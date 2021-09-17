@@ -59,15 +59,15 @@ class TpetraBlockMVTSQR
 
 public:
   using int_t	     = int;
-  using sc_t	     = typename ::pressio::Traits<MatrixType>::scalar_t;
+  using sc_t	     = typename ::pressio::Traits<MatrixType>::scalar_type;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
 
-  using lo_t	   = typename ::pressio::Traits<MatrixType>::local_ordinal_t;
-  using go_t	   = typename ::pressio::Traits<MatrixType>::global_ordinal_t;
-  using node_t   = typename ::pressio::Traits<MatrixType>::node_t;
+  using lo_t	   = typename ::pressio::Traits<MatrixType>::local_ordinal_type;
+  using go_t	   = typename ::pressio::Traits<MatrixType>::global_ordinal_type;
+  using node_t   = typename ::pressio::Traits<MatrixType>::node_type;
 
-  using Q_type	          = Tpetra::BlockMultiVector<>;
+  using Q_type	          = Tpetra::BlockMultiVector<sc_t, lo_t, go_t, node_t>;
   using tpetra_mv_t       = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
   using tsqr_adaptor_type = Tpetra::TsqrAdaptor<tpetra_mv_t>;
 
@@ -85,7 +85,7 @@ public:
 
     // this is the row map of the block MV
     auto ArowMap = A.getMap();
-    createQIfNeeded(ArowMap, blockSize, nVecs);
+    createQIfNeeded(*ArowMap, blockSize, nVecs);
 
     // get the multivector
     auto mv = A.getMultiVectorView();
@@ -94,8 +94,9 @@ public:
   }
 
   template <typename VectorType>
-  void doLinSolve(const VectorType & rhs, VectorType & y)const {
-      qr::impl::solve<VectorType, trcp_mat>(rhs, this->localR_, y);
+  void doLinSolve(const VectorType & rhs, VectorType & y)const
+  {
+    qr::impl::solve<VectorType, trcp_mat>(rhs, this->localR_, y);
   }
 
   template < typename VectorInType, typename VectorOutType>
@@ -116,20 +117,24 @@ public:
 
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
-    !containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    !::pressio::is_dense_matrix_teuchos<T>::value and
+    !std::is_void<T>::value,
     const T &
   >
-  RFactor() const {
+  RFactor() const
+  {
     this->Rmat_ = std::make_shared<T>(this->localR_->values());
     return *this->Rmat_;
   }
 
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    ::pressio::is_dense_matrix_teuchos<T>::value and
+    !std::is_void<T>::value,
     const T &
   >
-  RFactor() const {
+  RFactor() const
+  {
     this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);
     return *this->Rmat_;
   }
@@ -139,7 +144,8 @@ public:
   }
 
 private:
-  void createLocalRIfNeeded(int newsize){
+  void createLocalRIfNeeded(int newsize)
+  {
     if (localR_.is_null() or
     	(localR_->numRows()!=newsize and localR_->numCols()!=newsize)){
       localR_ = Teuchos::rcp(new serden_mat_t(newsize, newsize) );
@@ -147,9 +153,10 @@ private:
   }
 
   template <typename map_t>
-  void createQIfNeeded(const map_t & map, int blockSize, int numVecs){
-    if (!Qmat_ or !Qmat_->getMap()->isSameAs(*map) ){
-      Qmat_ = std::make_shared<Q_type>(map, blockSize, numVecs);
+  void createQIfNeeded(const map_t & map, int blockSize, int numVecs)
+  {
+    if (!Qmat_ or !Qmat_->getMap()->isSameAs(map) ){
+     Qmat_ = std::make_shared<Q_type>(map, blockSize, numVecs);
     }
   }
 

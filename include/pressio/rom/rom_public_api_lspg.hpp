@@ -68,7 +68,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType
     >::type
   >
-ReturnType create_default_unsteady_problem(::pressio::ode::SteppersE name,
+ReturnType create_default_unsteady_problem(::pressio::ode::StepScheme name,
 					   const FomSystemType & fomSysObj,
 					   DecoderType & decoder,
 					   const RomStateType & stateIn,
@@ -89,7 +89,7 @@ template<
     FomReferenceStateType, PreconditionerType
     >::type
   >
-ReturnType create_default_unsteady_problem(::pressio::ode::SteppersE name,
+ReturnType create_default_unsteady_problem(::pressio::ode::StepScheme name,
 					   const FomSystemType & fomSysObj,
 					   DecoderType & decoder,
 					   const RomStateType & stateIn,
@@ -115,7 +115,7 @@ ReturnType create_default_unsteady_problem(const FomSystemType & fomSysObj,
 					   const RomStateType & stateIn,
 					   const FomReferenceStateType & fomRef)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef);
 }
 
@@ -137,7 +137,7 @@ ReturnType create_default_unsteady_problem(const FomSystemType & fomSysObj,
 					   const FomReferenceStateType & fomRef,
 					   const PreconditionerType & prec)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef, prec);
 }
 
@@ -194,7 +194,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType, MaskerType
     >::type
   >
-ReturnType create_masked_unsteady_problem(::pressio::ode::SteppersE name,
+ReturnType create_masked_unsteady_problem(::pressio::ode::StepScheme name,
 					  const FomSystemType & fomSysObj,
 					  DecoderType & decoder,
 					  const RomStateType & stateIn,
@@ -217,7 +217,7 @@ template<
     MaskerType, PreconditionerType
     >::type
   >
-ReturnType create_masked_unsteady_problem(::pressio::ode::SteppersE name,
+ReturnType create_masked_unsteady_problem(::pressio::ode::StepScheme name,
 					  const FomSystemType & fomSysObj,
 					  DecoderType & decoder,
 					  const RomStateType & stateIn,
@@ -246,7 +246,7 @@ ReturnType create_masked_unsteady_problem(const FomSystemType & fomSysObj,
 					  const FomReferenceStateType & fomRef,
 					  const MaskerType & masker)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef, masker);
 }
 
@@ -271,7 +271,7 @@ ReturnType create_masked_unsteady_problem(const FomSystemType & fomSysObj,
 					  const MaskerType & masker,
 					  const PreconditionerType & prec)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef, prec, masker);
 }
 
@@ -333,7 +333,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType, HypRedOperatorUpdaterType
     >::type
   >
-ReturnType create_hyperreduced_unsteady_problem(::pressio::ode::SteppersE name,
+ReturnType create_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
 						const FomSystemType & fomSysObj,
 						DecoderType & decoder,
 						const RomStateType & stateIn,
@@ -358,7 +358,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType, HypRedOperatorUpdaterType
     >::type
   >
-ReturnType create_hyperreduced_unsteady_problem(::pressio::ode::SteppersE name,
+ReturnType create_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
 						const FomSystemType & fomSysObj,
 						DecoderType & decoder,
 						const RomStateType & stateIn,
@@ -385,7 +385,7 @@ ReturnType create_hyperreduced_unsteady_problem(const FomSystemType & fomSysObj,
 						const RomStateType & stateIn,
 						const FomReferenceStateType & fomRef)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef);
 }
 

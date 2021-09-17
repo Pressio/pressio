@@ -83,7 +83,7 @@ public:
     class GalerkinStencilVelocitiesContainerType,
     class ScalarType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 		  const GalerkinStateType & galerkinState,
 		  const GalerkinStencilStatesContainerType & galerkinStencilStates,
 		  GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
@@ -93,19 +93,19 @@ public:
 		  GalerkinResidualType & galerkinResidual) const
   {
 
-    if (name == ::pressio::ode::SteppersE::BDF1){
+    if (name == ::pressio::ode::StepScheme::BDF1){
       (*this).template compute_impl_bdf<ode::BDF1>
 	(galerkinState, galerkinStencilStates,
 	 galerkinStencilVelocities, t_np1, dt,
 	 currentStepNumber, galerkinResidual);
     }
-    else if (name == ::pressio::ode::SteppersE::BDF2){
+    else if (name == ::pressio::ode::StepScheme::BDF2){
       (*this).template compute_impl_bdf<ode::BDF2>
 	(galerkinState, galerkinStencilStates,
 	 galerkinStencilVelocities, t_np1, dt,
 	 currentStepNumber, galerkinResidual);
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
       (*this).template compute_impl_cn<ode::CrankNicolson>
 	(galerkinState, galerkinStencilStates,
 	 galerkinStencilVelocities, t_np1, dt,

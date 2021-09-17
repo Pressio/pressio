@@ -233,7 +233,7 @@ public:
     int _flag = flag,
     mpl::enable_if_t<_flag<=2, int> = 0
     >
-  Problem(::pressio::ode::SteppersE name,
+  Problem(::pressio::ode::StepScheme name,
 	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
@@ -244,7 +244,7 @@ public:
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=3 and _flag<=5, int> = 0
     >
-  Problem(::pressio::ode::SteppersE name,
+  Problem(::pressio::ode::StepScheme name,
 	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
@@ -258,7 +258,7 @@ public:
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=6 and _flag<=8, int> = 0
     >
-  Problem(::pressio::ode::SteppersE name,
+  Problem(::pressio::ode::StepScheme name,
 	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,

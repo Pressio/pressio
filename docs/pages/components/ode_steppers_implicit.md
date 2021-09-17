@@ -33,13 +33,13 @@ In this case, pressio exposes the following functions to create an instance of a
 @code{.cpp}
 // overload 1
 template<class StateType, class SystemType>
-auto create_implicit_stepper(pressio::ode::SteppersE name,
+auto create_implicit_stepper(pressio::ode::StepScheme name,
 							 const StateType & state,
 							 const SystemType & system);
 
 // overload 2
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
-auto create_implicit_stepper(pressio::ode::SteppersE name,
+auto create_implicit_stepper(pressio::ode::StepScheme name,
 							 const StateType & state,
 							 ResidualPolicyType && rPol,
 							 JacobianPolicyType && jPol);
@@ -205,7 +205,7 @@ int main()
   // systemObj is the system instance
 
   namespace pode = pressio::ode;
-  const auto scheme = pode::SteppersE::BDF1;
+  const auto scheme = pode::StepScheme::BDF1;
   auto stepper = pode::create_implicit_stepper(scheme, stateObj, systemObj);
 
   // create a solver, here for simplicity we show the case where

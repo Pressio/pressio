@@ -49,8 +49,6 @@
 #ifndef MPL_MPL_CONFIGDEFS_HPP_
 #define MPL_MPL_CONFIGDEFS_HPP_
 
-#include "pressio_cmake_config.h"
-
 #include <type_traits>
 #include <memory>
 #include <complex>

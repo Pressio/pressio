@@ -2,12 +2,11 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-using vec_t = Eigen::VectorXd;
-using mat_t = Eigen::MatrixXd;
 
 TEST(ops_eigen, subspan_extent)
 {
-  mat_t A(5,5);
+  using T = Eigen::MatrixXd;
+  T A(5,5);
   std::pair<int,int> r(1,3);
   std::pair<int,int> c(2,5);
 

@@ -5,7 +5,8 @@
 TEST_F(tpetraVectorGlobSize15Fixture, vector_clone)
 {
     auto a = pressio::ops::clone(*myVector_);
-    ASSERT_TRUE(a.getLocalViewDevice().data() != myVector_->getLocalViewDevice().data());
+    ASSERT_TRUE(a.getLocalViewDevice().data() !=
+		myVector_->getLocalViewDevice().data());
 
     auto a_h = a.getLocalViewHost();
     for (int i=0; i<localSize_; ++i){

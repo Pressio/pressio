@@ -57,7 +57,7 @@ public:
   residual_type create() const{ return residual_type(); }
 
   template <typename prev_states_type, class rhs_container>
-  void operator()(pressio::ode::SteppersE name, 
+  void operator()(pressio::ode::StepScheme name, 
       const StateType & y,
       const prev_states_type & oldYs,
       rhs_container & rhs,
@@ -76,7 +76,7 @@ public:
   using jacobian_type = JacobianType;
 
   template <typename prev_states_type>
-  void operator()(pressio::ode::SteppersE name,
+  void operator()(pressio::ode::StepScheme name,
       const StateType & y,
       const prev_states_type & oldYs,
       const double &  t,

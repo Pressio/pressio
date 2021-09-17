@@ -1,6 +1,6 @@
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom}, {\ttfamily pressio\+::rom\+::galerkin}.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md96}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_default_autotoc_md96}
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin}\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md96}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_default_autotoc_md96}
 At a high level, using a Galerkin problem involces three steps\+:
 \begin{DoxyEnumerate}
 \item {\itshape create}\+: you create an instance of a \char`\"{}default Galerkin problem\char`\"{}
@@ -12,32 +12,44 @@ You should now pause and think for a second about the steps above. What does a s
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
-\DoxyCodeLine{  \textcolor{keyword}{class }StepperTag,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
 \DoxyCodeLine{  >}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_default\_problem(\textcolor{keyword}{const} FomSystemType \& fomSysObj,}
-\DoxyCodeLine{                            DecoderType \& decoder,}
-\DoxyCodeLine{                            \textcolor{keyword}{const} RomStateType \& stateIn,}
-\DoxyCodeLine{                            \textcolor{keyword}{const} FomReferenceStateType \& fomRef);}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_default\_explicit\_problem(pressio::ode::StepScheme,}
+\DoxyCodeLine{                                     \textcolor{keyword}{const} FomSystemType \&,}
+\DoxyCodeLine{                                     DecoderType \&,}
+\DoxyCodeLine{                                     \textcolor{keyword}{const} RomStateType \&,}
+\DoxyCodeLine{                                     \textcolor{keyword}{const} FomReferenceStateType \&)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_default\_implicit\_problem(pressio::ode::StepScheme,}
+\DoxyCodeLine{                                     \textcolor{keyword}{const} FomSystemType \&,}
+\DoxyCodeLine{                                     DecoderType \&,}
+\DoxyCodeLine{                                     \textcolor{keyword}{const} RomStateType \& ,}
+\DoxyCodeLine{                                     \textcolor{keyword}{const} FomReferenceStateType \&)}
 
 \end{DoxyCode}
 
 
-where {\ttfamily Stepper\+Tag} is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md98}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_default_autotoc_md98}
+This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md98}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_default_autotoc_md98}
 
 \begin{DoxyItemize}
-\item {\ttfamily Stepper\+Tag}\+:
+\item {\ttfamily Step\+Scheme}\+:
 \begin{DoxyItemize}
-\item tag type to specify the time scheme
-\item must be one of the explicit or implicit tag types supported in {\ttfamily pressio\+::ode}
+\item enum value to specify the stepper scheme, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ explicit choices}} and \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit choices}}
 \end{DoxyItemize}
 \item {\ttfamily Fom\+System\+Type}\+:
 \begin{DoxyItemize}
-\item your adapter class type specifying the FOM problem
-\item must satisfy one of the APIs suitable for Galerkin, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ API list}}
+\item your adapter class type specifying the FOM problem. ~\newline
+
+\item Must satisfy one of the APIs suitable for Galerkin, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ API list}}
 \end{DoxyItemize}
 \item {\ttfamily Decoder\+Type}\+:
 \begin{DoxyItemize}
@@ -46,7 +58,6 @@ where {\ttfamily Stepper\+Tag} is a tag type from the ode to specify which time 
 \end{DoxyItemize}
 \item {\ttfamily Rom\+State\+Type}\+:
 \begin{DoxyItemize}
-\item ROM state type
 \item currently, it must be either an Eigen vector or a Kokkos 1D view
 \end{DoxyItemize}
 \item {\ttfamily Fom\+Reference\+State\+Type}\+:
@@ -60,8 +71,8 @@ where {\ttfamily Stepper\+Tag} is a tag type from the ode to specify which time 
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md99}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_galerkin_default_autotoc_md99}
-A problem meets the following API\+:
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md99}{}\doxysubsection{Galerkin Problem class API}\label{md_pages_components_rom_galerkin_default_autotoc_md99}
+A problem meets the following interface\+:
 
 
 \begin{DoxyCode}{0}
@@ -122,8 +133,9 @@ An example usage for explicit stepper is as follows\+:
 \DoxyCodeLine{\textcolor{keyword}{namespace }pode = pressio::ode;}
 \DoxyCodeLine{\textcolor{keyword}{namespace }pgal = pressio::rom::galerkin;}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{using} ode\_tag  = pode::ForwardEuler;}
-\DoxyCodeLine{\textcolor{keyword}{auto} problem   = pgal::create\_default\_problem<ode\_tag>(fom\_system, decoder, rom\_state, fom\_reference\_state);}
+\DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pdoe::StepScheme:ForwardEuler;}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem = pgal::create\_default\_explicit\_problem(scheme, fom\_system, decoder,}
+\DoxyCodeLine{                                                     rom\_state, fom\_reference\_state);}
 \DoxyCodeLine{\textcolor{keyword}{auto} \& stepper = problem.stepper();}
 \DoxyCodeLine{}
 \DoxyCodeLine{pressio::ode::advance\_n\_steps\_and\_observe(stepper, rom\_state, \textcolor{comment}{/* any other args */});}
@@ -142,8 +154,9 @@ An example usage for implicit stepper is as follows\+:
 \DoxyCodeLine{\textcolor{keyword}{namespace }pode = pressio::ode;}
 \DoxyCodeLine{\textcolor{keyword}{namespace }pgal = pressio::rom::galerkin;}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{using} ode\_tag  = pode::ForwardEuler;}
-\DoxyCodeLine{\textcolor{keyword}{auto} problem   = pgal::create\_default\_problem<ode\_tag>(fom\_system, decoder, rom\_state, fom\_reference\_state);}
+\DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pdoe::StepScheme:BDF1;}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem = pgal::create\_default\_implicit\_problem(scheme, fom\_system, decoder,}
+\DoxyCodeLine{                                                     rom\_state, fom\_reference\_state);}
 \DoxyCodeLine{\textcolor{keyword}{auto} \& stepper = problem.stepper();}
 \DoxyCodeLine{}
 \DoxyCodeLine{!!!!!!!! fill !!!!!!!!!}

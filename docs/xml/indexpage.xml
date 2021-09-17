@@ -103,14 +103,16 @@ implict steppers <linebreak/>
 general info <linebreak/>
  decoder <linebreak/>
  Galerkin<linebreak/>
- LSPG<linebreak/>
+ Steady LSPG<linebreak/>
+ Unsteady LSPG<linebreak/>
  WLS<linebreak/>
    </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/rom">Code</ulink> <linebreak/>
 <ulink url="md_pages_components_rom_general.html">Documentation</ulink> <linebreak/>
 <ulink url="md_pages_components_rom_decoder.html">Documentation</ulink> <linebreak/>
  <ulink url="md_pages_components_rom_galerkin.html">Documentation</ulink> <linebreak/>
- <ulink url="md_pages_components_rom_lspg.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_rom_lspg_steady.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_rom_lspg_unsteady.html">Documentation</ulink> <linebreak/>
  <ulink url="md_pages_components_rom_wls.html">Documentation</ulink> <linebreak/>
    </para>
 </entry><entry thead="no"><para><linebreak/>
@@ -118,12 +120,13 @@ general info <linebreak/>
  <computeroutput>&lt;pressio/rom_decoder.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput><linebreak/>
  <computeroutput>&lt;pressio/rom_wls.hpp&gt;</computeroutput> <linebreak/>
  (for everything: <computeroutput>&lt;pressio/rom.hpp&gt;</computeroutput>)   </para>
 </entry></row>
 </table>
 </para>
-<sect1 id="index_1autotoc_md139">
+<sect1 id="index_1autotoc_md168">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas;</para>
@@ -133,12 +136,12 @@ general info <linebreak/>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md140">
+<sect1 id="index_1autotoc_md169">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md141">
+<sect1 id="index_1autotoc_md170">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

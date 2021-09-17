@@ -3,14 +3,13 @@
 
 Defined in: `<pressio/rom_galerkin.hpp>`
 
-Public namespace: `pressio::rom`, `pressio::rom::galerkin`.
+Public namespace: `pressio::rom::galerkin`
 
 
 ## 1. Creating a problem instance
 
 ```cpp
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
@@ -18,22 +17,37 @@ template<
   class ProjectorType,
   class MaskerType
   >
-auto create_masked_problem(const FomSystemType & fomSysObj,
-                           DecoderType & decoder,
-                           const RomStateType & stateIn,
-                           const FomReferenceStateType & fomRef,
-						   const ProjectorType & probjector,
-						   const MaskerType & masker);
+ReturnType create_masked_explicit_problem(pressio::ode::StepScheme,
+										  const FomSystemType &,
+										  DecoderType &,
+										  const RomStateType &,
+										  const FomReferenceStateType &,
+										  const ProjectorType &,
+										  const MaskerType &);
+
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ProjectorType,
+  class MaskerType
+  >
+ReturnType create_masked_implicit_problem(pressio::ode::StepScheme,
+										  const FomSystemType &,
+										  DecoderType &,
+										  const RomStateType &,
+										  const FomReferenceStateType &,
+										  const ProjectorType &,
+										  const MaskerType &);
 ```
 
-where `StepperTag` is a tag type from the ode to specify which time scheme to use.
 This function returns an instance of the desired Galerkin problem.
 
 ### Parameters and Requirements
 
-- `StepperTag`:
-  - tag type to specify the time scheme
-  - must be one of the explicit or implicit tag types supported in `pressio::ode`
+- `StepScheme`:
+  - must be one of the explicit or implicit enum values supported in `pressio::ode`
 
 - `FomSystemType`:
   - your adapter class type specifying the FOM problem
@@ -59,7 +73,7 @@ This function returns an instance of the desired Galerkin problem.
   - must be a functor with a specific API, see [this page](md_pages_components_rom_galerkin_hypred.html)
 
 - `MaskedType`:
-  - an operator responsible of "masking" the FOM operators
+  - an functor responsible of "masking" the FOM operators
   - must be a functor with a specific API, see details below
 
 

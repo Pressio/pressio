@@ -1,0 +1,79 @@
+Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
+
+Public namespace\+: {\ttfamily pressio\+::rom\+::lspg}\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md133}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md133}
+todo\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md134}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md134}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_steady\_problem(\textcolor{keyword}{const} FomSystemType \&,}
+\DoxyCodeLine{                                        DecoderType \&,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} RomStateType \&,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} FomReferenceStateType \&);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }PreconditionerType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_steady\_problem(\textcolor{keyword}{const} FomSystemType \&,}
+\DoxyCodeLine{                                        DecoderType \&,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} RomStateType \&,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} FomReferenceStateType \&,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} PreconditionerType \&);}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md135}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md135}
+
+\begin{DoxyItemize}
+\item {\ttfamily Fom\+System\+Type}\+:
+\begin{DoxyItemize}
+\item your adapter class type specifying the FOM problem. ~\newline
+
+\item Must satisfy the steady API, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ here}}
+\end{DoxyItemize}
+\item {\ttfamily Decoder\+Type}\+:
+\begin{DoxyItemize}
+\item decoder class type
+\item must satify the requirements listed \href{md_pages_components_rom_decoder.html}{\texttt{ here}}
+\end{DoxyItemize}
+\item {\ttfamily Rom\+State\+Type}\+:
+\begin{DoxyItemize}
+\item currently, it must be either an Eigen vector or a Kokkos 1D view
+\end{DoxyItemize}
+\item {\ttfamily Fom\+Reference\+State\+Type}\+:
+\begin{DoxyItemize}
+\item your FOM reference state that is used when reconstructing the FOM state
+\item must be copy-\/constructible and the following must be true\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{std::is\_same<FomReferenceStateType, typename DecoderType::fom\_state\_type>::value == \textcolor{keyword}{true}}
+
+\end{DoxyCode}
+
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md136}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md136}
+A problem meets the following interface\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }SteadyLspgProblem}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// returns the underlying system to use to solve the problem}}
+\DoxyCodeLine{  \textcolor{keyword}{auto} \& system();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+ 

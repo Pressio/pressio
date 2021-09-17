@@ -51,10 +51,6 @@
 
 namespace pressio{ namespace ops{
 
-/*
- * C = beta * C + alpha*op(A)*op(B)
-*/
-
 /* -------------------------------------------------------------------
 C = beta * C + alpha * A^T * B
 
@@ -101,7 +97,6 @@ product(::pressio::transpose modeA,
     }
   }
 }
-
 
 /* -------------------------------------------------------------------
 C = beta * C + alpha * A^T * B
@@ -259,7 +254,7 @@ C is a Kokkos dense matrix
 template <class C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dense_matrix_kokkos<C_type>::value, 
+  ::pressio::is_dense_matrix_kokkos<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -325,6 +320,12 @@ product(::pressio::transpose modeA,
   Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, A, B, beta);
 }
 
+}}//end namespace pressio::ops
+#endif  // OPS_TPETRA_OPS_LEVEL3_HPP_
+
+
+
+
 // //-------------------------------------------
 // // C = beta * C + alpha*A*B
 // // specialize for when A is a diagonal expression
@@ -356,6 +357,3 @@ product(::pressio::transpose modeA,
 //   auto & Btp = *B.data();
 //   Ctp.elementWiseMultiply(alpha, Atp, Btp, beta);
 // }
-
-}}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_LEVEL3_HPP_

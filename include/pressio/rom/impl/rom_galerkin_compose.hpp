@@ -438,7 +438,7 @@ struct ComposeDiscTime<
 };
 
 
-void ensure_explicit_or_throw(const std::string & str, ::pressio::ode::SteppersE name)
+void ensure_explicit_or_throw(const std::string & str, ::pressio::ode::StepScheme name)
 {
   const auto tmp_b = ::pressio::ode::is_explicit_scheme(name);
   if (!tmp_b){
@@ -446,7 +446,7 @@ void ensure_explicit_or_throw(const std::string & str, ::pressio::ode::SteppersE
   }
 }
 
-void ensure_implicit_or_throw(const std::string & str, ::pressio::ode::SteppersE name)
+void ensure_implicit_or_throw(const std::string & str, ::pressio::ode::StepScheme name)
 {
   const auto tmp_b = ::pressio::ode::is_explicit_scheme(name);
   if (tmp_b){

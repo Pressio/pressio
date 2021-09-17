@@ -9,6 +9,43 @@ a minimally intrusive layer to standardize the way pressio interfaces with any a
 As explained below, in general, preparing the adapter should only
 involve *exposing* from your applications some operators.
 
+## Stead API
+
+Intended for when your FOM application is expressed as
+@f[
+\boldsymbol{R}(\boldsymbol{y}; \boldsymbol{\mu}) = 0
+@f]
+where @f$y@f$ is the full-order model (FOM) state,
+@f$R@f$ is the residual
+\todo finish.
+
+### Synopsis
+
+```cpp
+class FomSteadyAdapter
+{
+public:
+  using scalar_type   = /* your type */;
+  using state_type    = /* your type */;
+  using residual_type = /* your type */;
+
+public:
+  // you need to create an instance of the residual
+  residual_type createResidual() const;
+
+  // given a state, you compute the residual
+  void residual(const state_type &,
+				residual_type &) const;
+};
+```
+
+### Usage
+- @m_span{m-text m-warning}This adapter can ONLY be used for doing stedy LSPG ROMs.@m_endspan
+- See the following examples: \toadd
+
+<br/>
+
+
 ## Continuous-time API: Velocity Only
 
 Intended for when your FOM application is expressed in *time-continuous* form as

@@ -8,7 +8,7 @@ where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_explicit\_stepper(pressio::ode::SteppersE name,}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_explicit\_stepper(pressio::ode::StepScheme name,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} SystemType \& system);}
 
@@ -51,7 +51,7 @@ the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and
 \DoxyCodeLine{  \textcolor{comment}{// systemObj is the system instance}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{namespace }pode = pressio::ode;}
-\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pode::SteppersE::ForwardEuler;}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pode::StepScheme::ForwardEuler;}
 \DoxyCodeLine{  \textcolor{keyword}{auto} stepper = pode::create\_explicit\_stepper(scheme, stateObj, systemObj);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// use the stepper to advance in time,}}

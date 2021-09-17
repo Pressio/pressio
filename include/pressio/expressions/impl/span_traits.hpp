@@ -134,30 +134,26 @@ struct SpanTraits<
 };
 #endif
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename T>
-// struct traits<
-//   ::pressio::expressions::SpanExpr<T>,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
-//     >
-//   >
-//   : public ContainersSharedTraits<
-//   typename details::traits<T>::wrapped_t, PackageIdentifier::Pybind,
-//   true,
-//   1
-//   >
-// {
-//   static constexpr bool is_static = true;
-//   static constexpr bool is_dynamic  = !is_static;
-//   using wrapped_t = typename traits<T>::wrapped_t;
-//   using scalar_t  = typename traits<T>::scalar_t;
-//   using ordinal_t = typename traits<T>::ordinal_t;
-//   using size_t    = ordinal_t;
-//   using reference_t =  scalar_t &;
-//   using const_reference_t = scalar_t const &;
-// };
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename T>
+struct SpanTraits<
+  SpanExpr<T>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<T>::value
+    >
+  >
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+{
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using remove_cv_t = typename std::remove_cv<T>::type;
+  using scalar_type  = typename ::pressio::Traits<remove_cv_t>::scalar_type;
+  using size_type    = typename ::pressio::Traits<remove_cv_t>::size_type;
+  using reference_type =  scalar_type &;
+  using const_reference_type = scalar_type const &;
+};
+#endif
 
 }}}
 #endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_TRAITS_HPP_

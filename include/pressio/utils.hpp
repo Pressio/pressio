@@ -49,7 +49,7 @@
 #ifndef PRESSIO_UTILS_HPP_
 #define PRESSIO_UTILS_HPP_
 
-#include "pressio/mpl.hpp"
+#include "./mpl.hpp"
 #include <iomanip>
 
 #include "./utils/utils_crtp_helper.hpp"

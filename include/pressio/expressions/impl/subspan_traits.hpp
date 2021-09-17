@@ -133,30 +133,27 @@ struct SubSpanTraits<
 #endif
 
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename MatrixType>
-// struct traits<
-//   ::pressio::containers::expressions::SubspanExpr<MatrixType>,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<MatrixType>::value
-//     >
-//   >
-//   : public ContainersSharedTraits<
-//   typename details::traits<MatrixType>::wrapped_t,
-//   WrappedPackageIdentifier::Pybind, true, 2>,
-//   public MatrixSharedTraits<false>
-// {
-//   static constexpr bool is_static = true;
-//   static constexpr bool is_dynamic  = !is_static;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename MatrixType>
+struct SubSpanTraits<
+  SubspanExpr<MatrixType>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<MatrixType>::value
+    >
+  >
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
+    public MatrixSharedTraits<false>
+{
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
 
-//   using wrapped_t = typename traits<MatrixType>::wrapped_t;
-//   using scalar_t  = typename traits<MatrixType>::scalar_t;
-//   using ordinal_t = typename traits<MatrixType>::ordinal_t;
-//   using size_t    = ordinal_t;
-//   using reference_t =  scalar_t &;
-//   using const_reference_t = scalar_t const &;
-// };
-// #endif
+  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
+  using scalar_type  = typename Traits<mat_remove_cv_t>::scalar_type;
+  using size_type    = typename Traits<mat_remove_cv_t>::size_type;
+  using reference_type	  = scalar_type &;
+  using const_reference_type = scalar_type const &;
+};
+#endif
 
 }}}
 #endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_TRAITS_HPP_

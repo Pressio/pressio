@@ -81,7 +81,7 @@ struct implicit_residual_policy<
       (
        std::declval<T const>()
        (
-	std::declval<SteppersE const &>(),
+	std::declval<StepScheme const &>(),
 	std::declval<StateType const &>(),
 	std::declval<ImplicitStencilStatesContainerDyn<StateType> const & >(),
 	std::declval<ImplicitStencilVelocitiesContainerDyn<typename T::residual_type> & >(),

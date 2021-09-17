@@ -49,19 +49,11 @@
 #ifndef PRESSIO_ODE_EXPLICIT_HPP_
 #define PRESSIO_ODE_EXPLICIT_HPP_
 
-/*
-   include everything needed for ODE explicit integration
-   NOTE that the order below matters!
-   - Includes are ordered properly to avoid a tangled system.
-   - don't rely on files inside impl, these might change
-*/
-
-// need all of the dependent packages
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
-#include "pressio/ops.hpp"
-#include "pressio/solvers.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./solvers.hpp"
 
 #include "./ode_steppers/pressio_ode_common.hpp"
 #include "./ode_steppers/ode_create_explicit_stepper.hpp"

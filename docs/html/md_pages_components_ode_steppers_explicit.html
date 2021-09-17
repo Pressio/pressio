@@ -49,13 +49,16 @@
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
-                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
-                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
-                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html"> &emsp; - Galerkin </a></li>
                 <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a> &emsp; - LSPG </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: steady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -147,7 +150,7 @@ $t$
 <use x='0' y='0' xlink:href='#eq4-g0-116'/>
 </g>
 </svg> is time.<br />Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</p></section><section id="autotoc_md55"><h2><a href="#autotoc_md55">API</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">SteppersE</span> <span class="n">name</span><span class="p">,</span>
+<span class="k">auto</span> <span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">name</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span></pre><p>where <code>name</code> is one of the following enum class values: <code>ForwardEuler</code>, <code>RungeKutta4</code>, <code>AdamsBashforth2</code>, <code>SSPRungeKutta3</code>. This function returns an instance of the desired stepper. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>, so one can use the &quot;advancers&quot; functions to step forward.</p></section><section id="autotoc_md56"><h2><a href="#autotoc_md56">Parameters and Requirements</a></h2><ul><li><code>StateType</code>: data type of your state, must be copy constructible</li><li><p><code>SystemType</code>: class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>
@@ -177,7 +180,7 @@ $f$
   <span class="c1">// systemObj is the system instance</span>
 
   <span class="k">namespace</span> <span class="n">pode</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="p">;</span>
-  <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">SteppersE</span><span class="o">::</span><span class="n">ForwardEuler</span><span class="p">;</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">StepScheme</span><span class="o">::</span><span class="n">ForwardEuler</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">stepper</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">systemObj</span><span class="p">);</span>
 
   <span class="c1">// use the stepper to advance in time,</span>

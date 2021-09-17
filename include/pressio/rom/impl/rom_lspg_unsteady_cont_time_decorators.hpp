@@ -83,7 +83,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 	       const LspgStateType & lspgState,
 	       const LspgStencilStatesContainerType & lspgStencilStates,
 	       LspgStencilVelocitiesContainerType & lspgStencilVelocities,
@@ -136,7 +136,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 	       const LspgStateType & lspgState,
 	       const LspgStencilStatesContainerType & lspgStencilStates,
 	       const ScalarType & t_np1,
@@ -192,7 +192,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 	       const LspgStateType & lspgState,
 	       const LspgStencilStatesContainerType & lspgStencilStates,
 	       LspgStencilVelocitiesContainerType & lspgStencilVelocities,
@@ -246,7 +246,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 	       const LspgStateType & lspgState,
 	       const LspgStencilStatesContainerType & lspgStencilStates,
 	       const ScalarType & t_np1,

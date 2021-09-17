@@ -49,9 +49,9 @@
 #ifndef PRESSIO_LINEAR_SOLVERS_HPP_
 #define PRESSIO_LINEAR_SOLVERS_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
 #include "solvers_linear/solvers_linear_tags.hpp"
 #include "solvers_linear/solvers_linear_solver.hpp"
 

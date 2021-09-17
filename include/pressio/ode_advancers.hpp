@@ -49,9 +49,9 @@
 #ifndef PRESSIO_ODE_ADVANCE_HPP_
 #define PRESSIO_ODE_ADVANCE_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
 
 namespace pressio{ namespace ode{
 using step_count_type = int32_t;

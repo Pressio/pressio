@@ -72,40 +72,6 @@ struct FomStateReconstructor
       decoderObj_(decoder)
   {}
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   template <typename rom_state_t>
-//   void operator()(const rom_state_t & romState,
-// 		  fom_state_type    & fomState) const
-//   {
-//     // map current romState to FOM state
-//     decoderObj_.get().applyMapping(romState, fomState);
-//     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
-//     // fomState = fomState + fomNominalState_;
-//     ops::update(fomState, one, fomNominalState_, one);
-//   }
-
-//   // evaluate is added because I cannot figure out how to overload ()
-//    evaluate is used to pass an array from python and construct
-//      the fom result here which we pass back to pyhon.
-//      So the rom state is a native python array.
-
-//      Note that we template this on the rom_state_t but we pass the native array.
-//      By doing this, the template allows us to know the rank of the rom state
-//      since this should work for rank1 and rank2 rom states.
-//      If we only passed the native array wihtout the template, we would not know
-//      the propper rank of the fom state.
-
-//   template<typename rom_state_t>
-//   native_fom_state_t evaluate(const typename rom_state_t::traits::wrapped_t & romStateIn) const
-//   {
-//     rom_state_t romView(romStateIn, ::pressio::view());
-//     fom_state_type fomState(fomNominalState_);
-//     ::pressio::ops::set_zero(fomState);
-//     (*this)(romView, fomState);
-//     return *fomState.data();
-//   }
-
-// #else
   template <class RomStateType>
   void operator()(const RomStateType & romState,
 		  fom_state_type & fomState) const
@@ -118,15 +84,44 @@ struct FomStateReconstructor
     ::pressio::ops::update(fomState, one, fomNominalState_, one);
   }
 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
   template <class RomStateType>
   fom_state_type operator()(const RomStateType & romState) const
   {
-
     auto fomState = ::pressio::ops::clone(fomNominalState_);
     ::pressio::ops::set_zero(fomState);
     this->operator()(romState,fomState);
     return fomState;
   }
+#else
+
+   // evaluate is added because for pybind11 one cannot have templated lambda yet.
+   // evaluate is used to pass an array from python and construct
+   // the fom result here which we pass back to pyhon.
+   // So the rom state is a native python array.
+  template<typename RomStateType>
+  fom_state_type evaluate(const RomStateType & romState) const
+  {
+    fom_state_type fomState = ::pressio::ops::clone(fomNominalState_);
+    ::pressio::ops::set_zero(fomState);
+    (*this)(romState, fomState);
+    return fomState;
+  }
+#endif
+
+
+//   template <typename rom_state_t>
+//   void operator()(const rom_state_t & romState,
+// 		  fom_state_type    & fomState) const
+//   {
+//     // map current romState to FOM state
+//     decoderObj_.get().applyMapping(romState, fomState);
+//     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
+//     // fomState = fomState + fomNominalState_;
+//     ops::update(fomState, one, fomNominalState_, one);
+//   }
+
+
 // #endif
 
 private:

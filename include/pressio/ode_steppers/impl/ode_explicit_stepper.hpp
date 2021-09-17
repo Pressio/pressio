@@ -68,7 +68,7 @@ public:
 
 
 private:
-  SteppersE name_;
+  StepScheme name_;
   const stepper_order_type order_;
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::vector<VelocityType> velocities_;
@@ -83,8 +83,9 @@ public:
   ~ExplicitStepper() = default;
 
   ExplicitStepper(ode::ForwardEuler,
-		  const StateType & state, SystemType && systemObj)
-    : name_(SteppersE::ForwardEuler),
+		  const StateType & state,
+		  SystemType && systemObj)
+    : name_(StepScheme::ForwardEuler),
       order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity()},
@@ -92,8 +93,9 @@ public:
   {}
 
   ExplicitStepper(ode::RungeKutta4,
-		  const StateType & state, SystemType && systemObj)
-    : name_(SteppersE::RungeKutta4),
+		  const StateType & state,
+		  SystemType && systemObj)
+    : name_(StepScheme::RungeKutta4),
       order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity(),
@@ -104,8 +106,9 @@ public:
   {}
 
   ExplicitStepper(ode::AdamsBashforth2,
-		  const StateType & state, SystemType && systemObj)
-    : name_(SteppersE::AdamsBashforth2),
+		  const StateType & state,
+		  SystemType && systemObj)
+    : name_(StepScheme::AdamsBashforth2),
       order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity(), systemObj.createVelocity()},
@@ -113,8 +116,9 @@ public:
   {}
 
   ExplicitStepper(ode::SSPRungeKutta3,
-		  const StateType & state, SystemType && systemObj)
-    : name_(SteppersE::SSPRungeKutta3),
+		  const StateType & state,
+		  SystemType && systemObj)
+    : name_(StepScheme::SSPRungeKutta3),
       order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity()},
@@ -133,16 +137,16 @@ public:
 		  const ScalarType & dt,
 		  const StepCountType & step)
   {
-    if (name_ == ode::SteppersE::ForwardEuler){
+    if (name_ == ode::StepScheme::ForwardEuler){
       doStepImpl(ode::ForwardEuler(), odeState, time, dt, step);
     }
-    else if (name_ == ode::SteppersE::RungeKutta4){
+    else if (name_ == ode::StepScheme::RungeKutta4){
       doStepImpl(ode::RungeKutta4(), odeState, time, dt, step);
     }
-    else if (name_ == ode::SteppersE::AdamsBashforth2){
+    else if (name_ == ode::StepScheme::AdamsBashforth2){
       doStepImpl(ode::AdamsBashforth2(), odeState, time, dt, step);
     }
-    else if (name_ == ode::SteppersE::SSPRungeKutta3){
+    else if (name_ == ode::StepScheme::SSPRungeKutta3){
       doStepImpl(ode::SSPRungeKutta3(), odeState, time, dt, step);
     }
   }

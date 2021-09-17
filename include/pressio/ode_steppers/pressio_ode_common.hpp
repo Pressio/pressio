@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace ode{
 
-enum class SteppersE{
+enum class StepScheme{
   // explicit
   ForwardEuler,
   RungeKutta4,
@@ -65,17 +65,17 @@ enum class SteppersE{
 };
 
 template<class T = bool>
-T is_explicit_scheme(SteppersE name)
+T is_explicit_scheme(StepScheme name)
 {
-  if (name == SteppersE::ForwardEuler){ return true; }
-  else if (name == SteppersE::RungeKutta4){ return true; }
-  else if (name == SteppersE::AdamsBashforth2){ return true; }
-  else if (name == SteppersE::SSPRungeKutta3){ return true; }
+  if (name == StepScheme::ForwardEuler){ return true; }
+  else if (name == StepScheme::RungeKutta4){ return true; }
+  else if (name == StepScheme::AdamsBashforth2){ return true; }
+  else if (name == StepScheme::SSPRungeKutta3){ return true; }
   else{ return false; }
 }
 
 template<class T = bool>
-T is_implicit_scheme(SteppersE name){
+T is_implicit_scheme(StepScheme name){
   return !is_explicit_scheme(name);
 }
 

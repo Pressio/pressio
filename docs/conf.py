@@ -38,19 +38,22 @@ LINKS_NAVBAR1 = [
      ("<a> rom: </a>",),
      #("<a href=\"md_pages_components_rom_general.html\"> &emsp; - general info</a>",),
      ("<a href=\"md_pages_components_rom_fom_apis.html\"> &emsp; - FOM adapter API</a>",),
-     ("<a href=\"md_pages_components_rom_decoder.html\">  &emsp; - generic decoder</a>",),
-     ("<a href=\"md_pages_components_rom_decoder_linear.html\">  &emsp; - linear decoder</a>",),
+     ("<a href=\"md_pages_components_rom_decoder.html\">  &emsp; - decoder</a>",),
 
      #
-     ("<a> &emsp; - Galerkin </a>",),
-     #("<a href=\"md_pages_components_rom_galerkin_general.html\"> &emsp; &emsp; - general info </a>",),
+     ("<a href=\"md_pages_components_rom_galerkin.html\"> &emsp; - Galerkin </a>",),
      ("<a href=\"md_pages_components_rom_galerkin_default.html\"> &emsp; &emsp; - default problem </a>",),
      ("<a href=\"md_pages_components_rom_galerkin_hypred.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
      ("<a href=\"md_pages_components_rom_galerkin_masked.html\"> &emsp; &emsp; - masked problem </a>",),
 
      #
-     ("<a> &emsp; - LSPG </a>",),
-     #("<a href=\"md_pages_components_rom_lspg_general.html\"> &emsp; &emsp; - general info </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_steady.html\"> &emsp; - LSPG: steady </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_default_steady.html\"> &emsp; &emsp; - default problem </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_hypred_steady.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_masked_steady.html\"> &emsp; &emsp; - masked problem </a>",),
+
+     #
+     ("<a href=\"md_pages_components_rom_lspg_steady.html\"> &emsp; - LSPG: unsteady </a>",),
      ("<a href=\"md_pages_components_rom_lspg_default.html\"> &emsp; &emsp; - default problem </a>",),
      ("<a href=\"md_pages_components_rom_lspg_hypred.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
      ("<a href=\"md_pages_components_rom_lspg_masked.html\"> &emsp; &emsp; - masked problem </a>",),

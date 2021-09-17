@@ -65,7 +65,7 @@ struct AsDiagonalMatrixExpr<
     or
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    ::pressio::is_rank1_tensor_pybind<
+    ::pressio::is_array_pybind<
      typename std::remove_cv<VectorType>::type
      >::value
 #endif
@@ -73,12 +73,12 @@ struct AsDiagonalMatrixExpr<
   >
 {
   using this_t = AsDiagonalMatrixExpr<VectorType>;
-  using mytraits = AsdiagmatrixTraits<this_t>;
-  using sc_t = typename mytraits::scalar_type;
-  using size_t = typename mytraits::size_type;
-  using ref_t = typename mytraits::reference_type;
-  using const_ref_t = typename mytraits::const_reference_type;
-  using native_expr_t = typename mytraits::native_expr_type;
+  using traits = AsdiagmatrixTraits<this_t>;
+  using sc_t = typename traits::scalar_type;
+  using size_t = typename traits::size_type;
+  using ref_t = typename traits::reference_type;
+  using const_ref_t = typename traits::const_reference_type;
+  using native_expr_t = typename traits::native_expr_type;
 
 private:
   std::reference_wrapper<VectorType> vecObj_;
@@ -96,7 +96,7 @@ public:
   AsDiagonalMatrixExpr(VectorType & objIn)
     : vecObj_(objIn),
       extent_(objIn.size()),
-      nativeExprObj_(vecObj_.get().asDiagonal())      
+      nativeExprObj_(vecObj_.get().asDiagonal())
   {}
 
 public:
@@ -157,7 +157,7 @@ public:
 //   AsDiagonalMatrixExpr & operator=(AsDiagonalMatrixExpr && other) = delete;
 //   ~AsDiagonalMatrixExpr() = default;
 
-//   template <typename _T = T, 
+//   template <typename _T = T,
 //     typename mpl::enable_if_t<
 //       ::pressio::is_vector_epetra<_T>::value
 //     > * = nullptr
@@ -168,7 +168,7 @@ public:
 //       extentLocal_(objIn.MyLength())
 //   {}
 
-//   template <typename _T = T, 
+//   template <typename _T = T,
 //     typename mpl::enable_if_t<
 //       ::pressio::is_vector_tpetra<_T>::value
 //     > * = nullptr
@@ -179,7 +179,7 @@ public:
 //       extentLocal_(objIn.getLocalLength())
 //   {}
 
-//   template <typename _T = T, 
+//   template <typename _T = T,
 //     typename mpl::enable_if_t<
 //       ::pressio::is_vector_tpetra_block<_T>::value
 //     > * = nullptr

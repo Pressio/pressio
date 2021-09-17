@@ -99,7 +99,7 @@ template<
   class FomStateReconstructorType,
   class FomStateType>
 ManagerStencilFomStatesType
-create_manager_stencil_fom_states(::pressio::ode::SteppersE name,
+create_manager_stencil_fom_states(::pressio::ode::StepScheme name,
 				  const FomStateReconstructorType & fomRec,
 				  const FomStateType & fomNomState)
 {
@@ -108,19 +108,19 @@ create_manager_stencil_fom_states(::pressio::ode::SteppersE name,
     throw std::runtime_error("Unsteady LSPG prob members: enum must be implicit");
   }
   else{
-    if (name == ::pressio::ode::SteppersE::BDF1){
+    if (name == ::pressio::ode::StepScheme::BDF1){
       return ManagerStencilFomStatesType(fomRec,
 					 {::pressio::ops::clone(fomNomState),
 					  ::pressio::ops::clone(fomNomState)});
     }
-    else if (name == ::pressio::ode::SteppersE::BDF2)
+    else if (name == ::pressio::ode::StepScheme::BDF2)
     {
       return ManagerStencilFomStatesType(fomRec,
 					 {::pressio::ops::clone(fomNomState),
 					  ::pressio::ops::clone(fomNomState),
 					  ::pressio::ops::clone(fomNomState)});
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
       return ManagerStencilFomStatesType(fomRec,
 					 {::pressio::ops::clone(fomNomState),
 					  ::pressio::ops::clone(fomNomState)}
@@ -157,7 +157,7 @@ struct AddFomStatesManagerUnsteady : T
     bool _is_static = is_static,
     mpl::enable_if_t<!_is_static, int> = 0
     >
-  AddFomStatesManagerUnsteady(::pressio::ode::SteppersE name,
+  AddFomStatesManagerUnsteady(::pressio::ode::StepScheme name,
 			      const T1 & fomObj,
 			      const T2 & decoder,
 			      const T3 & romStateIn,
@@ -221,7 +221,7 @@ struct AddDefaultPolicies : T
   {}
 
   template<class T1, class T2, class T3, class T4>
-  AddDefaultPolicies(::pressio::ode::SteppersE name,
+  AddDefaultPolicies(::pressio::ode::StepScheme name,
 		     const T1 & romStateIn,
 		     const T2 & fomObj,
 		     T3 & decoder,
@@ -247,7 +247,7 @@ struct AddHypRedPolicies : T
   ~AddHypRedPolicies() = default;
 
   template<class T1, class T2, class T3, class T4, class T5>
-  AddHypRedPolicies(::pressio::ode::SteppersE name,
+  AddHypRedPolicies(::pressio::ode::StepScheme name,
 		    const T1 & romStateIn,
 		    const T2 & fomObj,
 		    T3 & decoder,
@@ -285,7 +285,7 @@ struct AddSinglyDecoratedPolicies : T
   {}
 
   template<class T1, class T2, class T3, class T4>
-  AddSinglyDecoratedPolicies(::pressio::ode::SteppersE name,
+  AddSinglyDecoratedPolicies(::pressio::ode::StepScheme name,
 			     const T1 & romStateIn,
 			     const T2 & fomObj,
 			     T3 & decoder,
@@ -329,7 +329,7 @@ struct AddDoublyDecoratedPolicies : T
   {}
 
   template<class T1, class T2, class T3, class T4>
-  AddDoublyDecoratedPolicies(::pressio::ode::SteppersE name,
+  AddDoublyDecoratedPolicies(::pressio::ode::StepScheme name,
 			     const T1 & romStateIn,
 			     const T2 & fomObj,
 			     T3 & decoder,
@@ -355,7 +355,7 @@ struct AddDefaultDiscreteTimeSystem : T
   ~AddDefaultDiscreteTimeSystem() = default;
 
   template<class T1, class T2, class T3, class T4>
-  AddDefaultDiscreteTimeSystem(::pressio::ode::SteppersE name,
+  AddDefaultDiscreteTimeSystem(::pressio::ode::StepScheme name,
 			       const T1 & romStateIn,
 			       const T2 & fomObj,
 			       T3 & decoder,
@@ -380,7 +380,7 @@ struct AddSinglyDecoratedDiscreteTimeSystem : T
   ~AddSinglyDecoratedDiscreteTimeSystem() = default;
 
   template<class T1, class T2, class T3, class T4>
-  AddSinglyDecoratedDiscreteTimeSystem(::pressio::ode::SteppersE name,
+  AddSinglyDecoratedDiscreteTimeSystem(::pressio::ode::StepScheme name,
 				       const T1 & romStateIn,
 				       const T2 & fomObj,
 				       T3 & decoder,
@@ -411,7 +411,7 @@ struct AddDoublyDecoratedDiscreteTimeSystem : T
   ~AddDoublyDecoratedDiscreteTimeSystem() = default;
 
   template<class T1, class T2, class T3, class T4>
-  AddDoublyDecoratedDiscreteTimeSystem(::pressio::ode::SteppersE name,
+  AddDoublyDecoratedDiscreteTimeSystem(::pressio::ode::StepScheme name,
 				       const T1 & romStateIn,
 				       const T2 & fomObj,
 				       T3 & decoder,

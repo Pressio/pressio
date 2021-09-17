@@ -57,7 +57,7 @@ struct admissible_galerkin_state : std::false_type{};
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<typename T>
 struct admissible_galerkin_state<T,
-  ::pressio::mpl::enable_if_t< 
+  ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<T>::value
    >
   > : std::true_type{};
@@ -66,8 +66,17 @@ struct admissible_galerkin_state<T,
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename T>
 struct admissible_galerkin_state<T,
-  ::pressio::mpl::enable_if_t< 
+  ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_kokkos<T>::value
+   >
+  > : std::true_type{};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct admissible_galerkin_state<T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<T>::value
    >
   > : std::true_type{};
 #endif

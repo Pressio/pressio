@@ -88,7 +88,7 @@ TEST(rom_lspg, cont_time_unsteady_hyperreduced_correctness_eigen)
 
   HypRedUpdaterEigen<scalar_t> comb(sample_indices);
   auto problem = pressio::rom::lspg::create_hyperreduced_unsteady_problem
-    (pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, comb);
+    (pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState, comb);
 
   COMMON_PART2();
   pressio::log::finalize();
@@ -106,7 +106,7 @@ TEST(rom_lspg, cont_time_unsteady_hyperreduced_correctness_custom_types)
 
   HypRedUpdaterCustomType<scalar_t> comb(sample_indices);
   auto problem = pressio::rom::lspg::create_hyperreduced_unsteady_problem
-    (pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, comb);
+    (pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState, comb);
 
   COMMON_PART2();
   pressio::log::finalize();

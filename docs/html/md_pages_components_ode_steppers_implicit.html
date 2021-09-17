@@ -49,13 +49,16 @@
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
-                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
-                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
-                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html"> &emsp; - Galerkin </a></li>
                 <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a> &emsp; - LSPG </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: steady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -207,13 +210,13 @@ $R$
 </g>
 </svg> is the residual.</p></section><section id="autotoc_md61"><h2><a href="#autotoc_md61">API for continuous-time systems</a></h2><p>In this case, pressio exposes the following functions to create an instance of a desired stepper:</p><pre class="m-code"><span class="c1">// overload 1</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_implicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">SteppersE</span> <span class="n">name</span><span class="p">,</span>
+<span class="k">auto</span> <span class="n">create_implicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">name</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span>
 
 <span class="c1">// overload 2</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ResidualPolicyType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">JacobianPolicyType</span><span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_implicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">SteppersE</span> <span class="n">name</span><span class="p">,</span>
+<span class="k">auto</span> <span class="n">create_implicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">name</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                              <span class="n">ResidualPolicyType</span> <span class="o">&amp;&amp;</span> <span class="n">rPol</span><span class="p">,</span>
                              <span class="n">JacobianPolicyType</span> <span class="o">&amp;&amp;</span> <span class="n">jPol</span><span class="p">);</span></pre><p>Currently, the choices are:</p><table class="m-table"><thead><tr><th>enum value</th><th>Method</th><th>Discrete Residual Formula</th></tr></thead><tbody><tr><td>BDF1</td><td>Backward Diff 1st order</td><td><svg class="m-math" style="width: 16.507em; height: 1.245em; vertical-align: -0.312em;" viewBox="0 -8.966376 158.46995 11.955168">
@@ -444,7 +447,7 @@ $f$
   <span class="c1">// systemObj is the system instance</span>
 
   <span class="k">namespace</span> <span class="n">pode</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="p">;</span>
-  <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">SteppersE</span><span class="o">::</span><span class="n">BDF1</span><span class="p">;</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">StepScheme</span><span class="o">::</span><span class="n">BDF1</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">stepper</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">create_implicit_stepper</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">systemObj</span><span class="p">);</span>
 
   <span class="c1">// create a solver, here for simplicity we show the case where</span>

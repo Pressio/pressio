@@ -49,7 +49,7 @@
 #ifndef PRESSIO_TYPE_TRAITS_HPP_
 #define PRESSIO_TYPE_TRAITS_HPP_
 
-#include "pressio/mpl.hpp"
+#include "./mpl.hpp"
 
 namespace pressio{
 template<class T, class Enable = void> struct Traits;
@@ -72,7 +72,7 @@ template<class T, class Enable = void> struct Traits;
 
 //-----------------------------------------------------
 // for pybind arrays we cannot detect if a native type
-// it is a vector or something else at compile time. 
+// it is a vector or something else at compile time.
 // We only have an "array".
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "type_traits/native_pybind_array.hpp"
@@ -117,5 +117,8 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/traits_dense_matrix.hpp"
 #include "type_traits/traits_multi_vector.hpp"
 #include "type_traits/traits_sparse_matrix.hpp"
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "type_traits/traits_pybind_array.hpp"
+#endif
 
 #endif

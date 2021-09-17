@@ -3,7 +3,7 @@
 
 Defined in header: `<pressio/utils.hpp>`
 
-Public namespaces: `pressio` and `pressio::utils`.
+Public namespaces: `pressio`, `pressio::utils`
 
 
 ## Logger

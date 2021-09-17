@@ -61,7 +61,7 @@ public:
 public:
   ResidualStandardPolicy() = delete;
 
-  ResidualStandardPolicy(SystemType && systemIn)
+  explicit ResidualStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
   ResidualStandardPolicy(const ResidualStandardPolicy &) = default;
@@ -82,7 +82,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(SteppersE name,
+  void operator()(StepScheme name,
 		  const StateType & predictedState,
 		  const StencilStatesContainerType & stencilStatesManager,
 		  StencilVelocitiesContainerType & stencilVelocities,
@@ -92,15 +92,15 @@ public:
 		  ResidualType & R) const
   {
 
-    if (name == SteppersE::BDF1){
+    if (name == StepScheme::BDF1){
       (*this).template compute_impl_bdf<ode::BDF1>(predictedState, stencilStatesManager,
 						   stencilVelocities, rhsEvaluationTime, dt, step, R);
     }
-    else if (name == SteppersE::BDF2){
+    else if (name == StepScheme::BDF2){
       (*this).template compute_impl_bdf<ode::BDF2>(predictedState, stencilStatesManager,
 						   stencilVelocities, rhsEvaluationTime, dt, step, R);
     }
-    else if (name == SteppersE::CrankNicolson){
+    else if (name == StepScheme::CrankNicolson){
       this->compute_impl_cn(predictedState, stencilStatesManager,
 			    stencilVelocities, rhsEvaluationTime, dt, step, R);
     }

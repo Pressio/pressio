@@ -242,7 +242,7 @@ public:
     int _flag = flag,
     mpl::enable_if_t<_flag<=1, int> = 0
     >
-  UnsteadyProblem(::pressio::ode::SteppersE name,
+  UnsteadyProblem(::pressio::ode::StepScheme name,
 		  const fom_system_type & fomObj,
 		  decoder_type & decoder,
 		  const lspg_state_type & romState,
@@ -253,7 +253,7 @@ public:
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=2, int> = 0
     >
-  UnsteadyProblem(::pressio::ode::SteppersE name,
+  UnsteadyProblem(::pressio::ode::StepScheme name,
 		  const fom_system_type & fomObj,
 		  decoder_type & decoder,
 		  const lspg_state_type & romState,

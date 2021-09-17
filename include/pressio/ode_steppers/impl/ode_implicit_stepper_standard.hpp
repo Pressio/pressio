@@ -74,7 +74,7 @@ public:
   static constexpr bool is_explicit = false;
 
 private:
-  ::pressio::ode::SteppersE name_;
+  ::pressio::ode::StepScheme name_;
   ::pressio::ode::stepper_order_type order_;
 
   ScalarType t_np1_  = {};
@@ -118,7 +118,7 @@ public:
   StepperRt(::pressio::ode::BDF1,
 	    const state_type & state,
 	    const SystemType & systemObj)
-    : name_(SteppersE::BDF1),
+    : name_(StepScheme::BDF1),
       order_(1),
       recovery_state_{::pressio::ops::clone(state)},
       stencil_states_{::pressio::ops::clone(state)},
@@ -136,7 +136,7 @@ public:
 	    const state_type & state,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
-    : name_(SteppersE::BDF1),
+    : name_(StepScheme::BDF1),
       order_(1),
       recovery_state_{::pressio::ops::clone(state)},
       stencil_states_{::pressio::ops::clone(state)},
@@ -154,7 +154,7 @@ public:
   StepperRt(::pressio::ode::BDF2,
 	    const state_type & state,
 	    const SystemType & systemObj)
-    : name_(SteppersE::BDF2),
+    : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
       stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
@@ -172,7 +172,7 @@ public:
 	    const state_type & state,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
-    : name_(SteppersE::BDF2),
+    : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
       stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
@@ -190,7 +190,7 @@ public:
   StepperRt(::pressio::ode::CrankNicolson,
 	    const state_type & state,
 	    const SystemType & systemObj)
-    : name_(SteppersE::CrankNicolson),
+    : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
       stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
@@ -209,7 +209,7 @@ public:
 	    const state_type & state,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
-    : name_(SteppersE::CrankNicolson),
+    : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
       stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
@@ -235,19 +235,19 @@ public:
     auto dummyGuesser =
       [](const int32_t &, const ScalarType &, state_type &){ /*no op*/ };
 
-    if (name_==::pressio::ode::SteppersE::BDF1){
+    if (name_==::pressio::ode::StepScheme::BDF1){
       doStepImpl(::pressio::ode::BDF1(),
 		 odeState, currentTime, dt, stepNumber,
 		 dummyGuesser, solver,
 		 std::forward<Args>(args)...);
     }
-    else if (name_==::pressio::ode::SteppersE::BDF2){
+    else if (name_==::pressio::ode::StepScheme::BDF2){
       doStepImpl(::pressio::ode::BDF2(),
 		 odeState, currentTime, dt, stepNumber,
 		 dummyGuesser, solver,
 		 std::forward<Args>(args)...);
     }
-    else if (name_==::pressio::ode::SteppersE::CrankNicolson){
+    else if (name_==::pressio::ode::StepScheme::CrankNicolson){
       doStepImpl(::pressio::ode::CrankNicolson(),
 		 odeState, currentTime, dt, stepNumber,
 		 dummyGuesser, solver,
@@ -267,19 +267,19 @@ public:
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step with callback to state guesser");
 
-    if (name_==::pressio::ode::SteppersE::BDF1){
+    if (name_==::pressio::ode::StepScheme::BDF1){
       doStepImpl(::pressio::ode::BDF1(),
 		 odeState, currentTime, dt, stepNumber,
 		 guesserCb, solver,
 		 std::forward<Args>(args)...);
     }
-    else if (name_==::pressio::ode::SteppersE::BDF2){
+    else if (name_==::pressio::ode::StepScheme::BDF2){
       doStepImpl(::pressio::ode::BDF2(),
 		 odeState, currentTime, dt, stepNumber,
 		 guesserCb, solver,
 		 std::forward<Args>(args)...);
     }
-    else if (name_==::pressio::ode::SteppersE::CrankNicolson){
+    else if (name_==::pressio::ode::StepScheme::CrankNicolson){
       doStepImpl(::pressio::ode::CrankNicolson(),
 		 odeState, currentTime, dt, stepNumber,
 		 guesserCb, solver,

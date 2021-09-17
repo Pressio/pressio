@@ -14,13 +14,13 @@ In this case, pressio exposes the following functions to create an instance of a
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// overload 1}}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_implicit\_stepper(pressio::ode::SteppersE name,}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_implicit\_stepper(pressio::ode::StepScheme name,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} SystemType \& system);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// overload 2}}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} Res\textcolor{keywordtype}{id}ualPolicyType, \textcolor{keyword}{class} JacobianPolicyType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_implicit\_stepper(pressio::ode::SteppersE name,}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_implicit\_stepper(pressio::ode::StepScheme name,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
 \DoxyCodeLine{                             ResidualPolicyType \&\& rPol,}
 \DoxyCodeLine{                             JacobianPolicyType \&\& jPol);}
@@ -169,7 +169,7 @@ Any stepper created using the functions above is guaranteed to satisfy the \char
 \DoxyCodeLine{  \textcolor{comment}{// systemObj is the system instance}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{namespace }pode = pressio::ode;}
-\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pode::SteppersE::BDF1;}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pode::StepScheme::BDF1;}
 \DoxyCodeLine{  \textcolor{keyword}{auto} stepper = pode::create\_implicit\_stepper(scheme, stateObj, systemObj);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// create a solver, here for simplicity we show the case where}}

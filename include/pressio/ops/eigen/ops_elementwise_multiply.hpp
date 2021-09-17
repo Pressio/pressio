@@ -61,7 +61,7 @@ template <typename T, typename T1, typename T2>
   ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::Traits<T>::rank == 1 and
   ::pressio::Traits<T1>::rank == 1 and
-  ::pressio::Traits<T2>::rank == 1 
+  ::pressio::Traits<T2>::rank == 1
   >
 elementwise_multiply
 (typename ::pressio::Traits<T>::scalar_type alpha,

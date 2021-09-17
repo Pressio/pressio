@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>rom: LSPG: default problem | Pressio|C++</title>
+  <title>rom: LSPG: unsteady default problem | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -49,13 +49,16 @@
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
-                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
-                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
-                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html"> &emsp; - Galerkin </a></li>
                 <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a> &emsp; - LSPG </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: steady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -80,9 +83,43 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          rom: LSPG: default problem
+          rom: LSPG: unsteady default problem
         </h1>
-<p>Defined in: <code>&lt;pressio/rom_lspg.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom</code>, <code>pressio::rom::lspg</code>.</p><p><span class="m-text m-danger">todo</span></p>
+<p>Defined in: <code>&lt;pressio/rom_lspg.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom::lspg</code></p><section id="autotoc_md116"><h2><a href="#autotoc_md116">Overview</a></h2></section><section id="autotoc_md117"><h2><a href="#autotoc_md117">1. Creating a problem instance</a></h2><pre class="m-code"><span class="c1">// overload for continuous-time systems</span>
+<span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">FomSystemType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>                                                             <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">class</span> <span class="nc">FomReferenceStateType</span>
+  <span class="o">&gt;</span>
+<span class="n">ReturnType</span> <span class="n">create_default_unsteady_problem</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="p">,</span>
+                                           <span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span><span class="p">,</span>
+                                           <span class="n">DecoderType</span> <span class="o">&amp;</span><span class="p">,</span>
+                                           <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span><span class="p">,</span>
+                                           <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span><span class="p">);</span>
+
+<span class="c1">// overload for discrete-time systems</span>
+<span class="k">template</span><span class="o">&lt;</span>
+  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">num_states</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">FomSystemType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>                                                             <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+  <span class="k">class</span> <span class="nc">FomReferenceStateType</span>
+  <span class="o">&gt;</span>
+<span class="n">ReturnType</span> <span class="n">create_default_unsteady_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span><span class="p">,</span>
+                                           <span class="n">DecoderType</span> <span class="o">&amp;</span><span class="p">,</span>
+                                           <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span><span class="p">,</span>
+                                           <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span><span class="p">);</span></pre><section id="autotoc_md118"><h3><a href="#autotoc_md118">Parameters and Requirements</a></h3><ul><li><code>FomSystemType</code>:<ul><li>your adapter class type specifying the FOM problem.<br /></li><li>for 1: must satisfy the <a href="./md_pages_components_rom_fom_apis.html">continuous-time API</a></li><li>for 2: must satisfy the <a href="./md_pages_components_rom_fom_apis.html">discrete-time API</a></li></ul></li><li><code>DecoderType</code>:<ul><li>decoder class type</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>RomStateType</code>:<ul><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>FomReferenceStateType</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li><li><code>num_states</code>:<ul><li><em>total</em> number of states you need to use (must be &lt;= 3), if you need more open issue</li><li>only needed for the discrete-time case</li></ul></li></ul></section><section id="autotoc_md119"><h3><a href="#autotoc_md119">Problem class API</a></h3><p>A problem meets the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">UnsteadyLspgProblem</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef with trait class */</span><span class="p">;</span>
+
+  <span class="c1">// returns the underlying stepper to use to solve the problem</span>
+  <span class="k">auto</span> <span class="o">&amp;</span> <span class="nf">stepper</span><span class="p">();</span>
+
+  <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre></section></section>
       </div>
     </div>
   </div>
