@@ -3,16 +3,11 @@
 #define CONTAINERS_FIXTURES_BLOCK_TPETRA_FIXTURES_HPP_
 
 #include <gtest/gtest.h>
-#include "pressio_containers.hpp"
-
 #include <Tpetra_BlockVector.hpp>
 #include <Tpetra_BlockMultiVector.hpp>
-
 #include <Tpetra_Map.hpp>
 #include <Teuchos_CommHelpers.hpp>
 #include <Tpetra_Map_decl.hpp>
-
-
 
 /* the tpetra data structures below are
  * left without templates such that it picks
@@ -37,7 +32,8 @@ public:
 
   int rank_;
   int numProc_;
-  const int blockSize_ = 4;
+  const int localSize_ = 5;
+  const int blockSize_ = 5;
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
@@ -48,8 +44,7 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-
-    numGlobalEntries_ = 15;
+    numGlobalEntries_ = localSize_*numProc_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     myVector_ = std::make_shared<vec_t>(*contigMap_, blockSize_);
   }
@@ -58,13 +53,15 @@ public:
 };
 
 struct tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
-
-  using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<>;
+  using tcomm  = Teuchos::Comm<int>;
+  using map_t  = Tpetra::Map<>;
+  using vec_t  = Tpetra::BlockVector<>;
   using mvec_t = Tpetra::BlockMultiVector<>;
+
   using ST = typename mvec_t::scalar_type;
   using LO = typename mvec_t::local_ordinal_type;
   using GO = typename mvec_t::global_ordinal_type;
@@ -72,6 +69,7 @@ public:
 
   int rank_;
   int numProc_;
+  const int localSize_ = 5;
   const int blockSize_ = 4;
   const int numVecs_ = 3;
   int numGlobalEntries_;
@@ -85,13 +83,12 @@ public:
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
 
-    numGlobalEntries_ = 15;
+    numGlobalEntries_ = localSize_*numProc_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     myMv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
   }
 
   virtual void TearDown(){}
 };
-
 
 #endif

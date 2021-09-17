@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_dot.hpp
+// ops_fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,32 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_DOT_HPP_
-#define OPS_TPETRA_BLOCK_OPS_DOT_HPP_
+#ifndef OPS_OPS_EXTENT_TPETRA_BLOCK_HPP_
+#define OPS_OPS_EXTENT_TPETRA_BLOCK_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T1, typename T2>
+template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value,
-  typename ::pressio::containers::details::traits<T1>::scalar_t
+  ::pressio::is_vector_tpetra_block<T>::value,
+  typename ::pressio::Traits<T>::global_ordinal_type
   >
-dot(const T1 & a, const T2 & b)
+extent(const T & oIn, const IndexType i)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
-
-  assert(a.extent(0) == b.extent(0));
-  // I have to constcast here because for block vector getVectorView is non-const
-  auto a_tp = const_cast<T1 &>(a).data()->getVectorView();
-  auto b_tp = const_cast<T2 &>(b).data()->getVectorView();
-  return a_tp.dot(b_tp);
+  assert(i==0);
+  return oIn.getMap()->getGlobalNumElements();
 }
 
-template <typename T1, typename T2>
+template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  ::pressio::is_multi_vector_tpetra_block<T>::value,
+  typename ::pressio::Traits<T>::global_ordinal_type
   >
-dot(const T1 & a,
-    const T2 & b,
-    typename ::pressio::containers::details::traits<T1>::scalar_t & result)
+extent(const T & oIn, const IndexType i)
 {
-  result = dot(a,b);
+  assert(i<=1);
+  return (i==0) ? oIn.getMap()->getGlobalNumElements() : oIn.getNumVectors();
 }
 
-
-}}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_DOT_HPP_
+}}
+#endif

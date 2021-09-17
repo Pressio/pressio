@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_elementwise_multiply.hpp
+// ops_norms_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,36 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_
-#define OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
+#define OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
 
 namespace pressio{ namespace ops{
 
-//----------------------------------------------------------------------
-// computing elementwise:  y = beta * y + alpha * x * z
-//----------------------------------------------------------------------
-template <typename T, typename T1, typename T2>
+template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  ::pressio::is_vector_tpetra_block<vec_type>::value,
+  typename ::pressio::Traits<vec_type>::scalar_type
   >
-elementwise_multiply
-(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
- const T & x,
- const T1 & z,
- typename ::pressio::containers::details::traits<T>::scalar_t beta,
- T2 & y)
+norm2(const vec_type & a)
 {
-  assert(x.extent(0)==z.extent(0));
-  assert(z.extent(0)==y.extent(0));
-  auto x_tpetraview = const_cast<T &>(x).data()->getVectorView();
-  auto z_tpetraview = const_cast<T1 &>(z).data()->getVectorView();
-  auto y_tpetraview = y.data()->getVectorView();
-  y_tpetraview.elementWiseMultiply(alpha, x_tpetraview, z_tpetraview, beta);
+  /* workaround the non-constness of getVectorView,
+   * which is supposed to be const but it is not */
+  using mv_t = Tpetra::BlockVector<>;
+  return const_cast<mv_t &>(a).getVectorView().norm2();
+}
+
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_vector_tpetra_block<vec_type>::value,
+  typename ::pressio::Traits<vec_type>::scalar_type
+  >
+norm1(const vec_type & a)
+{
+  /* workaround the non-constness of getVectorView,
+   * which is supposed to be const but it is not */
+  using mv_t = Tpetra::BlockVector<>;
+  return const_cast<mv_t &>(a).getVectorView().norm1();
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_

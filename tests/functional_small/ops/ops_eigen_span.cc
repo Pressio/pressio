@@ -2,22 +2,23 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-using vec_t = Eigen::VectorXd;
 
 TEST(ops_eigen, span_extent)
 {
-  vec_t a(8);
+  using T = Eigen::VectorXd;
+  T a(8);
   auto ex = pressio::span(a,5,2);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==2);
 }
 
 TEST(ops_eigen, span_abs)
 {
-  vec_t a(8);
+  using T = Eigen::VectorXd;
+  T a(8);
   a.setConstant(-1);
   auto ex = pressio::span(a,5,2);
 
-  vec_t y(5);
+  T y(5);
   pressio::ops::abs(y,ex);
   ASSERT_DOUBLE_EQ(y(0),1.);
   ASSERT_DOUBLE_EQ(y(1),1.);

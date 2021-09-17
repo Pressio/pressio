@@ -61,7 +61,7 @@ public:
 public:
   ResidualStandardPolicy() = delete;
 
-  ResidualStandardPolicy(SystemType && systemIn)
+  explicit ResidualStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
   ResidualStandardPolicy(const ResidualStandardPolicy &) = default;

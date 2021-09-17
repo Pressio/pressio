@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fill.hpp
+// ops_multi_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,34 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_FILL_HPP_
-#define OPS_TPETRA_BLOCK_OPS_FILL_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
+#define OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+//----------------------------------------------------------------------
+//  overloads for computing: MV = a * MV + b * MV1
+// where MV is an tpetra multivector wrapper
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
+  ::pressio::is_multi_vector_tpetra_block<T>::value
   >
-fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value){
-  v.data()->putScalar( value );
-  // v.data()->needSync();
+update(T & mv, const scalar_t &a,
+       const T & mv1, const scalar_t &b)
+{
+  mv.update(b, mv1, a);
+}
+
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_multi_vector_tpetra_block<T>::value
+  >
+update(T & mv, const T & mv1, const scalar_t & b)
+{
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  mv.update(b, mv1, zero);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_FILL_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_

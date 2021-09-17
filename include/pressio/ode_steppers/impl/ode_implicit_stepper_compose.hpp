@@ -182,7 +182,7 @@ template<
   class ReturnType = typename ImplicitCompose<SystemType, StateType>::type
   >
 ReturnType create_implicit_stepper_impl(StepScheme name,
-					const SystemType & system,
+					SystemType && system,
 					const StateType & state)
 {
   if (name == StepScheme::BDF1){

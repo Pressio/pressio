@@ -54,28 +54,27 @@ namespace pressio{ namespace ops{
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  ::pressio::is_vector_tpetra_block<T1>::value and
+  ::pressio::is_vector_tpetra_block<T2>::value
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent)
+	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
-  using ord_t = typename ::pressio::containers::details::traits<T1>::local_ordinal_t;
+  static_assert(::pressio::are_scalar_compatible<T1,T2>::value,
+		"not scalar compatible");
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
 
-  assert(x.extent(0) == y.extent(0));
-  assert(x.extentLocal(0) == y.extentLocal(0));
+  assert(extent(x,0) == extent(y,0));
   assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero()){
     throw std::runtime_error("this overload is only for exponent > 0");
+  }
 
-  const auto y_tp = y.data()->getVectorView();
+  const auto y_tp = y.getVectorView();
   // I have to constcast here because for block vector getVectorView is non-const
-  const auto x_tp = const_cast<T2 &>(x).data()->getVectorView();
+  const auto x_tp = const_cast<T2 &>(x).getVectorView();
   const auto y_kv = y_tp.getLocalViewDevice();
   const auto x_kv = x_tp.getLocalViewDevice();
   // NOTE that we need the local length of the tpetra view NOT the block
@@ -90,29 +89,28 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  ::pressio::is_vector_tpetra_block<T1>::value and
+  ::pressio::is_vector_tpetra_block<T2>::value
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent,
-	const typename ::pressio::containers::details::traits<T1>::scalar_t & eps)
+	const typename ::pressio::Traits<T1>::scalar_type & exponent,
+	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
-  using ord_t = typename ::pressio::containers::details::traits<T1>::local_ordinal_t;
+  static_assert(::pressio::are_scalar_compatible<T1,T2>::value,
+		"not scalar compatible");
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
 
-  assert(x.extent(0) == y.extent(0));
-  assert(x.extentLocal(0) == y.extentLocal(0));
+  assert(extent(x,0) == extent(y,0));
   assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::Constants<sc_t>::zero())
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero()){
     throw std::runtime_error("this overload is only for exponent < 0");
+  }
 
-  const auto y_tp = y.data()->getVectorView();
+  const auto y_tp = y.getVectorView();
   // I have to constcast here because for block vector getVectorView is non-const
-  const auto x_tp = const_cast<T2 &>(x).data()->getVectorView();
+  const auto x_tp = const_cast<T2 &>(x).getVectorView();
   const auto y_kv = y_tp.getLocalViewDevice();
   const auto x_kv = x_tp.getLocalViewDevice();
 
@@ -130,14 +128,14 @@ abs_pow(T1 & y,
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  ::pressio::is_vector_tpetra_block<T>::value
   >
 pow(T & x,
-    const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
+    const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
 
-  auto x_tpetraview = x.data()->getVectorView();
+  auto x_tpetraview = x.getVectorView();
   auto x_kv = x_tpetraview.getLocalViewDevice();
 
   // NOTE that we need the local length of the tpetra view NOT the block

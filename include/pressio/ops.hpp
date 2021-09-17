@@ -126,6 +126,22 @@ template<class ...> struct matching_extents;
 #include "ops/tpetra/ops_level2.hpp"
 #include "ops/tpetra/ops_level3.hpp"
 
+// Tpetra block
+#include "ops/tpetra_block/ops_clone.hpp"
+#include "ops/tpetra_block/ops_extent.hpp"
+#include "ops/tpetra_block/ops_deep_copy.hpp"
+#include "ops/tpetra_block/ops_set_zero.hpp"
+#include "ops/tpetra_block/ops_fill.hpp"
+#include "ops/tpetra_block/ops_abs.hpp"
+#include "ops/tpetra_block/ops_dot.hpp"
+#include "ops/tpetra_block/ops_norms.hpp"
+#include "ops/tpetra_block/ops_pow.hpp"
+#include "ops/tpetra_block/ops_rank1_update.hpp"
+#include "ops/tpetra_block/ops_elementwise_multiply.hpp"
+#include "ops/tpetra_block/ops_multi_vector_update.hpp"
+#include "ops/tpetra_block/ops_level2.hpp"
+#include "ops/tpetra_block/ops_level3.hpp"
+
 // Epetra
 #include "ops/epetra/ops_clone.hpp"
 #include "ops/epetra/ops_extent.hpp"
@@ -145,21 +161,6 @@ template<class ...> struct matching_extents;
 // teuchos
 #include "ops/teuchos/ops_level2.hpp"
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
-
-// // Tpetra block
-// #include "ops/tpetra_block/ops_abs.hpp"
-// #include "ops/tpetra_block/ops_set_zero.hpp"
-// #include "ops/tpetra_block/ops_fill.hpp"
-// #include "ops/tpetra_block/ops_deep_copy.hpp"
-// #include "ops/tpetra_block/ops_level2.hpp"
-// #include "ops/tpetra_block/ops_level3.hpp"
-// #include "ops/tpetra_block/ops_norms_vector.hpp"
-// #include "ops/tpetra_block/ops_vector_update.hpp"
-// #include "ops/tpetra_block/ops_multi_vector_update.hpp"
-// #include "ops/tpetra_block/ops_dot.hpp"
-// #include "ops/tpetra_block/ops_pow.hpp"
-// #include "ops/tpetra_block/ops_elementwise_multiply.hpp"
-// #endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "ops/pybind11/ops_common.hpp"

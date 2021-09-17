@@ -58,7 +58,7 @@ namespace pressio{ namespace ops{
 
 /*
 y = beta * y + alpha*op(A)*x
-  
+
 op(A) = A or A^T
 */
 
@@ -138,11 +138,11 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   and ::pressio::is_dense_vector_teuchos<x_type>::value
   >
 product(::pressio::nontranspose mode,
-  const scalar_type alpha,
-  const A_type & A,
-  const x_type & x,
-  const scalar_type beta,
-  y_type & y)
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
   static_assert
     (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
@@ -165,15 +165,15 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   ::pressio::is_vector_kokkos<x_type>::value
   >
 product(::pressio::nontranspose,
- const scalar_type alpha,
- const A_type & A,
- const x_type & x,
- const scalar_type beta,
- y_type & y)
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
   static_assert
     (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-    "Types are not scalar compatible");
+     "Types are not scalar compatible");
   assert(x.span_is_contiguous());
 
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
@@ -223,11 +223,11 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   and ::pressio::is_vector_eigen<y_type>::value
   >
 product(::pressio::transpose mode,
-  const scalar_type alpha,
-  const A_type & A,
-  const x_type & x,
-  const scalar_type beta,
-  y_type & y)
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
   // // dot product of each vector in A with vecB
   //  Apparently, trilinos does not support this...
@@ -244,11 +244,11 @@ product(::pressio::transpose mode,
 
   const auto numVecs = ::pressio::ops::extent(A, 1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
-  {
-    // colI is a Teuchos::RCP<Vector<...>>
-    const auto colI = A.getVector(i);
-    y(i) = beta * y(i) + alpha * colI->dot(x);
-  }
+    {
+      // colI is a Teuchos::RCP<Vector<...>>
+      const auto colI = A.getVector(i);
+      y(i) = beta * y(i) + alpha * colI->dot(x);
+    }
 }
 #endif
 
@@ -267,11 +267,11 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   ::pressio::is_vector_kokkos<y_type>::value
   >
 product(::pressio::transpose mode,
- const scalar_type alpha,
- const A_type & A,
- const x_type & x,
- const scalar_type beta,
- y_type & y)
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
   static_assert
     (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
@@ -294,6 +294,12 @@ product(::pressio::transpose mode,
   request->wait();
   ::KokkosBlas::axpby(alpha, ATx, beta, y);
 }
+
+}}//end namespace pressio::ops
+#endif  // OPS_TPETRA_OPS_LEVEL2_HPP_
+
+
+
 
 
 // #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -384,6 +390,3 @@ product(::pressio::transpose mode,
 //   ::KokkosBlas::gemv(&ctA, alpha, Aview, xLocalView_rank1, beta, yview);
 // }
 // #endif
-
-}}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_LEVEL2_HPP_

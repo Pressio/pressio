@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_multi_vector_update.hpp
+// ops_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,81 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
-#define OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
+#define OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
 //----------------------------------------------------------------------
-//  overloads for computing: MV = a * MV + b * MV1
-// where MV is an tpetra multivector wrapper
+// computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
+  ::pressio::is_vector_tpetra_block<T>::value
   >
-update(T & mv, const scalar_t &a,
-	       const T & mv1, const scalar_t &b)
+update(T & v, const scalar_t a,
+	  const T & v1, const scalar_t b)
 {
-  mv.data()->update(b, *mv1.data(), a);
+  v.update(b, v1, a);
 }
 
+//----------------------------------------------------------------------
+//  overloads for computing this: V = a * V + b * V1 + c * V2
+//----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
+  ::pressio::is_vector_tpetra_block<T>::value
   >
-update(T & mv, const T & mv1, const scalar_t & b)
+update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c)
 {
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  mv.data()->update(b, *mv1.data(), zero);
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+  v.update(b, v1, a); // v = v + b * v1
+  v.update(c, v2, one); // add c*v2
+}
+
+//----------------------------------------------------------------------
+//  overloads for computing:
+//	V = a * V + b * V1 + c * V2 + d * V3
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_vector_tpetra_block<T>::value
+  >
+update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d)
+{
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+
+  v.update(b, v1, a); // v = a*v + b*v1
+  v.update(c, v2, one); // add c*v2
+  v.update(d, v3, one); // add d*v3
+}
+
+//----------------------------------------------------------------------
+//  overloads for computing:
+//  V = a * V + b * V1 + c * V2 + d * V3 + e * V4
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_vector_tpetra_block<T>::value
+  >
+update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e)
+{
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+
+  v.update(b, v1, a); // v = a*v + b*v1
+  v.update(c, v2, one); // add c*v2
+  v.update(d, v3, one); // add d*v3
+  v.update(e, v4, one); // add e*v4
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_

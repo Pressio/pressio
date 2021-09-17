@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_abs.hpp
+// ops_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,21 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_ABS_HPP_
-#define OPS_TPETRA_BLOCK_OPS_ABS_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_SET_ZERO_HPP_
+#define OPS_TPETRA_BLOCK_OPS_SET_ZERO_HPP_
 
 namespace pressio{ namespace ops{
 
-// y= abs(x)
-template <typename T1, class T2>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  ::pressio::is_vector_tpetra_block<T>::value or
+  ::pressio::is_multi_vector_tpetra_block<T>::value
   >
-abs(T1 & y, const T2 & x)
+set_zero(T & v)
 {
-  auto y_tpetraview = y.data()->getVectorView();
-  auto x_tpetraview = const_cast<T2 &>(x).data()->getVectorView();
-  y_tpetraview.abs(x_tpetraview);
+  using value_t = typename ::pressio::Traits<T>::scalar_type;
+  v.putScalar( ::pressio::utils::Constants<value_t>::zero() );
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_ABS_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_SET_ZERO_HPP_
