@@ -6,6 +6,17 @@
 namespace pressio{ namespace rom{ namespace experimental{
 
 
+
+template <typename scalar_t>
+auto getCol(const Tpetra::BlockMultiVector<> & Phi,const int i){
+  auto meshMap = Phi.getPointMap();
+  auto PhiMultiVector = Phi.getMultiVectorView(); 
+  auto PhiCol = PhiMultiVector.getVector(i);
+  Tpetra::BlockVector PhiColBlockVector( PhiCol , meshMap, 1);
+  return *PhiColBlockVector;
+}
+
+
 template <typename scalar_t>
 auto getCol(const Tpetra::MultiVector<> & Phi,const int i){
   auto PhiCol = Phi.getVector(i);
@@ -507,7 +518,7 @@ auto computeBasisTransposeTimesJacobianTimesBasisEigen(const app_t & appObj, con
 
 
 template <typename app_t, typename state_t, typename param_t , typename scalar_t, typename basis_t, typename hessian_t, typename vector_t>
-void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, hessian_t & BasisTransposeTimesHessianTimesBasisTimesBasis, vector_t & HCol )
+void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, hessian_t & BasisTransposeTimesHessianTimesBasisTimesBasis, vector_t & HCol,const int maxKForHessian)
 {
   auto romDim = ::pressio::ops::extent(Phi,1);
   auto fomDim = ::pressio::ops::extent(y,0);
@@ -524,7 +535,7 @@ void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & ap
   scalar_t scale = 1./(12.*eps*eps);
   scalar_t scale2 = 0.25/(eps*eps);
 
-  for  (int i = 0; i < romDim; i++){
+  for  (int i = 0; i < maxKForHessian; i++){
     for (int j=0; j <= i; j++){
       ::pressio::ops::set_zero(workingVector);
       if (i == j){
@@ -599,7 +610,7 @@ void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & ap
 
   
 template <typename rom_data_t, typename app_t, typename state_t, typename param_t , typename scalar_t, typename basis_t>
-auto computeBasisTransposeTimesHessianTimesBasisTimesBasisKokkos(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi)
+auto computeBasisTransposeTimesHessianTimesBasisTimesBasisKokkos(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, const int maxKForHessian)
 {
   auto romDim = ::pressio::ops::extent(Phi,1);
   auto fomDim = ::pressio::ops::extent(y,0);
@@ -607,18 +618,18 @@ auto computeBasisTransposeTimesHessianTimesBasisTimesBasisKokkos(const app_t & a
   using vector_t    = typename rom_data_t::vector_t;
   using dense_hessian_t    =  typename rom_data_t::dense_hessian_t;
 
-  dense_hessian_t BasisTransposeTimesHessianTimesBasisTimesBasis("PhiTHPhiPhi", romDim,romDim,romDim);
+  dense_hessian_t BasisTransposeTimesHessianTimesBasisTimesBasis("PhiTHPhiPhi", romDim,maxKForHessian,maxKForHessian);
   vector_t HCol("HCol",romDim);
 
 
-  computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(appObj,y,mu,t,Phi,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol);
+  computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(appObj,y,mu,t,Phi,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,maxKForHessian);
   return BasisTransposeTimesHessianTimesBasisTimesBasis; 
 } 
 
 
 
 template <typename rom_data_t, typename app_t, typename state_t, typename param_t , typename scalar_t, typename basis_t>
-auto computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi)
+auto computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, const int maxKForHessian)
 {
   auto romDim = ::pressio::ops::extent(Phi,1);
   auto fomDim = ::pressio::ops::extent(y,0);
@@ -639,15 +650,15 @@ auto computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen(const app_t & ap
   vector_t HCol(romDim);
 
   for (int i=0; i < romDim; i++){
-    BasisTransposeTimesHessianTimesBasisTimesBasis[i].resize(romDim);
+    BasisTransposeTimesHessianTimesBasisTimesBasis[i].resize(maxKForHessian);
   }
   for (int i=0; i < romDim; i++){
-    for (int j=0; j < romDim; j++){
-      BasisTransposeTimesHessianTimesBasisTimesBasis[i][j].resize(romDim);
+    for (int j=0; j < maxKForHessian; j++){
+      BasisTransposeTimesHessianTimesBasisTimesBasis[i][j].resize(maxKForHessian);
     }
   }
 
-  computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(appObj,y,mu,t,Phi,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol);
+  computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(appObj,y,mu,t,Phi,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,maxKForHessian);
   return BasisTransposeTimesHessianTimesBasisTimesBasis; 
 } 
 

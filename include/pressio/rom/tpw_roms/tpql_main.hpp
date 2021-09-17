@@ -15,7 +15,7 @@ public:
   TpwqRom(const app_t & appObj,const basis_t & Phi,const list_of_states_t & InputListOfStatesAtLinearizationPoints,
           const list_of_params_t & InputListOfParamsAtLinearizationPoints, const list_of_times_t & InputListOfTimesAtLinearizationPoints, 
           const list_of_coords_t & InputListOfCoordsAtLinearizationPoints, const fom_state_t & fomReferenceState, const scalar_t & velocityErrorTolerance,
-          const scalar_t FiniteDifferenceStepSize) : Phi_(Phi) , appObj_(appObj){
+          const scalar_t FiniteDifferenceStepSize, const int maxKForHessian) : Phi_(Phi) , appObj_(appObj), maxKForHessian_(maxKForHessian){
 
 
   // Compute mean of coordinates
@@ -71,10 +71,10 @@ public:
       auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
       ListOfJacobiansAtLinearizationPoints_.push_back(PhiTJPhi);
 
-      auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+      auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi , maxKForHessian);
       ListOfHessiansAtLinearizationPoints_.push_back(PhiTHPhiPhi);
 
-      auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+      auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
       ListOfParamJacobiansAtLinearizationPoints_.push_back(PhiTJParams);
 
       auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
@@ -99,19 +99,19 @@ public:
         auto PhiTf = ::pressio::rom::experimental::computeBasisTransposeTimesVelocityEigen<rom_data_t>(appObj, workingStateVector,currentParam,currentTime, Phi);
         ListOfVelocitiesAtLinearizationPoints_.push_back(PhiTf);
   
-        auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+        auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
         ListOfJacobiansAtLinearizationPoints_.push_back(PhiTJPhi);
   
-        auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+        auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi,maxKForHessian);
         ListOfHessiansAtLinearizationPoints_.push_back(PhiTHPhiPhi);
   
         auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
         ListOfParamJacobiansAtLinearizationPoints_.push_back(PhiTJParams);
   
-        auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+        auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
         ListOfParamHessiansAtLinearizationPoints_.push_back(PhiTHParams);
   
-        auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+        auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
         ListOfMixedHessiansAtLinearizationPoints_.push_back(PhiTHMixed);
       }
       else{
@@ -138,7 +138,7 @@ private:
 
   const app_t & appObj_;
   const basis_t & Phi_;
-
+  int maxKForHessian_;
   list_of_states_t ListOfStatesAtLinearizationPoints_{0};
   list_of_params_t ListOfParamsAtLinearizationPoints_{0}; 
   list_of_times_t  ListOfTimesAtLinearizationPoints_{0};
@@ -166,7 +166,13 @@ public:
 
     auto romDim =  ::pressio::ops::extent(xhat,0);
     rom_state_t d_xHat(xhat);
+    rom_state_t d_xHat_Reduced(maxKForHessian_);
+
     ::pressio::ops::update(d_xHat,0.,xhat,1.,ReducedStateAtLinearizationPoint,-1.);
+
+    for (int i = 0; i < maxKForHessian_; i++){
+      d_xHat_Reduced(i) = d_xHat(i);
+    }
     //auto d_xHat = xhat - ReducedStateAtLinearizationPoint;
 
     params_t d_mu(mu);
@@ -179,7 +185,7 @@ public:
     ::pressio::ops::product(::pressio::nontranspose(),1., ParameterJacobianAtLinearizationPoint,d_mu  ,                    1.,f);
 //    f = VelocityAtLinearizationPoint + JacobianAtLinearizationPoint * d_xHat + 
 //             ParameterJacobianAtLinearizationPoint * d_mu;
-    tensorMultiply(HessianAtLinearizationPoint, d_xHat,d_xHat,0.5,f); 
+    tensorMultiply(HessianAtLinearizationPoint, d_xHat_Reduced,d_xHat_Reduced,0.5,f); 
     tensorMultiply(ParameterHessianAtLinearizationPoint, d_mu,d_mu,0.5,f); 
     tensorMultiply(MixedHessianAtLinearizationPoint, d_xHat,d_mu,1.,f); 
     return f;
