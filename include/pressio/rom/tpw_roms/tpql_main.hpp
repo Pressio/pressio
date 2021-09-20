@@ -17,6 +17,9 @@ public:
           const list_of_coords_t & InputListOfCoordsAtLinearizationPoints, const fom_state_t & fomReferenceState, const scalar_t & velocityErrorTolerance,
           const scalar_t FiniteDifferenceStepSize, const int maxKForHessian) : Phi_(Phi) , appObj_(appObj), maxKForHessian_(maxKForHessian){
 
+  auto romDim = ::pressio::ops::extent(Phi,1);
+  auto param0 = InputListOfParamsAtLinearizationPoints[0];
+  auto numParams = ::pressio::ops::extent(param0,0);
 
   // Compute mean of coordinates
   int numberOfInputPoints = InputListOfCoordsAtLinearizationPoints.size(); 
@@ -44,9 +47,10 @@ public:
   std::vector<int> sortedIndices(numberOfInputPoints);
   for (int i=0;i<numberOfInputPoints;i++){sortedIndices[i] = i;};
   std::sort( sortedIndices.begin(),sortedIndices.end(), [&](int i,int j){return distanceFromMean[i]<distanceFromMean[j];} );
- 
 
   auto workingStateVector = appObj.createVelocity(); 
+
+  int numCentroids = 0;
   for (int i = 0; i < numberOfInputPoints; i++){
     // Construct state at current point
     int sortedIndex = sortedIndices[i];
@@ -82,7 +86,8 @@ public:
 
       auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
       ListOfMixedHessiansAtLinearizationPoints_.push_back(PhiTHMixed);
-      
+
+      numCentroids += 1;      
     }
     else{
 
@@ -113,12 +118,109 @@ public:
   
         auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
         ListOfMixedHessiansAtLinearizationPoints_.push_back(PhiTHMixed);
+        numCentroids += 1;
       }
       else{
         std::cout << " error = " << relativeError << ", skipping point " << std::endl; 
       }
     }
   } 
+
+  // Now export model to file
+  std::ofstream outputFile ("tpwRomData.txt");
+  if (outputFile.is_open())
+  {
+    // Write out basic information
+    outputFile << romDim << std::endl;
+    outputFile << maxKForHessian << std::endl;
+    outputFile << numParams << std::endl;
+    outputFile << coordinateDimension << std::endl;
+    outputFile << numCentroids << std::endl;
+
+    for (int c = 0; c < numCentroids; c++){
+
+      // write out reduced states at centroids
+      for (int i = 0; i < romDim; i++){
+        outputFile << ListOfStatesAtLinearizationPoints_[c](i) << std::endl;
+      }
+    }
+
+      // write out parameters at centroids
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < numParams; i++){
+        outputFile << ListOfParamsAtLinearizationPoints_[c](i) << std::endl;
+      }
+     }
+      // write out times at centroids
+    for (int c = 0; c < numCentroids; c++){
+      outputFile << ListOfTimesAtLinearizationPoints_[c] << std::endl;
+    }
+      // write out coordinates at centroids
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < coordinateDimension; i++){
+        outputFile << ListOfCoordsAtLinearizationPoints_[c](i) << std::endl;
+      }
+     }
+       // Write out PhiTf
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < romDim; i++){
+        outputFile << ListOfVelocitiesAtLinearizationPoints_[c](i) << std::endl;
+      }
+    }
+
+       // Write out PhiTJPhi
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < romDim; i++){
+        for (int j = 0; j < romDim; j++){
+          outputFile << ListOfJacobiansAtLinearizationPoints_[c](i,j) << std::endl;
+        }
+      }
+    }
+
+      // Write out PhiTHPhiPhi
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < romDim; i++){
+        for (int j = 0; j < maxKForHessian; j++){
+          for (int k = 0; k < maxKForHessian; k++){
+            outputFile << ListOfHessiansAtLinearizationPoints_[c][i][j][k] << std::endl;
+          }
+        }
+      }
+    }
+
+      // Write out PhiTJParams
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < romDim; i++){
+        for (int j = 0; j < numParams; j++){
+          outputFile << ListOfParamJacobiansAtLinearizationPoints_[c](i,j) << std::endl;
+        }
+      }
+    }
+      // Write out PhiTJParams
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < romDim; i++){
+        for (int j = 0; j < numParams; j++){
+          for (int k = 0; k < numParams; k++){
+            outputFile << ListOfParamHessiansAtLinearizationPoints_[c][i][j][k] << std::endl;
+          }
+        }
+      }
+    }
+      // Write out PhiTHMixed
+
+    for (int c = 0; c < numCentroids; c++){
+      for (int i = 0; i < romDim; i++){
+        for (int j = 0; j < romDim; j++){
+          for (int k = 0; k < numParams; k++){
+            outputFile << ListOfMixedHessiansAtLinearizationPoints_[c][i][j][k] << std::endl;
+          }
+        }
+      }
+    }
+
+    outputFile.close();
+  }
+  else std::cout << "Unable to open file" << std::endl;
  
   }
 private:
