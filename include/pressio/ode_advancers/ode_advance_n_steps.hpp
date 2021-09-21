@@ -108,12 +108,7 @@ advance_n_steps_and_observe(StepperType & stepper,
 			    const TimeType start_time,
 			    const TimeType time_step_size,
 			    const ::pressio::ode::step_count_type num_steps,
-#ifdef PRESSIO_ENABLE_TPL_PYBIND
-			    // for pybind we need to copy
-			    ObserverType observer,
-#else
 			    ObserverType & observer,
-#endif
 			    Args && ... args)
 {
   static_assert
