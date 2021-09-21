@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
-#define ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
+#ifndef ROM_ROM_PUBLIC_API_GALERKIN_HPP_
+#define ROM_ROM_PUBLIC_API_GALERKIN_HPP_
 
 #include "./impl/rom_galerkin_compose.hpp"
 
@@ -263,4 +263,4 @@ ReturnType create_masked_problem(const FomSystemType & fomSysObj,
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
+#endif  // ROM_ROM_PUBLIC_API_GALERKIN_HPP_

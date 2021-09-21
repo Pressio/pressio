@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
-#define ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_NOOP_OBSERVER_HPP_
+#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_NOOP_OBSERVER_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -63,4 +63,4 @@ struct NoOpObserver
 };
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_NOOP_OBSERVER_HPP_

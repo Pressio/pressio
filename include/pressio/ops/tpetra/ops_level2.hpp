@@ -296,7 +296,6 @@ product(::pressio::transpose mode,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_LEVEL2_HPP_
 
 
 
@@ -390,3 +389,4 @@ product(::pressio::transpose mode,
 //   ::KokkosBlas::gemv(&ctA, alpha, Aview, xLocalView_rank1, beta, yview);
 // }
 // #endif
+#endif  // OPS_TPETRA_OPS_LEVEL2_HPP_

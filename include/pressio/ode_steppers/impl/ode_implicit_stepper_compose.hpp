@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
-#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_
 
 #include "ode_implicit_discrete_time_residual.hpp"
 #include "ode_implicit_discrete_time_jacobian.hpp"
@@ -231,4 +231,4 @@ ReturnType create_implicit_stepper_impl(StepScheme name,
 };
 
 }}}
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ImplicitCompose_IMPL_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_

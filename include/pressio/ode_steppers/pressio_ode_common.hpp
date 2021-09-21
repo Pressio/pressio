@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_PRESSIO_ODE_COMMON_HPP_
-#define ODE_PRESSIO_ODE_COMMON_HPP_
+#ifndef ODE_STEPPERS_PRESSIO_ODE_COMMON_HPP_
+#define ODE_STEPPERS_PRESSIO_ODE_COMMON_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -199,4 +199,4 @@ using ImplicitStencilStatesContainerDyn
 #include "constraints/ode_implicit_residual_policy.hpp"
 #include "constraints/ode_implicit_jacobian_policy.hpp"
 
-#endif  // ODE_PRESSIO_ODE_COMMON_HPP_
+#endif  // ODE_STEPPERS_PRESSIO_ODE_COMMON_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_FOM_TYPES_HPP_
-#define ROM_GALERKIN_CONSTRAINTS_ROM_FOM_TYPES_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_FOM_TYPES_HPP_
+#define ROM_CONSTRAINTS_ROM_FOM_TYPES_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -63,4 +63,4 @@ struct fom_state<
   > : std::true_type{};
 
 }}
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_FOM_TYPES_HPP_

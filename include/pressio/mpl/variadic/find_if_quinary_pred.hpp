@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef MPL_FIND_IF_QUINARY_PRED_HPP_
-#define MPL_FIND_IF_QUINARY_PRED_HPP_
+#ifndef MPL_VARIADIC_FIND_IF_QUINARY_PRED_HPP_
+#define MPL_VARIADIC_FIND_IF_QUINARY_PRED_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -84,4 +84,4 @@ using find_if_quinary_pred_t = typename find_if_quinary_pred<T1, T2, T3, T4,
 
 }}} // namespace
 
-#endif  // MPL_FIND_IF_QUINARY_PRED_HPP_
+#endif  // MPL_VARIADIC_FIND_IF_QUINARY_PRED_HPP_

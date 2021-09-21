@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
-#define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_SYSTEM_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -126,4 +126,4 @@ public:
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_SYSTEM_HPP_

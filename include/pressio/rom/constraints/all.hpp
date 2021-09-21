@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_INCLUDE_HPP_
-#define ROM_CONSTRAINTS_INCLUDE_HPP_
+#ifndef ROM_CONSTRAINTS_ALL_HPP_
+#define ROM_CONSTRAINTS_ALL_HPP_
 
 #include "./rom_decoder_jacobian.hpp"
 #include "./rom_decoder.hpp"
@@ -69,4 +69,4 @@
 #include "./rom_lspg_steady_masker.hpp"
 #include "./rom_lspg_steady_preconditioner.hpp"
 
-#endif  // ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
+#endif  // ROM_CONSTRAINTS_ALL_HPP_

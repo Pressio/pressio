@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
-#define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
+#ifndef ODE_STEPPERS_ODE_CREATE_IMPLICIT_STEPPER_HPP_
+#define ODE_STEPPERS_ODE_CREATE_IMPLICIT_STEPPER_HPP_
 
 #include "./impl/ode_implicit_stepper_compose.hpp"
 
@@ -110,4 +110,4 @@ ReturnType create_arbitrary_stepper(const StateType & state, SystemType && syste
 };
 
 }} // end namespace pressio::ode
-#endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
+#endif  // ODE_STEPPERS_ODE_CREATE_IMPLICIT_STEPPER_HPP_

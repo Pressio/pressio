@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_SPDLOG_ASYNC_HPP_
-#define UTILS_SPDLOG_ASYNC_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_ASYNC_HPP_
+#define UTILS_LOGGER_SPDLOG_ASYNC_HPP_
 
 //
 // Async logging using global thread pool
@@ -92,4 +92,4 @@ inline std::shared_ptr<spdlog::details::thread_pool> thread_pool()
     return details::registry::instance().get_tp();
 }
 } // namespace spdlog
-#endif  // UTILS_SPDLOG_ASYNC_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_ASYNC_HPP_

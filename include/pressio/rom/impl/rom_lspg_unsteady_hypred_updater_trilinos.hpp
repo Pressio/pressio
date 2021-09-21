@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
-#define ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
+#define ROM_IMPL_ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -218,4 +218,4 @@ struct HypRedUpdaterTrilinos
 };
 
 }}}}
-#endif
+#endif  // ROM_IMPL_ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_

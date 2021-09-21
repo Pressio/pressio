@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_
-#define ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -148,4 +148,4 @@ void discrete_time_jacobian(JacobianType & jac,
 // #endif
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_

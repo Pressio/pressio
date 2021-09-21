@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_EXTENT_KOKKOS_HPP_
-#define OPS_OPS_EXTENT_KOKKOS_HPP_
+#ifndef OPS_KOKKOS_OPS_EXTENT_HPP_
+#define OPS_KOKKOS_OPS_EXTENT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -62,4 +62,4 @@ extent(const T & objectIn, const IndexType i)
 }
 
 }}
-#endif
+#endif  // OPS_KOKKOS_OPS_EXTENT_HPP_

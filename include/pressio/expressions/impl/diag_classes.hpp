@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_DIAG_CLASSES_HPP_
-#define EXPRESSIONS_DIAG_CLASSES_HPP_
+#ifndef EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
+#define EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
@@ -259,4 +259,4 @@ public:
 #endif
 
 }}}
-#endif  // EXPRESSIONS_DIAG_CLASSES_HPP_
+#endif  // EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_

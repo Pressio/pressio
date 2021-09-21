@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
-#define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
+#ifndef ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_HPP_
+#define ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_n_steps.hpp"
@@ -155,4 +155,4 @@ advance_n_steps_and_observe(StepperType & stepper,
 }
 
 }}//end namespace pressio::ode
-#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
+#endif  // ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_HPP_

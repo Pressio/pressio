@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
-#define OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_RANK1_UPDATE_HPP_
+#define OPS_TPETRA_BLOCK_OPS_RANK1_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -123,4 +123,4 @@ update(T & v, const scalar_t &a,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_RANK1_UPDATE_HPP_

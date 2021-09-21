@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND_OPS_MIN_MAX_HPP_
-#define OPS_PYBIND_OPS_MIN_MAX_HPP_
+#ifndef OPS_PYBIND11_OPS_MIN_MAX_HPP_
+#define OPS_PYBIND11_OPS_MIN_MAX_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -95,4 +95,4 @@ min(const T & obj)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND_OPS_MIN_MAX_HPP_
+#endif  // OPS_PYBIND11_OPS_MIN_MAX_HPP_

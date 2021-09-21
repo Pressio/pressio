@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
-#define OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
+#ifndef OPS_PYBIND11_OPS_UPDATE_HPP_
+#define OPS_PYBIND11_OPS_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -411,4 +411,4 @@ update(T & v, scalar_t a,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
+#endif  // OPS_PYBIND11_OPS_UPDATE_HPP_

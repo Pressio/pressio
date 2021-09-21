@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_
-#define ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_DECORATORS_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_DECORATORS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -128,4 +128,4 @@ private:
 };
 
 }}}} //end namespace pressio::rom::lspg::decorator
-#endif  // ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_DECORATORS_HPP_

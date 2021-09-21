@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_HPP_
-#define ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#ifndef ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#define ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_TIME_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
@@ -154,4 +154,4 @@ void advance_to_target_time_with_time_step_recovery_and_observe(StepperType & st
 }
 
 }}//end namespace pressio::ode
-#endif  // ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#endif  // ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_TIME_HPP_

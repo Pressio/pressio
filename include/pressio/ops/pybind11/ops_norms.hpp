@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
-#define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_PYBIND11_OPS_NORMS_HPP_
+#define OPS_PYBIND11_OPS_NORMS_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -97,4 +97,4 @@ norm2(const T & o)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_PYBIND11_OPS_NORMS_HPP_

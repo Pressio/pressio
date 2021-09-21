@@ -10,8 +10,8 @@
 //  enniobarbaro@gmail.com
 //
 
-#ifndef MPL_AT_HPP_
-#define MPL_AT_HPP_
+#ifndef MPL_VARIADIC_AT_HPP_
+#define MPL_VARIADIC_AT_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -46,4 +46,4 @@ using at_or_t = typename at_or<Default, i, Args...>::type;
 
 }}}
 
-#endif  // MPL_AT_HPP_
+#endif  // MPL_VARIADIC_AT_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_EXTENT_EIGEN_HPP_
-#define OPS_OPS_EXTENT_EIGEN_HPP_
+#ifndef OPS_EIGEN_OPS_EXTENT_HPP_
+#define OPS_EIGEN_OPS_EXTENT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -90,4 +90,4 @@ extent(const T & objectIn, const IndexType i)
 }
 
 }}
-#endif
+#endif  // OPS_EIGEN_OPS_EXTENT_HPP_

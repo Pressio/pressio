@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_STEADY_HPP_
-#define ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_STEADY_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#define ROM_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -428,4 +428,4 @@ struct AddDoublyDecoratedDiscreteTimeSystem : T
 
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_

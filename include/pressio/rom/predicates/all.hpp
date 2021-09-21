@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
-#define ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
+#ifndef ROM_PREDICATES_ALL_HPP_
+#define ROM_PREDICATES_ALL_HPP_
 
 #include "./rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
 #include "./rom_has_const_get_reference_to_jacobian.hpp"
@@ -68,4 +68,4 @@
 // #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
 //#include "./rom_has_const_apply_method_accept_operand_result_return_void.hpp"
 
-#endif  // ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
+#endif  // ROM_PREDICATES_ALL_HPP_

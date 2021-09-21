@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_TPETRA_OPS_CLONE_HPP_
+#define OPS_TPETRA_OPS_CLONE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -62,4 +62,4 @@ clone(const T & clonable)
 }
 
 }}
-#endif
+#endif  // OPS_TPETRA_OPS_CLONE_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_GET_NATIVE_HPP_
-#define OPS_KOKKOS_OPS_GET_NATIVE_HPP_
+#ifndef OPS_OPS_GET_NATIVE_HPP_
+#define OPS_OPS_GET_NATIVE_HPP_
 
 namespace pressio{ namespace ops{ namespace impl{
 
@@ -104,4 +104,4 @@ struct NativeType<
 };
 
 }}}
-#endif  // OPS_KOKKOS_OPS_MULTI_VECTOR_UPDATE_HPP_
+#endif  // OPS_OPS_GET_NATIVE_HPP_

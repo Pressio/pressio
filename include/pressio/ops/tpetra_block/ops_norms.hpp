@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
-#define OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_NORMS_HPP_
+#define OPS_TPETRA_BLOCK_OPS_NORMS_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -78,4 +78,4 @@ norm1(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_NORMS_HPP_

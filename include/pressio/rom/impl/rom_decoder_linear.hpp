@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
-#define ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
+#ifndef ROM_IMPL_ROM_DECODER_LINEAR_HPP_
+#define ROM_IMPL_ROM_DECODER_LINEAR_HPP_
 
 #include "../predicates/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
 #include "../predicates/rom_has_const_get_reference_to_jacobian.hpp"
@@ -144,4 +144,4 @@ private:
 };
 
 }}}//end namespace pressio::rom::impl
-#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
+#endif  // ROM_IMPL_ROM_DECODER_LINEAR_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#ifndef ROM_ROM_PUBLIC_API_DECODER_HPP_
+#define ROM_ROM_PUBLIC_API_DECODER_HPP_
 
 #include "./impl/rom_decoder_linear.hpp"
 
@@ -63,4 +63,4 @@ ReturnType create_time_invariant_linear_decoder(JacobianMatrixType && jac_matrix
 }
 
 }} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#endif  // ROM_ROM_PUBLIC_API_DECODER_HPP_

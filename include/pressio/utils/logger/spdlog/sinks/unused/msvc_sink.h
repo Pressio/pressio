@@ -1,8 +1,8 @@
 // Copyright(c) 2016 Alexander Dalshov.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_SPDLOG_SINKS_UNUSED_MSVC_SINK_H_
-#define UTILS_SPDLOG_SINKS_UNUSED_MSVC_SINK_H_
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_UNUSED_MSVC_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_UNUSED_MSVC_SINK_H_
 
 #if defined(_WIN32)
 
@@ -48,4 +48,4 @@ using windebug_sink_st = msvc_sink_st;
 } // namespace spdlog
 
 #endif
-#endif  // UTILS_SPDLOG_SINKS_UNUSED_MSVC_SINK_H_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_UNUSED_MSVC_SINK_H_

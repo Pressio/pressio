@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_ODE_GUESSER_HPP_
-#define ODE_CONSTRAINTS_ODE_GUESSER_HPP_
+#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
+#define ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 
 namespace pressio{ namespace ode{ 
 
@@ -72,4 +72,4 @@ struct is_legitimate_guesser<
   > : std::true_type{};
 
 }} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_ODE_GUESSER_HPP_
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND_OPS_RESIZE_HPP_
-#define OPS_PYBIND_OPS_RESIZE_HPP_
+#ifndef OPS_PYBIND11_OPS_RESIZE_HPP_
+#define OPS_PYBIND11_OPS_RESIZE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -74,4 +74,4 @@ resize(T & o,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_RESIZE_HPP_
+#endif  // OPS_PYBIND11_OPS_RESIZE_HPP_

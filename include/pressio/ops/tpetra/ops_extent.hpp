@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_EXTENT_TPETRA_HPP_
-#define OPS_OPS_EXTENT_TPETRA_HPP_
+#ifndef OPS_TPETRA_OPS_EXTENT_HPP_
+#define OPS_TPETRA_OPS_EXTENT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -74,4 +74,4 @@ extent(const T & oIn, const IndexType i)
 }
 
 }}
-#endif
+#endif  // OPS_TPETRA_OPS_EXTENT_HPP_

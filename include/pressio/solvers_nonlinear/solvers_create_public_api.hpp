@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_SOLVER_API_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_SOLVER_API_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -113,4 +113,4 @@ auto create_irls_gauss_newton(const SystemType & system,
 }// end namespace experimental
 
 }}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_

@@ -80,4 +80,4 @@ resize(T & o,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_RESIZE_HPP_
+#endif  // OPS_KOKKOS_OPS_RESIZE_HPP_

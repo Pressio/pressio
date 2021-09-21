@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_PUBLIC_API_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_PUBLIC_API_HPP_
+#ifndef ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#define ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_HPP_
 
 #include "./impl/ode_explicit_compose.hpp"
 
@@ -129,4 +129,4 @@ auto create_ssprk3_stepper(Args && ...args)
 };
 
 }} // end namespace pressio::ode
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_HPP_
+#endif  // ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_HPP_

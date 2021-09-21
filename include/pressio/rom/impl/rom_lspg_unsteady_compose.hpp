@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_COMPOSE_HPP_
+#define ROM_IMPL_ROM_LSPG_UNSTEADY_COMPOSE_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
@@ -167,4 +167,4 @@ template<std::size_t n, class ...Args>
 using ComposeHypRedProblemDiscTime = ComposerDiscTime<1, n, Args...>;
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_UNSTEADY_COMPOSE_HPP_

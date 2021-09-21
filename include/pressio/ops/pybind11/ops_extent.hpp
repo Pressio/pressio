@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_EXTENT_PYBIND_HPP_
-#define OPS_OPS_EXTENT_PYBIND_HPP_
+#ifndef OPS_PYBIND11_OPS_EXTENT_HPP_
+#define OPS_PYBIND11_OPS_EXTENT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -72,4 +72,4 @@ extent(const T & objectIn, const IndexType i)
 }
 
 }}
-#endif
+#endif  // OPS_PYBIND11_OPS_EXTENT_HPP_

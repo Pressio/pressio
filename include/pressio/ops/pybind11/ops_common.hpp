@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_QUERY_LAYOUT_PYBIND_HPP_
-#define OPS_QUERY_LAYOUT_PYBIND_HPP_
+#ifndef OPS_PYBIND11_OPS_COMMON_HPP_
+#define OPS_PYBIND11_OPS_COMMON_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -81,4 +81,4 @@ struct _pybind_is_rank_dyn{
 };
 
 }} //end namespace
-#endif
+#endif  // OPS_PYBIND11_OPS_COMMON_HPP_

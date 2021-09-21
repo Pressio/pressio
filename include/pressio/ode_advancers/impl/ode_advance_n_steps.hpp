@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
+#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_N_STEPS_HPP_
+#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_N_STEPS_HPP_
 
 #include "ode_advance_call_observer_dispatcher.hpp"
 #include "ode_advance_printing_helpers.hpp"
@@ -168,4 +168,4 @@ void advance_n_steps_with_dt_setter(StepperType & stepper,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
+#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_N_STEPS_HPP_

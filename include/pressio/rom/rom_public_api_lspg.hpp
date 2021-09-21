@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
-#define ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
+#ifndef ROM_ROM_PUBLIC_API_LSPG_HPP_
+#define ROM_ROM_PUBLIC_API_LSPG_HPP_
 
 #include "./impl/rom_lspg_steady_compose.hpp"
 #include "./impl/rom_lspg_unsteady_compose.hpp"
@@ -428,4 +428,4 @@ ReturnType create_hyperreduced_steady_problem(const FomSystemType & fomSysObj,
 }
 
 }}}//end namespace pressio::rom::lspg
-#endif  // ROM_LSPG_ROM_CREATE_LSPG_PROBLEM_HPP_
+#endif  // ROM_ROM_PUBLIC_API_LSPG_HPP_

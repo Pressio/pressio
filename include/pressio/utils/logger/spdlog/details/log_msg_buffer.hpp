@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_
-#define UTILS_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_
+#define UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_
 
 //#include "./log_msg.hpp"
 
@@ -70,4 +70,4 @@ public:
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "log_msg_buffer-inl.hpp"
 // #endif
-#endif  // UTILS_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_

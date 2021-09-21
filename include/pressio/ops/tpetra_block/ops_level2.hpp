@@ -188,7 +188,6 @@ product(::pressio::transpose mode,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_LEVEL2_HPP_
 
 
 
@@ -314,3 +313,4 @@ product(::pressio::transpose mode,
 //   request->wait();
 //   ::KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 // }
+#endif  // OPS_TPETRA_BLOCK_OPS_LEVEL2_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_UTILS_COLORIZE_PRINT_HPP_
-#define UTILS_UTILS_COLORIZE_PRINT_HPP_
+#ifndef UTILS_IO_UTILS_COLORIZE_PRINT_HPP_
+#define UTILS_IO_UTILS_COLORIZE_PRINT_HPP_
 
 #include <iostream>
 #include <unistd.h>
@@ -154,4 +154,4 @@ std::string bg_white(){ return impl::is_colorized(std::cout) ? "\033[47m" : ""; 
 }}} // namespace pressio::utils::io
 
 
-#endif  // UTILS_UTILS_COLORIZE_PRINT_HPP_
+#endif  // UTILS_IO_UTILS_COLORIZE_PRINT_HPP_

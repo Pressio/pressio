@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_
-#define ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_DECORATOR_MASKED_HPP_
+#define ROM_IMPL_ROM_GALERKIN_DECORATOR_MASKED_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -90,4 +90,4 @@ private:
 };
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_DECORATOR_MASKED_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_SUBSPAN_TRAITS_HPP_
-#define EXPRESSIONS_SUBSPAN_TRAITS_HPP_
+#ifndef EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
+#define EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
@@ -156,4 +156,4 @@ struct SubSpanTraits<
 #endif
 
 }}}
-#endif  // EXPRESSIONS_SUBSPAN_TRAITS_HPP_
+#endif  // EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
