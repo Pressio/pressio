@@ -132,7 +132,6 @@ general info <linebreak/>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas;</para>
 </listitem><listitem><para><ulink url="./md_pages_installation.html">installation</ulink>: it is a header-only library, should be trivial;</para>
 </listitem><listitem><para>explore the <ulink url="./md_pages_tutorials.html">tutorials</ulink>;</para>
-</listitem><listitem><para>we maintain a test suite! Interested in browing it? <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">See here</ulink>.</para>
 </listitem></itemizedlist>
 </para>
 </sect1>

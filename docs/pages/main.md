@@ -34,8 +34,6 @@ This is the documentation of the [C++ library](https://github.com/Pressio/pressi
 
 * explore the [tutorials](./md_pages_tutorials.html);
 
-* we maintain a test suite! Interested in browing it? [See here](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d).
-
 
 <!-- ## What if your types are not natively supported in pressio? -->
 
