@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// galerkin_default_projector_ortho_decoder_jacobian.hpp
+// rom_galerkin_projector_default.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

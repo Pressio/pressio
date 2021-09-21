@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_create_default_galerkin_problem.hpp
+// rom_public_api_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_SubSpanTraits.hpp
+// subspan_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

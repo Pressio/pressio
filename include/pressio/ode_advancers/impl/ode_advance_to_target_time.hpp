@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_to_target_time_integrators.hpp
+// ode_advance_to_target_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

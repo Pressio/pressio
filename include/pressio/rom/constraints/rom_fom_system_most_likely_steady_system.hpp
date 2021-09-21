@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_most_likely_steady_system.hpp
+// rom_fom_system_most_likely_steady_system.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

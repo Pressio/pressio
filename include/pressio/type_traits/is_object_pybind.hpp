@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_is_object_pybind.hpp
+// is_object_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

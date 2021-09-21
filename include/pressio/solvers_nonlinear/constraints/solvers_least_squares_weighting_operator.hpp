@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_admissible_least_squares_weighting_operator.hpp
+// solvers_least_squares_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

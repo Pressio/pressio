@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_wrapped_types_enum.hpp
+// enums.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

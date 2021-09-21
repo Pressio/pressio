@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_span_function.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

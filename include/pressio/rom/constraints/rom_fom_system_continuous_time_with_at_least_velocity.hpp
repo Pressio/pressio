@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_continuous_time_system_with_at_least_velocity.hpp
+// rom_fom_system_continuous_time_with_at_least_velocity.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

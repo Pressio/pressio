@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_masker_explicit.hpp
+// rom_masker.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

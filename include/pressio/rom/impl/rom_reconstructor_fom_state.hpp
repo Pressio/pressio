@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_reconstructor_fom_state_pressio_ops.hpp
+// rom_reconstructor_fom_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

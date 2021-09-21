@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_dummy_collector.hpp
+// ode_advance_noop_observer.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

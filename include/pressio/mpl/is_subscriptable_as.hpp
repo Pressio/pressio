@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// has_subscript_operator.hpp
+// is_subscriptable_as.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

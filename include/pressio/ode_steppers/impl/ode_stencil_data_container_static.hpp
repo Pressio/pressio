@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_stencil_states_manager.hpp
+// ode_stencil_data_container_static.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

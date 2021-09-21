@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_traits.hpp
+// traits_pybind_array.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

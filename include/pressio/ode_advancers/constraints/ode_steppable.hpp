@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicitly_steppable.hpp
+// ode_steppable.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

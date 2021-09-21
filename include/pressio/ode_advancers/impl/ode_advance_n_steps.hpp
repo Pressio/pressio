@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_n_steps_integrators.hpp
+// ode_advance_n_steps.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

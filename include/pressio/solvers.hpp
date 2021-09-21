@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_solvers.hpp
+// solvers.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

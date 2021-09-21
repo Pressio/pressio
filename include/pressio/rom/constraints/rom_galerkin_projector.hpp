@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_projector_explicit.hpp
+// rom_galerkin_projector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

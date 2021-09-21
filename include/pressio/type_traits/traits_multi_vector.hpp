@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_multi_vector_traits.hpp
+// traits_multi_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

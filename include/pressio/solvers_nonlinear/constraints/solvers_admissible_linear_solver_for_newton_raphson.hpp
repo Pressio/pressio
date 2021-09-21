@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_legitimate_linear_solver_for_newton_raphson.hpp
+// solvers_admissible_linear_solver_for_newton_raphson.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

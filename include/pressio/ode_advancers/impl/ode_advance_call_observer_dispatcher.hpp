@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_call_collector_dispatcher.hpp
+// ode_advance_call_observer_dispatcher.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

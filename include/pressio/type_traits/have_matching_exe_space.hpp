@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_have_matching_exe_space.hpp
+// have_matching_exe_space.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

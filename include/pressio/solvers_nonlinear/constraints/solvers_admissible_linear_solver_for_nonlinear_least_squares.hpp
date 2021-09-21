@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_legitimate_linear_solver_for_nonlinear_least_squares.hpp
+// solvers_admissible_linear_solver_for_nonlinear_least_squares.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

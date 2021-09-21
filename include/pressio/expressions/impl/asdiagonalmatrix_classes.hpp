@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_asdiagonalmatrix_classes.hpp
+// asdiagonalmatrix_classes.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
