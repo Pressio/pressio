@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_type_traits" kind="page">
+    <compoundname>md_pages_components_type_traits</compoundname>
+    <title>type_traits</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header: <computeroutput>&lt;pressio/type_traits.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio</computeroutput></para>
+<sect1 id="md_pages_components_type_traits_1autotoc_md151">
+<title>Overview</title>
+<para>This component includes functionalities for type support and detection. One of the main design features of pressio is that it supports arbitrary types via generic programming and type introspection, but also provides special support for some data types commonly used.</para>
+</sect1>
+<sect1 id="md_pages_components_type_traits_1autotoc_md152">
+<title>Type detection and identification</title>
+<para>We support several metafunctions for detecting data types commonly used from existing TPLs. The following list is partial, and more will be added as we continue the development.</para>
+<para><table rows="22" cols="3"><row>
+<entry thead="yes"><para>Name   </para>
+</entry><entry thead="yes"><para>Description   </para>
+</entry><entry thead="yes"><para>Enabled if:    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_static_vector_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dynamic_vector_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_vector_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+ if <computeroutput>T</computeroutput> is a static or dynamic vector   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_sparse_matrix_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_static_dense_matrix_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dynamic_dense_matrix_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dense_matrix_eigen;</computeroutput>   </para>
+</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+ if <computeroutput>T</computeroutput> is <linebreak/>
+ a static or dynamic dense matrix   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dense_vector_teuchos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dense_matrix_teuchos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_vector_epetra;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_multi_vector_epetra;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_vector_tpetra;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_multi_vector_tpetra;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_vector_tpetra_block;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_multi_vector_tpetra_block;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_static_vector_kokkos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dynamic_vector_kokkos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_vector_kokkos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+ if <computeroutput>T</computeroutput> is a static or dynamic vector   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_static_dense_matrix_kokkos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dynamic_dense_matrix_kokkos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Self-explanatory   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
+ <computeroutput>struct is_dense_matrix_kokkos;</computeroutput>   </para>
+</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+ if <computeroutput>T</computeroutput> is a static or dynamic dense matrix   </para>
+</entry><entry thead="no"><para><computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>   </para>
+</entry></row>
+</table>
+</para>
+</sect1>
+<sect1 id="md_pages_components_type_traits_1autotoc_md153">
+<title>Traits class</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>=<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>This class contains compile-time information enabling pressio to reason about types. To understand the purpose and usage of the traits pattern in C++ there are several resources online. Quoting Bjarne Stroustrup: "Think of a trait as a small object whose main purpose is to carry information used by another object or algorithm to determine &quot;policy&quot; or &quot;implementation details&quot;.</para>
+<para><bold>need to add much more to this</bold> </para>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/type_traits.md"/>
+  </compounddef>
+</doxygen>

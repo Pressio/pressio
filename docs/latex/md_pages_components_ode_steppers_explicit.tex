@@ -1,0 +1,151 @@
+Defined in\+: {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+explicit.\+hpp$>$}
+
+Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md54}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_explicit_autotoc_md54}
+Applicable to systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
+
+where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time.~\newline
+ Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a \char`\"{}stepper\char`\"{} is an abstraction that represents the \char`\"{}how\char`\"{} to take a step.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md55}{}\doxysection{API}\label{md_pages_components_ode_steppers_explicit_autotoc_md55}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_explicit\_stepper(pressio::ode::StepScheme name,}
+\DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                             \textcolor{keyword}{const} SystemType \& system);}
+
+\end{DoxyCode}
+
+
+where {\ttfamily name} is one of the following enum class values\+: {\ttfamily Forward\+Euler}, {\ttfamily Runge\+Kutta4}, {\ttfamily Adams\+Bashforth2}, {\ttfamily SSPRunge\+Kutta3}. This function returns an instance of the desired stepper. The returned stepper object satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}, so one can use the \char`\"{}advancers\char`\"{} functions to step forward.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md56}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md56}
+
+\begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+: data type of your state, must be copy constructible
+\item {\ttfamily System\+Type}\+: class defining how to create an instance of the velocity $f$ and how to compute it.~\newline
+ The system class must conform to the following API\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }SystemForExplicitStepper}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type = \textcolor{comment}{/* */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&, scalar\_type time, velocity\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be {\itshape valid} types since they are detected by pressio
+\item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
+ {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true}
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md57}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md57}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/type\_traits.hpp"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/ode\_advancers.hpp"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/ode\_steppers\_explicit.hpp"{}}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// assuming that:}}
+\DoxyCodeLine{  \textcolor{comment}{// stateObj  is the state}}
+\DoxyCodeLine{  \textcolor{comment}{// systemObj is the system instance}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{namespace }pode = pressio::ode;}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pode::StepScheme::ForwardEuler;}
+\DoxyCodeLine{  \textcolor{keyword}{auto} stepper = pode::create\_explicit\_stepper(scheme, stateObj, systemObj);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// use the stepper to advance in time,}}
+\DoxyCodeLine{  \textcolor{comment}{// for example using the advancer function}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keywordtype}{double} time0 = 0.;}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keywordtype}{double} dt = 0.1;}
+\DoxyCodeLine{  \textcolor{keyword}{const} pode::step\_count\_type num\_steps = 100;}
+\DoxyCodeLine{  pode::advance\_n\_steps(stepper, stateObj, time0, dt, num\_steps);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md58}{}\doxysection{Required specializations for custom types}\label{md_pages_components_ode_steppers_explicit_autotoc_md58}
+When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type and {\ttfamily ACustom\+State\+Type} is what you use for the state, then you would need to do something like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/type\_traits.hpp"{}}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// assuming ACustomStateType has already been declared}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pressio\{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<> \textcolor{keyword}{struct }Traits<ACustomStateType>\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = double;}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{namespace }ops\{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} deep\_copy(ACustomStateType \& dest, \textcolor{keyword}{const} ACustomStateType \& src)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* deep copy src into dest */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{ACustomStateType clone(\textcolor{keyword}{const} ACustomStateType \& src)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* return a deep copy of src */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(ACustomStateType \& \textcolor{keywordtype}{object})\{}
+\DoxyCodeLine{  \textcolor{comment}{/* set elements to zero */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} \textcolor{keywordtype}{double} a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} \textcolor{keywordtype}{double} b)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute : v = a*v + b*v1}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} \textcolor{keywordtype}{double} a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} \textcolor{keywordtype}{double} b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} \textcolor{keywordtype}{double} c)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute : v = a*v + b*v1 + c*v2}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} \textcolor{keywordtype}{double} a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} \textcolor{keywordtype}{double} b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} \textcolor{keywordtype}{double} c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} \textcolor{keywordtype}{double} d)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} \textcolor{keywordtype}{double} a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} \textcolor{keywordtype}{double} b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} \textcolor{keywordtype}{double} c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} \textcolor{keywordtype}{double} d,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v4, \textcolor{keyword}{const} \textcolor{keywordtype}{double} e)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3 + e*v4}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{\}\}\textcolor{comment}{//end namepsace pressio::ops}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/ode\_advancers.hpp"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/ode\_steppers\_explicit.hpp"{}}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// same code as shown above}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Note that in the snippet above the order of the include statements matter\+: this is because your {\ttfamily Trait} and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/type\_traits.hpp"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}my\_specializations.hpp"{}} \textcolor{comment}{// contains all your specializations}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/ode\_advancers.hpp"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/ode\_steppers\_explicit.hpp"{}}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// same code as shown above}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 

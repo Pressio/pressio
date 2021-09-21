@@ -6,6 +6,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="pages/getstarted/build_and_install.md"/>
+    <location file="pages/revise_and_pick/getstarted/build_and_install.md"/>
   </compounddef>
 </doxygen>

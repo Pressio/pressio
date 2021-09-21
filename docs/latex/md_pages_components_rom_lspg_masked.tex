@@ -1,0 +1,124 @@
+Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
+
+Public namespace\+: {\ttfamily pressio\+::rom\+::lspg}\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md138}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_masked_autotoc_md138}
+\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md139}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_lspg_masked_autotoc_md139}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// overload for continuous-\/time systems}}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,                                                             (1)}
+\DoxyCodeLine{  \textcolor{keyword}{class} FomReferenceStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class} MaskerType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{ReturnType create\_masked\_unsteady\_problem(pressio::ode::StepScheme,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \&,}
+\DoxyCodeLine{                                          DecoderType \&,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \&,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \&,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \&);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// overload for discrete-\/time systems}}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  std::size\_t num\_states,}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,                                                             (2)}
+\DoxyCodeLine{  \textcolor{keyword}{class} FomReferenceStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class} MaskerType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{ReturnType create\_masked\_unsteady\_problem(\textcolor{keyword}{const} FomSystemType \&,}
+\DoxyCodeLine{                                          DecoderType \&,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \&,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \&,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \&);}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md140}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_masked_autotoc_md140}
+
+\begin{DoxyItemize}
+\item {\ttfamily Fom\+System\+Type}\+:
+\begin{DoxyItemize}
+\item your adapter class type specifying the FOM problem. ~\newline
+
+\item for 1\+: must satisfy the \href{./md_pages_components_rom_fom_apis.html}{\texttt{ continuous-\/time API}}
+\item for 2\+: must satisfy the \href{./md_pages_components_rom_fom_apis.html}{\texttt{ discrete-\/time API}}
+\end{DoxyItemize}
+\item {\ttfamily Decoder\+Type}\+:
+\begin{DoxyItemize}
+\item decoder class type
+\item must satify the requirements listed \href{md_pages_components_rom_decoder.html}{\texttt{ here}}
+\end{DoxyItemize}
+\item {\ttfamily Rom\+State\+Type}\+:
+\begin{DoxyItemize}
+\item currently, it must be either an Eigen vector or a Kokkos 1D view
+\end{DoxyItemize}
+\item {\ttfamily Fom\+Reference\+State\+Type}\+:
+\begin{DoxyItemize}
+\item your FOM reference state that is used when reconstructing the FOM state
+\item must be copy-\/constructible and the following must be true\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{std::is\_same<FomReferenceStateType, typename DecoderType::fom\_state\_type>::value == \textcolor{keyword}{true}}
+
+\end{DoxyCode}
+
+\end{DoxyItemize}
+\item {\ttfamily Rom\+State\+Type}\+:
+\begin{DoxyItemize}
+\item currently, it must be either an Eigen vector or a Kokkos 1D view
+\end{DoxyItemize}
+\item {\ttfamily num\+\_\+states}\+:
+\begin{DoxyItemize}
+\item {\itshape total} number of states you need to use (must be $<$= 3), if you need more open issue
+\item only needed for the discrete-\/time case
+\end{DoxyItemize}
+\item {\ttfamily Masked\+Type}\+:
+\begin{DoxyItemize}
+\item an functor responsible of \char`\"{}masking\char`\"{} the FOM operators
+\item must be a functor with a specific API\+:
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }ValidMasker}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} operand\_type1 = \textcolor{comment}{/*same type as your fom velocity*/};}
+\DoxyCodeLine{  \textcolor{keyword}{using} operand\_type2 = \textcolor{comment}{/*same type as your decoder's jacobian*/};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  operand\_type1 createApplyMaskResult(\textcolor{keyword}{const} operand\_type1 \& unmasked\_object);}
+\DoxyCodeLine{  operand\_type2 createApplyMaskResult(\textcolor{keyword}{const} operand\_type2 \& unmasked\_object);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} TimeType>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} operand\_type1 \& unmasked\_object,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time,}
+\DoxyCodeLine{                  operand\_type1 \& result);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} TimeType>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} operand\_type2 \& unmasked\_object,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time,}
+\DoxyCodeLine{                  operand\_type2 \& result);}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md141}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_lspg_masked_autotoc_md141}
+A problem meets the following interface\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }UnsteadyLspgProblem}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// returns the underlying stepper to use to solve the problem}}
+\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+ 

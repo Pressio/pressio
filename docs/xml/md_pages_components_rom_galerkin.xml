@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_rom_galerkin" kind="page">
+    <compoundname>md_pages_components_rom_galerkin</compoundname>
+    <title>rom: Galerkin:</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: write this better</para>
+<para>We currently support the following problems:</para>
+<para><itemizedlist>
+<listitem><para>Default: <ulink url="md_pages_components_rom_galerkin_default.html">link</ulink></para>
+</listitem><listitem><para>Hyper-reduced: <ulink url="md_pages_components_rom_galerkin_hypred.html">link</ulink></para>
+</listitem><listitem><para>Masked: <ulink url="md_pages_components_rom_galerkin_masked.html">link</ulink> </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <location file="pages/components/rom_galerkin.md"/>
+  </compounddef>
+</doxygen>

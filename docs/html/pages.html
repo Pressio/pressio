@@ -24,36 +24,51 @@
       <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
         <div class="m-row">
           <ol class="m-col-t-12 m-col-m-none">
+            <li><a href="md_pages_introduction.html">Introduction</a></li>
+            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
             <li>
-              <a>Get Started</a>
+              <a>Documentation</a>
               <ol>
-                <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
-                <li><a href="md_pages_getstarted_packages.html">Components</a></li>
-                <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
+                <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
+                <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
+                <li><a href="md_pages_components_expressions.html">expressions</a></li>
+                <li><a href="md_pages_components_ops.html">ops</a></li>
+                <li><a href="md_pages_components_qr.html">qr</a></li>
+                <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html"> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: steady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
               </ol>
             </li>
-            <li>
-              <a>Core Concepts</a>
-              <ol>
-                <li><a href="md_pages_coreconcepts_adapter_api.html">Adapter API</a></li>
-                <li><a href="md_pages_coreconcepts_datatypes.html">Data Types</a></li>
-                <li><a href="md_pages_coreconcepts_densenature.html">Dense nature of ROMs</a></li>
-                <li><a href="md_pages_coreconcepts_decoder.html">ROM-to-FOM Decoder</a></li>
-              </ol>
-            </li>
-            <li><a href="md_pages_tutorials.html">Tutorials</a></li>
-            <li>
-              <a href="md_pages_hyperreduction.html">Hyper-reduction</a>
-              <ol>
-                <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
-            <li><a href="annotated.html">Classes</a></li>
-            <li><a href="namespaces.html">Namespaces</a></li>
+            <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="7">
+          <ol class="m-col-t-6 m-col-m-none" start="6">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -69,28 +84,57 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>Pages</h1>
         <ul class="m-doc">
-          <li><a href="md_pages_coreconcepts_adapter_api.html" class="m-doc">Adapter API</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_coreconcepts_adapting_app.html" class="m-doc">Step-by-step guide on preparing your app</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_coreconcepts_datatypes.html" class="m-doc">Data Types and Structures</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_coreconcepts_decoder.html" class="m-doc">Decoder Abstraction in Pressio</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_coreconcepts_densenature.html" class="m-doc">Dense Nature of ROMs</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_custom_ops_default_gal_exp.html" class="m-doc">Custom Ops for Default Explicit-time Galerkin</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_custom_ops.html" class="m-doc">FOM Adapter API</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_examples_example1.html" class="m-doc">Example 1</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_getstarted_build_and_install.html" class="m-doc">Installation and Dependencies</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_getstarted_build_tests_eigen.html" class="m-doc">Build Tests with Eigen only</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_getstarted_packages.html" class="m-doc">Components</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_getstarted_pressio_app.html" class="m-doc">How does Pressio interact with your application?</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html" class="m-doc">Hyperreduction Example for Eigen</a> <span class="m-doc"><span></span></span></li>
-          <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html" class="m-doc">Hyperreduction</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html" class="m-doc">Hyperreduction example for Tpetra</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_hyperreduction.html" class="m-doc">Hyperreduction</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_tutorials.html" class="m-doc">Tutorials</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_various_formulation_galerkin.html" class="m-doc">The Galerkin ROM formulation</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_various_formulation_lspg.html" class="m-doc">The LSPG ROM formulation</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_various_formulation_wls.html" class="m-doc">The WLS ROM Formulation</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_various_license.html" class="m-doc">Licence</a> <span class="m-doc"></span></li>
-          <li><a href="md_pages_various.html" class="m-doc">Various</a> <span class="m-doc"><span></span></span></li>
+          <li><a href="md_pages_components_expressions.html" class="m-doc">expressions</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_linsolvers.html" class="m-doc">Linear solvers</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_mpl.html" class="m-doc">mpl</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_nonlinsolvers_general.html" class="m-doc">Nonlinear Solvers - General Info</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_nonlinsolvers_gn.html" class="m-doc">Nonlinear Solvers: Gauss-Newton</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_nonlinsolvers_irls.html" class="m-doc">Nonlinear Solvers: Iteratively reweighted least squares</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_nonlinsolvers_lm.html" class="m-doc">Nonlinear Solvers: Levenberg-Marquardt</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_nonlinsolvers_nr.html" class="m-doc">Nonlinear Solvers: Newton-Raphson</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_nonlinsolvers_system_api.html" class="m-doc">Nonlinear Solvers - Problem APIs</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_ode_advance.html" class="m-doc">ode advancers</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_ode_steppers_explicit.html" class="m-doc">ode: explicit steppers</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_ode_steppers_implicit.html" class="m-doc">ode: implicit steppers</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_ops.html" class="m-doc">ops</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_qr_copy.html" class="m-doc">qr</a> <span class="m-doc"><span></span></span></li>
+          <li><a href="md_pages_components_qr.html" class="m-doc">qr</a> <span class="m-doc"><span></span></span></li>
+          <li><a href="md_pages_components_rom_decoder.html" class="m-doc">rom: Decoder</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_fom_apis.html" class="m-doc">FOM adapter API</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_galerkin.html" class="m-doc">rom: Galerkin:</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_galerkin_default.html" class="m-doc">rom: Galerkin: default problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_galerkin_hypred.html" class="m-doc">rom: Galerkin: hyper-reduced problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_galerkin_masked.html" class="m-doc">rom: Galerkin: masked problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_general.html" class="m-doc">rom: general info</a> <span class="m-doc"><span></span></span></li>
+          <li><a href="md_pages_components_rom_hyperreduction.html" class="m-doc">rom: Hyperreduction</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_default.html" class="m-doc">rom: LSPG: unsteady default problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_default_steady.html" class="m-doc">rom: LSPG: steady default problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_general.html" class="m-doc">rom: LSPG: general info</a> <span class="m-doc"><span></span></span></li>
+          <li><a href="md_pages_components_rom_lspg_hypred.html" class="m-doc">rom: LSPG: hyper-reduced problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_hypred_steady.html" class="m-doc">rom: LSPG: steady hyper-reduced problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_masked.html" class="m-doc">rom: LSPG: masked problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_masked_steady.html" class="m-doc">rom: LSPG: steady masked problem</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_steady.html" class="m-doc">rom: Steady LSPG</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_lspg_unsteady.html" class="m-doc">rom: Unsteady LSPG</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_rom_wls.html" class="m-doc">rom: WLS</a> <span class="m-doc"><span></span></span></li>
+          <li><a href="md_pages_components_type_traits.html" class="m-doc">type_traits</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_components_utils.html" class="m-doc">utils</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_installation.html" class="m-doc">Installation and Dependencies</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_introduction.html" class="m-doc">Introduction</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_coreconcepts_adapter_api.html" class="m-doc">Adapter API</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_coreconcepts_decoder.html" class="m-doc">Decoder Abstraction in Pressio</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_custom_ops_default_gal_exp.html" class="m-doc">Custom Ops for Default Explicit-time Galerkin</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_custom_ops.html" class="m-doc">FOM Adapter API</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_examples_example1.html" class="m-doc">Example 1</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_getstarted_build_and_install.html" class="m-doc">Installation and Dependencies</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_getstarted_build_tests_eigen.html" class="m-doc">Build Tests with Eigen only</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_getstarted_packages.html" class="m-doc">Components</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_tutorials.html" class="m-doc">Tutorials</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_various_formulation_galerkin.html" class="m-doc">The Galerkin ROM formulation</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_various_formulation_lspg.html" class="m-doc">The LSPG ROM formulation</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_various_formulation_wls.html" class="m-doc">The WLS ROM Formulation</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_various_license.html" class="m-doc">Licence</a> <span class="m-doc"></span></li>
+          <li><a href="md_pages_revise_and_pick_various.html" class="m-doc">Various</a> <span class="m-doc"><span></span></span></li>
         </ul>
         <script>
         function toggle(e) {

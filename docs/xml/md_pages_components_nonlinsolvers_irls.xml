@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_nonlinsolvers_irls" kind="page">
+    <compoundname>md_pages_components_nonlinsolvers_irls</compoundname>
+    <title>Nonlinear Solvers: Iteratively reweighted least squares</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
+<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md31">
+<title>API, Parameters and Requirements</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md32">
+<title>Ops</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md33">
+<title>Example usage</title>
+</sect2>
+    </detaileddescription>
+    <location file="pages/components/nonlinsolvers_irls.md"/>
+  </compounddef>
+</doxygen>

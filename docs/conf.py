@@ -3,27 +3,71 @@ DOXYFILE = 'Doxyfile-mcss'
 MAIN_PROJECT_URL: "Pressio"
 
 LINKS_NAVBAR1 = [
-  # Get Started
-  #("<a href=\"md_pages_get_started.html\">Get Started</a>",
-  ("<a>Get Started</a>", # empty href so that get started only has children
+
+  ("<a href=\"md_pages_introduction.html\">Introduction</a>", []),
+
+  ("<a href=\"md_pages_installation.html\">Installation/Dependencies</a>", []),
+
+  # ("<a href=\"md_pages_components.html\">Components</a>",
+  ("<a>Documentation</a>",
    [
-     ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
-     ("<a href=\"md_pages_getstarted_packages.html\">Components</a>",),
-     ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",)
+     ("<a href=\"md_pages_components_mpl.html\">mpl</a>",),
+     ("<a href=\"md_pages_components_utils.html\">utils</a>",),
+     ("<a href=\"md_pages_components_type_traits.html\">type_traits</a>",),
+     ("<a href=\"md_pages_components_expressions.html\">expressions</a>",),
+     ("<a href=\"md_pages_components_ops.html\">ops</a>",),
+     ("<a href=\"md_pages_components_qr.html\">qr</a>",),
+     ("<a href=\"md_pages_components_linsolvers.html\">linear solvers</a>",),
+
+     #
+     ("<a> nonlinear solvers: </a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_general.html\"> &emsp; - general info</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_system_api.html\"> &emsp; - problem class API</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_nr.html\"> &emsp; - Newton-Raphson</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_gn.html\"> &emsp; - Gauss-Newton</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_lm.html\"> &emsp; - Levenberg-Marquardt</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_irls.html\"> &emsp; - irls</a>",),
+
+     #
+     ("<a> ode: </a>",),
+     ("<a href=\"md_pages_components_ode_advance.html\"> &emsp; - advancers</a>",),
+     ("<a href=\"md_pages_components_ode_steppers_explicit.html\"> &emsp; - explicit steppers</a>",),
+     ("<a href=\"md_pages_components_ode_steppers_implicit.html\"> &emsp; - implicit steppers</a>",),
+
+     #
+     ("<a> rom: </a>",),
+     #("<a href=\"md_pages_components_rom_general.html\"> &emsp; - general info</a>",),
+     ("<a href=\"md_pages_components_rom_fom_apis.html\"> &emsp; - FOM adapter API</a>",),
+     ("<a href=\"md_pages_components_rom_decoder.html\">  &emsp; - decoder</a>",),
+
+     #
+     ("<a href=\"md_pages_components_rom_galerkin.html\"> &emsp; - Galerkin </a>",),
+     ("<a href=\"md_pages_components_rom_galerkin_default.html\"> &emsp; &emsp; - default problem </a>",),
+     ("<a href=\"md_pages_components_rom_galerkin_hypred.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
+     ("<a href=\"md_pages_components_rom_galerkin_masked.html\"> &emsp; &emsp; - masked problem </a>",),
+
+     #
+     ("<a href=\"md_pages_components_rom_lspg_steady.html\"> &emsp; - LSPG: steady </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_default_steady.html\"> &emsp; &emsp; - default problem </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_hypred_steady.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_masked_steady.html\"> &emsp; &emsp; - masked problem </a>",),
+
+     #
+     ("<a href=\"md_pages_components_rom_lspg_steady.html\"> &emsp; - LSPG: unsteady </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_default.html\"> &emsp; &emsp; - default problem </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_hypred.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_masked.html\"> &emsp; &emsp; - masked problem </a>",),
+
+     #
+     ("<a href=\"md_pages_components_rom_wls.html\">rom: WLS</a>",),
+     #("<a href=\"md_pages_components_rom_hyperreduction.html\">rom: hyper-reduction</a>",),
    ]),
 
-  # core concepts
-  ("<a>Core Concepts</a>",
-   [
-     ("<a href=\"md_pages_coreconcepts_adapter_api.html\">Adapter API</a>",),
-     ("<a href=\"md_pages_coreconcepts_datatypes.html\">Data Types</a>",),
-     ("<a href=\"md_pages_coreconcepts_densenature.html\">Dense nature of ROMs</a>",),
-          ("<a href=\"md_pages_coreconcepts_decoder.html\">ROM-to-FOM Decoder</a>",)
-     # ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
-   ]),
+  ("<a href=\"https://pressio.github.io/pressio-tutorials/html/index.html\">Tutorials</a>", []),
+  #("<a href=\"md_pages_tutorials.html\">Tutorials</a>", []),
 
-  # tutorials
-  ("<a href=\"md_pages_tutorials.html\">Tutorials</a>", []),
+  ("<a href=\"https://github.com/Pressio/pressio\">Github Page</a>", []),
+
   #("<a href=>Tutorials</a>", ("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
   # #  [
   # #    ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
@@ -37,29 +81,8 @@ LINKS_NAVBAR1 = [
   #    ("<a href=\"md_pages_examples_example1.html\">Example1</a>", )
   #  ]),
 
-  # hyper-reduction
-  ("<a href=\"md_pages_hyperreduction.html\">Hyper-reduction</a>",
-   [
-     ("<a href=\"md_pages_hyperreduction_hyperred_how_to_enable.html\">How to enable hyperreduction</a>",),
-     ("<a href=\"md_pages_hyperreduction_hyperred_eigen_example.html\">Eigen example</a>",),
-     ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
-   ]),
-
-  # # custom ops
-  # ("<a href=>Custom Ops</a>", #("<a href=\"md_pages_custom_ops.html\">Custom Ops</a>",
-  #  [
-  #    ("<a href=\"md_pages_custom_ops_default_gal_exp.html\">Ops for Galerkin Explicit Time</a>", ),
-  #  ]),
-
-  # # Adapter API
-  # ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
-  #  [
-  #    ("<a href=\"md_pages_adapter_apis_adapter_continuous_time_api.html\">Continuous-time API</a>",),
-  #    ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
-  #  ]),
-
-  ('Classes', 'annotated', []),
-  ('Namespaces', 'namespaces', [])
+  # ('Classes', 'annotated', []),
+  # ('Namespaces', 'namespaces', [])
 ]
 
 LINKS_NAVBAR2 = []
@@ -67,7 +90,7 @@ LINKS_NAVBAR2 = []
 #   ('Namespaces', 'namespaces', [])
 # ]
 
-PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot', 'm.images']
+PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot', 'm.images', 'm.table']
 
 SHOW_UNDOCUMENTED = "YES"
 

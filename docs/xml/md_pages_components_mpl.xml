@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_mpl" kind="page">
+    <compoundname>md_pages_components_mpl</compoundname>
+    <title>mpl</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header: <computeroutput>&lt;pressio/mpl.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::mpl</computeroutput></para>
+<sect1 id="md_pages_components_mpl_1autotoc_md8">
+<title>Overview</title>
+<para>Provides metaprogramming functionalities that are useful for a variety of purposes and are one of the fundamental building blocks for the other parts of the pressio library. If you are familiar with the <computeroutput>&lt;type_traits&gt;</computeroutput> header from the standard library, the <computeroutput>pressio/mpl</computeroutput> will look familiar too.</para>
+<para>Some parts of <computeroutput>pressio/mpl</computeroutput> have been adapted/extended/forked from the tinympl project, forked from <ulink url="http://sbabbi.github.io/tinympl">http://sbabbi.github.io/tinympl</ulink>. The tinympl project appears to be no longer maintained.</para>
+</sect1>
+<sect1 id="md_pages_components_mpl_1autotoc_md9">
+<title>Content</title>
+<para>We are not going to list all the metafunctions supported, but we only give a glimpse of some of them.</para>
+<sect2 id="md_pages_components_mpl_1autotoc_md10">
+<title>pressio::mpl::not_void</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">not_void;</highlight></codeline>
+</programlisting></para>
+<para>Checks whether a type <computeroutput>T</computeroutput> is NOT a void type. Provides the static member constant <computeroutput>value</computeroutput> that is equal to true, if <computeroutput>T</computeroutput> is NOT of the type <computeroutput>void</computeroutput>, <computeroutput>const void</computeroutput>, <computeroutput>volatile void</computeroutput>, or <computeroutput>const volatile void</computeroutput>. Otherwise, value is equal to true.</para>
+</sect2>
+<sect2 id="md_pages_components_mpl_1autotoc_md11">
+<title>pressio::mpl::is_subscriptable_as</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>IndexType&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">is_subscriptable_as;</highlight></codeline>
+</programlisting></para>
+<para>Provides the static member constant <computeroutput>value</computeroutput> that is equal to true if <computeroutput>T</computeroutput> has subscript operator <computeroutput>[]</computeroutput>, it can be indexed by an instance of <computeroutput>IndexType</computeroutput>, and the return type is not void. Otherwise, value is equal to false.</para>
+</sect2>
+<sect2 id="md_pages_components_mpl_1autotoc_md12">
+<title>to do: add more</title>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/mpl.md"/>
+  </compounddef>
+</doxygen>

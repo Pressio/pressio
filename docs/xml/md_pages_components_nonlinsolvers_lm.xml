@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_nonlinsolvers_lm" kind="page">
+    <compoundname>md_pages_components_nonlinsolvers_lm</compoundname>
+    <title>Nonlinear Solvers: Levenberg-Marquardt</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
+<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md35">
+<title>Levenberg–Marquardt</title>
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md36">
+<title>API, Parameters and Requirements</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md37">
+<title>Ops</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md38">
+<title>Example usage</title>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/nonlinsolvers_lm.md"/>
+  </compounddef>
+</doxygen>

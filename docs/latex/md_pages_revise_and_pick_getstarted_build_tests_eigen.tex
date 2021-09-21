@@ -1,0 +1,84 @@
+
+
+\begin{DoxyParagraph}{}
+This page shows the steps to build the unit and regression tests in {\ttfamily pressio} depending only on Eigen (and Google\+Test). By the end, you should be able to have pressio built with Google\+Test and Eigen enabled, run the test suite inside.
+\end{DoxyParagraph}
+
+
+\begin{DoxyParagraph}{Why can this be useful?}
+If you just want a quick way to get the code up-\/and-\/running and ready to play around with, these steps are what you want. Once you have the build ready, you can easily test/play/explore.
+\end{DoxyParagraph}
+
+
+\begin{DoxyParagraph}{Disclaimer}
+The guide below does {\bfseries{not}} assume you are a Unix/\+CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/\+CS/coding ninja, some steps will be fairly obvious to you!
+\end{DoxyParagraph}
+\hypertarget{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md192}{}\doxysection{Prerequisites}\label{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md192}
+
+\begin{DoxyItemize}
+\item C and C++11 compilers\+: either Clang or GNU
+\item CMake $>$= 3.\+11.\+0
+\item Bash $>$= 3.\+2.\+57
+\end{DoxyItemize}\hypertarget{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md193}{}\doxysection{1. Prep}\label{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md193}
+Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir \$HOME/pressio\_repos}
+\DoxyCodeLine{mkdir \$HOME/pressio\_builds}
+\DoxyCodeLine{export PRESSIO\_REPOS=\$HOME/pressio\_repos}
+\DoxyCodeLine{export PRESSIO\_BUILDS=\$HOME/pressio\_builds}
+
+\end{DoxyCode}
+
+
+Unless you already have them, set the following compilers environment variable\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{export CC=<path-\/to-\/your-\/C-\/compiler>}
+\DoxyCodeLine{export CXX=<path-\/to-\/your-\/CXX-\/compiler>}
+
+\end{DoxyCode}
+
+
+These are needed because {\ttfamily CC} and {\ttfamily CXX} are used to do all the builds.\hypertarget{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md194}{}\doxysection{2. Cloning}\label{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md194}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}}
+\DoxyCodeLine{git clone git@github.com:Pressio/pressio-\/builder.git}
+\DoxyCodeLine{git clone git@github.com:Pressio/pressio.git}
+
+\end{DoxyCode}
+\hypertarget{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md195}{}\doxysection{3. Install TPLs}\label{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md195}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}/pressio-\/builder}
+\DoxyCodeLine{./main\_tpls.sh -\/dryrun=no -\/tpls=eigen,gtest -\/target-\/dir=\$\{PRESSIO\_BUILDS\}}
+
+\end{DoxyCode}
+\hypertarget{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md196}{}\doxysection{4. Build the tests}\label{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md196}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}/pressio-\/builder}
+\DoxyCodeLine{./main\_pressio.sh \(\backslash\)}
+\DoxyCodeLine{    -\/dryrun=no \(\backslash\)}
+\DoxyCodeLine{    -\/pressio-\/src=\$\{PRESSIO\_REPOS\}/pressio \(\backslash\)}
+\DoxyCodeLine{    -\/target-\/dir=\$\{PRESSIO\_BUILDS\} \(\backslash\)}
+\DoxyCodeLine{    -\/gtest-\/path=\$\{PRESSIO\_BUILDS\}/gtest/install \(\backslash\)}
+\DoxyCodeLine{    -\/eigen-\/path=\$\{PRESSIO\_BUILDS\}/eigen/install}
+\DoxyCodeLine{    -\/cmake-\/generator-\/name=default\_with\_tests}
+
+\end{DoxyCode}
+\hypertarget{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md197}{}\doxysection{5. Running the tests}\label{md_pages_revise_and_pick_getstarted_build_tests_eigen_autotoc_md197}
+To run the tests, you can follow this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \$\{PRESSIO\_BUILDS\}/pressio/build}
+\DoxyCodeLine{ctest}
+
+\end{DoxyCode}
+
+
+To learn more about ctest, you can do {\ttfamily ctest -\/-\/help}. 

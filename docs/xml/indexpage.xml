@@ -2,36 +2,146 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="indexpage" kind="page">
     <compoundname>index</compoundname>
-    <title>Pressio C++</title>
+    <title>Pressio C++ Library</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para>
-<para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, which is one component of the <ulink url="https://pressio.github.io/">Pressio project</ulink>.</para>
-<sect1 id="index_1autotoc_md33">
-<title>In a nutshell</title>
-<para>Pressio can be applied to any dynamical system expressible in a <emphasis>continuous-time</emphasis> form as <formula id="13">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> and/or in a <emphasis>discrete-time</emphasis> form <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
-<para>Here, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.</para>
-<para>We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding <emphasis>adapter class</emphasis> to expose the operators needed for the chosen formulation. In general, you don&apos;t need to support both: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read <ulink url="./md_pages_coreconcepts_adapter_api.html">the doc page</ulink> to learn more about the adapter classes and see code templates.</para>
-<para><image type="html" name="frontpageschem.svg" width="85%"></image>
+<para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge reduced order models (ROMs) for dynamical systems in science and engineering.</emphasis></para>
+<para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, one component of the <ulink url="https://pressio.github.io/">Pressio ecosystem</ulink>.</para>
+<para><linebreak/>
 </para>
-</sect1>
-<sect1 id="index_1autotoc_md34">
+<para><table rows="11" cols="4"><row>
+<entry thead="yes"><para>Name   </para>
+</entry><entry thead="yes"><para>Description/Content   </para>
+</entry><entry thead="yes"><para>Links   </para>
+</entry><entry thead="yes"><para>Corresponding header(s)    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">mpl</mcss:span>   </para>
+</entry><entry thead="no"><para>metaprogramming functionalities   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/mpl">Code</ulink> <linebreak/>
+ <ulink url="md_pages_components_mpl.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/mpl.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>   </para>
+</entry><entry thead="no"><para>logging, static constants, crtp helper, etc   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/utils">Code</ulink><linebreak/>
+<ulink url="md_pages_components_utils.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">type_traits</mcss:span>   </para>
+</entry><entry thead="no"><para>traits/detection classes   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/type_traits">Code</ulink><linebreak/>
+<ulink url="md_pages_components_type_traits.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/type_traits.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">expressions</mcss:span>   </para>
+</entry><entry thead="no"><para>classes for various abstractions (span, diagonal, subspan, etc.)   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/expressions">Code</ulink><linebreak/>
+<ulink url="md_pages_components_expressions.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/expressions.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>   </para>
+</entry><entry thead="no"><para>specializations of shared-memory and distributed linear algebra kernels   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/ops">Code</ulink><linebreak/>
+<ulink url="md_pages_components_ops.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/ops.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>   </para>
+</entry><entry thead="no"><para>QR factorization functionalities   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/qr">Code</ulink><linebreak/>
+<ulink url="md_pages_components_qr.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/qr.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers_linear</mcss:span>   </para>
+</entry><entry thead="no"><para>linear solvers (wrappers around existing TPLs)   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/solvers_linear">Code</ulink><linebreak/>
+<ulink url="md_pages_components_linsolvers.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/solvers_linear.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers_nonlinear</mcss:span>   </para>
+</entry><entry thead="no"><para><linebreak/>
+ general info <linebreak/>
+ Newton-Raphson <linebreak/>
+ Gauss-Newton <linebreak/>
+ Levenberg-Marquardt <linebreak/>
+   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/solvers_nonlinear">Code</ulink> <linebreak/>
+ <ulink url="md_pages_components_nonlinsolvers_general.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_nonlinsolvers_nr.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_nonlinsolvers_gn.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_nonlinsolvers_lm.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>   </para>
+</entry><entry thead="no"><para><linebreak/>
+ explicit steppers <linebreak/>
+implict steppers <linebreak/>
+ advancers <linebreak/>
+   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio">Code</ulink> <linebreak/>
+ <ulink url="md_pages_components_ode_steppers_explicit.html">Documentation</ulink><linebreak/>
+ <ulink url="md_pages_components_ode_steppers_implicit.html">Documentation</ulink> <linebreak/>
+<ulink url="md_pages_components_ode_advance.html">Documentation</ulink>   </para>
+</entry><entry thead="no"><para><linebreak/>
+ <computeroutput>&lt;pressio/ode_steppers_explicit.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput><linebreak/>
+ <computeroutput>&lt;pressio/ode_advancers.hpp&gt;</computeroutput> <linebreak/>
+ (for everything: <computeroutput>&lt;pressio/ode.hpp&gt;</computeroutput>)    </para>
+</entry></row>
+<row>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">rom</mcss:span>   </para>
+</entry><entry thead="no"><para><linebreak/>
+general info <linebreak/>
+ decoder <linebreak/>
+ Galerkin<linebreak/>
+ Steady LSPG<linebreak/>
+ Unsteady LSPG<linebreak/>
+ WLS<linebreak/>
+   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/rom">Code</ulink> <linebreak/>
+<ulink url="md_pages_components_rom_general.html">Documentation</ulink> <linebreak/>
+<ulink url="md_pages_components_rom_decoder.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_rom_galerkin.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_rom_lspg_steady.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_rom_lspg_unsteady.html">Documentation</ulink> <linebreak/>
+ <ulink url="md_pages_components_rom_wls.html">Documentation</ulink> <linebreak/>
+   </para>
+</entry><entry thead="no"><para><linebreak/>
+ <linebreak/>
+ <computeroutput>&lt;pressio/rom_decoder.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput><linebreak/>
+ <computeroutput>&lt;pressio/rom_wls.hpp&gt;</computeroutput> <linebreak/>
+ (for everything: <computeroutput>&lt;pressio/rom.hpp&gt;</computeroutput>)   </para>
+</entry></row>
+</table>
+</para>
+<sect1 id="index_1autotoc_md168">
 <title>Getting Started</title>
 <para><itemizedlist>
-<listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
-</listitem><listitem><para>read about the <ulink url="./md_pages_getstarted_packages.html">packages</ulink> composing the pressio C++ library</para>
-</listitem><listitem><para>explore the <ulink url="./md_pages_tutorials.html">tutorials</ulink></para>
-</listitem><listitem><para>dig into the <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</ulink> of the C++ library</para>
+<listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas;</para>
+</listitem><listitem><para><ulink url="./md_pages_installation.html">installation</ulink>: it is a header-only library, should be trivial;</para>
+</listitem><listitem><para>explore the <ulink url="./md_pages_tutorials.html">tutorials</ulink>;</para>
+</listitem><listitem><para>we maintain a test suite! Interested in browing it? <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">See here</ulink>.</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md35">
+<sect1 id="index_1autotoc_md169">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md36">
+<sect1 id="index_1autotoc_md170">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

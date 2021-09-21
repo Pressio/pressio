@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_expressions" kind="page">
+    <compoundname>md_pages_components_expressions</compoundname>
+    <title>expressions</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header: <computeroutput>&lt;pressio/expressions.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio</computeroutput></para>
+<sect1 id="md_pages_components_expressions_1autotoc_md1">
+<title>Overview</title>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/expressions.md"/>
+  </compounddef>
+</doxygen>
