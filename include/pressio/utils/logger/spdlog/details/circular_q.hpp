@@ -2,8 +2,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
 // circular q view of std::vector.
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_CIRCULAR_Q_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_CIRCULAR_Q_HPP_
+#ifndef UTILS_SPDLOG_DETAILS_CIRCULAR_Q_HPP_
+#define UTILS_SPDLOG_DETAILS_CIRCULAR_Q_HPP_
 
 #include <vector>
 #include <cassert>
@@ -140,4 +140,4 @@ private:
 };
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_CIRCULAR_Q_HPP_
+#endif  // UTILS_SPDLOG_DETAILS_CIRCULAR_Q_HPP_

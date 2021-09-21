@@ -1,6 +1,6 @@
 
-#ifndef UTILS_LOGGER_UTILS_LOGGER_HPP_
-#define UTILS_LOGGER_UTILS_LOGGER_HPP_
+#ifndef UTILS_UTILS_LOGGER_HPP_
+#define UTILS_UTILS_LOGGER_HPP_
 
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 #include "utils_logger_impl.hpp"
@@ -245,4 +245,4 @@ inline void critical(const FormatString &fmt, Args&&...args)
 #define PRESSIOLOG_CRITICAL(...) (void)0
 #endif
 
-#endif  // UTILS_LOGGER_UTILS_LOGGER_HPP_
+#endif  // UTILS_UTILS_LOGGER_HPP_

@@ -28,8 +28,8 @@ Windows Registry Editor Version 5.00
 
 -----------------------------------------------------------------------------------------*/
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_UNUSED_WIN_EVENTLOG_SINK_H_
-#define UTILS_LOGGER_SPDLOG_SINKS_UNUSED_WIN_EVENTLOG_SINK_H_
+#ifndef UTILS_SPDLOG_SINKS_UNUSED_WIN_EVENTLOG_SINK_H_
+#define UTILS_SPDLOG_SINKS_UNUSED_WIN_EVENTLOG_SINK_H_
 
 #include <spdlog/details/null_mutex.h>
 #include <spdlog/sinks/base_sink.h>
@@ -265,4 +265,4 @@ using win_eventlog_sink_st = win_eventlog::win_eventlog_sink<details::null_mutex
 
 } // namespace sinks
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_UNUSED_WIN_EVENTLOG_SINK_H_
+#endif  // UTILS_SPDLOG_SINKS_UNUSED_WIN_EVENTLOG_SINK_H_

@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_FILE_HELPER_INL_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_FILE_HELPER_INL_HPP_
+#ifndef UTILS_SPDLOG_DETAILS_FILE_HELPER_INL_HPP_
+#define UTILS_SPDLOG_DETAILS_FILE_HELPER_INL_HPP_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./file_helper.hpp"
@@ -131,4 +131,4 @@ SPDLOG_INLINE std::tuple<filename_t, filename_t> file_helper::split_by_extension
 
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_FILE_HELPER_INL_HPP_
+#endif  // UTILS_SPDLOG_DETAILS_FILE_HELPER_INL_HPP_

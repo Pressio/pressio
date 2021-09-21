@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_TWEAKME_HPP_
-#define UTILS_LOGGER_SPDLOG_TWEAKME_HPP_
+#ifndef UTILS_SPDLOG_TWEAKME_HPP_
+#define UTILS_SPDLOG_TWEAKME_HPP_
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -115,4 +115,4 @@
 //
 // #define SPDLOG_FUNCTION __PRETTY_FUNCTION__
 ///////////////////////////////////////////////////////////////////////////////
-#endif  // UTILS_LOGGER_SPDLOG_TWEAKME_HPP_
+#endif  // UTILS_SPDLOG_TWEAKME_HPP_

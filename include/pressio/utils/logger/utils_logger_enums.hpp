@@ -1,6 +1,6 @@
 
-#ifndef UTILS_LOGGER_UTILS_LOGGER_ENUMS_HPP_
-#define UTILS_LOGGER_UTILS_LOGGER_ENUMS_HPP_
+#ifndef UTILS_UTILS_LOGGER_ENUMS_HPP_
+#define UTILS_UTILS_LOGGER_ENUMS_HPP_
 
 namespace pressio{
 
@@ -21,4 +21,4 @@ enum class level
 }// end namespace pressio::log
 }// end namespace pressio
 
-#endif  // UTILS_LOGGER_UTILS_LOGGER_ENUMS_HPP_
+#endif  // UTILS_UTILS_LOGGER_ENUMS_HPP_

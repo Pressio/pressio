@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_UNUSED_WINCOLOR_SINK_H_
-#define UTILS_LOGGER_SPDLOG_SINKS_UNUSED_WINCOLOR_SINK_H_
+#ifndef UTILS_SPDLOG_SINKS_UNUSED_WINCOLOR_SINK_H_
+#define UTILS_SPDLOG_SINKS_UNUSED_WINCOLOR_SINK_H_
 
 #include <spdlog/common.h>
 #include <spdlog/details/console_globals.h>
@@ -93,4 +93,4 @@ using wincolor_stderr_sink_st = wincolor_stderr_sink<details::console_nullmutex>
 #ifdef SPDLOG_HEADER_ONLY
 #include "wincolor_sink-inl.h"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_UNUSED_WINCOLOR_SINK_H_
+#endif  // UTILS_SPDLOG_SINKS_UNUSED_WINCOLOR_SINK_H_

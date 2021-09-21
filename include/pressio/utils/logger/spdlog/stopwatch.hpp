@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_STOPWATCH_HPP_
-#define UTILS_LOGGER_SPDLOG_STOPWATCH_HPP_
+#ifndef UTILS_SPDLOG_STOPWATCH_HPP_
+#define UTILS_SPDLOG_STOPWATCH_HPP_
 
 // #include "./fmt/fmt.hpp"
 
@@ -60,4 +60,4 @@ struct formatter<spdlog::stopwatch> : formatter<double>
     }
 };
 } // namespace fmt
-#endif  // UTILS_LOGGER_SPDLOG_STOPWATCH_HPP_
+#endif  // UTILS_SPDLOG_STOPWATCH_HPP_

@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_FMT_BUNDLED_OSTREAM_HPP_
-#define UTILS_LOGGER_FMT_BUNDLED_OSTREAM_HPP_
+#ifndef UTILS_FMT_BUNDLED_OSTREAM_HPP_
+#define UTILS_FMT_BUNDLED_OSTREAM_HPP_
 
 #include <ostream>
 
@@ -164,4 +164,4 @@ void print(std::basic_ostream<Char>& os, const S& format_str, Args&&... args) {
 }
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_FMT_BUNDLED_OSTREAM_HPP_
+#endif  // UTILS_FMT_BUNDLED_OSTREAM_HPP_

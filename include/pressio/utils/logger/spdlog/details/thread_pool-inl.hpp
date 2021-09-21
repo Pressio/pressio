@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_INL_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_INL_HPP_
+#ifndef UTILS_SPDLOG_DETAILS_THREAD_POOL_INL_HPP_
+#define UTILS_SPDLOG_DETAILS_THREAD_POOL_INL_HPP_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./thread_pool.hpp"
@@ -128,4 +128,4 @@ bool SPDLOG_INLINE thread_pool::process_next_msg_()
 
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_INL_HPP_
+#endif  // UTILS_SPDLOG_DETAILS_THREAD_POOL_INL_HPP_

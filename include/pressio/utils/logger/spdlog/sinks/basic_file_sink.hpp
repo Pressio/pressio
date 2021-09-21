@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_HPP_
-#define UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_HPP_
+#ifndef UTILS_SPDLOG_SINKS_BASIC_FILE_SINK_HPP_
+#define UTILS_SPDLOG_SINKS_BASIC_FILE_SINK_HPP_
 
 #include "../details/file_helper.hpp"
 //#include "../details/null_mutex.hpp"
@@ -72,4 +72,4 @@ using basic_file_sink_st = basic_file_sink<details::null_mutex>;
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "basic_file_sink-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_HPP_
+#endif  // UTILS_SPDLOG_SINKS_BASIC_FILE_SINK_HPP_

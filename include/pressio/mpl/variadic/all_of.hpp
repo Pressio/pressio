@@ -10,8 +10,8 @@
 //  enniobarbaro@gmail.com
 //
 
-#ifndef TINYMPL_VARIADIC_ALL_OF_HPP
-#define TINYMPL_VARIADIC_ALL_OF_HPP
+#ifndef MPL_ALL_OF_HPP_
+#define MPL_ALL_OF_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -45,4 +45,4 @@ template< template<class... T> class F, class ... Args>
 using all_of_t = typename all_of<F, Args...>::type;
 
 }}}
-#endif // TINYMPL_VARIADIC_ALL_OF_HPP
+#endif  // MPL_ALL_OF_HPP_
