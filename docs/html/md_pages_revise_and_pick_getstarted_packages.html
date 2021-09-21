@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>rom_galerkin_general.md file | Pressio|C++</title>
+  <title>Components | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -65,7 +65,7 @@
                 <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
               </ol>
             </li>
-            <li><a href="md_pages_tutorials.html">Tutorials</a></li>
+            <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
             <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="6">
@@ -83,9 +83,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          rom_galerkin_general.md <span class="m-thin">file</span>
+          Components
         </h1>
-        <p><span></span></p>
+<p>The pressio C++ library is divided into several components:</p><table class="m-table"><thead><tr><th>Name</th><th>Description</th><th>Link</th><th>Reference header(s)</th></tr></thead><tbody><tr><td><span class="m-text m-success">mpl</span></td><td>metaprogramming functionalities</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/mpl">Source</a></td><td><code>#include&lt;pressio_mpl.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">utils</span></td><td>common functionalities<br />e.g., I/O helpers, static constants, etc</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/utils">Source</a></td><td><code>#include&lt;pressio_utils.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">containers</span></td><td>wrappers for vectors, matrices and multi-vectors, and expressions (span, diagonal and subspan)</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/containers">Source</a></td><td><code>#include&lt;pressio_containers.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">ops</span></td><td>shared-memory and distributed linear algebra</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/ops">Source</a></td><td><code>#include&lt;pressio_ops.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">apps</span></td><td>suites of mini-apps used for basic testing</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/apps">Source</a></td><td><code>#include&lt;pressio_apps.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">qr</span></td><td>QR factorization functionalities</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/qr">Source</a></td><td><code>#include&lt;pressio_qr.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">solvers</span></td><td>linear and non-linear solvers<br />(e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt)</td><td><a href="https://github.com/Pressio/pressio/tree/main/include/solvers">Source</a></td><td><code>#include&lt;pressio_solvers.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">ode</span></td><td>explicit only methods<br />implict only methods<br />all</td><td><br /><br /><a href="https://github.com/Pressio/pressio/tree/main/include/ode">Source</a></td><td><code>#include&lt;pressio_ode_explicit.hpp&gt;</code><br /><code>#include&lt;pressio_ode_implicit.hpp&gt;</code><br /><code>#include&lt;pressio_ode.hpp&gt;</code></td></tr><tr><td><span class="m-text m-success">rom</span></td><td>Galerkin ROMs<br />LSPG ROMs<br />WLS ROMs<br />all</td><td><br /><br /><br /><a href="https://github.com/Pressio/pressio/tree/main/include/rom">Source</a></td><td><code>#include&lt;pressio_rom_galerkin.hpp&gt;</code><br /><code>#include&lt;pressio_rom_lspg.hpp&gt;</code><br /><code>#include&lt;pressio_rom_wls.hpp&gt;</code><br /><code>#include&lt;pressio_rom.hpp&gt;</code></td></tr></tbody></table><p>The top-down order used above is informative of the dependency structure. For example, every package depends on <code>mpl</code>. The <code>ops</code> package depends only on <code>mpl</code>, <code>utils</code>, <code>containers</code>. At the bottom of the stack we have the <code>rom</code> package which requires all the others.</p><p>This structure of the framework has several benefits.</p><ul><li>Maintability: <code>pressio</code> can be more easily developed and maintained since its components depend on one another through well-defined public interfaces, and appropriate namespaces are used to organize classes.</li><li>Selective usability: this modular framework allows users, if needed, to leverage invidual components. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically.</li></ul><aside class="m-block m-warning"><p>When you use functionalities from a specific package, you should just include the corresponding header and the dependencies (based on the explanation above) are included automatically. For example, if you want to do Galerkin with explicit time integration, you just do <code>#include &lt;pressio_rom_galerkin.hpp&gt;</code> because all the needed packages are automatically included. There is not need to manually include all of them yourself. In the future, we might refine further the granularity of the headers to allow a finer control.</p></aside><aside class="m-note m-default"><h4>One header to include them all</h4><p>If you want to access <em>all</em> functionalities, you can use: <code class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio.hpp&quot;</span><span class="cp"></span></code></p></aside>
       </div>
     </div>
   </div>

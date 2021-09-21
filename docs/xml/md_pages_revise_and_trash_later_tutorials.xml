@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_revise_and_trash_later_tutorials" kind="page">
+    <compoundname>md_pages_revise_and_trash_later_tutorials</compoundname>
+    <title>Tutorials</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ulink url="https://pressio.github.io/pressio-tutorials/html/index.html">Go here</ulink> </para>
+    </detaileddescription>
+    <location file="pages/revise_and_trash_later/tutorials.md"/>
+  </compounddef>
+</doxygen>

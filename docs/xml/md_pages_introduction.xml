@@ -6,7 +6,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>bla bla</para>
+<para>Finish: graphic needs to be updated, content to add.</para>
 <para><itemizedlist>
 <listitem><para>ROMs are dense</para>
 </listitem><listitem><para>pressio was designed with that in mind</para>
@@ -16,7 +16,7 @@
 <title>In a nutshell</title>
 <para>Pressio can be applied to any dynamical system expressible in a <emphasis>continuous-time</emphasis> form as <formula id="2">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> and/or in a <emphasis>discrete-time</emphasis> form <formula id="6">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
 <para>Here, <formula id="3">$y$</formula> is the full-order model (FOM) state, <formula id="4">$f$</formula> the FOM velocity, <formula id="5">$t$</formula> is time, and <formula id="7">$R$</formula> is the residual.</para>
-<para>We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding <emphasis>adapter class</emphasis> to expose the operators needed for the chosen formulation. In general, you don&apos;t need to support both: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read <ulink url="./md_pages_coreconcepts_adapter_api.html">the doc page</ulink> to learn more about the adapter classes and see code templates.</para>
+<para>We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding <emphasis>adapter class</emphasis> to expose the operators needed for the chosen formulation. In general, you don&apos;t need to support both: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read <ulink url="md_pages_components_rom_fom_apis.html">the doc page</ulink> to learn more about the adapter classes and see code templates.</para>
 <para><image type="html" name="frontpageschem.svg" width="70%"></image>
  </para>
 </sect1>

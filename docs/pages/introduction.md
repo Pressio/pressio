@@ -1,11 +1,10 @@
 
 # Introduction
 
-bla bla
+Finish: graphic needs to be updated, content to add.
 
 - ROMs are dense
 - pressio was designed with that in mind
-
 
 
 ## In a nutshell
@@ -33,7 +32,7 @@ the operators needed for the chosen formulation.
 In general, you don't need to support both: there are advantages and disadvantages for both,
 and sometimes the choice is dictated directly by your native application (for example,
 in some cases it might be easier to directly expose the residual).
-Read [the doc page](./md_pages_coreconcepts_adapter_api.html)
+Read [the doc page](md_pages_components_rom_fom_apis.html)
 to learn more about the adapter classes and see code templates.
 
 @image html frontpageschem.svg width=70%
