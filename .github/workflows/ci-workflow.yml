@@ -2,6 +2,13 @@ name: github-linux
 
 on: [push, pull_request]
 
+#https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#concurrency
+# concurrency is a new feature to GitHub Actions, currently in beta stage
+# ${{ github.head_ref }} guarantees that the same job names are not cancelled on different branches
+concurrency:
+  group: CI-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   #------------------------
   CI:
