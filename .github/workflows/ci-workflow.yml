@@ -65,23 +65,21 @@ jobs:
           -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests \
           -pressio-src=${{env.pressio_dir}} -ncpu-for-make=4 --config-only=yes
 
-          ls -la ${{ env.target_dir }}/pressio/build/tests
-
       - name: Test-${{ env.small }}
         run: |
-            cd ${{ env.target_dir }}/pressio/build/tests/test_functional_${{ env.small }}
+            cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
             make -j 2
             ctest --output-on-failure
 
       - name: Test-${{ env.medium }}
         run: |
-          cd ${{ env.target_dir }}/pressio/build/tests/test_functional_${{ env.medium }}
+          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.medium }}
           make -j 2
           ctest --output-on-failure
 
       - name: Test-${{ env.large }}
         run: |
-          cd ${{ env.target_dir }}/pressio/build/tests/test_functional_${{ env.large }}
+          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.large }}
           make -j 2
           ctest --output-on-failure
 
