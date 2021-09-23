@@ -1,44 +1,51 @@
 #include <gtest/gtest.h>
 #include "pressio/type_traits.hpp"
 
-using eigvec_d_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-using eigvec_i_t = Eigen::Matrix<int, Eigen::Dynamic, 1>;
-using eigvec_f_t = Eigen::Matrix<float, Eigen::Dynamic, 1>;
+#if defined(PRESSIO_ENABLE_TPL_EIGEN) // use Eigen types for testing
+  template<typename Scalar>
+  using Type = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
+#elif defined(PRESSIO_ENABLE_TPL_KOKKOS) // use Kokkos types for testing
+  template<typename Scalar>
+  using Type = Kokkos::View<Scalar*>;
+#else // TODO: use Trilinos types ?
+  #define PRESSIO_DISABLE_TEST_SCALARCOMPATIBLE
+#endif
 
-using eigm_d_t = Eigen::Matrix<double, -1, -1>;
-using eigm_i_t = Eigen::Matrix<int, -1, -1>;
-using eigm_f_t = Eigen::Matrix<float, -1, -1>;
+#ifndef PRESSIO_DISABLE_TEST_SCALARCOMPATIBLE
 
+using A = Type<double>;
+using B = Type<float>;
+using C = Type<int>;
+using D = Type<bool>;
 
 TEST(containers_meta, two_vector_scalar_compatible){
-  using myv1_t = pressio::containers::Vector<eigvec_d_t>;
-  using myv2_t = myv1_t;
-  using myv3_t = pressio::containers::Vector<eigvec_i_t>;
-  static_assert( pressio::containers::predicates::are_scalar_compatible<myv1_t, myv2_t>::value, "");
-  static_assert( !pressio::containers::predicates::are_scalar_compatible<myv1_t, myv3_t>::value, "");
+  static_assert(  pressio::are_scalar_compatible<A, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, B>::value, "");
 }
 
 TEST(containers_meta, three_vector_scalar_compatible){
-  using myv1_t = pressio::containers::Vector<eigvec_d_t>;
-  using myv2_t = myv1_t;
-  using myv3_t = myv2_t;
-  static_assert( pressio::containers::predicates::are_scalar_compatible<myv1_t, myv2_t, myv3_t>::value, "");
-
-  using myv4_t = pressio::containers::Vector<eigvec_i_t>;
-  static_assert( !pressio::containers::predicates::are_scalar_compatible<myv1_t, myv2_t, myv4_t>::value, "");
-
-  using myv5_t = pressio::containers::Vector<eigvec_f_t>;
-  static_assert( !pressio::containers::predicates::are_scalar_compatible<myv1_t, myv2_t, myv5_t>::value, "");
+  static_assert(  pressio::are_scalar_compatible<A, A, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, A, B>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, B, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<B, A, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, B, C>::value, "");
 }
 
 TEST(containers_meta, four_vector_scalar_compatible){
-  using myv1_t = pressio::containers::Vector<eigvec_d_t>;
-  using myv2_t = myv1_t;
-  using myv3_t = myv2_t;
-  using myv4_t = pressio::containers::Vector<eigvec_i_t>;
+  static_assert(  pressio::are_scalar_compatible<A, A, A, A>::value, "");
 
-  static_assert( pressio::containers::predicates::are_scalar_compatible<myv1_t, myv2_t,
-                myv3_t, myv2_t>::value, "");
-  static_assert( !pressio::containers::predicates::are_scalar_compatible<myv1_t, myv2_t,
-                myv3_t, myv4_t>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, A, A, B>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, A, B, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, B, A, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<B, A, A, A>::value, "");
+
+  static_assert( !pressio::are_scalar_compatible<A, A, B, B>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, B, A, B>::value, "");
+  static_assert( !pressio::are_scalar_compatible<B, A, A, B>::value, "");
+  static_assert( !pressio::are_scalar_compatible<A, B, B, A>::value, "");
+  static_assert( !pressio::are_scalar_compatible<B, A, B, A>::value, "");
+
+  static_assert( !pressio::are_scalar_compatible<A, B, C, D>::value, "");
 }
+
+#endif
