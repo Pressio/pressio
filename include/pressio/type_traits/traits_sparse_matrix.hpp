@@ -60,7 +60,7 @@ struct Traits<
     >
   >
   : public ::pressio::impl::EigenTraits<T, 2>,
-    public ::pressio::impl::StaticAllocTrait, // Should be EigenMatrixAllocTrait<T> ?
+    public ::pressio::impl::EigenMatrixAllocTrait<T>,
     public ::pressio::impl::SparseMatrixTrait
 {
 private:
