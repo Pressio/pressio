@@ -111,7 +111,8 @@ jobs:
           #   }
 
           - {
-              name: "ubuntu_20.04_gcc_openmpi_trilinos_release",
+              trilinos_release: "13.0.0",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_release_13.0.0",
               build_type: "Release", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
@@ -120,7 +121,28 @@ jobs:
             }
 
           - {
-              name: "ubuntu_20.04_gcc_openmpi_trilinos_debug",
+              trilinos_release: "13.0.0",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_debug_13.0.0",
+              build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
+              options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
+              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
+              ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build
+            }
+
+          - {
+              trilinos_release: "13.0.1",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_release_13.0.1",
+              build_type: "Release", cc: "mpicc", cxx: "mpicxx",
+              options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
+              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
+              ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build
+            }
+
+          - {
+              trilinos_release: "13.0.1",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_debug_13.0.1",
               build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
@@ -177,12 +199,12 @@ jobs:
     - name: Get TPLs...
       run: |
         export TERM=xterm
-        docker run -di pressiomodelreduction/ubuntu-pressio-tpl
+        docker run -di pressiomodelreduction/ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_rel_${{ matrix.config.trilinos_release }}
         TNAME=$(docker ps --format "{{.Names}}")
         docker cp $TNAME:/home/pressio_builds ${{ env.WORKSPACE_PARENT_DIR }}
         docker stop $TNAME
         docker rm $TNAME
-        docker image rm pressiomodelreduction/ubuntu-pressio-tpl
+        docker image rm pressiomodelreduction/ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_rel_${{ matrix.config.trilinos_release }}
 
     - name: Build
       env:
