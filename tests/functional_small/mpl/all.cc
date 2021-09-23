@@ -45,3 +45,38 @@ TEST(mpl, subscriptable)
   static_assert( mpl::is_subscriptable_as<T, int>::value, "" );
 }
 
+TEST(mpl, not_void)
+{
+  namespace pmpl = pressio::mpl;
+  static_assert(pmpl::not_void<double>::value, "" );
+}
+
+TEST(mpl, all_of)
+{
+  namespace pmpl = pressio::mpl;
+  static_assert
+    (pmpl::all_of<std::is_floating_point, double, float>::value, "" );
+}
+
+TEST(mpl, any_of)
+{
+  namespace pmpl = pressio::mpl;
+  static_assert
+    (pmpl::any_of<std::is_integral, int, float>::value, "" );
+}
+
+TEST(mpl, none_of)
+{
+  namespace pmpl = pressio::mpl;
+  static_assert
+    (pmpl::none_of<std::is_integral, double, float>::value, "" );
+}
+
+
+TEST(mpl, size)
+{
+  namespace pmpl = pressio::mpl;
+  static_assert(pmpl::size<double, float>::value==2, "" );
+  static_assert(pmpl::size<double, float>::value!=3, "" );
+  static_assert(pmpl::size<double, float>::value!=0, "" );
+}

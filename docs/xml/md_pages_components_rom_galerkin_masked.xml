@@ -6,9 +6,11 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::rom::galerkin</computeroutput></para>
-<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md110">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::rom::galerkin</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md107">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -43,7 +45,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;);</highlight></codeline>
 </programlisting></para>
 <para>This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md111">
+<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md108">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StepScheme</computeroutput>:<itemizedlist>
@@ -85,7 +87,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md112">
+<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md109">
 <title>Masker</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: explain</para>
 <para>Suppose that <computeroutput>fom_velocity_type</computeroutput> is the type of your FOM velocity, and that <computeroutput>decoder_jacobian_t</computeroutput> is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, <computeroutput>fom_velocity_type</computeroutput> can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the <computeroutput>decoder_jacobian_t</computeroutput>.</para>

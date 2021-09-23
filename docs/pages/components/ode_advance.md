@@ -1,9 +1,14 @@
 
 # ode advancers
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in header: `<pressio/ode_advancers.hpp>`
 
 Public namespace: `pressio::ode`
+@endparblock
 
 
 ## Overview

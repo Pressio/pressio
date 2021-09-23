@@ -60,9 +60,15 @@ public:
 
 ## Special case: linear decoder
 
+
+@m_class{m-frame}
+
+@parblock
 Defined in header: `<pressio/rom_decoder.hpp>`
 
 Public namespace: `pressio::rom`
+@endparblock
+
 
 A linear decoder is a mapping of the form:
 @f[

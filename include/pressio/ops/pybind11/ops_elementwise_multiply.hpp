@@ -55,8 +55,8 @@ namespace pressio{ namespace ops{
 
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
-  mpl::variadic::any_of<_pybind_is_rank1, T, T1, T2>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::any_of<_pybind_is_rank1, T, T1, T2>::value
   >
 elementwise_multiply
 (typename ::pressio::Traits<T>::scalar_type alpha,
@@ -75,8 +75,8 @@ elementwise_multiply
 
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
-  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1, T2>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::all_of<_pybind_is_rank_dyn, T, T1, T2>::value
   >
 elementwise_multiply
 (typename ::pressio::Traits<T>::scalar_type alpha,

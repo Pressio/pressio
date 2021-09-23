@@ -1,9 +1,14 @@
 
 # Nonlinear Solvers: Newton-Raphson
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in header `<pressio/solvers_nonlinear.hpp>`
 
 Public namespace: `pressio::nonlinearsolvers`
+@endparblock
 
 
 ## Newton-Raphson

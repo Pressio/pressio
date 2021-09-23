@@ -1,9 +1,15 @@
 
 # rom: Galerkin: masked problem
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in: `<pressio/rom_galerkin.hpp>`
 
 Public namespace: `pressio::rom::galerkin`
+@endparblock
+
 
 
 ## 1. Creating a problem instance

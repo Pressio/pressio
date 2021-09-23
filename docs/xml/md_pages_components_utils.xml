@@ -6,22 +6,28 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in header: <computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput></para>
-<para>Public namespaces: <computeroutput>pressio</computeroutput>, <computeroutput>pressio::utils</computeroutput></para>
-<sect1 id="md_pages_components_utils_1autotoc_md155">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header: <computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput></para>
+<para>Public namespaces: <computeroutput>pressio</computeroutput>, <computeroutput>pressio::utils</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_utils_1autotoc_md152">
 <title>Logger</title>
-<para>One of the main functionalities inside <computeroutput>utils</computeroutput> is the logger. To implement the pressio logging functionalities, we have used <ulink url="https://github.com/gabime/spdlog">spdlog</ulink>, rewriting a subset of it, for example to work seamlessly with MPI.</para>
-<para>If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> and expect logging, you will be disappointed!<linebreak/>
-  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">By default, for performance reasons, the logger is disabled.</mcss:span> To enable and use it, you need to do two things:<orderedlist>
-<listitem><para><emphasis>before</emphasis> including the utils header, place a <computeroutput>define</computeroutput> statement to set the <emphasis>minimum</emphasis> level</para>
-</listitem><listitem><para>you need to initialize and finalize the logger singleton</para>
+<para>One of the main functionalities inside <computeroutput>utils</computeroutput> is the logger. To implement the pressio logging functionalities, we have used <ulink url="https://github.com/gabime/spdlog">spdlog</ulink>, modified a subset of it, for example to work seamlessly with MPI.</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-warning" /></para>
+<para><parblock><para>By default, for performance reasons, the logger is disabled, so pressio will not output anything. </para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
+<para><parblock><para>To enable logging, you need to do two things:<orderedlist>
+<listitem><para>insert a <computeroutput>define</computeroutput> statement to set the <emphasis>minimum</emphasis> level <emphasis>before</emphasis> including the utils header</para>
+</listitem><listitem><para>initialize and finalize the logger singleton </para>
 </listitem></orderedlist>
 </para>
-<para>as shown below:</para>
+</parblock></para>
+<para>The following snippet provides the main idea:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>this<sp/>sets<sp/>the<sp/>default<sp/>min<sp/>level</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_ACTIVE_MIN_LEVEL<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>this<sp/>is<sp/>needed<sp/>to<sp/>include<sp/>the<sp/>logger<sp/>code</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>this<sp/>is<sp/>needed<sp/>since<sp/>it<sp/>contains<sp/>the<sp/>logging<sp/>code</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;pressio/utils.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
@@ -36,9 +42,9 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>finalize<sp/>logger<sp/>(see<sp/>below<sp/>for<sp/>details)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_utils_1autotoc_md156">
-<title>Initializing</title>
-<para>You have these choices:</para>
+<sect2 id="md_pages_components_utils_1autotoc_md153">
+<title>Initializing and finalizing</title>
+<para>To initialize, you have these choices:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>only<sp/>log<sp/>messages<sp/>to<sp/>terminal</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">plog::initialize(pressio::logto::terminal);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -48,6 +54,12 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>only<sp/>log<sp/>messages<sp/>to<sp/>a<sp/>file<sp/>named,<sp/>e.g.,<sp/>&quot;my_log.txt&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">plog::initialize(pressio::logto::file,<sp/></highlight><highlight class="stringliteral">&quot;my_log.txt&quot;</highlight><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
+<para>And to finalize:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">plog::finalize();</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_utils_1autotoc_md154">
+<title>If running with MPI</title>
 <para>If you are running with MPI, the logger prints to the terminal <emphasis>only from rank==0</emphasis>. However, it automatically creates a per-rank log file if you choose the file output. For example, the following code:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**argv)</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -65,12 +77,7 @@
 </programlisting></para>
 <para>If we were to run this with N ranks, we would obtain two files <computeroutput>log_file.txt_0</computeroutput>, and <computeroutput>log_file.txt_1</computeroutput>. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.</para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md157">
-<title>Finalizing</title>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">plog::finalize();</highlight></codeline>
-</programlisting></para>
-</sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md158">
+<sect2 id="md_pages_components_utils_1autotoc_md155">
 <title>Levels</title>
 <para>The supported levels are:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_TRACE<sp/><sp/><sp/><sp/><sp/>0</highlight><highlight class="normal"></highlight></codeline>
@@ -82,7 +89,7 @@
 <codeline><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_OFF<sp/><sp/><sp/><sp/><sp/><sp/><sp/>6</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md159">
+<sect2 id="md_pages_components_utils_1autotoc_md156">
 <title>Resetting the level</title>
 <para>If you want, you can use the define statement to set the min level, but then at runtime you can reset for a <emphasis>higher</emphasis> level (see below). Note that you cannot reset the level to something that is <emphasis>lower</emphasis> than the one you set via the <computeroutput>define</computeroutput> statement.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>your<sp/>code</highlight><highlight class="normal"></highlight></codeline>
@@ -91,7 +98,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md160">
+<sect2 id="md_pages_components_utils_1autotoc_md157">
 <title>The loggin macros</title>
 <para>To actually issue log statements, you use the macros as in the following example:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>

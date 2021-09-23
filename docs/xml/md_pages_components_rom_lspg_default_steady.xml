@@ -6,12 +6,14 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in: <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::rom::lspg</computeroutput></para>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md121">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::rom::lspg</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md118">
 <title>Overview</title>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md122">
+<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md119">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -37,7 +39,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>PreconditionerType<sp/>&amp;);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md123">
+<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md120">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
@@ -65,7 +67,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md124">
+<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md121">
 <title>Problem class API</title>
 <para>A problem meets the following interface:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">SteadyLspgProblem</highlight></codeline>
@@ -82,7 +84,7 @@
 </programlisting></para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md125">
+<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md122">
 <title>2.,3. Extract and Solve</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

@@ -2,9 +2,13 @@
 # rom: Galerkin: default problem
 
 
+@m_class{m-note m-default}
+
+@parblock
 Defined in: `<pressio/rom_galerkin.hpp>`
 
 Public namespace: `pressio::rom::galerkin`
+@endparblock
 
 
 ## Overview

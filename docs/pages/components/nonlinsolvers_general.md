@@ -1,9 +1,14 @@
 
 # Nonlinear Solvers - General Info
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in header `<pressio/solvers_nonlinear.hpp>`
 
 Public namespace: `pressio::nonlinearsolvers`
+@endparblock
 
 
 ## Overview
