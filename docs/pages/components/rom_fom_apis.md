@@ -9,7 +9,9 @@ a minimally intrusive layer to standardize the way pressio interfaces with any a
 As explained below, in general, preparing the adapter should only
 involve *exposing* from your applications some operators.
 
-## Stead API
+___
+
+## Steady API
 
 Intended for when your FOM application is expressed as
 @f[
@@ -45,6 +47,7 @@ public:
 
 <br/>
 
+___
 
 ## Continuous-time API: Velocity Only
 
@@ -86,6 +89,8 @@ public:
 - See the following examples: ...
 
 <br/>
+
+___
 
 ## Continuous-time API: Velocity and Jacobian action
 
@@ -131,7 +136,7 @@ make sense for implicit time integration).@m_endspan
 
 <br/>
 
-
+___
 
 ## Discrete-time API
 

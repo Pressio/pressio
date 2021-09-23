@@ -118,7 +118,7 @@
 </programlisting></para>
 <para>where we note that you can use the <ulink url="https://github.com/fmtlib/fmt">{fmt} library</ulink> to properly format the print statements.</para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title>Keep in mind:</title><para>The log statements issued for a specific level will be printed <emphasis>only if</emphasis> <computeroutput>PRESSIO_LOG_ACTIVE_MIN_LEVEL</computeroutput> is greater or equal than that level. If the logger is disabled, the macros are expanded to a no-op. So it does not cost you anything to place log statements in your code, because in production mode you can just compile to no-op. </para>
+<para><simplesect kind="par"><title>Keep in mind:</title><para>The log statements issued for a specific level will be printed <emphasis>only if</emphasis> <computeroutput>PRESSIO_LOG_ACTIVE_MIN_LEVEL</computeroutput> is smaller or equal than that level. If the logger is disabled, the macros are expanded to a no-op. So it does not cost you anything to place log statements in your code, because in production mode you can just compile to no-op. </para>
 </simplesect>
 </para>
 </sect2>

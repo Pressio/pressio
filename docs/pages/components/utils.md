@@ -163,7 +163,7 @@ to properly format the print statements.
 
 @par Keep in mind:
 The log statements issued for a specific level will be printed
-*only if* `PRESSIO_LOG_ACTIVE_MIN_LEVEL` is greater or equal than that level.
+*only if* `PRESSIO_LOG_ACTIVE_MIN_LEVEL` is smaller or equal than that level.
 If the logger is disabled, the macros are expanded to a no-op.
 So it does not cost you anything to place log statements in your code,
 because in production mode you can just compile to no-op.

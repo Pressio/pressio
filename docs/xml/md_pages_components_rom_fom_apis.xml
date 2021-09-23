@@ -7,8 +7,10 @@
     </briefdescription>
     <detaileddescription>
 <para>In order to use the <computeroutput>presssio/rom</computeroutput> model reduction functionalities, obviously there needs to be a way to exchange data/information between pressio and your FOM application. To do so, pressio requires you to write an <emphasis>adapter class</emphasis> as a minimally intrusive layer to standardize the way pressio interfaces with any application. As explained below, in general, preparing the adapter should only involve <emphasis>exposing</emphasis> from your applications some operators.</para>
+<para><hruler/>
+</para>
 <sect1 id="md_pages_components_rom_fom_apis_1autotoc_md78">
-<title>Stead API</title>
+<title>Steady API</title>
 <para>Intended for when your FOM application is expressed as <formula id="17">\[ \boldsymbol{R}(\boldsymbol{y}; \boldsymbol{\mu}) = 0 \]</formula> where <formula id="3">$y$</formula> is the full-order model (FOM) state, <formula id="7">$R$</formula> is the residual  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
 <sect2 id="md_pages_components_rom_fom_apis_1autotoc_md79">
 <title>Synopsis</title>
@@ -37,6 +39,8 @@
 </listitem></itemizedlist>
 </para>
 <para><linebreak/>
+</para>
+<para><hruler/>
 </para>
 </sect2>
 </sect1>
@@ -71,6 +75,8 @@
 </listitem></itemizedlist>
 </para>
 <para><linebreak/>
+</para>
+<para><hruler/>
 </para>
 </sect2>
 </sect1>
@@ -115,6 +121,8 @@
 </listitem></itemizedlist>
 </para>
 <para><linebreak/>
+</para>
+<para><hruler/>
 </para>
 </sect2>
 </sect1>
