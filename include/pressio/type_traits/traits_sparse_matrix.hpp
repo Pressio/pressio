@@ -52,6 +52,7 @@
 namespace pressio{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
+
 template <typename T>
 struct Traits<
   T,
@@ -61,22 +62,20 @@ struct Traits<
   >
   : public ::pressio::impl::EigenTraits<T, 2>,
     public ::pressio::impl::EigenMatrixAllocTrait<T>,
+    public ::pressio::impl::MatrixLayoutTrait<T::IsRowMajor>,
     public ::pressio::impl::SparseMatrixTrait
 {
-private:
-  using OrdinalTrait = ::pressio::impl::OrdinalTrait<typename T::StorageIndex>;
-  using ordinal_type = typename OrdinalTrait::ordinal_type;
 public:
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::SparseEigen;
 
+private:
+  using ordinal_type_ = typename T::StorageIndex;
+
   static_assert(
-    std::is_integral<ordinal_type>::value &&
-    std::is_signed<ordinal_type>::value,
+    std::is_integral<ordinal_type_>::value &&
+    std::is_signed<ordinal_type_>::value,
     "ordinal type for indexing eigen sparse matrix has to be signed"
   );
-
-  static constexpr bool is_row_major = T::IsRowMajor;
-  static constexpr bool is_col_major = !is_row_major;
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 

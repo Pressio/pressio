@@ -64,6 +64,7 @@ struct Traits<
   >
   : public ::pressio::impl::EigenTraits<T, 2>,
     public ::pressio::impl::EigenMatrixAllocTrait<T>,
+    public ::pressio::impl::MatrixLayoutTrait<T::IsRowMajor>,
     public ::pressio::impl::DenseMatrixTrait
 {
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseEigen;

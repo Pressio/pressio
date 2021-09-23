@@ -239,7 +239,7 @@ _IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_dynamic_row_vector_eigen,    EigenRowDyn
 _IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_dynamic_column_vector_eigen, EigenColDynamic)
 
 template <typename T>
-using EigenVectorAllocTrait = AllocTrait<
+using EigenVectorAllocTrait = ::pressio::impl::AllocTrait<
   is_static_vector_eigen<T>::value
 >;
 

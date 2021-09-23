@@ -77,8 +77,12 @@ struct OrdinalTrait
 
 template<
   typename Scalar,
-  typename ScalarRef = Scalar&,
-  typename ScalarConstRef = typename std::add_const<ScalarRef>::type
+  typename ScalarRef = typename std::add_lvalue_reference<
+    Scalar
+  >::type,
+  typename ScalarConstRef = typename std::add_lvalue_reference<
+    typename std::add_const<Scalar>::type
+  >::type
 >
 struct ScalarTrait
 {
@@ -98,15 +102,22 @@ using StaticAllocTrait = AllocTrait<true>;
 using DynamicAllocTrait = AllocTrait<false>;
 
 /// common traits of matrices
-template<bool is_sparse_b>
+template<bool sparse>
 struct MatrixDensityTrait
 {
-  static constexpr bool is_sparse = is_sparse_b;
-  static constexpr bool is_dense  = !is_sparse_b;
+  static constexpr bool is_sparse = sparse;
+  static constexpr bool is_dense  = !is_sparse;
 };
 
 using DenseMatrixTrait = MatrixDensityTrait<false>;
 using SparseMatrixTrait = MatrixDensityTrait<true>;
+
+template<bool row_major>
+struct MatrixLayoutTrait
+{
+  static constexpr bool is_row_major = row_major;
+  static constexpr bool is_col_major = !is_row_major;
+};
 
 template<typename T>
 struct SizePair
