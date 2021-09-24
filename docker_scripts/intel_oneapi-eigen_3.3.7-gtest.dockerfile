@@ -18,7 +18,7 @@ RUN rm cmake.sh
 
 # Setting environment variables
 ENV CC=/opt/intel/oneapi/compiler/latest/linux/bin/icx
-ENV CXX=/opt/intel/oneapi/compiler/latest/linux/bin/icpx
+ENV CXX=/opt/intel/oneapi/compiler/latest/linux/bin/dpcpp
 
 # Building TPLs
 RUN git clone https://github.com/Pressio/pressio-builder.git
