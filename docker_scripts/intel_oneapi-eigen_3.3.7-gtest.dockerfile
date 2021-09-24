@@ -1,4 +1,4 @@
-FROM intel/oneapi:latest
+FROM intel/oneapi-hpckit:latest
 # Declaring build variables
 ARG CMAKE_VERSION=3.18.6
 
@@ -17,8 +17,8 @@ RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
 RUN rm cmake.sh
 
 # Setting environment variables
-ENV CC=/opt/intel/oneapi/compiler/latest/linux/bin/icx
-ENV CXX=/opt/intel/oneapi/compiler/latest/linux/bin/icpx
+ENV CC=/opt/intel/oneapi/compiler/latest/linux/bin/intel64/icc
+ENV CXX=/opt/intel/oneapi/compiler/latest/linux/bin/intel64/icpc
 
 # Building TPLs
 RUN git clone https://github.com/Pressio/pressio-builder.git
