@@ -62,6 +62,7 @@ using step_count_type = int32_t;
 #include "./ode_advancers/constraints/ode_guesser.hpp"
 #include "./ode_advancers/constraints/ode_time_step_size_manager.hpp"
 #include "./ode_advancers/constraints/ode_steppable.hpp"
+#include "./ode_advancers/constraints/ode_static_assert_helpers.hpp"
 #include "./ode_advancers/ode_advance_n_steps.hpp"
 #include "./ode_advancers/ode_advance_to_target_time.hpp"
 

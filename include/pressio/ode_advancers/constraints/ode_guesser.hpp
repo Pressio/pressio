@@ -49,7 +49,7 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 
-namespace pressio{ namespace ode{ 
+namespace pressio{ namespace ode{
 
 template <class T, class StepType, class TimeType, class StateType, class enable = void>
 struct is_legitimate_guesser
@@ -61,11 +61,12 @@ struct is_legitimate_guesser<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T const>().operator()(
-						  std::declval<StepType const &>(),
-						  std::declval<TimeType const &>(),
-						  std::declval<StateType &>()
-						  )
+	       std::declval<T const>().operator()
+	       (
+		std::declval<StepType const &>(),
+		std::declval<TimeType const &>(),
+		std::declval<StateType &>()
+		)
 	       )
       >::value
     >

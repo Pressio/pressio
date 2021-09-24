@@ -1,8 +1,8 @@
 In order to use the {\ttfamily presssio/rom} model reduction functionalities, obviously there needs to be a way to exchange data/information between pressio and your FOM application. To do so, pressio requires you to write an {\itshape adapter class} as a minimally intrusive layer to standardize the way pressio interfaces with any application. As explained below, in general, preparing the adapter should only involve {\itshape exposing} from your applications some operators.
 
 \DoxyHorRuler{0}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md78}{}\doxysection{Steady API}\label{md_pages_components_rom_fom_apis_autotoc_md78}
-Intended for when your FOM application is expressed as \[ \boldsymbol{R}(\boldsymbol{y}; \boldsymbol{\mu}) = 0 \] where $y$ is the full-\/order model (FOM) state, $R$ is the residual todo finish.\hypertarget{md_pages_components_rom_fom_apis_autotoc_md79}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md79}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md77}{}\doxysection{Steady API}\label{md_pages_components_rom_fom_apis_autotoc_md77}
+Intended for when your FOM application is expressed as \[ \boldsymbol{R}(\boldsymbol{y}; \boldsymbol{\mu}) = 0 \] where $y$ is the full-\/order model (FOM) state, $R$ is the residual todo finish.\hypertarget{md_pages_components_rom_fom_apis_autotoc_md78}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md78}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }FomSteadyAdapter}
@@ -22,7 +22,7 @@ Intended for when your FOM application is expressed as \[ \boldsymbol{R}(\boldsy
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md80}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md80}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md79}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md79}
 
 \begin{DoxyItemize}
 \item This adapter can ONLY be used for doing stedy LSPG ROMs.
@@ -33,8 +33,8 @@ Intended for when your FOM application is expressed as \[ \boldsymbol{R}(\boldsy
 
 
 \DoxyHorRuler{0}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md81}{}\doxysection{Continuous-\/time API\+: Velocity Only}\label{md_pages_components_rom_fom_apis_autotoc_md81}
-Intended for when your FOM application is expressed in {\itshape time-\/continuous} form as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the full-\/order model (FOM) state, $f$ is what we call the FOM velocity (or RHS), and $t$ is time, and, for some reason, you can/want to only expose the right-\/hand-\/side (or velocity) of your FOM application. todo finish.\hypertarget{md_pages_components_rom_fom_apis_autotoc_md82}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md82}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md80}{}\doxysection{Continuous-\/time API\+: Velocity Only}\label{md_pages_components_rom_fom_apis_autotoc_md80}
+Intended for when your FOM application is expressed in {\itshape time-\/continuous} form as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the full-\/order model (FOM) state, $f$ is what we call the FOM velocity (or RHS), and $t$ is time, and, for some reason, you can/want to only expose the right-\/hand-\/side (or velocity) of your FOM application. todo finish.\hypertarget{md_pages_components_rom_fom_apis_autotoc_md81}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md81}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }FomAdapter}
@@ -55,7 +55,7 @@ Intended for when your FOM application is expressed in {\itshape time-\/continuo
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md83}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md83}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md82}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md82}
 
 \begin{DoxyItemize}
 \item This adapter can ONLY be used for doing Galerkin ROMs with explicit time stepping.
@@ -66,8 +66,8 @@ Intended for when your FOM application is expressed in {\itshape time-\/continuo
 
 
 \DoxyHorRuler{0}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md84}{}\doxysection{Continuous-\/time API\+: Velocity and Jacobian action}\label{md_pages_components_rom_fom_apis_autotoc_md84}
-This API is intended for any system expressible in {\itshape time-\/continuous} form as above, but you expose both the right-\/hand-\/side of your FOM application as well as the action of the velocity\textquotesingle{}s Jacobian on some operand (more on this later).\hypertarget{md_pages_components_rom_fom_apis_autotoc_md85}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md85}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md83}{}\doxysection{Continuous-\/time API\+: Velocity and Jacobian action}\label{md_pages_components_rom_fom_apis_autotoc_md83}
+This API is intended for any system expressible in {\itshape time-\/continuous} form as above, but you expose both the right-\/hand-\/side of your FOM application as well as the action of the velocity\textquotesingle{}s Jacobian on some operand (more on this later).\hypertarget{md_pages_components_rom_fom_apis_autotoc_md84}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md84}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }FomAdapter}
@@ -97,7 +97,7 @@ This API is intended for any system expressible in {\itshape time-\/continuous} 
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md86}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md86}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md85}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md85}
 
 \begin{DoxyItemize}
 \item can be used for doing Galerkin ROMs with explicit and implicit time stepping,
@@ -109,8 +109,8 @@ This API is intended for any system expressible in {\itshape time-\/continuous} 
 
 
 \DoxyHorRuler{0}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md87}{}\doxysection{Discrete-\/time API}\label{md_pages_components_rom_fom_apis_autotoc_md87}
-This API is intended for any system expressible in a discrete-\/time form as \[ \boldsymbol{R}(\boldsymbol{y_{n+1}}, \boldsymbol{y_{n}}, \boldsymbol{y_{n-1}}, ..., t_{n+1}, dt_{n+1}; ...) = \boldsymbol{0} \] where $y$ is the full-\/order model (FOM) state, $t$ is time, and $R$ is the residual. todo finish.\hypertarget{md_pages_components_rom_fom_apis_autotoc_md88}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md88}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md86}{}\doxysection{Discrete-\/time API}\label{md_pages_components_rom_fom_apis_autotoc_md86}
+This API is intended for any system expressible in a discrete-\/time form as \[ \boldsymbol{R}(\boldsymbol{y_{n+1}}, \boldsymbol{y_{n}}, \boldsymbol{y_{n-1}}, ..., t_{n+1}, dt_{n+1}; ...) = \boldsymbol{0} \] where $y$ is the full-\/order model (FOM) state, $t$ is time, and $R$ is the residual. todo finish.\hypertarget{md_pages_components_rom_fom_apis_autotoc_md87}{}\doxysubsection{Synopsis}\label{md_pages_components_rom_fom_apis_autotoc_md87}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class}}
@@ -183,7 +183,7 @@ This API is intended for any system expressible in a discrete-\/time form as \[ 
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md89}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md89}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md88}{}\doxysubsection{Usage}\label{md_pages_components_rom_fom_apis_autotoc_md88}
 
 \begin{DoxyItemize}
 \item for doing Galerkin {\itshape implicit} time stepping
@@ -192,5 +192,5 @@ This API is intended for any system expressible in a discrete-\/time form as \[ 
 \end{DoxyItemize}
 
 ~\newline
-\hypertarget{md_pages_components_rom_fom_apis_autotoc_md90}{}\doxysection{Should you prefer the continuous-\/time or discrete-\/time API?}\label{md_pages_components_rom_fom_apis_autotoc_md90}
+\hypertarget{md_pages_components_rom_fom_apis_autotoc_md89}{}\doxysection{Should you prefer the continuous-\/time or discrete-\/time API?}\label{md_pages_components_rom_fom_apis_autotoc_md89}
 In general, we suggest users to always prefer the continuous-\/time API because it is more general. However, there are situations where the discrete-\/time API is more useful or even necessary. For example,todo. 

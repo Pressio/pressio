@@ -12,11 +12,15 @@ Public namespace: `pressio::mpl`
 
 ## Overview
 
+@m_class{m-note m-info}
+
+@parblock
 Provides metaprogramming functionalities that are useful for a variety of purposes
 and are one of the fundamental building blocks for the other parts of the pressio library.
+@endparblock
+
 If you are familiar with the `<type_traits>` header from
 the standard library, the `pressio/mpl` will look familiar too.
-
 Some parts of `pressio/mpl` have been adapted from the [tinympl project](http://sbabbi.github.io/tinympl).
 The tinympl project appears to be no longer maintained.
 
