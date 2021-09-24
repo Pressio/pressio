@@ -35,8 +35,8 @@ jobs:
           - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest,   mode: Release }
           - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest,   mode: Debug }
 
-          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest-trilinos_9fec35276d846a667bc668ff4cbdfd8be0dfea08, mode: Release }
-          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest-trilinos_9fec35276d846a667bc668ff4cbdfd8be0dfea08, mode: Debug }
+          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Debug }
 
     runs-on: ${{ matrix.config.os }}
     container: pressiomodelreduction/${{ matrix.config.image }}
