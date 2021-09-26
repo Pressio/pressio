@@ -11,6 +11,11 @@ one needs to account for this. See below for the details.
 @endparblock
 
 
+@m_class{m-block m-warning}
+
+@parblock `pressio` requires a C++14 compiler.
+@endparblock
+
 
 ## Dependencies
 

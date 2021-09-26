@@ -49,7 +49,7 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
 
-namespace pressio{ namespace ode{ 
+namespace pressio{ namespace ode{
 
 template <class T, class TimeType, class Enable = void>
 struct time_step_size_manager
@@ -60,14 +60,15 @@ struct time_step_size_manager<
   T, TimeType,
   mpl::enable_if_t<
     std::is_void<
-      decltype(
-	       std::declval<T const>()
-	       (
-		std::declval<::pressio::ode::step_count_type const &>(),    //step
-		std::declval<TimeType const &>(), //time
-		std::declval<TimeType &>()        //dt
-		)
-	       )
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<::pressio::ode::step_count_type const &>(), //step
+	std::declval<TimeType const &>(), //time
+	std::declval<TimeType &>()        //dt
+	)
+       )
       >::value
     >
   > : std::true_type{};
@@ -77,16 +78,17 @@ struct time_step_size_manager<
   T, TimeType,
   mpl::enable_if_t<
     std::is_void<
-      decltype(
-	       std::declval<T const>()
-	       (
-		std::declval<::pressio::ode::step_count_type const &>(),    //step
-		std::declval<TimeType const &>(), //time
-		std::declval<TimeType &>(),       //dt
-		std::declval<TimeType &>(),       //min dt
-		std::declval<TimeType &>()        //dt reduction factor
-		)
-	       )
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<::pressio::ode::step_count_type const &>(), //step
+	std::declval<TimeType const &>(), //time
+	std::declval<TimeType &>(),       //dt
+	std::declval<TimeType &>(),       //min dt
+	std::declval<TimeType &>()        //dt reduction factor
+	)
+       )
       >::value
     >
   > : std::true_type{};

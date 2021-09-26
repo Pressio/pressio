@@ -1,6 +1,10 @@
 
 
-{\ttfamily pressio} is header-\/only, so it does not need to be precompiled and linked to. However, since we use preprocessor directives to conditionally enable/disable code based on target third-\/party libraries, one needs to account for this. See below for the details. \hypertarget{md_pages_installation_autotoc_md159}{}\doxysection{Dependencies}\label{md_pages_installation_autotoc_md159}
+{\ttfamily pressio} is header-\/only, so it does not need to be precompiled and linked to. However, since we use preprocessor directives to conditionally enable/disable code based on target third-\/party libraries, one needs to account for this. See below for the details. 
+
+
+
+{\ttfamily pressio} requires a C++14 compiler. \hypertarget{md_pages_installation_autotoc_md158}{}\doxysection{Dependencies}\label{md_pages_installation_autotoc_md158}
 Some parts of {\ttfamily pressio} contain code and implementations that are specific to third-\/party libraries (TPLs). An example is {\ttfamily pressio/ops}, which contains kernels specializations for widely-\/used HPC libraries (e.\+g. Trilinos, Kokkos). The main reason for doing this is that we aim, where possible, to alleviate the user from writing custom operations and allow {\ttfamily pressio} to decide when and how to leverage the native libraries\textquotesingle{} operations to obtain the best performance. This should facilitate the integration and use of {\ttfamily pressio} by existing applications. This is a growing capability and we currently only provide built-\/in support to some external HPC libraries (see below). Obviously, these TPLs-\/specific specializations need to be guarded with preprecessor directives, and enabled only if one can access the TPLs.
 
 Enabling/disabling specific dependencies can be done via the following cmake variables\+:
@@ -25,7 +29,7 @@ Enabling/disabling specific dependencies can be done via the following cmake var
 {\ttfamily PRESSIO\+\_\+\+ENABLE\+\_\+\+TPL\+\_\+\+PYBIND11}   &self-\/explanatory   &{\ttfamily OFF}    \\\cline{1-3}
 {\ttfamily PRESSIO\+\_\+\+ENABLE\+\_\+\+DEBUG\+\_\+\+PRINT}   &to enable debugging print statements   &{\ttfamily OFF}   \\\cline{1-3}
 \end{longtabu}
-\hypertarget{md_pages_installation_autotoc_md160}{}\doxysubsection{Optional vs Required}\label{md_pages_installation_autotoc_md160}
+\hypertarget{md_pages_installation_autotoc_md159}{}\doxysubsection{Optional vs Required}\label{md_pages_installation_autotoc_md159}
 Eigen is the only required dependency because it is the default choice for instantiating the ROM data structures and solving the (dense) ROM problem.
 
 \tabulinesep=1mm
@@ -54,7 +58,7 @@ Obviously, the choice of which TPLs to enable is related to your application\tex
 
 Also, we note that some of the cmake variables listed above are connected and cannot be turned on individualy. For example, if we enable Trilinos then {\ttfamily pressio} automatically enables also Kokkos, BLAS, LAPACK and MPI. The reason for this choice is that in a production scenario---which is what pressio mainly targets---it is reasonable to expect a user to have Trilinos built with BLAS, LAPACK, MPI and Kokkos support.
 
-There might be other constraints on the variables one can set. The reason for this is twofold\+: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.\hypertarget{md_pages_installation_autotoc_md161}{}\doxysection{In practice, what are the steps to get, install and use Pressio?}\label{md_pages_installation_autotoc_md161}
+There might be other constraints on the variables one can set. The reason for this is twofold\+: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.\hypertarget{md_pages_installation_autotoc_md160}{}\doxysection{In practice, what are the steps to get, install and use Pressio?}\label{md_pages_installation_autotoc_md160}
 
 \begin{DoxyEnumerate}
 \item Clone \href{https://github.com/Pressio/pressio}{\texttt{ pressio}} (defaults to the main branch), or you can pick a \href{https://github.com/Pressio/pressio/releases}{\texttt{ release version}} 

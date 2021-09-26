@@ -2,7 +2,7 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_default_autotoc_md93}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_default_autotoc_md93}
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_default_autotoc_md92}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_default_autotoc_md92}
 At a high level, using a Galerkin problem involces three steps\+:
 \begin{DoxyEnumerate}
 \item {\itshape create}\+: you create an instance of a \char`\"{}default Galerkin problem\char`\"{}
@@ -10,7 +10,7 @@ At a high level, using a Galerkin problem involces three steps\+:
 \item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
 \end{DoxyEnumerate}
 
-You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md94}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_default_autotoc_md94}
+You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md93}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_default_autotoc_md93}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -40,7 +40,7 @@ You should now pause and think for a second about the steps above. What does a s
 \end{DoxyCode}
 
 
-This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md95}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_default_autotoc_md95}
+This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md94}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_default_autotoc_md94}
 
 \begin{DoxyItemize}
 \item {\ttfamily Step\+Scheme}\+:
@@ -73,7 +73,7 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md96}{}\doxysubsection{Galerkin Problem class API}\label{md_pages_components_rom_galerkin_default_autotoc_md96}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md95}{}\doxysubsection{Galerkin Problem class API}\label{md_pages_components_rom_galerkin_default_autotoc_md95}
 A problem meets the following interface\+:
 
 
@@ -122,8 +122,8 @@ As almost every important type in pressio, a Galerkin problem too has traits\+:
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md97}{}\doxysection{2.,3. Extract and Solve}\label{md_pages_components_rom_galerkin_default_autotoc_md97}
-\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md98}{}\doxysubsection{Explicit Case}\label{md_pages_components_rom_galerkin_default_autotoc_md98}
+\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md96}{}\doxysection{2.,3. Extract and Solve}\label{md_pages_components_rom_galerkin_default_autotoc_md96}
+\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md97}{}\doxysubsection{Explicit Case}\label{md_pages_components_rom_galerkin_default_autotoc_md97}
 An example usage for explicit stepper is as follows\+:
 
 
@@ -144,7 +144,7 @@ An example usage for explicit stepper is as follows\+:
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md99}{}\doxysubsection{Implicit Case}\label{md_pages_components_rom_galerkin_default_autotoc_md99}
+\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md98}{}\doxysubsection{Implicit Case}\label{md_pages_components_rom_galerkin_default_autotoc_md98}
 An example usage for implicit stepper is as follows\+:
 
 

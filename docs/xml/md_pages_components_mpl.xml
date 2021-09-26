@@ -12,8 +12,10 @@
 </parblock></para>
 <sect1 id="md_pages_components_mpl_1autotoc_md8">
 <title>Overview</title>
-<para>Provides metaprogramming functionalities that are useful for a variety of purposes and are one of the fundamental building blocks for the other parts of the pressio library. If you are familiar with the <computeroutput>&lt;type_traits&gt;</computeroutput> header from the standard library, the <computeroutput>pressio/mpl</computeroutput> will look familiar too.</para>
-<para>Some parts of <computeroutput>pressio/mpl</computeroutput> have been adapted from the <ulink url="http://sbabbi.github.io/tinympl">tinympl project</ulink>. The tinympl project appears to be no longer maintained.</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
+<para><parblock><para>Provides metaprogramming functionalities that are useful for a variety of purposes and are one of the fundamental building blocks for the other parts of the pressio library. </para>
+</parblock></para>
+<para>If you are familiar with the <computeroutput>&lt;type_traits&gt;</computeroutput> header from the standard library, the <computeroutput>pressio/mpl</computeroutput> will look familiar too. Some parts of <computeroutput>pressio/mpl</computeroutput> have been adapted from the <ulink url="http://sbabbi.github.io/tinympl">tinympl project</ulink>. The tinympl project appears to be no longer maintained.</para>
 </sect1>
 <sect1 id="md_pages_components_mpl_1autotoc_md9">
 <title>Content</title>

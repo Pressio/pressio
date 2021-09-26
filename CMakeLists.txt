@@ -49,11 +49,11 @@ endif()
 #=====================================================================
 # commands to test if compiler supports standard
 include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
-if(NOT COMPILER_SUPPORT_CPP11)
-  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
+check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_CPP14)
+if(NOT COMPILER_SUPPORT_CPP14)
+  message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
 endif()
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

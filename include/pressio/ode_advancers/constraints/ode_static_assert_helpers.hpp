@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_advance_printing_helpers.hpp
+// ode_advance_n_steps.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,19 +46,43 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
-#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
+#ifndef ODE_STATIC_ASSERT_HELPERS_HPP_
+#define ODE_STATIC_ASSERT_HELPERS_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template <typename TimeType, class StepCountType>
-void print_step_time(const StepCountType & step,
-		     const TimeType & time,
-		     const TimeType & dt)
+template<class StepperType, class StateType, class TimeType, class ...Args>
+constexpr void
+static_assert_is_steppable_with(StepperType &  /*unused*/,
+				StateType &    /*unused*/,
+				const TimeType /*unused*/,
+				Args && ...    /*unused*/)
 {
-  PRESSIOLOG_DEBUG("starting timestep={} from time={} with dt={}",
-		   step, time, dt);
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object does not satisfy the steppable concept.");
 }
 
-}}}//end namespace pressio::ode::impl
-#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
+template<class StepSizeSetterType, class TimeType>
+constexpr void
+static_assert_admissible_time_step_setter(StepSizeSetterType && /*unused*/,
+					  const TimeType        /*unused*/)
+{
+  static_assert
+    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
+     "The step size setter does not satisfy the required concept.");
+}
+
+template<class ObserverType, class StateType, class TimeType>
+constexpr void
+static_assert_admissible_observer(ObserverType && /*unused*/,
+				  StateType &     /*unused*/,
+				  const TimeType  /*unused*/)
+{
+  static_assert
+    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
+     "The observer does not satisfy the required concept");
+}
+
+}}} //end namespace pressio::ode::impl
+#endif

@@ -55,18 +55,18 @@
 namespace pressio{ namespace ode{
 
 template<class StepperType, class StateType, class TimeType, class ...Args>
-mpl::enable_if_t< std::is_floating_point<TimeType>::value >
-advance_n_steps(StepperType & stepper,
-		StateType & state,
-		const TimeType start_time,
-		const TimeType time_step_size,
-		const ::pressio::ode::step_count_type num_steps,
-		Args && ... args)
+void advance_n_steps(StepperType & stepper,
+		     StateType & state,
+		     const TimeType start_time,
+		     const TimeType time_step_size,
+		     const ::pressio::ode::step_count_type num_steps,
+		     Args && ... args)
 {
-  static_assert
-    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
-     "The steppable object is not steppable.");
 
+  // check
+  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+
+  // run
   using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
   observer_t observer;
   impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_time,
@@ -76,11 +76,13 @@ advance_n_steps(StepperType & stepper,
 }
 
 template<
-  class StepperType, class StateType, class TimeType, class StepSizeSetterType, class ...Args
+  class StepperType,
+  class StateType,
+  class TimeType,
+  class StepSizeSetterType,
+  class ...Args
   >
-mpl::enable_if_t<
-  ::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value
-  >
+mpl::enable_if_t< mpl::not_same<StepSizeSetterType, TimeType>::value >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const TimeType start_time,
@@ -88,10 +90,12 @@ advance_n_steps(StepperType & stepper,
 		const ::pressio::ode::step_count_type num_steps,
 		Args && ... args)
 {
-  static_assert
-    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
-     "The steppable object is not steppable.");
 
+  // check
+  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_admissible_time_step_setter(time_step_size_manager, start_time);
+
+  // run
   using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
   observer_t observer;
   impl::advance_n_steps_with_dt_setter(stepper, num_steps, start_time,
@@ -102,23 +106,20 @@ advance_n_steps(StepperType & stepper,
 }
 
 template<class StepperType, class StateType, class TimeType, class ObserverType, class ...Args>
-mpl::enable_if_t< std::is_floating_point<TimeType>::value >
-advance_n_steps_and_observe(StepperType & stepper,
-			    StateType & state,
-			    const TimeType start_time,
-			    const TimeType time_step_size,
-			    const ::pressio::ode::step_count_type num_steps,
-			    ObserverType & observer,
-			    Args && ... args)
+void advance_n_steps_and_observe(StepperType & stepper,
+				 StateType & state,
+				 const TimeType start_time,
+				 const TimeType time_step_size,
+				 const ::pressio::ode::step_count_type num_steps,
+				 ObserverType & observer,
+				 Args && ... args)
 {
-  static_assert
-    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
-     "The steppable object is not steppable.");
 
-  static_assert
-    (::pressio::ode::observer<ObserverType,TimeType, StateType>::value,
-     "Invalid observer");
+  // check
+  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_admissible_observer(observer, state, start_time);
 
+  // run
   impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_time,
 				time_step_size, state,
 				observer, std::forward<Args>(args)...);
@@ -129,9 +130,7 @@ template<
   class StepSizeSetterType, class ObserverType,
   class ...Args
   >
-mpl::enable_if_t<
-  ::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value
-  >
+mpl::enable_if_t< mpl::not_same<StepSizeSetterType, TimeType>::value >
 advance_n_steps_and_observe(StepperType & stepper,
 			    StateType & state,
 			    const TimeType start_time,
@@ -140,14 +139,13 @@ advance_n_steps_and_observe(StepperType & stepper,
 			    ObserverType & observer,
 			    Args && ... args)
 {
-  static_assert
-    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
-     "The steppable object is not steppable.");
 
-  static_assert
-    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
-     "Invalid observer");
+  // check
+  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_admissible_time_step_setter(time_step_size_manager, start_time);
+  impl::static_assert_admissible_observer(observer, state, start_time);
 
+  // run
   impl::advance_n_steps_with_dt_setter(stepper, num_steps, start_time, state,
 				       std::forward<StepSizeSetterType>(time_step_size_manager),
 				       observer,

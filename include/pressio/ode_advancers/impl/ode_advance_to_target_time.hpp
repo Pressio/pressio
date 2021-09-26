@@ -78,7 +78,6 @@ call_dt_manager(TimeStepSizeManagerType && dtManager,
   dtManager(step, time, dt);
 }
 
-
 template <
   bool enableTimeStepRecovery,
   typename StepperType,
@@ -89,12 +88,12 @@ template <
   typename ... Args>
 void
 integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
-					     const TimeType & start_time,
-					     const TimeType & final_time,
-					     StateType	& odeStateInOut,
-					     ObserverType & observer,
-					     TimeStepSizeManagerType	&& dtManager,
-					     Args && ... args)
+						     const TimeType & start_time,
+						     const TimeType & final_time,
+						     StateType	& odeStateInOut,
+						     ObserverType & observer,
+						     TimeStepSizeManagerType	&& dtManager,
+						     Args && ... args)
 {
 
   using step_t = ::pressio::ode::step_count_type;
@@ -133,8 +132,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 
 
       if (dt <= static_cast<TimeType>(0)){
-	throw std::runtime_error
-	  ("The time step size cannot be <= 0.");
+	throw std::runtime_error("The time step size cannot be <= 0.");
       }
       if (dt < minDt){
 	throw std::runtime_error
