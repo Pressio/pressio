@@ -389,14 +389,14 @@ auto create_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
 					  DecoderType & decoder,
 					  const RomStateType & stateIn,
 					  const FomReferenceStateType & fomRef,
-					  const HypRedOperatorUpdaterType & combiner)
+					  const HypRedOperatorUpdaterType & operatorUpdater)
 {
 
   using return_t = typename impl::ComposeHypRedProblemContTime<
     FomSystemType, DecoderType, RomStateType,
     FomReferenceStateType, HypRedOperatorUpdaterType>::type;
 
-  return return_t(name, fomSysObj, decoder, stateIn, fomRef, combiner);
+  return return_t(name, fomSysObj, decoder, stateIn, fomRef, operatorUpdater);
 }
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -408,8 +408,7 @@ template<
   class FomSystemType,
   class DecoderType,
   class RomStateType,
-  class FomReferenceStateType,
-  class HypRedOperatorUpdaterType = impl::HypRedUpdaterTrilinos
+  class FomReferenceStateType
   >
 auto create_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
 					  const FomSystemType & fomSysObj,
@@ -418,14 +417,92 @@ auto create_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
 					  const FomReferenceStateType & fomRef)
 {
 
+  // this is the cont-time, we can query the adapter's types and
+  // error out if they are not trilinos types
+  using fom_state_type = typename mpl::remove_cvref_t<FomSystemType>::state_type;
+  using fom_velo_type = typename mpl::remove_cvref_t<FomSystemType>::velocity_type;
+  static_assert
+    (pressio::Traits<fom_state_type>::package_identifier ==
+     pressio::PackageIdentifier::Trilinos and
+     pressio::Traits<fom_velo_type>::package_identifier ==
+     pressio::PackageIdentifier::Trilinos,
+     "You are calling an overload of create_hyperreduced_unsteaady_problem that \
+is only valid for Trilinos type");
+
+  using hr_operator_updater_t = impl::HypRedUpdaterTrilinos;
   using return_t = typename impl::ComposeHypRedProblemContTime<
     FomSystemType, DecoderType, RomStateType,
-    FomReferenceStateType, HypRedOperatorUpdaterType>::type;
+    FomReferenceStateType, hr_operator_updater_t>::type;
+
+  return return_t(name, fomSysObj, decoder, stateIn,
+		  fomRef, hr_operator_updater_t());
+}
+
+// unsteady, cont-time
+// this overload is specific to trilinos for now, where we can use the underlying
+// maps of the operators to figure out how to combine them.
+// if you call this for non-trilinos data types, you get an error
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class PreconditionerType
+  >
+auto create_prec_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
+					       const FomSystemType & fomSysObj,
+					       DecoderType & decoder,
+					       const RomStateType & stateIn,
+					       const FomReferenceStateType & fomRef,
+					       const PreconditionerType & prec)
+{
+
+  // this is the cont-time, we can query the adapter's types and
+  // error out if they are not trilinos types
+  using fom_state_type = typename mpl::remove_cvref_t<FomSystemType>::state_type;
+  using fom_velo_type = typename mpl::remove_cvref_t<FomSystemType>::velocity_type;
+  static_assert
+    (pressio::Traits<fom_state_type>::package_identifier ==
+     pressio::PackageIdentifier::Trilinos and
+     pressio::Traits<fom_velo_type>::package_identifier ==
+     pressio::PackageIdentifier::Trilinos,
+     "You are calling an overload of create_hyperreduced_unsteaady_problem that \
+is only valid for Trilinos type");
+
+  using hr_operator_updater_t = impl::HypRedUpdaterTrilinos;
+  using return_t = typename impl::ComposePrecHypRedProblemContTime<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType,
+    hr_operator_updater_t, PreconditionerType>::type;
 
   return return_t(name, fomSysObj, decoder, stateIn, fomRef,
-		  HypRedOperatorUpdaterType());
+		  hr_operator_updater_t(), prec);
 }
 #endif
+
+// unsteady, cont-time, with preconditioner
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class HypRedOperatorUpdaterType,
+  class PreconditionerType
+  >
+auto create_prec_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
+					       const FomSystemType & fomSysObj,
+					       DecoderType & decoder,
+					       const RomStateType & stateIn,
+					       const FomReferenceStateType & fomRef,
+					       const HypRedOperatorUpdaterType & operatorUpdater,
+					       const PreconditionerType & prec)
+{
+
+  using return_t = typename impl::ComposePrecHypRedProblemContTime<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType,
+    HypRedOperatorUpdaterType, PreconditionerType>::type;
+
+  return return_t(name, fomSysObj, decoder, stateIn, fomRef, operatorUpdater, prec);
+}
 
 // unsteady, discrete-time
 template<
@@ -447,6 +524,30 @@ auto create_hyperreduced_unsteady_problem(const FomSystemType & fomSysObj,
 
   return return_t(::pressio::ode::StepScheme::ImplicitArbitrary,
 		  fomSysObj, decoder, stateIn, fomRef);
+}
+
+// unsteady, discrete-time, with preconditioner
+template<
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class PreconditionerType
+  >
+auto create_prec_hyperreduced_unsteady_problem(const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const PreconditionerType & prec)
+{
+
+  using return_t = typename impl::ComposePrecHypRedProblemDiscTime<
+    num_states, FomSystemType, DecoderType, RomStateType,
+    FomReferenceStateType, PreconditionerType>::type;
+
+  return return_t(::pressio::ode::StepScheme::ImplicitArbitrary,
+		  fomSysObj, decoder, stateIn, fomRef, prec);
 }
 
 }}}//end namespace pressio::rom::lspg

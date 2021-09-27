@@ -200,6 +200,22 @@ struct UnsteadyMembers<8, traits> : UnsteadyMembersCommon<traits>
     Ct, typename traits::stepper_type>;
 };
 
+// prec hyp-red, cont-time
+template <class traits>
+struct UnsteadyMembers<9, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct  = AddPrecHypRedPolicies<
+    Bt,
+    typename traits::preconditioner_type,
+    typename traits::residual_policy_type,
+    typename traits::jacobian_policy_type>;
+  using type = ::pressio::rom::impl::AddImplicitStepper<
+    Ct, typename traits::stepper_type>;
+};
+
 
 ///////////////////
 // problem class //

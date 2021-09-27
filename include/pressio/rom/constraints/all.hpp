@@ -60,13 +60,13 @@
 #include "./rom_fom_system_most_likely_continuous_time.hpp"
 #include "./rom_fom_system_most_likely_discrete_time.hpp"
 #include "./rom_fom_system_most_likely_steady_system.hpp"
-#include "./rom_masker.hpp"
 
-#include "./rom_galerkin_projector.hpp"
 #include "./rom_galerkin_types.hpp"
+#include "./rom_galerkin_masker.hpp"
+#include "./rom_galerkin_projector.hpp"
 
 #include "./rom_lspg_types.hpp"
-#include "./rom_lspg_steady_masker.hpp"
-#include "./rom_lspg_steady_preconditioner.hpp"
+#include "./rom_lspg_masker.hpp"
+#include "./rom_lspg_preconditioner.hpp"
 
 #endif  // ROM_CONSTRAINTS_ALL_HPP_

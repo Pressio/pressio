@@ -266,7 +266,6 @@ protected:
 
   std::reference_wrapper<FomStatesManagerType> fomStatesMngr_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
-
   std::reference_wrapper<const HypRedOperatorUpdater> hypredOperatorUpdater_;
   mutable typename FomStatesManagerType::value_type fomStateHelperInstance_;
 };
