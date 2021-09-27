@@ -6,6 +6,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header <computeroutput>&lt;pressio/qr.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::qr</computeroutput> </para>
+</parblock></para>
     </detaileddescription>
     <location file="pages/components/qr.md"/>
   </compounddef>

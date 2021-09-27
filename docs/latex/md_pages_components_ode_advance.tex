@@ -1,9 +1,19 @@
+
+
 Defined in header\+: {\ttfamily $<$pressio/ode\+\_\+advancers.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_advance_autotoc_md48}{}\doxysection{Overview}\label{md_pages_components_ode_advance_autotoc_md48}
-Suppose that you have a generic application/usecase involving the concept of a discrete time space or discrete steps, a notion of \char`\"{}state\char`\"{} that defines your information at a specific step, and a \char`\"{}stepper\char`\"{} object, i.\+e. an object/abstraction that has accepts a state and knows how to take a step forward or backward to update that state. Now, suppose that you have such a \char`\"{}steppable\char`\"{} object and might need different strategies to advance such objects.
+Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_advance_autotoc_md45}{}\doxysection{Overview}\label{md_pages_components_ode_advance_autotoc_md45}
 
-The pressio {\itshape advancers} provide functionalities for exactly this purpose, i.\+e. \char`\"{}advancing\char`\"{} a generic object that satisfies the \char`\"{}steppable\char`\"{} concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be {\itshape time integration} of time-\/dependent dynamical systems.\hypertarget{md_pages_components_ode_advance_autotoc_md49}{}\doxysection{API Synopsis\+: advancing for fixed number of steps}\label{md_pages_components_ode_advance_autotoc_md49}
+
+Provides functionalities implementing various strategies to \char`\"{}update\char`\"{} some information (i.\+e., a state) via an object that satisfies a \char`\"{}steppable\char`\"{} concept (more details below). 
+
+Why is this useful? Suppose that you have a generic application/usecase involving the concept of a discrete time or just discrete steps, a notion of \char`\"{}state\char`\"{} that defines your information at a specific step, and a \char`\"{}stepper\char`\"{} object, i.\+e. an object/abstraction that accepts a state and knows how to take a \char`\"{}step\char`\"{} to update that state. In such a scenario, it can be useful to have different strategies to advance the state, for example\+: advancing for a fixed number of times, advancing until a certain condition is met, etc. This is what the {\ttfamily pressio/ode\+\_\+advancers} provide. We are growing this capability, so if you need something but it is not alrady supported, open an issue or a PR on \href{https://github.com/Pressio/pressio}{\texttt{ github}}.
+
+Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize these functions to be useful for {\itshape time integration} of dynamical systems. This is the reason why these functionalities are currently inside {\ttfamily pressio\+::ode}, and this is also why we specifically use \char`\"{}time\char`\"{} below. Later on, we might move or generalize them.\hypertarget{md_pages_components_ode_advance_autotoc_md46}{}\doxysection{API}\label{md_pages_components_ode_advance_autotoc_md46}
+
+
+Overload set for advancing for fixed number of steps 
+
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -11,7 +21,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{  \textcolor{keyword}{class }StateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }TimeType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }...Args}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                     (1)}
 \DoxyCodeLine{\textcolor{keywordtype}{void} advance\_n\_steps(StepperType \& stepper,}
 \DoxyCodeLine{                     StateType \& state,}
 \DoxyCodeLine{                     \textcolor{keyword}{const} TimeType start\_time,}
@@ -25,7 +35,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{  \textcolor{keyword}{class }TimeType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }StepSizeSetterType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }...Args}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                     (2)}
 \DoxyCodeLine{\textcolor{keywordtype}{void} advance\_n\_steps(StepperType \& stepper,}
 \DoxyCodeLine{                     StateType \& state,}
 \DoxyCodeLine{                     \textcolor{keyword}{const} TimeType start\_time,}
@@ -39,7 +49,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{  \textcolor{keyword}{class }TimeType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }ObserverType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }...Args}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                     (3)}
 \DoxyCodeLine{\textcolor{keywordtype}{void} advance\_n\_steps\_and\_observe(StepperType \& stepper,}
 \DoxyCodeLine{                                 StateType \& state,}
 \DoxyCodeLine{                                 \textcolor{keyword}{const} TimeType start\_time,}
@@ -55,7 +65,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{  \textcolor{keyword}{class }StepSizeSetterType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }ObserverType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }...Args}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                     (4)}
 \DoxyCodeLine{\textcolor{keywordtype}{void} advance\_n\_steps\_and\_observe(StepperType \& stepper,}
 \DoxyCodeLine{                                 StateType \& state,}
 \DoxyCodeLine{                                 \textcolor{keyword}{const} TimeType start\_time,}
@@ -65,7 +75,18 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{                                 Args \&\& ... args);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_ode_advance_autotoc_md50}{}\doxysection{API Synopsis\+: advancing to target time}\label{md_pages_components_ode_advance_autotoc_md50}
+
+
+
+\begin{DoxyItemize}
+\item (1,2)\+: overload set for advancing for a fixed number of steps
+\item (3,4)\+: overload set for advancing for a fixed number of steps accepting also an \char`\"{}observer\char`\"{} to monitor the evolution of the state at each step (more on this below)
+\end{DoxyItemize}
+
+
+
+Overload set for advancing to target time 
+
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -76,7 +97,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{  \textcolor{keyword}{class }...Args}
 \DoxyCodeLine{  >}
 \DoxyCodeLine{\textcolor{keywordtype}{void} advance\_to\_target\_time(StepperType \& stepper,}
-\DoxyCodeLine{                            StateType \& odeStateInOut,}
+\DoxyCodeLine{                            StateType \& state,}
 \DoxyCodeLine{                            \textcolor{keyword}{const} TimeType start\_time,}
 \DoxyCodeLine{                            \textcolor{keyword}{const} TimeType final\_time,}
 \DoxyCodeLine{                            StepSizeSetterType \&\& time\_step\_size\_manager,}
@@ -91,7 +112,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{  \textcolor{keyword}{class }...Args}
 \DoxyCodeLine{  >}
 \DoxyCodeLine{\textcolor{keywordtype}{void} advance\_to\_target\_time\_and\_observe(StepperType \& stepper,}
-\DoxyCodeLine{                                        StateType \& odeStateInOut,}
+\DoxyCodeLine{                                        StateType \& state,}
 \DoxyCodeLine{                                        \textcolor{keyword}{const} TimeType start\_time,}
 \DoxyCodeLine{                                        \textcolor{keyword}{const} TimeType final\_time,}
 \DoxyCodeLine{                                        StepSizeSetterType \&\& time\_step\_size\_manager,}
@@ -99,61 +120,48 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{                                        Args \&\& ...args);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_ode_advance_autotoc_md51}{}\doxysection{Parameters}\label{md_pages_components_ode_advance_autotoc_md51}
-
-\begin{DoxyItemize}
-\item {\ttfamily Stepper\+Type}\+:
-\begin{DoxyItemize}
-\item represents the type of the object that can be stepped forward
-\end{DoxyItemize}
-\item {\ttfamily State\+Type}\+:
-\begin{DoxyItemize}
-\item type of the data structure you use for the state
-\end{DoxyItemize}
-\item {\ttfamily Time\+Type}\+:
-\begin{DoxyItemize}
-\item type of time\+: typically it is same as the value\+\_\+type of the state
-\end{DoxyItemize}
-\item {\ttfamily Step\+Size\+Setter\+Type}
-\begin{DoxyItemize}
-\item type of object responsible for setting the time step size
-\end{DoxyItemize}
-\item {\ttfamily Observer\+Type}\+:
-\begin{DoxyItemize}
-\item type of the class responsible for \char`\"{}observing\char`\"{} the state during the time integration and potentially collect necessary data/metrics/statistics
-\end{DoxyItemize}
-\item {\ttfamily Args...}\+:
-\begin{DoxyItemize}
-\item any arguments needed to be passed to the stepper to perform one step
-\end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_advance_autotoc_md52}{}\doxysection{Requirements}\label{md_pages_components_ode_advance_autotoc_md52}
-
-\begin{DoxyItemize}
-\item The stepper class must conform to the following API\+:
-\end{DoxyItemize}
 
 
+~\newline
+\hypertarget{md_pages_components_ode_advance_autotoc_md47}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_advance_autotoc_md47}
+
+\begin{DoxyItemize}
+\item {\ttfamily Stepper\+Type}\+: the steppable object type, must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }SteppableClass}
 \DoxyCodeLine{\{}
 \DoxyCodeLine{  \textcolor{keyword}{public}:}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} StateType \& current\_state,}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(StateType \& state,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} int32\_t step\_count}
 \DoxyCodeLine{                  \textcolor{comment}{/*[, other arguments needed: these will be forwarded to your}}
-\DoxyCodeLine{\textcolor{comment}{                  stepper object by the advance methods as shown above ]*/});}
+\DoxyCodeLine{\textcolor{comment}{                  stepper object by the advance methods as shown above ]*/})}
+\DoxyCodeLine{ \{}
+\DoxyCodeLine{   \textcolor{comment}{// do what you need to update state}}
+\DoxyCodeLine{ \}}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
 
+\item {\ttfamily State\+Type}\+: type you use for the state, can be anything
+\item {\ttfamily Time\+Type}\+: typically it is same as the {\ttfamily value\+\_\+type} of the state
+\item {\ttfamily Step\+Size\+Setter\+Type}\+: class type responsible for setting the time step size. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }StepSizeSetter}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} int32\_t step\_count,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time,}
+\DoxyCodeLine{                  TimeType \& dt)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{ }\{}
+\DoxyCodeLine{   \textcolor{comment}{// update somehow dt}}
+\DoxyCodeLine{ \}}
+\DoxyCodeLine{\};}
 
+\end{DoxyCode}
 
-\begin{DoxyItemize}
-\item The observer class must conform to the following API\+:
-\end{DoxyItemize}
-
-
+\item {\ttfamily Observer\+Type}\+: type responsible of \char`\"{}observing\char`\"{} the state during the time integration and potentially collect necessary data/metrics/statistics. Must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }ObserverClass}
 \DoxyCodeLine{\{}
@@ -165,21 +173,57 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 
 \end{DoxyCode}
 
-
-
-\begin{DoxyItemize}
-\item {\ttfamily Step\+Size\+Setter\+Type} must conform to the following API\+:
+\item {\ttfamily Args...}\+: optional objects to forward to stepper\textquotesingle{}s {\ttfamily operator()} that are potentially needed to perform one step. Note that these are optional, because your stepper might not need anything. The advance functions will simply forward all these to the {\ttfamily operator()} of the stepper object. Is having these optional argument really needed? One might argue that if the stepper needs to have access to some objects, then these auxiliary objects can be passed to the stepper upon construction, and so the stepper would already have access to them when its {\ttfamily operator()} is called. This is true {\itshape if} there is a valid reason for making these auxiliary object data members of the steppable class. The problem with this approach is that the stepper would need to know about all theses other types, and this creates a very tight coupling between different objects, that might be not even needed. By letting users provide a pack to the advance functions, we are able to decouple this structure such that any object {\itshape only} needed within the stepper\textquotesingle{}s {\ttfamily operator()} can be directly passed. To explain this, look at the example below.
 \end{DoxyItemize}
+
+~\newline
+\hypertarget{md_pages_components_ode_advance_autotoc_md48}{}\doxysection{When are the variadic arguments useful?}\label{md_pages_components_ode_advance_autotoc_md48}
+For example in a scenario like the following\+:
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }TimeStepManager}
+\DoxyCodeLine{\textcolor{keyword}{struct }SteppableClass}
 \DoxyCodeLine{\{}
-\DoxyCodeLine{  \textcolor{keyword}{public}:}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} int32\_t step\_count,}
-\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time,}
-\DoxyCodeLine{                  TimeType \& time\_step\_size\_to\_set) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} AuxiliaryType>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(StateType \& state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} int32\_t step\_count,}
+\DoxyCodeLine{                  AuxiliaryType \& aux)}
+\DoxyCodeLine{  \{}
+\DoxyCodeLine{     \textcolor{keyword}{const} \textcolor{keywordtype}{int} value = aux.doComplicateCalculation();}
+\DoxyCodeLine{     \textcolor{keywordflow}{if} (value \% 2 == 0)\{}
+\DoxyCodeLine{       \textcolor{comment}{// update state somehow}}
+\DoxyCodeLine{     \}}
+\DoxyCodeLine{     \textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{       \textcolor{comment}{// update state in a different way}}
+\DoxyCodeLine{     \}}
+\DoxyCodeLine{  \}}
 \DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class }Foo\{}
+\DoxyCodeLine{  \textcolor{keywordtype}{int} doComplicateCalculation()\{\}}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class }Bar\{}
+\DoxyCodeLine{  \textcolor{keywordtype}{int} doComplicateCalculation()\{\}}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} AuxType>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} run()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  AuxType a;}
+\DoxyCodeLine{  advance\_n\_steps(stepper, \textcolor{comment}{/*state*/}, \textcolor{comment}{/*start t*/}, \textcolor{comment}{/*step size*/}, \textcolor{comment}{/*num steps*/}, a);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  SteppableClass stepper;}
+\DoxyCodeLine{  run<Foo>();}
+\DoxyCodeLine{  run<Bar>();}
+\DoxyCodeLine{\}}
 
 \end{DoxyCode}
- 
+
+
+Here, we don\textquotesingle{}t want to parametrize the {\ttfamily Stepper\+Class} on the auxiliary class needed because we don\textquotesingle{}t need it as member. We just need to access the auxiliary class inside the {\ttfamily operator()}. 

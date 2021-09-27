@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// mpl_non_variadic.hpp
+// ode_advance_n_steps.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,43 @@
 //@HEADER
 */
 
-#ifndef MPL_MPL_NON_VARIADIC_HPP_
-#define MPL_MPL_NON_VARIADIC_HPP_
+#ifndef ODE_STATIC_ASSERT_HELPERS_HPP_
+#define ODE_STATIC_ASSERT_HELPERS_HPP_
 
-#include "identity.hpp"
-#include "enable_if_t.hpp"
-#include "conditional_t.hpp"
-#include "is_default_constructible.hpp"
-#include "is_std_complex.hpp"
-#include "is_std_shared_ptr.hpp"
-#include "publicly_inherits_from.hpp"
-#include "void_t.hpp"
-#include "is_same.hpp"
-#include "not_same.hpp"
-#include "detection_idiom.hpp"
-#include "remove_cvref.hpp"
-#include "remove_reference.hpp"
-#include "not_void.hpp"
-#include "is_subscriptable_as.hpp"
+namespace pressio{ namespace ode{ namespace impl{
 
-#endif  // MPL_MPL_NON_VARIADIC_HPP_
+template<class StepperType, class StateType, class TimeType, class ...Args>
+constexpr void
+static_assert_is_steppable_with(StepperType &  /*unused*/,
+				StateType &    /*unused*/,
+				const TimeType /*unused*/,
+				Args && ...    /*unused*/)
+{
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object does not satisfy the steppable concept.");
+}
+
+template<class StepSizeSetterType, class TimeType>
+constexpr void
+static_assert_admissible_time_step_setter(StepSizeSetterType && /*unused*/,
+					  const TimeType        /*unused*/)
+{
+  static_assert
+    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
+     "The step size setter does not satisfy the required concept.");
+}
+
+template<class ObserverType, class StateType, class TimeType>
+constexpr void
+static_assert_admissible_observer(ObserverType && /*unused*/,
+				  StateType &     /*unused*/,
+				  const TimeType  /*unused*/)
+{
+  static_assert
+    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
+     "The observer does not satisfy the required concept");
+}
+
+}}} //end namespace pressio::ode::impl
+#endif

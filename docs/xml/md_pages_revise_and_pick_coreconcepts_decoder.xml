@@ -9,7 +9,7 @@
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: complete</para>
 <para>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <formula id="11">$y_{fom}$</formula>, as: <formula id="12">\[ y_{fom} = g(y_{rom}) \]</formula></para>
 <para>where <formula id="13">$y_{rom}$</formula> is the reduced state (or generalized coordinates), and <formula id="14">$g$</formula> is the mapping between the two.</para>
-<sect1 id="md_pages_revise_and_pick_coreconcepts_decoder_1autotoc_md181">
+<sect1 id="md_pages_revise_and_pick_coreconcepts_decoder_1autotoc_md178">
 <title>Linear</title>
 <para>If <formula id="14">$g$</formula> is linear, then we can write: <formula id="15">\[ y_{fom} = \phi y_{rom} \]</formula> where <formula id="16">$\phi$</formula> is a matrix (for the time being, assume it constant). The Jacobian of the mapping is: <formula id="20">\[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]</formula></para>
 <para>Graphically, this corresponds to: <image type="html" name="decoder.png" width="20%"></image>
@@ -18,7 +18,7 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">pressio::rom::LinearDecoder&lt;...&gt;;</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_revise_and_pick_coreconcepts_decoder_1autotoc_md182">
+<sect1 id="md_pages_revise_and_pick_coreconcepts_decoder_1autotoc_md179">
 <title>Generic decoder API</title>
 <para>If you want to use your own decoder, you can write a custom one that should meet the following API.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CustomDecoder</highlight></codeline>

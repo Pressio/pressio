@@ -55,4 +55,32 @@ struct PreconditionerCustomTypes
   }
 };
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+struct PreconditionerTpetra
+{
+  using state_type = Tpetra::Vector<>;
+  using vec_operand_type = Tpetra::Vector<>;
+  using mat_operand_type = Tpetra::MultiVector<>;
+  int rank_;
+
+  PreconditionerTpetra(int rank) : rank_(rank){}
+
+  void operator()(const state_type &, double time, vec_operand_type & operand) const
+  {
+    if(rank_==0){ 
+      std::cout << "TpetraPrecond: apply to rank-1 operand\n";
+      // operand.array() += 1.5;
+    }
+  }
+
+  void operator()(const state_type &, double time, mat_operand_type & operand) const
+  {
+    if(rank_==0){ 
+      std::cout << "TpetraPrecond: apply to rank-2 operand\n";
+      // operand.array() += 1.5;
+    }
+  }
+};
+#endif
+
 #endif

@@ -98,7 +98,7 @@ using ComposeDefaultProblemSteady = Composer<0, Args...>;
 template<class ...Args>
 using ComposePrecDefaultProblemSteady = Composer<2, Args...>;
 
-// hyperreduced (note that impl-wise this is same as default)
+// hyperreduced (impl-wise this is same as default)
 template<class ...Args>
 using ComposeHyperreducedProblemSteady = ComposeDefaultProblemSteady<Args...>;
 

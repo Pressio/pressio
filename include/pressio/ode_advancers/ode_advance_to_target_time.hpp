@@ -62,24 +62,22 @@ template<
   class ...Args
   >
 void advance_to_target_time(StepperType & stepper,
-			    StateType & odeStateInOut,
+			    StateType & ode_state,
 			    const TimeType start_time,
 			    const TimeType final_time,
 			    StepSizeSetterType && dtManager,
 			    Args&& ... args)
 {
-  static_assert
-    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
-     "The steppable object is not steppable.");
 
-  static_assert
-    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
-     "Invalid time step size manger/setter");
+  // checks
+  impl::static_assert_is_steppable_with(stepper, ode_state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_admissible_time_step_setter(dtManager, start_time);
 
+  // run
   using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
   observer_t observer;
   impl::integrate_to_target_time_with_time_step_size_manager<false>
-    (stepper, start_time, final_time, odeStateInOut,
+    (stepper, start_time, final_time, ode_state,
      observer, std::forward<StepSizeSetterType>(dtManager),
      std::forward<Args>(args)...);
 }
@@ -96,7 +94,7 @@ template<
   ::pressio::ode::observer<ObserverType, TimeType, StateType>::value
   >
 advance_to_target_time_and_observe(StepperType & stepper,
-				   StateType & odeStateInOut,
+				   StateType & ode_state,
 				   const TimeType	start_time,
 				   const TimeType	final_time,
 				   StepSizeSetterType	&& dtManager,
@@ -104,20 +102,14 @@ advance_to_target_time_and_observe(StepperType & stepper,
 				   Args&& ...args)
 {
 
-  static_assert
-    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
-     "The steppable object is not steppable.");
+  // checks
+  impl::static_assert_is_steppable_with(stepper, ode_state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_admissible_time_step_setter(dtManager, start_time);
+  impl::static_assert_admissible_observer(observer, ode_state, start_time);
 
-  static_assert
-    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
-     "Invalid time step size manger/setter");
-
-  static_assert
-    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
-     "Invalid observer");
-
+  // run
   impl::integrate_to_target_time_with_time_step_size_manager<false>
-    (stepper, start_time, final_time, odeStateInOut, observer,
+    (stepper, start_time, final_time, ode_state, observer,
      std::forward<StepSizeSetterType>(dtManager),
      std::forward<Args>(args)...);
 }
@@ -131,7 +123,7 @@ template<
   class ...Args
   >
 void advance_to_target_time_with_time_step_recovery_and_observe(StepperType & stepper,
-								StateType & odeStateInOut,
+								StateType & ode_state,
 								const TimeType start_time,
 								const TimeType final_time,
 								StepSizeSetterType && dtManager,
@@ -139,16 +131,14 @@ void advance_to_target_time_with_time_step_recovery_and_observe(StepperType & st
 								Args&& ... args)
 {
 
-  static_assert
-    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
-     "Invalid time step size manger/setter");
+  // checks
+  impl::static_assert_is_steppable_with(stepper, ode_state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_admissible_time_step_setter(dtManager, start_time);
+  impl::static_assert_admissible_observer(observer, ode_state, start_time);
 
-  static_assert
-    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
-     "Invalid observer");
-
+  // run
   impl::integrate_to_target_time_with_time_step_size_manager<true>
-    (stepper, start_time, final_time, odeStateInOut,
+    (stepper, start_time, final_time, ode_state,
      observer, std::forward<StepSizeSetterType>(dtManager),
      std::forward<Args>(args)...);
 }

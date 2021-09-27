@@ -57,7 +57,6 @@ template<class StateType, class SystemType>
 auto create_implicit_stepper(StepScheme name,
 			     const StateType & state,
 			     const SystemType & system)
-  ->  decltype(impl::create_implicit_stepper_impl(name, system, state))
 {
   return impl::create_implicit_stepper_impl(name, system, state);
 };
@@ -67,9 +66,6 @@ auto create_implicit_stepper(StepScheme name,
 			     const StateType & state,
 			     ResidualPolicyType && rPol,
 			     JacobianPolicyType && jPol)
-  ->  decltype(impl::create_implicit_stepper_impl(name, state,
-						  std::forward<ResidualPolicyType>(rPol),
-						  std::forward<JacobianPolicyType>(jPol)))
 {
   return impl::create_implicit_stepper_impl(name, state,
 					    std::forward<ResidualPolicyType>(rPol),
@@ -77,36 +73,25 @@ auto create_implicit_stepper(StepScheme name,
 };
 
 template<class ...Args>
-auto create_bdf1_stepper(Args && ... args)
-  -> decltype(create_implicit_stepper(StepScheme::BDF1, std::forward<Args>(args)...))
-{
+auto create_bdf1_stepper(Args && ... args){
   return create_implicit_stepper(StepScheme::BDF1, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
-auto create_bdf2_stepper(Args && ... args)
-  -> decltype(create_implicit_stepper(StepScheme::BDF2, std::forward<Args>(args)...))
-{
+auto create_bdf2_stepper(Args && ... args){
   return create_implicit_stepper(StepScheme::BDF2, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
-auto create_cranknicolson_stepper(Args && ... args)
-  -> decltype(create_implicit_stepper(StepScheme::CrankNicolson, std::forward<Args>(args)...))
-{
+auto create_cranknicolson_stepper(Args && ... args){
   return create_implicit_stepper(StepScheme::CrankNicolson, std::forward<Args>(args)...);
 };
 
 // Arbitrary
-template<
-  int num_states,
-  class StateType,
-  class SystemType,
-  class ReturnType = typename impl::ImplicitComposeArb<num_states, SystemType, StateType>::type
-  >
-ReturnType create_arbitrary_stepper(const StateType & state, SystemType && system)
-{
-  return ReturnType(state, std::forward<SystemType>(system));
+template<int num_states, class StateType, class SystemType>
+auto create_arbitrary_stepper(const StateType & state, SystemType && system){
+  using return_type = typename impl::ImplicitComposeArb<num_states, SystemType, StateType>::type;
+  return return_type(state, std::forward<SystemType>(system));
 };
 
 }} // end namespace pressio::ode

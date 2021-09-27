@@ -2,9 +2,15 @@
 # rom: LSPG: unsteady default problem
 
 
+@m_class{m-note m-default}
+
+@parblock
+
 Defined in: `<pressio/rom_lspg.hpp>`
 
 Public namespace: `pressio::rom::lspg`
+@endparblock
+
 
 ## Overview
 

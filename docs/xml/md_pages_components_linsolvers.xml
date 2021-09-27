@@ -6,8 +6,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in header <computeroutput>&lt;pressio/solvers_linear.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::linearsolvers</computeroutput></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_linear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::linearsolvers</computeroutput> </para>
+</parblock></para>
 <sect1 id="md_pages_components_linsolvers_1autotoc_md3">
 <title>Overview</title>
 <para>We clearly state upfront that this component of pressio is not a self-contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an <bold>intentional</bold> choice: there exist already many open-source highly-optimized libraries that do so in both a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</para>
@@ -93,13 +95,14 @@ As discussed in the introduction, ROMs involve &quot;small&quot; <emphasis>dense
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>matrix_type<sp/>=<sp/>MatrixType;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>VectorType&gt;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>solve(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MatrixType<sp/>&amp;<sp/>A,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VectorType<sp/>&amp;<sp/>b,<sp/>VectorType<sp/>&amp;<sp/>x);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RhsType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>solve(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MatrixType<sp/>&amp;<sp/>A,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RhsType<sp/>&amp;<sp/>b,<sp/>StateType<sp/>&amp;<sp/>x);</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="md_pages_components_linsolvers_1autotoc_md6">
 <title>Example Usage</title>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: need to discuss difference between iterative and direct</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>want<sp/>to<sp/>solve<sp/>`Ax<sp/>=<sp/>b`</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>

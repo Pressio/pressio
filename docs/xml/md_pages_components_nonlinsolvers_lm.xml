@@ -6,17 +6,19 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md35">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md32">
 <title>Levenberg–Marquardt</title>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md36">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md33">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md37">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md34">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md38">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md35">
 <title>Example usage</title>
 </sect2>
 </sect1>

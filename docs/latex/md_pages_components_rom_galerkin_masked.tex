@@ -1,6 +1,21 @@
+
+
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md110}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_masked_autotoc_md110}
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md106}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_masked_autotoc_md106}
+Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, that using a pressio Galerkin problem involves three steps\+:
+
+
+\begin{DoxyEnumerate}
+\item {\itshape create}\+: you create an instance of a \char`\"{}\+Galerkin problem\char`\"{}
+\item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
+\item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
+\end{DoxyEnumerate}
+
+~\newline
+ \DoxyHorRuler{0}
+ ~\newline
+\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md107}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_masked_autotoc_md107}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -38,7 +53,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin}\hypertarget{md_pages_
 \end{DoxyCode}
 
 
-This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md111}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_masked_autotoc_md111}
+This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md108}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_masked_autotoc_md108}
 
 \begin{DoxyItemize}
 \item {\ttfamily Step\+Scheme}\+:
@@ -81,7 +96,7 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \item an functor responsible of \char`\"{}masking\char`\"{} the FOM operators
 \item must be a functor with a specific API, see details below
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md112}{}\doxysubsection{Masker}\label{md_pages_components_rom_galerkin_masked_autotoc_md112}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md109}{}\doxysubsection{Masker}\label{md_pages_components_rom_galerkin_masked_autotoc_md109}
 todo\+: explain
 
 Suppose that {\ttfamily fom\+\_\+velocity\+\_\+type} is the type of your FOM velocity, and that {\ttfamily decoder\+\_\+jacobian\+\_\+t} is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, {\ttfamily fom\+\_\+velocity\+\_\+type} can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the {\ttfamily decoder\+\_\+jacobian\+\_\+t}.

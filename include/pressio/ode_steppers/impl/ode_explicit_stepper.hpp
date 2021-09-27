@@ -62,11 +62,6 @@ template<
 class ExplicitStepper
 {
 
-public:
-  static constexpr bool is_implicit = false;
-  static constexpr bool is_explicit = true;
-
-
 private:
   StepScheme name_;
   const stepper_order_type order_;
@@ -99,9 +94,9 @@ public:
       order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity(),
-		  systemObj.createVelocity(),
-		  systemObj.createVelocity(),
-		  systemObj.createVelocity()},
+    systemObj.createVelocity(),
+    systemObj.createVelocity(),
+    systemObj.createVelocity()},
       auxiliaryState_{::pressio::ops::clone(state)}
   {}
 
@@ -203,7 +198,6 @@ private:
     }
   }
 
-
   template<class StepCountType>
   void doStepImpl(ode::SSPRungeKutta3,
 		  StateType & odeState,
@@ -239,14 +233,14 @@ private:
     systemObj_.get().velocity(auxiliaryState_, time+dt, rhs0);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*dt*rhs(u_1, t_n+dt)
     ::pressio::ops::update(auxiliaryState_, fourInv,
-		                       odeState,     threeOvFour,
+			   odeState,     threeOvFour,
                            rhs0,            fourInv*dt);
 
     // rhs(u_2, t_n + 0.5*dt)
     systemObj_.get().velocity(auxiliaryState_, time + oneOvTwo*dt, rhs0);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*dt*rhs(u_2, t_n+0.5*dt)
     ::pressio::ops::update(odeState,     oneOvThree,
-		                       auxiliaryState_, twoOvThree,
+			   auxiliaryState_, twoOvThree,
                            rhs0,            twoOvThree*dt);
   }
 
@@ -292,9 +286,9 @@ private:
 
   template<class rhs_t>
   void rk4_stage_update_impl(StateType & yIn,
-		    const StateType & stateIn,
-		    const rhs_t & rhsIn,
-		    ScalarType dtValue)
+			     const StateType & stateIn,
+			     const rhs_t & rhsIn,
+			     ScalarType dtValue)
   {
     constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
     constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
@@ -303,12 +297,12 @@ private:
 
   template<class rhs_t>
   void rk4_stage_update_impl(StateType & stateIn,
-		    const rhs_t & rhsIn0,
-        const rhs_t & rhsIn1,
-		    const rhs_t & rhsIn2,
-        const rhs_t & rhsIn3,
-		    ScalarType dt6,
-        ScalarType dt3)
+			     const rhs_t & rhsIn0,
+			     const rhs_t & rhsIn1,
+			     const rhs_t & rhsIn2,
+			     const rhs_t & rhsIn3,
+			     ScalarType dt6,
+			     ScalarType dt3)
   {
     constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
     ::pressio::ops::update(stateIn, one,

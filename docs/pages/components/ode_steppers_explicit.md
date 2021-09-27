@@ -1,9 +1,14 @@
 
 # ode: explicit steppers
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in: `<pressio/ode_steppers_explicit.hpp>`
 
 Public namespace: `pressio::ode`
+@endparblock
 
 
 ## Overview

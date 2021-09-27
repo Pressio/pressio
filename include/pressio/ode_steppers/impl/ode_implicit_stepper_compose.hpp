@@ -143,8 +143,8 @@ struct ImplicitCompose<SystemType, StateType>
 
   using ResidualType = typename mpl::remove_cvref_t<SystemType>::velocity_type;
   using JacobianType = typename mpl::remove_cvref_t<SystemType>::jacobian_type;
-  static_assert
-  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+  static_assert(ImplicitComposeAssertValidStateResJac<
+		StateType, ResidualType, JacobianType>::value, "");
 
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
   using ResidualPolicyType = ResidualStandardPolicy<SystemType, StateType, ResidualType>;
@@ -163,70 +163,76 @@ struct ImplicitCompose<StateType, ResidualPolicyType, JacobianPolicyType>
 {
 
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert
-  (ImplicitComposeAssertValidPolicies<
-   ResidualPolicyType, JacobianPolicyType, ScalarType, StateType>::value, "");
+  static_assert(ImplicitComposeAssertValidPolicies<
+		ResidualPolicyType, JacobianPolicyType,
+		ScalarType, StateType>::value, "");
 
   using ResidualType = typename mpl::remove_cvref_t<ResidualPolicyType>::residual_type;
   using JacobianType = typename mpl::remove_cvref_t<JacobianPolicyType>::jacobian_type;
-  static_assert
-  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+  static_assert(ImplicitComposeAssertValidStateResJac<
+		StateType, ResidualType, JacobianType>::value, "");
 
   using type = StepperRt<ScalarType, StateType, ResidualType, JacobianType,
 			 ResidualPolicyType, JacobianPolicyType, false>;
 };
 
-template<
-  class SystemType,
-  class StateType,
-  class ReturnType = typename ImplicitCompose<SystemType, StateType>::type
-  >
-ReturnType create_implicit_stepper_impl(StepScheme name,
-					SystemType && system,
-					const StateType & state)
+template<class SystemType, class StateType>
+auto create_implicit_stepper_impl(StepScheme name,
+				  SystemType && system,
+				  const StateType & state)
 {
+  using return_t = typename ImplicitCompose<SystemType, StateType>::type;
+
   if (name == StepScheme::BDF1){
-    return ReturnType(::pressio::ode::BDF1(), state, system);
+    return return_t(::pressio::ode::BDF1(), state, system);
   }
+
   else if (name == StepScheme::BDF2){
-    return ReturnType(::pressio::ode::BDF2(), state, system);
+    return return_t(::pressio::ode::BDF2(), state, system);
   }
+
   else if (name == StepScheme::CrankNicolson){
-    return ReturnType(::pressio::ode::CrankNicolson(), state, system);
+    return return_t(::pressio::ode::CrankNicolson(), state, system);
   }
+
   else{
-    throw std::runtime_error("Invalid stepper enum");
+    throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
   }
 };
 
 template<
   class StateType,
   class ResidualPolicyType,
-  class JacobianPolicyType,
-  class ReturnType = typename ImplicitCompose<StateType, ResidualPolicyType, JacobianPolicyType>::type
+  class JacobianPolicyType
   >
-ReturnType create_implicit_stepper_impl(StepScheme name,
-					const StateType & state,
-					ResidualPolicyType && rPol,
-					JacobianPolicyType && jPol)
+auto create_implicit_stepper_impl(StepScheme name,
+				  const StateType & state,
+				  ResidualPolicyType && rPol,
+				  JacobianPolicyType && jPol)
 {
+  using return_t = typename ImplicitCompose<StateType, ResidualPolicyType,
+					    JacobianPolicyType>::type;
+
   if (name == StepScheme::BDF1){
-    return ReturnType(::pressio::ode::BDF1(), state,
+    return return_t(::pressio::ode::BDF1(), state,
 		      std::forward<ResidualPolicyType>(rPol),
 		      std::forward<JacobianPolicyType>(jPol));
   }
+
   else if (name == StepScheme::BDF2){
-    return ReturnType(::pressio::ode::BDF2(), state,
+    return return_t(::pressio::ode::BDF2(), state,
 		      std::forward<ResidualPolicyType>(rPol),
 		      std::forward<JacobianPolicyType>(jPol));
   }
+
   else if (name == StepScheme::CrankNicolson){
-    return ReturnType(::pressio::ode::CrankNicolson(), state,
+    return return_t(::pressio::ode::CrankNicolson(), state,
 		      std::forward<ResidualPolicyType>(rPol),
 		      std::forward<JacobianPolicyType>(jPol));
   }
+
   else{
-    throw std::runtime_error("Invalid stepper enum");
+    throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
   }
 };
 

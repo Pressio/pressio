@@ -80,5 +80,42 @@ struct ExplicitCompose
   using type = ExplicitStepper<scalar_type, StateType, SystemType, velocity_type>;
 };
 
+template<class StateType, class SystemType>
+auto create_explicit_stepper(StepScheme name,
+			     const StateType & state,
+			     SystemType && system)
+{
+
+  // note that here it is important to use SystemType and NOT SystemType &&.
+  // When user passes a non-temporary system, SystemType is deduced to be a reference,
+  // so the concrete stepper class composed inside the ExplicitCompose will
+  // be composed such that it will hold a reference to the provided system arg.
+  // When the user passes a temporary system object, SystemType will be correctly
+  // deduced so that the stepper will hold an instance of the system that
+  // is move-constructed (if applicable) from the system argument.
+  using ReturnType = typename impl::ExplicitCompose<StateType, SystemType>::type;
+
+  if (name == StepScheme::ForwardEuler){
+    return ReturnType(ode::ForwardEuler(), state, std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::RungeKutta4){
+    return ReturnType(ode::RungeKutta4(), state, std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::AdamsBashforth2){
+    return ReturnType(ode::AdamsBashforth2(), state, std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::SSPRungeKutta3){
+    return ReturnType(ode::SSPRungeKutta3(), state, std::forward<SystemType>(system));
+  }
+
+  else{
+    throw std::runtime_error("ode:: create_explicit_stepper: invalid StepScheme enum value");
+  }
+
+};
+
 }}}
 #endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_COMPOSE_HPP_
