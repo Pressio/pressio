@@ -98,6 +98,8 @@ jobs:
 
         # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsrun
         # Runs command-line programs using the operating system's shell.
+
+        # In this stage pressio-builder script is used for configuration purposes
         run: |
           cd /pressio-builder
           git pull
@@ -110,18 +112,21 @@ jobs:
           -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests \
           -pressio-src=${{env.pressio_dir}} -ncpu-for-make=4 --config-only=yes
 
+      # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
         run: |
             cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
             make -j 2
             ctest --output-on-failure
 
+      # In this stage medium functional tests are built and run
       - name: build-test-${{ env.medium }}
         run: |
           cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.medium }}
           make -j 2
           ctest --output-on-failure
 
+      # In this stage large functional tests are built and run
       - name: build-test-${{ env.large }}
         run: |
           cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.large }}
