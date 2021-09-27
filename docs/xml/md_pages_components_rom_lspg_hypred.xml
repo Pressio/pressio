@@ -10,10 +10,10 @@
 <para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom::lspg</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md124">
+<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md125">
 <title>Overview</title>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md125">
+<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md126">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>for<sp/>continuous-time<sp/>systems</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
@@ -43,7 +43,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>stateIn,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRef);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md126">
+<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md127">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
@@ -111,7 +111,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md127">
+<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md128">
 <title>Problem class API</title>
 <para>A problem meets the following interface:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">UnsteadyLspgProblem</highlight></codeline>

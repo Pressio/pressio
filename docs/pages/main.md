@@ -28,11 +28,11 @@ This is the documentation of the [C++ library](https://github.com/Pressio/pressi
 
 ## Getting Started
 
-* [read the introduction](./md_pages_introduction.html) discussing objectives and design ideas;
+* [read the introduction](./md_pages_introduction.html) discussing objectives and design ideas
 
-* [installation](./md_pages_installation.html): it is a header-only library, should be trivial;
+* [installation](./md_pages_installation.html): it is a header-only library, should be trivial
 
-* explore the [tutorials](./md_pages_tutorials.html);
+* [explore the tutorials](https://pressio.github.io/pressio-tutorials/html/index.html)
 
 
 <!-- ## What if your types are not natively supported in pressio? -->

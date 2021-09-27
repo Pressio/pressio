@@ -10,11 +10,11 @@
 <para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom::lspg</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md139">
+<sect1 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md140">
 <title>Overview</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span></para>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md140">
+<sect1 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md141">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -44,7 +44,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>PreconditionerType<sp/>&amp;,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md141">
+<sect2 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md142">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
@@ -72,7 +72,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md142">
+<sect2 id="md_pages_components_rom_lspg_masked_steady_1autotoc_md143">
 <title>Problem class API</title>
 <para>A problem meets the following interface:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">SteadyLspgProblem</highlight></codeline>
