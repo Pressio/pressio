@@ -13,21 +13,19 @@ Public namespace: `pressio::rom::galerkin`
 
 ## Overview
 
-At a high level, using a Galerkin problem involces three steps:
-1. *create*: you create an instance of a "default Galerkin problem"
+Recall from [this page](md_pages_components_rom_galerkin.html),
+that using a pressio Galerkin problem involves three steps:
+
+1. *create*: you create an instance of a "Galerkin problem"
+
 2. *extract*: you extract the underlying stepper object owned by the problem
+
 3. *solve*: you use the stepper to solve in time the Galerkin problem
 
-You should now pause and think for a second about the steps above.
-What does a stepper have to do with a Galerkin ROM?
-The answer is that practically speaking, at the lowest-level,
-a Galerkin problem can be reduced to simply a "custom" stepper to advance in time.
-This is exactly how pressio implements this and the reason why a Galerkin
-problem contains a stepper object inside: when you create the
-problem, pressio creates the appropriate custom stepper
-object that you can use. You don't need to know how this is done,
-or rely on the details, because these are problem- and implementation-dependent,
-and we reserve the right to change this in the future.
+
+<br/>
+___
+<br/>
 
 
 ## 1. Creating a problem instance

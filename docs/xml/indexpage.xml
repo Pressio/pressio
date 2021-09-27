@@ -6,8 +6,11 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge reduced order models (ROMs) for dynamical systems in science and engineering.</emphasis></para>
-<para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, one component of the <ulink url="https://pressio.github.io/">Pressio ecosystem</ulink>.</para>
+<para><anchor id="index_1md_pages_main"/></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-frame m-default" /></para>
+<para><parblock><para><emphasis>Leading-edge reduced order models (ROMs) for dynamical systems in science and engineering.</emphasis></para>
+<para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, one component of the <ulink url="https://pressio.github.io/">Pressio ecosystem</ulink>. </para>
+</parblock></para>
 <para><linebreak/>
 </para>
 <para><table rows="11" cols="4"><row>

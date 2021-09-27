@@ -10,7 +10,7 @@
 <para><parblock><para><computeroutput>pressio</computeroutput> is header-only, so it does not need to be precompiled and linked to. However, since we use preprocessor directives to conditionally enable/disable code based on target third-party libraries, one needs to account for this. See below for the details. </para>
 </parblock></para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><parblock><para><computeroutput>pressio</computeroutput> requires a C++14 compiler. </para>
+<para><parblock><para>To use <computeroutput>pressio</computeroutput>, you need a C++14 compiler. </para>
 </parblock></para>
 <sect1 id="md_pages_installation_1autotoc_md159">
 <title>Dependencies</title>

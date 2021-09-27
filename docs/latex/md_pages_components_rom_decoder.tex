@@ -1,9 +1,13 @@
-\hypertarget{md_pages_components_rom_decoder_autotoc_md70}{}\doxysection{Overview}\label{md_pages_components_rom_decoder_autotoc_md70}
+
+
+
+
 A key assumption of projection-\/based ROMs is to approximate the full-\/order model (FOM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
 
-where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two.
+where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the decoder (or mapping). 
 
-Note that there is no explicit constraint on what the mapping is, it can be anything.\hypertarget{md_pages_components_rom_decoder_autotoc_md71}{}\doxysection{Decoder Concept}\label{md_pages_components_rom_decoder_autotoc_md71}
+~\newline
+\hypertarget{md_pages_components_rom_decoder_autotoc_md70}{}\doxysection{Decoder Concept}\label{md_pages_components_rom_decoder_autotoc_md70}
 In pressio, a valid decoder is any C++ object whose type meets the following API\+:
 
 
@@ -39,15 +43,23 @@ In pressio, a valid decoder is any C++ object whose type meets the following API
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_decoder_autotoc_md72}{}\doxysubsection{Requirements}\label{md_pages_components_rom_decoder_autotoc_md72}
+\hypertarget{md_pages_components_rom_decoder_autotoc_md71}{}\doxysubsection{Requirements}\label{md_pages_components_rom_decoder_autotoc_md71}
 
 \begin{DoxyItemize}
 \item {\ttfamily fom\+\_\+state\+\_\+type}\+: must be copy constructible
 \item {\ttfamily jacobian\+\_\+type}\+: must be copy constructible
 \end{DoxyItemize}
 
+
+
+Note\+: there is no explicit constraint on what the mapping is, it can be anything.
+
+As long as the decoder (or mapper) class implements the concept, it is admissible. 
+
 ~\newline
-\hypertarget{md_pages_components_rom_decoder_autotoc_md73}{}\doxysection{Special case\+: linear decoder}\label{md_pages_components_rom_decoder_autotoc_md73}
+ \DoxyHorRuler{0}
+ ~\newline
+\hypertarget{md_pages_components_rom_decoder_autotoc_md72}{}\doxysection{Special case\+: linear decoder}\label{md_pages_components_rom_decoder_autotoc_md72}
 
 
 Defined in header\+: {\ttfamily $<$pressio/rom\+\_\+decoder.\+hpp$>$}
@@ -56,8 +68,9 @@ Public namespace\+: {\ttfamily pressio\+::rom}
 
 A linear decoder is a mapping of the form\+: \[ y_{fom} = \phi y_{rom} \]
 
-where $\phi$ is the Jacobian matrix (for the time being, assume it constant). ~\newline
- Pressio offers a class for this abstraction\+:
+where $\phi$ is the Jacobian matrix (for the time being, assume it constant).
+
+Pressio offers this functionality via the following function\+:
 
 
 \begin{DoxyCode}{0}
@@ -67,13 +80,16 @@ where $\phi$ is the Jacobian matrix (for the time being, assume it constant). ~\
 \end{DoxyCode}
 
 
-where\+:
+
 \begin{DoxyItemize}
 \item {\ttfamily Fom\+State\+Type}\+: type of your FOM state, must be copy constructible
 \item {\ttfamily Jacobian\+Type}\+: type of the decoder\textquotesingle{}s Jacobian, must be copy constructible and move constructible
 \end{DoxyItemize}
 
-Obviously, the returned linear decoder object meets the decoder concept discussed above.\hypertarget{md_pages_components_rom_decoder_autotoc_md74}{}\doxysubsection{Example usage for supported types}\label{md_pages_components_rom_decoder_autotoc_md74}
+Obviously, an instance of a linear decoder object meets the decoder concept discussed above.
+
+~\newline
+\hypertarget{md_pages_components_rom_decoder_autotoc_md73}{}\doxysubsection{Example usage for supported types}\label{md_pages_components_rom_decoder_autotoc_md73}
 When using data types supported in \href{./md_pages_components_ops.html}{\texttt{ pressio ops}}, an example usage is as follows\+:
 
 
@@ -95,7 +111,7 @@ When using data types supported in \href{./md_pages_components_ops.html}{\texttt
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_decoder_autotoc_md75}{}\doxysubsection{Example usage for custom types}\label{md_pages_components_rom_decoder_autotoc_md75}
+\hypertarget{md_pages_components_rom_decoder_autotoc_md74}{}\doxysubsection{Example usage for custom types}\label{md_pages_components_rom_decoder_autotoc_md74}
 When using custom data types not supported in \href{./md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type, {\ttfamily My\+Custom\+Vector$<$double$>$} for the FOM state, and {\ttfamily My\+Custom\+Matrix$<$double$>$} for the Jacobian matrix. Then you would need to do something like this\+:
 
 

@@ -1,8 +1,14 @@
+
 # Pressio C++ Library
 
+
+@m_class{m-frame m-default}
+
+@parblock
 *Leading-edge reduced order models (\roms) for dynamical systems in science and engineering.*
 
 This is the documentation of the [C++ library](https://github.com/Pressio/pressio), one component of the [Pressio ecosystem](https://pressio.github.io/).
+@endparblock
 
 <br/>
 

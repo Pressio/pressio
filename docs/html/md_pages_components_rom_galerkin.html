@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>rom: Galerkin: | Pressio|C++</title>
+  <title>rom: Galerkin: General Info | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -83,9 +83,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          rom: Galerkin:
+          rom: Galerkin: General Info
         </h1>
-<p><span class="m-text m-danger">todo</span>: write this better</p><p>We currently support the following problems:</p><ul><li>Default: <a href="md_pages_components_rom_galerkin_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_galerkin_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_galerkin_masked.html">link</a></li></ul>
+<p><span class="m-text m-danger">todo</span>: write this better</p><p>At a high level, using the pressio Galerkin ROMs involves three main steps:</p><ol><li><em>create</em>: you create an instance of a &quot;Galerkin problem&quot;</li><li><em>extract</em>: you extract the underlying stepper object owned by the problem</li><li><em>solve</em>: you use the stepper to solve in time the Galerkin problem</li></ol><p>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&#x27;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</p><p>Pressio currently support three variants of a Galerkin problem:</p><ul><li>Default: <a href="md_pages_components_rom_galerkin_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_galerkin_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_galerkin_masked.html">link</a></li></ul>
       </div>
     </div>
   </div>

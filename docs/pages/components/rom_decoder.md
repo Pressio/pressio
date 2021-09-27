@@ -1,7 +1,9 @@
 
 # rom: Decoder
 
-## Overview
+@m_class{m-note m-default}
+
+@parblock
 
 A key assumption of projection-based ROMs is to approximate
 the full-order model (FOM) state, @f$y_{fom}@f$, as:
@@ -10,9 +12,11 @@ y_{fom} = g(y_{rom})
 @f]
 
 where @f$y_{rom}@f$ is the reduced state (or generalized coordinates),
-and @f$g@f$ is the mapping between the two.
+and @f$g@f$ is the decoder (or mapping).
+@endparblock
 
-Note that there is no explicit constraint on what the mapping is, it can be anything.
+
+<br/>
 
 ## Decoder Concept
 
@@ -50,13 +54,28 @@ public:
 };
 @endcode
 
+
 ### Requirements
 
 - `fom_state_type`: must be copy constructible
 
 - `jacobian_type`: must be copy constructible
 
+
+@m_class{m-note m-info}
+
+@parblock
+Note: there is no explicit constraint on what the mapping is, it can be anything.
+
+As long as the decoder (or mapper) class implements the concept, it is admissible.
+@endparblock
+
+
+
 <br/>
+____
+<br/>
+
 
 ## Special case: linear decoder
 
@@ -75,20 +94,22 @@ A linear decoder is a mapping of the form:
 y_{fom} = \phi y_{rom}
 @f]
 
-where @f$\phi@f$ is the Jacobian matrix (for the time being, assume it constant). <br/>
-Pressio offers a class for this abstraction:
+where @f$\phi@f$ is the Jacobian matrix (for the time being, assume it constant).
+
+Pressio offers this functionality via the following function:
 
 @code{.cpp}
 template<class FomStateType, class JacobianType>
 auto create_time_invariant_linear_decoder(JacobianType &&);
 @endcode
 
-where:
 - `FomStateType`: type of your FOM state, must be copy constructible
 
 - `JacobianType`: type of the decoder's Jacobian, must be copy constructible and move constructible
 
-Obviously, the returned linear decoder object meets the decoder concept discussed above.
+Obviously, an instance of a linear decoder object meets the decoder concept discussed above.
+
+<br/>
 
 ### Example usage for supported types
 

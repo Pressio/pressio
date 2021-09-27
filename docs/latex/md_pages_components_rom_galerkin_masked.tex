@@ -2,7 +2,20 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md107}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_masked_autotoc_md107}
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md106}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_masked_autotoc_md106}
+Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, that using a pressio Galerkin problem involves three steps\+:
+
+
+\begin{DoxyEnumerate}
+\item {\itshape create}\+: you create an instance of a \char`\"{}\+Galerkin problem\char`\"{}
+\item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
+\item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
+\end{DoxyEnumerate}
+
+~\newline
+ \DoxyHorRuler{0}
+ ~\newline
+\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md107}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_masked_autotoc_md107}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}

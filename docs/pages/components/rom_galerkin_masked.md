@@ -11,6 +11,22 @@ Public namespace: `pressio::rom::galerkin`
 @endparblock
 
 
+## Overview
+
+Recall from [this page](md_pages_components_rom_galerkin.html),
+that using a pressio Galerkin problem involves three steps:
+
+1. *create*: you create an instance of a "Galerkin problem"
+
+2. *extract*: you extract the underlying stepper object owned by the problem
+
+3. *solve*: you use the stepper to solve in time the Galerkin problem
+
+
+<br/>
+___
+<br/>
+
 
 ## 1. Creating a problem instance
 

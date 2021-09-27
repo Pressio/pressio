@@ -1,6 +1,7 @@
 
 # Full-order model (FOM) adapter API
 
+
 @m_class{m-note m-default}
 
 @parblock
@@ -15,13 +16,15 @@ It is one of the most important features and a pivotal design in pressio.
 
 @par Minimally intrusive, you only need to expose information you already have
 Preparing an adapter should only involve *exposing* some operators in your application.
-Also, note that to write an adapter for *your* application you only
-need *your* application data structures.
 Pressio does NOT require you to provide information that you don't already have.
 In fact, pressio needs to access *standard* information/operators that your application
 already assembles in some form or another. In some cases, these operators might not
 be fully exposed yet, so all we need is for you to make them accessible.
 As such, writing an adapter is, in most cases, relatively simple.
+Note, also, that writing an adapter for *your* application only involves
+operating within *your* application domain, using your data structures
+and whatever functionalities your application supports.
+Therefore, this adapter *lives within your application space*.
 @endparblock
 
 

@@ -2,15 +2,20 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md101}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_hypred_autotoc_md101}
-At a high level, using a Galerkin problem involces three steps\+:
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md100}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_hypred_autotoc_md100}
+Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, that using a pressio Galerkin problem involves three steps\+:
+
+
 \begin{DoxyEnumerate}
-\item {\itshape create}\+: you create an instance of a \char`\"{}default Galerkin problem\char`\"{}
+\item {\itshape create}\+: you create an instance of a \char`\"{}\+Galerkin problem\char`\"{}
 \item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
 \item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
 \end{DoxyEnumerate}
 
-You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md102}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_hypred_autotoc_md102}
+~\newline
+ \DoxyHorRuler{0}
+ ~\newline
+\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md101}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_hypred_autotoc_md101}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -42,7 +47,7 @@ You should now pause and think for a second about the steps above. What does a s
 \DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \&);}
 
 \end{DoxyCode}
- This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md103}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_hypred_autotoc_md103}
+ This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md102}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_hypred_autotoc_md102}
 
 \begin{DoxyItemize}
 \item {\ttfamily Step\+Scheme}\+:
@@ -80,7 +85,7 @@ You should now pause and think for a second about the steps above. What does a s
 \item an operator is responsible for projectng the FOM operators onto the reduced space
 \item must be a functor with a specific API, see details below
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md104}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_galerkin_hypred_autotoc_md104}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md103}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_galerkin_hypred_autotoc_md103}
 An instance of the hyper-\/reduced Galerkin problem meets the same API as the \href{md_pages_components_rom_galerkin_default.html}{\texttt{ default problem}}.
 
 A hyper-\/reduced Galerkin problem has these traits\+:
@@ -112,7 +117,7 @@ A hyper-\/reduced Galerkin problem has these traits\+:
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md105}{}\doxysubsection{Projector}\label{md_pages_components_rom_galerkin_hypred_autotoc_md105}
+\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md104}{}\doxysubsection{Projector}\label{md_pages_components_rom_galerkin_hypred_autotoc_md104}
 todo\+: explain what projectos is for since it is critical.
 
 The projector must be a functor as follows\+:

@@ -4,7 +4,8 @@
 
 @m_class{m-block m-success}
 
-@parblock `pressio` is header-only, so it does not need to be precompiled and linked to.
+@parblock
+`pressio` is header-only, so it does not need to be precompiled and linked to.
 However, since we use preprocessor directives to conditionally
 enable/disable code based on target third-party libraries,
 one needs to account for this. See below for the details.
@@ -13,7 +14,8 @@ one needs to account for this. See below for the details.
 
 @m_class{m-block m-warning}
 
-@parblock `pressio` requires a C++14 compiler.
+@parblock
+To use `pressio`, you need a C++14 compiler.
 @endparblock
 
 

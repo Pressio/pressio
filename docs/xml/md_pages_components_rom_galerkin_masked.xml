@@ -10,6 +10,20 @@
 <para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom::galerkin</computeroutput> </para>
 </parblock></para>
+<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md106">
+<title>Overview</title>
+<para>Recall from <ulink url="md_pages_components_rom_galerkin.html">this page</ulink>, that using a pressio Galerkin problem involves three steps:</para>
+<para><orderedlist>
+<listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;Galerkin problem&quot;</para>
+</listitem><listitem><para><emphasis>extract</emphasis>: you extract the underlying stepper object owned by the problem</para>
+</listitem><listitem><para><emphasis>solve</emphasis>: you use the stepper to solve in time the Galerkin problem</para>
+</listitem></orderedlist>
+</para>
+<para><linebreak/>
+ <hruler/>
+ <linebreak/>
+</para>
+</sect1>
 <sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md107">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>

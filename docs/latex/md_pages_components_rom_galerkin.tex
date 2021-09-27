@@ -1,6 +1,17 @@
 todo\+: write this better
 
-We currently support the following problems\+:
+At a high level, using the pressio Galerkin ROMs involves three main steps\+:
+
+
+\begin{DoxyEnumerate}
+\item {\itshape create}\+: you create an instance of a \char`\"{}\+Galerkin problem\char`\"{}
+\item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
+\item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
+\end{DoxyEnumerate}
+
+You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.
+
+Pressio currently support three variants of a Galerkin problem\+:
 
 
 \begin{DoxyItemize}
