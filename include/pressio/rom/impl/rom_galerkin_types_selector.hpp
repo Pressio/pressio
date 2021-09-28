@@ -77,23 +77,19 @@ struct select_galerkin_types<
 };
 #endif
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<typename T>
-// struct select_galerkin_types<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
-//     >
-//   >
-// {
-//   using scalar_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-//   // for now use residual_type = state_type
-//   using residual_type = T;
-//   // the galerkin jacobian is a pybind11 tensor column-major
-//   using native_j_t = pybind11::array_t<scalar_t, pybind11::array::f_style>;
-//   using jacobian_type = ::pressio::containers::Tensor<2, native_j_t>;
-// };
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct select_galerkin_types<
+  T,
+  mpl::enable_if_t<
+    ::pressio::is_array_pybind<T>::value
+    >
+  >
+{
+  using residual_type = T;
+  using jacobian_type = T;
+};
+#endif
 
 }}}}
 #endif  // ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_

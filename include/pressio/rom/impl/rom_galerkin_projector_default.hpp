@@ -104,8 +104,42 @@ struct DefaultProjector
 			    cnst::zero(), result);
   }
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template<class OperandType, class TimeType, class ResultType>
+  mpl::enable_if_t<::pressio::Traits<ResultType>::rank == -1>
+  operator()(OperandType operand, const TimeType time, ResultType result) const
+  {
+    //std::cout << " PROJE " << result.ndim() << "\n";
+
+    // (void)time;
+    // using scalar_t = typename ::pressio::Traits<ResultType>::scalar_type;
+    // using cnst = ::pressio::utils::Constants<scalar_t>;
+
+    // if (operand.ndim() == 1){
+    //   std::cout << " PROJE 1 \n";
+    //   // ::pressio::ops::product(::pressio::transpose(), cnst::one(),
+    //   // 			      decoderJacobian_, operand,
+    //   // 			      cnst::zero(), result);
+    // }
+    // else if (operand.ndim() == 2){
+    //   std::cout << " PROJE 2\n";
+    // // ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+    // // 			    cnst::one(), decoderJacobian_, operand,
+    // // 			    cnst::zero(), result);
+    // }
+    // else{
+    //   std::cout << " PROJE 2\n";
+    //   throw std::runtime_error("rom: default projector: case not impl");
+    // }
+  }
+#endif
+
 private:
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  typename DecoderType::jacobian_type decoderJacobian_;
+#else
   std::reference_wrapper<const typename DecoderType::jacobian_type> decoderJacobian_;
+  #endif
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl
