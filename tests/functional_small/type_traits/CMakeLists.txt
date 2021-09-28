@@ -24,7 +24,4 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
 
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/traits_tpetra.cc)
   add_serial_utest(${TESTING_LEVEL}_type_traits_tpetra ${SRC})
-
-  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/traits_tpetra_block.cc)
-  add_serial_utest(${TESTING_LEVEL}_type_traits_tpetra_block ${SRC})
 endif()

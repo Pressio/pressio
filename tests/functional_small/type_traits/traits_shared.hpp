@@ -63,6 +63,7 @@ template <
   bool is_dynamic,
   typename Scalar,
   typename Ordinal,
+  typename SizeType = Ordinal,
   typename ScalarRef = typename std::add_lvalue_reference<
     Scalar
   >::type,
@@ -84,7 +85,7 @@ void test_container_traits()
   testing::StaticAssertTypeEq<typename traits::const_reference_type, Scalar const &>();
   // OrdinalTrait
   testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
-  testing::StaticAssertTypeEq<typename traits::size_type, Ordinal>();
+  testing::StaticAssertTypeEq<typename traits::size_type, SizeType>();
 }
 
 // -------------------------------------------------

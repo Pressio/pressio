@@ -66,7 +66,8 @@ void test_kokkos_container_traits()
     true,
     is_dynamic,
     typename T::traits::value_type,
-    typename T::traits::size_type,
+    typename T::traits::size_type, /* ordinal */
+    typename T::traits::size_type, /* size */
     typename T::reference_type
   >();
 
