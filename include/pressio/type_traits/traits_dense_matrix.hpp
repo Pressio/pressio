@@ -83,6 +83,12 @@ struct Traits<
     >
   >
   : public ::pressio::impl::KokkosTraits<T, 2>,
+    public ::pressio::impl::MatrixLayoutTrait<
+      std::is_same<
+        typename T::traits::array_layout,
+        Kokkos::LayoutLeft
+      >::value
+    >,
     public ::pressio::impl::DenseMatrixTrait
 {
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseKokkos;
