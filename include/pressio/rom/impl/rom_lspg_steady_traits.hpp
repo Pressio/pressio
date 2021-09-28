@@ -106,8 +106,6 @@ struct CommonTraitsSteady
   // for steady lspg, we only need to store one FOM state
   using fom_states_manager_type = ::pressio::rom::ManagerFomStatesSteady<
     fom_state_type, fom_state_reconstr_type>;
-
-  static constexpr bool binding_sentinel = false;
 };
 
 }}} // end namespace pressio::rom::galekin::impl
@@ -129,7 +127,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsSteady<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
 
@@ -179,7 +176,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsSteady<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
 
@@ -241,7 +237,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsSteady<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
 
@@ -303,13 +298,10 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsSteady<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
-
   using fom_state_type   = typename common_types::fom_state_type;
   using fom_residual_type    = typename common_types::fom_residual_type;
-
   using decoder_type   = typename common_types::decoder_type;
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;

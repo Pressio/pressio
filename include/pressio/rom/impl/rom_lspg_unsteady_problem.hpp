@@ -54,7 +54,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 template <class traits> struct UnsteadyMembersCommon
 {
   using At = ::pressio::rom::impl::FomObjHolder<
-    typename traits::fom_system_type, traits::binding_sentinel>;
+    typename traits::fom_system_type>;
 
   using Bt = ::pressio::rom::lspg::impl::AddFomStatesManagerUnsteady<
     At,

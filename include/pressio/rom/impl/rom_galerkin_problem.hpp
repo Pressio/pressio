@@ -54,7 +54,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <class traits> struct MembersCommon
 {
   using At = ::pressio::rom::impl::FomObjHolder<
-    typename traits::fom_system_type, traits::binding_sentinel>;
+    typename traits::fom_system_type>;
 
   using Bt = ::pressio::rom::galerkin::impl::AddFomStatesManager<
     At,

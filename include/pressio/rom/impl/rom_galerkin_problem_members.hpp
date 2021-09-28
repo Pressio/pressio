@@ -164,7 +164,7 @@ struct AddFomStatesManager : T
 template <class T, class projector_t>
 struct AddProjector : T
 {
-  const projector_t projector_;
+  projector_t projector_;
 
   AddProjector() = delete;
   AddProjector(const AddProjector &) = default;
@@ -199,7 +199,7 @@ struct AddProjector : T
 template <class T, class masker_t>
 struct AddMasker : T
 {
-  const masker_t masker_;
+  masker_t masker_;
 
   AddMasker() = delete;
   AddMasker(const AddMasker &) = default;

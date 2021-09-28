@@ -111,7 +111,7 @@ public:
     // fomOperand = fom velocity or the fom apply jacobain object
     const auto & fomOperand = ProjectableType::get();
 
-    // galerkinOperator is either galrkin rhs or jacobian
+    // galerkinOperator is either galerkin rhs or jacobian
     projector_(fomOperand, evalTime, galerkinOperator);
   }
 

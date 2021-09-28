@@ -100,8 +100,6 @@ struct CommonTraitsUnsteadyContTime
 
   using fom_states_manager_type = ::pressio::rom::ManagerStencilFomStatesDynamic<
     fom_state_type, fom_state_reconstr_type, ::pressio::ode::nPlusOne>;
-
-  static constexpr bool binding_sentinel = false;
 };
 
 
@@ -143,7 +141,7 @@ struct CommonTraitsUnsteadyDiscTime
   using fom_states_manager_type = ::pressio::rom::ManagerStencilFomStatesStatic<
     fom_state_type, fom_state_reconstr_type, num_states>;
 
-  static constexpr bool binding_sentinel = false;
+
 };
 
 
@@ -165,7 +163,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyContTime<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -215,7 +212,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyDiscTime<
     num_states, FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -262,7 +258,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyContTime<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -321,7 +316,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyDiscTime<
     num_states, FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -375,7 +369,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyContTime<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -434,7 +427,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyDiscTime<
     num_states, FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -488,7 +480,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyContTime<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -556,7 +547,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyDiscTime<
     num_states, FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using scalar_type       = typename common_types::scalar_type;
@@ -614,7 +604,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyContTime<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using scalar_type       = typename common_types::scalar_type;

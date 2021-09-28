@@ -63,8 +63,6 @@ template <
   >
 struct CommonTraitsContinuousTimeApi
 {
-  static constexpr bool binding_sentinel = false;
-
   using fom_system_type	 = FomSystemType;
   using scalar_type	 = typename fom_system_type::scalar_type;
   using galerkin_state_type = GalerkinStateType;
@@ -163,8 +161,6 @@ struct CommonTraitsDiscreteTimeApi
   static constexpr auto nstates = num_states;
   using fom_states_manager_type = ::pressio::rom::ManagerStencilFomStatesStatic<
     fom_state_type, fom_state_reconstr_type, nstates>;
-
-  static constexpr bool binding_sentinel = false;
 };
 
 }}} // end namespace pressio::rom::galekin::impl
@@ -186,7 +182,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     true, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type		= typename common_types::fom_system_type;
@@ -242,7 +237,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     false, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -306,7 +300,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;
@@ -375,7 +368,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     true, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -444,7 +436,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     false, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -525,7 +516,6 @@ struct Traits<
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;
@@ -607,7 +597,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     true, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -666,7 +655,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     false, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -733,7 +721,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;

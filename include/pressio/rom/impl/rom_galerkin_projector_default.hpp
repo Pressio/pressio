@@ -70,8 +70,6 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <typename DecoderType>
 struct DefaultProjector
 {
-  using dec_jac_t = typename DecoderType::jacobian_type;
-
   DefaultProjector() = delete;
   DefaultProjector(const DefaultProjector &) = default;
   DefaultProjector & operator=(const DefaultProjector &) = delete;
