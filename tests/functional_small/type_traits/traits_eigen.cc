@@ -1,37 +1,8 @@
 #include <gtest/gtest.h>
 #include "pressio/type_traits.hpp"
+#include "traits_shared.hpp"
 
-/*
-  Verify values of common container traits
-*/
-template <
-  typename T,
-  pressio::PackageIdentifier pack_id,
-  int rank,
-  bool is_shared_mem,
-  bool is_dynamic,
-  typename Scalar,
-  typename Ordinal,
-  typename traits = pressio::Traits<T>
->
-void test_container_traits()
-{
-  // ContainersSharedTraits
-  static_assert(traits::package_identifier == pack_id);
-  static_assert(traits::is_shared_mem);
-  static_assert(!traits::is_distributed);
-  static_assert(traits::rank == rank);
-  // AllocTrait
-  static_assert(traits::is_static == !is_dynamic);
-  static_assert(traits::is_dynamic == is_dynamic);
-  // ScalarTrait
-  testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
-  testing::StaticAssertTypeEq<typename traits::reference_type, Scalar &>();
-  testing::StaticAssertTypeEq<typename traits::const_reference_type, Scalar const &>();
-  // OrdinalTrait
-  testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
-  testing::StaticAssertTypeEq<typename traits::size_type, Ordinal>();
-}
+namespace pressio { namespace traits { namespace test {
 
 template <typename T, int rank, bool is_dynamic>
 void test_eigen_container_traits()
@@ -45,22 +16,6 @@ void test_eigen_container_traits()
     typename T::Scalar,
     typename T::StorageIndex
   >();
-}
-
-template <
-  typename T,
-  pressio::MatrixIdentifier mtx_id,
-  bool is_sparse,
-  bool is_row_major,
-  typename traits = pressio::Traits<T>
->
-void test_matrix_traits()
-{
-  static_assert(traits::matrix_identifier == mtx_id);
-  static_assert(traits::is_sparse == is_sparse);
-  static_assert(traits::is_dense == !is_sparse);
-  static_assert(traits::is_row_major == is_row_major);
-  static_assert(traits::is_col_major == !is_row_major);
 }
 
 //*******************************
@@ -126,11 +81,8 @@ void test_eigen_matrix_type_traits()
 {
   // traits
   test_eigen_container_traits<T, 2, is_dynamic>();
-  test_matrix_traits<T, pressio::MatrixIdentifier::DenseEigen, false, T::IsRowMajor>();
+  test_matrix_traits<T, pressio::MatrixIdentifier::DenseEigen, T::IsRowMajor>();
 
-  static_assert(traits::matrix_identifier == pressio::MatrixIdentifier::DenseEigen);
-  static_assert(!traits::is_sparse);
-  static_assert(traits::is_dense);
   constexpr bool row_major = T::IsRowMajor == 1;
   // static_assert(traits::is_row_major == row_major);
   // static_assert(traits::is_col_major == !row_major);
@@ -170,7 +122,7 @@ void test_eigen_sparse_matrix_type_traits()
 {
   // traits
   test_eigen_container_traits<T, 2, true>();
-  test_matrix_traits<T, pressio::MatrixIdentifier::SparseEigen, true, T::IsRowMajor>();
+  test_matrix_traits<T, pressio::MatrixIdentifier::SparseEigen, T::IsRowMajor, true>();
 
   // sparse matrix predicates
   static_assert(pressio::is_sparse_matrix_eigen<T>::value);
@@ -188,3 +140,5 @@ using eigen_sparse_matrix_static_colmajor  = Eigen::SparseMatrix<float, Eigen::C
 
 TEST_EIGEN_SPARSE_MATRIX(eigen_sparse_matrix_dynamic_rowmajor);
 TEST_EIGEN_SPARSE_MATRIX(eigen_sparse_matrix_static_colmajor);
+
+}}} // pressio::traits::test
