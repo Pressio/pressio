@@ -1,15 +1,27 @@
 #include <gtest/gtest.h>
-#include <Tpetra_Map.hpp>
-#include <Tpetra_Vector.hpp>
-#include <Teuchos_CommHelpers.hpp>
-#include "Teuchos_SerialDenseVector.hpp"
-#include <Teuchos_SerialDenseMatrix.hpp>
 #include "pressio/type_traits.hpp"
+#include "traits_shared.hpp"
+
+template <typename T, int rank>
+void test_teuchos_container()
+{
+  test_container_traits<
+    T,
+    pressio::PackageIdentifier::Trilinos,
+    rank,
+    true, /* shared mem */
+    true, /* dynamic */
+    typename T::scalarType,
+    typename T::ordinalType
+  >();
+}
+
+//*******************************
+// Teuchos vector
+//*******************************
 
 TEST(type_traits, isTeuchosRCP)
 {
-  using namespace pressio;
-
   class foo{
     int a_ = 0;
     public:
@@ -31,37 +43,18 @@ TEST(type_traits, isTeuchosRCP)
 
 TEST(type_traits, TeuchosVector)
 {
-  using namespace pressio;
-
   using T = Teuchos::SerialDenseVector<int, double>;
-  using mytraits = pressio::Traits<T>;
   static_assert(pressio::is_dense_vector_teuchos<T>::value,"");
-
-  ::testing::StaticAssertTypeEq<typename mytraits::scalar_type, double>();
-
-  ::testing::StaticAssertTypeEq<typename mytraits::ordinal_type,int>();
-
-  ASSERT_TRUE(mytraits::rank == 1);
-  ASSERT_TRUE(mytraits::is_shared_mem == true);
-
-  ASSERT_TRUE(mytraits::vector_identifier 
+  ASSERT_TRUE(pressio::Traits<T>::vector_identifier
       == pressio::VectorIdentifier::TeuchosSerialDense);
+  test_teuchos_container<T, 1>();
 }
 
 TEST(type_traits, TeuchosMatrix)
 {
-  using namespace pressio;
-
-  using T = Teuchos::SerialDenseMatrix<long long, double>;
-  using mytraits = pressio::Traits<T>;
+  using T = Teuchos::SerialDenseMatrix<long long, float>;
   static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
-
-  ::testing::StaticAssertTypeEq<typename mytraits::scalar_type, double>();
-  ::testing::StaticAssertTypeEq<typename mytraits::ordinal_type, long long>();
-
-  ASSERT_TRUE(mytraits::rank == 2);
-  ASSERT_TRUE(mytraits::is_shared_mem == true);
-
-  ASSERT_TRUE(mytraits::matrix_identifier 
+  ASSERT_TRUE(pressio::Traits<T>::matrix_identifier
       == pressio::MatrixIdentifier::DenseTeuchosSerial);
+  test_teuchos_container<T, 2>();
 }
