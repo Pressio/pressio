@@ -1,65 +1,52 @@
 #include <gtest/gtest.h>
-#include "Epetra_Map.h"
-#include "Epetra_Vector.h"
-#include "Epetra_MultiVector.h"
-#include "Epetra_Version.h"
-#include "Epetra_MpiComm.h"
 #include "pressio/type_traits.hpp"
+#include "traits_shared.hpp"
+
+template <
+  typename T,
+  int rank,
+  typename traits = pressio::Traits<T>
+>
+void test_epetra_container()
+{
+  test_container_traits<
+    T,
+    pressio::PackageIdentifier::Trilinos,
+    rank,
+    false, /* shared mem */
+    true, /* dynamic */
+    double, /* scalar */
+    int /* ordinal */
+  >();
+
+  ::testing::StaticAssertTypeEq<typename
+          traits::local_ordinal_type, int>();
+
+  ::testing::StaticAssertTypeEq<typename
+          traits::global_ordinal_type, int>();
+
+  ::testing::StaticAssertTypeEq<typename
+          traits::data_map_type, Epetra_BlockMap>();
+
+  ::testing::StaticAssertTypeEq<typename
+          traits::size_type, int>();
+
+  ::testing::StaticAssertTypeEq<typename
+          traits::communicator_type, Epetra_Comm>();
+}
 
 TEST(epetra, VectorTraits)
 {
-  using namespace pressio;
-
   using T = Epetra_Vector;
   static_assert(pressio::is_vector_epetra<T>::value,"");
-
-  using vecTrait = pressio::Traits<T>;
- 
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::scalar_type, double>();
-
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::local_ordinal_type, int>();
-
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::global_ordinal_type, int>();
-  
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::data_map_type, Epetra_BlockMap>();
-
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::communicator_type, Epetra_Comm>();
-  
-  ASSERT_TRUE(vecTrait::rank == 1);
-  ASSERT_TRUE(vecTrait::is_shared_mem == false);
+  static_assert(pressio::Traits<T>::vector_identifier == pressio::VectorIdentifier::Epetra);
+  test_epetra_container<T, 1>();
 }
 
 TEST(eped_epetra, MVTraits)
 {
-  using namespace pressio;
-
   using T = Epetra_MultiVector;
-  static_assert(::pressio::is_multi_vector_epetra<T>::value, "");
-
-  using vecTrait = pressio::Traits<T>;
-  ::testing::StaticAssertTypeEq<typename
-       vecTrait::scalar_type, double>();
-
-  ::testing::StaticAssertTypeEq<typename
-       vecTrait::local_ordinal_type, int>();
-
-  ::testing::StaticAssertTypeEq<typename
-       vecTrait::global_ordinal_type, int>();
-
-  ::testing::StaticAssertTypeEq<typename
-       vecTrait::data_map_type,
-       Epetra_BlockMap>();
-
-  ::testing::StaticAssertTypeEq<typename
-       vecTrait::communicator_type,
-       Epetra_Comm>();
-  
-  ASSERT_TRUE(vecTrait::rank == 2);
-  ASSERT_TRUE(vecTrait::is_shared_mem == false);
-  ASSERT_TRUE(vecTrait::package_identifier == pressio::PackageIdentifier::Trilinos);
+  static_assert(pressio::is_multi_vector_epetra<T>::value,"");
+  static_assert(pressio::Traits<T>::multi_vector_identifier == pressio::MultiVectorIdentifier::Epetra);
+  test_epetra_container<T, 2>();
 }

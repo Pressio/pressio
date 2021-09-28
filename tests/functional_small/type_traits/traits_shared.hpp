@@ -72,8 +72,8 @@ void test_container_traits()
 {
   // ContainersSharedTraits
   static_assert(traits::package_identifier == pack_id);
-  static_assert(traits::is_shared_mem);
-  static_assert(!traits::is_distributed);
+  static_assert(traits::is_shared_mem == is_shared_mem);
+  static_assert(traits::is_distributed == !is_shared_mem);
   static_assert(traits::rank == rank);
   // AllocTrait
   static_assert(traits::is_static == !is_dynamic);
