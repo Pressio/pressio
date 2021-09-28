@@ -72,6 +72,7 @@ struct TrilinosTraits
       Rank
     >,
     public ::pressio::impl::ScalarTrait<Scalar>,
+    public ::pressio::impl::OrdinalTrait<LocalOrdinal>,
     public ::pressio::impl::DynamicAllocTrait
 {
   using local_ordinal_type = LocalOrdinal;
