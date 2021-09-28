@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_stepper_cranknicolson_impl.hpp
+// ode_implicit_stepper_standard.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_RT_IMPL_HPP_
-#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_RT_IMPL_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -69,9 +69,6 @@ public:
   using state_type  = StateType;
   using residual_type = ResidualType;
   using jacobian_type = JacobianType;
-
-  static constexpr bool is_implicit = true;
-  static constexpr bool is_explicit = false;
 
 private:
   ::pressio::ode::StepScheme name_;
@@ -144,7 +141,6 @@ public:
       jac_policy_{jacPolicyObj}
   {}
 
-
   // *** BDF2 ***//
   template<
     class SystemType,
@@ -157,7 +153,8 @@ public:
     : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
+      stencil_states_{::pressio::ops::clone(state),
+		      ::pressio::ops::clone(state)},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}}
   {}
@@ -175,11 +172,11 @@ public:
     : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
+      stencil_states_{::pressio::ops::clone(state),
+		      ::pressio::ops::clone(state)},
       res_policy_{resPolicyObj},
       jac_policy_{jacPolicyObj}
   {}
-
 
   // *** CN ***//
   template<
@@ -193,10 +190,11 @@ public:
     : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
+      stencil_states_{::pressio::ops::clone(state)},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}},
-      stencil_velocities_{res_policy_.get().create(), res_policy_.get().create()}
+      stencil_velocities_{res_policy_.get().create(),
+			  res_policy_.get().create()}
   {}
 
   template<
@@ -212,10 +210,11 @@ public:
     : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state), ::pressio::ops::clone(state)},
+      stencil_states_{::pressio::ops::clone(state)},
       res_policy_{resPolicyObj},
       jac_policy_{jacPolicyObj},
-      stencil_velocities_{res_policy_.get().create(), res_policy_.get().create()}
+      stencil_velocities_{res_policy_.get().create(),
+			  res_policy_.get().create()}
   {}
 
 public:
@@ -225,11 +224,11 @@ public:
 
   template<typename solver_type, typename ...Args>
   void operator()(state_type & odeState,
-	      const ScalarType &  currentTime,
-	      const ScalarType &  dt,
-	      const int32_t & stepNumber,
-	      solver_type & solver,
-	      Args&& ...args)
+		  const ScalarType &  currentTime,
+		  const ScalarType &  dt,
+		  const int32_t & stepNumber,
+		  solver_type & solver,
+		  Args&& ...args)
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step");
     auto dummyGuesser =
@@ -258,31 +257,31 @@ public:
   // overload for when we have a guesser callback
   template<typename solver_type, typename guess_callback_t, typename ...Args>
   void operator()(state_type & odeState,
-	      const ScalarType &  currentTime,
-	      const ScalarType &  dt,
-	      const int32_t & stepNumber,
-	      guess_callback_t && guesserCb,
-	      solver_type & solver,
-	      Args&& ...args)
+		  const ScalarType &  currentTime,
+		  const ScalarType &  dt,
+		  const int32_t & stepNumber,
+		  guess_callback_t && guesserCb,
+		  solver_type & solver,
+		  Args&& ...args)
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step with callback to state guesser");
 
     if (name_==::pressio::ode::StepScheme::BDF1){
       doStepImpl(::pressio::ode::BDF1(),
 		 odeState, currentTime, dt, stepNumber,
-		 guesserCb, solver,
+		 std::forward<guess_callback_t>(guesserCb), solver,
 		 std::forward<Args>(args)...);
     }
     else if (name_==::pressio::ode::StepScheme::BDF2){
       doStepImpl(::pressio::ode::BDF2(),
 		 odeState, currentTime, dt, stepNumber,
-		 guesserCb, solver,
+		 std::forward<guess_callback_t>(guesserCb), solver,
 		 std::forward<Args>(args)...);
     }
     else if (name_==::pressio::ode::StepScheme::CrankNicolson){
       doStepImpl(::pressio::ode::CrankNicolson(),
 		 odeState, currentTime, dt, stepNumber,
-		 guesserCb, solver,
+		 std::forward<guess_callback_t>(guesserCb), solver,
 		 std::forward<Args>(args)...);
     }
   }
@@ -298,13 +297,14 @@ public:
   void residual(const StateType & odeState, ResidualType & R) const
   {
     res_policy_.get()(name_, odeState, stencil_states_,
-			      stencil_velocities_, t_np1_, dt_, step_number_, R);
+		      stencil_velocities_, t_np1_, dt_,
+		      step_number_, R);
   }
 
   void jacobian(const StateType & odeState, JacobianType & J) const
   {
     jac_policy_.get()(name_, odeState, stencil_states_,
-			      t_np1_, dt_, step_number_, J);
+		      t_np1_, dt_, step_number_, J);
   }
 
 private:
@@ -491,4 +491,4 @@ private:
 };
 
 }}} // end namespace pressio::ode::implicitmethods
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_

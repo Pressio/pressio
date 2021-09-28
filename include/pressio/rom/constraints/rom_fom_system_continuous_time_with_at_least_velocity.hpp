@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_continuous_time_system_with_at_least_velocity.hpp
+// rom_fom_system_continuous_time_with_at_least_velocity.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_WITH_AT_LEAST_VELOCITY_HPP_
-#define ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_WITH_AT_LEAST_VELOCITY_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_WITH_AT_LEAST_VELOCITY_HPP_
+#define ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_WITH_AT_LEAST_VELOCITY_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -73,4 +73,4 @@ struct continuous_time_fom_system_with_at_least_velocity<
   > : std::true_type{};
 
 }}
-#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_WITH_AT_LEAST_VELOCITY_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_WITH_AT_LEAST_VELOCITY_HPP_

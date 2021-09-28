@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_implicit_state.hpp
+// solvers_admissible_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_CONSTRAINTS_SOLVERS_IMPLICIT_STATE_HPP_
-#define SOLVERS_CONSTRAINTS_SOLVERS_IMPLICIT_STATE_HPP_
+#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_STATE_HPP_
+#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_STATE_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
@@ -63,4 +63,4 @@ struct admissible_state<
   > : std::true_type{};
 
 }} // namespace pressio::solvers::constraints
-#endif  // SOLVERS_CONSTRAINTS_SOLVERS_IMPLICIT_STATE_HPP_
+#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_STATE_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom_galerkin.hpp
+// rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -48,13 +48,6 @@
 
 #ifndef PRESSIO_ROM_GALERKIN_TOPLEVEL_INC_HPP_
 #define PRESSIO_ROM_GALERKIN_TOPLEVEL_INC_HPP_
-
-/*
-   this header includes everything needed for GALERKIN.
-   NOTE that the order below matters!
-   - Includes are ordered properly to avoid a tangled system.
-   - don't rely on files inside impl, these might change
-*/
 
 #include "./mpl.hpp"
 #include "./utils.hpp"

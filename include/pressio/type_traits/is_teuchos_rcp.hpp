@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_teuchos_rcp.hpp
+// is_teuchos_rcp.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_CONTAINERS_IS_TEUCHOS_RCP_HPP_
-#define CONTAINERS_PREDICATES_CONTAINERS_IS_TEUCHOS_RCP_HPP_
+#ifndef TYPE_TRAITS_IS_TEUCHOS_RCP_HPP_
+#define TYPE_TRAITS_IS_TEUCHOS_RCP_HPP_
 
 #include <Teuchos_RCPDecl.hpp>
 
@@ -71,4 +71,4 @@ struct is_teuchos_rcp<
   > : std::true_type{};
 
 } // namespace 
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_IS_TEUCHOS_RCP_HPP_
+#endif  // TYPE_TRAITS_IS_TEUCHOS_RCP_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_create_gauss_newton.hpp
+// solvers_create_public_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_SOLVER_API_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_SOLVER_API_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -55,9 +55,8 @@ namespace pressio{ namespace nonlinearsolvers{
 
 template<class SystemType, class StateType, class ...Args>
 auto create_newton_raphson(const SystemType & system,
-       const StateType & state,
-       Args && ...args)
-  -> impl::ComposeNewtonRaphson_t<StateType, SystemType, Args...>
+			   const StateType & state,
+			   Args && ...args)
 {
   return impl::ComposeNewtonRaphson_t<StateType, SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
@@ -65,9 +64,8 @@ auto create_newton_raphson(const SystemType & system,
 
 template<class SystemType, class StateType, class ...Args>
 auto create_gauss_newton(const SystemType & system,
-		       const StateType & state,
-		       Args && ... args)
-  -> impl::ComposeGaussNewton_t<StateType, SystemType, Args...>
+			 const StateType & state,
+			 Args && ... args)
 {
   return impl::ComposeGaussNewton_t<StateType, SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
@@ -75,9 +73,8 @@ auto create_gauss_newton(const SystemType & system,
 
 template<class SystemType, class StateType, class ...Args>
 auto create_gauss_newtonQR(const SystemType & system,
-			 const StateType & state,
-			 Args && ...args)
-  -> impl::ComposeGaussNewtonQR_t<StateType, SystemType, Args...>
+			   const StateType & state,
+			   Args && ...args)
 {
   return impl::ComposeGaussNewtonQR_t<StateType, SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
@@ -85,21 +82,19 @@ auto create_gauss_newtonQR(const SystemType & system,
 
 template<class SystemType, class StateType, class ...Args>
 auto create_levenberg_marquardt(const SystemType & system,
-            const StateType & state,
-            Args && ...args)
-  -> impl::ComposeLevenbergMarquardt_t<StateType, SystemType, Args...>
+				const StateType & state,
+				Args && ...args)
 {
   return impl::ComposeLevenbergMarquardt_t<StateType, SystemType, Args...>
-  ( system, state, std::forward<Args>(args)...);
+    ( system, state, std::forward<Args>(args)...);
 }
 
 namespace experimental{
 //***** IRWGN *******
 template<class SystemType, class StateType, class linear_solver_t>
 auto create_irls_gauss_newton(const SystemType & system,
-        const StateType & state,
-        linear_solver_t && linSolver)
-  -> typename impl::ComposeIrwGaussNewton<StateType, SystemType, linear_solver_t>::type
+			      const StateType & state,
+			      linear_solver_t && linSolver)
 {
   using c_t = impl::ComposeIrwGaussNewton<StateType, SystemType, linear_solver_t>;
   using w_t = typename c_t::weighting_t;
@@ -107,10 +102,10 @@ auto create_irls_gauss_newton(const SystemType & system,
 
   w_t W(system);
   return return_t(system, state,
-      std::forward<linear_solver_t>(linSolver),
-      std::move(W));
+		  std::forward<linear_solver_t>(linSolver),
+		  std::move(W));
 }
 }// end namespace experimental
 
 }}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_

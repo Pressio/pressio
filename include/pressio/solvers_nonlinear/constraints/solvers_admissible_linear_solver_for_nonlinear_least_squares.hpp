@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_legitimate_linear_solver_for_nonlinear_least_squares.hpp
+// solvers_admissible_linear_solver_for_nonlinear_least_squares.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
-#define SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
@@ -87,4 +87,4 @@ struct admissible_linear_solver_for_nonlinear_least_squares<
   > : std::true_type{};
 
 }}
-#endif  // SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_

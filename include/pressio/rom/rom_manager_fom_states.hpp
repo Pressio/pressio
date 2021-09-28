@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_manager_fom_states_static.hpp
+// rom_manager_fom_states.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
-#define ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
+#ifndef ROM_ROM_MANAGER_FOM_STATES_HPP_
+#define ROM_ROM_MANAGER_FOM_STATES_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -496,4 +496,4 @@ private:
 
 }}//end namespace pressio::rom
 
-#endif  // ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
+#endif  // ROM_ROM_MANAGER_FOM_STATES_HPP_

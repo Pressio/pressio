@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_to_target_time_integrators.hpp
+// ode_advance_to_target_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
+#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
 
 #include "ode_advance_call_observer_dispatcher.hpp"
 #include "ode_advance_printing_helpers.hpp"
@@ -78,7 +78,6 @@ call_dt_manager(TimeStepSizeManagerType && dtManager,
   dtManager(step, time, dt);
 }
 
-
 template <
   bool enableTimeStepRecovery,
   typename StepperType,
@@ -89,12 +88,12 @@ template <
   typename ... Args>
 void
 integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
-					     const TimeType & start_time,
-					     const TimeType & final_time,
-					     StateType	& odeStateInOut,
-					     ObserverType & observer,
-					     TimeStepSizeManagerType	&& dtManager,
-					     Args && ... args)
+						     const TimeType & start_time,
+						     const TimeType & final_time,
+						     StateType	& odeStateInOut,
+						     ObserverType & observer,
+						     TimeStepSizeManagerType	&& dtManager,
+						     Args && ... args)
 {
 
   using step_t = ::pressio::ode::step_count_type;
@@ -133,8 +132,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 
 
       if (dt <= static_cast<TimeType>(0)){
-	throw std::runtime_error
-	  ("The time step size cannot be <= 0.");
+	throw std::runtime_error("The time step size cannot be <= 0.");
       }
       if (dt < minDt){
 	throw std::runtime_error
@@ -208,4 +206,4 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
+#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_span_classes.hpp
+// span_classes.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_
-#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_
+#ifndef EXPRESSIONS_IMPL_SPAN_CLASSES_HPP_
+#define EXPRESSIONS_IMPL_SPAN_CLASSES_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
@@ -307,4 +307,4 @@ public:
 #endif
 
 }}}
-#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_
+#endif  // EXPRESSIONS_IMPL_SPAN_CLASSES_HPP_

@@ -6,29 +6,31 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md19">
 <title>Gauss-Newton via Normal-Equations</title>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md20">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md21">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md25">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
 <title>Example usage</title>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md26">
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
 <title>Gauss-Newton via QR factorization</title>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md27">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md28">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md25">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md29">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md26">
 <title>Example usage</title>
 </sect2>
 </sect1>

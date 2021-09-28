@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_multi_vector_update.hpp
+// ops_get_native.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_GET_NATIVE_HPP_
-#define OPS_KOKKOS_OPS_GET_NATIVE_HPP_
+#ifndef OPS_OPS_GET_NATIVE_HPP_
+#define OPS_OPS_GET_NATIVE_HPP_
 
 namespace pressio{ namespace ops{ namespace impl{
 
@@ -104,4 +104,4 @@ struct NativeType<
 };
 
 }}}
-#endif  // OPS_KOKKOS_OPS_MULTI_VECTOR_UPDATE_HPP_
+#endif  // OPS_OPS_GET_NATIVE_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_impl.hpp
+// rom_lspg_steady_compose.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_COMPOSE_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_COMPOSE_HPP_
 
 #include "./rom_lspg_steady_decorators.hpp"
 #include "./rom_problem_members_common_mixins.hpp"
@@ -98,7 +98,7 @@ using ComposeDefaultProblemSteady = Composer<0, Args...>;
 template<class ...Args>
 using ComposePrecDefaultProblemSteady = Composer<2, Args...>;
 
-// hyperreduced (note that impl-wise this is same as default)
+// hyperreduced (impl-wise this is same as default)
 template<class ...Args>
 using ComposeHyperreducedProblemSteady = ComposeDefaultProblemSteady<Args...>;
 
@@ -115,4 +115,4 @@ template<class ...Args>
 using ComposePrecMaskedProblemSteady = Composer<3, Args...>;
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_COMPOSE_HPP_

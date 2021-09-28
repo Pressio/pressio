@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_rank1_update.hpp
+// ops_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
-#define OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
+#ifndef OPS_PYBIND11_OPS_UPDATE_HPP_
+#define OPS_PYBIND11_OPS_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -56,8 +56,8 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<class T, class T1, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1>::value and
-  mpl::variadic::any_of<_pybind_is_rank1, T, T1>::value
+  mpl::all_of<_pybind_is_pybind, T, T1>::value and
+  mpl::any_of<_pybind_is_rank1, T, T1>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b)
@@ -74,8 +74,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1>::value and
-  mpl::variadic::any_of<_pybind_is_rank2, T, T1>::value
+  mpl::all_of<_pybind_is_pybind, T, T1>::value and
+  mpl::any_of<_pybind_is_rank2, T, T1>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b)
@@ -94,8 +94,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1>::value and
-  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1>::value
+  mpl::all_of<_pybind_is_pybind, T, T1>::value and
+  mpl::all_of<_pybind_is_rank_dyn, T, T1>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b)
@@ -128,8 +128,8 @@ update(T & v, scalar_t a,
 //----------------------------------------------------------------------
 template<class T, class T1, class T2, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
-  mpl::variadic::any_of<_pybind_is_rank1, T, T1, T2>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::any_of<_pybind_is_rank1, T, T1, T2>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -149,8 +149,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class T2, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
-  mpl::variadic::any_of<_pybind_is_rank2, T, T1, T2>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::any_of<_pybind_is_rank2, T, T1, T2>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -174,8 +174,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class T2, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
-  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1, T2>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::all_of<_pybind_is_rank_dyn, T, T1, T2>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -216,8 +216,8 @@ update(T & v, scalar_t a,
 //----------------------------------------------------------------------
 template<class T, class T1, class T2, class T3, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2, T3>::value and
-  mpl::variadic::any_of<_pybind_is_rank1, T, T1, T2, T3>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2, T3>::value and
+  mpl::any_of<_pybind_is_rank1, T, T1, T2, T3>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -240,8 +240,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class T2, class T3, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2, T3>::value and
-  mpl::variadic::any_of<_pybind_is_rank2, T, T1, T2, T3>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2, T3>::value and
+  mpl::any_of<_pybind_is_rank2, T, T1, T2, T3>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -269,8 +269,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class T2, class T3, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2, T3>::value and
-  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1, T2, T3>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2, T3>::value and
+  mpl::all_of<_pybind_is_rank_dyn, T, T1, T2, T3>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -319,8 +319,8 @@ update(T & v, scalar_t a,
 //----------------------------------------------------------------------
 template<class T, class T1, class T2, class T3, class T4, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2, T3, T4>::value and
-  mpl::variadic::any_of<_pybind_is_rank1, T, T1, T2, T3, T4>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2, T3, T4>::value and
+  mpl::any_of<_pybind_is_rank1, T, T1, T2, T3, T4>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -346,8 +346,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class T2, class T3, class T4, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2, T3, T4>::value and
-  mpl::variadic::any_of<_pybind_is_rank2, T, T1, T2, T3, T4>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2, T3, T4>::value and
+  mpl::any_of<_pybind_is_rank2, T, T1, T2, T3, T4>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -379,8 +379,8 @@ update(T & v, scalar_t a,
 
 template<class T, class T1, class T2, class T3, class T4, class scalar_t>
 ::pressio::mpl::enable_if_t<
-  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2, T3, T4>::value and
-  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1, T2, T3, T4>::value
+  mpl::all_of<_pybind_is_pybind, T, T1, T2, T3, T4>::value and
+  mpl::all_of<_pybind_is_rank_dyn, T, T1, T2, T3, T4>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -411,4 +411,4 @@ update(T & v, scalar_t a,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
+#endif  // OPS_PYBIND11_OPS_UPDATE_HPP_

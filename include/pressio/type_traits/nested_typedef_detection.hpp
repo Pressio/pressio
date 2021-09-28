@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_has_communicator_typedef.hpp
+// nested_typedef_detection.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_TYPEDEFS_NESTED_TYPEDEF_DETECTION_HPP_
-#define CONTAINERS_PREDICATES_TYPEDEFS_NESTED_TYPEDEF_DETECTION_HPP_
+#ifndef TYPE_TRAITS_NESTED_TYPEDEF_DETECTION_HPP_
+#define TYPE_TRAITS_NESTED_TYPEDEF_DETECTION_HPP_
 
 namespace pressio{
 
@@ -209,4 +209,4 @@ struct has_fom_state_typedef<
   > : std::true_type{};
 
 }//end namespace
-#endif  // CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_
+#endif  // TYPE_TRAITS_NESTED_TYPEDEF_DETECTION_HPP_

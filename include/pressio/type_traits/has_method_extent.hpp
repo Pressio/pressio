@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_has_method_extent.hpp
+// has_method_extent.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_EXTENT_HPP_
-#define CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_EXTENT_HPP_
+#ifndef TYPE_TRAITS_HAS_METHOD_EXTENT_HPP_
+#define TYPE_TRAITS_HAS_METHOD_EXTENT_HPP_
 
 namespace pressio{ 
 
@@ -68,4 +68,4 @@ struct has_method_extent<
   > : std::true_type{};
 
 } 
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_EXTENT_HPP_
+#endif  // TYPE_TRAITS_HAS_METHOD_EXTENT_HPP_

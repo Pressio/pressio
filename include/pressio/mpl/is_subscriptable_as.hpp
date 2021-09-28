@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// has_subscript_operator.hpp
+// is_subscriptable_as.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
-#define MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
+#ifndef MPL_IS_SUBSCRIPTABLE_AS_HPP_
+#define MPL_IS_SUBSCRIPTABLE_AS_HPP_
 
 namespace pressio{ namespace mpl{
 
@@ -68,4 +68,4 @@ struct is_subscriptable_as<
   > : std::true_type { };
 
 }} // namespace
-#endif  // MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
+#endif  // MPL_IS_SUBSCRIPTABLE_AS_HPP_

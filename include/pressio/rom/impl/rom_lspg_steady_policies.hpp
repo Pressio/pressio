@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_residual_policy.hpp
+// rom_lspg_steady_policies.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_POLICIES_HPP_
-#define ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_POLICIES_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_POLICIES_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_POLICIES_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -146,4 +146,4 @@ protected:
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_POLICIES_HPP_

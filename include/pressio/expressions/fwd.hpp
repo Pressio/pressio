@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_expression.hpp
+// fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_FWD_HPP_
-#define CONTAINERS_EXPRESSIONS_FWD_HPP_
+#ifndef EXPRESSIONS_FWD_HPP_
+#define EXPRESSIONS_FWD_HPP_
 
 namespace pressio{ 
 
@@ -87,4 +87,4 @@ struct Traits<::pressio::expressions::impl::DiagExpr<T>>
       >{};
 
 }//end namespace pressio
-#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#endif  // EXPRESSIONS_FWD_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_teuchos_dense_matrix.hpp
+// native_teuchos_dense_matrix.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
+#ifndef TYPE_TRAITS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
+#define TYPE_TRAITS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
 
 // #include <Epetra_CrsMatrix.h>
 // #include <Epetra_MultiVector.h>
@@ -86,4 +86,4 @@ struct is_dense_matrix_teuchos_rcp<
 
 
 }//end namespace 
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
+#endif  // TYPE_TRAITS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_FOM_STATES_MANAGEMENT_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
-#define ROM_FOM_STATES_MANAGEMENT_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#ifndef ROM_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#define ROM_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
 
 #include "./impl/rom_reconstructor_fom_state.hpp"
 
@@ -57,4 +57,4 @@ template <class decoder_type>
 using FomStateReconstructor = impl::FomStateReconstructor<decoder_type>;
 
 }}//end namespace pressio::rom
-#endif  // ROM_FOM_STATES_MANAGEMENT_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#endif  // ROM_ROM_RECONSTRUCTOR_FOM_STATE_HPP_

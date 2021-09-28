@@ -2,12 +2,20 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="md_pages_components_rom_galerkin" kind="page">
     <compoundname>md_pages_components_rom_galerkin</compoundname>
-    <title>rom: Galerkin:</title>
+    <title>rom: Galerkin: General Info</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: write this better</para>
-<para>We currently support the following problems:</para>
+<para>At a high level, using the pressio Galerkin ROMs involves three main steps:</para>
+<para><orderedlist>
+<listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;Galerkin problem&quot;</para>
+</listitem><listitem><para><emphasis>extract</emphasis>: you extract the underlying stepper object owned by the problem</para>
+</listitem><listitem><para><emphasis>solve</emphasis>: you use the stepper to solve in time the Galerkin problem</para>
+</listitem></orderedlist>
+</para>
+<para>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
+<para>Pressio currently support three variants of a Galerkin problem:</para>
 <para><itemizedlist>
 <listitem><para>Default: <ulink url="md_pages_components_rom_galerkin_default.html">link</ulink></para>
 </listitem><listitem><para>Hyper-reduced: <ulink url="md_pages_components_rom_galerkin_hypred.html">link</ulink></para>

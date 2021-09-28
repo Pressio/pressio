@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_steady_system_with_user_provided_apply_jacobian.hpp
+// rom_fom_system_steady_with_user_provided_apply_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
-#define ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_FOM_SYSTEM_STEADY_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#define ROM_CONSTRAINTS_ROM_FOM_SYSTEM_STEADY_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -134,4 +134,4 @@ struct steady_fom_system_with_user_provided_apply_jacobian<
 // };
 
 }} // namespace pressio::rom
-#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_STEADY_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_

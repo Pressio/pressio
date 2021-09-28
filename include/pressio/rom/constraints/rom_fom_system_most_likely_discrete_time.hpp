@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_most_likely_discrete_time_system.hpp
+// rom_fom_system_most_likely_discrete_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_DISCRETE_TIME_SYSTEM_HPP_
-#define ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_DISCRETE_TIME_SYSTEM_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_FOM_SYSTEM_MOST_LIKELY_DISCRETE_TIME_HPP_
+#define ROM_CONSTRAINTS_ROM_FOM_SYSTEM_MOST_LIKELY_DISCRETE_TIME_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -68,4 +68,4 @@ struct most_likely_discrete_time_fom_system<
   > : std::true_type{};
 
 }}
-#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_DISCRETE_TIME_SYSTEM_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_MOST_LIKELY_DISCRETE_TIME_HPP_

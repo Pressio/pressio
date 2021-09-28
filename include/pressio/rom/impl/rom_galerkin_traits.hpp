@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_common_traits.hpp
+// rom_galerkin_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
-#define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_TRAITS_HPP_
+#define ROM_IMPL_ROM_GALERKIN_TRAITS_HPP_
 
 namespace pressio{
 
@@ -767,4 +767,4 @@ struct Traits<
 };
 
 }//end  namespace pressio
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_TRAITS_HPP_

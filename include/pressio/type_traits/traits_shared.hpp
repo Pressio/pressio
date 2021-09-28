@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ContainersSharedTraits.hpp
+// traits_shared.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_CONTAINERS_SHARED_TRAITS_HPP_
-#define CONTAINERS_CONTAINERS_SHARED_TRAITS_HPP_
+#ifndef TYPE_TRAITS_TRAITS_SHARED_HPP_
+#define TYPE_TRAITS_TRAITS_SHARED_HPP_
 
 namespace pressio{
 
@@ -72,4 +72,4 @@ struct MatrixSharedTraits{
 };
 
 }
-#endif  // CONTAINERS_CONTAINERS_SHARED_TRAITS_HPP_
+#endif  // TYPE_TRAITS_TRAITS_SHARED_HPP_

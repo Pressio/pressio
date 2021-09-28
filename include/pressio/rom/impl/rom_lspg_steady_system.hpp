@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
-#define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_SYSTEM_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -63,8 +63,6 @@ class SteadySystem
 {
   std::reference_wrapper<const ResidualPolicyType> residualPolicy_;
   std::reference_wrapper<const JacobianPolicyType> jacobianPolicy_;
-  mutable LspgResidualType R_;
-  mutable LspgJacobianType J_;
 
 public:
   // these need to be public because are detected by solver
@@ -84,14 +82,17 @@ public:
   SteadySystem(const ResidualPolicyType & resPolicyObj,
 	       const JacobianPolicyType & jacPolicyObj)
     : residualPolicy_(resPolicyObj),
-      jacobianPolicy_(jacPolicyObj),
-      R_(residualPolicy_.get().create()),
-      J_(jacobianPolicy_.get().create())
+      jacobianPolicy_(jacPolicyObj)
     {}
 
 public:
-  LspgResidualType createResidual() const{ return R_; }
-  LspgJacobianType createJacobian() const{ return J_; }
+  LspgResidualType createResidual() const{
+    return LspgResidualType(residualPolicy_.get().create());
+  }
+
+  LspgJacobianType createJacobian() const{
+  return LspgJacobianType(jacobianPolicy_.get().create());
+}
 
   void residual(const LspgStateType & romState, LspgResidualType & R) const
   {
@@ -126,4 +127,4 @@ public:
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_SYSTEM_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_base_observer.hpp
+// solvers_observer.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_OBSERVER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_SOLVERS_OBSERVER_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
@@ -106,4 +106,4 @@ void applyObserver(BaseObserver* observer,
 }
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_OBSERVER_HPP_

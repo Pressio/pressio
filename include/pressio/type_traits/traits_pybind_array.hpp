@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_traits.hpp
+// traits_pybind_array.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_TRAITS_PYBIND_ARRAY_HPP_
-#define PRESSIO_TRAITS_PYBIND_ARRAY_HPP_
+#ifndef TYPE_TRAITS_TRAITS_PYBIND_ARRAY_HPP_
+#define TYPE_TRAITS_TRAITS_PYBIND_ARRAY_HPP_
 
 namespace pressio{
 
@@ -84,4 +84,4 @@ struct Traits<pybind11::array_t<ScalarType, pybind11::array::f_style>>
 };
 
 }
-#endif  // CONTAINERS_VECTOR_CONTAINERS_VECTOR_TRAITS_HPP_
+#endif  // TYPE_TRAITS_TRAITS_PYBIND_ARRAY_HPP_

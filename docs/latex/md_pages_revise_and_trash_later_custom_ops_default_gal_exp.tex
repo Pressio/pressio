@@ -1,0 +1,67 @@
+This page explains which operations you need to provide to pressio to construct and run Galerkin with explicit time stepping when you are using FOM types that are {\itshape not} natively supported in pressio.
+
+We remark that when you types already known to pressio, you don\textquotesingle{}t need to provide any custom ops.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} scalar\_t>}
+\DoxyCodeLine{\textcolor{keyword}{struct }CustomOps \textcolor{comment}{// or whatever name you want}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} deep\_copy(TypeOfYourForFomState \& dest,}
+\DoxyCodeLine{                 \textcolor{keyword}{const} TypeOfYourForFomState \& src)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// deep copy content of src into dest}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} set\_zero(TypeOfYourForFomState \& vec)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{     \textcolor{comment}{// self explanatory}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} axpy(scalar\_t alpha,}
+\DoxyCodeLine{            \textcolor{keyword}{const} TypeOfYourForFomState \& x,}
+\DoxyCodeLine{            TypeOfYourForFomState \& y)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// compute y = y + alfa * x}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/*}}
+\DoxyCodeLine{\textcolor{comment}{  compute: y = beta * y + alpha*A*x}}
+\DoxyCodeLine{\textcolor{comment}{  -\/ y is your application vector type}}
+\DoxyCodeLine{\textcolor{comment}{  -\/ A is the basis matrix}}
+\DoxyCodeLine{\textcolor{comment}{  -\/ x is the rom state}}
+\DoxyCodeLine{\textcolor{comment}{  */}}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} x\_t>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} product(::pressio::nontranspose mode,}
+\DoxyCodeLine{               \textcolor{keyword}{const} scalar\_t alpha,}
+\DoxyCodeLine{               \textcolor{keyword}{const} TypeUsedForBasisMatrix \& A,}
+\DoxyCodeLine{               \textcolor{keyword}{const} x\_t \& x,}
+\DoxyCodeLine{               \textcolor{keyword}{const} scalar\_t beta,}
+\DoxyCodeLine{               TypeOfYourForFomState \& y)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// when running on CPU, here you can assume that}}
+\DoxyCodeLine{    \textcolor{comment}{// x is subscriptable on host as: x(i)}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/*}}
+\DoxyCodeLine{\textcolor{comment}{  compute: y = beta * y + alpha*A\string^T*x}}
+\DoxyCodeLine{\textcolor{comment}{  -\/ y is the rom state}}
+\DoxyCodeLine{\textcolor{comment}{  -\/ A is the basis matrix}}
+\DoxyCodeLine{\textcolor{comment}{  -\/ x is your application vector type}}
+\DoxyCodeLine{\textcolor{comment}{  */}}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} y\_t>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} product(::pressio::transpose mode,}
+\DoxyCodeLine{               \textcolor{keyword}{const} scalar\_t alpha,}
+\DoxyCodeLine{               \textcolor{keyword}{const} TypeUsedForBasisMatrix \& A,}
+\DoxyCodeLine{               \textcolor{keyword}{const} TypeOfYourForFomState \& x,}
+\DoxyCodeLine{               \textcolor{keyword}{const} scalar\_t beta,}
+\DoxyCodeLine{               y\_t \& y)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// when running on CPU, here you can assume that}}
+\DoxyCodeLine{    \textcolor{comment}{// y is subscriptable on host as: y(i)}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+\hypertarget{md_pages_revise_and_trash_later_custom_ops_default_gal_exp_autotoc_md184}{}\doxysection{Where does one need to use this?}\label{md_pages_revise_and_trash_later_custom_ops_default_gal_exp_autotoc_md184}
+An object of the class template above needs to be passed to the constructor of the Galerkin problem as explained in \href{./md_pages_tutorials_tutorial2.html}{\texttt{ this tutorial}}. 

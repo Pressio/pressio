@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_is_object_pybind.hpp
+// is_object_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
-#define OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
+#ifndef TYPE_TRAITS_IS_OBJECT_PYBIND_HPP_
+#define TYPE_TRAITS_IS_OBJECT_PYBIND_HPP_
 
 namespace pressio{
 
@@ -63,4 +63,4 @@ struct is_object_pybind<const pybind11::object> : std::true_type {};
 #endif
 
 }
-#endif  // OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
+#endif  // TYPE_TRAITS_IS_OBJECT_PYBIND_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_jacobian_policy.hpp
+// rom_galerkin_policy_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_
-#define ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_POLICY_JACOBIAN_HPP_
+#define ROM_IMPL_ROM_GALERKIN_POLICY_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -110,4 +110,4 @@ public:
 };
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_POLICY_JACOBIAN_HPP_

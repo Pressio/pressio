@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_base_updater.hpp
+// solvers_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
@@ -109,4 +109,4 @@ public:
 };
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_

@@ -1,6 +1,8 @@
+
+
 Defined in header {\ttfamily $<$pressio/solvers\+\_\+linear.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::linearsolvers}\hypertarget{md_pages_components_linsolvers_autotoc_md3}{}\doxysection{Overview}\label{md_pages_components_linsolvers_autotoc_md3}
+Public namespace\+: {\ttfamily pressio\+::linearsolvers} \hypertarget{md_pages_components_linsolvers_autotoc_md3}{}\doxysection{Overview}\label{md_pages_components_linsolvers_autotoc_md3}
 We clearly state upfront that this component of pressio is not a self-\/contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an {\bfseries{intentional}} choice\+: there exist already many open-\/source highly-\/optimized libraries that do so in both a shared-\/memory, e.\+g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.\+g. Trilinos, PETSc, HYPRE.
 
 
@@ -56,12 +58,14 @@ We distinguish between iterative and direct solvers. Obviously, depending on the
 \DoxyCodeLine{\textcolor{keyword}{public}:}
 \DoxyCodeLine{  \textcolor{keyword}{using} matrix\_type = MatrixType;}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} VectorType>}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} solve(\textcolor{keyword}{const} MatrixType \& A, \textcolor{keyword}{const} VectorType \& b, VectorType \& x);}
+\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} RhsType>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} solve(\textcolor{keyword}{const} MatrixType \& A, \textcolor{keyword}{const} RhsType \& b, StateType \& x);}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
 \hypertarget{md_pages_components_linsolvers_autotoc_md6}{}\doxysection{Example Usage}\label{md_pages_components_linsolvers_autotoc_md6}
+todo\+: need to discuss difference between iterative and direct
+
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{//}}

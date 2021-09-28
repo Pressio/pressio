@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_stencil_states_manager.hpp
+// ode_stencil_data_container_dynamic.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_ODE_STENCIL_DATA_CONTAINER_RT_HPP_
-#define ODE_IMPLICIT_ODE_STENCIL_DATA_CONTAINER_RT_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_STENCIL_DATA_CONTAINER_DYNAMIC_HPP_
+#define ODE_STEPPERS_IMPL_ODE_STENCIL_DATA_CONTAINER_DYNAMIC_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -201,4 +201,4 @@ private:
 };
 
 }}}
-#endif  // ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_STENCIL_DATA_CONTAINER_DYNAMIC_HPP_

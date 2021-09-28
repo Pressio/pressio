@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_traits.hpp
+// traits_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_CONTAINERS_VECTOR_TRAITS_HPP_
-#define CONTAINERS_VECTOR_CONTAINERS_VECTOR_TRAITS_HPP_
+#ifndef TYPE_TRAITS_TRAITS_VECTOR_HPP_
+#define TYPE_TRAITS_TRAITS_VECTOR_HPP_
 
 namespace pressio{
 
@@ -343,4 +343,4 @@ struct Traits<
 #endif
 
 }
-#endif  // CONTAINERS_VECTOR_CONTAINERS_VECTOR_TRAITS_HPP_
+#endif  // TYPE_TRAITS_TRAITS_VECTOR_HPP_

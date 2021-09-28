@@ -101,7 +101,6 @@ deep_copy(T1 & dest, const T2 & src)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_DEEP_COPY_HPP_
 
 
 
@@ -200,3 +199,4 @@ deep_copy(T1 & dest, const T2 & src)
 //     }
 //   }
 // }
+#endif  // OPS_PYBIND11_OPS_DEEP_COPY_HPP_

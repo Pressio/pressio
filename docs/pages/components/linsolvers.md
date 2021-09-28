@@ -1,9 +1,14 @@
 
 # Linear solvers
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in header `<pressio/solvers_linear.hpp>`
 
 Public namespace: `pressio::linearsolvers`
+@endparblock
 
 
 ## Overview
@@ -74,12 +79,14 @@ class LinearSolver
 public:
   using matrix_type	= MatrixType;
 
-  template<class VectorType>
-  void solve(const MatrixType & A, const VectorType & b, VectorType & x);
+  template<class StateType, class RhsType>
+  void solve(const MatrixType & A, const RhsType & b, StateType & x);
 };
 ```
 
 ## Example Usage
+
+\todo: need to discuss difference between iterative and direct
 
 ```cpp
 //

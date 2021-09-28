@@ -1,30 +1,45 @@
 
 # utils
 
+@m_class{m-note m-default}
+
+@parblock
 Defined in header: `<pressio/utils.hpp>`
 
 Public namespaces: `pressio`, `pressio::utils`
+@endparblock
 
 
 ## Logger
 
 One of the main functionalities inside `utils` is the logger.
 To implement the pressio logging functionalities, we have used [spdlog](https://github.com/gabime/spdlog),
-rewriting a subset of it, for example to work seamlessly with MPI.
+modified a subset of it, for example to work seamlessly with MPI.
 
-If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed!<br/>
-@m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan
-To enable and use it, you need to do two things:
-1. *before* including the utils header, place a `define` statement to set the *minimum* level
-2. you need to initialize and finalize the logger singleton
+@m_class{m-note m-warning}
 
-as shown below:
+@parblock
+By default, for performance reasons, the logger is disabled, so pressio will not output anything.
+@endparblock
+
+<!-- If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed!<br/> -->
+<!-- @m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan -->
+
+@m_class{m-note m-info}
+
+@parblock
+To enable logging, you need to do two things:
+1. insert a `define` statement to set the *minimum* level *before* including the utils header
+2. initialize and finalize the logger singleton
+@endparblock
+
+The following snippet provides the main idea:
 
 ```cpp
 // this sets the default min level
 #define PRESSIO_LOG_ACTIVE_MIN_LEVEL 2
 
-// this is needed to include the logger code
+// this is needed since it contains the logging code
 #include <pressio/utils.hpp>
 
 int main()
@@ -40,9 +55,9 @@ int main()
 }
 ```
 
-### Initializing
+### Initializing and finalizing
 
-You have these choices:
+To initialize, you have these choices:
 
 ```cpp
 // only log messages to terminal
@@ -54,6 +69,14 @@ plog::initialize(pressio::logto::fileAndTerminal, "my_log.txt");
 // only log messages to a file named, e.g., "my_log.txt"
 plog::initialize(pressio::logto::file, "my_log.txt");
 ```
+
+And to finalize:
+
+```cpp
+plog::finalize();
+```
+
+### If running with MPI
 
 If you are running with MPI, the logger prints to the terminal *only from rank==0*.
 However, it automatically creates a per-rank log file if you choose the file output.
@@ -81,11 +104,6 @@ Currently, the logger works only for the world communicator.
 We will later extend the API to accept a communicator object.
 
 
-### Finalizing
-
-```cpp
-plog::finalize();
-```
 
 
 ### Levels
@@ -145,7 +163,7 @@ to properly format the print statements.
 
 @par Keep in mind:
 The log statements issued for a specific level will be printed
-*only if* `PRESSIO_LOG_ACTIVE_MIN_LEVEL` is greater or equal than that level.
+*only if* `PRESSIO_LOG_ACTIVE_MIN_LEVEL` is smaller or equal than that level.
 If the logger is disabled, the macros are expanded to a no-op.
 So it does not cost you anything to place log statements in your code,
 because in production mode you can just compile to no-op.

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_iterative_base.hpp
+// solvers_linear_iterative_base.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_
-#define SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_
+#ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_ITERATIVE_BASE_HPP_
+#define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_ITERATIVE_BASE_HPP_
 
 namespace pressio { namespace linearsolvers{ namespace impl{
 
@@ -80,4 +80,4 @@ protected:
 };
 
 }}}
-#endif  // SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_
+#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_ITERATIVE_BASE_HPP_

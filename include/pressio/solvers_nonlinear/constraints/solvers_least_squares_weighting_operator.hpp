@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_admissible_least_squares_weighting_operator.hpp
+// solvers_least_squares_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
-#define SOLVERS_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
+#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
+#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
@@ -89,4 +89,4 @@ struct admissible_least_squares_weighting_operator<
 
 
 }}
-#endif  // SOLVERS_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
+#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_

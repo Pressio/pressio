@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_are_scalar_compatible.hpp
+// are_scalar_compatible.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
-#define CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
+#ifndef TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
+#define TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
 
 namespace pressio{
 
@@ -78,4 +78,4 @@ struct are_scalar_compatible<T1, T2, rest...>
 };
 
 } // namespace 
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
+#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_

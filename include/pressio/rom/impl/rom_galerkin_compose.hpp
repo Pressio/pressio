@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_impl.hpp
+// rom_galerkin_compose.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_ROM_COMPOSE_IMPL_HPP_
-#define ROM_GALERKIN_IMPL_ROM_COMPOSE_IMPL_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_COMPOSE_HPP_
+#define ROM_IMPL_ROM_GALERKIN_COMPOSE_HPP_
 
 #include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_galerkin_problem_members.hpp"
@@ -455,4 +455,4 @@ void ensure_implicit_or_throw(const std::string & str, ::pressio::ode::StepSchem
 }
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_COMPOSE_HPP_

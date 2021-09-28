@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_eigen_vector.hpp
+// native_eigen_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_VECTOR_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_VECTOR_HPP_
+#ifndef TYPE_TRAITS_NATIVE_EIGEN_VECTOR_HPP_
+#define TYPE_TRAITS_NATIVE_EIGEN_VECTOR_HPP_
 
 #include <Eigen/Dense>
 
@@ -154,4 +154,4 @@ struct is_vector_eigen<
   > : std::true_type{};
 
 }//end namespace 
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_VECTOR_HPP_
+#endif  // TYPE_TRAITS_NATIVE_EIGEN_VECTOR_HPP_
