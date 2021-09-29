@@ -35,11 +35,13 @@
 </entry><entry thead="no"><para>Nonlinear least-squares problem. (see <ulink url="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">link</ulink> )    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Iteratively reweighted least squares   </para>
+<entry thead="no"><para>Iteratively reweighted least squares (irls)   </para>
 </entry><entry thead="no"><para><ulink url="./md_pages_components_nonlinsolvers_irls.html">Link</ulink>   </para>
 </entry><entry thead="no"><para>optimization problem formulated in a p-norm (see <ulink url="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">link</ulink> )   </para>
 </entry></row>
 </table>
+</para>
+<para><linebreak/>
 </para>
 <sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md12">
 <title>A glimpse of the API</title>
@@ -49,15 +51,17 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pnonls::create_gauss_newton(....);</highlight></codeline>
 </programlisting></para>
 <para>Please refer to each method&apos;s documentation for the details on the API and arguments.</para>
+<para><linebreak/>
+</para>
 </sect2>
 </sect1>
 <sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md13">
-<title>What are users responsible of?</title>
-<para>If you want to use the pressio nonlinear solvers, you are responsible of three main things:</para>
+<title>What are you responsible of?</title>
+<para>If you want to use the pressio nonlinear solvers, you are responsible of:</para>
 <para><itemizedlist>
 <listitem><para>A: providing a problem object</para>
-</listitem><listitem><para>B: specifying the convergence criterion</para>
-</listitem><listitem><para>C: specifying the update method</para>
+</listitem><listitem><para>B: selecting (if needed) the convergence criterion</para>
+</listitem><listitem><para>C: selecting (if needed) the update method</para>
 </listitem></itemizedlist>
 </para>
 <sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md14">
@@ -75,22 +79,22 @@
 <entry thead="no"><para>Newton-Raphson   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
-</entry><entry thead="no"><para></para>
-</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para>-   </para>
+</entry><entry thead="no"><para>-    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Gauss-Newton Normal-Equations   </para>
+<entry thead="no"><para>Gauss-Newton via Normal-Equations   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Gauss-Newton QR   </para>
+<entry thead="no"><para>Gauss-Newton via QR   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
-</entry><entry thead="no"><para></para>
-</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para>-   </para>
+</entry><entry thead="no"><para>-    </para>
 </entry></row>
 <row>
 <entry thead="no"><para>Levenberg-Marquardt   </para>
@@ -103,8 +107,8 @@
 <entry thead="no"><para>irls   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
-</entry><entry thead="no"><para></para>
-</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para>-   </para>
+</entry><entry thead="no"><para>-   </para>
 </entry></row>
 </table>
 </para>
@@ -155,7 +159,7 @@
 </entry></row>
 </table>
 </para>
-<para>which you set/query along with corresponding tolerances using the following methods:</para>
+<para>which you set/query using the following methods:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Solver{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

@@ -2,20 +2,20 @@
 # Installation and Dependencies
 
 
-@m_class{m-block m-success}
+@m_class{m-note m-success}
 
 @parblock
-`pressio` is header-only, so it does not need to be precompiled and linked to.
+pressio is header-only, so it does not need to be precompiled and linked to.
 However, since we use preprocessor directives to conditionally
 enable/disable code based on target third-party libraries,
 one needs to account for this. See below for the details.
 @endparblock
 
 
-@m_class{m-block m-warning}
+@m_class{m-note m-warning}
 
 @parblock
-To use `pressio`, you need a C++14 compiler.
+To use pressio, you need a C++14 compiler.
 @endparblock
 
 
@@ -97,6 +97,11 @@ the Trilinos example above or always requiring BLAS and LAPACK to be simulateneo
 
 
 ## In practice, what are the steps to get, install and use Pressio?
+
+\todo: add description for using pressio without configuring,
+so one has to define the options directly when configuring
+their code or inside the code directly.
+
 <ol>
 <li>Clone [pressio](https://github.com/Pressio/pressio) (defaults to the main branch),
 or you can pick a [release version](https://github.com/Pressio/pressio/releases) </li>
