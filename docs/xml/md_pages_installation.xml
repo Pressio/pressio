@@ -6,11 +6,11 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-success" /></para>
-<para><parblock><para><computeroutput>pressio</computeroutput> is header-only, so it does not need to be precompiled and linked to. However, since we use preprocessor directives to conditionally enable/disable code based on target third-party libraries, one needs to account for this. See below for the details. </para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-success" /></para>
+<para><parblock><para>pressio is header-only, so it does not need to be precompiled and linked to. However, since we use preprocessor directives to conditionally enable/disable code based on target third-party libraries, one needs to account for this. See below for the details. </para>
 </parblock></para>
-<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><parblock><para>To use <computeroutput>pressio</computeroutput>, you need a C++14 compiler. </para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-warning" /></para>
+<para><parblock><para>To use pressio, you need a C++14 compiler. </para>
 </parblock></para>
 <sect1 id="md_pages_installation_1autotoc_md159">
 <title>Dependencies</title>
@@ -130,6 +130,7 @@
 </sect1>
 <sect1 id="md_pages_installation_1autotoc_md161">
 <title>In practice, what are the steps to get, install and use Pressio?</title>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: add description for using pressio without configuring, so one has to define the options directly when configuring their code or inside the code directly.</para>
 <para><orderedlist>
 <listitem>
 <para>Clone <ulink url="https://github.com/Pressio/pressio">pressio</ulink> (defaults to the main branch), or you can pick a <ulink url="https://github.com/Pressio/pressio/releases">release version</ulink> </para>

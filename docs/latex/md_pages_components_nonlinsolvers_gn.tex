@@ -4,9 +4,117 @@ Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md19}{}\doxysection{Gauss-\/\+Newton via Normal-\/\+Equations}\label{md_pages_components_nonlinsolvers_gn_autotoc_md19}
 \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md20}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_gn_autotoc_md20}
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md21}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md21}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }ProblemClassType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }StateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }LinearSolverType}
+\DoxyCodeLine{  >                                                             (1)}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_gauss\_newton(\textcolor{keyword}{const} ProblemClassType \& system,}
+\DoxyCodeLine{                         \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                         LinearSolverType \&\& lsolver);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }ProblemClassType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }StateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }LinearSolverType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }WeightingOpType}
+\DoxyCodeLine{  >                                                             (2)}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_gauss\_newton(\textcolor{keyword}{const} ProblemClassType \& system,}
+\DoxyCodeLine{                         \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                         LinearSolverType \&\& lsolver,}
+\DoxyCodeLine{                         WeightingOpType \&\& weightOperator);}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item {\ttfamily Problem\+Class\+Type}\+:
+\begin{DoxyItemize}
+\item type of the class defining the problem to solve 
+
+
+\begin{DoxyItemize}
+\item overload 1\+: accepts the \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ residual-\/jacobian, hessian-\/gradient API, or their fused versions}}
+\item overload 2\+: {\itshape only} accepts the \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ residual-\/jacobian API or its fused version}} 
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+:
+\begin{DoxyItemize}
+\item type of the data structure you use for the state
+\item Requirements\+: must be an Eigen or Kokkos vector\+:todo explain why
+\end{DoxyItemize}
+\item {\ttfamily Linear\+Solver\+Type}\+:
+\begin{DoxyItemize}
+\item choose one from \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
+\item if you want to implement your own, then the linear solver class still has to conform to the \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
+\end{DoxyItemize}
+\item {\ttfamily Weighting\+Op\+Type}\+:
+\begin{DoxyItemize}
+\item this is the weighting operator if you want to do weighted least-\/squares. Must conform to\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }WeightingOperator}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} residual\_type \& operand, residual\_type \& result);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} jacobian\_type \& operand, jacobian\_type \& result);}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md21}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md21}
 \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md22}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_gn_autotoc_md22}
+~\newline
+ \DoxyHorRuler{0}
+ ~\newline
 \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md23}{}\doxysection{Gauss-\/\+Newton via QR factorization}\label{md_pages_components_nonlinsolvers_gn_autotoc_md23}
 \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md24}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_gn_autotoc_md24}
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md25}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md25}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }ProblemClassType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }StateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }QRSolverType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_gauss\_newton(\textcolor{keyword}{const} ProblemClassType \& system,}
+\DoxyCodeLine{                         \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                         QRSolverType \&\& qrsolver);}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item {\ttfamily Problem\+Class\+Type}\+:
+\begin{DoxyItemize}
+\item type of the class defining the problem to solve 
+
+
+\begin{DoxyItemize}
+\item {\itshape only} accepts the \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ residual-\/jacobian API or its fused version}} 
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+:
+\begin{DoxyItemize}
+\item type of the data structure you use for the state
+\item Requirements\+: must be an Eigen or Kokkos vector\+:todo explain why
+\end{DoxyItemize}
+\item {\ttfamily QRSolver\+Type}\+:
+\begin{DoxyItemize}
+\item needed to solve the QR-\/based formulation of the least-\/squares problem \href{https://en.wikipedia.org/wiki/QR_decomposition}{\texttt{ see this}}
+\item we suggest to use the \href{md_pages_components_qr.html}{\texttt{ pressio QR package}}
+\item if you want to implement your own, then it has to conform to the \href{md_pages_components_qr.html}{\texttt{ this API}}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md25}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md25}
 \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md26}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_gn_autotoc_md26}

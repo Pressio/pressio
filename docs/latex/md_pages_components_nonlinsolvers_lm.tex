@@ -4,5 +4,70 @@ Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md32}{}\doxysection{Levenberg–\+Marquardt}\label{md_pages_components_nonlinsolvers_lm_autotoc_md32}
 \hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md33}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_lm_autotoc_md33}
-\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md34}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_lm_autotoc_md34}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }ProblemClassType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }StateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }LinearSolverType}
+\DoxyCodeLine{  >                                                             (1)}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_levenberg\_marquardt(\textcolor{keyword}{const} ProblemClassType \& system,}
+\DoxyCodeLine{                                \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                                LinearSolverType \&\& lsolver);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }ProblemClassType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }StateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }LinearSolverType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }WeightingOpType}
+\DoxyCodeLine{  >                                                             (2)}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_levenberg\_marquardt(\textcolor{keyword}{const} ProblemClassType \& system,}
+\DoxyCodeLine{                                \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                                LinearSolverType \&\& lsolver,}
+\DoxyCodeLine{                                WeightingOpType \&\& weightOperator);}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item {\ttfamily Problem\+Class\+Type}\+:
+\begin{DoxyItemize}
+\item type of the class defining the problem to solve 
+
+
+\begin{DoxyItemize}
+\item overload 1\+: accepts the \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ residual-\/jacobian, hessian-\/gradient API, or their fused versions}}
+\item overload 2\+: {\itshape only} accepts the \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ residual-\/jacobian API or its fused version}} 
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+:
+\begin{DoxyItemize}
+\item type of the data structure you use for the state
+\item Requirements\+: must be an Eigen or Kokkos vector\+:todo explain why
+\end{DoxyItemize}
+\item {\ttfamily Linear\+Solver\+Type}\+:
+\begin{DoxyItemize}
+\item choose one from \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
+\item if you want to implement your own, then the linear solver class still has to conform to the \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
+\end{DoxyItemize}
+\item {\ttfamily Weighting\+Op\+Type}\+:
+\begin{DoxyItemize}
+\item this is the weighting operator if you want to do weighted least-\/squares. Must conform to\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }WeightingOperator}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} residual\_type \& operand, residual\_type \& result);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} jacobian\_type \& operand, jacobian\_type \& result);}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md34}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_lm_autotoc_md34}
 \hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md35}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_lm_autotoc_md35}
