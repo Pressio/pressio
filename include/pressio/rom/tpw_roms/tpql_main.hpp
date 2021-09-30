@@ -15,30 +15,33 @@ public:
   TpwqRom(const app_t & appObj,const basis_t & Phi,const list_of_states_t & InputListOfStatesAtLinearizationPoints,
           const list_of_params_t & InputListOfParamsAtLinearizationPoints, const list_of_times_t & InputListOfTimesAtLinearizationPoints, 
           const list_of_coords_t & InputListOfCoordsAtLinearizationPoints, const fom_state_t & fomReferenceState, const scalar_t & velocityErrorTolerance,
-          const scalar_t FiniteDifferenceStepSize, const int maxKForHessian) : Phi_(Phi) , appObj_(appObj), maxKForHessian_(maxKForHessian){
+          const int maxKForHessian,
+          const scalar_t epsilonForStateJacobian, const scalar_t epsilonForStateHessian, 
+          const scalar_t epsilonForParameterJacobian, const scalar_t epsilonForParameterHessian, 
+          const scalar_t epsilonForStateInMixedHessian, const scalar_t epsilonForParametersInMixedHessian) : Phi_(Phi) , appObj_(appObj), maxKForHessian_(maxKForHessian){
 
-  auto romDim = ::pressio::ops::extent(Phi,1);
+  romDim_ = ::pressio::ops::extent(Phi,1);
   auto param0 = InputListOfParamsAtLinearizationPoints[0];
   auto numParams = ::pressio::ops::extent(param0,0);
 
   // Compute mean of coordinates
   int numberOfInputPoints = InputListOfCoordsAtLinearizationPoints.size(); 
-  int coordinateDimension = InputListOfCoordsAtLinearizationPoints[0].size();
+  coordinateDimension_ = InputListOfCoordsAtLinearizationPoints[0].size();
 
-  std::vector<scalar_t> coordinateMeans(coordinateDimension);
+  std::vector<scalar_t> coordinateMeans(coordinateDimension_);
   for (int i = 0; i < numberOfInputPoints; i++){
-    for (int j=0; j < coordinateDimension; j++){ 
+    for (int j=0; j < coordinateDimension_; j++){ 
       coordinateMeans[j] += InputListOfCoordsAtLinearizationPoints[i](j);
     }
   }
 
-  for (int j=0; j < coordinateDimension; j++){ 
+  for (int j=0; j < coordinateDimension_; j++){ 
    coordinateMeans[j] /= float(numberOfInputPoints);
   }
 
   std::vector<scalar_t> distanceFromMean(numberOfInputPoints);
   for (int i = 0; i < numberOfInputPoints; i++){
-    for (int j=0; j < coordinateDimension; j++){ 
+    for (int j=0; j < coordinateDimension_; j++){ 
       distanceFromMean[i] += std::pow( InputListOfCoordsAtLinearizationPoints[i](j) - coordinateMeans[j] ,2.);
     }
     distanceFromMean[i] = std::sqrt(distanceFromMean[i]);
@@ -72,19 +75,19 @@ public:
       auto PhiTf = ::pressio::rom::experimental::computeBasisTransposeTimesVelocityEigen<rom_data_t>(appObj, workingStateVector,currentParam,currentTime, Phi);
       ListOfVelocitiesAtLinearizationPoints_.push_back(PhiTf);
 
-      auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+      auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi,epsilonForStateJacobian);
       ListOfJacobiansAtLinearizationPoints_.push_back(PhiTJPhi);
 
-      auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi , maxKForHessian);
+      auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi , maxKForHessian,epsilonForStateHessian);
       ListOfHessiansAtLinearizationPoints_.push_back(PhiTHPhiPhi);
 
-      auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
+      auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi ,epsilonForParameterJacobian);
       ListOfParamJacobiansAtLinearizationPoints_.push_back(PhiTJParams);
 
-      auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+      auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi,epsilonForParameterHessian);
       ListOfParamHessiansAtLinearizationPoints_.push_back(PhiTHParams);
 
-      auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+      auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi,epsilonForStateHessian,epsilonForParametersInMixedHessian);
       ListOfMixedHessiansAtLinearizationPoints_.push_back(PhiTHMixed);
 
       numCentroids += 1;      
@@ -93,7 +96,10 @@ public:
 
       auto relativeError = CheckGalerkinVelocity(currentState,workingStateVector,currentParam,currentTime,currentCoords);
       if (relativeError >= velocityErrorTolerance){
-        std::cout << " error = " << relativeError << ", adding new point " << std::endl; 
+        auto fmt = ::pressio::utils::io::red() + ::pressio::utils::io::bold();
+        ::pressio::utils::io::print_stdout(
+          fmt, "Relative velocity error = ", relativeError , " adding new point " , ::pressio::utils::io::reset(), " | ");
+
         // Add point to coordinate list
         ListOfStatesAtLinearizationPoints_.push_back( currentState );  
         ListOfParamsAtLinearizationPoints_.push_back( currentParam );  
@@ -104,24 +110,26 @@ public:
         auto PhiTf = ::pressio::rom::experimental::computeBasisTransposeTimesVelocityEigen<rom_data_t>(appObj, workingStateVector,currentParam,currentTime, Phi);
         ListOfVelocitiesAtLinearizationPoints_.push_back(PhiTf);
   
-        auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
+        auto PhiTJPhi = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi , epsilonForStateJacobian);
         ListOfJacobiansAtLinearizationPoints_.push_back(PhiTJPhi);
   
-        auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi,maxKForHessian);
+        auto PhiTHPhiPhi = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi,maxKForHessian,epsilonForStateHessian);
         ListOfHessiansAtLinearizationPoints_.push_back(PhiTHPhiPhi);
   
-        auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
+        auto PhiTJParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi , epsilonForParameterJacobian);
         ListOfParamJacobiansAtLinearizationPoints_.push_back(PhiTJParams);
   
-        auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
+        auto PhiTHParams = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi , epsilonForParameterHessian);
         ListOfParamHessiansAtLinearizationPoints_.push_back(PhiTHParams);
   
-        auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi );
+        auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi ,epsilonForStateInMixedHessian,epsilonForParametersInMixedHessian);
         ListOfMixedHessiansAtLinearizationPoints_.push_back(PhiTHMixed);
         numCentroids += 1;
       }
       else{
-        std::cout << " error = " << relativeError << ", skipping point " << std::endl; 
+        auto fmt = ::pressio::utils::io::green() + ::pressio::utils::io::bold();
+        ::pressio::utils::io::print_stdout(
+          fmt, "Relative velocity error = ", relativeError , " skipping point " , ::pressio::utils::io::reset(), " | ");
       }
     }
   } 
@@ -131,16 +139,16 @@ public:
   if (outputFile.is_open())
   {
     // Write out basic information
-    outputFile << romDim << std::endl;
+    outputFile << romDim_ << std::endl;
     outputFile << maxKForHessian << std::endl;
     outputFile << numParams << std::endl;
-    outputFile << coordinateDimension << std::endl;
+    outputFile << coordinateDimension_ << std::endl;
     outputFile << numCentroids << std::endl;
 
     for (int c = 0; c < numCentroids; c++){
 
       // write out reduced states at centroids
-      for (int i = 0; i < romDim; i++){
+      for (int i = 0; i < romDim_; i++){
         outputFile << ListOfStatesAtLinearizationPoints_[c](i) << std::endl;
       }
     }
@@ -157,21 +165,21 @@ public:
     }
       // write out coordinates at centroids
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < coordinateDimension; i++){
+      for (int i = 0; i < coordinateDimension_; i++){
         outputFile << ListOfCoordsAtLinearizationPoints_[c](i) << std::endl;
       }
      }
        // Write out PhiTf
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < romDim; i++){
+      for (int i = 0; i < romDim_; i++){
         outputFile << ListOfVelocitiesAtLinearizationPoints_[c](i) << std::endl;
       }
     }
 
        // Write out PhiTJPhi
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < romDim; i++){
-        for (int j = 0; j < romDim; j++){
+      for (int i = 0; i < romDim_; i++){
+        for (int j = 0; j < romDim_; j++){
           outputFile << ListOfJacobiansAtLinearizationPoints_[c](i,j) << std::endl;
         }
       }
@@ -179,7 +187,7 @@ public:
 
       // Write out PhiTHPhiPhi
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < romDim; i++){
+      for (int i = 0; i < romDim_; i++){
         for (int j = 0; j < maxKForHessian; j++){
           for (int k = 0; k < maxKForHessian; k++){
             outputFile << ListOfHessiansAtLinearizationPoints_[c][i][j][k] << std::endl;
@@ -190,7 +198,7 @@ public:
 
       // Write out PhiTJParams
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < romDim; i++){
+      for (int i = 0; i < romDim_; i++){
         for (int j = 0; j < numParams; j++){
           outputFile << ListOfParamJacobiansAtLinearizationPoints_[c](i,j) << std::endl;
         }
@@ -198,7 +206,7 @@ public:
     }
       // Write out PhiTJParams
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < romDim; i++){
+      for (int i = 0; i < romDim_; i++){
         for (int j = 0; j < numParams; j++){
           for (int k = 0; k < numParams; k++){
             outputFile << ListOfParamHessiansAtLinearizationPoints_[c][i][j][k] << std::endl;
@@ -209,8 +217,8 @@ public:
       // Write out PhiTHMixed
 
     for (int c = 0; c < numCentroids; c++){
-      for (int i = 0; i < romDim; i++){
-        for (int j = 0; j < romDim; j++){
+      for (int i = 0; i < romDim_; i++){
+        for (int j = 0; j < romDim_; j++){
           for (int k = 0; k < numParams; k++){
             outputFile << ListOfMixedHessiansAtLinearizationPoints_[c][i][j][k] << std::endl;
           }
@@ -241,6 +249,8 @@ private:
   const app_t & appObj_;
   const basis_t & Phi_;
   int maxKForHessian_;
+  int coordinateDimension_;
+  int romDim_;
   list_of_states_t ListOfStatesAtLinearizationPoints_{0};
   list_of_params_t ListOfParamsAtLinearizationPoints_{0}; 
   list_of_times_t  ListOfTimesAtLinearizationPoints_{0};
@@ -265,31 +275,92 @@ public:
     auto MixedHessianAtLinearizationPoint = ListOfMixedHessiansAtLinearizationPoints_[linPointIndx];
     auto ReducedStateAtLinearizationPoint = ListOfStatesAtLinearizationPoints_[linPointIndx];
     auto ParamAtLinearizationPoint = ListOfParamsAtLinearizationPoints_[linPointIndx];
+    auto CoordsAtLinearizationPoint = ListOfCoordsAtLinearizationPoints_[linPointIndx];
+    auto fmt1 = ::pressio::utils::io::cyan() + ::pressio::utils::io::bold();
 
-    auto romDim =  ::pressio::ops::extent(xhat,0);
+    ::pressio::utils::io::print_stdout(
+        fmt1, "Calling Galerkin velocity with coordinates = ");
+    auto numCoords = ::pressio::ops::extent(PointCoords,0);
+    for (int i = 0; i < numCoords; i++){
+      ::pressio::utils::io::print_stdout(fmt1, " " , PointCoords(i) );
+    }
+    ::pressio::utils::io::print_stdout("\n");
+    ::pressio::utils::io::print_stdout(fmt1, "Closest linearization point = ");
+    for (int i = 0; i < numCoords; i++){
+      ::pressio::utils::io::print_stdout(fmt1, " " , CoordsAtLinearizationPoint(i) );
+    }
+    ::pressio::utils::io::print_stdout("\n");
+
+
     rom_state_t d_xHat(xhat);
+    d_xHat.setZero();
+
     rom_state_t d_xHat_Reduced(maxKForHessian_);
+    d_xHat_Reduced.setZero();
 
     ::pressio::ops::update(d_xHat,0.,xhat,1.,ReducedStateAtLinearizationPoint,-1.);
 
     for (int i = 0; i < maxKForHessian_; i++){
       d_xHat_Reduced(i) = d_xHat(i);
     }
-    //auto d_xHat = xhat - ReducedStateAtLinearizationPoint;
 
     params_t d_mu(mu);
+    ::pressio::ops::set_zero(d_mu);
     ::pressio::ops::update(d_mu,0.,mu,1.,ParamAtLinearizationPoint,-1.);
 
-    //auto d_mu = mu - ParamAtLinearizationPoint;
-    rom_velocity_t f(romDim);
+    rom_velocity_t f(romDim_);
+    ::pressio::ops::set_zero(f);
+    auto budget0 = ::pressio::ops::norm2(f);
     ::pressio::ops::update(f,0.,VelocityAtLinearizationPoint,1.);
+    auto budget1 = ::pressio::ops::norm2(f);
+    auto budget1Diff = std::sqrt( std::abs(budget1*budget1 - budget0*budget0) + 1.e-30);
+
     ::pressio::ops::product(::pressio::nontranspose(),1., JacobianAtLinearizationPoint,         d_xHat,                    1.,f);
+
+    auto budget2 = ::pressio::ops::norm2(f);
+    auto budget2Diff = std::sqrt( std::abs(budget2*budget2 - budget1*budget1) + 1.e-30);
+
     ::pressio::ops::product(::pressio::nontranspose(),1., ParameterJacobianAtLinearizationPoint,d_mu  ,                    1.,f);
-//    f = VelocityAtLinearizationPoint + JacobianAtLinearizationPoint * d_xHat + 
-//             ParameterJacobianAtLinearizationPoint * d_mu;
+
+    auto budget3 = ::pressio::ops::norm2(f);
+    auto budget3Diff = std::sqrt( std::abs(budget3*budget3 - budget2*budget2) + 1.e-30);
+    
     tensorMultiply(HessianAtLinearizationPoint, d_xHat_Reduced,d_xHat_Reduced,0.5,f); 
+
+    auto budget4 = ::pressio::ops::norm2(f);
+    auto budget4Diff = std::sqrt( std::abs(budget4*budget4 - budget3*budget3) + 1.e-30);
+
     tensorMultiply(ParameterHessianAtLinearizationPoint, d_mu,d_mu,0.5,f); 
+
+    auto budget5 = ::pressio::ops::norm2(f);
+    auto budget5Diff = std::sqrt( std::abs(budget5*budget5 - budget4*budget4) + 1.e-30);
+
     tensorMultiply(MixedHessianAtLinearizationPoint, d_xHat,d_mu,1.,f); 
+
+    auto budget6 = ::pressio::ops::norm2(f);
+    auto budget6Diff = std::sqrt( std::abs(budget6*budget6 - budget5*budget5) + 1.e-30);
+
+    ::pressio::utils::io::print_stdout("\n");
+    auto fmt = ::pressio::utils::io::blue() + ::pressio::utils::io::bold();
+    ::pressio::utils::io::print_stdout(
+        fmt, "Budget 0 = ", budget0 , ::pressio::utils::io::reset(), " | ");
+    ::pressio::utils::io::print_stdout(
+        fmt, "linearization point budget = ", budget1Diff , ::pressio::utils::io::reset(), " | ");
+    ::pressio::utils::io::print_stdout(
+        fmt, "State Jacobian budget = ", budget2Diff , ::pressio::utils::io::reset(), " | ");
+
+    ::pressio::utils::io::print_stdout(
+        fmt, "Parameter Jacobian budget = ", budget3Diff , ::pressio::utils::io::reset(), " | ");
+
+    ::pressio::utils::io::print_stdout(
+        fmt, "State Hessian budget = ", budget4Diff , ::pressio::utils::io::reset(), " | ");
+
+    ::pressio::utils::io::print_stdout(
+        fmt, "Parameter Hessian budget = ", budget5Diff , ::pressio::utils::io::reset(), " | ");
+
+    ::pressio::utils::io::print_stdout(
+        fmt, "Mixed Hessian budget = ", budget6Diff , ::pressio::utils::io::reset(), "\n");
+
     return f;
   }
 
@@ -312,16 +383,25 @@ private:
   {
     auto fTpwq = GalerkinVelocity(xhat,mu,t,PointCoords);
     auto fTrue = appObj_.createVelocity();
+    ::pressio::ops::set_zero(fTrue);
     appObj_.updateScalarParameters(mu);
     appObj_.velocity(x,t,fTrue);
 
-    auto romDim =  ::pressio::ops::extent(xhat,0);
 
-    rom_velocity_t fGalerkin(romDim);
-    rom_velocity_t velocityError(romDim);
+    rom_velocity_t fGalerkin(romDim_);
+    ::pressio::ops::set_zero(fGalerkin);
+    rom_velocity_t velocityError(romDim_);
+    ::pressio::ops::set_zero(velocityError);
     ::pressio::ops::product(::pressio::transpose(),1., Phi_,fTrue, 0.,fGalerkin);    
     ::pressio::ops::update(velocityError,0.,fTpwq,1.,fGalerkin,-1.);
-    //auto error = fTpwq - fGalerkin;
+
+
+    auto galerkinNorm = ::pressio::ops::norm2(fGalerkin);
+    auto tpwNorm = ::pressio::ops::norm2(fTpwq);
+    auto fmt = ::pressio::utils::io::blue() + ::pressio::utils::io::bold();
+    ::pressio::utils::io::print_stdout(
+        fmt, "Galerkin velocity norm = ", galerkinNorm , " tpw velocity norm = " , tpwNorm , ::pressio::utils::io::reset(), "\n");
+
     auto errorNorm = ::pressio::ops::norm2(velocityError)/ ::pressio::ops::norm2(fGalerkin); 
     return errorNorm; 
   }
@@ -330,18 +410,15 @@ private:
   int FindClosestLinearizationPoint(coords_t PointCoords){
 
     int numberOfAddedLinearizationPoints = ListOfCoordsAtLinearizationPoints_.size();
-    int coordinateDimension = 2;
     std::vector<scalar_t> distance(numberOfAddedLinearizationPoints);
-    //std::cout << "Current coords are " << PointCoords << std::endl;
 
     for (int i = 0; i < numberOfAddedLinearizationPoints; i++){
-      for (int j=0; j < coordinateDimension; j++){
+      for (int j=0; j < coordinateDimension_; j++){
         distance[i] += std::pow( ListOfCoordsAtLinearizationPoints_[i](j) - PointCoords[j] ,2.);
       }
       distance[i] = std::sqrt(distance[i]);
     }
     int linPointIndex = std::min_element(distance.begin(), distance.end()) - distance.begin();
-    //std::cout << "Closest linearization point is " << linPointIndex << std::endl;
     return linPointIndex;
   }
 
