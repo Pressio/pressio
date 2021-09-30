@@ -1,28 +1,64 @@
 
-# FOM adapter API
+# Full-order model (FOM) adapter API
 
-In order to use the `presssio/rom` model reduction functionalities,
-obviously there needs to be a way to exchange
-data/information between pressio and your FOM application.
-To do so, pressio requires you to write an *adapter class* as
-a minimally intrusive layer to standardize the way pressio interfaces with any application.
-As explained below, in general, preparing the adapter should only
-involve *exposing* from your applications some operators.
 
-## Stead API
+@m_class{m-note m-default}
 
+@parblock
+*The FOM adapter is the layer standardizing how pressio
+queries operators from an application.*
+
+It is one of the most important features and a pivotal design in pressio.
+@endparblock
+
+
+@m_class{m-block m-success}
+
+@par Minimally intrusive, you only need to expose information you already have
+Preparing an adapter should only involve *exposing* some operators in your application.
+Pressio does NOT require you to provide information that you don't already have.
+In fact, pressio needs to access *standard* information/operators that your application
+already assembles in some form or another. In some cases, these operators might not
+be fully exposed yet, so all we need is for you to make them accessible.
+As such, writing an adapter is, in most cases, relatively simple.
+Note, also, that writing an adapter for *your* application only involves
+operating within *your* application domain, using your data structures
+and whatever functionalities your application supports.
+Therefore, this adapter *lives within your application space*.
+@endparblock
+
+
+@m_class{m-block m-success}
+
+@par Different adapters for different needs
+Depending on what problem you are trying to solve,
+we haved designed different adapter concepts/APIs,
+e.g. steady, unsteady, exposing only partial information, etc,
+that fit different scenarios.
+Note that not all adapters can be used for all ROM methods we support.
+See below for all the details.
+@endparblock
+
+<br/>
+
+
+# Steady API
+
+@m_class{m-note m-info}
+
+@parblock
 Intended for when your FOM application is expressed as
 @f[
 \boldsymbol{R}(\boldsymbol{y}; \boldsymbol{\mu}) = 0
 @f]
-where @f$y@f$ is the full-order model (FOM) state,
-@f$R@f$ is the residual
+where @f$y@f$ is your FOM state, and @f$R@f$ is the residual
 \todo finish.
+@endparblock
 
 ### Synopsis
 
 ```cpp
-class FomSteadyAdapter
+class SteadyFomAdapter
 {
 public:
   using scalar_type   = /* your type */;
@@ -39,15 +75,27 @@ public:
 };
 ```
 
-### Usage
-- @m_span{m-text m-warning}This adapter can ONLY be used for doing stedy LSPG ROMs.@m_endspan
-- See the following examples: \toadd
+### Notes
+@m_class{m-note m-warning}
 
+@parblock
+The steady adapter can ONLY be used for doing steady LSPG ROMs.
+@endparblock
+
+See the following examples:
+\toadd
+
+
+<br/>
+___
 <br/>
 
 
-## Continuous-time API: Velocity Only
+# Continuous-time API: RHS Only
 
+@m_class{m-note m-info}
+
+@parblock
 Intended for when your FOM application is expressed in *time-continuous* form as
 @f[
 \frac{d \boldsymbol{y}}{dt} =
@@ -59,11 +107,12 @@ where @f$y@f$ is the full-order model (FOM) state,
 and, for some reason, you can/want to only expose
 the right-hand-side (or velocity) of your FOM application.
 \todo finish.
+@endparblock
 
 ### Synopsis
 
 ```cpp
-class FomAdapter
+class ContTimeFomAdapterVelocityOnly
 {
 public:
   using scalar_type   = /* your type */;
@@ -81,21 +130,37 @@ public:
 };
 ```
 
-### Usage
-- @m_span{m-text m-warning}This adapter can ONLY be used for doing Galerkin ROMs with explicit time stepping.@m_endspan
-- See the following examples: ...
+### Notes
+@m_class{m-note m-warning}
+
+@parblock
+This adapter can ONLY be used for doing Galerkin ROMs with explicit time stepping.
+@endparblock
+
+See the following examples:
+\toadd
+
 
 <br/>
+___
+<br/>
 
-## Continuous-time API: Velocity and Jacobian action
 
+# Continuous-time API: RHS and Jacobian action
+
+@m_class{m-note m-info}
+
+@parblock
 This API is intended for any system expressible in *time-continuous* form as above,
 but you expose both the right-hand-side of your FOM application as well as
 the action of the velocity's Jacobian on some operand (more on this later).
+@endparblock
+
 
 ### Synopsis
+
 ```cpp
-class FomAdapter
+class ContTimeFomAdapterWithApplyJacobian
 {
 public:
   using scalar_type   = /* your type */;
@@ -122,30 +187,43 @@ public:
 };
 ```
 
-### Usage
+### Notes
 
-- @m_span{m-text m-warning}can be used for doing Galerkin ROMs with explicit and implicit time stepping@m_endspan,
-- @m_span{m-text m-warning}can be used for LSPG and WLS (note that LSPG and WLS only
-make sense for implicit time integration).@m_endspan
-- See the following examples: ...
+@m_class{m-note m-warning}
 
+@parblock
+- Can be used for doing Galerkin ROMs with explicit and implicit time stepping
+- Can be used for LSPG and WLS (note that LSPG and WLS only make sense
+for implicit time integration).
+@endparblock
+
+See the following examples:
+\toadd
+
+
+<br/>
+___
 <br/>
 
 
+# Discrete-time API
 
-## Discrete-time API
+@m_class{m-note m-info}
 
+@parblock
 This API is intended for any system expressible in a discrete-time form as
 @f[
 \boldsymbol{R}(\boldsymbol{y_{n+1}}, \boldsymbol{y_{n}}, \boldsymbol{y_{n-1}}, ..., t_{n+1}, dt_{n+1}; ...) = \boldsymbol{0}
 @f]
 where @f$y@f$ is the full-order model (FOM) state, @f$t@f$ is time, and @f$R@f$ is the residual.
 \todo finish.
+@endparblock
+
 
 ### Synopsis
 
 ```cpp
-class
+class DiscreteTimeFomAdapter
 {
 public:
   using scalar_type					= /* your type */;
@@ -215,17 +293,53 @@ public:
 };
 ```
 
-### Usage
 
-- @m_span{m-text m-warning}for doing Galerkin *implicit* time stepping@m_endspan
-- @m_span{m-text m-warning}for doing LSPG @m_endspan
-- See the following examples: ...
+### Notes
 
+@m_class{m-note m-warning}
+
+@parblock
+- For doing Galerkin *implicit* time stepping.
+- For doing LSPG and WLS.
+@endparblock
+
+See the following examples:
+\toadd
+
+
+<br/>
+___
 <br/>
 
 
-## Should you prefer the continuous-time or discrete-time API?
+# What can you use where?
 
+As anticipated, not all adapters can be used for all supported ROM methods.
+The following table illustrates which APIs are admissible for each method.
+
+|                            | Steady API | Continuous Time API <br/> (RHS only) | Continuous Time API <br/> (RHS, Jacobian action) | Discrete Time API |
+|----------------------------|------------|-------------------------------------------|----------------------------------------------------------|-------------------|
+| Galerkin Explicit Stepping | NA         | supported                                 | supported                                                | NA                |
+| Galerkin Implicit Stepping | NA         | NA                                        | supported                                                | supported         |
+| LSPG Unsteady              | NA         | NA                                        | supported                                                | supported         |
+| LSPG Steady                | supported  | NA                                        | NA                                                       | NA                |
+| WLS Explicit Stepping      | NA         | supported                                 | supported                                                | NA                |
+| WLS Implicit Stepping      | NA         | NA                                        | supported                                                | supported         |
+
+Note: for LSPG there is no distinction between explicit and implicit
+because LSPG only makes sense for implicit time stepping.
+Actually, it can be shown that explicit LSPG is equivalent to explicit Galerkin.
+
+<br/>
+___
+<br/>
+
+
+# Frequently Asked Questions
+
+@m_class{m-block m-default}
+
+@par 1. Should I prefer the continuous-time or discrete-time API?
 In general, we suggest users to always prefer the continuous-time API because it is more general.
 However, there are situations where the discrete-time API is more useful or even necessary.
-For example, \todo.
+@endparblock

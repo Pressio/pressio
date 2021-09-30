@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_tpetra_vector.hpp
+// native_tpetra_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_VECTOR_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_VECTOR_HPP_
+#ifndef TYPE_TRAITS_NATIVE_TPETRA_VECTOR_HPP_
+#define TYPE_TRAITS_NATIVE_TPETRA_VECTOR_HPP_
 
 #include "Tpetra_Vector.hpp"
 
@@ -74,4 +74,4 @@ struct is_vector_tpetra<
   > : std::true_type{};
 
 }
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_VECTOR_HPP_
+#endif  // TYPE_TRAITS_NATIVE_TPETRA_VECTOR_HPP_

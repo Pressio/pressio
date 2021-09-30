@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_discrete_time_system_with_user_provided_apply_jacobian.hpp
+// rom_fom_system_discrete_time_with_user_provided_apply_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
-#define ROM_CONSTRAINTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_FOM_SYSTEM_DISCRETE_TIME_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#define ROM_CONSTRAINTS_ROM_FOM_SYSTEM_DISCRETE_TIME_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -161,4 +161,4 @@ struct discrete_time_fom_system_with_user_provided_apply_jacobian<
 // };
 
 }} // namespace pressio::rom
-#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_DISCRETE_TIME_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_

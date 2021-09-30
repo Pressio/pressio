@@ -217,7 +217,7 @@ public:
     // compute r from system object
     system.residual(state, r_);
     // apply M
-    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, 
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_,
         Mr_, is_irwls, callCount_);
 
     residualNorm = this->_computeNorm();
@@ -228,7 +228,7 @@ public:
 
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
-      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_, 
+      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_,
           MJ_, is_irwls, callCount_);
       _computeHessian();
     }
@@ -248,7 +248,7 @@ public:
     callCount_++;
 
     system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, 
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_,
         Mr_, is_irwls, callCount_);
     residualNorm = this->_computeNorm();
 
@@ -257,7 +257,7 @@ public:
     }
 
     if (recomputeSystemJacobian){
-      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_, 
+      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_,
           MJ_, is_irwls, callCount_);
       _computeHessian();
     }

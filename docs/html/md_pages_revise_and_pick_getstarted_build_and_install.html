@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Installation and Dependencies | Pressio|C++</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Pressio|C++</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-12 m-col-m-none">
+            <li><a href="md_pages_introduction.html">Introduction</a></li>
+            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li>
+              <a>Documentation</a>
+              <ol>
+                <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
+                <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
+                <li><a href="md_pages_components_expressions.html">expressions</a></li>
+                <li><a href="md_pages_components_ops.html">ops</a></li>
+                <li><a href="md_pages_components_qr.html">qr</a></li>
+                <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html"> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: steady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+              </ol>
+            </li>
+            <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="6">
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          Installation and Dependencies
+        </h1>
+<aside class="m-block m-info"><p>This page describes the dependencies of <code>pressio</code> and its installation process. By the end, you should be able to clone pressio, install it, and point to the installed headers from your application.</p></aside><div><p><code>pressio</code> is header-only, so to use it one does not need to precompile it into a library and linking to it. However, since we use preprocessor directives to conditionally enable/disable code based on target third-party libraries, one needs to account for this. See below for the details.</p></div><section id="autotoc_md185"><h2><a href="#autotoc_md185">Dependencies</a></h2><p>Some parts of <code>pressio</code> contain code and implementations that are specific to third-party libraries (TPLs). For example, the <code>containers</code> and <code>ops</code> components of <code>pressio</code> contain thin wrappers and kernels that are custom-built for target libraries. The main reason for doing this is that we aim to alleviate the user from writing custom operations and allows <code>pressio</code> to decide when and how to leverage the native libraries&#x27; operations to obtain the best performance. This should facilitate the integration and use of <code>pressio</code> by existing applications. Obviously, this is a growing capability and we currently only provide built-in support to some external HPC libraries (see below). We can distinguish between <em>optional</em> and <em>required</em> dependencies.</p><table class="m-table"><thead><tr><th>TPL Library Name</th><th>Optional/Required</th><th>Version Known to Work</th></tr></thead><tbody><tr><td>Eigen</td><td>Required</td><td>3.3.7</td></tr><tr><td>Trilinos</td><td>Optional</td><td>12.17.00</td></tr><tr><td>MPI</td><td>Optional</td><td>&ndash;</td></tr><tr><td>Kokkos</td><td>Optional</td><td>3.1.0</td></tr><tr><td>BLAS</td><td>Optional</td><td>&ndash;</td></tr><tr><td>LAPACK</td><td>Optional</td><td>&ndash;</td></tr><tr><td>Pybind11</td><td>Optional</td><td>v2.6</td></tr><tr><td>GoogleTest</td><td>Optional</td><td>1.10.0</td></tr><tr><td></td><td></td><td></td></tr></tbody></table><p>Enabling/disabling specific dependencies is done via the following cmake variables:</p><table class="m-table"><thead><tr><th>Variable</th><th>Description</th><th>Default Value</th></tr></thead><tbody><tr><td><code>PRESSIO_ENABLE_TPL_EIGEN</code></td><td>self-explanatory</td><td><code>ON</code></td></tr><tr><td><code>PRESSIO_ENABLE_TPL_TRILINOS</code></td><td>self-explanatory</td><td><code>OFF</code></td></tr><tr><td><code>PRESSIO_ENABLE_TPL_MPI</code></td><td>self-explanatory</td><td><code>OFF</code> automatically <code>ON</code> if <code>PRESSIO_ENABLE_TPL_TRILINOS=ON</code></td></tr><tr><td><code>PRESSIO_ENABLE_TPL_KOKKOS</code></td><td>self-explanatory</td><td><code>OFF</code>; automatically <code>ON</code> if <code>PRESSIO_ENABLE_TPL_TRILINOS=ON</code></td></tr><tr><td><code>PRESSIO_ENABLE_TEUCHOS_TIMERS</code></td><td>self-explanatory</td><td><code>OFF</code> automatically <code>ON</code> if <code>PRESSIO_ENABLE_TPL_TRILINOS=ON</code></td></tr><tr><td><code>PRESSIO_ENABLE_TPL_BLAS</code></td><td>self-explanatory</td><td><code>OFF</code>; automatically <code>ON</code> if <code>PRESSIO_ENABLE_TPL_LAPACK=ON</code> or <code>PRESSIO_ENABLE_TPL_TRILINOS=ON</code></td></tr><tr><td><code>PRESSIO_ENABLE_TPL_LAPACK</code></td><td>self-explanatory</td><td><code>OFF</code>; automatically <code>ON</code> if <code>PRESSIO_ENABLE_TPL_BLAS=ON</code> or <code>PRESSIO_ENABLE_TPL_TRILINOS=ON</code></td></tr><tr><td><code>PRESSIO_ENABLE_TPL_PYBIND11</code></td><td>self-explanatory</td><td><code>OFF</code></td></tr><tr><td><code>PRESSIO_ENABLE_DEBUG_PRINT</code></td><td>to enable debugging print statements</td><td><code>OFF</code></td></tr></tbody></table><aside class="m-block m-default"><p>Eigen is the only required dependency because it is the default choice for instantiating the ROM data structures and solving the (dense) ROM problem.</p></aside><p>Obviously, the choice of which TPLs to enable is related to your application&#x27;s dependency requirements. For example, if you have an application that relies on Trilinos data structures and want to use <code>pressio</code>, then it makes sense to enable the Trilinos dependency. On the contrary, if you have an application that relies only on Eigen data structures, then it makes sense to only leave only Eigen on and disable the rest.</p><p>Also, we note that some of the cmake variables listed above are connected and cannot be turned on individualy. For example, if we enable Trilinos then <code>pressio</code> automatically enables also Kokkos, BLAS, LAPACK and MPI. The reason for this choice is that in a production scenario&mdash;which is what pressio mainly targets&mdash;it is reasonable to expect a user to have Trilinos built with BLAS, LAPACK, MPI and Kokkos support.</p><p>There might be other constraints on the variables one can set. The reason for this is twofold: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.</p></section><section id="autotoc_md186"><h2><a href="#autotoc_md186">In practice, what are the steps to get, install and use Pressio?</a></h2><ol><li><p>Clone <a href="https://github.com/Pressio/pressio">pressio</a> (defaults to the main branch), or you can pick a <a href="https://github.com/Pressio/pressio/releases">release version</a></p></li><li><p>Create a build and install subdirectories</p><pre class="m-code m-code-figure"><span class="nb">cd</span> &lt;where-you-cloned-pressio&gt;
+mkdir build <span class="o">&amp;&amp;</span> mkdir install</pre></li><li><p>Use cmake to configure by passing to the comand line the target list of cmake variables to define.<br />For example, suppose we want to enable support for Trilinos and the debug prints. We would do:</p><pre class="m-code"><span class="nb">export</span> <span class="nv">PRESSIO_SRC</span><span class="o">=</span>&lt;where-you-cloned-pressio&gt;
+<span class="nb">cd</span> &lt;where-you-cloned-pressio&gt;/build
+
+cmake -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>../install <span class="se">\</span>
+      -D <span class="nv">PRESSIO_ENABLE_TPL_TRILINOS</span><span class="o">=</span>ON <span class="se">\</span>
+      -D <span class="nv">PRESSIO_ENABLE_DEBUG_PRINT</span><span class="o">=</span>ON <span class="se">\</span>
+      <span class="si">${</span><span class="nv">PRESSIO_SRC</span><span class="si">}</span>
+
+make install <span class="c1"># nothing is built, just headers copied to installation</span></pre><p><em>Note that this step does <strong>not</strong> build anything because <code>pressio</code> is header-only, but only processes the cmake arguments and copies the pressio headers to the install prefix</em> <code>&lt;where-you-cloned-pressio&gt;/install</code>.<br />If you want, inspect the file <code>&lt;where-you-cloned-pressio&gt;/install/presssio_cmake_config.h</code> which contains the cmake variables configuration.</p><p>We also remark that during the configuration step above pressio does not need to know where a target TPL exists in your system. In the configuration step above, you are simply telling Pressio that you have a certain TPL and want to enable the corresponding code in pressio. The TPLs will be needed at linking stage when you build <em>your</em> code that <em>uses</em> pressio.</p></li><li><p>When building your application to use pressio, you just have to point to the installation directory <code>&lt;where-you-cloned-pressio&gt;/install</code> with the installed pressio headers, and you can access all pressio functionalities via the C++ include <code>#include&lt;pressio.hpp&gt;</code>:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio.hpp&quot;</span><span class="cp"></span>
+<span class="c1">// ...</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+  <span class="c1">// do what you need</span>
+<span class="p">}</span></pre></li></ol><aside class="m-block m-warning"><p>The procedure above is advised because it enables <code>pressio</code> to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to the <code>&lt;where-you-cloned-pressio&gt;/include</code> subdirectory and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constraints.</p></aside></section><section id="autotoc_md187"><h2><a href="#autotoc_md187">Where to go from here?</a></h2><p>Navigate <a href="./md_pages_getstarted_packages.html">this page</a> to learn which packages pressio includes, and how you can have finer-grained access to certain functionalities.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

@@ -181,7 +181,6 @@ product(::pressio::nontranspose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_LEVEL3_HPP_
 
 
 
@@ -245,3 +244,4 @@ product(::pressio::nontranspose modeA,
 //     CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen * BE.col(i);
 //   }
 // }
+#endif  // OPS_EIGEN_OPS_LEVEL3_HPP_

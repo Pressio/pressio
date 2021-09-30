@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_residual_policy_continuous_time_api.hpp
+// rom_lspg_unsteady_hypred_updater_trilinos.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
-#define ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
+#define ROM_IMPL_ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -218,4 +218,4 @@ struct HypRedUpdaterTrilinos
 };
 
 }}}}
-#endif
+#endif  // ROM_IMPL_ROM_LSPG_UNSTEADY_HYPRED_UPDATER_TRILINOS_HPP_

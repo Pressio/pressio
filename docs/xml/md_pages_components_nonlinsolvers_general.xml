@@ -6,9 +6,11 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md14">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md11">
 <title>Overview</title>
 <para>The pressio nonlinear solvers have been developed from the ground up using generic programming. It is intended to be a library that can be used independently and with support for arbitrary data types. It is not fully complete, and it can obviously be extended. If you are interested in contributing or you need other methods, open an issue and/or PR.</para>
 <para>Currently, we support the following algorithms:</para>
@@ -33,13 +35,15 @@
 </entry><entry thead="no"><para>Nonlinear least-squares problem. (see <ulink url="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">link</ulink> )    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Iteratively reweighted least squares   </para>
+<entry thead="no"><para>Iteratively reweighted least squares (irls)   </para>
 </entry><entry thead="no"><para><ulink url="./md_pages_components_nonlinsolvers_irls.html">Link</ulink>   </para>
 </entry><entry thead="no"><para>optimization problem formulated in a p-norm (see <ulink url="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">link</ulink> )   </para>
 </entry></row>
 </table>
 </para>
-<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md15">
+<para><linebreak/>
+</para>
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md12">
 <title>A glimpse of the API</title>
 <para>To create a solver, we expose specific factory functions for each algorithm.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pnonls<sp/>=<sp/>pressio::nonlinearsolvers;</highlight></codeline>
@@ -47,18 +51,20 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pnonls::create_gauss_newton(....);</highlight></codeline>
 </programlisting></para>
 <para>Please refer to each method&apos;s documentation for the details on the API and arguments.</para>
+<para><linebreak/>
+</para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md16">
-<title>What are users responsible of?</title>
-<para>If you want to use the pressio nonlinear solvers, you are responsible of three main things:</para>
+<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md13">
+<title>What are you responsible of?</title>
+<para>If you want to use the pressio nonlinear solvers, you are responsible of:</para>
 <para><itemizedlist>
 <listitem><para>A: providing a problem object</para>
-</listitem><listitem><para>B: specifying the convergence criterion</para>
-</listitem><listitem><para>C: specifying the update method</para>
+</listitem><listitem><para>B: selecting (if needed) the convergence criterion</para>
+</listitem><listitem><para>C: selecting (if needed) the update method</para>
 </listitem></itemizedlist>
 </para>
-<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md17">
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md14">
 <title>A: problem class</title>
 <para>The problem class is what you use to <emphasis>define your problem</emphasis>. An instance of a problem class is what you provide to pressio to compute the needed operators to operate on. Obivously, this problem class must meet a specific API.</para>
 <para>The pressio nonlinear solvers define four main types of problem APIs, namely the &quot;residual-jacobian&quot;, &quot;fused residual-jacobian&quot;, &quot;hessian-gradient&quot; , and &quot;fused hessian-gradient&quot;. These problem concepts are discussed on <ulink url="md_pages_components_nonlinsolvers_system_api.html">this page</ulink>. Depending on which concepts your problem meets, you can access certain algorithms but not necessarily others. The following table helps clarifying the problem API/algorithms admissibility:</para>
@@ -73,22 +79,22 @@
 <entry thead="no"><para>Newton-Raphson   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
-</entry><entry thead="no"><para></para>
-</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para>-   </para>
+</entry><entry thead="no"><para>-    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Gauss-Newton Normal-Equations   </para>
+<entry thead="no"><para>Gauss-Newton via Normal-Equations   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Gauss-Newton QR   </para>
+<entry thead="no"><para>Gauss-Newton via QR   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
-</entry><entry thead="no"><para></para>
-</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para>-   </para>
+</entry><entry thead="no"><para>-    </para>
 </entry></row>
 <row>
 <entry thead="no"><para>Levenberg-Marquardt   </para>
@@ -101,14 +107,14 @@
 <entry thead="no"><para>irls   </para>
 </entry><entry thead="no"><para>admissible   </para>
 </entry><entry thead="no"><para>admissible   </para>
-</entry><entry thead="no"><para></para>
-</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para>-   </para>
+</entry><entry thead="no"><para>-   </para>
 </entry></row>
 </table>
 </para>
 <para>Please refer to each method&apos;s documentation for the details on how you provide a problem instance to pressio.</para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md18">
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md15">
 <title>B: Convergence and tolerance</title>
 <para>The convergence criterion and associated tolerance are used to decide why and when the solver needs to terminate. We currently support these termination criteria:</para>
 <para><table rows="8" cols="3"><row>
@@ -153,7 +159,7 @@
 </entry></row>
 </table>
 </para>
-<para>which you set/query along with corresponding tolerances using the following methods:</para>
+<para>which you set/query using the following methods:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Solver{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -187,7 +193,7 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md19">
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md16">
 <title>C: Setting the update</title>
 <para>The update stage represents the <emphasis>how</emphasis> the current correction term is combined with state to update the latter. We currently support the following:</para>
 <para><table rows="5" cols="4"><row>
@@ -243,7 +249,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md20">
+<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md17">
 <title>A note on the solvers&apos; design</title>
 <para>If you are interested, here we provide a brief note describing the our design idea. The design of the nonlinear solvers has been based on recognizing that, at a very high level, a nonlinear solver operates by repeatedly updating a given &quot;state&quot; until a certain criterion is met, and each &quot;iteration&quot; involves the following stages:</para>
 <para><itemizedlist>

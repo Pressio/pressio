@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_integrators_printing_helpers.hpp
+// ode_advance_printing_helpers.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,19 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_
-#define ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_
+#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
+#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<typename ...Args>
-void print_start_of_advancing(Args && ... args)
-{
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  using namespace ::pressio::utils::io;
-  print_stdout("\n");
-  print_stdout(blue(),
-	       "-------------------------------------------------\n",
-	       reset());
-  print_stdout(bg_grey() + blue(),
-	       "ode:", std::forward<Args>(args)..., reset(), "\n");
-  print_stdout(blue(),
-	       "-------------------------------------------------",
-	       reset());
-  print_stdout("\n");
-#endif
-}
-
 template <typename TimeType, class StepCountType>
 void print_step_time(const StepCountType & step,
-		   const TimeType & time,
-		   const TimeType & dt)
+		     const TimeType & time,
+		     const TimeType & dt)
 {
   PRESSIOLOG_DEBUG("starting timestep={} from time={} with dt={}",
 		   step, time, dt);
-// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-//   using namespace ::pressio::utils::io;
-//   auto fmt = blue();
-//   print_stdout(fmt,
-// 	       std::left,
-// 	       "time step=", step,
-// 	       ": starts at time=", time,
-// 	       " dt=", dt,
-// 	       reset(), "\n");
-// #endif
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_
+#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_

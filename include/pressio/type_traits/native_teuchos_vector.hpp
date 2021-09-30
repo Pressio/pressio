@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_teuchos_vector.hpp
+// native_teuchos_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_
+#ifndef TYPE_TRAITS_NATIVE_TEUCHOS_VECTOR_HPP_
+#define TYPE_TRAITS_NATIVE_TEUCHOS_VECTOR_HPP_
 
 #include "Teuchos_SerialDenseVector.hpp"
 
@@ -68,4 +68,4 @@ struct is_dense_vector_teuchos<
   > : std::true_type{};
 
 }//end namespace 
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_
+#endif  // TYPE_TRAITS_NATIVE_TEUCHOS_VECTOR_HPP_

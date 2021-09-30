@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_collector.hpp
+// ode_observer.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_
-#define ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_
+#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_
+#define ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -156,4 +156,4 @@ struct observer
 };
 
 }} // namespace pressio::ode::meta
-#endif  // ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_

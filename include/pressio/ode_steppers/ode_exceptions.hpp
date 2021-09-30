@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_EXCEPTIONS_STEPPERS_HPP_
-#define ODE_ODE_EXCEPTIONS_STEPPERS_HPP_
+#ifndef ODE_STEPPERS_ODE_EXCEPTIONS_HPP_
+#define ODE_STEPPERS_ODE_EXCEPTIONS_HPP_
 
 #include <exception>
 
@@ -103,4 +103,4 @@ public:
 };
 
 }}//end namespace pressio::eh
-#endif  // ODE_ODE_EXCEPTIONS_HPP_
+#endif  // ODE_STEPPERS_ODE_EXCEPTIONS_HPP_

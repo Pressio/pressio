@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// galerkin_default_projector_ortho_decoder_jacobian.hpp
+// rom_galerkin_projector_default.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_
-#define ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_PROJECTOR_DEFAULT_HPP_
+#define ROM_IMPL_ROM_GALERKIN_PROJECTOR_DEFAULT_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -111,4 +111,4 @@ private:
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_PROJECTOR_DEFAULT_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_eigen_sparse_matrix.hpp
+// native_eigen_sparse_matrix.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_
+#ifndef TYPE_TRAITS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_
+#define TYPE_TRAITS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_
 
 #include "Eigen/Sparse"
 
@@ -89,4 +89,4 @@ struct sparse_sharedmem_eigen_same_storage<
   > : std::true_type{};
 
 }//end namespace 
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_
+#endif  // TYPE_TRAITS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_

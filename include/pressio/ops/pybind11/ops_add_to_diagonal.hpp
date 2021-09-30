@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND_OPS_ADD_TO_DIAGONAL_HPP_
-#define OPS_PYBIND_OPS_ADD_TO_DIAGONAL_HPP_
+#ifndef OPS_PYBIND11_OPS_ADD_TO_DIAGONAL_HPP_
+#define OPS_PYBIND11_OPS_ADD_TO_DIAGONAL_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -71,4 +71,4 @@ add_to_diagonal(T & o,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
+#endif  // OPS_PYBIND11_OPS_ADD_TO_DIAGONAL_HPP_

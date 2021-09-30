@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_wrapped_types_enum.hpp
+// enums.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
-#define CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
+#ifndef TYPE_TRAITS_ENUMS_HPP_
+#define TYPE_TRAITS_ENUMS_HPP_
 
 namespace pressio{
 
@@ -118,4 +118,4 @@ enum class TensorIdentifier{
 };
 
 }
-#endif  // CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
+#endif  // TYPE_TRAITS_ENUMS_HPP_

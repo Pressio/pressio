@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_pybind_array.hpp
+// native_pybind_array.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
+#ifndef TYPE_TRAITS_NATIVE_PYBIND_ARRAY_HPP_
+#define TYPE_TRAITS_NATIVE_PYBIND_ARRAY_HPP_
 
 namespace pressio{
 
@@ -108,4 +108,4 @@ template <typename T>
 using is_fstyle_array_pybind = is_fstyle_array_pybind11<T>;
 
 }
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
+#endif  // TYPE_TRAITS_NATIVE_PYBIND_ARRAY_HPP_

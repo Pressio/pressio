@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
-#define ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
+#ifndef ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
+#define ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -55,4 +55,4 @@ template<typename T>
 struct explicit_velocity : explicit_state<T>{};
 
 }} // namespace pressio::ode::constraints
-#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
+#endif  // ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_

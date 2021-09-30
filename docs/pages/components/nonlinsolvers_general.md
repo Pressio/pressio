@@ -1,9 +1,14 @@
 
 # Nonlinear Solvers - General Info
 
+
+@m_class{m-note m-default}
+
+@parblock
 Defined in header `<pressio/solvers_nonlinear.hpp>`
 
 Public namespace: `pressio::nonlinearsolvers`
+@endparblock
 
 
 ## Overview
@@ -29,7 +34,9 @@ Currently, we support the following algorithms:
 | Newton-Raphson                       | [Link](./md_pages_components_nonlinsolvers_nr.html)   | Systems of nonlinear equations (see e.g. [link](https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf), [link](https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf) ) |
 | Gauss-Newton                         | [Link](./md_pages_components_nonlinsolvers_gn.html)   | Nonlinear least-squares problem.            (see [link](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm) )                                                                                |
 | Levenberg–Marquardt                  | [Link](./md_pages_components_nonlinsolvers_lm.html)   | Nonlinear least-squares problem.             (see [link](https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm) )                                                                        |
-| Iteratively reweighted least squares | [Link](./md_pages_components_nonlinsolvers_irls.html) | optimization problem formulated in a p-norm (see [link](https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares) )                                                                          |
+| Iteratively reweighted least squares (irls) | [Link](./md_pages_components_nonlinsolvers_irls.html) | optimization problem formulated in a p-norm (see [link](https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares) )                                                                          |
+
+<br/>
 
 ### A glimpse of the API
 
@@ -43,15 +50,15 @@ auto solver = pnonls::create_gauss_newton(....);
 
 Please refer to each method's documentation for the details on the API and arguments.
 
+<br/>
 
-## What are users responsible of?
+## What are you responsible of?
 
-If you want to use the pressio nonlinear solvers, you are responsible
-of three main things:
+If you want to use the pressio nonlinear solvers, you are responsible of:
 
 - A: providing a problem object
-- B: specifying the convergence criterion
-- C: specifying the update method
+- B: selecting (if needed) the convergence criterion
+- C: selecting (if needed) the update method
 
 
 ### A: problem class
@@ -68,13 +75,13 @@ Depending on which concepts your problem meets, you can access certain algorithm
 necessarily others.
 The following table helps clarifying the problem API/algorithms admissibility:
 
-| Algorithm                     	| Residual-Jacobian API 	| Fused Residual-Jacobian API 	| Hessian-Gradient API 	| Fused Hessian-Gradient API 	|
-|-------------------------------	|-------------------	|-------------------------	|------------------	|------------------------	|
-| Newton-Raphson                	| admissible        	| admissible              	|                  	|                        	|
-| Gauss-Newton Normal-Equations 	| admissible        	| admissible              	| admissible       	| admissible             	|
-| Gauss-Newton QR               	| admissible        	| admissible              	|                  	|                        	|
-| Levenberg-Marquardt           	| admissible        	| admissible              	| admissible       	| admissible             	|
-| irls                          	| admissible        	| admissible              	|                  	|                        	|
+| Algorithm                         | Residual-Jacobian API | Fused Residual-Jacobian API | Hessian-Gradient API | Fused Hessian-Gradient API |
+|-----------------------------------|-----------------------|-----------------------------|----------------------|----------------------------|
+| Newton-Raphson                    | admissible            | admissible                  | -                    | -                          |
+| Gauss-Newton via Normal-Equations | admissible            | admissible                  | admissible           | admissible                 |
+| Gauss-Newton via QR               | admissible            | admissible                  | -                    | -                          |
+| Levenberg-Marquardt               | admissible            | admissible                  | admissible           | admissible                 |
+| irls                              | admissible            | admissible                  | -                    | -                          |
 
 Please refer to each method's documentation for the details on how you provide
 a problem instance to pressio.
@@ -98,7 +105,7 @@ We currently support these termination criteria:
 | `Stop::WhenGradientRelativeNormBelowTolerance`   | self-explanatory | least-squares solvers    |
 
 
-which you set/query along with corresponding tolerances using the following methods:
+which you set/query using the following methods:
 
 ```cpp
 class Solver{

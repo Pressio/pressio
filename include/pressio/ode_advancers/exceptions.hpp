@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_exceptions.hpp
+// exceptions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_EXCEPTIONS_ADVANCE_HPP_
-#define ODE_ODE_EXCEPTIONS_ADVANCE_HPP_
+#ifndef ODE_ADVANCERS_EXCEPTIONS_HPP_
+#define ODE_ADVANCERS_EXCEPTIONS_HPP_
 
 #include <exception>
 
@@ -78,4 +78,4 @@ public:
 };
 
 }}//end namespace pressio::eh
-#endif  // ODE_ODE_EXCEPTIONS_HPP_
+#endif  // ODE_ADVANCERS_EXCEPTIONS_HPP_

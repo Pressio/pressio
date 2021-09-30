@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_impl.hpp
+// rom_lspg_unsteady_compose.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_COMPOSE_HPP_
+#define ROM_IMPL_ROM_LSPG_UNSTEADY_COMPOSE_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
@@ -74,7 +74,7 @@ template<
   class FomReferenceState,
   class ...Args
   >
-struct ComposerContTime
+struct ComposerContinuousTime
 {
 
   static_assert
@@ -106,7 +106,7 @@ template<
   class FomReferenceState,
   class ...Args
   >
-struct ComposerDiscTime
+struct ComposerDiscreteTime
 {
 
   static_assert
@@ -132,39 +132,47 @@ struct ComposerDiscTime
 
 // default
 template<class ...Args>
-using ComposeDefaultProblemContTime = ComposerContTime<0, Args...>;
+using ComposeDefaultProblemContTime = ComposerContinuousTime<0, Args...>;
 
 template<std::size_t n, class ...Args>
-using ComposeDefaultProblemDiscTime = ComposerDiscTime<1, n, Args...>;
+using ComposeDefaultProblemDiscTime = ComposerDiscreteTime<1, n, Args...>;
 
 // preconditioned default
 template<class ...Args>
-using ComposePrecDefaultProblemContTime = ComposerContTime<2, Args...>;
+using ComposePrecDefaultProblemContTime = ComposerContinuousTime<2, Args...>;
 
 template<std::size_t n, class ...Args>
-using ComposePrecDefaultProblemDiscTime = ComposerDiscTime<3, n, Args...>;
+using ComposePrecDefaultProblemDiscTime = ComposerDiscreteTime<3, n, Args...>;
 
 // masked
 template<class ...Args>
-using ComposeMaskedProblemContTime = ComposerContTime<4, Args...>;
+using ComposeMaskedProblemContTime = ComposerContinuousTime<4, Args...>;
 
 template<std::size_t n, class ...Args>
-using ComposeMaskedProblemDiscTime = ComposerDiscTime<5, n, Args...>;
+using ComposeMaskedProblemDiscTime = ComposerDiscreteTime<5, n, Args...>;
 
 // preconditioned masked
 template<class ...Args>
-using ComposePrecMaskedProblemContTime = ComposerContTime<6, Args...>;
+using ComposePrecMaskedProblemContTime = ComposerContinuousTime<6, Args...>;
 
 template<std::size_t n, class ...Args>
-using ComposePrecMaskedProblemDiscTime = ComposerDiscTime<7, n, Args...>;
+using ComposePrecMaskedProblemDiscTime = ComposerDiscreteTime<7, n, Args...>;
 
 // hyper-reduced
 template<class ...Args>
-using ComposeHypRedProblemContTime = ComposerContTime<8, Args...>;
+using ComposeHypRedProblemContTime = ComposerContinuousTime<8, Args...>;
 
-// for discrete-time hyperreduced, impl is same as default
+// hyper-reduced discrete-time: impl-wise is the same as default
 template<std::size_t n, class ...Args>
-using ComposeHypRedProblemDiscTime = ComposerDiscTime<1, n, Args...>;
+using ComposeHypRedProblemDiscTime = ComposeDefaultProblemDiscTime<n, Args...>;
+
+// preconditioned hyperreduced
+template<class ...Args>
+using ComposePrecHypRedProblemContTime = ComposerContinuousTime<9, Args...>;
+
+// prec hyper-reduced discrete-time: impl-wise is the same as prec default
+template<std::size_t n, class ...Args>
+using ComposePrecHypRedProblemDiscTime = ComposePrecDefaultProblemDiscTime<n, Args...>;
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_UNSTEADY_COMPOSE_HPP_

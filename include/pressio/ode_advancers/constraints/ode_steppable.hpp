@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicitly_steppable.hpp
+// ode_steppable.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_STEPPABLE_HPP_
-#define ODE_EXPLICIT_CONSTRAINTS_ODE_STEPPABLE_HPP_
+#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
+#define ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -75,4 +75,4 @@ struct steppable_with<
   > : std::true_type{};
 
 }} // namespace pressio::ode::constraints
-#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_

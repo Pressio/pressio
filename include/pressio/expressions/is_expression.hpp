@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_expression.hpp
+// is_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
-#define CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#ifndef EXPRESSIONS_IS_EXPRESSION_HPP_
+#define EXPRESSIONS_IS_EXPRESSION_HPP_
 
 namespace pressio{
 
@@ -196,4 +196,4 @@ struct is_expression_pybind<
 #endif
 
 }
-#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#endif  // EXPRESSIONS_IS_EXPRESSION_HPP_

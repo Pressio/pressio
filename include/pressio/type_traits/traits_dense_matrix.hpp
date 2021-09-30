@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_dense_matrix_traits.hpp
+// traits_dense_matrix.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
-#define CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
+#ifndef TYPE_TRAITS_TRAITS_DENSE_MATRIX_HPP_
+#define TYPE_TRAITS_TRAITS_DENSE_MATRIX_HPP_
 
 namespace pressio{
 
@@ -150,4 +150,4 @@ struct Traits<
 #endif
 
 }
-#endif  // CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
+#endif  // TYPE_TRAITS_TRAITS_DENSE_MATRIX_HPP_

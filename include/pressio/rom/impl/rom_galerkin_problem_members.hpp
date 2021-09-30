@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_problem_members.hpp
+// rom_galerkin_problem_members.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_
-#define ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_PROBLEM_MEMBERS_HPP_
+#define ROM_IMPL_ROM_GALERKIN_PROBLEM_MEMBERS_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -458,4 +458,4 @@ template <class T, typename ...Args>
 using AddMaskedVeloImplicitPolicies = ImplicitPoliciesMixin<T, false, false, true, Args...>;
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_PROBLEM_MEMBERS_HPP_

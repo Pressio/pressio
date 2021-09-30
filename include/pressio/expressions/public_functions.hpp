@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_span_function.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
-#define CONTAINERS_EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
+#ifndef EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
+#define EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
 
 #include "impl/span_traits.hpp"
 #include "impl/span_classes.hpp"
@@ -196,4 +196,4 @@ expressions::impl::AsDiagonalMatrixExpr<const T> as_diagonal_matrix(const T & ve
 }
 
 }
-#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_FUNCTION_HPP_
+#endif  // EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_

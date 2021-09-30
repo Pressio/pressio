@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_reconstructor_fom_state_pressio_ops.hpp
+// rom_reconstructor_fom_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
-#define ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#ifndef ROM_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#define ROM_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -130,4 +130,4 @@ private:
 };
 
 }}}//end namespace pressio::rom::impl
-#endif  // ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_
+#endif  // ROM_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_HPP_

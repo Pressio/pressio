@@ -1,10 +1,12 @@
+
+
 Defined in\+: {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+explicit.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md54}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_explicit_autotoc_md54}
+Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md50}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_explicit_autotoc_md50}
 Applicable to systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 
 where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time.~\newline
- Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a \char`\"{}stepper\char`\"{} is an abstraction that represents the \char`\"{}how\char`\"{} to take a step.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md55}{}\doxysection{API}\label{md_pages_components_ode_steppers_explicit_autotoc_md55}
+ Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a \char`\"{}stepper\char`\"{} is an abstraction that represents the \char`\"{}how\char`\"{} to take a step.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md51}{}\doxysection{API}\label{md_pages_components_ode_steppers_explicit_autotoc_md51}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
@@ -15,7 +17,7 @@ where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time
 \end{DoxyCode}
 
 
-where {\ttfamily name} is one of the following enum class values\+: {\ttfamily Forward\+Euler}, {\ttfamily Runge\+Kutta4}, {\ttfamily Adams\+Bashforth2}, {\ttfamily SSPRunge\+Kutta3}. This function returns an instance of the desired stepper. The returned stepper object satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}, so one can use the \char`\"{}advancers\char`\"{} functions to step forward.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md56}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md56}
+where {\ttfamily name} is one of the following enum class values\+: {\ttfamily Forward\+Euler}, {\ttfamily Runge\+Kutta4}, {\ttfamily Adams\+Bashforth2}, {\ttfamily SSPRunge\+Kutta3}. This function returns an instance of the desired stepper. The returned stepper object satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}, so one can use the \char`\"{}advancers\char`\"{} functions to step forward.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md52}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md52}
 
 \begin{DoxyItemize}
 \item {\ttfamily State\+Type}\+: data type of your state, must be copy constructible
@@ -38,7 +40,7 @@ where {\ttfamily name} is one of the following enum class values\+: {\ttfamily F
 the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be {\itshape valid} types since they are detected by pressio
 \item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
  {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md57}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md57}
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md53}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md53}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/type\_traits.hpp"{}}}
@@ -63,7 +65,7 @@ the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md58}{}\doxysection{Required specializations for custom types}\label{md_pages_components_ode_steppers_explicit_autotoc_md58}
+\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md54}{}\doxysection{Required specializations for custom types}\label{md_pages_components_ode_steppers_explicit_autotoc_md54}
 When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type and {\ttfamily ACustom\+State\+Type} is what you use for the state, then you would need to do something like this\+:
 
 

@@ -6,17 +6,75 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md35">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md32">
 <title>Levenberg–Marquardt</title>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md36">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md33">
 <title>API, Parameters and Requirements</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ProblemClassType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StateType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">LinearSolverType</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_levenberg_marquardt(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProblemClassType<sp/>&amp;<sp/>system,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LinearSolverType<sp/>&amp;&amp;<sp/>lsolver);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ProblemClassType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StateType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">LinearSolverType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">WeightingOpType</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(2)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_levenberg_marquardt(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProblemClassType<sp/>&amp;<sp/>system,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LinearSolverType<sp/>&amp;&amp;<sp/>lsolver,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WeightingOpType<sp/>&amp;&amp;<sp/>weightOperator);</highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para><computeroutput>ProblemClassType</computeroutput>:<itemizedlist>
+<listitem><para>type of the class defining the problem to solve  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><parblock><para><itemizedlist>
+<listitem><para>overload 1: accepts the <ulink url="md_pages_components_nonlinsolvers_system_api.html">residual-jacobian, hessian-gradient API, or their fused versions</ulink></para>
+</listitem><listitem><para>overload 2: <emphasis>only</emphasis> accepts the <ulink url="md_pages_components_nonlinsolvers_system_api.html">residual-jacobian API or its fused version</ulink> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+<para><itemizedlist>
+<listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
+<listitem><para>type of the data structure you use for the state</para>
+</listitem><listitem><para>Requirements: must be an Eigen or Kokkos vector: <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> explain why</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>LinearSolverType</computeroutput>:<itemizedlist>
+<listitem><para>choose one from <ulink url="md_pages_components_linsolvers.html">linear solver API</ulink></para>
+</listitem><listitem><para>if you want to implement your own, then the linear solver class still has to conform to the <ulink url="md_pages_components_linsolvers.html">linear solver API</ulink></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>WeightingOpType</computeroutput>:<itemizedlist>
+<listitem><para>this is the weighting operator if you want to do weighted least-squares. Must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">WeightingOperator</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>residual_type<sp/>&amp;<sp/>operand,<sp/>residual_type<sp/>&amp;<sp/>result);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>jacobian_type<sp/>&amp;<sp/>operand,<sp/>jacobian_type<sp/>&amp;<sp/>result);</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md37">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md34">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md38">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md35">
 <title>Example usage</title>
 </sect2>
 </sect1>

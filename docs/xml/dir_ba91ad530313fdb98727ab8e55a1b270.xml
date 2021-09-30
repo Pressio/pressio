@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_ba91ad530313fdb98727ab8e55a1b270" kind="dir">
+    <compoundname>pages/revise_and_pick</compoundname>
+    <innerdir refid="dir_5ecfa304e58ac6e3746380480b820417">pages/revise_and_pick/coreconcepts</innerdir>
+    <innerdir refid="dir_d622bd70f2285df5a7cb31cbaa1b0d62">pages/revise_and_pick/custom_ops</innerdir>
+    <innerdir refid="dir_a7dab5f8ddf7891d12ca851ffbc18834">pages/revise_and_pick/examples</innerdir>
+    <innerdir refid="dir_677993232208ebd6d9b218dc1922bbc9">pages/revise_and_pick/getstarted</innerdir>
+    <innerdir refid="dir_171202a9729899fc1db1b0f5ee04839d">pages/revise_and_pick/various</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="pages/revise_and_pick/"/>
+  </compounddef>
+</doxygen>

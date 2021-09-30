@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_extent.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_EXTENT_EIGEN_HPP_
-#define OPS_OPS_EXTENT_EIGEN_HPP_
+#ifndef OPS_EIGEN_OPS_EXTENT_HPP_
+#define OPS_EIGEN_OPS_EXTENT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -90,4 +90,4 @@ extent(const T & objectIn, const IndexType i)
 }
 
 }}
-#endif
+#endif  // OPS_EIGEN_OPS_EXTENT_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_common_traits.hpp
+// rom_lspg_steady_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_COMMON_TRAITS_HPP_
-#define ROM_LSPG_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_COMMON_TRAITS_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_TRAITS_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_TRAITS_HPP_
 
 namespace pressio{
 
@@ -161,6 +161,68 @@ struct Traits<
     residual_policy_type, jacobian_policy_type>;
 };
 
+
+//=======================
+// PRECONDITIONED DEFAULT
+//=======================
+template <
+  class FomSystemType,
+  class LspgStateType,
+  class DecoderType,
+  class PreconditionerType
+  >
+struct Traits<
+  ::pressio::rom::lspg::impl::SteadyProblem<
+    2, FomSystemType, LspgStateType, DecoderType, PreconditionerType
+    >
+  >
+{
+  using common_types = ::pressio::rom::lspg::impl::CommonTraitsSteady<
+    FomSystemType, LspgStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  using fom_system_type    = typename common_types::fom_system_type;
+  using scalar_type    = typename common_types::scalar_type;
+
+  using fom_state_type   = typename common_types::fom_state_type;
+  using fom_residual_type    = typename common_types::fom_residual_type;
+
+  using decoder_type   = typename common_types::decoder_type;
+  using decoder_jac_type   = typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
+
+  using lspg_state_type  = typename common_types::lspg_state_type;
+  using lspg_residual_type = typename common_types::lspg_residual_type;
+  using lspg_jacobian_type = typename common_types::lspg_jacobian_type;
+  using size_type = typename ::pressio::Traits<lspg_state_type>::size_type;
+
+  using preconditioner_type = PreconditionerType;
+  static_assert
+  (::pressio::rom::lspg_steady_preconditioner<
+   preconditioner_type, fom_state_type, lspg_residual_type, lspg_jacobian_type>::value,
+   "Invalid preconditioner passed for steady LSPG");
+
+  using residual_policy_type =
+    ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
+    lspg_residual_type, preconditioner_type,
+    ::pressio::rom::lspg::impl::SteadyResidualPolicy<
+      fom_states_manager_type, lspg_residual_type, fom_system_type
+      >
+    >;
+
+  using jacobian_policy_type = ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
+    lspg_jacobian_type, preconditioner_type,
+    ::pressio::rom::lspg::impl::SteadyJacobianPolicy<
+      fom_states_manager_type, lspg_jacobian_type, decoder_type,fom_system_type
+      >
+    >;
+
+  using steady_system_type = ::pressio::rom::lspg::impl::SteadySystem<
+    scalar_type, lspg_state_type, lspg_residual_type, lspg_jacobian_type,
+    residual_policy_type, jacobian_policy_type>;
+};
+
 //=======================
 // MASKED
 //=======================
@@ -224,67 +286,6 @@ struct Traits<
 };
 
 //=======================
-// PRECONDITIONED DEFAULT
-//=======================
-template <
-  class FomSystemType,
-  class LspgStateType,
-  class DecoderType,
-  class PreconditionerType
-  >
-struct Traits<
-  ::pressio::rom::lspg::impl::SteadyProblem<
-    2, FomSystemType, LspgStateType, DecoderType, PreconditionerType
-    >
-  >
-{
-  using common_types = ::pressio::rom::lspg::impl::CommonTraitsSteady<
-    FomSystemType, LspgStateType, DecoderType>;
-
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
-  using fom_system_type    = typename common_types::fom_system_type;
-  using scalar_type    = typename common_types::scalar_type;
-
-  using fom_state_type   = typename common_types::fom_state_type;
-  using fom_residual_type    = typename common_types::fom_residual_type;
-
-  using decoder_type   = typename common_types::decoder_type;
-  using decoder_jac_type   = typename common_types::decoder_jac_type;
-  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
-  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-
-  using lspg_state_type  = typename common_types::lspg_state_type;
-  using lspg_residual_type = typename common_types::lspg_residual_type;
-  using lspg_jacobian_type = typename common_types::lspg_jacobian_type;
-  using size_type = typename ::pressio::Traits<lspg_state_type>::size_type;
-
-  using preconditioner_type = PreconditionerType;
-  static_assert
-  (::pressio::rom::lspg_steady_preconditioner<
-   preconditioner_type, fom_state_type, lspg_residual_type, lspg_jacobian_type>::value,
-   "Invalid masker passed for steady LSPG");
-
-  using residual_policy_type =
-    ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
-    lspg_residual_type, preconditioner_type,
-    ::pressio::rom::lspg::impl::SteadyResidualPolicy<
-      fom_states_manager_type, lspg_residual_type, fom_system_type
-      >
-    >;
-
-  using jacobian_policy_type = ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
-    lspg_jacobian_type, preconditioner_type,
-    ::pressio::rom::lspg::impl::SteadyJacobianPolicy<
-      fom_states_manager_type, lspg_jacobian_type, decoder_type,fom_system_type
-      >
-    >;
-
-  using steady_system_type = ::pressio::rom::lspg::impl::SteadySystem<
-    scalar_type, lspg_state_type, lspg_residual_type, lspg_jacobian_type,
-    residual_policy_type, jacobian_policy_type>;
-};
-
-//=======================
 // PRECONDITIONED MASKED
 //=======================
 template <
@@ -330,7 +331,7 @@ struct Traits<
   static_assert
   (::pressio::rom::lspg_steady_preconditioner<
    preconditioner_type, fom_state_type, lspg_residual_type, lspg_jacobian_type>::value,
-   "Invalid masker passed for steady LSPG");
+   "Invalid preconditioner passed for steady LSPG");
 
   using residual_policy_type =
     ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
@@ -360,4 +361,4 @@ struct Traits<
 };
 
 }//end  namespace pressio
-#endif  // ROM_LSPG_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_COMMON_TRAITS_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_TRAITS_HPP_

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_revise_and_trash_later_coreconcepts_decoder" kind="page">
+    <compoundname>md_pages_revise_and_trash_later_coreconcepts_decoder</compoundname>
+    <title>Decoder Abstraction in Pressio</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: complete</para>
+<para>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <formula id="11">$y_{fom}$</formula>, as: <formula id="12">\[ y_{fom} = g(y_{rom}) \]</formula></para>
+<para>where <formula id="13">$y_{rom}$</formula> is the reduced state (or generalized coordinates), and <formula id="14">$g$</formula> is the mapping between the two.</para>
+<sect1 id="md_pages_revise_and_trash_later_coreconcepts_decoder_1autotoc_md181">
+<title>Linear</title>
+<para>If <formula id="14">$g$</formula> is linear, then we can write: <formula id="15">\[ y_{fom} = \phi y_{rom} \]</formula> where <formula id="16">$\phi$</formula> is a matrix (for the time being, assume it constant). The Jacobian of the mapping is: <formula id="20">\[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]</formula></para>
+<para>Graphically, this corresponds to: <image type="html" name="decoder.png" width="20%"></image>
+</para>
+<para>In the C++ library, the class representing the linear decoder is:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">pressio::rom::LinearDecoder&lt;...&gt;;</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_revise_and_trash_later_coreconcepts_decoder_1autotoc_md182">
+<title>Generic decoder API</title>
+<para>If you want to use your own decoder, you can write a custom one that should meet the following API.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CustomDecoder</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>natives<sp/>types</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_fom_state_type<sp/>=<sp/>;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_dense_mat_type<sp/>=<sp/>;<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>these<sp/>nested<sp/>typedefs<sp/>are<sp/>mandatory<sp/>because<sp/>pressio<sp/>detects<sp/>them</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_dense_mat_type&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_type<sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_type&gt;;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>CustomDecoder(</highlight><highlight class="comment">/*constuct<sp/>as<sp/>needed*/</highlight><highlight class="normal">){}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>operand_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyMapping(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>operand_type<sp/>&amp;<sp/>romOperand,<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fom_state_type<sp/>&amp;<sp/>fomState)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>romOperand:<sp/>object<sp/>exposing<sp/>the<sp/>(i)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>result:<sp/>a<sp/>pressio<sp/>wrapper,<sp/>so<sp/>use<sp/>the<sp/>data()<sp/>to<sp/>get<sp/>a<sp/>pointer<sp/>to<sp/>native<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>auto<sp/>&amp;<sp/>fomStateNative<sp/>=<sp/>*fomState.data();</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>rom_state_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>updateJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>rom_state_type<sp/>&amp;<sp/>romStateIn)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>update<sp/>the<sp/>jacobian<sp/>as<sp/>needed</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>jacobian_type<sp/>&amp;<sp/>jacobianCRef()</highlight><highlight class="keyword"><sp/>const</highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>m_jacobian;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>m_jacobian;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para>
+</sect1>
+    </detaileddescription>
+    <location file="pages/revise_and_trash_later/coreconcepts/decoder.md"/>
+  </compounddef>
+</doxygen>

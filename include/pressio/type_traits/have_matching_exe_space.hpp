@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_have_matching_exe_space.hpp
+// have_matching_exe_space.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
-#define CONTAINERS_PREDICATES_CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
+#ifndef TYPE_TRAITS_HAVE_MATCHING_EXE_SPACE_HPP_
+#define TYPE_TRAITS_HAVE_MATCHING_EXE_SPACE_HPP_
 
 namespace pressio{ 
 
@@ -78,4 +78,4 @@ struct have_matching_execution_space<T1, T2, rest...>
 };
 
 } // namespace 
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
+#endif  // TYPE_TRAITS_HAVE_MATCHING_EXE_SPACE_HPP_

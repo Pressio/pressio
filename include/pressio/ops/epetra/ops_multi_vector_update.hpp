@@ -71,4 +71,4 @@ update(T & mv, const T & mv1, const scalar_t & b)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
+#endif  // OPS_EPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_

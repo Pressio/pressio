@@ -6,19 +6,25 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
-<para>Public namespace: <computeroutput>pressio::rom::galerkin</computeroutput></para>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md96">
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-default" /></para>
+<para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::rom::galerkin</computeroutput> </para>
+</parblock></para>
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md92">
 <title>Overview</title>
-<para>At a high level, using a Galerkin problem involces three steps:<orderedlist>
-<listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;default Galerkin problem&quot;</para>
+<para>Recall from <ulink url="md_pages_components_rom_galerkin.html">this page</ulink>, that using a pressio Galerkin problem involves three steps:</para>
+<para><orderedlist>
+<listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;Galerkin problem&quot;</para>
 </listitem><listitem><para><emphasis>extract</emphasis>: you extract the underlying stepper object owned by the problem</para>
 </listitem><listitem><para><emphasis>solve</emphasis>: you use the stepper to solve in time the Galerkin problem</para>
 </listitem></orderedlist>
 </para>
-<para>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
+<para><linebreak/>
+ <hruler/>
+ <linebreak/>
+</para>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md97">
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md93">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -45,7 +51,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;)</highlight></codeline>
 </programlisting></para>
 <para>This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md98">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md94">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StepScheme</computeroutput>:<itemizedlist>
@@ -77,7 +83,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md99">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md95">
 <title>Galerkin Problem class API</title>
 <para>A problem meets the following interface:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">DefaultGalerkinProblem</highlight></codeline>
@@ -116,47 +122,51 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_jacobian_type;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::stepper_type;</highlight></codeline>
 </programlisting></para>
+<para><linebreak/>
+ <hruler/>
+ <linebreak/>
+</para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md100">
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md96">
 <title>2.,3. Extract and Solve</title>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md101">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md97">
 <title>Explicit Case</title>
 <para>An example usage for explicit stepper is as follows:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pgal<sp/>=<sp/>pressio::rom::galerkin;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pgal<sp/>=<sp/>pressio::rom::galerkin;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pdoe::StepScheme:ForwardEuler;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pgal::create_default_explicit_problem(scheme,<sp/>fom_system,<sp/>decoder,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/>=<sp/>problem.stepper();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pdoe::StepScheme:ForwardEuler;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pgal::create_default_explicit_problem(scheme,<sp/>fom_system,<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/>=<sp/>problem.stepper();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">pressio::ode::advance_n_steps_and_observe(stepper,<sp/>rom_state,<sp/></highlight><highlight class="comment">/*<sp/>any<sp/>other<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>pressio::ode::advance_n_steps_and_observe(stepper,<sp/>rom_state,<sp/></highlight><highlight class="comment">/*<sp/>any<sp/>other<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md102">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md98">
 <title>Implicit Case</title>
 <para>An example usage for implicit stepper is as follows:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pgal<sp/>=<sp/>pressio::rom::galerkin;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pgal<sp/>=<sp/>pressio::rom::galerkin;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pdoe::StepScheme:BDF1;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pgal::create_default_implicit_problem(scheme,<sp/>fom_system,<sp/>decoder,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/>=<sp/>problem.stepper();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pdoe::StepScheme:BDF1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pgal::create_default_implicit_problem(scheme,<sp/>fom_system,<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/>=<sp/>problem.stepper();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">!!!!!!!!<sp/>fill<sp/>!!!!!!!!!</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>!!!!!!!!<sp/>fill<sp/>!!!!!!!!!</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">pressio::ode::advance_n_steps_and_observe(stepper,<sp/>rom_state,<sp/></highlight><highlight class="comment">/*<sp/>any<sp/>other<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>pressio::ode::advance_n_steps_and_observe(stepper,<sp/>rom_state,<sp/></highlight><highlight class="comment">/*<sp/>any<sp/>other<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting> </para>
 </sect2>

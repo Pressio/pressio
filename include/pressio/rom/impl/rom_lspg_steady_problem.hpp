@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_default_problem_explicit_stepping.hpp
+// rom_lspg_steady_problem.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_CONTINUOUS_TIME_API_ROM_LSPG_DEFAULT_PROBLEM_EXPLICIT_STEPPING_HPP_
-#define ROM_LSPG_IMPL_CONTINUOUS_TIME_API_ROM_LSPG_DEFAULT_PROBLEM_EXPLICIT_STEPPING_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_STEADY_PROBLEM_HPP_
+#define ROM_IMPL_ROM_LSPG_STEADY_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -208,4 +208,4 @@ public:
 };
 
 }}}}//end namespace pressio::rom::lspg::impl
-#endif  // ROM_LSPG_IMPL_CONTINUOUS_TIME_API_ROM_LSPG_DEFAULT_PROBLEM_EXPLICIT_STEPPING_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_STEADY_PROBLEM_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
-#define ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
+#ifndef ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
+#define ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -96,4 +96,4 @@ struct select_galerkin_types<
 // #endif
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
+#endif  // ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_

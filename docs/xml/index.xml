@@ -92,6 +92,8 @@
   </compound>
   <compound refid="packages_8md" kind="file"><name>packages.md</name>
   </compound>
+  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
+  </compound>
   <compound refid="various_8md" kind="file"><name>various.md</name>
   </compound>
   <compound refid="formulation__galerkin_8md" kind="file"><name>formulation_galerkin.md</name>
@@ -101,8 +103,6 @@
   <compound refid="formulation__wls_8md" kind="file"><name>formulation_wls.md</name>
   </compound>
   <compound refid="license_8md" kind="file"><name>license.md</name>
-  </compound>
-  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
   </compound>
   <compound refid="md_pages_components_expressions" kind="page"><name>md_pages_components_expressions</name>
   </compound>
@@ -178,49 +178,49 @@
   </compound>
   <compound refid="md_pages_introduction" kind="page"><name>md_pages_introduction</name>
   </compound>
-  <compound refid="md_pages_old_coreconcepts_adapter_api" kind="page"><name>md_pages_old_coreconcepts_adapter_api</name>
+  <compound refid="md_pages_revise_and_pick_coreconcepts_adapter_api" kind="page"><name>md_pages_revise_and_pick_coreconcepts_adapter_api</name>
   </compound>
-  <compound refid="md_pages_old_coreconcepts_decoder" kind="page"><name>md_pages_old_coreconcepts_decoder</name>
+  <compound refid="md_pages_revise_and_pick_coreconcepts_decoder" kind="page"><name>md_pages_revise_and_pick_coreconcepts_decoder</name>
   </compound>
-  <compound refid="md_pages_old_custom_ops_default_gal_exp" kind="page"><name>md_pages_old_custom_ops_default_gal_exp</name>
+  <compound refid="md_pages_revise_and_pick_custom_ops_default_gal_exp" kind="page"><name>md_pages_revise_and_pick_custom_ops_default_gal_exp</name>
   </compound>
-  <compound refid="md_pages_old_custom_ops" kind="page"><name>md_pages_old_custom_ops</name>
+  <compound refid="md_pages_revise_and_pick_custom_ops" kind="page"><name>md_pages_revise_and_pick_custom_ops</name>
   </compound>
-  <compound refid="md_pages_old_examples_example1" kind="page"><name>md_pages_old_examples_example1</name>
+  <compound refid="md_pages_revise_and_pick_examples_example1" kind="page"><name>md_pages_revise_and_pick_examples_example1</name>
   </compound>
-  <compound refid="md_pages_old_getstarted_build_and_install" kind="page"><name>md_pages_old_getstarted_build_and_install</name>
+  <compound refid="md_pages_revise_and_pick_getstarted_build_and_install" kind="page"><name>md_pages_revise_and_pick_getstarted_build_and_install</name>
   </compound>
-  <compound refid="md_pages_old_getstarted_build_tests_eigen" kind="page"><name>md_pages_old_getstarted_build_tests_eigen</name>
+  <compound refid="md_pages_revise_and_pick_getstarted_build_tests_eigen" kind="page"><name>md_pages_revise_and_pick_getstarted_build_tests_eigen</name>
   </compound>
-  <compound refid="md_pages_old_getstarted_packages" kind="page"><name>md_pages_old_getstarted_packages</name>
+  <compound refid="md_pages_revise_and_pick_getstarted_packages" kind="page"><name>md_pages_revise_and_pick_getstarted_packages</name>
   </compound>
-  <compound refid="md_pages_old_various_formulation_galerkin" kind="page"><name>md_pages_old_various_formulation_galerkin</name>
+  <compound refid="md_pages_revise_and_pick_tutorials" kind="page"><name>md_pages_revise_and_pick_tutorials</name>
   </compound>
-  <compound refid="md_pages_old_various_formulation_lspg" kind="page"><name>md_pages_old_various_formulation_lspg</name>
+  <compound refid="md_pages_revise_and_pick_various_formulation_galerkin" kind="page"><name>md_pages_revise_and_pick_various_formulation_galerkin</name>
   </compound>
-  <compound refid="md_pages_old_various_formulation_wls" kind="page"><name>md_pages_old_various_formulation_wls</name>
+  <compound refid="md_pages_revise_and_pick_various_formulation_lspg" kind="page"><name>md_pages_revise_and_pick_various_formulation_lspg</name>
   </compound>
-  <compound refid="md_pages_old_various_license" kind="page"><name>md_pages_old_various_license</name>
+  <compound refid="md_pages_revise_and_pick_various_formulation_wls" kind="page"><name>md_pages_revise_and_pick_various_formulation_wls</name>
   </compound>
-  <compound refid="md_pages_old_various" kind="page"><name>md_pages_old_various</name>
+  <compound refid="md_pages_revise_and_pick_various_license" kind="page"><name>md_pages_revise_and_pick_various_license</name>
   </compound>
-  <compound refid="md_pages_tutorials" kind="page"><name>md_pages_tutorials</name>
+  <compound refid="md_pages_revise_and_pick_various" kind="page"><name>md_pages_revise_and_pick_various</name>
   </compound>
   <compound refid="dir_4af40c8677da60eb4c6f7c14f8103d72" kind="dir"><name>pages/components</name>
   </compound>
-  <compound refid="dir_b6a35cfb91b6b205b94921eefd97b199" kind="dir"><name>pages/old/coreconcepts</name>
+  <compound refid="dir_5ecfa304e58ac6e3746380480b820417" kind="dir"><name>pages/revise_and_pick/coreconcepts</name>
   </compound>
-  <compound refid="dir_fda7fd0d327460b03eafc052fa3160d7" kind="dir"><name>pages/old/custom_ops</name>
+  <compound refid="dir_d622bd70f2285df5a7cb31cbaa1b0d62" kind="dir"><name>pages/revise_and_pick/custom_ops</name>
   </compound>
-  <compound refid="dir_a9099d8738ee5963bcb1a50b578cdb0a" kind="dir"><name>pages/old/examples</name>
+  <compound refid="dir_a7dab5f8ddf7891d12ca851ffbc18834" kind="dir"><name>pages/revise_and_pick/examples</name>
   </compound>
-  <compound refid="dir_060de963bcdf381474461f7418e3d2ab" kind="dir"><name>pages/old/getstarted</name>
-  </compound>
-  <compound refid="dir_892f060392cd1136ee591a13ca8e58c8" kind="dir"><name>pages/old</name>
+  <compound refid="dir_677993232208ebd6d9b218dc1922bbc9" kind="dir"><name>pages/revise_and_pick/getstarted</name>
   </compound>
   <compound refid="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir"><name>pages</name>
   </compound>
-  <compound refid="dir_71c2f6f30531dfb5877fcb2316615e4e" kind="dir"><name>pages/old/various</name>
+  <compound refid="dir_ba91ad530313fdb98727ab8e55a1b270" kind="dir"><name>pages/revise_and_pick</name>
+  </compound>
+  <compound refid="dir_171202a9729899fc1db1b0f5ee04839d" kind="dir"><name>pages/revise_and_pick/various</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>

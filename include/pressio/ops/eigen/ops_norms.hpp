@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// ops_norms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_EIGEN_OPS_NORMS_VECTOR_HPP_
-#define OPS_EIGEN_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_EIGEN_OPS_NORMS_HPP_
+#define OPS_EIGEN_OPS_NORMS_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -74,4 +74,4 @@ norm2(const T & a)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_EIGEN_OPS_NORMS_HPP_

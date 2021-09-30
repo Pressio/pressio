@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_predicates_include.hpp
+// all.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_INCLUDE_HPP_
-#define ROM_CONSTRAINTS_INCLUDE_HPP_
+#ifndef ROM_CONSTRAINTS_ALL_HPP_
+#define ROM_CONSTRAINTS_ALL_HPP_
 
 #include "./rom_decoder_jacobian.hpp"
 #include "./rom_decoder.hpp"
@@ -60,13 +60,13 @@
 #include "./rom_fom_system_most_likely_continuous_time.hpp"
 #include "./rom_fom_system_most_likely_discrete_time.hpp"
 #include "./rom_fom_system_most_likely_steady_system.hpp"
-#include "./rom_masker.hpp"
 
-#include "./rom_galerkin_projector.hpp"
 #include "./rom_galerkin_types.hpp"
+#include "./rom_galerkin_masker.hpp"
+#include "./rom_galerkin_projector.hpp"
 
 #include "./rom_lspg_types.hpp"
-#include "./rom_lspg_steady_masker.hpp"
-#include "./rom_lspg_steady_preconditioner.hpp"
+#include "./rom_lspg_masker.hpp"
+#include "./rom_lspg_preconditioner.hpp"
 
-#endif  // ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
+#endif  // ROM_CONSTRAINTS_ALL_HPP_

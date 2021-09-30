@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_kokkos_dense_matrix.hpp
+// native_kokkos_dense_matrix.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
-#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
+#ifndef TYPE_TRAITS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
+#define TYPE_TRAITS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
 
 #include <KokkosSparse_CrsMatrix.hpp>
 
@@ -97,4 +97,4 @@ struct is_dense_matrix_kokkos<
   > : std::true_type{};
 
 }//end namespace 
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
+#endif  // TYPE_TRAITS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_

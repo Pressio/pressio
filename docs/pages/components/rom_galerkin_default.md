@@ -2,29 +2,30 @@
 # rom: Galerkin: default problem
 
 
+@m_class{m-note m-default}
+
+@parblock
 Defined in: `<pressio/rom_galerkin.hpp>`
 
 Public namespace: `pressio::rom::galerkin`
+@endparblock
 
 
 ## Overview
 
-At a high level, using a Galerkin problem involces three steps:
-1. *create*: you create an instance of a "default Galerkin problem"
+Recall from [this page](md_pages_components_rom_galerkin.html),
+that using a pressio Galerkin problem involves three steps:
+
+1. *create*: you create an instance of a "Galerkin problem"
+
 2. *extract*: you extract the underlying stepper object owned by the problem
+
 3. *solve*: you use the stepper to solve in time the Galerkin problem
 
 
-You should now pause and think for a second about the steps above.
-What does a stepper have to do with a Galerkin ROM?
-The answer is that practically speaking, at the lowest-level,
-a Galerkin problem can be reduced to simply a "custom" stepper to advance in time.
-This is exactly how pressio implements this and the reason why a Galerkin
-problem contains a stepper object inside: when you create the
-problem, pressio creates the appropriate custom stepper
-object that you can use. You don't need to know how this is done,
-or rely on the details, because these are problem- and implementation-dependent,
-and we reserve the right to change this in the future.
+<br/>
+___
+<br/>
 
 
 ## 1. Creating a problem instance
@@ -135,6 +136,10 @@ typename traits::galerkin_jacobian_type;
 typename traits::stepper_type;
 ```
 
+<br/>
+___
+<br/>
+
 ## 2.,3. Extract and Solve
 
 ### Explicit Case
@@ -143,17 +148,17 @@ An example usage for explicit stepper is as follows:
 ```cpp
 int main()
 {
-// we assume the rom_state, decoder, fom_system, fom_reference_state already exist
+  // we assume the rom_state, decoder, fom_system, fom_reference_state already exist
 
-namespace pode = pressio::ode;
-namespace pgal = pressio::rom::galerkin;
+  namespace pode = pressio::ode;
+  namespace pgal = pressio::rom::galerkin;
 
-const auto scheme = pdoe::StepScheme:ForwardEuler;
-auto problem = pgal::create_default_explicit_problem(scheme, fom_system, decoder,
-													 rom_state, fom_reference_state);
-auto & stepper = problem.stepper();
+  const auto scheme = pdoe::StepScheme:ForwardEuler;
+  auto problem = pgal::create_default_explicit_problem(scheme, fom_system, decoder,
+													   rom_state, fom_reference_state);
+  auto & stepper = problem.stepper();
 
-pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
+  pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
 }
 ```
 
@@ -163,18 +168,18 @@ An example usage for implicit stepper is as follows:
 ```cpp
 int main()
 {
-// we assume the rom_state, decoder, fom_system, fom_reference_state already exist
+  // we assume the rom_state, decoder, fom_system, fom_reference_state already exist
 
-namespace pode = pressio::ode;
-namespace pgal = pressio::rom::galerkin;
+  namespace pode = pressio::ode;
+  namespace pgal = pressio::rom::galerkin;
 
-const auto scheme = pdoe::StepScheme:BDF1;
-auto problem = pgal::create_default_implicit_problem(scheme, fom_system, decoder,
-													 rom_state, fom_reference_state);
-auto & stepper = problem.stepper();
+  const auto scheme = pdoe::StepScheme:BDF1;
+  auto problem = pgal::create_default_implicit_problem(scheme, fom_system, decoder,
+													   rom_state, fom_reference_state);
+  auto & stepper = problem.stepper();
 
-!!!!!!!! fill !!!!!!!!!
+  !!!!!!!! fill !!!!!!!!!
 
-pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
+  pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
 }
 ```

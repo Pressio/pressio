@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_problem_members_mixins.hpp
+// rom_problem_members_common_mixins.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
-#define ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
+#ifndef ROM_IMPL_ROM_PROBLEM_MEMBERS_COMMON_MIXINS_HPP_
+#define ROM_IMPL_ROM_PROBLEM_MEMBERS_COMMON_MIXINS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -162,4 +162,4 @@ struct AddImplicitArbStepper : T
 };
 
 }}}
-#endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
+#endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_COMMON_MIXINS_HPP_

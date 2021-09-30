@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_discrete_time_residual_impl.hpp
+// ode_implicit_discrete_time_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_RESIDUAL_IMPL_HPP_
-#define ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_RESIDUAL_IMPL_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -145,4 +145,4 @@ void discrete_time_residual(const StateType & y_np1,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_RESIDUAL_IMPL_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_HPP_

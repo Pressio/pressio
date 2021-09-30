@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_problem_members.hpp
+// rom_lspg_problem_members.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_STEADY_HPP_
-#define ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_STEADY_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#define ROM_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -259,6 +259,32 @@ struct AddHypRedPolicies : T
   {}
 };
 
+template <class T, class PrecT, class r_pol_t, class j_pol_t>
+struct AddPrecHypRedPolicies : T
+{
+  r_pol_t residualPolicy_;
+  j_pol_t jacobianPolicy_;
+
+  AddPrecHypRedPolicies() = delete;
+  AddPrecHypRedPolicies(const AddPrecHypRedPolicies &) = default;
+  AddPrecHypRedPolicies & operator=(const AddPrecHypRedPolicies &) = delete;
+  AddPrecHypRedPolicies(AddPrecHypRedPolicies &&) = default;
+  AddPrecHypRedPolicies & operator=(AddPrecHypRedPolicies &&) = delete;
+  ~AddPrecHypRedPolicies() = default;
+
+  template<class T1, class T2, class T3, class T4, class T5>
+  AddPrecHypRedPolicies(::pressio::ode::StepScheme name,
+			const T1 & romStateIn,
+			const T2 & fomObj,
+			T3 & decoder,
+			const T4 & fomNominalState,
+			const T5 & combiner,
+			const PrecT & prec)
+    : T(name, fomObj, decoder, romStateIn, fomNominalState),
+      residualPolicy_(prec, T::fomCRef(), T::fomStatesMngr_, combiner),
+      jacobianPolicy_(prec, T::fomCRef(), T::fomStatesMngr_, decoder, combiner)
+  {}
+};
 
 template <class T, class UserProvidedFunctor_t, class r_pol_t, class j_pol_t>
 struct AddSinglyDecoratedPolicies : T
@@ -428,4 +454,4 @@ struct AddDoublyDecoratedDiscreteTimeSystem : T
 
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_

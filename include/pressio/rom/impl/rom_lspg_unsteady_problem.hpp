@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_default_problem_explicit_stepping.hpp
+// rom_lspg_unsteady_problem.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_UNSTEADY_PROBLEM_HPP_
-#define ROM_LSPG_IMPL_UNSTEADY_PROBLEM_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_HPP_
+#define ROM_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -200,6 +200,22 @@ struct UnsteadyMembers<8, traits> : UnsteadyMembersCommon<traits>
     Ct, typename traits::stepper_type>;
 };
 
+// prec hyp-red, cont-time
+template <class traits>
+struct UnsteadyMembers<9, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct  = AddPrecHypRedPolicies<
+    Bt,
+    typename traits::preconditioner_type,
+    typename traits::residual_policy_type,
+    typename traits::jacobian_policy_type>;
+  using type = ::pressio::rom::impl::AddImplicitStepper<
+    Ct, typename traits::stepper_type>;
+};
+
 
 ///////////////////
 // problem class //
@@ -264,4 +280,4 @@ public:
 };
 
 }}}}//end namespace pressio::rom::lspg::impl
-#endif  // ROM_LSPG_IMPL_CONTINUOUS_TIME_API_ROM_LSPG_DEFAULT_PROBLEM_EXPLICIT_STEPPING_HPP_
+#endif  // ROM_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_HPP_
