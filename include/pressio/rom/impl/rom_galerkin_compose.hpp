@@ -95,6 +95,20 @@ struct select_galerkin_types<
 };
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct select_galerkin_types<
+  T,
+  mpl::enable_if_t<
+    ::pressio::is_array_pybind<T>::value
+    >
+  >
+{
+  using residual_type = mpl::remove_cvref_t<T>;
+  using jacobian_type = mpl::remove_cvref_t<T>;
+};
+#endif
+
 template<class ...Args> struct ComposeContTimeExplicit;
 template<class ...Args> struct ComposeContTimeImplicit;
 template<std::size_t, class ...Args> struct ComposeDiscTime;

@@ -58,7 +58,7 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 // specialize for op(A) = A and op(B) = B
 //-------------------------------------------
-template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+template <class A_type, class B_type, class scalar_type, class C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_fstyle_array_pybind<A_type>::value and
   ::pressio::is_fstyle_array_pybind<B_type>::value and
@@ -91,6 +91,46 @@ product(::pressio::nontranspose modeA,
   constexpr auto ovw    = yes;
   pyblas.attr("dgemm")(one, A, B, beta, C, transA, transB, ovw);
 }
+
+//-------------------------------------------
+// specialize for op(A) = A^T and op(B) = B
+//-------------------------------------------
+template <class A_type, class B_type, class scalar_type, class C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_fstyle_array_pybind<A_type>::value and
+  ::pressio::is_fstyle_array_pybind<B_type>::value and
+  ::pressio::is_fstyle_array_pybind<C_type>::value
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
+		"Types are not scalar compatible");
+
+  assert(A.ndim() == 2);
+  assert(B.ndim() == 2);
+  assert(C.ndim() == 2);
+
+  // NOTE: need to check if doing this import is expensive,
+  // and assess whether we can use blas directly when we know
+  // that objects involved are dense with not strange layout.
+  pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
+  constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+  constexpr auto no   = ::pressio::utils::Constants<int>::zero();
+  constexpr auto yes  = ::pressio::utils::Constants<int>::one();
+  constexpr auto transA = yes;
+  constexpr auto transB = no;
+  constexpr auto ovw    = yes;
+  pyblas.attr("dgemm")(one, A, B, beta, C, transA, transB, ovw);
+}
+
+
+
 
 // /*
 //  * C = beta * C + alpha*A*B

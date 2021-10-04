@@ -234,37 +234,75 @@ public:
     mpl::enable_if_t<_flag<=2, int> = 0
     >
   Problem(::pressio::ode::StepScheme name,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+	  const pybind11::object fomObj,
+	  decoder_type & decoder,
+	  galerkin_state_type romState,
+	  fom_state_type fomNominalState
+#else
 	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
-	  const fom_state_type & fomNominalState)
-    : members_(name, romState, fomObj, decoder, fomNominalState){}
+	  const fom_state_type & fomNominalState
+#endif
+	  )
+    : members_(name, romState, fomObj, decoder, fomNominalState)
+  {}
 
   template<
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=3 and _flag<=5, int> = 0
     >
   Problem(::pressio::ode::StepScheme name,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+	  const pybind11::object fomObj,
+	  decoder_type & decoder,
+	  galerkin_state_type romState,
+	  fom_state_type fomNominalState,
+	  const pybind11::object projector,
+	  Args2 ...args
+#else
 	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
 	  const fom_state_type & fomNominalState,
 	  const typename traits::projector_type & projector,
-	  Args2 && ...args)
-    : members_(name, romState, fomObj, decoder, fomNominalState,
-	       projector, std::forward<Args2>(args) ...){}
+	  Args2 && ...args
+#endif
+	  )
+  : members_(name, romState, fomObj, decoder,
+	     fomNominalState, projector,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+	     args...
+#else
+	     std::forward<Args2>(args) ...
+#endif
+	     )
+  {}
 
   template<
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=6 and _flag<=8, int> = 0
     >
   Problem(::pressio::ode::StepScheme name,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+	  const pybind11::object fomObj,
+	  decoder_type & decoder,
+	  galerkin_state_type romState,
+	  fom_state_type fomNominalState,
+	  const pybind11::object projector
+#else
 	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
 	  const fom_state_type & fomNominalState,
-	  const typename traits::projector_type & projector)
-    : members_(name, romState, fomObj, decoder, fomNominalState, projector){}
+	  const typename traits::projector_type & projector
+#endif
+	  )
+  : members_(name, romState, fomObj, decoder,
+	     fomNominalState, projector)
+  {}
+
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl
