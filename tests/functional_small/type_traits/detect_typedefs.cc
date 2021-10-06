@@ -7,8 +7,8 @@ namespace pressio { namespace testing {
   struct struct_name { \
     using type_name = int; \
   }; \
-  static_assert(pressio::predicate_name<struct_name>::value == true); \
-  static_assert(pressio::predicate_name<std::ios>::value == false);
+  static_assert(pressio::predicate_name<struct_name>::value == true, ""); \
+  static_assert(pressio::predicate_name<std::ios>::value == false,"");
 
 #define CHECK(struct_name, type_name) CHECK2(struct_name, has_ ## type_name ## def, type_name)
 

@@ -76,7 +76,7 @@ void test_kokkos_container_traits()
     static_assert(std::is_same< \
       typename traits::PRESSIO_TRAIT, \
       typename T::KOKKOS_TRAIT \
-    >::value);
+    >::value, "");
   #define CHECK_KOKKOS_TRAIT(TRAIT) CHECK_KOKKOS_TRAIT2(TRAIT, traits::TRAIT)
   CHECK_KOKKOS_TRAIT2(layout_type, traits::array_layout);
   CHECK_KOKKOS_TRAIT(execution_space);
@@ -99,7 +99,7 @@ void test_kokkos_container_traits()
   );
 
   // Kokkos-specific predicates
-  static_assert(have_matching_execution_space<T, T>::value);
+  static_assert(have_matching_execution_space<T, T>::value,"");
 }
 
 //*******************************
@@ -120,9 +120,9 @@ void test_kokkos_vector_type_traits()
 
   // Kokkos specific vector predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
-  static_assert(pressio::is_dynamic_vector_kokkos<T>::value == is_dynamic);
-  static_assert(pressio::is_static_vector_kokkos<T>::value == !is_dynamic);
-  static_assert(pressio::is_vector_kokkos<T>::value);
+  static_assert(pressio::is_dynamic_vector_kokkos<T>::value == is_dynamic,"");
+  static_assert(pressio::is_static_vector_kokkos<T>::value == !is_dynamic,"");
+  static_assert(pressio::is_vector_kokkos<T>::value,"");
 }
 
 TEST(type_traits, kokkos_vector) {
@@ -158,9 +158,9 @@ void test_kokkos_matrix_type_traits()
 
   // native Kokkos matrix predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
-  static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == !is_dynamic);
-  static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == is_dynamic);
-  static_assert(pressio::is_dense_matrix_kokkos<T>::value);
+  static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == !is_dynamic,"");
+  static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == is_dynamic,"");
+  static_assert(pressio::is_dense_matrix_kokkos<T>::value,"");
 }
 
 TEST(type_traits, kokkos_matrix) {

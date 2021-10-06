@@ -39,7 +39,7 @@ TEST(epetra, VectorTraits)
 {
   using T = Epetra_Vector;
   static_assert(pressio::is_vector_epetra<T>::value,"");
-  static_assert(pressio::Traits<T>::vector_identifier == pressio::VectorIdentifier::Epetra);
+  static_assert(pressio::Traits<T>::vector_identifier == pressio::VectorIdentifier::Epetra,"");
   test_epetra_container<T, 1>();
 }
 
@@ -47,6 +47,6 @@ TEST(eped_epetra, MVTraits)
 {
   using T = Epetra_MultiVector;
   static_assert(pressio::is_multi_vector_epetra<T>::value,"");
-  static_assert(pressio::Traits<T>::multi_vector_identifier == pressio::MultiVectorIdentifier::Epetra);
+  static_assert(pressio::Traits<T>::multi_vector_identifier == pressio::MultiVectorIdentifier::Epetra,"");
   test_epetra_container<T, 2>();
 }

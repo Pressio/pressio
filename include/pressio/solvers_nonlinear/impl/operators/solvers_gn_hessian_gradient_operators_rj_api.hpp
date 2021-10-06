@@ -134,6 +134,7 @@ public:
 
     // compute norm of r_
     residualNorm = ::pressio::ops::norm2(r_);
+    PRESSIOLOG_DEBUG("gn operators: residualNorm = ", residualNorm);
 
     if (std::isnan(residualNorm)){
       throw ::pressio::eh::ResidualHasNans();
