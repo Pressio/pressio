@@ -87,14 +87,6 @@ public:
     ::pressio::ops::fill(g_, zero);
   }
 
-  // template <typename SystemType, typename qrsT>
-  // QRCorrector(const SystemType & system,
-	 //      const state_wrapped_t & state,
-	 //      qrsT && solverObj)
-  //   : QRCorrector(system, state_type(state),
-		//   std::forward<qrsT>(solverObj))
-  // {}
-
   QRCorrector(QRCorrector const &) = default;
   QRCorrector & operator=(QRCorrector const &) = default;
   QRCorrector(QRCorrector && o) = default;
