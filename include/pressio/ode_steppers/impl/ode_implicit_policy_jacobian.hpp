@@ -61,8 +61,13 @@ public:
 public:
   JacobianStandardPolicy() = delete;
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  explicit JacobianStandardPolicy(SystemType systemIn)
+    : systemObj_(systemIn){}
+#else
   explicit JacobianStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
+#endif
 
   JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
   JacobianStandardPolicy & operator=(const JacobianStandardPolicy &) = default;

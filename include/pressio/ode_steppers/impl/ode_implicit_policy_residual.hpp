@@ -61,8 +61,13 @@ public:
 public:
   ResidualStandardPolicy() = delete;
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  explicit ResidualStandardPolicy(SystemType systemIn)
+    : systemObj_(systemIn){}
+#else
   explicit ResidualStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
+#endif
 
   ResidualStandardPolicy(const ResidualStandardPolicy &) = default;
   ResidualStandardPolicy & operator=(const ResidualStandardPolicy &) = default;
