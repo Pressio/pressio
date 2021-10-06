@@ -132,7 +132,7 @@ struct SpanTraits<
     ::pressio::is_array_pybind<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
