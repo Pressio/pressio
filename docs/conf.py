@@ -53,7 +53,7 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_rom_lspg_masked_steady.html\"> &emsp; &emsp; - masked problem </a>",),
 
      #
-     ("<a href=\"md_pages_components_rom_lspg_steady.html\"> &emsp; - LSPG: unsteady </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_unsteady.html\"> &emsp; - LSPG: unsteady </a>",),
      ("<a href=\"md_pages_components_rom_lspg_default.html\"> &emsp; &emsp; - default problem </a>",),
      ("<a href=\"md_pages_components_rom_lspg_hypred.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
      ("<a href=\"md_pages_components_rom_lspg_masked.html\"> &emsp; &emsp; - masked problem </a>",),
