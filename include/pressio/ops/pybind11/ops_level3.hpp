@@ -130,6 +130,63 @@ product(::pressio::transpose modeA,
 }
 
 
+/*-------------------------------------------
+ * special case A==B and op(A) = transpose
+ * C = beta * C + alpha*A^T*A
+ -------------------------------------------*/
+template <class A_type, class scalar_type, class C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_fstyle_array_pybind<A_type>::value and
+  ::pressio::is_fstyle_array_pybind<C_type>::value
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const scalar_type beta,
+	C_type & C)
+{
+
+  assert(A.ndim() == 2);
+  assert(C.ndim() == 2);
+
+  static_assert(are_scalar_compatible<A_type, C_type>::value,
+		"Types are not scalar compatible");
+
+  // NOTE: need to check if doing this import is expensive,
+  // and assess whether we can use blas directly when we know
+  // that objects involved are dense with not strange layout.
+  pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
+  constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+  constexpr auto no   = ::pressio::utils::Constants<int>::zero();
+  constexpr auto yes  = ::pressio::utils::Constants<int>::one();
+  constexpr auto transA = yes;
+  constexpr auto transB = no;
+  constexpr auto ovw    = yes;
+  pyblas.attr("dgemm")(one, A, A, beta, C, transA, transB, ovw);
+}
+
+template <class C_type, class A_type, class scalar_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_fstyle_array_pybind<A_type>::value and
+  ::pressio::is_fstyle_array_pybind<C_type>::value,
+  C_type
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A)
+{
+
+  assert(A.ndim() == 2);
+  constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
+  C_type C({A.shape(1), A.shape(1)});
+  product(modeA, modeB, alpha, A, zero, C);
+  return C;
+}
+
+
+
 
 
 // /*
@@ -391,72 +448,6 @@ product(::pressio::transpose modeA,
 //   }
 // }
 
-
-// /***********************************
-//  * special case A==B and op(A) = transpose
-//  * C = beta * C + alpha*A^T*A
-//  **********************************/
-// template <class A_type, class scalar_type, class C_type>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
-//   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<C_type>::value
-//   >
-// product(::pressio::transpose modeA,
-// 	::pressio::nontranspose modeB,
-// 	const scalar_type alpha,
-// 	const A_type & A,
-// 	const scalar_type beta,
-// 	C_type & C)
-// {
-//   // currently not working for expressions because expressions
-//   // do not have a .data() method and might have non-contiguous layout
-//   // so we cannot just pass them to blas/lapack, we need to handle them separatly
-//   static_assert
-//     (!containers::predicates::is_expression<A_type>::value and
-//      !containers::predicates::is_expression<C_type>::value,
-//      "Cannot yet handle expressions for ops::product for pybind11");
-
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-//      "Types are not scalar compatible");
-
-//   // // attempt to use eigen to map data and do operation but still needs debuggin
-//   // using mat_t = Eigen::Matrix<scalar_type, -1, -1, Eigen::ColMajor>;
-//   // Eigen::Map<const mat_t> Am(A.data()->data(), A.extent(0), A.extent(1));
-//   // auto AmT = Am.transpose();
-//   // Eigen::Map<mat_t> Cm(C.data()->mutable_data(), C.extent(0), C.extent(1));
-//   // Cm = beta * Cm + alpha * AmT * Am;
-
-//   // NOTE: need to check if doing this import is expensive,
-//   // and assess whether we can use blas directly when we know
-//   // that objects involved are dense with not strange layout.
-//   pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
-//   constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-//   constexpr auto no   = ::pressio::utils::Constants<int>::zero();
-//   constexpr auto yes  = ::pressio::utils::Constants<int>::one();
-//   constexpr auto transA = yes;
-//   constexpr auto transB = no;
-//   constexpr auto ovw    = yes;
-//   pyblas.attr("dgemm")(one, *A.data(), *A.data(), beta,
-// 		       *C.data(), transA, transB, ovw);
-// }
-
-// template <class C_type, class A_type, class scalar_type>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
-//   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<C_type>::value,
-//   C_type
-//   >
-// product(::pressio::transpose modeA,
-// 	::pressio::nontranspose modeB,
-// 	const scalar_type alpha,
-// 	const A_type & A)
-// {
-//   constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
-//   C_type C(A.extent(1), A.extent(1));
-//   product(modeA, modeB, alpha, A, zero, C);
-//   return C;
-// }
 
 // //-------------------------------------------
 // // C = beta * C + alpha*A*B
