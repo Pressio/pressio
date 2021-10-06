@@ -51,101 +51,20 @@
 
 namespace pressio{
 
+//*******************************
+// Eigen vector traits
+//*******************************
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-//*******************************
-// Eigen STATIC ROW vector
-//*******************************
 template <typename T>
 struct Traits<
   T,
   mpl::enable_if_t<
-    is_static_row_vector_eigen<T>::value
-    >
+    is_vector_eigen<T>::value
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
+> : public ::pressio::impl::EigenTraits<T, 1>,
+    public ::pressio::impl::EigenVectorIdentifier<T>,
+    public ::pressio::impl::EigenVectorAllocTrait<T>
 {
-
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenRowStatic;
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type   = typename T::Scalar;
-  using ordinal_type  = typename T::StorageIndex;
-  using size_type     = ordinal_type;
-  using reference_type = scalar_type &;
-  using const_reference_type = scalar_type const &;
-};
-
-//*******************************
-// Eigen STATIC COLUMN vector
-//*******************************
-template <typename T>
-struct Traits<
-  T,
-  mpl::enable_if_t<
-    is_static_column_vector_eigen<T>::value
-    >
-  >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
-{
-
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenColStatic;
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type   = typename T::Scalar;
-  using ordinal_type  = typename T::StorageIndex;
-  using size_type     = ordinal_type;
-  using reference_type = scalar_type &;
-  using const_reference_type = scalar_type const &;
-};
-
-//*******************************
-// Eigen DYNAMIC ROW vector
-//*******************************
-template <typename T>
-struct Traits<
-  T,
-  mpl::enable_if_t<
-    is_dynamic_row_vector_eigen<T>::value
-    >
-  >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
-{
-
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenRowDynamic;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type   = typename T::Scalar;
-  using ordinal_type  = typename T::StorageIndex;
-  using size_type     = ordinal_type;
-  using reference_type = scalar_type &;
-  using const_reference_type = scalar_type const &;
-};
-
-//*******************************
-// Eigen DYNAMIC COLUMN vector
-//*******************************
-template <typename T>
-struct Traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_dynamic_column_vector_eigen<T>::value
-    >
-  >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
-{
-
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenColDynamic;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type   = typename T::Scalar;
-  using ordinal_type  = typename T::StorageIndex;
-  using size_type     = ordinal_type;
-  using reference_type = scalar_type &;
-  using const_reference_type = scalar_type const &;
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
@@ -161,40 +80,12 @@ struct Traits<
     is_vector_kokkos<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
+  : public ::pressio::impl::KokkosTraits<T, 1>
 {
-
-  // static view if the number of runtime determined dimensions == 0
-  static constexpr bool is_static = T::traits::rank_dynamic==0;
-  static constexpr bool is_dynamic  = !is_static;
-
   static constexpr VectorIdentifier
   vector_identifier =
-    is_static ? VectorIdentifier::KokkosStatic :
+    T::traits::rank_dynamic == 0 ? VectorIdentifier::KokkosStatic :
     VectorIdentifier::KokkosDynamic;
-
-  using scalar_type      = typename T::traits::value_type;
-  using layout_type      = typename T::traits::array_layout;
-  using ordinal_type     = typename T::traits::size_type;
-  using size_type        = typename T::traits::size_type;
-  using execution_space  = typename T::traits::execution_space;
-  using memory_space     = typename T::traits::memory_space;
-  using device_type      = typename T::traits::device_type;
-  using memory_traits    = typename T::traits::memory_traits;
-  using host_mirror_space= typename T::traits::host_mirror_space;
-  using host_mirror_type = typename T::host_mirror_type;
-
-  using reference_type = typename T::reference_type;
-
-  static constexpr bool has_host_execution_space =
-    (false
-     #ifdef KOKKOS_ENABLE_SERIAL
-     || std::is_same<execution_space, Kokkos::Serial>::value
-     #endif
-     #ifdef KOKKOS_ENABLE_OPENMP
-     || std::is_same<execution_space, Kokkos::OpenMP>::value
-     #endif
-     );
 };
 #endif
 
@@ -209,39 +100,9 @@ struct Traits<
     is_vector_tpetra<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 1>
+  : public ::pressio::impl::TpetraTraits<T, 1>
 {
-
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Tpetra;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type   = typename T::impl_scalar_type;
-  using local_ordinal_type  = typename T::local_ordinal_type;
-  using global_ordinal_type = typename T::global_ordinal_type;
-  using data_map_type   = typename T::map_type;
-  using size_type     = global_ordinal_type;
-  // using const_data_return_t = T const *;
-  // using data_return_t = T *;
-
-  // node is a Tpetra concept, defined as:
-  // node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-  // where memory space is taken from the execution_space
-  ///
-  using node_type = typename T::node_type;
-  using dual_view_type = typename T::dual_view_type;
-  // device_type is just an (execution space, memory space) pair.
-  // defined as: Kokkos::Device<execution_space, memory_space>
-  // so from the device we can get the device execution and memory space
-  using device_type = typename T::device_type;
-  using device_mem_space_type = typename device_type::memory_space;
-  using device_exec_space_type = typename device_type::execution_space;
-  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
-
-  using dot_type = typename T::dot_type;
-  using mag_type = typename T::mag_type;
-  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 #endif
 
@@ -256,19 +117,9 @@ struct Traits<
     is_vector_epetra<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 1>
+  : public ::pressio::impl::EpetraTraits<1>
 {
-
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type  = double;
-  using local_ordinal_type  = int;
-  using global_ordinal_type = int;
-  using size_type    = global_ordinal_type;
-  using data_map_type  = Epetra_BlockMap;
-  using communicator_type   = Epetra_Comm;
 };
 #endif
 
@@ -283,36 +134,9 @@ struct Traits<
     is_vector_tpetra_block<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 1>
+  : public ::pressio::impl::TpetraTraits<T, 1>
 {
-
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TpetraBlock;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type = typename T::impl_scalar_type;
-  using local_ordinal_type = typename T::local_ordinal_type;
-  using global_ordinal_type = typename T::global_ordinal_type;
-  using data_map_type = typename T::map_type;
-  using size_type    = global_ordinal_type;
-  using mag_type = scalar_type;
-
-  /* node is a Tpetra concept, defined as:
-   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-   * where memory space is taken from the execution_space
-   */
-  using node_type = typename T::node_type;
-
-  // device_type is just an (execution space, memory space) pair.
-  // defined as: Kokkos::Device<execution_space, memory_space>
-  // so from the device we can get the device execution and memory space
-  using device_type = typename T::device_type;
-  using device_mem_space_type = typename device_type::memory_space;
-  using device_exec_space_type = typename device_type::execution_space;
-  // store types for host
-  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
-  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 #endif
 
@@ -327,18 +151,9 @@ struct Traits<
     is_dense_vector_teuchos<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 1>
+  : public ::pressio::impl::TeuchosTraits<T, 1>
 {
-
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type  = typename T::scalarType;
-  using ordinal_type = typename T::ordinalType;
-  using size_type    = ordinal_type;
-  using reference_type = scalar_type &;
-  using const_reference_type = scalar_type const &;
 };
 #endif
 

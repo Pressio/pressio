@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// traits_multi_vector.hpp
+// type_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,59 +46,67 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
-#define TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
+/*
+  Verify values of common container traits
+*/
 
-namespace pressio{ 
+// -------------------------------------------------
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-
-//*******************************
-// for tpetra multivector
-//*******************************
-template<typename T>
-struct Traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_multi_vector_tpetra<T>::value
-    >
-  >
-  : public ::pressio::impl::TpetraTraits<T, 2>
+/*
+    Verifies traits common for all containers
+*/
+template <
+  typename T,
+  pressio::PackageIdentifier pack_id,
+  int rank,
+  bool is_shared_mem,
+  bool is_dynamic,
+  typename Scalar,
+  typename Ordinal,
+  typename SizeType = Ordinal,
+  typename ScalarRef = typename std::add_lvalue_reference<
+    Scalar
+  >::type,
+  typename traits = pressio::Traits<T>
+>
+void test_container_traits()
 {
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Tpetra;
-};
-
-
-//*******************************
-// for epetra multivector
-//*******************************
-template<typename T>
-struct Traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_multi_vector_epetra<T>::value
-    >
-  >
-  : public ::pressio::impl::EpetraTraits<2>
-{
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
-};
-
-//*******************************
-// for block tpetra multivector
-//*******************************
-template<typename T>
-struct Traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_multi_vector_tpetra_block<T>::value
-    >
-  >
-  : public ::pressio::impl::TpetraTraits<T, 2>
-{
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
-};
-#endif
-
+  // ContainersSharedTraits
+  static_assert(traits::package_identifier == pack_id);
+  static_assert(traits::is_shared_mem == is_shared_mem);
+  static_assert(traits::is_distributed == !is_shared_mem);
+  static_assert(traits::rank == rank);
+  // AllocTrait
+  static_assert(traits::is_static == !is_dynamic);
+  static_assert(traits::is_dynamic == is_dynamic);
+  // ScalarTrait
+  testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
+  testing::StaticAssertTypeEq<typename traits::reference_type, Scalar &>();
+  testing::StaticAssertTypeEq<typename traits::const_reference_type, Scalar const &>();
+  // OrdinalTrait
+  testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
+  testing::StaticAssertTypeEq<typename traits::size_type, SizeType>();
 }
-#endif  // TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
+
+// -------------------------------------------------
+
+/*
+    Verifies traits common for all matrices
+*/
+template <
+  typename T,
+  pressio::MatrixIdentifier mtx_id,
+  bool is_row_major = true,
+  bool is_sparse = false,
+  typename traits = pressio::Traits<T>
+>
+void test_matrix_traits()
+{
+  static_assert(traits::matrix_identifier == mtx_id);
+  static_assert(traits::is_sparse == is_sparse);
+  static_assert(traits::is_dense == !is_sparse);
+  static_assert(traits::is_row_major == is_row_major);
+  static_assert(traits::is_col_major == !is_row_major);
+}
+
+// -------------------------------------------------
