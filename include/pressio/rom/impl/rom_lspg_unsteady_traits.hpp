@@ -661,7 +661,6 @@ struct Traits<
   using common_types = ::pressio::rom::lspg::impl::CommonTraitsUnsteadyContTime<
     FomSystemType, LspgStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using scalar_type       = typename common_types::scalar_type;

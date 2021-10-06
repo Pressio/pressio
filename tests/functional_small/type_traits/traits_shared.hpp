@@ -72,13 +72,13 @@ template <
 void test_container_traits()
 {
   // ContainersSharedTraits
-  static_assert(traits::package_identifier == pack_id);
-  static_assert(traits::is_shared_mem == is_shared_mem);
-  static_assert(traits::is_distributed == !is_shared_mem);
-  static_assert(traits::rank == rank);
+  static_assert(traits::package_identifier == pack_id, "");
+  static_assert(traits::is_shared_mem == is_shared_mem, "");
+  static_assert(traits::is_distributed == !is_shared_mem, "");
+  static_assert(traits::rank == rank, "");
   // AllocTrait
-  static_assert(traits::is_static == !is_dynamic);
-  static_assert(traits::is_dynamic == is_dynamic);
+  static_assert(traits::is_static == !is_dynamic, "");
+  static_assert(traits::is_dynamic == is_dynamic, "");
   // ScalarTrait
   testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
   testing::StaticAssertTypeEq<typename traits::reference_type, Scalar &>();
@@ -102,11 +102,11 @@ template <
 >
 void test_matrix_traits()
 {
-  static_assert(traits::matrix_identifier == mtx_id);
-  static_assert(traits::is_sparse == is_sparse);
-  static_assert(traits::is_dense == !is_sparse);
-  static_assert(traits::is_row_major == is_row_major);
-  static_assert(traits::is_col_major == !is_row_major);
+  static_assert(traits::matrix_identifier == mtx_id, "");
+  static_assert(traits::is_sparse == is_sparse, "");
+  static_assert(traits::is_dense == !is_sparse, "");
+  static_assert(traits::is_row_major == is_row_major, "");
+  static_assert(traits::is_col_major == !is_row_major, "");
 }
 
 // -------------------------------------------------
