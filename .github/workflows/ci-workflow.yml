@@ -45,7 +45,6 @@ jobs:
         # Different configurations for matrix.
         # Values are reachable with ${{ matrix.config.<key> }}
         config:
-
           # os: Stands for OS on GitHub Runner (Ubuntu / MacOS / Windows)
           # image: Stands for used Docker Image
           # mode: Stands for build mode inside Pressio (Debug / Release)
