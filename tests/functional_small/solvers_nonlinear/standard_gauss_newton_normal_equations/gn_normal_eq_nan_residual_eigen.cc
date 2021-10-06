@@ -48,7 +48,7 @@ struct FakeProblem
     std::cout << "RESIDUAL CALL " << count_ << std::endl;
     res.setConstant(1.);
     if (count_==2){
-      res(2) = std::numeric_limits<double>::quiet_NaN();
+      res(2) = std::sqrt(-1); //std::numeric_limits<double>::quiet_NaN();
     }
   }
 
