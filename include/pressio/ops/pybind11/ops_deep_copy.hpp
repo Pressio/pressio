@@ -62,8 +62,8 @@ deep_copy(T1 & dest, const T2 & src)
 		"Types are not scalar compatible");
   assert(dest.ndim() == src.ndim());
 
-  constexpr bool dest_is_cm = is_column_major(dest);
-  constexpr bool src_is_cm  = is_column_major(src);
+  constexpr bool dest_is_cm = ::pressio::Traits<T1>::layout == 1;
+  constexpr bool src_is_cm  = ::pressio::Traits<T2>::layout == 1;
   constexpr bool both_cm    = dest_is_cm && src_is_cm;
   constexpr bool one_is_rm  = !both_cm;
 

@@ -170,11 +170,9 @@ template<class ...> struct matching_extents;
 #include "ops/pybind11/ops_abs.hpp"
 #include "ops/pybind11/ops_scale.hpp"
 #include "ops/pybind11/ops_fill.hpp"
-
 // resize commented out because we need to fix it
-// see inside file for details 
+// see inside file for details
 // #include "ops/pybind11/ops_resize.hpp"
-
 #include "ops/pybind11/ops_set_zero.hpp"
 #include "ops/pybind11/ops_add_to_diagonal.hpp"
 #include "ops/pybind11/ops_min_max.hpp"
