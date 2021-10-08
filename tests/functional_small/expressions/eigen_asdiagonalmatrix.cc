@@ -49,7 +49,7 @@ void testConst(const T & a){
   // D(0,0) = 1.;
   // does not compile since "a" is const, so should not compile!
 }
-};
+}
 
 TEST(expressions_eigen, as_diagonal_matrix)
 {
