@@ -72,13 +72,9 @@ struct FomObjHolder
   ~FomObjHolder() = default;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-
   explicit FomObjHolder(const pybind11::object & fomObjIn) : fomObj_(fomObjIn){}
-
   const FomSystemType & fomCRef() const{ return fomObj_; }
-
 #else
-
   explicit FomObjHolder(const FomSystemType & fomObjIn) : fomObj_(fomObjIn){}
   const FomSystemType & fomCRef() const{ return fomObj_.get(); }
 #endif

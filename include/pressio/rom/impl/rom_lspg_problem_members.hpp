@@ -279,7 +279,12 @@ struct AddPrecHypRedPolicies : T
 			T3 & decoder,
 			const T4 & fomNominalState,
 			const T5 & combiner,
-			const PrecT & prec)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object prec
+#else
+			const PrecT & prec
+#endif
+			)
     : T(name, fomObj, decoder, romStateIn, fomNominalState),
       residualPolicy_(prec, T::fomCRef(), T::fomStatesMngr_, combiner),
       jacobianPolicy_(prec, T::fomCRef(), T::fomStatesMngr_, decoder, combiner)
@@ -304,7 +309,12 @@ struct AddSinglyDecoratedPolicies : T
 			     const T2 & fomObj,
 			     T3 & decoder,
 			     const T4 & fomNominalState,
-			     const UserProvidedFunctor_t & userProvidedFunctor)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			     pybind11::object userProvidedFunctor
+#else
+			     const UserProvidedFunctor_t & userProvidedFunctor
+#endif
+			     )
     : T(fomObj, decoder, romStateIn, fomNominalState),
       residualPolicy_(userProvidedFunctor, T::fomCRef(), T::fomStatesMngr_),
       jacobianPolicy_(userProvidedFunctor, T::fomCRef(), T::fomStatesMngr_, decoder)
@@ -316,7 +326,12 @@ struct AddSinglyDecoratedPolicies : T
 			     const T2 & fomObj,
 			     T3 & decoder,
 			     const T4 & fomNominalState,
-			     const UserProvidedFunctor_t & userProvidedFunctor)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			     pybind11::object userProvidedFunctor
+#else
+			     const UserProvidedFunctor_t & userProvidedFunctor
+#endif
+			     )
     : T(name, fomObj, decoder, romStateIn, fomNominalState),
       residualPolicy_(userProvidedFunctor, T::fomCRef(), T::fomStatesMngr_),
       jacobianPolicy_(userProvidedFunctor, T::fomCRef(), T::fomStatesMngr_, decoder)
@@ -347,8 +362,14 @@ struct AddDoublyDecoratedPolicies : T
 			     const T2 & fomObj,
 			     T3 & decoder,
 			     const T4 & fomNominalState,
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			     pybind11::object functor1,
+			     pybind11::object functor2
+#else
 			     const UserProvidedFunctor1_t & functor1,
-			     const UserProvidedFunctor2_t & functor2)
+			     const UserProvidedFunctor2_t & functor2
+#endif
+			     )
     : T(fomObj, decoder, romStateIn, fomNominalState),
       residualPolicy_(functor1, functor2, T::fomCRef(), T::fomStatesMngr_),
       jacobianPolicy_(functor1, functor2, T::fomCRef(), T::fomStatesMngr_, decoder)
@@ -360,8 +381,14 @@ struct AddDoublyDecoratedPolicies : T
 			     const T2 & fomObj,
 			     T3 & decoder,
 			     const T4 & fomNominalState,
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			     pybind11::object functor1,
+			     pybind11::object functor2
+#else
 			     const UserProvidedFunctor1_t & functor1,
-			     const UserProvidedFunctor2_t & functor2)
+			     const UserProvidedFunctor2_t & functor2
+#endif
+			     )
     : T(name, fomObj, decoder, romStateIn, fomNominalState),
       residualPolicy_(functor1, functor2, T::fomCRef(), T::fomStatesMngr_),
       jacobianPolicy_(functor1, functor2, T::fomCRef(), T::fomStatesMngr_, decoder)

@@ -67,8 +67,13 @@ public:
   {}
 
   template <class ... Args>
-  PreconditionDecoratorSteady(const PreconditionerType & preconditionerIn,
-			      Args && ... args)
+  PreconditionDecoratorSteady(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object preconditionerIn,
+#else
+			const PreconditionerType & preconditionerIn,
+#endif
+			Args && ... args)
     : preconditionable(std::forward<Args>(args)...),
       preconditionerObj_(preconditionerIn)
   {}
@@ -87,7 +92,12 @@ public:
 
 private:
   using preconditionable::fomStatesMngr_;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const PreconditionerType preconditionerObj_;
+#else
   std::reference_wrapper<const PreconditionerType> preconditionerObj_;
+#endif
 };
 
 
@@ -104,15 +114,25 @@ public:
   ~MaskDecoratorSteady() = default;
 
   template <class ... Args>
-  MaskDecoratorSteady(const MaskerType & maskerObj, Args && ... args)
+  MaskDecoratorSteady(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object masker,
+#else
+			const MaskerType & masker,
+#endif
+			Args && ... args)
     : MaskableType(std::forward<Args>(args)...),
       unmaskedObject_(MaskableType::create()),
-      masker_(maskerObj)
+      masker_(masker)
   {}
 
 public:
   DataType create() const{
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    return DataType(masker_.createApplyMaskResult(unmaskedObject_));
+#else
     return DataType(masker_.get().createApplyMaskResult(unmaskedObject_));
+#endif
   }
 
   template <class LspgStateType>
@@ -124,7 +144,12 @@ public:
 
 private:
   mutable DataType unmaskedObject_;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const MaskerType masker_;
+#else
   std::reference_wrapper<const MaskerType> masker_;
+#endif
 };
 
 }}}} //end namespace pressio::rom::lspg::decorator
