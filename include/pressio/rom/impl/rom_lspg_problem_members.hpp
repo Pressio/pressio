@@ -438,7 +438,12 @@ struct AddSinglyDecoratedDiscreteTimeSystem : T
 				       const T2 & fomObj,
 				       T3 & decoder,
 				       const T4 & fomNominalState,
-				       const UserProvidedFunctor_t & userProvidedFunctor)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+				       pybind11::object userProvidedFunctor
+#else
+				       const UserProvidedFunctor_t & userProvidedFunctor
+#endif
+				       )
     : T(fomObj, decoder, romStateIn, fomNominalState),
       romSys_(userProvidedFunctor, T::fomCRef(), decoder, T::fomStatesMngr_)
   {}
@@ -469,8 +474,14 @@ struct AddDoublyDecoratedDiscreteTimeSystem : T
 				       const T2 & fomObj,
 				       T3 & decoder,
 				       const T4 & fomNominalState,
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+				       pybind11::object userProvidedFunctor1,
+				       pybind11::object userProvidedFunctor2
+#else
 				       const UserProvidedFunctor1_t & userProvidedFunctor1,
-				       const UserProvidedFunctor2_t & userProvidedFunctor2)
+				       const UserProvidedFunctor2_t & userProvidedFunctor2
+#endif
+				       )
     : T(fomObj, decoder, romStateIn, fomNominalState),
       romSys_(userProvidedFunctor1, userProvidedFunctor2,
 	      T::fomCRef(), decoder, T::fomStatesMngr_)

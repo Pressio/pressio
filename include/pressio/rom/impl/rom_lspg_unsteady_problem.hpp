@@ -302,6 +302,33 @@ public:
 	     )
   {}
 
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+  template<
+    int _flag = flag,
+    mpl::enable_if_t<_flag<=1 && traits::is_cont_time==false, int> = 0
+    >
+  UnsteadyProblem(const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState)
+    : members_(::pressio::ode::StepScheme::ImplicitArbitrary, romState,
+	       fomObj, decoder, fomNominalState)
+  {}
+
+  template<
+    int _flag = flag, class ...Args2,
+    mpl::enable_if_t<_flag>=2 && traits::is_cont_time==false, int> = 0
+    >
+  UnsteadyProblem(const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState,
+		  Args2 ...args)
+  : members_(::pressio::ode::StepScheme::ImplicitArbitrary, romState,
+	     fomObj, decoder, fomNominalState, args...)
+  {}
+#endif
+
 };
 
 }}}}//end namespace pressio::rom::lspg::impl

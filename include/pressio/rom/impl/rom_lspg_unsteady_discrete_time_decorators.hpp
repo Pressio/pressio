@@ -67,10 +67,15 @@ struct PrecDecoratorDiscreteTimeSystem : preconditionable
   ~PrecDecoratorDiscreteTimeSystem() = default;
 
   template <class ... Args>
-  PrecDecoratorDiscreteTimeSystem(const PreconditionerType & preconditionerIn,
-				  Args && ... args)
+  PrecDecoratorDiscreteTimeSystem(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object preconditioner,
+#else
+			const PreconditionerType & preconditioner,
+#endif
+			Args && ... args)
     : preconditionable(std::forward<Args>(args)...),
-      precFunctor_(preconditionerIn)
+      precFunctor_(preconditioner)
   {}
 
   discrete_time_residual_type createDiscreteTimeResidual() const{
@@ -109,7 +114,12 @@ struct PrecDecoratorDiscreteTimeSystem : preconditionable
 
 private:
   using preconditionable::fomStatesMngr_;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const PreconditionerType precFunctor_;
+#else
   std::reference_wrapper<const PreconditionerType> precFunctor_;
+#endif
 };
 
 template <class MaskerType, class maskable>
@@ -128,8 +138,13 @@ struct MaskDecoratorDiscreteTimeSystem : maskable
   ~MaskDecoratorDiscreteTimeSystem() = default;
 
   template <class ... Args>
-  MaskDecoratorDiscreteTimeSystem(const MaskerType & maskerIn,
-				  Args && ... args)
+  MaskDecoratorDiscreteTimeSystem(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object maskerIn,
+#else
+			const MaskerType & maskerIn,
+#endif
+			Args && ... args)
     : maskable(std::forward<Args>(args)...),
       maskFunctor_(maskerIn),
       unmaskedResidual_(maskable::createDiscreteTimeResidual()),
@@ -137,12 +152,20 @@ struct MaskDecoratorDiscreteTimeSystem : maskable
   {}
 
   discrete_time_residual_type createDiscreteTimeResidual() const{
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    discrete_time_residual_type R(maskFunctor_.createApplyMaskResult(unmaskedResidual_));
+#else
     discrete_time_residual_type R(maskFunctor_.get().createApplyMaskResult(unmaskedResidual_));
+#endif
     return R;
   }
 
   discrete_time_jacobian_type createDiscreteTimeJacobian() const{
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    discrete_time_jacobian_type J(maskFunctor_.createApplyMaskResult(unmaskedJacobian_));
+#else
     discrete_time_jacobian_type J(maskFunctor_.get().createApplyMaskResult(unmaskedJacobian_));
+#endif
     return J;
   }
 
@@ -171,7 +194,12 @@ struct MaskDecoratorDiscreteTimeSystem : maskable
   }
 
 private:
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const MaskerType maskFunctor_;
+#else
   std::reference_wrapper<const MaskerType> maskFunctor_;
+#endif
+
   mutable discrete_time_residual_type unmaskedResidual_;
   mutable discrete_time_jacobian_type unmaskedJacobian_;
 };
