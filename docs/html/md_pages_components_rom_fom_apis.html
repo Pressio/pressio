@@ -58,7 +58,7 @@
                 <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_unsteady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -140,9 +140,18 @@ $R$
   <span class="c1">// you need to create an instance of the residual</span>
   <span class="n">residual_type</span> <span class="n">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">OperandType</span><span class="o">&gt;</span>
+  <span class="n">OperandType</span> <span class="n">createApplyJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">OperandType</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
   <span class="c1">// given a state, you compute the residual</span>
   <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
                 <span class="n">residual_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="c1">// given a state, compute action of Jacobian on B</span>
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">OperandType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">applyJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="n">OperandType</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
+                     <span class="n">OperandType</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 <span class="p">};</span></pre></section><section id="autotoc_md78"><h4><a href="#autotoc_md78">Notes</a></h4><div class="m-note m-warning"><p>The steady adapter can ONLY be used for doing steady LSPG ROMs.</p></div><p>See the following examples:  <span class="m-text m-danger">add</span></p><p><br /></p><hr/>
  <p><br /></p></section></section><section id="autotoc_md79"><h2><a href="#autotoc_md79">Continuous-time API: RHS Only</a></h2><div class="m-note m-info"><p>Intended for when your FOM application is expressed in <em>time-continuous</em> form as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
 <title>

@@ -14,7 +14,7 @@
 <title>Overview</title>
 </sect1>
 <sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md119">
-<title>1. Creating a problem instance</title>
+<title>Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DecoderType,</highlight></codeline>
@@ -67,25 +67,9 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md121">
-<title>Problem class API</title>
-<para>A problem meets the following interface:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">SteadyLspgProblem</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>traits<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>nested<sp/>typedef<sp/>with<sp/>trait<sp/>class<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>returns<sp/>the<sp/>underlying<sp/>system<sp/>to<sp/>use<sp/>to<sp/>solve<sp/>the<sp/>problem</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>system();</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>const<sp/>ref<sp/>to<sp/>the<sp/>object<sp/>knowing<sp/>how<sp/>to<sp/>reconstruct<sp/>a<sp/>FOM<sp/>state</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>fomStateReconstructor()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting></para>
-</sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md122">
-<title>2.,3. Extract and Solve</title>
+<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md121">
+<title>Solve</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
@@ -94,10 +78,9 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>plspg::create_default_steady_problem(fom_system,<sp/>decoder,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>system<sp/>=<sp/>problem.system();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>nonlinear<sp/>least-squares<sp/>solver,<sp/>for<sp/>example:</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>nonlinsolver<sp/>=<sp/>pressio::ode::create_gauss_newton(system,<sp/>rom_state,<sp/>...);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>nonlinsolver<sp/>=<sp/>pressio::ode::create_gauss_newton(problem,<sp/>rom_state,<sp/>...);</highlight></codeline>
 <codeline><highlight class="normal">nonlinsolver.solve(system,<sp/>rom_state);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>

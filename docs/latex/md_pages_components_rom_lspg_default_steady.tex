@@ -3,7 +3,7 @@
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_components_rom_lspg_default_steady_autotoc_md118}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_default_steady_autotoc_md118}
-\hypertarget{md_pages_components_rom_lspg_default_steady_autotoc_md119}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_lspg_default_steady_autotoc_md119}
+\hypertarget{md_pages_components_rom_lspg_default_steady_autotoc_md119}{}\doxysection{Creating a problem instance}\label{md_pages_components_rom_lspg_default_steady_autotoc_md119}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -60,25 +60,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_com
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_lspg_default_steady_autotoc_md121}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_lspg_default_steady_autotoc_md121}
-A problem meets the following interface\+:
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }SteadyLspgProblem}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{\textcolor{keyword}{public}:}
-\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// returns the underlying system to use to solve the problem}}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& system();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
-\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
-\DoxyCodeLine{\};}
-
-\end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_default_steady_autotoc_md122}{}\doxysection{2.,3. Extract and Solve}\label{md_pages_components_rom_lspg_default_steady_autotoc_md122}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_lspg_default_steady_autotoc_md121}{}\doxysection{Solve}\label{md_pages_components_rom_lspg_default_steady_autotoc_md121}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
@@ -89,10 +71,9 @@ A problem meets the following interface\+:
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{auto} problem = plspg::create\_default\_steady\_problem(fom\_system, decoder,}
 \DoxyCodeLine{                                                    rom\_state, fom\_reference\_state);}
-\DoxyCodeLine{\textcolor{keyword}{auto} \& system = problem.system();}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// create nonlinear least-\/squares solver, for example:}}
-\DoxyCodeLine{\textcolor{keyword}{auto} nonlinsolver = pressio::ode::create\_gauss\_newton(system, rom\_state, ...);}
+\DoxyCodeLine{\textcolor{keyword}{auto} nonlinsolver = pressio::ode::create\_gauss\_newton(problem, rom\_state, ...);}
 \DoxyCodeLine{nonlinsolver.solve(system, rom\_state);}
 \DoxyCodeLine{\textcolor{comment}{//...}}
 \DoxyCodeLine{\}}

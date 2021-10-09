@@ -2,8 +2,8 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md140}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md140}
-todo\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md141}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md141}
+Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md138}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md138}
+todo\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md139}{}\doxysection{Creating a problem instance}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md139}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -35,7 +35,7 @@ todo\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md141}{}\dox
 \DoxyCodeLine{                                  \textcolor{keyword}{const} MaskerType \&);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md142}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md142}
+\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md140}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md140}
 
 \begin{DoxyItemize}
 \item {\ttfamily Fom\+System\+Type}\+:
@@ -62,24 +62,6 @@ todo\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md141}{}\dox
 \DoxyCodeLine{std::is\_same<FomReferenceStateType, typename DecoderType::fom\_state\_type>::value == \textcolor{keyword}{true}}
 
 \end{DoxyCode}
-
-\end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_lspg_masked_steady_autotoc_md143}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_lspg_masked_steady_autotoc_md143}
-A problem meets the following interface\+:
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }SteadyLspgProblem}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{\textcolor{keyword}{public}:}
-\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// returns the underlying system to use to solve the problem}}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& system();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
-\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
-\DoxyCodeLine{\};}
-
-\end{DoxyCode}
  
+\end{DoxyItemize}
+\end{DoxyItemize}

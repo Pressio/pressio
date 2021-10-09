@@ -36,9 +36,18 @@ Intended for when your FOM application is expressed as \[ \boldsymbol{R}(\boldsy
 \DoxyCodeLine{  \textcolor{comment}{// you need to create an instance of the residual}}
 \DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
 \DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} OperandType>}
+\DoxyCodeLine{  OperandType createApplyJacobianResult(\textcolor{keyword}{const} OperandType \& B) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// given a state, you compute the residual}}
 \DoxyCodeLine{  \textcolor{keywordtype}{void} residual(\textcolor{keyword}{const} state\_type \&,}
 \DoxyCodeLine{                residual\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// given a state, compute action of Jacobian on B}}
+\DoxyCodeLine{  \textcolor{keyword}{template}<\textcolor{keyword}{class} OperandType>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyJacobian(\textcolor{keyword}{const} state\_type \& state,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} OperandType \& B,}
+\DoxyCodeLine{                     OperandType \& A) \textcolor{keyword}{const};}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
