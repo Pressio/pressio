@@ -59,17 +59,12 @@ struct DiagTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
+  : public ::pressio::impl::EigenTraits<
+      typename ::pressio::mpl::remove_cvref_t<MatrixType>,
+      1
+    >,
+    public ::pressio::impl::StaticAllocTrait
 {
-
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type     = typename ::pressio::Traits<mat_remove_cv_t>::scalar_type;
-  using ordinal_type    = typename ::pressio::Traits<mat_remove_cv_t>::ordinal_type;
-  using size_type       = typename ::pressio::Traits<mat_remove_cv_t>::size_type;
-
   // type of the native expression
   using _native_expr_type = decltype(std::declval<MatrixType>().diagonal());
   using _const_native_expr_type=decltype(std::declval<const MatrixType>().diagonal());
@@ -93,22 +88,17 @@ struct DiagTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
+  : public ::pressio::impl::KokkosTraits<
+      typename ::pressio::mpl::remove_cvref_t<MatrixType>,
+      1,
+      true
+    >
 {
+  using native_expr_type = Kokkos::View<
+    typename ::pressio::mpl::remove_cvref_t<MatrixType>::traits::value_type*,
+    Kokkos::LayoutStride
+  >;
 
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type	    = typename ::pressio::Traits<mat_remove_cv_t>::scalar_type;
-  using execution_space = typename ::pressio::Traits<mat_remove_cv_t>::execution_space;
-  using memory_space	  = typename ::pressio::Traits<mat_remove_cv_t>::memory_space;
-  using device_type	    = typename ::pressio::Traits<mat_remove_cv_t>::device_type;
-  using ordinal_type	  = typename ::pressio::Traits<mat_remove_cv_t>::ordinal_type;
-  using size_type		    = typename ::pressio::Traits<mat_remove_cv_t>::size_type;
-  using reference_type	= typename ::pressio::Traits<mat_remove_cv_t>::reference_type;
-
-  using native_expr_type = Kokkos::View<typename mat_remove_cv_t::traits::value_type*, Kokkos::LayoutStride>;
   // using _native_expr_t	     = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
   // using _const_native_expr_t = Kokkos::View<const scalar_t*, Kokkos::LayoutStride>;
   // using native_expr_t = typename std::conditional<
@@ -127,7 +117,7 @@ struct DiagTraits<
     ::pressio::is_array_pybind<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;

@@ -58,7 +58,7 @@
                 <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_unsteady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -85,7 +85,24 @@
         <h1>
           rom: Steady LSPG
         </h1>
-<p><span class="m-text m-danger">todo</span>: write this better</p><p>We currently support the following problems:</p><ul><li>Default: <a href="md_pages_components_rom_lspg_default_steady.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_lspg_hypred_steady.html">link</a></li><li>Masked: <a href="md_pages_components_rom_lspg_masked_steady.html">link</a></li></ul>
+<p><span class="m-text m-danger">todo</span>: write this better</p><p>The pressio steady LSPG ROMs are designed around two main steps:</p><section id="autotoc_md142"><h2><a href="#autotoc_md142">1. Create</a></h2><p>You instantiate a &quot;steady LSPG problem&quot;, e.g.:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="o">::</span><span class="n">create_default_unsteady_problem</span><span class="p">(</span><span class="cm">/* args */</span><span class="p">);</span></pre><p>We currently support three variants:</p><ul><li>Default: <a href="md_pages_components_rom_lspg_default_steady.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_lspg_hypred_steady.html">link</a></li><li>Masked: <a href="md_pages_components_rom_lspg_masked_steady.html">link</a></li></ul><p>Refer to each problem page for details on each specific variant.</p><p>The returned <code>problem</code> object is an instantiation of a class exposing the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">SteadyLspgProblem</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef with trait class */</span><span class="p">;</span>
+
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* ... */</span>
+  <span class="k">using</span> <span class="n">state_type</span>     <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+
+  <span class="n">residual_type</span> <span class="nf">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">jacobian_type</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">residual_type</span> <span class="o">&amp;</span> <span class="n">res</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">jacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jac</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre></section><section id="autotoc_md143"><h2><a href="#autotoc_md143">2. Solve</a></h2><ul><li>you instantiate and use a nonlinear least-squares solver of your choice to solve the problem. Note, in fact, that the problem&#x27;s API conforms to the one required by the nonlinear solvers</li><li>for this solve stage, you don&#x27;t have to use the pressio4py solvers. Once you have the problem object, you can also use your own nonlinear least-squares solver. As shown above, the <code>problem</code> exposes all the operators that you need to solve.</li></ul></section>
       </div>
     </div>
   </div>

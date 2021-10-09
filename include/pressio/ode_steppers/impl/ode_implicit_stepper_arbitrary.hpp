@@ -92,7 +92,7 @@ public:
   ~StepperArbitrary() = default;
 
   StepperArbitrary(const StateType & state,
-		               SystemType && systemObj)
+		   SystemType && systemObj)
     : systemObj_(std::forward<SystemType>(systemObj)),
       stencilStates_(state), //stencilstates handles right semantics
       recoveryState_{::pressio::ops::clone(state)}

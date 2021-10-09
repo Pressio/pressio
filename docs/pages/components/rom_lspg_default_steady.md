@@ -14,7 +14,7 @@ Public namespace: `pressio::rom::lspg`
 ## Overview
 
 
-## 1. Creating a problem instance
+## Creating a problem instance
 
 
 ```cpp
@@ -63,26 +63,8 @@ auto create_default_steady_problem(const FomSystemType &,
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
 
-### Problem class API
 
-A problem meets the following interface:
-
-```cpp
-class SteadyLspgProblem
-{
-public:
-  using traits = /* nested typedef with trait class */;
-
-  // returns the underlying system to use to solve the problem
-  auto & system();
-
-  // const ref to the object knowing how to reconstruct a FOM state
-  const auto & fomStateReconstructor() const;
-};
-```
-
-
-## 2.,3. Extract and Solve
+## Solve
 
 ```cpp
 int main()
@@ -93,10 +75,9 @@ namespace plspg = pressio::rom::lspg;
 
 auto problem = plspg::create_default_steady_problem(fom_system, decoder,
 													rom_state, fom_reference_state);
-auto & system = problem.system();
 
 // create nonlinear least-squares solver, for example:
-auto nonlinsolver = pressio::ode::create_gauss_newton(system, rom_state, ...);
+auto nonlinsolver = pressio::ode::create_gauss_newton(problem, rom_state, ...);
 nonlinsolver.solve(system, rom_state);
 //...
 }

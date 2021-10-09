@@ -141,40 +141,6 @@ public:
     ::pressio::ops::set_zero(H_);
   }
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   template <
-//     typename SystemType,
-//     typename StateType,
-//     typename _weigh_t = weighting_functor_t,
-//     mpl::enable_if_t<
-//       (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
-//        ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value)
-//       and std::is_same<_weigh_t,
-// 		       ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<ResidualType, JacobianType>
-// 		       >::value
-//       , int > = 0
-//     >
-//   WeightedHessianGradientOperatorsRJApi(const SystemType & system,
-// 					const StateType & state,
-// 					scalar_type pValue)
-//   : r_(system.createResidual()),
-//     Mr_(::pressio::ops::clone(r_)),
-//     J_(system.createJacobian()),
-//     MJ_(::pressio::ops::clone(J_)),
-//     g_(::pressio::ops::clone(state)),
-//     H_(::pressio::ops::product<HessianType>(pT, pnT,::pressio::utils::Constants<scalar_type>::one(), J_)),
-//     functorM_(std::move(_weigh_t(system)))
-//   {
-//     this->set_p(pValue);
-//     ::pressio::ops::set_zero(r_);
-//     ::pressio::ops::set_zero(Mr_);
-//     ::pressio::ops::set_zero(J_);
-//     ::pressio::ops::set_zero(MJ_);
-//     ::pressio::ops::set_zero(g_);
-//     ::pressio::ops::set_zero(H_);
-//   }
-// #endif
-
 public:
   void resetForNewCall() {
     callCount_ = 0;
@@ -217,7 +183,7 @@ public:
     // compute r from system object
     system.residual(state, r_);
     // apply M
-    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, 
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_,
         Mr_, is_irwls, callCount_);
 
     residualNorm = this->_computeNorm();
@@ -228,7 +194,7 @@ public:
 
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
-      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_, 
+      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_,
           MJ_, is_irwls, callCount_);
       _computeHessian();
     }
@@ -248,7 +214,7 @@ public:
     callCount_++;
 
     system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, 
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_,
         Mr_, is_irwls, callCount_);
     residualNorm = this->_computeNorm();
 
@@ -257,7 +223,7 @@ public:
     }
 
     if (recomputeSystemJacobian){
-      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_, 
+      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_,
           MJ_, is_irwls, callCount_);
       _computeHessian();
     }

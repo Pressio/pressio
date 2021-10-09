@@ -81,17 +81,6 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
-  // template <typename SystemType, typename lsT, typename ...Args>
-  // HessianGradientCorrector(const SystemType & system,
-		// 	   const state_wrapped_t & state,
-		// 	   lsT && solverIn,
-		// 	   Args && ... args)
-  //   : HessianGradientCorrector(system,
-		// 	       state_type(state) /*needs a wrapped object*/,
-		// 	       std::forward<lsT>(solverIn),
-		// 	       std::forward<Args>(args)...)
-  // {}
-
   HessianGradientCorrector(HessianGradientCorrector const &) = default;
   HessianGradientCorrector & operator=(HessianGradientCorrector const &) = default;
   HessianGradientCorrector(HessianGradientCorrector && o) = default;

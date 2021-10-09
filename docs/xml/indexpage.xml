@@ -8,7 +8,7 @@
     <detaileddescription>
 <para><anchor id="index_1md_pages_main"/></para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-frame m-default" /></para>
-<para><parblock><para><emphasis>Leading-edge reduced order models (ROMs) for dynamical systems in science and engineering.</emphasis></para>
+<para><parblock><para><emphasis>Advancing reduced order models (ROMs) for dynamical systems in science and engineering.</emphasis></para>
 <para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, one component of the <ulink url="https://pressio.github.io/">Pressio ecosystem</ulink>. </para>
 </parblock></para>
 <para><linebreak/>
@@ -28,7 +28,7 @@
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>   </para>
-</entry><entry thead="no"><para>logging, static constants, crtp helper, etc   </para>
+</entry><entry thead="no"><para>logging, constants, various helpers, etc   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/utils">Code</ulink><linebreak/>
 <ulink url="md_pages_components_utils.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput>    </para>
@@ -87,7 +87,7 @@
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>   </para>
 </entry><entry thead="no"><para><linebreak/>
  explicit steppers <linebreak/>
-implict steppers <linebreak/>
+implicit steppers <linebreak/>
  advancers <linebreak/>
    </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio">Code</ulink> <linebreak/>
@@ -106,8 +106,8 @@ implict steppers <linebreak/>
 general info <linebreak/>
  decoder <linebreak/>
  Galerkin<linebreak/>
- Steady LSPG<linebreak/>
- Unsteady LSPG<linebreak/>
+ LSPG: steady<linebreak/>
+ LSPG: unsteady<linebreak/>
  WLS<linebreak/>
    </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/rom">Code</ulink> <linebreak/>
@@ -129,21 +129,21 @@ general info <linebreak/>
 </entry></row>
 </table>
 </para>
-<sect1 id="index_1autotoc_md165">
-<title>Getting Started</title>
+<sect1 id="index_1autotoc_md164">
+<title>Get Started</title>
 <para><itemizedlist>
-<listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas</para>
-</listitem><listitem><para><ulink url="./md_pages_installation.html">installation</ulink>: it is a header-only library, should be trivial</para>
+<listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> providing an overview, objectives and design ideas</para>
+</listitem><listitem><para><ulink url="./md_pages_installation.html">how to install</ulink>: it is a header-only library, should be trivial</para>
 </listitem><listitem><para><ulink url="https://pressio.github.io/pressio-tutorials/html/index.html">explore the tutorials</ulink></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md166">
+<sect1 id="index_1autotoc_md165">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md167">
+<sect1 id="index_1autotoc_md166">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

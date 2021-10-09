@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_types_selector.hpp
+// type_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,67 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
-#define ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
+/*
+  Verify values of common container traits
+*/
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+// -------------------------------------------------
 
-template<typename T, class = void>
-struct select_galerkin_types
+/*
+    Verifies traits common for all containers
+*/
+template <
+  typename T,
+  pressio::PackageIdentifier pack_id,
+  int rank,
+  bool is_shared_mem,
+  bool is_dynamic,
+  typename Scalar,
+  typename Ordinal,
+  typename SizeType = Ordinal,
+  typename ScalarRef = typename std::add_lvalue_reference<
+    Scalar
+  >::type,
+  typename traits = pressio::Traits<T>
+>
+void test_container_traits()
 {
-  using residual_type = void;
-  using jacobian_type = void;
-};
+  // ContainersSharedTraits
+  static_assert(traits::package_identifier == pack_id, "");
+  static_assert(traits::is_shared_mem == is_shared_mem, "");
+  static_assert(traits::is_distributed == !is_shared_mem, "");
+  static_assert(traits::rank == rank, "");
+  // AllocTrait
+  static_assert(traits::is_static == !is_dynamic, "");
+  static_assert(traits::is_dynamic == is_dynamic, "");
+  // ScalarTrait
+  testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
+  testing::StaticAssertTypeEq<typename traits::reference_type, Scalar &>();
+  testing::StaticAssertTypeEq<typename traits::const_reference_type, Scalar const &>();
+  // OrdinalTrait
+  testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
+  testing::StaticAssertTypeEq<typename traits::size_type, SizeType>();
+}
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
-struct select_galerkin_types<
-  T,
-  mpl::enable_if_t<
-    ::pressio::is_dynamic_vector_eigen<T>::value
-    >
-  >
+// -------------------------------------------------
+
+/*
+    Verifies traits common for all matrices
+*/
+template <
+  typename T,
+  pressio::MatrixIdentifier mtx_id,
+  bool is_row_major = true,
+  bool is_sparse = false,
+  typename traits = pressio::Traits<T>
+>
+void test_matrix_traits()
 {
-  // for now use residual_type = state_type
-  using residual_type = T;
+  static_assert(traits::matrix_identifier == mtx_id, "");
+  static_assert(traits::is_sparse == is_sparse, "");
+  static_assert(traits::is_dense == !is_sparse, "");
+  static_assert(traits::is_row_major == is_row_major, "");
+  static_assert(traits::is_col_major == !is_row_major, "");
+}
 
-  // the galerkin jacobian is an eigen::matrix
-  // for now make it column-major (which is default)
-  using jacobian_type = Eigen::Matrix<
-    typename ::pressio::Traits<T>::scalar_type, -1,-1>;
-};
-#endif
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<typename T>
-// struct select_galerkin_types<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
-//     >
-//   >
-// {
-//   using scalar_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-//   // for now use residual_type = state_type
-//   using residual_type = T;
-//   // the galerkin jacobian is a pybind11 tensor column-major
-//   using native_j_t = pybind11::array_t<scalar_t, pybind11::array::f_style>;
-//   using jacobian_type = ::pressio::containers::Tensor<2, native_j_t>;
-// };
-// #endif
-
-}}}}
-#endif  // ROM_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
+// -------------------------------------------------

@@ -79,13 +79,20 @@ create_manager_stencil_fom_states(::pressio::ode::StepScheme name,
   const auto tmp_b = ::pressio::ode::is_explicit_scheme(name);
   if (tmp_b){
     // use initializer_list here!
-    return ManagerStencilFomStatesType(fomRec, {::pressio::ops::clone(fomNomState)});
+    return ManagerStencilFomStatesType(fomRec,
+				       {::pressio::ops::clone(fomNomState)});
   }
   else{
-    if (name == ::pressio::ode::StepScheme::BDF1 or name == ::pressio::ode::StepScheme::BDF2){
-      return ManagerStencilFomStatesType(fomRec, {::pressio::ops::clone(fomNomState)});
+    if (name == ::pressio::ode::StepScheme::BDF1 or
+	name == ::pressio::ode::StepScheme::BDF2)
+    {
+      // use initializer_list here!
+      return ManagerStencilFomStatesType(fomRec,
+					 {::pressio::ops::clone(fomNomState)});
     }
-    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson)
+    {
+      // use initializer_list here!
       return ManagerStencilFomStatesType(fomRec,
 					 {::pressio::ops::clone(fomNomState),
 					  ::pressio::ops::clone(fomNomState)}
@@ -164,7 +171,7 @@ struct AddFomStatesManager : T
 template <class T, class projector_t>
 struct AddProjector : T
 {
-  const projector_t projector_;
+  projector_t projector_;
 
   AddProjector() = delete;
   AddProjector(const AddProjector &) = default;
@@ -191,7 +198,8 @@ struct AddProjector : T
 	       const T4 & fomNominalState,
 	       const T5 & projector,
 	       Args && ... args)
-    : T(name, fomObj, decoder, romStateIn, fomNominalState, std::forward<Args>(args)...),
+    : T(name, fomObj, decoder, romStateIn,
+	fomNominalState, std::forward<Args>(args)...),
       projector_(projector)
   {}
 };
@@ -199,7 +207,7 @@ struct AddProjector : T
 template <class T, class masker_t>
 struct AddMasker : T
 {
-  const masker_t masker_;
+  masker_t masker_;
 
   AddMasker() = delete;
   AddMasker(const AddMasker &) = default;
@@ -216,7 +224,8 @@ struct AddMasker : T
 	      const T4 & fomNominalState,
 	      const T5 & masker,
 	      Args && ... args)
-    : T(name, fomObj, decoder, romStateIn, fomNominalState, std::forward<Args>(args)...),
+    : T(name, fomObj, decoder, romStateIn,
+	fomNominalState, std::forward<Args>(args)...),
       masker_(masker)
   {}
 };
@@ -243,6 +252,34 @@ struct AddDefaultExplicitSystem : T
 
   const rom_sys_t & romCRef() const{ return romSys_; }
 };
+
+
+template <class T, class rom_sys_t>
+struct AddMaskedVeloExplicitSystem : T
+{
+  const rom_sys_t romSys_;
+
+  AddMaskedVeloExplicitSystem() = delete;
+  AddMaskedVeloExplicitSystem(const AddMaskedVeloExplicitSystem &) = default;
+  AddMaskedVeloExplicitSystem & operator=(const AddMaskedVeloExplicitSystem &) = delete;
+  AddMaskedVeloExplicitSystem(AddMaskedVeloExplicitSystem &&) = default;
+  AddMaskedVeloExplicitSystem & operator=(AddMaskedVeloExplicitSystem &&) = delete;
+  ~AddMaskedVeloExplicitSystem() = default;
+
+  template<class T1, typename ...Args>
+  AddMaskedVeloExplicitSystem(::pressio::ode::StepScheme name,
+			      const T1 & romStateIn,
+			      Args && ...args)
+    : T(name, romStateIn, std::forward<Args>(args)...),
+      romSys_(romStateIn, T::projector_, T::masker_, T::fomCRef(), T::fomStatesMngr_)
+  {}
+
+  const rom_sys_t & romCRef() const{ return romSys_; }
+};
+
+template <class T, class rom_sys_t>
+using AddHypRedVeloExplicitSystem = AddDefaultExplicitSystem<T, rom_sys_t>;
+
 
 template <class T, class rom_sys_t>
 struct AddDefaultDiscreteTimeSystem : T
@@ -322,31 +359,6 @@ struct AddMaskedDiscreteTimeSystem : T
   const rom_sys_t & romCRef() const{ return romSys_; }
 };
 
-template <class T, class rom_sys_t>
-struct AddMaskedVeloExplicitSystem : T
-{
-  const rom_sys_t romSys_;
-
-  AddMaskedVeloExplicitSystem() = delete;
-  AddMaskedVeloExplicitSystem(const AddMaskedVeloExplicitSystem &) = default;
-  AddMaskedVeloExplicitSystem & operator=(const AddMaskedVeloExplicitSystem &) = delete;
-  AddMaskedVeloExplicitSystem(AddMaskedVeloExplicitSystem &&) = default;
-  AddMaskedVeloExplicitSystem & operator=(AddMaskedVeloExplicitSystem &&) = delete;
-  ~AddMaskedVeloExplicitSystem() = default;
-
-  template<class T1, typename ...Args>
-  AddMaskedVeloExplicitSystem(::pressio::ode::StepScheme name,
-			      const T1 & romStateIn,
-			      Args && ...args)
-    : T(name, romStateIn, std::forward<Args>(args)...),
-      romSys_(romStateIn, T::projector_, T::masker_, T::fomCRef(), T::fomStatesMngr_)
-  {}
-
-  const rom_sys_t & romCRef() const{ return romSys_; }
-};
-
-template <class T, class rom_sys_t>
-using AddHypRedVeloExplicitSystem = AddDefaultExplicitSystem<T, rom_sys_t>;
 
 //---------------------------------------------------
 // implicit policies

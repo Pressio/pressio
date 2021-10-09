@@ -73,7 +73,7 @@ struct SystemMixin : T
 template <class traits> struct SteadyMembersCommon
 {
   using At = ::pressio::rom::impl::FomObjHolder<
-    typename traits::fom_system_type, traits::binding_sentinel>;
+    typename traits::fom_system_type>;
 
   using Bt = ::pressio::rom::lspg::impl::AddFomStatesManagerSteady<
     At,
@@ -166,6 +166,27 @@ private:
   typename SteadyMembers<flag, traits>::type members_;
 
 public:
+  using scalar_type    = typename traits::scalar_type;
+  using state_type     = lspg_state_type;
+  using residual_type  = typename traits::lspg_residual_type;
+  using jacobian_type  = typename traits::lspg_jacobian_type;
+
+  residual_type createResidual() const{
+    return members_.systemObj_.createResidual();
+  }
+
+  jacobian_type createJacobian() const{
+    return members_.systemObj_.createJacobian();
+  }
+
+  void residual(const state_type& x, residual_type & R) const{
+    members_.systemObj_.residual(x, R);
+  }
+
+  void jacobian(const state_type& x, jacobian_type & jac) const{
+    members_.systemObj_.jacobian(x, jac);
+  }
+
   steady_system_type & system(){ return members_.systemObj_; }
 
   const fom_state_type & currentFomState() const{
@@ -188,23 +209,51 @@ public:
     int _flag = flag,
     mpl::enable_if_t<_flag==0, int> = 0
     >
-  SteadyProblem(const fom_system_type & fomObj,
-		decoder_type & decoder,
-		const lspg_state_type & romState,
-		const fom_state_type & fomNominalState)
-    : members_(romState, fomObj, decoder, fomNominalState){}
+  SteadyProblem(
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+		  const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState
+#else
+		  const fom_system_type & fomObj,
+		  decoder_type & decoder,
+		  const lspg_state_type & romState,
+		  const fom_state_type & fomNominalState
+#endif
+		  )
+    : members_(romState, fomObj, decoder, fomNominalState)
+  {}
+
 
   template<
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag==1 or _flag==2 or _flag==3, int> = 0
     >
-  SteadyProblem(const fom_system_type & fomObj,
-		decoder_type & decoder,
-		const lspg_state_type & romState,
-		const fom_state_type & fomNominalState,
-		Args2 && ...args)
-    : members_(romState, fomObj, decoder,
-	       fomNominalState, std::forward<Args2>(args) ...){}
+  SteadyProblem(
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+		  const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState,
+		  Args2 ...args
+#else
+		  const fom_system_type & fomObj,
+		  decoder_type & decoder,
+		  const lspg_state_type & romState,
+		  const fom_state_type & fomNominalState,
+		  Args2 && ...args
+#endif
+		  )
+  : members_(romState, fomObj, decoder, fomNominalState,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+	     args...
+#else
+	     std::forward<Args2>(args) ...
+#endif
+	     )
+  {}
+
 };
 
 }}}}//end namespace pressio::rom::lspg::impl

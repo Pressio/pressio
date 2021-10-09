@@ -1,48 +1,104 @@
+############################## WORKFLOW ##############################
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#name
+# This workflow will be visible in GitHun Aciton under the name, defined below.
 name: github-linux
 
+############################## TRIGGERS ##############################
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
+# This workflow will be triggered on git action defined below e.g. push, pull_request.
 on: [push, pull_request]
 
-jobs:
-  #------------------------
-  CI:
-  #------------------------
-    continue-on-error: true
+############################## CONCURRENCY ##############################
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#concurrency
+# Concurrency is a new feature to GitHub Actions, currently in beta stage.
+# ${{ github.head_ref }} guarantees that the same job names are not cancelled on different branches.
+concurrency:
+  group: CI-${{ github.head_ref }}
+  cancel-in-progress: true
 
+############################## JOBS ##############################
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobs
+# A workflow run is made up of one or more jobs. Jobs run in parallel by default.
+jobs:
+  ############################## JOB `CI` ##############################
+  CI:
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error
+    # Prevents a workflow run from failing when a job fails. Set to true to allow a workflow run to pass when this job fails.
+    continue-on-error: false
+
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategy
+    # A strategy creates a build matrix for your jobs. You can define different variations to run each job in.
     strategy:
+
+      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel
+      # The maximum number of jobs that can run simultaneously when using a matrix job strategy
       max-parallel: 10
+
+      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+      # When set to true, GitHub cancels all in-progress jobs if any matrix job fails. Default: true
       fail-fast: false
+
+      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix
+      # You can define a matrix of different job configurations.
       matrix:
+
+        # Different configurations for matrix.
+        # Values are reachable with ${{ matrix.config.<key> }}
         config:
-          # note: the os is always ubuntu because that is the os of the github runner
-          # but the code is run via docker
-          #
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest,   mode: Release }
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest,   mode: Debug }
-          #
+          # os: Stands for OS on GitHub Runner (Ubuntu / MacOS / Windows)
+          # image: Stands for used Docker Image
+          # mode: Stands for build mode inside Pressio (Debug / Release)
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Debug }
+
           - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release }
           - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Debug }
-          #
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest,     mode: Debug }
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest,     mode: Release }
-          #
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest,   mode: Debug }
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest,   mode: Release }
 
-          #- { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
-          #- { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Debug }
 
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Debug }
+
+          - { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Debug }
+
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    # The type of machine to run the job on
     runs-on: ${{ matrix.config.os }}
+
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontainer
+    # A container to run any steps in a job that don't already specify a container.
     container: pressiomodelreduction/${{ matrix.config.image }}
 
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idenv
+    # A map of environment variables that are available to all steps in the job
     env:
       pressio_dir: /__w/pressio/pressio
       target_dir: /out
       eigen_path: /usr/local/eigen/install
       gtest_path: /usr/local/gtest/install
+      small: small
+      medium: medium
+      large: large
 
+    ############################## STEPS in `CI` job ##############################
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idsteps
+    # A job contains a sequence of tasks called steps.
     steps:
+
+      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsuses
+      # Selects an action to run as part of a step in your job. An action is a reusable unit of code.
       - uses: actions/checkout@v2
-      - name: Build
+
+      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsname
+      # A name for your step to display on GitHub.
+      - name: configure
+
+        # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+        # Runs command-line programs using the operating system's shell.
+
+        # In this stage pressio-builder script is used for configuration purposes
         run: |
           cd /pressio-builder
           git pull
@@ -53,17 +109,31 @@ jobs:
           ./main_pressio.sh -dryrun=no -build-mode=${{ matrix.config.mode }} \
           -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} \
           -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests \
-          -pressio-src=${{env.pressio_dir}} -ncpu-for-make=4
+          -pressio-src=${{env.pressio_dir}} -ncpu-for-make=4 --config-only=yes
 
-      - name: Test
+      # In this stage small functional tests are built and run
+      - name: build-test-${{ env.small }}
         run: |
-            cd ${{ env.target_dir }}/pressio/build
+            cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
+            make -j 2
             ctest --output-on-failure
 
+      # In this stage medium functional tests are built and run
+      - name: build-test-${{ env.medium }}
+        run: |
+          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.medium }}
+          make -j 2
+          ctest --output-on-failure
 
-  #------------------------
+      # In this stage large functional tests are built and run
+      - name: build-test-${{ env.large }}
+        run: |
+          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.large }}
+          make -j 2
+          ctest --output-on-failure
+
+  ############################## JOB `CI-trilinos` defined below ##############################
   CI-trilinos:
-  #------------------------
     runs-on: ubuntu-20.04
 
     strategy:
@@ -89,7 +159,8 @@ jobs:
           #   }
 
           - {
-              name: "ubuntu_20.04_gcc_openmpi_trilinos_release",
+              trilinos_release: "13.0.0",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_release_13.0.0",
               build_type: "Release", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
@@ -98,7 +169,28 @@ jobs:
             }
 
           - {
-              name: "ubuntu_20.04_gcc_openmpi_trilinos_debug",
+              trilinos_release: "13.0.0",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_debug_13.0.0",
+              build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
+              options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
+              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
+              ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build
+            }
+
+          - {
+              trilinos_release: "13.0.1",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_release_13.0.1",
+              build_type: "Release", cc: "mpicc", cxx: "mpicxx",
+              options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
+              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
+              ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build
+            }
+
+          - {
+              trilinos_release: "13.0.1",
+              name: "ubuntu_20.04_gcc_openmpi_trilinos_debug_13.0.1",
               build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
@@ -155,12 +247,12 @@ jobs:
     - name: Get TPLs...
       run: |
         export TERM=xterm
-        docker run -di perrinel/ubuntu-pressio-tpl
+        docker run -di pressiomodelreduction/ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_rel_${{ matrix.config.trilinos_release }}
         TNAME=$(docker ps --format "{{.Names}}")
         docker cp $TNAME:/home/pressio_builds ${{ env.WORKSPACE_PARENT_DIR }}
         docker stop $TNAME
         docker rm $TNAME
-        docker image rm perrinel/ubuntu-pressio-tpl
+        docker image rm pressiomodelreduction/ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_rel_${{ matrix.config.trilinos_release }}
 
     - name: Build
       env:

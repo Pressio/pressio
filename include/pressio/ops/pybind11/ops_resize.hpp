@@ -58,7 +58,8 @@ template <typename T>
 resize(T & o, typename ::pressio::Traits<T>::size_type newSize)
 {
   assert(o.ndim() == 1);
-  //o.resize(newSize);
+  // not sure we need false here
+  o.resize({newSize}, false);
 }
 
 template <typename T>
@@ -70,7 +71,8 @@ resize(T & o,
        const typename ::pressio::Traits<T>::size_type newCols)
 {
   assert(o.ndim() == 2);
-  //o.resize(newRows, newCols);
+  // not sure we need false here
+  o.resize({newRows, newCols}, false);
 }
 
 }}//end namespace pressio::ops

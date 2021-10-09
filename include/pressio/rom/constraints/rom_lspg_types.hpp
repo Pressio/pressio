@@ -72,5 +72,14 @@ struct admissible_lspg_state<T,
   > : std::true_type{};
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct admissible_lspg_state<T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<T>::value
+   >
+  > : std::true_type{};
+#endif
+
 }}
 #endif  // ROM_CONSTRAINTS_ROM_LSPG_TYPES_HPP_

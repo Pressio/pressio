@@ -67,7 +67,12 @@ public:
   ~PrecDecoratorResidual() = default;
 
   template <class ... Args>
-  PrecDecoratorResidual(const PreconditionerType & preconditioner,
+  PrecDecoratorResidual(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object preconditioner,
+#else
+			const PreconditionerType & preconditioner,
+#endif
 			Args && ... args)
     : PreconditionableType(std::forward<Args>(args)...),
       preconditionerObj_(preconditioner)
@@ -101,7 +106,11 @@ public:
 
 private:
   using PreconditionableType::fomStatesMngr_;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const PreconditionerType preconditionerObj_;
+#else
   std::reference_wrapper<const PreconditionerType> preconditionerObj_;
+#endif
 };
 
 
@@ -121,7 +130,12 @@ public:
   ~PrecDecoratorJacobian() = default;
 
   template <class ... Args>
-  PrecDecoratorJacobian(const PreconditionerType & preconditioner,
+  PrecDecoratorJacobian(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object preconditioner,
+#else
+			const PreconditionerType & preconditioner,
+#endif
 			Args && ... args)
     : PreconditionableType(std::forward<Args>(args)...),
       preconditionerObj_(preconditioner)
@@ -152,7 +166,11 @@ public:
 
 private:
   using PreconditionableType::fomStatesMngr_;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const PreconditionerType preconditionerObj_;
+#else
   std::reference_wrapper<const PreconditionerType> preconditionerObj_;
+#endif
 };
 
 
@@ -172,7 +190,12 @@ public:
   ~MaskDecoratorResidual() = default;
 
   template <class ... Args>
-  MaskDecoratorResidual(const MaskerType & masker,
+  MaskDecoratorResidual(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object masker,
+#else
+			const MaskerType & masker,
+#endif
 			Args && ... args)
     : MaskableType(std::forward<Args>(args)...),
       unmaskedResidual_(MaskableType::create()),
@@ -181,7 +204,11 @@ public:
 
 public:
   residual_type create() const{
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    residual_type R(masker_.createApplyMaskResult(unmaskedResidual_));
+#else
     residual_type R(masker_.get().createApplyMaskResult(unmaskedResidual_));
+#endif
     return R;
   }
 
@@ -208,7 +235,12 @@ public:
 
 private:
   mutable residual_type unmaskedResidual_;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const MaskerType masker_;
+#else
   std::reference_wrapper<const MaskerType> masker_;
+#endif
 };
 
 template <class MaskerType, class MaskableType>
@@ -227,7 +259,12 @@ public:
   ~MaskDecoratorJacobian() = default;
 
   template <class ... Args>
-  MaskDecoratorJacobian(const MaskerType & masker,
+  MaskDecoratorJacobian(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+			pybind11::object masker,
+#else
+			const MaskerType & masker,
+#endif
 			Args && ... args)
     : MaskableType(std::forward<Args>(args)...),
       unmaskedJacobian_(MaskableType::create()),
@@ -236,7 +273,11 @@ public:
 
 public:
   jacobian_type create() const{
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    jacobian_type R(masker_.createApplyMaskResult(unmaskedJacobian_));
+#else
     jacobian_type R(masker_.get().createApplyMaskResult(unmaskedJacobian_));
+#endif
     return R;
   }
 
@@ -261,7 +302,11 @@ public:
 
 private:
   mutable jacobian_type unmaskedJacobian_;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const MaskerType masker_;
+#else
   std::reference_wrapper<const MaskerType> masker_;
+#endif
 };
 
 }}}} //end namespace pressio::rom::lspg::decorator

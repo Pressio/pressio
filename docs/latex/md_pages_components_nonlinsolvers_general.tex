@@ -20,8 +20,11 @@ Currently, we support the following algorithms\+:
 Newton-\/\+Raphson   &\href{./md_pages_components_nonlinsolvers_nr.html}{\texttt{ Link}}   &Systems of nonlinear equations (see e.\+g. \href{https://link.springer.com/content/pdf/bbm\%3A978-3-319-69407-8\%2F1.pdf}{\texttt{ link}}, \href{https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf}{\texttt{ link}} )    \\\cline{1-3}
 Gauss-\/\+Newton   &\href{./md_pages_components_nonlinsolvers_gn.html}{\texttt{ Link}}   &Nonlinear least-\/squares problem. (see \href{https://en.wikipedia.org/wiki/Gauss\%E2\%80\%93Newton_algorithm}{\texttt{ link}} )    \\\cline{1-3}
 Levenberg–\+Marquardt   &\href{./md_pages_components_nonlinsolvers_lm.html}{\texttt{ Link}}   &Nonlinear least-\/squares problem. (see \href{https://en.wikipedia.org/wiki/Levenberg\%E2\%80\%93Marquardt_algorithm}{\texttt{ link}} )    \\\cline{1-3}
-Iteratively reweighted least squares   &\href{./md_pages_components_nonlinsolvers_irls.html}{\texttt{ Link}}   &optimization problem formulated in a p-\/norm (see \href{https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares}{\texttt{ link}} )   \\\cline{1-3}
+Iteratively reweighted least squares (irls)   &\href{./md_pages_components_nonlinsolvers_irls.html}{\texttt{ Link}}   &optimization problem formulated in a p-\/norm (see \href{https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares}{\texttt{ link}} )   \\\cline{1-3}
 \end{longtabu}
+
+
+~\newline
 \hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md12}{}\doxysubsection{A glimpse of the API}\label{md_pages_components_nonlinsolvers_general_autotoc_md12}
 To create a solver, we expose specific factory functions for each algorithm.
 
@@ -34,14 +37,17 @@ To create a solver, we expose specific factory functions for each algorithm.
 \end{DoxyCode}
 
 
-Please refer to each method\textquotesingle{}s documentation for the details on the API and arguments.\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md13}{}\doxysection{What are users responsible of?}\label{md_pages_components_nonlinsolvers_general_autotoc_md13}
-If you want to use the pressio nonlinear solvers, you are responsible of three main things\+:
+Please refer to each method\textquotesingle{}s documentation for the details on the API and arguments.
+
+~\newline
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md13}{}\doxysection{What are you responsible of?}\label{md_pages_components_nonlinsolvers_general_autotoc_md13}
+If you want to use the pressio nonlinear solvers, you are responsible of\+:
 
 
 \begin{DoxyItemize}
 \item A\+: providing a problem object
-\item B\+: specifying the convergence criterion
-\item C\+: specifying the update method
+\item B\+: selecting (if needed) the convergence criterion
+\item C\+: selecting (if needed) the update method
 \end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md14}{}\doxysubsection{A\+: problem class}\label{md_pages_components_nonlinsolvers_general_autotoc_md14}
 The problem class is what you use to {\itshape define your problem}. An instance of a problem class is what you provide to pressio to compute the needed operators to operate on. Obivously, this problem class must meet a specific API.
 
@@ -57,11 +63,11 @@ The pressio nonlinear solvers define four main types of problem APIs, namely the
 \hline
 \PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Algorithm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Residual-\/\+Jacobian API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fused Residual-\/\+Jacobian API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Hessian-\/\+Gradient API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fused Hessian-\/\+Gradient API    }\\\cline{1-5}
 \endhead
-Newton-\/\+Raphson   &admissible   &admissible   &&\\\cline{1-5}
-Gauss-\/\+Newton Normal-\/\+Equations   &admissible   &admissible   &admissible   &admissible    \\\cline{1-5}
-Gauss-\/\+Newton QR   &admissible   &admissible   &&\\\cline{1-5}
+Newton-\/\+Raphson   &admissible   &admissible   &-\/   &-\/    \\\cline{1-5}
+Gauss-\/\+Newton via Normal-\/\+Equations   &admissible   &admissible   &admissible   &admissible    \\\cline{1-5}
+Gauss-\/\+Newton via QR   &admissible   &admissible   &-\/   &-\/    \\\cline{1-5}
 Levenberg-\/\+Marquardt   &admissible   &admissible   &admissible   &admissible    \\\cline{1-5}
-irls   &admissible   &admissible   &&\\\cline{1-5}
+irls   &admissible   &admissible   &-\/   &-\/   \\\cline{1-5}
 \end{longtabu}
 
 
@@ -88,7 +94,7 @@ The convergence criterion and associated tolerance are used to decide why and wh
 \end{longtabu}
 
 
-which you set/query along with corresponding tolerances using the following methods\+:
+which you set/query using the following methods\+:
 
 
 \begin{DoxyCode}{0}

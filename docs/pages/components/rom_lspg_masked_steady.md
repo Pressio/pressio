@@ -16,7 +16,7 @@ Public namespace: `pressio::rom::lspg`
 \todo
 
 
-## 1. Creating a problem instance
+## Creating a problem instance
 
 ```cpp
 template<
@@ -67,22 +67,3 @@ auto create_masked_steady_problem(const FomSystemType &,
   ```cpp
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
-
-
-### Problem class API
-
-A problem meets the following interface:
-
-```cpp
-class SteadyLspgProblem
-{
-public:
-  using traits = /* nested typedef with trait class */;
-
-  // returns the underlying system to use to solve the problem
-  auto & system();
-
-  // const ref to the object knowing how to reconstruct a FOM state
-  const auto & fomStateReconstructor() const;
-};
-```

@@ -59,15 +59,12 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
+  : public ::pressio::impl::EigenTraits<VectorType, 1>,
+    public ::pressio::impl::StaticAllocTrait
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic = !is_static;
-
-  using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
-  using scalar_type  = typename ::pressio::Traits<vec_remove_cv_t>::scalar_type;
-  using ordinal_type = typename ::pressio::Traits<vec_remove_cv_t>::ordinal_type;
-  using size_type    = typename ::pressio::Traits<vec_remove_cv_t>::size_type;
+  using ordinal_type = typename ::pressio::Traits<
+    ::pressio::mpl::remove_cvref_t<VectorType>
+  >::ordinal_type;
 
   // type of the native expression
   using _native_expr_type =
@@ -100,20 +97,13 @@ struct SpanTraits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
+  : public ::pressio::impl::KokkosTraits<
+            ::pressio::mpl::remove_cvref_t<VectorType>,
+      1,
+      true
+    >
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic = !is_static;
-
-  using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
-  using scalar_type	    = typename ::pressio::Traits<vec_remove_cv_t>::scalar_type;
-  using execution_space = typename ::pressio::Traits<vec_remove_cv_t>::execution_space;
-  using memory_space	  = typename ::pressio::Traits<vec_remove_cv_t>::memory_space;
-  using device_type	    = typename ::pressio::Traits<vec_remove_cv_t>::device_type;
-  using ordinal_type	  = typename ::pressio::Traits<vec_remove_cv_t>::ordinal_type;
-  using reference_type  = typename ::pressio::Traits<vec_remove_cv_t>::reference_type;
-  using size_type	      = typename ::pressio::Traits<vec_remove_cv_t>::size_type;
-  using pair_type       = std::pair<size_type, size_type>;
+  using pair_type = typename ::pressio::impl::SizePair<VectorType>::pair_type;
 
   using native_expr_type =
     decltype(
@@ -142,7 +132,7 @@ struct SpanTraits<
     ::pressio::is_array_pybind<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;

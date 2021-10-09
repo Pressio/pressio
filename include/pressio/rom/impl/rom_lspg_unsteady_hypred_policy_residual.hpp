@@ -181,8 +181,13 @@ private:
 
       constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
       const auto cf = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
-      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgResidual, cf,
-								       fomStateHelperInstance_, one);
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      hypredOperatorUpdater_.updateSampleMeshOperandWithStencilMeshOne
+	(lspgResidual, cf, fomStateHelperInstance_, one);
+#else
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
+	(lspgResidual, cf, fomStateHelperInstance_, one);
+#endif
     }
 
     else if (name == ::pressio::ode::StepScheme::BDF2)
@@ -211,8 +216,14 @@ private:
 			     fomStateAt_nm1, cnm1);
 
       constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
-      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgResidual, cf,
-								       fomStateHelperInstance_, one);
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      hypredOperatorUpdater_.updateSampleMeshOperandWithStencilMeshOne
+	(lspgResidual, cf, fomStateHelperInstance_, one);
+#else
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
+	(lspgResidual, cf, fomStateHelperInstance_, one);
+#endif
     }
   }
 
@@ -266,7 +277,13 @@ protected:
 
   std::reference_wrapper<FomStatesManagerType> fomStatesMngr_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const HypRedOperatorUpdater hypredOperatorUpdater_;
+#else
   std::reference_wrapper<const HypRedOperatorUpdater> hypredOperatorUpdater_;
+#endif
+
   mutable typename FomStatesManagerType::value_type fomStateHelperInstance_;
 };
 

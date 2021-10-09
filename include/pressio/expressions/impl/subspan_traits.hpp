@@ -59,16 +59,13 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
-  public MatrixSharedTraits<Traits<MatrixType>::is_sparse>
+  : public ::pressio::impl::EigenTraits<MatrixType, 2>,
+    public ::pressio::impl::StaticAllocTrait,
+    public ::pressio::impl::MatrixDensityTrait<
+      ::pressio::Traits<MatrixType>::is_sparse
+    >
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type  = typename Traits<mat_remove_cv_t>::scalar_type;
-  using ordinal_type = typename Traits<mat_remove_cv_t>::ordinal_type;
-  using size_type    = typename Traits<mat_remove_cv_t>::size_type;
+  using size_type = typename ::pressio::impl::SizePair<MatrixType>::size_type;
 
   // type of the native expression
   using _native_expr_type = decltype(
@@ -96,21 +93,14 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 2>,
-  public MatrixSharedTraits<false>
+  : public ::pressio::impl::KokkosTraits<
+      ::pressio::mpl::remove_cvref_t<MatrixType>,
+      2,
+      true
+    >,
+    public ::pressio::impl::DenseMatrixTrait
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type	      = typename Traits<mat_remove_cv_t>::scalar_type;
-  using execution_space = typename Traits<mat_remove_cv_t>::execution_space;
-  using memory_space	= typename Traits<mat_remove_cv_t>::memory_space;
-  using device_type	= typename Traits<mat_remove_cv_t>::device_type;
-  using ordinal_type	= typename Traits<mat_remove_cv_t>::ordinal_type;
-  using size_type		= typename Traits<mat_remove_cv_t>::size_type;
-  using pair_type  		= std::pair<size_type, size_type>;
-  using reference_type   = typename ::pressio::Traits<mat_remove_cv_t>::reference_type;
+  using pair_type = typename ::pressio::impl::SizePair<MatrixType>::pair_type;
 
   using _native_expr_type = decltype
     (
@@ -141,8 +131,8 @@ struct SubSpanTraits<
     ::pressio::is_array_pybind<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
-    public MatrixSharedTraits<false>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
+    public ::pressio::impl::DenseMatrixTrait
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;

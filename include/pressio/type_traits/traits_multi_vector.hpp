@@ -63,37 +63,9 @@ struct Traits<
     is_multi_vector_tpetra<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 2>
+  : public ::pressio::impl::TpetraTraits<T, 2>
 {
   static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Tpetra;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type = typename T::impl_scalar_type;
-  using local_ordinal_type = typename T::local_ordinal_type;
-  using global_ordinal_type = typename T::global_ordinal_type;
-  using data_map_type = typename T::map_type;
-  using size_type  = global_ordinal_type;
-
-  /* node is a Tpetra concept, defined as:
-   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-   * where memory space is taken from the execution_space
-   */
-  using node_type = typename T::node_type;
-  using dual_view_type = typename T::dual_view_type;
-  // device_type is just an (execution space, memory space) pair.
-  // defined as: Kokkos::Device<execution_space, memory_space>
-  // so from the device we can get the device execution and memory space
-  using device_type = typename T::device_type;
-  using device_mem_space_type = typename device_type::memory_space;
-  using device_exec_space_type = typename device_type::execution_space;
-  // store types for host
-  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
-
-  using dot_type = typename T::dot_type;
-  using mag_type = typename T::mag_type;
-  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 
 
@@ -107,18 +79,9 @@ struct Traits<
     is_multi_vector_epetra<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 2>
+  : public ::pressio::impl::EpetraTraits<2>
 {
   static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type = double;
-  using local_ordinal_type = int;
-  using global_ordinal_type = int;
-  using size_type  = global_ordinal_type;
-  using data_map_type = Epetra_BlockMap;
-  using communicator_type = Epetra_Comm;
 };
 
 //*******************************
@@ -131,35 +94,9 @@ struct Traits<
     is_multi_vector_tpetra_block<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 2>
+  : public ::pressio::impl::TpetraTraits<T, 2>
 {
   static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type = typename T::impl_scalar_type;
-  using local_ordinal_type = typename T::local_ordinal_type;
-  using global_ordinal_type = typename T::global_ordinal_type;
-  using data_map_type = typename T::map_type;
-  using size_type  = global_ordinal_type;
-
-  // node is a Tpetra concept, defined as:
-  // node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-  // where memory space is taken from the execution_space
-  //
-  using node_type = typename T::node_type;
-
-  // device_type is just an (execution space, memory space) pair.
-  // defined as: Kokkos::Device<execution_space, memory_space>
-  // so from the device we can get the device execution and memory space
-  using device_type = typename T::device_type;
-  using device_mem_space_type = typename device_type::memory_space;
-  using device_exec_space_type = typename device_type::execution_space;
-  // store types for host
-  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
-
-  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 #endif
 

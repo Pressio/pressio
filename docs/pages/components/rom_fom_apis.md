@@ -69,9 +69,18 @@ public:
   // you need to create an instance of the residual
   residual_type createResidual() const;
 
+  template<class OperandType>
+  OperandType createApplyJacobianResult(const OperandType & B) const;
+
   // given a state, you compute the residual
   void residual(const state_type &,
-				residual_type &) const;
+                residual_type &) const;
+
+  // given a state, compute action of Jacobian on B
+  template<class OperandType>
+  void applyJacobian(const state_type & state,
+                     const OperandType & B,
+                     OperandType & A) const;
 };
 ```
 

@@ -1,11 +1,11 @@
 
 # this function creates and adds an individual SERIAL unit-test
-macro(add_serial_utest TESTNAME TESTSRCS)
+macro(add_serial_utest TESTNAME)
   # set name of the executable
   set(testNameFinal ${TESTNAME})
 
   add_executable(${testNameFinal}
-    ${TESTSRCS} ${GTESTMAINSDIR}/gTestMain_serial.cc)
+    ${ARGN} ${GTESTMAINSDIR}/gTestMain_serial.cc)
 
   find_library(GMOCKLIB NAMES gmock PATHS ${GTEST_ROOT}/lib/ NO_DEFAULT_PATH) 
   target_link_libraries(${testNameFinal}

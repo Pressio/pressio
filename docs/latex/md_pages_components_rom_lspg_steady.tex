@@ -1,10 +1,53 @@
 todo\+: write this better
 
-We currently support the following problems\+:
+The pressio steady LSPG ROMs are designed around two main steps\+:\hypertarget{md_pages_components_rom_lspg_steady_autotoc_md142}{}\doxysection{1. Create}\label{md_pages_components_rom_lspg_steady_autotoc_md142}
+You instantiate a \char`\"{}steady LSPG problem\char`\"{}, e.\+g.\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem = pressio::rom::lspg::create\_default\_unsteady\_problem(\textcolor{comment}{/* args */});}
+
+\end{DoxyCode}
+
+
+We currently support three variants\+:
 
 
 \begin{DoxyItemize}
 \item Default\+: \href{md_pages_components_rom_lspg_default_steady.html}{\texttt{ link}}
 \item Hyper-\/reduced\+: \href{md_pages_components_rom_lspg_hypred_steady.html}{\texttt{ link}}
-\item Masked\+: \href{md_pages_components_rom_lspg_masked_steady.html}{\texttt{ link}} 
+\item Masked\+: \href{md_pages_components_rom_lspg_masked_steady.html}{\texttt{ link}}
+\end{DoxyItemize}
+
+Refer to each problem page for details on each specific variant.
+
+The returned {\ttfamily problem} object is an instantiation of a class exposing the following interface\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }SteadyLspgProblem}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* ... */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type     = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type  = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residual(\textcolor{keyword}{const} state\_type\& x, residual\_type \& res) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} jacobian(\textcolor{keyword}{const} state\_type\& x, jacobian\_type \& jac) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_lspg_steady_autotoc_md143}{}\doxysection{2. Solve}\label{md_pages_components_rom_lspg_steady_autotoc_md143}
+
+\begin{DoxyItemize}
+\item you instantiate and use a nonlinear least-\/squares solver of your choice to solve the problem. Note, in fact, that the problem\textquotesingle{}s API conforms to the one required by the nonlinear solvers
+\item for this solve stage, you don\textquotesingle{}t have to use the pressio4py solvers. Once you have the problem object, you can also use your own nonlinear least-\/squares solver. As shown above, the {\ttfamily problem} exposes all the operators that you need to solve. 
 \end{DoxyItemize}
