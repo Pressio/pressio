@@ -1,20 +1,20 @@
 
 # Overview
 
-This C++ library aims to provide leading-edge reduced-order
-models (ROMs) capabilities for dynamical systems in science and engineering.
+Pressio is an open-source computational framework aimed at advancing
+the field of reduced-order models (ROMs) for dynamical systems in science and engineering.
 We employ generic programming, and target shared and distributed-memory
 applications using arbitrary data-types and diverse programming models.
 
 We believe that the key to develop such a capability from the ground up
 is to properly identify the building blocks and modularize them accordingly.
-This is exactly the approach we have adopted: the library is broken into
+This is the approach we have adopted: the library is broken into
 several components such that they can be used independently
 and in a self-contained fashion.
 One of the main outcome of this is that regardless of your interest in ROMs,
 you might find useful some of the components of the library.
 
-[EXPLORE THE DOCUMENTATION](https://pressio.github.io/pressio/html/index.html)
+[![](https://img.shields.io/website?label=EXPLORE%20THE%20DOCUMENTATION&url=https%3A%2F%2Fpressio.github.io%2Fpressio4py%2Fhtml%2Findex.html)](https://pressio.github.io/pressio/html/index.html)
 
 <!-- [Link to the full Pressio project](https://pressio.github.io). -->
 
