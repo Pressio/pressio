@@ -78,7 +78,9 @@ public:
       fomSystem_(fomSystem),
       hypredOperatorUpdater_(hrUpdater),
       fomStateHelperInstance_(::pressio::ops::clone(fomStatesMngr(::pressio::ode::nPlusOne())))
-  {}
+  {
+    ::pressio::ops::set_zero(fomStateHelperInstance_);
+  }
 
 public:
   residual_type create() const{
@@ -243,30 +245,57 @@ private:
 		       residual_type & lspgResidual) const
   {
 
-    throw std::runtime_error("Lspg hyp-red residual policy for CN missing");
+    if (storedStep_ != currentStepNumber){
+      const auto & lspgStateAt_n = lspgStencilStates(::pressio::ode::n());
+      fomStatesMngr_.get().reconstructAtAndUpdatePrevious(lspgStateAt_n,
+							  ::pressio::ode::n());
+      storedStep_ = currentStepNumber;
 
-    // PRESSIOLOG_DEBUG("residual policy with compute_cn_impl");
-    // if (storedStep_ != currentStepNumber){
-    //   const auto & lspgStateAt_n = lspgStencilStates(::pressio::ode::n());
-    //   fomStatesMngr_.get().reconstructAtAndUpdatePrevious(lspgStateAt_n,
-    // 							  ::pressio::ode::n());
-    //   storedStep_ = currentStepNumber;
+      // if the step changed, I need to compute f(y_n, t_n)
+      const auto tn = t_np1-dt;
+      auto & f_n = lspgStencilVelocities(::pressio::ode::n());
+      const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
+      fomSystem_.get().velocity(fomState_n, tn, f_n);
+    }
 
-    //   // if the step changed, I need to compute f(y_n, t_n)
-    //   const auto tn = t_np1-dt;
-    //   auto & f_n = lspgStencilVelocities(::pressio::ode::n());
-    //   const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
-    //   fomSystem_.get().velocity(fomState_n, tn, f_n);
-    // }
+    // always compute f(y_n+1, t_n+1)
+    const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    auto & f_np1 = lspgStencilVelocities(::pressio::ode::nPlusOne());
+    fomSystem_.get().velocity(fomState_np1, t_np1, f_np1);
 
-    // // always compute f(y_n+1, t_n+1)
-    // const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    // auto & f_np1 = lspgStencilVelocities(::pressio::ode::nPlusOne());
-    // fomSystem_.get().velocity(fomState_np1, t_np1, f_np1);
+    /*
+      R(y_n+1) = y_n+1 - y_n - 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
 
-    // ::pressio::ode::impl::discrete_time_residual
-    // 	(fomState_np1, lspgResidual, fomStatesMngr_.get(),
-    // 	 lspgStencilVelocities, dt, ::pressio::ode::CrankNicolson());
+      so we do:
+      1. lspgResidual = -0.5 * dt * [ f(t_n+1, y_n+1) + f(t_n, y_n) ]
+
+      2. fomStateHelpInstance_ = cnp1*y_np1 + cn*y_n
+
+      3. we call the combiner to handle the rest
+    */
+    constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
+    constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
+    using cnst = ::pressio::ode::constants::cranknicolson<ScalarType>;
+    constexpr auto cnp1  = cnst::c_np1_;
+    constexpr auto cn    = cnst::c_n_;
+    const auto cfnp1 = cnst::c_fnp1_ * dt;
+    const auto cfn   = cnst::c_fn_ * dt;
+
+    // 1. lspgResidual = -0.5 * dt * [ f(t_n+1, y_n+1) + f(t_n, y_n) ]
+    const auto & f_n = lspgStencilVelocities(::pressio::ode::n());
+    ::pressio::ops::update(lspgResidual, zero, f_np1, cfnp1, f_n, cfn);
+
+    // 2. fomStateHelpInstance_ = cnp1*y_np1 + cn*y_n
+    const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
+    ::pressio::ops::update(fomStateHelperInstance_, zero, fomState_np1, cnp1, fomState_n, cn);
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    hypredOperatorUpdater_.updateSampleMeshOperandWithStencilMeshOne
+      (lspgResidual, one, fomStateHelperInstance_, one);
+#else
+    hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
+      (lspgResidual, one, fomStateHelperInstance_, one);
+#endif
   }
 
 protected:
