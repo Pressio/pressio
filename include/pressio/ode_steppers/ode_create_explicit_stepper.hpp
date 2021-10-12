@@ -59,43 +59,43 @@ auto create_explicit_stepper(StepScheme name,
 			     SystemType && system)
 {
   return impl::create_explicit_stepper(name, state, system);
-};
+}
 
 template<class ...Args>
 auto create_forward_euler_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::ForwardEuler,
 				 std::forward<Args>(args)...);
-};
+}
 
 template<class ...Args>
 auto create_runge_kutta4_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::RungeKutta4,
 				 std::forward<Args>(args)...);
-};
+}
 
 template<class ...Args>
 auto create_rk4_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::RungeKutta4,
 				 std::forward<Args>(args)...);
-};
+}
 
 template<class ...Args>
 auto create_adams_bashforth2_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::AdamsBashforth2,
 				 std::forward<Args>(args)...);
-};
+}
 
 template<class ...Args>
 auto create_ssp_runge_kutta3_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::SSPRungeKutta3,
 				 std::forward<Args>(args)...);
-};
+}
 
 template<class ...Args>
 auto create_ssprk3_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::SSPRungeKutta3,
 				 std::forward<Args>(args)...);
-};
+}
 
 }} // end namespace pressio::ode
 #endif  // ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_HPP_

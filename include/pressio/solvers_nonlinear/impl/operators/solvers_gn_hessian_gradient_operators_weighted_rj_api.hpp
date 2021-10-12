@@ -64,13 +64,13 @@ void _applyWeightingHelper(const T & functorM,
   }else{
     functorM(operand, result);
   }
-};
+}
 
 template <class ResidualType, class JacobianType, class T, class OperandType, class ResultType>
 void _applyWeightingHelper(const T & functorM, const OperandType & operand, ResultType & result)
 {
   functorM(operand, result);
-};
+}
 
 template <
   typename HessianType,

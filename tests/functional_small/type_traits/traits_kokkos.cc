@@ -96,6 +96,7 @@ void test_kokkos_container_traits()
 #ifdef KOKKOS_ENABLE_THREADS
     || std::is_same<typename T::traits::execution_space, Kokkos::Threads>::value
 #endif
+    , ""
   );
 
   // Kokkos-specific predicates
