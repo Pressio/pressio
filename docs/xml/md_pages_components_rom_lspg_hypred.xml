@@ -13,10 +13,10 @@
 <para><linebreak/>
 </para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title>Prerequisite:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_lspg_unsteady.html">overall design idea of the unsteady LSPG</ulink>. </para>
+<para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_lspg_unsteady.html">overall design idea of the unsteady LSPG</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md119">
+<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md118">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>for<sp/>continuous-time<sp/>systems</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
@@ -26,11 +26,11 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FomReferenceStateType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>HypRedOperatorUpdaterType</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
-<codeline><highlight class="normal">ReturnType<sp/>create_hyperreduced_unsteady_problem(pressio::ode::StepScheme,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal">ReturnType<sp/>create_hyperreduced_unsteady_problem(pressio::ode::StepScheme<sp/>scheme,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>HypRedOperatorUpdaterType<sp/>&amp;<sp/>hrUpdater)</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>overload<sp/>for<sp/>discrete-time<sp/>systems</highlight><highlight class="normal"></highlight></codeline>
@@ -41,40 +41,39 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RomStateType,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(2)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FomReferenceStateType</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
-<codeline><highlight class="normal">ReturnType<sp/>create_hyperreduced_unsteady_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSysObj,</highlight></codeline>
+<codeline><highlight class="normal">ReturnType<sp/>create_hyperreduced_unsteady_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>stateIn,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRef);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md120">
+<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md119">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
-<listitem><para>your adapter class type specifying the FOM problem. <linebreak/>
-</para>
+<listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>
+<listitem><para>instance of your adapter class type specifying the FOM problem</para>
 </listitem><listitem><para>for 1: must satisfy the <ulink url="./md_pages_components_rom_fom_apis.html">continuous-time API</ulink></para>
 </listitem><listitem><para>for 2: must satisfy the <ulink url="./md_pages_components_rom_fom_apis.html">discrete-time API</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>DecoderType</computeroutput>:<itemizedlist>
-<listitem><para>decoder class type</para>
+</listitem><listitem><para><computeroutput>decoder</computeroutput>:<itemizedlist>
+<listitem><para>decoder object</para>
 </listitem><listitem><para>must satify the requirements listed <ulink url="md_pages_components_rom_decoder.html">here</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>RomStateType</computeroutput>:<itemizedlist>
+</listitem><listitem><para><computeroutput>romState</computeroutput>:<itemizedlist>
 <listitem><para>currently, it must be either an Eigen vector or a Kokkos 1D view</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>FomReferenceStateType</computeroutput>:<itemizedlist>
+</listitem><listitem><para><computeroutput>fomRefState</computeroutput>:<itemizedlist>
 <listitem><para>your FOM reference state that is used when reconstructing the FOM state</para>
 </listitem><listitem><para>must be copy-constructible and the following must be true:<linebreak/>
  <programlisting filename=".cpp"><codeline><highlight class="normal">std::is_same&lt;FomReferenceStateType,<sp/>typename<sp/>DecoderType::fom_state_type&gt;::value<sp/>==<sp/></highlight><highlight class="keyword">true</highlight></codeline>
 </programlisting></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>HypRedOperatorUpdaterType</computeroutput>:<itemizedlist>
+</listitem><listitem><para><computeroutput>hrUpdater</computeroutput>:<itemizedlist>
 <listitem><para>an instance of class that knows how to update operands that live on the stencil and sample mesh.</para>
-</listitem><listitem><para>Must meet the following interface:</para>
+</listitem><listitem><para>must meet the following interface:</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -117,7 +116,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md121">
+<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md120">
 <title>Why do we need the HypRedUpdater?</title>
 <para>When working with a hyper-reduced problem, pressio has to manipulate objects that have different sizes/distributions. For this problem variant, in fact, some operators are naturally defined on the what we refer to as &quot;sample mesh&quot; while some are defined on what we call the &quot;stencil mesh&quot;.</para>
 <para>As explained <ulink url="https://pressio.github.io/algos/hyper/">here</ulink>, recall that:</para>
@@ -130,7 +129,7 @@
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
 <para><parblock><para>The <computeroutput>hrUpdater</computeroutput> is an object that knows how to compute <computeroutput>a*x + b*y</computeroutput> for operands <computeroutput>x,y,</computeroutput> that (potentially) do NOT have the same size/data distribution since they are defined on stencil and sample mesh. </para>
 </parblock></para>
-<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md122">
+<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md121">
 <title>Explain it to me better!</title>
 <para>Suppose that your FOM problem involves a 2D problem and that your FOM numerical method needs at every cell information from the nearest neighbors. For the sake of explanation, <emphasis>it does not matter what problem we are solving</emphasis>, only what we just said. Now, suppose that you want to try hyper-reduced LSPG on it. You come up with a sample and stencil mesh for your problem (read <ulink url="https://pressio.github.io/algos/hyper/">this page</ulink> for some information about how to select sample mesh cells), and let&apos;s say it looks like this: <image type="html" name="lspg_sample_mesh1.png" width="400px"></image>
 </para>

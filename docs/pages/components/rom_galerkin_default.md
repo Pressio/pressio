@@ -14,7 +14,7 @@ Public namespace: `pressio::rom::galerkin`
 
 @m_class{m-block m-warning}
 
-@par Prerequisite:
+@par Prerequisite reading:
 Before you read this page, make sure you
 read the [overall design idea of Galerkin](md_pages_components_rom_galerkin.html).
 @endparblock
@@ -57,7 +57,7 @@ This function returns an instance of the desired Galerkin problem.
   - for doing implicit Galerkin, seee [implicit choices](md_pages_components_ode_steppers_implicit.html)
 
 - `fomSystem`:
-  - instance of your FOM adapter specifying the FOM problem <br/>
+  - instance of your FOM adapter specifying the FOM problem
   - Must satisfy one of the APIs suitable for Galerkin, see [API list](./md_pages_components_rom_fom_apis.html)
 
 - `decoder`:

@@ -13,7 +13,7 @@
 <para><linebreak/>
 </para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title>Prerequisite:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_galerkin.html">overall design idea of Galerkin</ulink>. </para>
+<para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_galerkin.html">overall design idea of Galerkin</ulink>. </para>
 </simplesect>
 </para>
 <sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md97">
@@ -53,8 +53,7 @@
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>
-<listitem><para>instance of your FOM adapter specifying the FOM problem <linebreak/>
-</para>
+<listitem><para>instance of your FOM adapter specifying the FOM problem</para>
 </listitem><listitem><para>Must satisfy one of the APIs suitable for Galerkin, see <ulink url="./md_pages_components_rom_fom_apis.html">API list</ulink></para>
 </listitem></itemizedlist>
 </para>

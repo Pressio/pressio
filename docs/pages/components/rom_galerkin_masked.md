@@ -14,7 +14,7 @@ Public namespace: `pressio::rom::galerkin`
 
 @m_class{m-block m-warning}
 
-@par Prerequisite:
+@par Prerequisite reading:
 Before you read this page, make sure you
 read the [overall design idea of Galerkin](md_pages_components_rom_galerkin.html).
 @endparblock

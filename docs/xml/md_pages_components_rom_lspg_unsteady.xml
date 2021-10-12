@@ -8,7 +8,7 @@
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: finish this, add more details</para>
 <para>The pressio Unsteady LSPG ROMs are designed such that using them involves these steps:</para>
-<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md138">
+<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md135">
 <title>1. Create</title>
 <para>You create an instance of one of the supported &quot;LSPG problem&quot; using the following API:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pressio::rom::lspg::create_&lt;keywords&gt;(<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal"><sp/>);</highlight></codeline>
@@ -36,7 +36,7 @@
 <para>The <computeroutput>stepper</computeroutput> method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-const reference to an <ulink url="md_pages_components_ode_steppers_implicit.html">implicit stepper</ulink>. Once you reference the stepper, you can then use it to solve the problem (more on this below).</para>
 <para>What does a stepper have to do with a LSPG ROM? The answer is that practically speaking, at the lowest-level, a LSPG problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. When you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md139">
+<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md136">
 <title>2. Extract and Solve</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

@@ -9,7 +9,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin}
 
 
 
-\begin{DoxyParagraph}{Prerequisite\+:}
+\begin{DoxyParagraph}{Prerequisite reading\+:}
 Before you read this page, make sure you read the \href{md_pages_components_rom_galerkin.html}{\texttt{ overall design idea of Galerkin}}. 
 \end{DoxyParagraph}
 \hypertarget{md_pages_components_rom_galerkin_default_autotoc_md97}{}\doxysection{API}\label{md_pages_components_rom_galerkin_default_autotoc_md97}
@@ -53,8 +53,7 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \end{DoxyItemize}
 \item {\ttfamily fom\+System}\+:
 \begin{DoxyItemize}
-\item instance of your FOM adapter specifying the FOM problem ~\newline
-
+\item instance of your FOM adapter specifying the FOM problem
 \item Must satisfy one of the APIs suitable for Galerkin, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ API list}}
 \end{DoxyItemize}
 \item {\ttfamily decoder}\+:

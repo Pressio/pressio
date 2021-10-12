@@ -2,8 +2,17 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md124}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md124}
-todo\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md125}{}\doxysection{Creating a problem instance}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md125}
+Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} 
+
+~\newline
+
+
+
+
+\begin{DoxyParagraph}{Prerequisite reading\+:}
+Before you read this page, make sure you read the \href{md_pages_components_rom_lspg_steady.html}{\texttt{ overall design idea behind steady LSPG}}. 
+\end{DoxyParagraph}
+\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md123}{}\doxysection{Creating a problem instance}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md123}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -12,10 +21,10 @@ todo\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md125}{}\dox
 \DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
 \DoxyCodeLine{  >}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_steady\_problem(\textcolor{keyword}{const} FomSystemType \&,}
-\DoxyCodeLine{                                        DecoderType \&,}
-\DoxyCodeLine{                                        \textcolor{keyword}{const} RomStateType \&,}
-\DoxyCodeLine{                                        \textcolor{keyword}{const} FomReferenceStateType \&);}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_steady\_problem(\textcolor{keyword}{const} FomSystemType \& fomSystem,}
+\DoxyCodeLine{                                        DecoderType \& decoder,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} RomStateType \& romState,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} FomReferenceStateType \& fomRefState);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
@@ -24,32 +33,31 @@ todo\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md125}{}\dox
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }PreconditionerType}
 \DoxyCodeLine{  >}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_steady\_problem(\textcolor{keyword}{const} FomSystemType \&,}
-\DoxyCodeLine{                                        DecoderType \&,}
-\DoxyCodeLine{                                        \textcolor{keyword}{const} RomStateType \&,}
-\DoxyCodeLine{                                        \textcolor{keyword}{const} FomReferenceStateType \&,}
-\DoxyCodeLine{                                        \textcolor{keyword}{const} PreconditionerType \&);}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_steady\_problem(\textcolor{keyword}{const} FomSystemType \& fomSystem,}
+\DoxyCodeLine{                                        DecoderType \& decoder,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} RomStateType \& romState,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} FomReferenceStateType \& fomRefState,}
+\DoxyCodeLine{                                        \textcolor{keyword}{const} PreconditionerType \& preconditioner);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md126}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md126}
+\hypertarget{md_pages_components_rom_lspg_hypred_steady_autotoc_md124}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_steady_autotoc_md124}
 
 \begin{DoxyItemize}
-\item {\ttfamily Fom\+System\+Type}\+:
+\item {\ttfamily fom\+System}\+:
 \begin{DoxyItemize}
-\item your adapter class type specifying the FOM problem. ~\newline
-
-\item Must satisfy the steady API, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ here}}
+\item instance of your FOM adapter specifying the FOM problem
+\item must satisfy the steady API, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ here}}
 \end{DoxyItemize}
-\item {\ttfamily Decoder\+Type}\+:
+\item {\ttfamily decoder}\+:
 \begin{DoxyItemize}
-\item decoder class type
+\item decoder object
 \item must satify the requirements listed \href{md_pages_components_rom_decoder.html}{\texttt{ here}}
 \end{DoxyItemize}
-\item {\ttfamily Rom\+State\+Type}\+:
+\item {\ttfamily rom\+State}\+:
 \begin{DoxyItemize}
 \item currently, it must be either an Eigen vector or a Kokkos 1D view
 \end{DoxyItemize}
-\item {\ttfamily Fom\+Reference\+State\+Type}\+:
+\item {\ttfamily fom\+Ref\+State}\+:
 \begin{DoxyItemize}
 \item your FOM reference state that is used when reconstructing the FOM state
 \item must be copy-\/constructible and the following must be true\+:~\newline

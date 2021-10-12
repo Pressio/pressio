@@ -1,6 +1,6 @@
 todo\+: finish this, add more details
 
-The pressio Unsteady LSPG ROMs are designed such that using them involves these steps\+:\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md138}{}\doxysection{1. Create}\label{md_pages_components_rom_lspg_unsteady_autotoc_md138}
+The pressio Unsteady LSPG ROMs are designed such that using them involves these steps\+:\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md135}{}\doxysection{1. Create}\label{md_pages_components_rom_lspg_unsteady_autotoc_md135}
 You create an instance of one of the supported \char`\"{}\+LSPG problem\char`\"{} using the following API\+:
 
 
@@ -40,7 +40,7 @@ The above {\ttfamily create} function returns a problem object that meets the fo
 
 The {\ttfamily stepper} method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-\/const reference to an \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit stepper}}. Once you reference the stepper, you can then use it to solve the problem (more on this below).
 
-What does a stepper have to do with a LSPG ROM? The answer is that practically speaking, at the lowest-\/level, a LSPG problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. When you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md139}{}\doxysection{2. Extract and Solve}\label{md_pages_components_rom_lspg_unsteady_autotoc_md139}
+What does a stepper have to do with a LSPG ROM? The answer is that practically speaking, at the lowest-\/level, a LSPG problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. When you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md136}{}\doxysection{2. Extract and Solve}\label{md_pages_components_rom_lspg_unsteady_autotoc_md136}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
