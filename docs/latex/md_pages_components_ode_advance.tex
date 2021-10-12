@@ -2,14 +2,14 @@
 
 Defined in header\+: {\ttfamily $<$pressio/ode\+\_\+advancers.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_advance_autotoc_md45}{}\doxysection{Overview}\label{md_pages_components_ode_advance_autotoc_md45}
+Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_advance_autotoc_md46}{}\doxysection{Scope and overview}\label{md_pages_components_ode_advance_autotoc_md46}
 
 
 Provides functionalities implementing various strategies to \char`\"{}update\char`\"{} some information (i.\+e., a state) via an object that satisfies a \char`\"{}steppable\char`\"{} concept (more details below). 
 
 Why is this useful? Suppose that you have a generic application/usecase involving the concept of a discrete time or just discrete steps, a notion of \char`\"{}state\char`\"{} that defines your information at a specific step, and a \char`\"{}stepper\char`\"{} object, i.\+e. an object/abstraction that accepts a state and knows how to take a \char`\"{}step\char`\"{} to update that state. In such a scenario, it can be useful to have different strategies to advance the state, for example\+: advancing for a fixed number of times, advancing until a certain condition is met, etc. This is what the {\ttfamily pressio/ode\+\_\+advancers} provide. We are growing this capability, so if you need something but it is not alrady supported, open an issue or a PR on \href{https://github.com/Pressio/pressio}{\texttt{ github}}.
 
-Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize these functions to be useful for {\itshape time integration} of dynamical systems. This is the reason why these functionalities are currently inside {\ttfamily pressio\+::ode}, and this is also why we specifically use \char`\"{}time\char`\"{} below. Later on, we might move or generalize them.\hypertarget{md_pages_components_ode_advance_autotoc_md46}{}\doxysection{API}\label{md_pages_components_ode_advance_autotoc_md46}
+Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize these functions to be useful for {\itshape time integration} of dynamical systems. This is the reason why these functionalities are currently inside {\ttfamily pressio\+::ode}, and this is also why we specifically use \char`\"{}time\char`\"{} below. Later on, we might move or generalize them.\hypertarget{md_pages_components_ode_advance_autotoc_md47}{}\doxysection{API}\label{md_pages_components_ode_advance_autotoc_md47}
 
 
 Overload set for advancing for fixed number of steps 
@@ -26,7 +26,7 @@ Overload set for advancing for fixed number of steps
 \DoxyCodeLine{                     StateType \& state,}
 \DoxyCodeLine{                     \textcolor{keyword}{const} TimeType start\_time,}
 \DoxyCodeLine{                     \textcolor{keyword}{const} TimeType time\_step\_size,}
-\DoxyCodeLine{                     const ::pressio::ode::step\_count\_type num\_steps,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} pressio::ode::step\_count\_type num\_steps,}
 \DoxyCodeLine{                     Args \&\& ... args);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -40,7 +40,7 @@ Overload set for advancing for fixed number of steps
 \DoxyCodeLine{                     StateType \& state,}
 \DoxyCodeLine{                     \textcolor{keyword}{const} TimeType start\_time,}
 \DoxyCodeLine{                     StepSizeSetterType \&\& time\_step\_size\_manager,}
-\DoxyCodeLine{                     const ::pressio::ode::step\_count\_type num\_steps,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} pressio::ode::step\_count\_type num\_steps,}
 \DoxyCodeLine{                     Args \&\& ... args);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -54,7 +54,7 @@ Overload set for advancing for fixed number of steps
 \DoxyCodeLine{                                 StateType \& state,}
 \DoxyCodeLine{                                 \textcolor{keyword}{const} TimeType start\_time,}
 \DoxyCodeLine{                                 \textcolor{keyword}{const} TimeType time\_step\_size,}
-\DoxyCodeLine{                                 const ::pressio::ode::step\_count\_type num\_steps,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} pressio::ode::step\_count\_type num\_steps,}
 \DoxyCodeLine{                                 ObserverType \& observer,}
 \DoxyCodeLine{                                 Args \&\& ... args);}
 \DoxyCodeLine{}
@@ -70,7 +70,7 @@ Overload set for advancing for fixed number of steps
 \DoxyCodeLine{                                 StateType \& state,}
 \DoxyCodeLine{                                 \textcolor{keyword}{const} TimeType start\_time,}
 \DoxyCodeLine{                                 StepSizeSetterType \&\& time\_step\_size\_manager,}
-\DoxyCodeLine{                                 const ::pressio::ode::step\_count\_type num\_steps,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} pressio::ode::step\_count\_type num\_steps,}
 \DoxyCodeLine{                                 ObserverType \& observer,}
 \DoxyCodeLine{                                 Args \&\& ... args);}
 
@@ -123,10 +123,12 @@ Overload set for advancing to target time
 
 
 ~\newline
-\hypertarget{md_pages_components_ode_advance_autotoc_md47}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_advance_autotoc_md47}
+\hypertarget{md_pages_components_ode_advance_autotoc_md48}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_advance_autotoc_md48}
 
 \begin{DoxyItemize}
-\item {\ttfamily Stepper\+Type}\+: the steppable object type, must conform to\+: 
+\item {\ttfamily stepper}\+:
+\begin{DoxyItemize}
+\item the steppable object, must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }SteppableClass}
 \DoxyCodeLine{\{}
@@ -144,9 +146,14 @@ Overload set for advancing to target time
 
 \end{DoxyCode}
 
-\item {\ttfamily State\+Type}\+: type you use for the state, can be anything
-\item {\ttfamily Time\+Type}\+: typically it is same as the {\ttfamily value\+\_\+type} of the state
-\item {\ttfamily Step\+Size\+Setter\+Type}\+: class type responsible for setting the time step size. 
+\end{DoxyItemize}
+\item {\ttfamily state}\+: self-\/explanatory
+\item {\ttfamily start\+\_\+time}\+: self-\/explanatory
+\item {\ttfamily final\+\_\+time}\+: self-\/explanatory
+\item {\ttfamily num\+\_\+steps}\+: self-\/explanatory
+\item {\ttfamily time\+\_\+ste\+\_\+size\+\_\+manager}\+:
+\begin{DoxyItemize}
+\item functor for setting the time step size 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }StepSizeSetter}
 \DoxyCodeLine{\{}
@@ -161,7 +168,10 @@ Overload set for advancing to target time
 
 \end{DoxyCode}
 
-\item {\ttfamily Observer\+Type}\+: type responsible of \char`\"{}observing\char`\"{} the state during the time integration and potentially collect necessary data/metrics/statistics. Must conform to\+: 
+\end{DoxyItemize}
+\item {\ttfamily observer}\+:
+\begin{DoxyItemize}
+\item functor to \char`\"{}observe\char`\"{} the state during the time integration, allowing you to potentially collect necessary data/metrics/statistics. Must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }ObserverClass}
 \DoxyCodeLine{\{}
@@ -173,11 +183,12 @@ Overload set for advancing to target time
 
 \end{DoxyCode}
 
-\item {\ttfamily Args...}\+: optional objects to forward to stepper\textquotesingle{}s {\ttfamily operator()} that are potentially needed to perform one step. Note that these are optional, because your stepper might not need anything. The advance functions will simply forward all these to the {\ttfamily operator()} of the stepper object. Is having these optional argument really needed? One might argue that if the stepper needs to have access to some objects, then these auxiliary objects can be passed to the stepper upon construction, and so the stepper would already have access to them when its {\ttfamily operator()} is called. This is true {\itshape if} there is a valid reason for making these auxiliary object data members of the steppable class. The problem with this approach is that the stepper would need to know about all theses other types, and this creates a very tight coupling between different objects, that might be not even needed. By letting users provide a pack to the advance functions, we are able to decouple this structure such that any object {\itshape only} needed within the stepper\textquotesingle{}s {\ttfamily operator()} can be directly passed. To explain this, look at the example below.
+\end{DoxyItemize}
+\item {\ttfamily args...}\+: optional objects to forward to stepper\textquotesingle{}s {\ttfamily operator()} that are potentially needed to perform one step. Note that these are optional, because your stepper might not need anything. The advance functions will simply forward all these to the {\ttfamily operator()} of the stepper object. Is having these optional argument really needed? One might argue that if the stepper needs to have access to some objects, then these auxiliary objects can be passed to the stepper upon construction, and so the stepper would already have access to them when its {\ttfamily operator()} is called. This is true {\itshape if} there is a valid reason for making these auxiliary object data members of the steppable class. The problem with this approach is that the stepper would need to know about all theses other types, and this creates a very tight coupling between different objects, that might be not even needed. By letting users provide a pack to the advance functions, we are able to decouple this structure such that any object {\itshape only} needed within the stepper\textquotesingle{}s {\ttfamily operator()} can be directly passed. To explain this, look at the example below.
 \end{DoxyItemize}
 
 ~\newline
-\hypertarget{md_pages_components_ode_advance_autotoc_md48}{}\doxysection{When are the variadic arguments useful?}\label{md_pages_components_ode_advance_autotoc_md48}
+\hypertarget{md_pages_components_ode_advance_autotoc_md49}{}\doxysection{When are the variadic arguments useful?}\label{md_pages_components_ode_advance_autotoc_md49}
 For example in a scenario like the following\+:
 
 

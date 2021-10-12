@@ -22,16 +22,16 @@ auto create_newton_raphson(const ProblemClassType & system,
 						   LinearSolverType && lsolver);
 ```
 
-- `ProblemClassType`:
-  - type of the class defining the problem to solve
+- `system`:
+  - instance of the problem you want to solve
   - Requirements: must conform to either the residual-jacobian API or the fused residual-jacobian API
 
-- `StateType`:
-  - type of the data structure you use for the state
+- `state`:
+  - your state
   - Requirements: must be copy constructible
 
-- `LinearSolverType`:
-  - self-explanatory
+- `lsolver`:
+  - linear solver called at each inner iteration
   - Requirements: must conform to this [API](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html)
 
 ### Ops
@@ -41,8 +41,8 @@ such that pressio can operate on your data. For the sake of explanation, suppose
 
 ```cpp
 using scalar_type   = double;
-using state_type    = ACustomStateType;  //this can be any type
-using jacobian_type = ACustomJacobianType;  //this can be any type
+using state_type    = ACustomStateType;    //this can be any type
+using jacobian_type = ACustomJacobianType; //this can be any type
 ```
 
 Then you need to provide the following specializations:

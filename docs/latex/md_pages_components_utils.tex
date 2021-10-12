@@ -2,7 +2,7 @@
 
 Defined in header\+: {\ttfamily $<$pressio/utils.\+hpp$>$}
 
-Public namespaces\+: {\ttfamily pressio}, {\ttfamily pressio\+::utils} \hypertarget{md_pages_components_utils_autotoc_md151}{}\doxysection{Logger}\label{md_pages_components_utils_autotoc_md151}
+Public namespaces\+: {\ttfamily pressio}, {\ttfamily pressio\+::utils} \hypertarget{md_pages_components_utils_autotoc_md146}{}\doxysection{Logger}\label{md_pages_components_utils_autotoc_md146}
 One of the main functionalities inside {\ttfamily utils} is the logger. To implement the pressio logging functionalities, we have used \href{https://github.com/gabime/spdlog}{\texttt{ spdlog}}, modified a subset of it, for example to work seamlessly with MPI.
 
 
@@ -40,7 +40,7 @@ The following snippet provides the main idea\+:
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md152}{}\doxysubsection{Initializing and finalizing}\label{md_pages_components_utils_autotoc_md152}
+\hypertarget{md_pages_components_utils_autotoc_md147}{}\doxysubsection{Initializing and finalizing}\label{md_pages_components_utils_autotoc_md147}
 To initialize, you have these choices\+:
 
 
@@ -64,7 +64,7 @@ And to finalize\+:
 \DoxyCodeLine{plog::finalize();}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md153}{}\doxysubsection{If running with MPI}\label{md_pages_components_utils_autotoc_md153}
+\hypertarget{md_pages_components_utils_autotoc_md148}{}\doxysubsection{If running with MPI}\label{md_pages_components_utils_autotoc_md148}
 If you are running with MPI, the logger prints to the terminal {\itshape only from rank==0}. However, it automatically creates a per-\/rank log file if you choose the file output. For example, the following code\+:
 
 
@@ -86,7 +86,7 @@ If you are running with MPI, the logger prints to the terminal {\itshape only fr
 \end{DoxyCode}
 
 
-If we were to run this with N ranks, we would obtain two files {\ttfamily log\+\_\+file.\+txt\+\_\+0}, and {\ttfamily log\+\_\+file.\+txt\+\_\+1}. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.\hypertarget{md_pages_components_utils_autotoc_md154}{}\doxysubsection{Levels}\label{md_pages_components_utils_autotoc_md154}
+If we were to run this with N ranks, we would obtain two files {\ttfamily log\+\_\+file.\+txt\+\_\+0}, and {\ttfamily log\+\_\+file.\+txt\+\_\+1}. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.\hypertarget{md_pages_components_utils_autotoc_md149}{}\doxysubsection{Levels}\label{md_pages_components_utils_autotoc_md149}
 The supported levels are\+:
 
 
@@ -100,7 +100,7 @@ The supported levels are\+:
 \DoxyCodeLine{\textcolor{preprocessor}{\#define PRESSIO\_LOG\_LEVEL\_OFF       6}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md155}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md155}
+\hypertarget{md_pages_components_utils_autotoc_md150}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md150}
 If you want, you can use the define statement to set the min level, but then at runtime you can reset for a {\itshape higher} level (see below). Note that you cannot reset the level to something that is {\itshape lower} than the one you set via the {\ttfamily define} statement.
 
 
@@ -111,7 +111,7 @@ If you want, you can use the define statement to set the min level, but then at 
 \DoxyCodeLine{\textcolor{comment}{// ...}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md156}{}\doxysubsection{The loggin macros}\label{md_pages_components_utils_autotoc_md156}
+\hypertarget{md_pages_components_utils_autotoc_md151}{}\doxysubsection{The loggin macros}\label{md_pages_components_utils_autotoc_md151}
 To actually issue log statements, you use the macros as in the following example\+:
 
 

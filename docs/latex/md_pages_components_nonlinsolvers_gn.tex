@@ -2,8 +2,8 @@
 
 Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md19}{}\doxysection{Gauss-\/\+Newton via Normal-\/\+Equations}\label{md_pages_components_nonlinsolvers_gn_autotoc_md19}
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md20}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_gn_autotoc_md20}
+Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md20}{}\doxysection{Gauss-\/\+Newton via Normal-\/\+Equations}\label{md_pages_components_nonlinsolvers_gn_autotoc_md20}
+\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md21}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_gn_autotoc_md21}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -31,9 +31,9 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 
 
 \begin{DoxyItemize}
-\item {\ttfamily Problem\+Class\+Type}\+:
+\item {\ttfamily system}\+:
 \begin{DoxyItemize}
-\item type of the class defining the problem to solve 
+\item instance of the problem you want to solve 
 
 
 \begin{DoxyItemize}
@@ -45,19 +45,19 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+:
+\item {\ttfamily state}\+:
 \begin{DoxyItemize}
-\item type of the data structure you use for the state
+\item your state data
 \item Requirements\+: must be an Eigen or Kokkos vector\+:todo explain why
 \end{DoxyItemize}
-\item {\ttfamily Linear\+Solver\+Type}\+:
+\item {\ttfamily lsolver}\+:
 \begin{DoxyItemize}
-\item choose one from \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
+\item linear solver for solving the normal equations, choose one from \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
 \item if you want to implement your own, then the linear solver class still has to conform to the \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
 \end{DoxyItemize}
-\item {\ttfamily Weighting\+Op\+Type}\+:
+\item {\ttfamily weight\+Operator}\+:
 \begin{DoxyItemize}
-\item this is the weighting operator if you want to do weighted least-\/squares. Must conform to\+: 
+\item weighting operator for doing weighted least-\/squares. Must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }WeightingOperator}
 \DoxyCodeLine{\{}
@@ -69,13 +69,13 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md21}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md21}
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md22}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_gn_autotoc_md22}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md22}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md22}
+\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md23}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_gn_autotoc_md23}
 ~\newline
  \DoxyHorRuler{0}
  ~\newline
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md23}{}\doxysection{Gauss-\/\+Newton via QR factorization}\label{md_pages_components_nonlinsolvers_gn_autotoc_md23}
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md24}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_gn_autotoc_md24}
+\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md24}{}\doxysection{Gauss-\/\+Newton via QR factorization}\label{md_pages_components_nonlinsolvers_gn_autotoc_md24}
+\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md25}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_gn_autotoc_md25}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -92,9 +92,9 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 
 
 \begin{DoxyItemize}
-\item {\ttfamily Problem\+Class\+Type}\+:
+\item {\ttfamily system}\+:
 \begin{DoxyItemize}
-\item type of the class defining the problem to solve 
+\item instance of the problem you want to solve 
 
 
 \begin{DoxyItemize}
@@ -105,16 +105,16 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+:
+\item {\ttfamily state}\+:
 \begin{DoxyItemize}
-\item type of the data structure you use for the state
+\item your state data
 \item Requirements\+: must be an Eigen or Kokkos vector\+:todo explain why
 \end{DoxyItemize}
-\item {\ttfamily QRSolver\+Type}\+:
+\item {\ttfamily qrsolver}\+:
 \begin{DoxyItemize}
-\item needed to solve the QR-\/based formulation of the least-\/squares problem \href{https://en.wikipedia.org/wiki/QR_decomposition}{\texttt{ see this}}
+\item solver needed to solve the QR-\/based formulation of the least-\/squares problem \href{https://en.wikipedia.org/wiki/QR_decomposition}{\texttt{ see this}}
 \item we suggest to use the \href{md_pages_components_qr.html}{\texttt{ pressio QR package}}
 \item if you want to implement your own, then it has to conform to the \href{md_pages_components_qr.html}{\texttt{ this API}}
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md25}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md25}
-\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md26}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_gn_autotoc_md26}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md26}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_gn_autotoc_md26}
+\hypertarget{md_pages_components_nonlinsolvers_gn_autotoc_md27}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_gn_autotoc_md27}

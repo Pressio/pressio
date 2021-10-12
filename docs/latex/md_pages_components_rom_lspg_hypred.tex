@@ -2,8 +2,17 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md124}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_hypred_autotoc_md124}
-\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md125}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_lspg_hypred_autotoc_md125}
+Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} 
+
+~\newline
+
+
+
+
+\begin{DoxyParagraph}{Prerequisite\+:}
+Before you read this page, make sure you read the \href{md_pages_components_rom_lspg_unsteady.html}{\texttt{ overall design idea of the unsteady LSPG}}. 
+\end{DoxyParagraph}
+\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md119}{}\doxysection{API}\label{md_pages_components_rom_lspg_hypred_autotoc_md119}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// overload for continuous-\/time systems}}
@@ -19,7 +28,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_com
 \DoxyCodeLine{                                                DecoderType \& ,}
 \DoxyCodeLine{                                                \textcolor{keyword}{const} RomStateType \&,}
 \DoxyCodeLine{                                                \textcolor{keyword}{const} FomReferenceStateType \&,}
-\DoxyCodeLine{                                                \textcolor{keyword}{const} HypRedOperatorUpdaterType \&)}
+\DoxyCodeLine{                                                \textcolor{keyword}{const} HypRedOperatorUpdaterType \& hrUpdater)}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// overload for discrete-\/time systems}}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -35,7 +44,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_com
 \DoxyCodeLine{                                                \textcolor{keyword}{const} FomReferenceStateType \& fomRef);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md126}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_autotoc_md126}
+\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md120}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_autotoc_md120}
 
 \begin{DoxyItemize}
 \item {\ttfamily Fom\+System\+Type}\+:
@@ -110,22 +119,28 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_com
 \item {\itshape total} number of states you need to use (must be $<$= 3), if you need more open issue
 \item only needed for the discrete-\/time case
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md127}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_lspg_hypred_autotoc_md127}
-A problem meets the following interface\+:
+\end{DoxyItemize}
+
+~\newline
+\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md121}{}\doxysection{Why do we need the Hyp\+Red\+Updater?}\label{md_pages_components_rom_lspg_hypred_autotoc_md121}
+When working with a hyper-\/reduced problem, pressio has to manipulate objects that have different sizes/distributions. For this problem variant, in fact, some operators are naturally defined on the what we refer to as \char`\"{}sample mesh\char`\"{} while some are defined on what we call the \char`\"{}stencil mesh\char`\"{}.
+
+As explained \href{https://pressio.github.io/algos/hyper/}{\texttt{ here}}, recall that\+:
 
 
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }UnsteadyLspgProblem}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{\textcolor{keyword}{public}:}
-\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// returns the underlying stepper to use to solve the problem}}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
-\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
-\DoxyCodeLine{\};}
+\begin{DoxyEnumerate}
+\item {\bfseries{sample mesh}}\+: a disjoint collection of elements where the velocity (or residual) operator is computed.
+\item {\bfseries{stencil mesh}}\+: the set of all nodes or elements needed to compute the velocity or residual on the sample mesh.
+\item Typically, the sample mesh is a subset of the stencil mesh.
+\end{DoxyEnumerate}
 
-\end{DoxyCode}
- 
+
+
+The {\ttfamily hr\+Updater} is an object that knows how to compute {\ttfamily a$\ast$x + b$\ast$y} for operands {\ttfamily x,y,} that (potentially) do NOT have the same size/data distribution since they are defined on stencil and sample mesh. \hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md122}{}\doxysubsection{Explain it to me better!}\label{md_pages_components_rom_lspg_hypred_autotoc_md122}
+Suppose that your FOM problem involves a 2D problem and that your FOM numerical method needs at every cell information from the nearest neighbors. For the sake of explanation, {\itshape it does not matter what problem we are solving}, only what we just said. Now, suppose that you want to try hyper-\/reduced LSPG on it. You come up with a sample and stencil mesh for your problem (read \href{https://pressio.github.io/algos/hyper/}{\texttt{ this page}} for some information about how to select sample mesh cells), and let\textquotesingle{}s say it looks like this\+: 
+
+The stencil mesh is the set of {\itshape all} cells shown, while the sample mesh is the {\itshape subset} color-\/coded yellow. We have added an arbitrary enumeration scheme to uniquely assign a global index to each cell. The enumeration order does not matter, this is just for demonstration purposes. You have an adapter class for your problem that is able to compute the FOM right-\/hand-\/side $f$ on the yellow cells, for a given FOM state $y$ on the stencil mesh.
+
+For this example, you would need to create an {\ttfamily Hyp\+Red\+Updater} object capable of performing those operations on operands that defined on the visualized sample and stencil meshes.
+
+todo\+: explain that this is application-\/specific. There is nothing we can be to make this simple for generic applications, but we can simplify this for shared-\/mem ones and users can fully omit this for Trilinos based applications since we can use the underlying maps to figure out how to combine operators. 

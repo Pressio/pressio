@@ -2,26 +2,35 @@
 
 Defined in\+: {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+explicit.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md50}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_explicit_autotoc_md50}
+Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md51}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_explicit_autotoc_md51}
 Applicable to systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 
 where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time.~\newline
- Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a \char`\"{}stepper\char`\"{} is an abstraction that represents the \char`\"{}how\char`\"{} to take a step.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md51}{}\doxysection{API}\label{md_pages_components_ode_steppers_explicit_autotoc_md51}
+ Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a \char`\"{}stepper\char`\"{} is an abstraction that represents the \char`\"{}how\char`\"{} to take a step.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md52}{}\doxysection{API, Parameters and Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md52}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_explicit\_stepper(pressio::ode::StepScheme name,}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_explicit\_stepper(pressio::ode::StepScheme scheme\_name,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
 \DoxyCodeLine{                             \textcolor{keyword}{const} SystemType \& system);}
 
 \end{DoxyCode}
 
 
-where {\ttfamily name} is one of the following enum class values\+: {\ttfamily Forward\+Euler}, {\ttfamily Runge\+Kutta4}, {\ttfamily Adams\+Bashforth2}, {\ttfamily SSPRunge\+Kutta3}. This function returns an instance of the desired stepper. The returned stepper object satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}, so one can use the \char`\"{}advancers\char`\"{} functions to step forward.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md52}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md52}
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+: data type of your state, must be copy constructible
-\item {\ttfamily System\+Type}\+: class defining how to create an instance of the velocity $f$ and how to compute it.~\newline
+\item {\ttfamily scheme\+\_\+name}
+\begin{DoxyItemize}
+\item a value of the {\ttfamily Step\+Scheme} enum
+\item must be one of\+: {\ttfamily Forward\+Euler}, {\ttfamily Runge\+Kutta4}, {\ttfamily Adams\+Bashforth2}, {\ttfamily SSPRunge\+Kutta3}.
+\end{DoxyItemize}
+\item {\ttfamily state}\+:
+\begin{DoxyItemize}
+\item your state, must be copy constructible
+\end{DoxyItemize}
+\item {\ttfamily system}\+:
+\begin{DoxyItemize}
+\item problem instance to query for velocity $f$ and how to compute it.~\newline
  The system class must conform to the following API\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{struct }SystemForExplicitStepper}
@@ -36,11 +45,16 @@ where {\ttfamily name} is one of the following enum class values\+: {\ttfamily F
 
 \end{DoxyCode}
 
+\end{DoxyItemize}
 
 the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be {\itshape valid} types since they are detected by pressio
 \item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
  {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md53}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md53}
+\end{DoxyItemize}
+
+
+
+The above factory function returns a stepper instance for the desired scheme. The returned stepper object satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}, so one can use the \char`\"{}advancers\char`\"{} functions to step forward. \hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md53}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md53}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/type\_traits.hpp"{}}}

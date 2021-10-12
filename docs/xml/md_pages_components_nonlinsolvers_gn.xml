@@ -10,9 +10,9 @@
 <para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md19">
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md20">
 <title>Gauss-Newton via Normal-Equations</title>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md20">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md21">
 <title>API, Parameters and Requirements</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ProblemClassType,</highlight></codeline>
@@ -35,8 +35,8 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WeightingOpType<sp/>&amp;&amp;<sp/>weightOperator);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para><computeroutput>ProblemClassType</computeroutput>:<itemizedlist>
-<listitem><para>type of the class defining the problem to solve  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<listitem><para><computeroutput>system</computeroutput>:<itemizedlist>
+<listitem><para>instance of the problem you want to solve  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
 <para><parblock><para><itemizedlist>
 <listitem><para>overload 1: accepts the <ulink url="md_pages_components_nonlinsolvers_system_api.html">residual-jacobian, hessian-gradient API, or their fused versions</ulink></para>
 </listitem><listitem><para>overload 2: <emphasis>only</emphasis> accepts the <ulink url="md_pages_components_nonlinsolvers_system_api.html">residual-jacobian API or its fused version</ulink> </para>
@@ -48,18 +48,18 @@
 </listitem></itemizedlist>
 </para>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
-<listitem><para>type of the data structure you use for the state</para>
+<listitem><para><computeroutput>state</computeroutput>:<itemizedlist>
+<listitem><para>your state data</para>
 </listitem><listitem><para>Requirements: must be an Eigen or Kokkos vector: <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> explain why</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>LinearSolverType</computeroutput>:<itemizedlist>
-<listitem><para>choose one from <ulink url="md_pages_components_linsolvers.html">linear solver API</ulink></para>
+</listitem><listitem><para><computeroutput>lsolver</computeroutput>:<itemizedlist>
+<listitem><para>linear solver for solving the normal equations, choose one from <ulink url="md_pages_components_linsolvers.html">linear solver API</ulink></para>
 </listitem><listitem><para>if you want to implement your own, then the linear solver class still has to conform to the <ulink url="md_pages_components_linsolvers.html">linear solver API</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>WeightingOpType</computeroutput>:<itemizedlist>
-<listitem><para>this is the weighting operator if you want to do weighted least-squares. Must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">WeightingOperator</highlight></codeline>
+</listitem><listitem><para><computeroutput>weightOperator</computeroutput>:<itemizedlist>
+<listitem><para>weighting operator for doing weighted least-squares. Must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">WeightingOperator</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>residual_type<sp/>&amp;<sp/>operand,<sp/>residual_type<sp/>&amp;<sp/>result);</highlight></codeline>
@@ -71,10 +71,10 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md21">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
 <title>Example usage</title>
 <para><linebreak/>
  <hruler/>
@@ -82,9 +82,9 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
 <title>Gauss-Newton via QR factorization</title>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md25">
 <title>API, Parameters and Requirements</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ProblemClassType,</highlight></codeline>
@@ -96,8 +96,8 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>QRSolverType<sp/>&amp;&amp;<sp/>qrsolver);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para><computeroutput>ProblemClassType</computeroutput>:<itemizedlist>
-<listitem><para>type of the class defining the problem to solve  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<listitem><para><computeroutput>system</computeroutput>:<itemizedlist>
+<listitem><para>instance of the problem you want to solve  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
 <para><parblock><para><itemizedlist>
 <listitem><para><emphasis>only</emphasis> accepts the <ulink url="md_pages_components_nonlinsolvers_system_api.html">residual-jacobian API or its fused version</ulink> </para>
 </listitem></itemizedlist>
@@ -108,13 +108,13 @@
 </listitem></itemizedlist>
 </para>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
-<listitem><para>type of the data structure you use for the state</para>
+<listitem><para><computeroutput>state</computeroutput>:<itemizedlist>
+<listitem><para>your state data</para>
 </listitem><listitem><para>Requirements: must be an Eigen or Kokkos vector: <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> explain why</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>QRSolverType</computeroutput>:<itemizedlist>
-<listitem><para>needed to solve the QR-based formulation of the least-squares problem <ulink url="https://en.wikipedia.org/wiki/QR_decomposition">see this</ulink></para>
+</listitem><listitem><para><computeroutput>qrsolver</computeroutput>:<itemizedlist>
+<listitem><para>solver needed to solve the QR-based formulation of the least-squares problem <ulink url="https://en.wikipedia.org/wiki/QR_decomposition">see this</ulink></para>
 </listitem><listitem><para>we suggest to use the <ulink url="md_pages_components_qr.html">pressio QR package</ulink></para>
 </listitem><listitem><para>if you want to implement your own, then it has to conform to the <ulink url="md_pages_components_qr.html">this API</ulink></para>
 </listitem></itemizedlist>
@@ -122,10 +122,10 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md25">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md26">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md26">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md27">
 <title>Example usage</title>
 </sect2>
 </sect1>

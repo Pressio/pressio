@@ -10,25 +10,16 @@ Defined in: `<pressio/rom_galerkin.hpp>`
 Public namespace: `pressio::rom::galerkin`
 @endparblock
 
-
-## Overview
-
-Recall from [this page](md_pages_components_rom_galerkin.html),
-that using a pressio Galerkin problem involves three steps:
-
-1. *create*: you create an instance of a "Galerkin problem"
-
-2. *extract*: you extract the underlying stepper object owned by the problem
-
-3. *solve*: you use the stepper to solve in time the Galerkin problem
-
-
-<br/>
-___
 <br/>
 
+@m_class{m-block m-warning}
 
-## 1. Creating a problem instance
+@par Prerequisite:
+Before you read this page, make sure you
+read the [overall design idea of Galerkin](md_pages_components_rom_galerkin.html).
+@endparblock
+
+## API
 
 ```cpp
 template<
@@ -39,13 +30,13 @@ template<
   class ProjectorType,
   class MaskerType
   >
-ReturnType create_masked_explicit_problem(pressio::ode::StepScheme,
-										  const FomSystemType &,
-										  DecoderType &,
-										  const RomStateType &,
-										  const FomReferenceStateType &,
-										  const ProjectorType &,
-										  const MaskerType &);
+ReturnType create_masked_explicit_problem(pressio::ode::StepScheme scheme,
+										  const FomSystemType & fomSystem,
+										  DecoderType & decoder,
+										  const RomStateType & romState,
+										  const FomReferenceStateType & fomRefState,
+										  const ProjectorType & projector,
+										  const MaskerType & masker);
 
 template<
   class FomSystemType,
@@ -55,51 +46,53 @@ template<
   class ProjectorType,
   class MaskerType
   >
-ReturnType create_masked_implicit_problem(pressio::ode::StepScheme,
-										  const FomSystemType &,
-										  DecoderType &,
-										  const RomStateType &,
-										  const FomReferenceStateType &,
-										  const ProjectorType &,
-										  const MaskerType &);
+ReturnType create_masked_implicit_problem(pressio::ode::StepScheme scheme,
+										  const FomSystemType & fomSystem,
+										  DecoderType & decoder,
+										  const RomStateType & romState,
+										  const FomReferenceStateType & fomRefState,
+										  const ProjectorType & projector,
+										  const MaskerType & masker);
 ```
 
 This function returns an instance of the desired Galerkin problem.
 
 ### Parameters and Requirements
 
-- `StepScheme`:
-  - must be one of the explicit or implicit enum values supported in `pressio::ode`
+- `scheme`:
+  - enum value to specify the stepper scheme
+  - for doing explicit Galerkin, see [explicit choices](md_pages_components_ode_steppers_explicit.html)
+  - for doing implicit Galerkin, seee [implicit choices](md_pages_components_ode_steppers_implicit.html)
 
-- `FomSystemType`:
-  - your adapter class type specifying the FOM problem
+- `fomSystem`:
+  - instance of your FOM adapter specifying the FOM problem <br/>
   - must satisfy one of the APIs suitable for Galerkin, see [API list](./md_pages_components_rom_fom_apis.html)
 
-- `DecoderType`:
-  - decoder class type
+- `decoder`:
+  - decoder object
   - must satify the requirements listed [here](md_pages_components_rom_decoder.html)
 
-- `RomStateType`:
-  - ROM state type
+- `romState`:
+  - ROM state
   - currently, it must be either an Eigen vector or a Kokkos 1D view
 
-- `FomReferenceStateType`:
+- `fomRefState`:
   - your FOM reference state that is used when reconstructing the FOM state
   - must be copy-constructible and the following must be true:<br/>
   ```cpp
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
 
-- `ProjectorType`:
-  - an operator is responsible for projectng the FOM operators onto the reduced space
+- `projector`:
+  - operator is responsible for projectng the FOM operators onto the reduced space
   - must be a functor with a specific API, see [this page](md_pages_components_rom_galerkin_hypred.html)
 
-- `MaskedType`:
-  - an functor responsible of "masking" the FOM operators
+- `masker`:
+  - functor responsible of "masking" the FOM operators
   - must be a functor with a specific API, see details below
 
 
-### Masker
+## Masker
 
 \todo: explain
 

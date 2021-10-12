@@ -10,9 +10,9 @@
 <para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_nonlinsolvers_nr_1autotoc_md37">
+<sect1 id="md_pages_components_nonlinsolvers_nr_1autotoc_md38">
 <title>Newton-Raphson</title>
-<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md38">
+<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md39">
 <title>API, Parameters and Requirements</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ProblemClassType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>LinearSolverType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_newton_raphson(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProblemClassType<sp/>&amp;<sp/>system,</highlight></codeline>
@@ -20,30 +20,30 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LinearSolverType<sp/>&amp;&amp;<sp/>lsolver);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para><computeroutput>ProblemClassType</computeroutput>:<itemizedlist>
-<listitem><para>type of the class defining the problem to solve</para>
+<listitem><para><computeroutput>system</computeroutput>:<itemizedlist>
+<listitem><para>instance of the problem you want to solve</para>
 </listitem><listitem><para>Requirements: must conform to either the residual-jacobian API or the fused residual-jacobian API</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
-<listitem><para>type of the data structure you use for the state</para>
+</listitem><listitem><para><computeroutput>state</computeroutput>:<itemizedlist>
+<listitem><para>your state</para>
 </listitem><listitem><para>Requirements: must be copy constructible</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>LinearSolverType</computeroutput>:<itemizedlist>
-<listitem><para>self-explanatory</para>
+</listitem><listitem><para><computeroutput>lsolver</computeroutput>:<itemizedlist>
+<listitem><para>linear solver called at each inner iteration</para>
 </listitem><listitem><para>Requirements: must conform to this <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html">API</ulink></para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md39">
+<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md40">
 <title>Ops</title>
 <para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/>ACustomStateType;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/>ACustomJacobianType;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/>ACustomStateType;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/>ACustomJacobianType;<sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight></codeline>
 </programlisting></para>
 <para>Then you need to provide the following specializations:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
@@ -94,7 +94,7 @@
 <codeline><highlight class="comment">}}//end<sp/>namepsace<sp/>pressio::ops</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md40">
+<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md41">
 <title>Example usage</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

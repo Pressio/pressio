@@ -8,7 +8,7 @@
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: write this better</para>
 <para>The pressio steady LSPG ROMs are designed around two main steps:</para>
-<sect1 id="md_pages_components_rom_lspg_steady_1autotoc_md142">
+<sect1 id="md_pages_components_rom_lspg_steady_1autotoc_md135">
 <title>1. Create</title>
 <para>You instantiate a &quot;steady LSPG problem&quot;, e.g.:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pressio::rom::lspg::create_default_unsteady_problem(</highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
@@ -42,7 +42,7 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_steady_1autotoc_md143">
+<sect1 id="md_pages_components_rom_lspg_steady_1autotoc_md136">
 <title>2. Solve</title>
 <para><itemizedlist>
 <listitem><para>you instantiate and use a nonlinear least-squares solver of your choice to solve the problem. Note, in fact, that the problem&apos;s API conforms to the one required by the nonlinear solvers</para>

@@ -10,13 +10,13 @@
 <para><parblock><para>Defined in header: <computeroutput>&lt;pressio/type_traits.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_type_traits_1autotoc_md147">
+<sect1 id="md_pages_components_type_traits_1autotoc_md142">
 <title>Overview</title>
 <para>Provides functionalities for type support and detection. One of the main design features of pressio is that it supports arbitrary types via generic programming and type introspection, but also provides special support for some data types commonly used.</para>
 <para><linebreak/>
 </para>
 </sect1>
-<sect1 id="md_pages_components_type_traits_1autotoc_md148">
+<sect1 id="md_pages_components_type_traits_1autotoc_md143">
 <title>Traits class</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: finish</para>
 <para>One of the most important things inside <computeroutput>type_traits</computeroutput> is the <computeroutput>Traits</computeroutput> class:</para>
@@ -52,7 +52,7 @@
 <para><linebreak/>
 </para>
 </sect1>
-<sect1 id="md_pages_components_type_traits_1autotoc_md149">
+<sect1 id="md_pages_components_type_traits_1autotoc_md144">
 <title>Type detection and identification</title>
 <para>We support several metafunctions for detecting data types commonly used from existing TPLs. The following list is partial, and more will be added as we continue the development.</para>
 <para><table rows="22" cols="2"><row>
@@ -62,147 +62,147 @@
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_static_vector_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static Eigen vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dynamic_vector_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a dynamic Eigen vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_vector_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static or dynamic Eigen vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_sparse_matrix_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static or dynamic sparse Eigen matrix. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_static_dense_matrix_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static dense Eigen matrix. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dynamic_dense_matrix_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a dynamic dense Eigen matrix. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dense_matrix_eigen;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static or dynamic dense Eigen matrix. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_EIGEN==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dense_vector_teuchos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a dense Teuchos vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dense_matrix_teuchos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a dense Teuchos matrix. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_vector_epetra;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is Epetra vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_multi_vector_epetra;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is an Epetra multi vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_vector_tpetra;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a Tpetra vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_multi_vector_tpetra;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a Tpetra multi vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_vector_tpetra_block;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a Tpetra-block vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_multi_vector_tpetra_block;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a Tpetra-block multi vector. <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_TRILINOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_static_vector_kokkos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static Kokkos vector (rank-1 View). <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dynamic_vector_kokkos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a dynamic Kokkos vector (rank-1 View). <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_vector_kokkos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static or dynamic Kokkos vector (rank-1 View). <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_static_dense_matrix_kokkos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static dense Kokkos matrix (rank-2 View). <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dynamic_dense_matrix_kokkos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a dynamic dense Kokkos matrix (rank-2 View). <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para><computeroutput>template&lt;class T&gt;</computeroutput> <linebreak/>
  <computeroutput>struct is_dense_matrix_kokkos;</computeroutput>   </para>
-</entry><entry thead="no"><para>Static member constant <computeroutput>value</computeroutput> is true <linebreak/>
+</entry><entry thead="no"><para>Provides static member constant <computeroutput>value</computeroutput> equal to <computeroutput>true</computeroutput> <linebreak/>
  if <computeroutput>T</computeroutput> is a static or dynamic dense Kokkos matrix (rank-2 View). <linebreak/>
  Requires: <computeroutput>PRESSIO_ENABLE_TPL_KOKKOS==On</computeroutput>   </para>
 </entry></row>

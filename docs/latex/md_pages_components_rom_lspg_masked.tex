@@ -2,8 +2,17 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+lspg.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_components_rom_lspg_masked_autotoc_md133}{}\doxysection{Overview}\label{md_pages_components_rom_lspg_masked_autotoc_md133}
-\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md134}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_lspg_masked_autotoc_md134}
+Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} 
+
+~\newline
+
+
+
+
+\begin{DoxyParagraph}{Prerequisite\+:}
+Before you read this page, make sure you read the \href{md_pages_components_rom_lspg_unsteady.html}{\texttt{ overall design idea of the unsteady LSPG}}. 
+\end{DoxyParagraph}
+\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md128}{}\doxysection{API}\label{md_pages_components_rom_lspg_masked_autotoc_md128}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// overload for continuous-\/time systems}}
@@ -37,7 +46,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_com
 \DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \&);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md135}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_masked_autotoc_md135}
+\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md129}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_masked_autotoc_md129}
 
 \begin{DoxyItemize}
 \item {\ttfamily Fom\+System\+Type}\+:
@@ -102,24 +111,6 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg} \hypertarget{md_pages_com
 \DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} operand\_type2 \& unmasked\_object,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time,}
 \DoxyCodeLine{                  operand\_type2 \& result);}
-\DoxyCodeLine{\};}
-
-\end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_masked_autotoc_md136}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_lspg_masked_autotoc_md136}
-A problem meets the following interface\+:
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }UnsteadyLspgProblem}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{\textcolor{keyword}{public}:}
-\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// returns the underlying stepper to use to solve the problem}}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
-\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}

@@ -11,11 +11,16 @@ Defined in: `<pressio/rom_lspg.hpp>`
 Public namespace: `pressio::rom::lspg`
 @endparblock
 
+<br/>
 
-## Overview
+@m_class{m-block m-warning}
 
+@par Prerequisite:
+Before you read this page, make sure you
+read the [overall design idea of the unsteady LSPG](md_pages_components_rom_lspg_unsteady.html).
+@endparblock
 
-## 1. Creating a problem instance
+## API
 
 ```cpp
 // overload for continuous-time systems
@@ -69,22 +74,3 @@ ReturnType create_default_unsteady_problem(const FomSystemType &,
 - `num_states`:
   - *total* number of states you need to use (must be <= 3), if you need more open issue
   - only needed for the discrete-time case
-
-
-### Problem class API
-
-A problem meets the following interface:
-
-```cpp
-class UnsteadyLspgProblem
-{
-public:
-  using traits = /* nested typedef with trait class */;
-
-  // returns the underlying stepper to use to solve the problem
-  auto & stepper();
-
-  // const ref to the object knowing how to reconstruct a FOM state
-  const auto & fomStateReconstructor() const;
-};
-```

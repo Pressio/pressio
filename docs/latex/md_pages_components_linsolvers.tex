@@ -3,16 +3,14 @@
 Defined in header {\ttfamily $<$pressio/solvers\+\_\+linear.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::linearsolvers} \hypertarget{md_pages_components_linsolvers_autotoc_md3}{}\doxysection{Overview}\label{md_pages_components_linsolvers_autotoc_md3}
-We clearly state upfront that this component of pressio is not a self-\/contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an {\bfseries{intentional}} choice\+: there exist already many open-\/source highly-\/optimized libraries that do so in both a shared-\/memory, e.\+g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.\+g. Trilinos, PETSc, HYPRE.
+We clearly state upfront that this component of pressio is not a self-\/contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an {\bfseries{intentional}} choice\+: there exist already many open-\/source highly-\/optimized libraries that provide linear solvers for both shared-\/memory, e.\+g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.\+g. Trilinos, PETSc, HYPRE.
 
 
 
-\begin{DoxyParagraph}{}
-The primary goal of the pressio\textquotesingle{}s linear solvers is to support usecases that are needed for ROMs.
-\end{DoxyParagraph}
-As discussed in the introduction, ROMs involve \char`\"{}small\char`\"{} {\itshape dense} systems that suitably fit on a {\itshape single compute node}. Pressio\textquotesingle{}s linear solvers are thus designed and implemented to be wrappers (exposing a common interface) to existing shared-\/memory linear solvers libraries.
+The primary goal of the pressio\textquotesingle{}s linear solvers is to support usecases that are needed for ROMs. As discussed in the introduction, ROMs involve \char`\"{}small\char`\"{} {\itshape dense} systems that suitably fit on a {\itshape single compute node}. Pressio\textquotesingle{}s linear solvers are thus designed and implemented to be wrappers (exposing a common interface) to existing shared-\/memory linear solvers libraries. 
 
-Currently, we support linear systems involving either Eigen or Kokkos data structures. The reason for this is that Eigen and Kokkos are the preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed. Note that even if the scope of the linear solvers is limited, we still emphasize that, like all of the others subpackages in pressio, it can be used idenpendetly.\hypertarget{md_pages_components_linsolvers_autotoc_md4}{}\doxysection{API}\label{md_pages_components_linsolvers_autotoc_md4}
+Currently, we support linear systems using either Eigen or Kokkos containers. The reason for this is that Eigen and Kokkos are the supported and preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed. Note that even if the scope of the linear solvers is limited, we still emphasize that, like all of the others subpackages in pressio, it can be used idenpendetly.\hypertarget{md_pages_components_linsolvers_autotoc_md4}{}\doxysubsection{Why do we need it?}\label{md_pages_components_linsolvers_autotoc_md4}
+todo\+: explain that we need to a uniform interface.\hypertarget{md_pages_components_linsolvers_autotoc_md5}{}\doxysection{API}\label{md_pages_components_linsolvers_autotoc_md5}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{pressio::linearsolvers::Solver<Tag, MatrixType>;}
@@ -49,7 +47,7 @@ We distinguish between iterative and direct solvers. Obviously, depending on the
 {\ttfamily direct\+::getrs}   &Uses LU factorization   &Kokkos    \\\cline{1-3}
 {\ttfamily direct\+::geqrf}   &Uses QR fatorization   &Kokkos   \\\cline{1-3}
 \end{longtabu}
-\hypertarget{md_pages_components_linsolvers_autotoc_md5}{}\doxysection{Class Synopsis}\label{md_pages_components_linsolvers_autotoc_md5}
+\hypertarget{md_pages_components_linsolvers_autotoc_md6}{}\doxysection{Class Synopsis}\label{md_pages_components_linsolvers_autotoc_md6}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} MatrixType>}
@@ -63,7 +61,7 @@ We distinguish between iterative and direct solvers. Obviously, depending on the
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_linsolvers_autotoc_md6}{}\doxysection{Example Usage}\label{md_pages_components_linsolvers_autotoc_md6}
+\hypertarget{md_pages_components_linsolvers_autotoc_md7}{}\doxysection{Example Usage}\label{md_pages_components_linsolvers_autotoc_md7}
 todo\+: need to discuss difference between iterative and direct
 
 
