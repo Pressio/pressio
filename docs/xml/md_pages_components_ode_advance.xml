@@ -10,15 +10,15 @@
 <para><parblock><para>Defined in header: <computeroutput>&lt;pressio/ode_advancers.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md45">
-<title>Overview</title>
+<sect1 id="md_pages_components_ode_advance_1autotoc_md46">
+<title>Scope and overview</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
 <para><parblock><para>Provides functionalities implementing various strategies to &quot;update&quot; some information (i.e., a state) via an object that satisfies a &quot;steppable&quot; concept (more details below). </para>
 </parblock></para>
 <para>Why is this useful? Suppose that you have a generic application/usecase involving the concept of a discrete time or just discrete steps, a notion of &quot;state&quot; that defines your information at a specific step, and a &quot;stepper&quot; object, i.e. an object/abstraction that accepts a state and knows how to take a &quot;step&quot; to update that state. In such a scenario, it can be useful to have different strategies to advance the state, for example: advancing for a fixed number of times, advancing until a certain condition is met, etc. This is what the <computeroutput>pressio/ode_advancers</computeroutput> provide. We are growing this capability, so if you need something but it is not alrady supported, open an issue or a PR on <ulink url="https://github.com/Pressio/pressio">github</ulink>.</para>
 <para>Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize these functions to be useful for <emphasis>time integration</emphasis> of dynamical systems. This is the reason why these functionalities are currently inside <computeroutput>pressio::ode</computeroutput>, and this is also why we specifically use &quot;time&quot; below. Later on, we might move or generalize them.</para>
 </sect1>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md46">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md47">
 <title>API</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
 <para><parblock><para>Overload set for advancing for fixed number of steps </para>
@@ -33,7 +33,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>start_time,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>time_step_size,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>const<sp/>::pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Args<sp/>&amp;&amp;<sp/>...<sp/>args);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
@@ -47,7 +47,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>start_time,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StepSizeSetterType<sp/>&amp;&amp;<sp/>time_step_size_manager,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>const<sp/>::pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Args<sp/>&amp;&amp;<sp/>...<sp/>args);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
@@ -61,7 +61,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>start_time,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>time_step_size,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>const<sp/>::pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ObserverType<sp/>&amp;<sp/>observer,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Args<sp/>&amp;&amp;<sp/>...<sp/>args);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -77,7 +77,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>start_time,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StepSizeSetterType<sp/>&amp;&amp;<sp/>time_step_size_manager,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>const<sp/>::pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pressio::ode::step_count_type<sp/>num_steps,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ObserverType<sp/>&amp;<sp/>observer,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Args<sp/>&amp;&amp;<sp/>...<sp/>args);</highlight></codeline>
 </programlisting></para>
@@ -122,10 +122,11 @@
 <para><linebreak/>
 </para>
 </sect1>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md47">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md48">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StepperType</computeroutput>: the steppable object type, must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">SteppableClass</highlight></codeline>
+<listitem><para><computeroutput>stepper</computeroutput>:<itemizedlist>
+<listitem><para>the steppable object, must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">SteppableClass</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(StateType<sp/>&amp;<sp/>state,</highlight></codeline>
@@ -139,9 +140,14 @@
 <codeline><highlight class="normal"><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
-</listitem><listitem><para><computeroutput>StateType</computeroutput>: type you use for the state, can be anything</para>
-</listitem><listitem><para><computeroutput>TimeType</computeroutput>: typically it is same as the <computeroutput>value_type</computeroutput> of the state</para>
-</listitem><listitem><para><computeroutput>StepSizeSetterType</computeroutput>: class type responsible for setting the time step size. <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepSizeSetter</highlight></codeline>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>state</computeroutput>: self-explanatory</para>
+</listitem><listitem><para><computeroutput>start_time</computeroutput>: self-explanatory</para>
+</listitem><listitem><para><computeroutput>final_time</computeroutput>: self-explanatory</para>
+</listitem><listitem><para><computeroutput>num_steps</computeroutput>: self-explanatory</para>
+</listitem><listitem><para><computeroutput>time_ste_size_manager</computeroutput>:<itemizedlist>
+<listitem><para>functor for setting the time step size <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepSizeSetter</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>int32_t<sp/>step_count,</highlight></codeline>
@@ -152,7 +158,10 @@
 <codeline><highlight class="normal"><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
-</listitem><listitem><para><computeroutput>ObserverType</computeroutput>: type responsible of &quot;observing&quot; the state during the time integration and potentially collect necessary data/metrics/statistics. Must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ObserverClass</highlight></codeline>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>observer</computeroutput>:<itemizedlist>
+<listitem><para>functor to &quot;observe&quot; the state during the time integration, allowing you to potentially collect necessary data/metrics/statistics. Must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ObserverClass</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>int32_t<sp/>&amp;<sp/>step_count,</highlight></codeline>
@@ -160,13 +169,15 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>current_state)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
-</listitem><listitem><para><computeroutput>Args...</computeroutput>: optional objects to forward to stepper&apos;s <computeroutput>operator()</computeroutput> that are potentially needed to perform one step. Note that these are optional, because your stepper might not need anything. The advance functions will simply forward all these to the <computeroutput>operator()</computeroutput> of the stepper object. Is having these optional argument really needed? One might argue that if the stepper needs to have access to some objects, then these auxiliary objects can be passed to the stepper upon construction, and so the stepper would already have access to them when its <computeroutput>operator()</computeroutput> is called. This is true <emphasis>if</emphasis> there is a valid reason for making these auxiliary object data members of the steppable class. The problem with this approach is that the stepper would need to know about all theses other types, and this creates a very tight coupling between different objects, that might be not even needed. By letting users provide a pack to the advance functions, we are able to decouple this structure such that any object <emphasis>only</emphasis> needed within the stepper&apos;s <computeroutput>operator()</computeroutput> can be directly passed. To explain this, look at the example below.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>args...</computeroutput>: optional objects to forward to stepper&apos;s <computeroutput>operator()</computeroutput> that are potentially needed to perform one step. Note that these are optional, because your stepper might not need anything. The advance functions will simply forward all these to the <computeroutput>operator()</computeroutput> of the stepper object. Is having these optional argument really needed? One might argue that if the stepper needs to have access to some objects, then these auxiliary objects can be passed to the stepper upon construction, and so the stepper would already have access to them when its <computeroutput>operator()</computeroutput> is called. This is true <emphasis>if</emphasis> there is a valid reason for making these auxiliary object data members of the steppable class. The problem with this approach is that the stepper would need to know about all theses other types, and this creates a very tight coupling between different objects, that might be not even needed. By letting users provide a pack to the advance functions, we are able to decouple this structure such that any object <emphasis>only</emphasis> needed within the stepper&apos;s <computeroutput>operator()</computeroutput> can be directly passed. To explain this, look at the example below.</para>
 </listitem></itemizedlist>
 </para>
 <para><linebreak/>
 </para>
 </sect1>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md48">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md49">
 <title>When are the variadic arguments useful?</title>
 <para>For example in a scenario like the following:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SteppableClass</highlight></codeline>

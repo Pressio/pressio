@@ -115,7 +115,7 @@ auto create_explicit_stepper(StepScheme name,
     throw std::runtime_error("ode:: create_explicit_stepper: invalid StepScheme enum value");
   }
 
-};
+}
 
 }}}
 #endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_COMPOSE_HPP_

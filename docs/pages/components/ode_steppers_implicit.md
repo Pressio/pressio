@@ -47,11 +47,13 @@ auto create_implicit_stepper(pressio::ode::StepScheme name,
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
 auto create_implicit_stepper(pressio::ode::StepScheme name,
 							 const StateType & state,
-							 ResidualPolicyType && rPol,
-							 JacobianPolicyType && jPol);
+							 ResidualPolicyType && residual_policy,
+							 JacobianPolicyType && jacobian_policy);
 @endcode
 
-Currently, the choices are:
+
+### Parameters
+- `scheme_name`:
 
 | enum value    | Method                  | Discrete Residual Formula                                                                          |
 |---------------|-------------------------|----------------------------------------------------------------------------------------------------|
@@ -60,13 +62,15 @@ Currently, the choices are:
 | CrankNicolson | Crank-Nicolson          | @f$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)@f$    |
 
 
-### Parameters
+- `state`:
+  - self-explanatory
 
-- `StateType`: data type of the state
+- `system`:
+  - problem instance to query for the velocity @f$f@f$ and how to compute it;
 
-- `SystemType`: class defining how to create an instance of the velocity @f$f@f$ and how to compute it;
-
-- `ResidualPolicyType`, `JacobianPolicyType`: policy types if you want to use custom ones to compute the discrete operators.
+- `residual_policy`, `jacobian_policy`:
+  - policies if you want to use custom ones to compute the discrete operators.
+  - the policies encapsulate logic on *how* to compute the operators
 
 
 Notes:
@@ -178,10 +182,12 @@ If you want to use custom policies for computing residual and Jacobian,
 you need are responsible for ensuring things are correct.
 In particular, you should be aware of the following:
 
-- `State`: argument passed to `compute` method contains the prediction at `n+1`.
+- `state`:
+  - passed to `call` operator of the policies, contains the prediction at `n+1`.
 
-- `auxStates`, `auxRhs` (whose type you don't need to know) contain the needed auxiliary
-states and RHS evaluations, respectively, needed to compute the operators
+- `auxStates`, `auxRhs`
+  - the types of these you don't need to know
+  - contain the needed auxiliary states and RHS evaluations, respectively, needed to compute the operators
 for a certain scheme. All you need to know about these containers is the following:
 
 
@@ -191,6 +197,17 @@ for a certain scheme. All you need to know about these containers is the followi
 | `BDF2`          | `auxStates`: contains: states at n-th and (n-1)-th step <br/> &emsp; &emsp; &emsp; &emsp;  &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> &emsp; &emsp; &emsp; &emsp; &ensp; `const auto & ynm1 = auxStates(pressio::ode::nMinusOne());` <br/> `auxRhs`: Empty                                                                                                   |
 | `CrankNicolson` | `auxStates`: contains: states at n-th step <br/>  &emsp; &emsp; &emsp; &emsp; &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> `auxRhs`: contains evaluations of the RHS are n-th and (n+1)-th steps <br/>  &emsp; &emsp; &emsp; Use: `auto & fn = auxRhs(pressio::ode::n());` <br/> &ensp; &ensp; &ensp; &emsp; `auto & fnp1 = auxRhs(pressio::ode::nPlusOne());` |
 
+
+<br/>
+
+@m_class{m-note m-info}
+
+@parblock
+The above factory function returns a stepper instance for the desired scheme.
+The returned stepper object satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
+@endparblock
+
+<br/>
 
 ### What to do after a stepper is created?
 
@@ -331,10 +348,11 @@ auto create_arbitrary_stepper(const StateType & state,
 
 - `num_states`: total number of states you need.
 
-- `StateType`: data type of your state, must be copy constructible
+- `state`: your state data
 
-- `SystemType`: class defining how to create and compute the residual and Jacobian.<br/>
-  Must conform to the following API:
+- `system`:
+  - problem instance knowing how to create and compute the residual and Jacobian.
+  - Must conform to the following API:
   @code{.cpp}
   class ValidDiscreteTimeSystem
   {

@@ -10,22 +10,14 @@
 <para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom::galerkin</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md106">
-<title>Overview</title>
-<para>Recall from <ulink url="md_pages_components_rom_galerkin.html">this page</ulink>, that using a pressio Galerkin problem involves three steps:</para>
-<para><orderedlist>
-<listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;Galerkin problem&quot;</para>
-</listitem><listitem><para><emphasis>extract</emphasis>: you extract the underlying stepper object owned by the problem</para>
-</listitem><listitem><para><emphasis>solve</emphasis>: you use the stepper to solve in time the Galerkin problem</para>
-</listitem></orderedlist>
-</para>
 <para><linebreak/>
- <hruler/>
- <linebreak/>
 </para>
-</sect1>
-<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md107">
-<title>1. Creating a problem instance</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_galerkin.html">overall design idea of Galerkin</ulink>. </para>
+</simplesect>
+</para>
+<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md104">
+<title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DecoderType,</highlight></codeline>
@@ -34,13 +26,13 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ProjectorType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskerType</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
-<codeline><highlight class="normal">ReturnType<sp/>create_masked_explicit_problem(pressio::ode::StepScheme,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProjectorType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;);</highlight></codeline>
+<codeline><highlight class="normal">ReturnType<sp/>create_masked_explicit_problem(pressio::ode::StepScheme<sp/>scheme,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProjectorType<sp/>&amp;<sp/>projector,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;<sp/>masker);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -50,58 +42,62 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ProjectorType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskerType</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
-<codeline><highlight class="normal">ReturnType<sp/>create_masked_implicit_problem(pressio::ode::StepScheme,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProjectorType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;);</highlight></codeline>
+<codeline><highlight class="normal">ReturnType<sp/>create_masked_implicit_problem(pressio::ode::StepScheme<sp/>scheme,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProjectorType<sp/>&amp;<sp/>projector,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;<sp/>masker);</highlight></codeline>
 </programlisting></para>
 <para>This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md108">
+<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md105">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StepScheme</computeroutput>:<itemizedlist>
-<listitem><para>must be one of the explicit or implicit enum values supported in <computeroutput>pressio::ode</computeroutput></para>
+<listitem><para><computeroutput>scheme</computeroutput>:<itemizedlist>
+<listitem><para>enum value to specify the stepper scheme</para>
+</listitem><listitem><para>for doing explicit Galerkin, see <ulink url="md_pages_components_ode_steppers_explicit.html">explicit choices</ulink></para>
+</listitem><listitem><para>for doing implicit Galerkin, seee <ulink url="md_pages_components_ode_steppers_implicit.html">implicit choices</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
-<listitem><para>your adapter class type specifying the FOM problem</para>
+</listitem><listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>
+<listitem><para>instance of your FOM adapter specifying the FOM problem <linebreak/>
+</para>
 </listitem><listitem><para>must satisfy one of the APIs suitable for Galerkin, see <ulink url="./md_pages_components_rom_fom_apis.html">API list</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>DecoderType</computeroutput>:<itemizedlist>
-<listitem><para>decoder class type</para>
+</listitem><listitem><para><computeroutput>decoder</computeroutput>:<itemizedlist>
+<listitem><para>decoder object</para>
 </listitem><listitem><para>must satify the requirements listed <ulink url="md_pages_components_rom_decoder.html">here</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>RomStateType</computeroutput>:<itemizedlist>
-<listitem><para>ROM state type</para>
+</listitem><listitem><para><computeroutput>romState</computeroutput>:<itemizedlist>
+<listitem><para>ROM state</para>
 </listitem><listitem><para>currently, it must be either an Eigen vector or a Kokkos 1D view</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>FomReferenceStateType</computeroutput>:<itemizedlist>
+</listitem><listitem><para><computeroutput>fomRefState</computeroutput>:<itemizedlist>
 <listitem><para>your FOM reference state that is used when reconstructing the FOM state</para>
 </listitem><listitem><para>must be copy-constructible and the following must be true:<linebreak/>
  <programlisting filename=".cpp"><codeline><highlight class="normal">std::is_same&lt;FomReferenceStateType,<sp/>typename<sp/>DecoderType::fom_state_type&gt;::value<sp/>==<sp/></highlight><highlight class="keyword">true</highlight></codeline>
 </programlisting></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>ProjectorType</computeroutput>:<itemizedlist>
-<listitem><para>an operator is responsible for projectng the FOM operators onto the reduced space</para>
+</listitem><listitem><para><computeroutput>projector</computeroutput>:<itemizedlist>
+<listitem><para>operator is responsible for projectng the FOM operators onto the reduced space</para>
 </listitem><listitem><para>must be a functor with a specific API, see <ulink url="md_pages_components_rom_galerkin_hypred.html">this page</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>MaskedType</computeroutput>:<itemizedlist>
-<listitem><para>an functor responsible of &quot;masking&quot; the FOM operators</para>
+</listitem><listitem><para><computeroutput>masker</computeroutput>:<itemizedlist>
+<listitem><para>functor responsible of &quot;masking&quot; the FOM operators</para>
 </listitem><listitem><para>must be a functor with a specific API, see details below</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md109">
+</sect1>
+<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md106">
 <title>Masker</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: explain</para>
 <para>Suppose that <computeroutput>fom_velocity_type</computeroutput> is the type of your FOM velocity, and that <computeroutput>decoder_jacobian_t</computeroutput> is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, <computeroutput>fom_velocity_type</computeroutput> can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the <computeroutput>decoder_jacobian_t</computeroutput>.</para>
@@ -124,7 +120,6 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>decoder_jacobian_type<sp/>&amp;<sp/>result);</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting> </para>
-</sect2>
 </sect1>
     </detaileddescription>
     <location file="pages/components/rom_galerkin_masked.md"/>

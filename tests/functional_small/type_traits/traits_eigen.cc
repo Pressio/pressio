@@ -60,10 +60,10 @@ using eigen_vector_static_row  = Eigen::Matrix<double, 1, 32>;
 using eigen_vector_static_col  = Eigen::Matrix<float, 32, 1>;
 
 //                Type(Name)                dyamic row_vector
-TEST_EIGEN_VECTOR(eigen_vector_dynamic_row, true,  true);
-TEST_EIGEN_VECTOR(eigen_vector_dynamic_col, true,  false);
-TEST_EIGEN_VECTOR(eigen_vector_static_row,  false, true);
-TEST_EIGEN_VECTOR(eigen_vector_static_col,  false, false);
+TEST_EIGEN_VECTOR(eigen_vector_dynamic_row, true,  true)
+TEST_EIGEN_VECTOR(eigen_vector_dynamic_col, true,  false)
+TEST_EIGEN_VECTOR(eigen_vector_static_row,  false, true)
+TEST_EIGEN_VECTOR(eigen_vector_static_col,  false, false)
 
 //*******************************
 // Eigen dense matrix
@@ -104,8 +104,8 @@ using eigen_dense_matrix_dynamic_rowmajor = Eigen::Matrix<double, Eigen::Dynamic
 using eigen_dense_matrix_static_colmajor  = Eigen::Matrix<float, 32, 32, Eigen::ColMajor>;
 
 //                Type(Name)                           dyamic
-TEST_EIGEN_MATRIX(eigen_dense_matrix_dynamic_rowmajor, true);
-TEST_EIGEN_MATRIX(eigen_dense_matrix_static_colmajor,  false);
+TEST_EIGEN_MATRIX(eigen_dense_matrix_dynamic_rowmajor, true)
+TEST_EIGEN_MATRIX(eigen_dense_matrix_static_colmajor,  false)
 
 //*******************************
 // Eigen sparse matrix
@@ -138,7 +138,7 @@ TEST(type_traits, Type) { \
 using eigen_sparse_matrix_dynamic_rowmajor = Eigen::SparseMatrix<double, Eigen::RowMajor>;
 using eigen_sparse_matrix_static_colmajor  = Eigen::SparseMatrix<float, Eigen::ColMajor>;
 
-TEST_EIGEN_SPARSE_MATRIX(eigen_sparse_matrix_dynamic_rowmajor);
-TEST_EIGEN_SPARSE_MATRIX(eigen_sparse_matrix_static_colmajor);
+TEST_EIGEN_SPARSE_MATRIX(eigen_sparse_matrix_dynamic_rowmajor)
+TEST_EIGEN_SPARSE_MATRIX(eigen_sparse_matrix_static_colmajor)
 
 }}} // pressio::traits::test

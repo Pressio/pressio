@@ -27,7 +27,7 @@ The tinympl project appears to be no longer maintained.
 
 ## Content
 
-The following is a *partial* list, only meant to provide a glimpse.
+The following is a *partial* list only intended to provide a general idea of the supported features.
 
 To find out all supported cases, browse the [source](https://github.com/Pressio/pressio/tree/main/include/pressio/mpl),
 and for example usage, see [this](https://github.com/Pressio/pressio/blob/main/tests/functional_small/mpl/all.cc).

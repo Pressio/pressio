@@ -90,7 +90,7 @@ void testConst(const T & A)
   EXPECT_DOUBLE_EQ( natEx(1,0), 14. );  EXPECT_DOUBLE_EQ( natEx(1,1), 15. );
 }
 
-};
+}
 
 
 TEST(expressions_eigen, subspan)

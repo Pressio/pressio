@@ -10,21 +10,24 @@
 <para><parblock><para>Defined in: <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom::lspg</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md118">
-<title>Overview</title>
-</sect1>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md119">
-<title>Creating a problem instance</title>
+<para><linebreak/>
+</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_lspg_steady.html">overall design idea behind steady LSPG</ulink>. </para>
+</simplesect>
+</para>
+<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md113">
+<title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DecoderType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RomStateType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomReferenceStateType</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_steady_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_steady_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -33,31 +36,30 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomReferenceStateType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">PreconditionerType</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_steady_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>PreconditionerType<sp/>&amp;);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_steady_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>PreconditionerType<sp/>&amp;<sp/>preconditioner);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md120">
+<sect2 id="md_pages_components_rom_lspg_default_steady_1autotoc_md114">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
-<listitem><para>your adapter class type specifying the FOM problem. <linebreak/>
-</para>
-</listitem><listitem><para>Must satisfy the steady API, see <ulink url="./md_pages_components_rom_fom_apis.html">here</ulink></para>
+<listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>
+<listitem><para>instance of your FOM adapter specifying the FOM problem</para>
+</listitem><listitem><para>must satisfy the steady API, see <ulink url="./md_pages_components_rom_fom_apis.html">here</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>DecoderType</computeroutput>:<itemizedlist>
-<listitem><para>decoder class type</para>
+</listitem><listitem><para><computeroutput>decoder</computeroutput>:<itemizedlist>
+<listitem><para>decoder object</para>
 </listitem><listitem><para>must satify the requirements listed <ulink url="md_pages_components_rom_decoder.html">here</ulink></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>RomStateType</computeroutput>:<itemizedlist>
+</listitem><listitem><para><computeroutput>romState</computeroutput>:<itemizedlist>
 <listitem><para>currently, it must be either an Eigen vector or a Kokkos 1D view</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para><computeroutput>FomReferenceStateType</computeroutput>:<itemizedlist>
+</listitem><listitem><para><computeroutput>fomRefState</computeroutput>:<itemizedlist>
 <listitem><para>your FOM reference state that is used when reconstructing the FOM state</para>
 </listitem><listitem><para>must be copy-constructible and the following must be true:<linebreak/>
  <programlisting filename=".cpp"><codeline><highlight class="normal">std::is_same&lt;FomReferenceStateType,<sp/>typename<sp/>DecoderType::fom_state_type&gt;::value<sp/>==<sp/></highlight><highlight class="keyword">true</highlight></codeline>
@@ -68,7 +70,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md121">
+<sect1 id="md_pages_components_rom_lspg_default_steady_1autotoc_md115">
 <title>Solve</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

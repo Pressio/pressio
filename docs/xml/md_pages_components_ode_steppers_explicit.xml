@@ -10,26 +10,31 @@
 <para><parblock><para>Defined in: <computeroutput>&lt;pressio/ode_steppers_explicit.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md50">
+<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md51">
 <title>Overview</title>
 <para>Applicable to systems of the form: <formula id="2">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
 <para>where <formula id="3">$y$</formula> is the state, <formula id="4">$f$</formula> is the RHS (also called velocity below), <formula id="5">$t$</formula> is time.<linebreak/>
  Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</para>
 </sect1>
-<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md51">
-<title>API</title>
+<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md52">
+<title>API, Parameters and Requirements</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_explicit_stepper(pressio::ode::StepScheme<sp/>name,</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_explicit_stepper(pressio::ode::StepScheme<sp/>scheme_name,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
 </programlisting></para>
-<para>where <computeroutput>name</computeroutput> is one of the following enum class values: <computeroutput>ForwardEuler</computeroutput>, <computeroutput>RungeKutta4</computeroutput>, <computeroutput>AdamsBashforth2</computeroutput>, <computeroutput>SSPRungeKutta3</computeroutput>. This function returns an instance of the desired stepper. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>, so one can use the &quot;advancers&quot; functions to step forward.</para>
-</sect1>
-<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md52">
-<title>Parameters and Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>: data type of your state, must be copy constructible</para>
-</listitem><listitem><para><computeroutput>SystemType</computeroutput>: class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it.<linebreak/>
+<listitem><para><computeroutput>scheme_name</computeroutput><itemizedlist>
+<listitem><para>a value of the <computeroutput>StepScheme</computeroutput> enum</para>
+</listitem><listitem><para>must be one of: <computeroutput>ForwardEuler</computeroutput>, <computeroutput>RungeKutta4</computeroutput>, <computeroutput>AdamsBashforth2</computeroutput>, <computeroutput>SSPRungeKutta3</computeroutput>.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>state</computeroutput>:<itemizedlist>
+<listitem><para>your state, must be copy constructible</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>system</computeroutput>:<itemizedlist>
+<listitem><para>problem instance to query for velocity <formula id="4">$f$</formula> and how to compute it.<linebreak/>
  The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForExplicitStepper</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
@@ -40,11 +45,16 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_type<sp/>time,<sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
+</listitem></itemizedlist>
+</para>
 <para>the nested aliases <computeroutput>scalar_type</computeroutput>, <computeroutput>state_type</computeroutput> and <computeroutput>velocity_type</computeroutput> must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
 </listitem><listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> from <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
  <computeroutput>std::is_same&lt;StateType, typename SystemForExplicitOde::state_type&gt;::value == true</computeroutput></para>
 </listitem></itemizedlist>
 </para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
+<para><parblock><para>The above factory function returns a stepper instance for the desired scheme. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>, so one can use the &quot;advancers&quot; functions to step forward. </para>
+</parblock></para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md53">
 <title>Example usage</title>

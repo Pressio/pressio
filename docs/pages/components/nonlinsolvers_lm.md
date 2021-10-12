@@ -37,8 +37,8 @@ auto create_levenberg_marquardt(const ProblemClassType & system,
 						        WeightingOpType && weightOperator);
 ```
 
-- `ProblemClassType`:
-  - type of the class defining the problem to solve
+- `system`:
+  - instance of the problem you want to solve
 	@m_class{m-block m-warning}
 
 	@parblock
@@ -46,16 +46,16 @@ auto create_levenberg_marquardt(const ProblemClassType & system,
 	- overload 2: *only* accepts the [residual-jacobian API or its fused version](md_pages_components_nonlinsolvers_system_api.html)
 	@endparblock
 
-- `StateType`:
-  - type of the data structure you use for the state
+- `state`:
+  - your state data
   - Requirements: must be an Eigen or Kokkos vector: \todo explain why
 
-- `LinearSolverType`:
-  - choose one from [linear solver API](md_pages_components_linsolvers.html)
+- `lsolver`:
+  - linear solver for solving the normal equations, choose one from [linear solver API](md_pages_components_linsolvers.html)
   - if you want to implement your own, then the linear solver class still has to conform to the [linear solver API](md_pages_components_linsolvers.html)
 
-- `WeightingOpType`:
-  - this is the weighting operator if you want to do weighted least-squares.
+- `weightOperator`:
+  - weighting operator for doing weighted least-squares.
   Must conform to:
   ```cpp
   class WeightingOperator

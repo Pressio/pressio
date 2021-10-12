@@ -11,7 +11,7 @@ Public namespace: `pressio::ode`
 @endparblock
 
 
-## Overview
+## Scope and overview
 
 @m_class{m-note m-info}
 
@@ -20,6 +20,7 @@ Provides functionalities implementing various strategies
 to "update" some information (i.e., a state) via an object
 that satisfies a "steppable" concept (more details below).
 @endparblock
+
 
 Why is this useful? Suppose that you have a generic application/usecase
 involving the concept of a discrete time or just discrete steps,
@@ -62,7 +63,7 @@ void advance_n_steps(StepperType & stepper,
 					 StateType & state,
 					 const TimeType start_time,
 					 const TimeType time_step_size,
-					 const ::pressio::ode::step_count_type num_steps,
+					 const pressio::ode::step_count_type num_steps,
 					 Args && ... args);
 
 template<
@@ -76,7 +77,7 @@ void advance_n_steps(StepperType & stepper,
 					 StateType & state,
 					 const TimeType start_time,
 					 StepSizeSetterType && time_step_size_manager,
-					 const ::pressio::ode::step_count_type num_steps,
+					 const pressio::ode::step_count_type num_steps,
 					 Args && ... args);
 
 template<
@@ -90,7 +91,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
 								 StateType & state,
 								 const TimeType start_time,
 								 const TimeType time_step_size,
-								 const ::pressio::ode::step_count_type num_steps,
+								 const pressio::ode::step_count_type num_steps,
 								 ObserverType & observer,
 								 Args && ... args);
 
@@ -106,7 +107,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
 								 StateType & state,
 								 const TimeType start_time,
 								 StepSizeSetterType && time_step_size_manager,
-								 const ::pressio::ode::step_count_type num_steps,
+								 const pressio::ode::step_count_type num_steps,
 								 ObserverType & observer,
 								 Args && ... args);
 ```
@@ -160,7 +161,8 @@ void advance_to_target_time_and_observe(StepperType & stepper,
 
 ## Parameters and Requirements
 
-- `StepperType`: the steppable object type, must conform to:
+- `stepper`:
+  - the steppable object, must conform to:
   ```cpp
   class SteppableClass
   {
@@ -177,11 +179,16 @@ void advance_to_target_time_and_observe(StepperType & stepper,
   };
   ```
 
-- `StateType`: type you use for the state, can be anything
+- `state`: self-explanatory
 
-- `TimeType`: typically it is same as the `value_type` of the state
+- `start_time`: self-explanatory
 
-- `StepSizeSetterType`: class type responsible for setting the time step size.
+- `final_time`: self-explanatory
+
+- `num_steps`: self-explanatory
+
+- `time_ste_size_manager`:
+  - functor for setting the time step size
   ```cpp
   class StepSizeSetter
   {
@@ -195,8 +202,9 @@ void advance_to_target_time_and_observe(StepperType & stepper,
   };
   ```
 
-- `ObserverType`: type responsible of "observing" the state during the
-  time integration and potentially collect necessary data/metrics/statistics.
+- `observer`:
+  - functor to "observe" the state during the time integration,
+  allowing you to potentially collect necessary data/metrics/statistics.
   Must conform to:
   ```cpp
   class ObserverClass
@@ -208,7 +216,7 @@ void advance_to_target_time_and_observe(StepperType & stepper,
   };
   ```
 
-- `Args...`: optional objects to forward to stepper's `operator()` that are
+- `args...`: optional objects to forward to stepper's `operator()` that are
 potentially needed to perform one step.
 Note that these are optional, because your stepper might not need anything.
 The advance functions will simply forward all these to the `operator()`

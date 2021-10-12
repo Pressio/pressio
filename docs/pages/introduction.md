@@ -1,15 +1,16 @@
 
 # Introduction
 
-Finish: graphic needs to be updated, content to add.
-
+\todo: finish
+- graphic needs to be updated
 - ROMs are dense
 - pressio was designed with that in mind
 
 
 ## In a nutshell
 
-Pressio can be applied to any dynamical system expressible in
+Pressio contains model reduction methods supported applicable
+to any dynamical system expressible in
 a *continuous-time* form as
 @f[
 \frac{d \boldsymbol{y}}{dt} =

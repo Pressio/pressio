@@ -10,13 +10,13 @@
 <para><parblock><para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput> </para>
 </parblock></para>
-<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md28">
+<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md29">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md29">
+<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md30">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md30">
+<sect2 id="md_pages_components_nonlinsolvers_irls_1autotoc_md31">
 <title>Example usage</title>
 </sect2>
     </detaileddescription>

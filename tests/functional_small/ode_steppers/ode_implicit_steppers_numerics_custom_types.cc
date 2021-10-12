@@ -75,7 +75,7 @@ void deep_copy(VectorType & dest, const VectorType & from){
 
 VectorType clone(const VectorType & src){
   return VectorType(src.size());
-};
+}
 
 void scale(MatrixType & M, ScalarType factor){
   for (auto & it : M){

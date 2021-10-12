@@ -198,7 +198,7 @@ auto create_implicit_stepper_impl(StepScheme name,
   else{
     throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
   }
-};
+}
 
 template<
   class StateType,
@@ -234,7 +234,7 @@ auto create_implicit_stepper_impl(StepScheme name,
   else{
     throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
   }
-};
+}
 
 }}}
 #endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_

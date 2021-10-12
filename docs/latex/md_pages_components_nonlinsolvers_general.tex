@@ -2,7 +2,7 @@
 
 Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md11}{}\doxysection{Overview}\label{md_pages_components_nonlinsolvers_general_autotoc_md11}
+Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md12}{}\doxysection{Overview}\label{md_pages_components_nonlinsolvers_general_autotoc_md12}
 The pressio nonlinear solvers have been developed from the ground up using generic programming. It is intended to be a library that can be used independently and with support for arbitrary data types. It is not fully complete, and it can obviously be extended. If you are interested in contributing or you need other methods, open an issue and/or PR.
 
 Currently, we support the following algorithms\+:
@@ -25,7 +25,7 @@ Iteratively reweighted least squares (irls)   &\href{./md_pages_components_nonli
 
 
 ~\newline
-\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md12}{}\doxysubsection{A glimpse of the API}\label{md_pages_components_nonlinsolvers_general_autotoc_md12}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md13}{}\doxysubsection{A glimpse of the API}\label{md_pages_components_nonlinsolvers_general_autotoc_md13}
 To create a solver, we expose specific factory functions for each algorithm.
 
 
@@ -40,7 +40,7 @@ To create a solver, we expose specific factory functions for each algorithm.
 Please refer to each method\textquotesingle{}s documentation for the details on the API and arguments.
 
 ~\newline
-\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md13}{}\doxysection{What are you responsible of?}\label{md_pages_components_nonlinsolvers_general_autotoc_md13}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md14}{}\doxysection{What are you responsible of?}\label{md_pages_components_nonlinsolvers_general_autotoc_md14}
 If you want to use the pressio nonlinear solvers, you are responsible of\+:
 
 
@@ -48,7 +48,7 @@ If you want to use the pressio nonlinear solvers, you are responsible of\+:
 \item A\+: providing a problem object
 \item B\+: selecting (if needed) the convergence criterion
 \item C\+: selecting (if needed) the update method
-\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md14}{}\doxysubsection{A\+: problem class}\label{md_pages_components_nonlinsolvers_general_autotoc_md14}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md15}{}\doxysubsection{A\+: problem class}\label{md_pages_components_nonlinsolvers_general_autotoc_md15}
 The problem class is what you use to {\itshape define your problem}. An instance of a problem class is what you provide to pressio to compute the needed operators to operate on. Obivously, this problem class must meet a specific API.
 
 The pressio nonlinear solvers define four main types of problem APIs, namely the \char`\"{}residual-\/jacobian\char`\"{}, \char`\"{}fused residual-\/jacobian\char`\"{}, \char`\"{}hessian-\/gradient\char`\"{} , and \char`\"{}fused hessian-\/gradient\char`\"{}. These problem concepts are discussed on \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ this page}}. Depending on which concepts your problem meets, you can access certain algorithms but not necessarily others. The following table helps clarifying the problem API/algorithms admissibility\+:
@@ -71,7 +71,7 @@ irls   &admissible   &admissible   &-\/   &-\/   \\\cline{1-5}
 \end{longtabu}
 
 
-Please refer to each method\textquotesingle{}s documentation for the details on how you provide a problem instance to pressio.\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md15}{}\doxysubsection{B\+: Convergence and tolerance}\label{md_pages_components_nonlinsolvers_general_autotoc_md15}
+Please refer to each method\textquotesingle{}s documentation for the details on how you provide a problem instance to pressio.\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md16}{}\doxysubsection{B\+: Convergence and tolerance}\label{md_pages_components_nonlinsolvers_general_autotoc_md16}
 The convergence criterion and associated tolerance are used to decide why and when the solver needs to terminate. We currently support these termination criteria\+:
 
 \tabulinesep=1mm
@@ -131,7 +131,7 @@ which you set/query using the following methods\+:
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md16}{}\doxysubsection{C\+: Setting the update}\label{md_pages_components_nonlinsolvers_general_autotoc_md16}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md17}{}\doxysubsection{C\+: Setting the update}\label{md_pages_components_nonlinsolvers_general_autotoc_md17}
 The update stage represents the {\itshape how} the current correction term is combined with state to update the latter. We currently support the following\+:
 
 \tabulinesep=1mm
@@ -178,7 +178,7 @@ To set or query the update method, you use the following methods of the solver c
 \item tolerance = 0.\+000001 (for everything)
 \end{DoxyItemize}
 \end{DoxyParagraph}
-\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md17}{}\doxysection{A note on the solvers\textquotesingle{} design}\label{md_pages_components_nonlinsolvers_general_autotoc_md17}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md18}{}\doxysection{A note on the solvers\textquotesingle{} design}\label{md_pages_components_nonlinsolvers_general_autotoc_md18}
 If you are interested, here we provide a brief note describing the our design idea. The design of the nonlinear solvers has been based on recognizing that, at a very high level, a nonlinear solver operates by repeatedly updating a given \char`\"{}state\char`\"{} until a certain criterion is met, and each \char`\"{}iteration\char`\"{} involves the following stages\+:
 
 

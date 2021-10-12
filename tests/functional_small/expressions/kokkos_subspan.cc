@@ -12,7 +12,7 @@ void fillMatrix(T & A)
   A(3,0) = 13.; A(3,1) = 14.; A(3,2) = 15.;  A(3,3) = 16.;
   A(4,0) = 12.; A(4,1) = 14.; A(4,2) = 5.;   A(4,3) = 6.;
 }
-};
+}
 
 TEST(expressions_kokkos, subspan0)
 {

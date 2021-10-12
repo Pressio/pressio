@@ -2,20 +2,17 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md106}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_masked_autotoc_md106}
-Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, that using a pressio Galerkin problem involves three steps\+:
-
-
-\begin{DoxyEnumerate}
-\item {\itshape create}\+: you create an instance of a \char`\"{}\+Galerkin problem\char`\"{}
-\item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
-\item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
-\end{DoxyEnumerate}
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} 
 
 ~\newline
- \DoxyHorRuler{0}
- ~\newline
-\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md107}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_masked_autotoc_md107}
+
+
+
+
+\begin{DoxyParagraph}{Prerequisite reading\+:}
+Before you read this page, make sure you read the \href{md_pages_components_rom_galerkin.html}{\texttt{ overall design idea of Galerkin}}. 
+\end{DoxyParagraph}
+\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md104}{}\doxysection{API}\label{md_pages_components_rom_galerkin_masked_autotoc_md104}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -26,13 +23,13 @@ Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, t
 \DoxyCodeLine{  \textcolor{keyword}{class }ProjectorType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }MaskerType}
 \DoxyCodeLine{  >}
-\DoxyCodeLine{ReturnType create\_masked\_explicit\_problem(pressio::ode::StepScheme,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \&,}
-\DoxyCodeLine{                                          DecoderType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \&);}
+\DoxyCodeLine{ReturnType create\_masked\_explicit\_problem(pressio::ode::StepScheme scheme,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \& fomSystem,}
+\DoxyCodeLine{                                          DecoderType \& decoder,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \& romState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \& fomRefState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \& projector,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \& masker);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
@@ -42,40 +39,43 @@ Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, t
 \DoxyCodeLine{  \textcolor{keyword}{class }ProjectorType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }MaskerType}
 \DoxyCodeLine{  >}
-\DoxyCodeLine{ReturnType create\_masked\_implicit\_problem(pressio::ode::StepScheme,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \&,}
-\DoxyCodeLine{                                          DecoderType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \&);}
+\DoxyCodeLine{ReturnType create\_masked\_implicit\_problem(pressio::ode::StepScheme scheme,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \& fomSystem,}
+\DoxyCodeLine{                                          DecoderType \& decoder,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \& romState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \& fomRefState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \& projector,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} MaskerType \& masker);}
 
 \end{DoxyCode}
 
 
-This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md108}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_masked_autotoc_md108}
+This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md105}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_masked_autotoc_md105}
 
 \begin{DoxyItemize}
-\item {\ttfamily Step\+Scheme}\+:
+\item {\ttfamily scheme}\+:
 \begin{DoxyItemize}
-\item must be one of the explicit or implicit enum values supported in {\ttfamily pressio\+::ode}
+\item enum value to specify the stepper scheme
+\item for doing explicit Galerkin, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ explicit choices}}
+\item for doing implicit Galerkin, seee \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit choices}}
 \end{DoxyItemize}
-\item {\ttfamily Fom\+System\+Type}\+:
+\item {\ttfamily fom\+System}\+:
 \begin{DoxyItemize}
-\item your adapter class type specifying the FOM problem
+\item instance of your FOM adapter specifying the FOM problem ~\newline
+
 \item must satisfy one of the APIs suitable for Galerkin, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ API list}}
 \end{DoxyItemize}
-\item {\ttfamily Decoder\+Type}\+:
+\item {\ttfamily decoder}\+:
 \begin{DoxyItemize}
-\item decoder class type
+\item decoder object
 \item must satify the requirements listed \href{md_pages_components_rom_decoder.html}{\texttt{ here}}
 \end{DoxyItemize}
-\item {\ttfamily Rom\+State\+Type}\+:
+\item {\ttfamily rom\+State}\+:
 \begin{DoxyItemize}
-\item ROM state type
+\item ROM state
 \item currently, it must be either an Eigen vector or a Kokkos 1D view
 \end{DoxyItemize}
-\item {\ttfamily Fom\+Reference\+State\+Type}\+:
+\item {\ttfamily fom\+Ref\+State}\+:
 \begin{DoxyItemize}
 \item your FOM reference state that is used when reconstructing the FOM state
 \item must be copy-\/constructible and the following must be true\+:~\newline
@@ -86,17 +86,17 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\item {\ttfamily Projector\+Type}\+:
+\item {\ttfamily projector}\+:
 \begin{DoxyItemize}
-\item an operator is responsible for projectng the FOM operators onto the reduced space
+\item operator is responsible for projectng the FOM operators onto the reduced space
 \item must be a functor with a specific API, see \href{md_pages_components_rom_galerkin_hypred.html}{\texttt{ this page}}
 \end{DoxyItemize}
-\item {\ttfamily Masked\+Type}\+:
+\item {\ttfamily masker}\+:
 \begin{DoxyItemize}
-\item an functor responsible of \char`\"{}masking\char`\"{} the FOM operators
+\item functor responsible of \char`\"{}masking\char`\"{} the FOM operators
 \item must be a functor with a specific API, see details below
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md109}{}\doxysubsection{Masker}\label{md_pages_components_rom_galerkin_masked_autotoc_md109}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md106}{}\doxysection{Masker}\label{md_pages_components_rom_galerkin_masked_autotoc_md106}
 todo\+: explain
 
 Suppose that {\ttfamily fom\+\_\+velocity\+\_\+type} is the type of your FOM velocity, and that {\ttfamily decoder\+\_\+jacobian\+\_\+t} is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, {\ttfamily fom\+\_\+velocity\+\_\+type} can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the {\ttfamily decoder\+\_\+jacobian\+\_\+t}.

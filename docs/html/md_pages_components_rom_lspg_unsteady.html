@@ -85,7 +85,30 @@
         <h1>
           rom: Unsteady LSPG
         </h1>
-<p><span class="m-text m-danger">todo</span>: write this better</p><p>We currently support the following problems:</p><ul><li>Default: <a href="md_pages_components_rom_lspg_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_lspg_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_lspg_masked.html">link</a></li></ul>
+<p><span class="m-text m-danger">todo</span>: finish this, add more details</p><p>The pressio Unsteady LSPG ROMs are designed such that using them involves these steps:</p><section id="autotoc_md135"><h2><a href="#autotoc_md135">1. Create</a></h2><p>You create an instance of one of the supported &quot;LSPG problem&quot; using the following API:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="o">::</span><span class="n">create_</span><span class="o">&lt;</span><span class="n">keywords</span><span class="o">&gt;</span><span class="p">(</span> <span class="cm">/* args */</span> <span class="p">);</span></pre><p>where <code>&lt;keywords&gt;</code> express the variant of the problem you want (more below), and <code>args</code> are the arguments needed which depend on the variant you choose. We currently support the following variants:</p><ul><li>Default: <a href="md_pages_components_rom_lspg_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_lspg_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_lspg_masked.html">link</a></li></ul><p>The above <code>create</code> function returns a problem object that meets the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">UnsteadyLSPGProblemClass</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef to access the problem&#39;s traits */</span><span class="p">;</span>
+
+  <span class="c1">// returns the underlying stepper to use to solve the problem</span>
+  <span class="k">auto</span> <span class="o">&amp;</span> <span class="nf">stepper</span><span class="p">();</span>
+
+  <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre><p>The <code>stepper</code> method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-const reference to an <a href="md_pages_components_ode_steppers_implicit.html">implicit stepper</a>. Once you reference the stepper, you can then use it to solve the problem (more on this below).</p><p>What does a stepper have to do with a LSPG ROM? The answer is that practically speaking, at the lowest-level, a LSPG problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. When you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&#x27;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</p></section><section id="autotoc_md136"><h2><a href="#autotoc_md136">2. Extract and Solve</a></h2><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+
+  <span class="k">namespace</span> <span class="n">pode</span>  <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="p">;</span>
+  <span class="k">namespace</span> <span class="n">plspg</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="p">;</span>
+
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pdoe</span><span class="o">::</span><span class="nl">StepScheme</span><span class="p">:</span><span class="n">BDF1</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">problem</span>      <span class="o">=</span> <span class="n">plspg</span><span class="o">::</span><span class="n">create_default_problem</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">stepper</span>    <span class="o">=</span> <span class="n">problem</span><span class="p">.</span><span class="n">stepper</span><span class="p">();</span>
+
+  <span class="k">auto</span> <span class="n">solver</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="o">::</span><span class="n">create_gauss_newton</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
+  <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">,</span> <span class="n">solver</span><span class="p">);</span>
+<span class="p">}</span></pre><p>Note that above we used as an example a Gauss-Newton solver because to solve LSPG consists of &quot;advancing&quot; in time by solving at each step a nonlinear least-squares problem.</p></section>
       </div>
     </div>
   </div>

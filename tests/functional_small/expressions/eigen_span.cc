@@ -64,7 +64,7 @@ namespace{
     EXPECT_DOUBLE_EQ( natEx(1), 13. );
     EXPECT_DOUBLE_EQ( natEx(2), 17. );
   }
-};
+}
 
 TEST(expressions_eigen, span)
 {
