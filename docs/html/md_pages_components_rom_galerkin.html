@@ -25,7 +25,7 @@
         <div class="m-row">
           <ol class="m-col-t-12 m-col-m-none">
             <li><a href="md_pages_introduction.html">Introduction</a></li>
-            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
               <a>Documentation</a>
               <ol>
@@ -85,34 +85,55 @@
         <h1>
           rom: Galerkin: General Info
         </h1>
-<p><span class="m-text m-danger">todo</span>: finish this, add more details</p><p>The pressio Galerkin ROMs are designed such that using them involves these steps:</p><section id="autotoc_md91"><h2><a href="#autotoc_md91">1. Create</a></h2><p>You create an instance of one of the supported &quot;Galerkin problem&quot; using the following API:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">galerkin</span><span class="o">::</span><span class="n">create_</span><span class="o">&lt;</span><span class="n">keywords</span><span class="o">&gt;</span><span class="p">(</span> <span class="cm">/* args */</span> <span class="p">);</span></pre><p>where <code>&lt;keywords&gt;</code> express the variant of the problem you want (more below), and <code>args</code> are the arguments needed which depend on the variant you choose. We currently support the following variants:</p><ul><li>Default: <a href="md_pages_components_rom_galerkin_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_galerkin_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_galerkin_masked.html">link</a></li></ul><p>The above <code>create</code> function returns a problem object that meets the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">GalerkinProblemClass</span>
+<p><span class="m-text m-danger">todo</span>: finish this, add more details</p><p>The pressio Galerkin ROMs are designed such that using them involves these steps:</p><section id="autotoc_md91"><h2><a href="#autotoc_md91">1. Create</a></h2><p>You create an instance of one of the supported &quot;Galerkin problem&quot; using the following API:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">galerkin</span><span class="o">::</span><span class="n">create_</span><span class="o">&lt;</span><span class="n">keywords</span><span class="o">&gt;</span><span class="p">(</span> <span class="cm">/* args */</span> <span class="p">);</span></pre><p>where <code>&lt;keywords&gt;</code> express the variant of the problem you want (more below), and <code>args</code> are the arguments needed which depend on the variant you choose. We currently support the following variants:</p><ul><li>Default: <a href="md_pages_components_rom_galerkin_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_galerkin_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_galerkin_masked.html">link</a></li></ul><p>The above <code>create</code> function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).</p><section id="autotoc_md92"><h3><a href="#autotoc_md92">Explicit Problem</a></h3><p>The problem meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">GalerkinExplicitProblemClass</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef to access the problem&#39;s traits */</span><span class="p">;</span>
 
-  <span class="c1">// returns the underlying stepper to use to solve the problem</span>
-  <span class="k">auto</span> <span class="o">&amp;</span> <span class="nf">stepper</span><span class="p">();</span>
-
   <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
   <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><p>where the traits class contains the following:</p><pre class="m-code"><span class="c1">// for the explicit case, one can access the following traits:</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">fom_system_type</span><span class="p">;</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StepCount</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">galerkin_state_type</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">StepCount</span> <span class="n">step_count</span><span class="p">);</span>
+<span class="p">};</span></pre><p>where the traits contain:</p><pre class="m-code"><span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">fom_system_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">scalar_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_jac_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_state_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_velocity_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">stepper_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_velocity_type</span><span class="p">;</span></pre></section><section id="autotoc_md93"><h3><a href="#autotoc_md93">Implicit Problem</a></h3><p>The problem meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">GalerkinImplicitProblemClass</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef to access the problem&#39;s traits */</span><span class="p">;</span>
 
-<span class="c1">// for the implicit case one has:</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">fom_system_type</span><span class="p">;</span>
+  <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* ... */</span>
+  <span class="k">using</span> <span class="n">state_type</span>     <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+
+  <span class="n">residual_type</span> <span class="nf">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">jacobian_type</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">residual_type</span> <span class="o">&amp;</span> <span class="n">res</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">jacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jac</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StepCount</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span><span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">galerkin_state_type</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">StepCount</span> <span class="n">step_count</span><span class="p">,</span>
+                  <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+<span class="p">};</span></pre><p>where the traits contain:</p><pre class="m-code"><span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">fom_system_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">scalar_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_jac_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_state_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_residual_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_jacobian_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">stepper_type</span><span class="p">;</span></pre><p>The <code>stepper</code> method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-const reference to an <a href="md_pages_components_ode_steppers_explicit.html">explicit stepper</a> if, when you create the problem, you select an explicit scheme, or an <a href="md_pages_components_ode_steppers_implicit.html">implicit stepper</a> if you select an implicit scheme. Once you reference the stepper, you can then use it like you would with any other stepper object (more on this below).</p><p>What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&#x27;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</p></section><section id="autotoc_md92"><h2><a href="#autotoc_md92">2. Extract and Solve</a></h2><section id="autotoc_md93"><h3><a href="#autotoc_md93">Example for explicit Galerkin</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_jacobian_type</span><span class="p">;</span></pre></section></section><section id="autotoc_md94"><h2><a href="#autotoc_md94">2. Solve in time</a></h2><section id="autotoc_md95"><h3><a href="#autotoc_md95">Example for explicit Galerkin</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">//...</span>
 
@@ -121,10 +142,8 @@
 
   <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pdoe</span><span class="o">::</span><span class="nl">StepScheme</span><span class="p">:</span><span class="n">ForwardEuler</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">problem</span>      <span class="o">=</span> <span class="n">pgal</span><span class="o">::</span><span class="n">create_default_explicit_problem</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
-  <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">stepper</span>    <span class="o">=</span> <span class="n">problem</span><span class="p">.</span><span class="n">stepper</span><span class="p">();</span>
-
-  <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
-<span class="p">}</span></pre></section><section id="autotoc_md94"><h3><a href="#autotoc_md94">Example for implicit Galerkin</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+  <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
+<span class="p">}</span></pre></section><section id="autotoc_md96"><h3><a href="#autotoc_md96">Example for implicit Galerkin</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">//...</span>
 
@@ -133,14 +152,9 @@
 
   <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pdoe</span><span class="o">::</span><span class="nl">StepScheme</span><span class="p">:</span><span class="n">BDF1</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">problem</span>      <span class="o">=</span> <span class="n">pgal</span><span class="o">::</span><span class="n">create_default_implicit_problem</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
-  <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">stepper</span>    <span class="o">=</span> <span class="n">problem</span><span class="p">.</span><span class="n">stepper</span><span class="p">();</span>
-
-  <span class="k">auto</span> <span class="n">solver</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="o">::</span><span class="n">create_newton_rapshon</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
-  <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">,</span> <span class="n">solver</span><span class="p">);</span>
-<span class="p">}</span></pre></section></section><section id="autotoc_md95"><h2><a href="#autotoc_md95">Why not making the problem itself a stepper?</a></h2><p>One could argue that the Galerkin problem class itself can be made to behave like a stepper allowing one to avoid having to reference anything. If we did this, then one would do, for example:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pgal</span><span class="o">::</span><span class="n">create_default_explicit_problem</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
-
-<span class="c1">// this is not valid, just for reasoning</span>
-<span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span></pre><p>This is a valid comment, and one that we thought about. We reserve the right to change this in the future, but for now we have decided not to do this. We want to keep explicit the need to reference the stepper once the problem is created. This also makes it clear how to use the stepper. This is just a choice, but we belive that keeping explicit the dependence of Galerkin on time is important, and to clearly convey that the problem &quot;owns&quot; something that you use.</p></section>
+  <span class="k">auto</span> <span class="n">solver</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="o">::</span><span class="n">create_newton_rapshon</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
+  <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">,</span> <span class="n">solver</span><span class="p">);</span>
+<span class="p">}</span></pre></section></section><section id="autotoc_md97"><h2><a href="#autotoc_md97">Why does the problem behave like a stepper?</a></h2><p>The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&#x27;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future. All you need to know is that a an explicit Galerkin problem behaves like a an explicit stepper, and an implicit Galerkin problem behaves like an implicit stepper.</p></section>
       </div>
     </div>
   </div>

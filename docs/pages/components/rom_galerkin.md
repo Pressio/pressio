@@ -22,35 +22,77 @@ We currently support the following variants:
 - Hyper-reduced: [link](md_pages_components_rom_galerkin_hypred.html)
 - Masked: [link](md_pages_components_rom_galerkin_masked.html)
 
-The above `create` function returns a problem object that meets the following interface:
+The above `create` function returns a problem object that behaves like a stepper.
+Therefore, you can use the problem like
+you would with any other stepper object (more on this below).
+
+### Explicit Problem
+
+The problem meets the following API:
 
 ```cpp
-class GalerkinProblemClass
+class GalerkinExplicitProblemClass
 {
 public:
   using traits = /* nested typedef to access the problem's traits */;
 
-  // returns the underlying stepper to use to solve the problem
-  auto & stepper();
-
   // const ref to the object knowing how to reconstruct a FOM state
   const auto & fomStateReconstructor() const;
+
+  template <class TimeType, class StepCount>
+  void operator()(galerkin_state_type & state,
+				  const TimeType current_time,
+				  const TimeType time_step_size_to_use,
+				  const StepCount step_count);
 };
 ```
 
-where the traits class contains the following:
+where the traits contain:
 
 ```cpp
-// for the explicit case, one can access the following traits:
 typename traits::fom_system_type;
 typename traits::scalar_type;
 typename traits::decoder_type;
 typename traits::decoder_jac_type;
 typename traits::galerkin_state_type;
 typename traits::galerkin_velocity_type;
-typename traits::stepper_type;
+```
 
-// for the implicit case one has:
+### Implicit Problem
+
+The problem meets the following API:
+
+```cpp
+class GalerkinImplicitProblemClass
+{
+public:
+  using traits = /* nested typedef to access the problem's traits */;
+
+  // const ref to the object knowing how to reconstruct a FOM state
+  const auto & fomStateReconstructor() const;
+
+  using scalar_type    = /* ... */
+  using state_type     = /* ... */;
+  using residual_type  = /* ... */;
+  using jacobian_type  = /* ... */;
+
+  residual_type createResidual() const;
+  jacobian_type createJacobian() const;
+  void residual(const state_type& x, residual_type & res) const;
+  void jacobian(const state_type& x, jacobian_type & jac) const;
+
+  template <class TimeType, class StepCount, class ...Args>
+  void operator()(galerkin_state_type & state,
+				  const TimeType current_time,
+				  const TimeType time_step_size_to_use,
+				  const StepCount step_count,
+				  Args && ... args);
+};
+```
+
+where the traits contain:
+
+```cpp
 typename traits::fom_system_type;
 typename traits::scalar_type;
 typename traits::decoder_type;
@@ -58,31 +100,10 @@ typename traits::decoder_jac_type;
 typename traits::galerkin_state_type;
 typename traits::galerkin_residual_type;
 typename traits::galerkin_jacobian_type;
-typename traits::stepper_type;
 ```
 
-The `stepper` method is, practically, what you would use
-to retrieve the stepper and then use it to solve the problem.
-The stepper method returns a non-const reference to an
-[explicit stepper](md_pages_components_ode_steppers_explicit.html)
-if, when you create the problem, you select an explicit scheme,
-or an [implicit stepper](md_pages_components_ode_steppers_implicit.html)
-if you select an implicit scheme.
-Once you reference the stepper, you can then use it like
-you would with any other stepper object (more on this below).
+## 2. Solve in time
 
-What does a stepper have to do with a Galerkin ROM?
-The answer is that practically speaking, at the lowest-level,
-a Galerkin problem can be reduced to simply a "custom" stepper to advance in time.
-This is how pressio implements this and the reason why a Galerkin
-problem contains a stepper object inside: when you create the
-problem, pressio creates the appropriate custom stepper
-object that you can use. You don't need to know how this is done,
-or rely on the details, because these are problem- and implementation-dependent,
-and we reserve the right to change this in the future.
-
-
-## 2. Extract and Solve
 
 ### Example for explicit Galerkin
 
@@ -96,14 +117,11 @@ int main()
 
   const auto scheme = pdoe::StepScheme:ForwardEuler;
   auto problem      = pgal::create_default_explicit_problem(scheme, /* args */);
-  auto & stepper    = problem.stepper();
-
-  pressio::ode::advance_n_steps_and_observe(stepper, /* args */);
+  pode::advance_n_steps_and_observe(problem, /* args */);
 }
 ```
 
 ### Example for implicit Galerkin
-
 
 ```cpp
 int main()
@@ -115,38 +133,25 @@ int main()
 
   const auto scheme = pdoe::StepScheme:BDF1;
   auto problem      = pgal::create_default_implicit_problem(scheme, /* args */);
-  auto & stepper    = problem.stepper();
-
-  auto solver = pressio::nonlinearsolvers::create_newton_rapshon(stepper, /* args */);
-  pressio::ode::advance_n_steps_and_observe(stepper, /* args */, solver);
+  auto solver = pressio::nonlinearsolvers::create_newton_rapshon(problem, /* args */);
+  pode::advance_n_steps_and_observe(problem, /* args */, solver);
 }
 ```
 
 
-## Why not making the problem itself a stepper?
+## Why does the problem behave like a stepper?
 
-One could argue that the Galerkin problem class itself can be
-made to behave like a stepper allowing one to avoid having to reference anything.
-If we did this, then one would do, for example:
-
-```cpp
-auto problem = pgal::create_default_explicit_problem(scheme, /* args */);
-
-// this is not valid, just for reasoning
-pressio::ode::advance_n_steps_and_observe(problem, /* args */);
-```
-
-This is a valid comment, and one that we thought about.
-We reserve the right to change this in the future, but for now
-we have decided not to do this. We want to keep explicit
-the need to reference the stepper once the problem is created.
-This also makes it clear how to use the stepper.
-This is just a choice, but we belive that keeping explicit the
-dependence of Galerkin on time is important, and to clearly
-convey that the problem "owns" something that you use.
-
-
-
+The answer is that practically speaking, at the lowest-level,
+a Galerkin problem can be reduced to simply a "custom" stepper to advance in time.
+This is how pressio implements this and the reason why a Galerkin
+problem contains a stepper object inside: when you create the
+problem, pressio creates the appropriate custom stepper
+object that you can use. You don't need to know how this is done,
+or rely on the details, because these are problem- and implementation-dependent,
+and we reserve the right to change this in the future.
+All you need to know is that a an explicit Galerkin problem behaves like
+a an explicit stepper, and an implicit Galerkin problem behaves
+like an implicit stepper.
 
 
 <!-- ## 2. Extract the stepper and solve in time -->

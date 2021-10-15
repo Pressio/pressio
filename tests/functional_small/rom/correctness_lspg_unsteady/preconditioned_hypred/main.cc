@@ -69,7 +69,7 @@ void fill_phi(T & phi)
   const scalar_t dt = 2.;\
   FakeNonLinSolver nonLinSolver(nSample);\
   ObserverA obs;\
-  pressio::ode::advance_n_steps_and_observe(problem.stepper(), romState, 0.,\
+  pressio::ode::advance_n_steps_and_observe(problem, romState, 0.,\
               dt, 2, obs, nonLinSolver);\
   std::cout << romState << std::endl;\
   EXPECT_DOUBLE_EQ(romState[0], 4.);\

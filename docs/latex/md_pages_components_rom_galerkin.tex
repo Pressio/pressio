@@ -19,39 +19,79 @@ where {\ttfamily $<$keywords$>$} express the variant of the problem you want (mo
 \item Masked\+: \href{md_pages_components_rom_galerkin_masked.html}{\texttt{ link}}
 \end{DoxyItemize}
 
-The above {\ttfamily create} function returns a problem object that meets the following interface\+:
+The above {\ttfamily create} function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).\hypertarget{md_pages_components_rom_galerkin_autotoc_md92}{}\doxysubsection{Explicit Problem}\label{md_pages_components_rom_galerkin_autotoc_md92}
+The problem meets the following API\+:
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }GalerkinProblemClass}
+\DoxyCodeLine{\textcolor{keyword}{class }GalerkinExplicitProblemClass}
 \DoxyCodeLine{\{}
 \DoxyCodeLine{\textcolor{keyword}{public}:}
 \DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef to access the problem's traits */};}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// returns the underlying stepper to use to solve the problem}}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper();}
-\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
 \DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{class} TimeType, \textcolor{keyword}{class} StepCount>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(galerkin\_state\_type \& state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} StepCount step\_count);}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
 
 
-where the traits class contains the following\+:
+where the traits contain\+:
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{comment}{// for the explicit case, one can access the following traits:}}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::fom\_system\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::scalar\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_jac\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_state\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_velocity\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_galerkin_autotoc_md93}{}\doxysubsection{Implicit Problem}\label{md_pages_components_rom_galerkin_autotoc_md93}
+The problem meets the following API\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }GalerkinImplicitProblemClass}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef to access the problem's traits */};}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{// for the implicit case one has:}}
+\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* ... */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type     = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type  = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residual(\textcolor{keyword}{const} state\_type\& x, residual\_type \& res) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} jacobian(\textcolor{keyword}{const} state\_type\& x, jacobian\_type \& jac) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{class }TimeType, \textcolor{keyword}{class }StepCount, \textcolor{keyword}{class }...Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(galerkin\_state\_type \& state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} StepCount step\_count,}
+\DoxyCodeLine{                  Args \&\& ... args);}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+where the traits contain\+:
+
+
+\begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::fom\_system\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::scalar\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_type;}
@@ -59,15 +99,10 @@ where the traits class contains the following\+:
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_state\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_residual\_type;}
 \DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_jacobian\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
 
 \end{DoxyCode}
-
-
-The {\ttfamily stepper} method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-\/const reference to an \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ explicit stepper}} if, when you create the problem, you select an explicit scheme, or an \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit stepper}} if you select an implicit scheme. Once you reference the stepper, you can then use it like you would with any other stepper object (more on this below).
-
-What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_galerkin_autotoc_md92}{}\doxysection{2. Extract and Solve}\label{md_pages_components_rom_galerkin_autotoc_md92}
-\hypertarget{md_pages_components_rom_galerkin_autotoc_md93}{}\doxysubsection{Example for explicit Galerkin}\label{md_pages_components_rom_galerkin_autotoc_md93}
+\hypertarget{md_pages_components_rom_galerkin_autotoc_md94}{}\doxysection{2. Solve in time}\label{md_pages_components_rom_galerkin_autotoc_md94}
+\hypertarget{md_pages_components_rom_galerkin_autotoc_md95}{}\doxysubsection{Example for explicit Galerkin}\label{md_pages_components_rom_galerkin_autotoc_md95}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
@@ -79,13 +114,11 @@ What does a stepper have to do with a Galerkin ROM? The answer is that practical
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pdoe::StepScheme:ForwardEuler;}
 \DoxyCodeLine{  \textcolor{keyword}{auto} problem      = pgal::create\_default\_explicit\_problem(scheme, \textcolor{comment}{/* args */});}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper    = problem.stepper();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  pressio::ode::advance\_n\_steps\_and\_observe(stepper, \textcolor{comment}{/* args */});}
+\DoxyCodeLine{  pode::advance\_n\_steps\_and\_observe(problem, \textcolor{comment}{/* args */});}
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_galerkin_autotoc_md94}{}\doxysubsection{Example for implicit Galerkin}\label{md_pages_components_rom_galerkin_autotoc_md94}
+\hypertarget{md_pages_components_rom_galerkin_autotoc_md96}{}\doxysubsection{Example for implicit Galerkin}\label{md_pages_components_rom_galerkin_autotoc_md96}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
@@ -97,24 +130,10 @@ What does a stepper have to do with a Galerkin ROM? The answer is that practical
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pdoe::StepScheme:BDF1;}
 \DoxyCodeLine{  \textcolor{keyword}{auto} problem      = pgal::create\_default\_implicit\_problem(scheme, \textcolor{comment}{/* args */});}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper    = problem.stepper();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{keyword}{auto} solver = pressio::nonlinearsolvers::create\_newton\_rapshon(stepper, \textcolor{comment}{/* args */});}
-\DoxyCodeLine{  pressio::ode::advance\_n\_steps\_and\_observe(stepper, \textcolor{comment}{/* args */}, solver);}
+\DoxyCodeLine{  \textcolor{keyword}{auto} solver = pressio::nonlinearsolvers::create\_newton\_rapshon(problem, \textcolor{comment}{/* args */});}
+\DoxyCodeLine{  pode::advance\_n\_steps\_and\_observe(problem, \textcolor{comment}{/* args */}, solver);}
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_galerkin_autotoc_md95}{}\doxysection{Why not making the problem itself a stepper?}\label{md_pages_components_rom_galerkin_autotoc_md95}
-One could argue that the Galerkin problem class itself can be made to behave like a stepper allowing one to avoid having to reference anything. If we did this, then one would do, for example\+:
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{auto} problem = pgal::create\_default\_explicit\_problem(scheme, \textcolor{comment}{/* args */});}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{// this is not valid, just for reasoning}}
-\DoxyCodeLine{pressio::ode::advance\_n\_steps\_and\_observe(problem, \textcolor{comment}{/* args */});}
-
-\end{DoxyCode}
-
-
-This is a valid comment, and one that we thought about. We reserve the right to change this in the future, but for now we have decided not to do this. We want to keep explicit the need to reference the stepper once the problem is created. This also makes it clear how to use the stepper. This is just a choice, but we belive that keeping explicit the dependence of Galerkin on time is important, and to clearly convey that the problem \char`\"{}owns\char`\"{} something that you use. 
+\hypertarget{md_pages_components_rom_galerkin_autotoc_md97}{}\doxysection{Why does the problem behave like a stepper?}\label{md_pages_components_rom_galerkin_autotoc_md97}
+The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future. All you need to know is that a an explicit Galerkin problem behaves like a an explicit stepper, and an implicit Galerkin problem behaves like an implicit stepper. 

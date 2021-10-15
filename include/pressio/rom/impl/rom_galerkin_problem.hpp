@@ -195,13 +195,17 @@ template <class traits> struct Members<8, traits> : MembersCommon<traits>
 ///////////////////
 // problem class //
 ///////////////////
-template <int flag, typename ...Args>
-class Problem
+template <
+  template <int, class ... > class Derived,
+  int flag,
+  typename ...Args
+  >
+class ProblemBase
 {
 public:
-  using traits = ::pressio::Traits<Problem<flag, Args...>>;
+  using traits = ::pressio::Traits<Derived<flag, Args...>>;
 
-private:
+protected:
   using fom_system_type	 = typename traits::fom_system_type;
   using decoder_type	 = typename traits::decoder_type;
   using galerkin_state_type = typename traits::galerkin_state_type;
@@ -211,8 +215,6 @@ private:
   typename Members<flag, traits>::type members_;
 
 public:
-  stepper_type & stepper(){ return members_.stepperObj_; }
-
   const fom_state_type & currentFomState() const{
     return members_.fomStatesMngr_(::pressio::ode::n());
   }
@@ -222,18 +224,18 @@ public:
   }
 
 public:
-  Problem() = delete;
-  Problem(const Problem &) = default;
-  Problem & operator=(const Problem &) = delete;
-  Problem(Problem &&) = default;
-  Problem & operator=(Problem &&) = delete;
-  ~Problem() = default;
+  ProblemBase() = delete;
+  ProblemBase(const ProblemBase &) = default;
+  ProblemBase & operator=(const ProblemBase &) = delete;
+  ProblemBase(ProblemBase &&) = default;
+  ProblemBase & operator=(ProblemBase &&) = delete;
+  ~ProblemBase() = default;
 
   template<
     int _flag = flag,
     mpl::enable_if_t<_flag<=2, int> = 0
     >
-  Problem(::pressio::ode::StepScheme name,
+  ProblemBase(::pressio::ode::StepScheme name,
 #if defined PRESSIO_ENABLE_TPL_PYBIND11
 	  const pybind11::object fomObj,
 	  decoder_type & decoder,
@@ -253,7 +255,7 @@ public:
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=3 and _flag<=5, int> = 0
     >
-  Problem(::pressio::ode::StepScheme name,
+  ProblemBase(::pressio::ode::StepScheme name,
 #if defined PRESSIO_ENABLE_TPL_PYBIND11
 	  const pybind11::object fomObj,
 	  decoder_type & decoder,
@@ -284,7 +286,7 @@ public:
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=6 and _flag<=8, int> = 0
     >
-  Problem(::pressio::ode::StepScheme name,
+  ProblemBase(::pressio::ode::StepScheme name,
 #if defined PRESSIO_ENABLE_TPL_PYBIND11
 	  const pybind11::object fomObj,
 	  decoder_type & decoder,
@@ -303,6 +305,78 @@ public:
 	     fomNominalState, projector)
   {}
 
+};
+
+
+template <int flag, typename ...Args>
+class ProblemExplicit
+  : public ProblemBase< ProblemExplicit, flag, Args... >
+{
+private:
+  using base_type = ProblemBase< ProblemExplicit, flag, Args... >;
+  using this_type = ProblemExplicit<flag, Args...>;
+  using base_type::members_;
+
+public:
+  using traits = ::pressio::Traits<this_type>;
+
+  ProblemExplicit() = delete;
+
+  template<class ...Args2>
+  ProblemExplicit(Args2 && ... args2)
+    : base_type(std::forward<Args2>(args2)...)
+  {}
+
+  template<class ...Args2>
+  void operator()(Args2 && ... args2){
+    members_.stepperObj_(std::forward<Args2>(args2)...);
+  }
+};
+
+template <int flag, typename ...Args>
+class ProblemImplicit
+  : public ProblemBase< ProblemImplicit, flag, Args... >
+{
+
+private:
+  using base_type = ProblemBase< ProblemImplicit, flag, Args... >;
+  using this_type = ProblemImplicit<flag, Args...>;
+  using base_type::members_;
+
+public:
+  using traits = ::pressio::Traits<this_type>;
+  using scalar_type   = typename traits::scalar_type;
+  using state_type    = typename traits::galerkin_state_type;
+  using residual_type = typename traits::galerkin_residual_type;
+  using jacobian_type = typename traits::galerkin_jacobian_type;
+
+  ProblemImplicit() = delete;
+
+  template<class ...Args2>
+  ProblemImplicit(Args2 && ... args2)
+    : base_type(std::forward<Args2>(args2)...)
+  {}
+
+  template<class ...Args2>
+  void operator()(Args2 && ... args2){
+    members_.stepperObj_(std::forward<Args2>(args2)...);
+  }
+
+  residual_type createResidual() const{
+    return members_.stepperObj_.createResidual();
+  }
+
+  jacobian_type createJacobian() const{
+    return members_.stepperObj_.createJacobian();
+  }
+
+  void residual(const state_type & odeState, residual_type & R) const{
+    members_.stepperObj_.residual(odeState, R);
+  }
+
+  void jacobian(const state_type & odeState, jacobian_type & J) const{
+    members_.stepperObj_.jacobian(odeState, J);
+  }
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

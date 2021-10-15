@@ -236,17 +236,6 @@ private:
   typename UnsteadyMembers<flag, traits>::type members_;
 
 public:
-  stepper_type & stepper(){ return members_.stepperObj_; }
-
-  const fom_state_type & currentFomState() const{
-    return members_.fomStatesMngr_(::pressio::ode::n());
-  }
-
-  const fom_state_reconstr_type & fomStateReconstructor() const{
-    return members_.fomStateReconstructor_;
-  }
-
-public:
   UnsteadyProblem() = delete;
   UnsteadyProblem(const UnsteadyProblem &) = default;
   UnsteadyProblem & operator=(const UnsteadyProblem &) = delete;
@@ -329,6 +318,40 @@ public:
   {}
 #endif
 
+public:
+  using scalar_type   = typename traits::scalar_type;
+  using state_type    = typename traits::lspg_state_type;
+  using residual_type = typename traits::lspg_residual_type;
+  using jacobian_type = typename traits::lspg_jacobian_type;
+
+  const fom_state_type & currentFomState() const{
+    return members_.fomStatesMngr_(::pressio::ode::n());
+  }
+
+  const fom_state_reconstr_type & fomStateReconstructor() const{
+    return members_.fomStateReconstructor_;
+  }
+
+  template<class ...Args2>
+  void operator()(Args2 && ... args2){
+    members_.stepperObj_(std::forward<Args2>(args2)...);
+  }
+
+  residual_type createResidual() const{
+    return members_.stepperObj_.createResidual();
+  }
+
+  jacobian_type createJacobian() const{
+    return members_.stepperObj_.createJacobian();
+  }
+
+  void residual(const state_type & odeState, residual_type & R) const{
+    members_.stepperObj_.residual(odeState, R);
+  }
+
+  void jacobian(const state_type & odeState, jacobian_type & J) const{
+    members_.stepperObj_.jacobian(odeState, J);
+  }
 };
 
 }}}}//end namespace pressio::rom::lspg::impl

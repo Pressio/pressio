@@ -6,9 +6,8 @@ LINKS_NAVBAR1 = [
 
   ("<a href=\"md_pages_introduction.html\">Introduction</a>", []),
 
-  ("<a href=\"md_pages_installation.html\">Installation/Dependencies</a>", []),
+  ("<a href=\"md_pages_installation.html\">Installation</a>", []),
 
-  # ("<a href=\"md_pages_components.html\">Components</a>",
   ("<a>Documentation</a>",
    [
      ("<a href=\"md_pages_components_mpl.html\">mpl</a>",),
@@ -34,7 +33,6 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_ode_steppers_explicit.html\"> &emsp; - explicit steppers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_implicit.html\"> &emsp; - implicit steppers</a>",),
 
-     #
      ("<a> rom: </a>",),
      #("<a href=\"md_pages_components_rom_general.html\"> &emsp; - general info</a>",),
      ("<a href=\"md_pages_components_rom_fom_apis.html\"> &emsp; - FOM adapter API</a>",),
@@ -60,7 +58,6 @@ LINKS_NAVBAR1 = [
 
      #
      ("<a href=\"md_pages_components_rom_wls.html\">rom: WLS</a>",),
-     #("<a href=\"md_pages_components_rom_hyperreduction.html\">rom: hyper-reduction</a>",),
    ]),
 
   ("<a href=\"https://pressio.github.io/pressio-tutorials/html/index.html\">Tutorials</a>", []),

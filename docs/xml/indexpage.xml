@@ -21,49 +21,56 @@
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">mpl</mcss:span>   </para>
-</entry><entry thead="no"><para>metaprogramming functionalities   </para>
+</entry><entry thead="no"><para><linebreak/>
+ metaprogramming functionalities   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/mpl">Code</ulink> <linebreak/>
  <ulink url="md_pages_components_mpl.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/mpl.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>   </para>
-</entry><entry thead="no"><para>logging, constants, various helpers, etc   </para>
+</entry><entry thead="no"><para><linebreak/>
+ logging, constants, helpers, etc   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/utils">Code</ulink><linebreak/>
 <ulink url="md_pages_components_utils.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">type_traits</mcss:span>   </para>
-</entry><entry thead="no"><para>traits/detection classes   </para>
+</entry><entry thead="no"><para><linebreak/>
+ traits/detection classes   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/type_traits">Code</ulink><linebreak/>
 <ulink url="md_pages_components_type_traits.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/type_traits.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">expressions</mcss:span>   </para>
-</entry><entry thead="no"><para>classes for various abstractions (span, diagonal, subspan, etc.)   </para>
+</entry><entry thead="no"><para><linebreak/>
+ classes for various abstractions (span, diagonal, subspan, etc.)   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/expressions">Code</ulink><linebreak/>
 <ulink url="md_pages_components_expressions.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/expressions.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>   </para>
-</entry><entry thead="no"><para>specializations of shared-memory and distributed linear algebra kernels   </para>
+</entry><entry thead="no"><para><linebreak/>
+ specializations of shared-memory and distributed linear algebra kernels   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/ops">Code</ulink><linebreak/>
 <ulink url="md_pages_components_ops.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/ops.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>   </para>
-</entry><entry thead="no"><para>QR factorization functionalities   </para>
+</entry><entry thead="no"><para><linebreak/>
+ QR factorization functionalities   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/qr">Code</ulink><linebreak/>
 <ulink url="md_pages_components_qr.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/qr.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers_linear</mcss:span>   </para>
-</entry><entry thead="no"><para>linear solvers (wrappers around existing TPLs)   </para>
+</entry><entry thead="no"><para><linebreak/>
+ linear solvers (wrappers around existing TPLs)   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/develop/include/pressio/solvers_linear">Code</ulink><linebreak/>
 <ulink url="md_pages_components_linsolvers.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/solvers_linear.hpp&gt;</computeroutput>    </para>
@@ -129,7 +136,7 @@ general info <linebreak/>
 </entry></row>
 </table>
 </para>
-<sect1 id="index_1autotoc_md156">
+<sect1 id="index_1autotoc_md158">
 <title>Get Started</title>
 <para><itemizedlist>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> providing an overview, objectives and design ideas</para>
@@ -138,12 +145,12 @@ general info <linebreak/>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md157">
+<sect1 id="index_1autotoc_md159">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md158">
+<sect1 id="index_1autotoc_md160">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

@@ -16,7 +16,7 @@
 <para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_galerkin.html">overall design idea of Galerkin</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md104">
+<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md106">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -51,7 +51,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>MaskerType<sp/>&amp;<sp/>masker);</highlight></codeline>
 </programlisting></para>
 <para>This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md105">
+<sect2 id="md_pages_components_rom_galerkin_masked_1autotoc_md107">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>scheme</computeroutput>:<itemizedlist>
@@ -97,7 +97,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md106">
+<sect1 id="md_pages_components_rom_galerkin_masked_1autotoc_md108">
 <title>Masker</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: explain</para>
 <para>Suppose that <computeroutput>fom_velocity_type</computeroutput> is the type of your FOM velocity, and that <computeroutput>decoder_jacobian_t</computeroutput> is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, <computeroutput>fom_velocity_type</computeroutput> can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the <computeroutput>decoder_jacobian_t</computeroutput>.</para>
