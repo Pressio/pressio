@@ -149,7 +149,7 @@ struct ComposeContTimeExplicit<
    "The type deduced for the FOM nominal state passed to the create function is not \
    compatible with the FOM state type detected from adapter class");
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemExplicit<
     0, FomSystemType, GalerkinStateType, DecoderType>;
 };
 
@@ -184,7 +184,7 @@ struct ComposeContTimeImplicit<
   using galerkin_residual_t = typename select_galerkin_types<GalerkinStateType>::residual_type;
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemImplicit<
     1, FomSystemType, GalerkinStateType, galerkin_residual_t, galerkin_jacobian_t, DecoderType>;
 };
 
@@ -218,7 +218,7 @@ struct ComposeDiscTime<
   using galerkin_residual_t = typename select_galerkin_types<GalerkinStateType>::residual_type;
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemImplicit<
     2, FomSystemType, GalerkinStateType,
     galerkin_residual_t, galerkin_jacobian_t, DecoderType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>>;
@@ -257,7 +257,7 @@ struct ComposeContTimeExplicit<
    "The type deduced for the FOM nominal state passed to the create function is not \
    compatible with the FOM state type detected from decoder");
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemExplicit<
     3, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType>;
 };
 
@@ -294,7 +294,7 @@ struct ComposeContTimeImplicit<
   using galerkin_residual_t = typename select_galerkin_types<GalerkinStateType>::residual_type;
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemImplicit<
     4, FomSystemType, GalerkinStateType, galerkin_residual_t,
     galerkin_jacobian_t, DecoderType, MaskerType, ProjectorType>;
 };
@@ -333,7 +333,7 @@ struct ComposeDiscTime<
   using galerkin_residual_t = typename select_galerkin_types<GalerkinStateType>::residual_type;
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemImplicit<
     5, FomSystemType, GalerkinStateType,
     galerkin_residual_t, galerkin_jacobian_t, DecoderType, ProjectorType, MaskerType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>>;
@@ -371,7 +371,7 @@ struct ComposeContTimeExplicit<
    "The type deduced for the FOM nominal state passed to the create function is not \
    compatible with the FOM state type detected from decoder");
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemExplicit<
     6, FomSystemType, GalerkinStateType, DecoderType, ProjectorType>;
 };
 
@@ -407,7 +407,7 @@ struct ComposeContTimeImplicit<
   using galerkin_residual_t = typename select_galerkin_types<GalerkinStateType>::residual_type;
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemImplicit<
     7, FomSystemType, GalerkinStateType, galerkin_residual_t, galerkin_jacobian_t,
     DecoderType, ProjectorType>;
 };
@@ -445,7 +445,7 @@ struct ComposeDiscTime<
   using galerkin_residual_t = typename select_galerkin_types<GalerkinStateType>::residual_type;
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
-  using type = ::pressio::rom::galerkin::impl::Problem<
+  using type = ::pressio::rom::galerkin::impl::ProblemImplicit<
     8, FomSystemType, GalerkinStateType,
     galerkin_residual_t, galerkin_jacobian_t, DecoderType, ProjectorType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>>;

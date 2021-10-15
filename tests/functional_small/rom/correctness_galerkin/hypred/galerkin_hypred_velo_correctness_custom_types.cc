@@ -196,7 +196,7 @@ TEST(rom_galerkin, cont_time_hypred_explicit_correctness_custom_types)
   const scalar_t dt = 1.; 
   const int num_steps = 2;
   ObserverA obs;
-  pressio::ode::advance_n_steps_and_observe(problem.stepper(), romState, 0., dt, num_steps, obs);
+  pressio::ode::advance_n_steps_and_observe(problem, romState, 0., dt, num_steps, obs);
 
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 0.);
@@ -218,11 +218,10 @@ TEST(rom_galerkin, cont_time_hypred_implicit_correctness_custom_types)
 
   auto problem = pressio::rom::galerkin::create_hyperreduced_implicit_problem(
     pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState, proj);
-  auto & stepperObj = problem.stepper();
 
   FakeNonLinSolverContTime nonLinSolver;
   scalar_t dt = 2.;
-  pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
+  pressio::ode::advance_n_steps(problem, romState, 0.0, dt, 2, nonLinSolver);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 4.);
   EXPECT_DOUBLE_EQ(romState[1], 5.);
@@ -243,11 +242,10 @@ TEST(rom_galerkin, discrete_time_hypred_implicit_correctness_custom_types)
 
   auto problem = pressio::rom::galerkin::create_hyperreduced_problem<2>(
     fomSystem, decoder, romState, fomReferenceState, proj);
-  auto & stepperObj = problem.stepper();
 
   FakeNonLinSolverForDiscreteTime nonLinSolver;
   scalar_t dt = 2.;
-  pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
+  pressio::ode::advance_n_steps(problem, romState, 0.0, dt, 2, nonLinSolver);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 4.);
   EXPECT_DOUBLE_EQ(romState[1], 5.);

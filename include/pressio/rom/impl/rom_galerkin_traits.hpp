@@ -53,7 +53,9 @@ namespace pressio{
 
 namespace rom{ namespace galerkin{ namespace impl{
 //fwd declare problem class
-template <int, class ...> class Problem;
+//template <int, class ...> class ProblemBase;
+template <int, class ...> class ProblemExplicit;
+template <int, class ...> class ProblemImplicit;
 
 template <
   bool is_explicit,
@@ -174,7 +176,7 @@ struct CommonTraitsDiscreteTimeApi
 // conttime explicit
 template <class FomSystemType, class GalerkinStateType, class DecoderType>
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemExplicit<
     0, FomSystemType, GalerkinStateType, DecoderType
     >
   >
@@ -228,7 +230,7 @@ template <
   class DecoderType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     1, FomSystemType, GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
     DecoderType
     >
@@ -290,7 +292,7 @@ template <
   class DecoderType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     2, FomSystemType,
     GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>
@@ -360,7 +362,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemExplicit<
     3, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType
     >
   >
@@ -427,7 +429,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     4, FomSystemType, GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
     DecoderType, MaskerType, ProjectorType
     >
@@ -507,7 +509,7 @@ template <
   class MaskerType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     5, FomSystemType,
     GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType, ProjectorType, MaskerType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>
@@ -589,7 +591,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemExplicit<
     6, FomSystemType, GalerkinStateType, DecoderType, ProjectorType
     >
   >
@@ -646,7 +648,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     7, FomSystemType, GalerkinStateType, GalerkinResidualType,
     GalerkinJacobianType, DecoderType, ProjectorType
     >
@@ -711,7 +713,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     8, FomSystemType,
     GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType, ProjectorType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>
