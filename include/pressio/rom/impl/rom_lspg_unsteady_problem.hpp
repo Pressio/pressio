@@ -324,8 +324,6 @@ public:
   using residual_type = typename traits::lspg_residual_type;
   using jacobian_type = typename traits::lspg_jacobian_type;
 
-  //stepper_type & stepper(){ return members_.stepperObj_; }
-
   const fom_state_type & currentFomState() const{
     return members_.fomStatesMngr_(::pressio::ode::n());
   }
