@@ -361,6 +361,22 @@ public:
   void operator()(Args2 && ... args2){
     members_.stepperObj_(std::forward<Args2>(args2)...);
   }
+
+  residual_type createResidual() const{
+    return members_.stepperObj_.createResidual();
+  }
+
+  jacobian_type createJacobian() const{
+    return members_.stepperObj_.createJacobian();
+  }
+
+  void residual(const state_type & odeState, residual_type & R) const{
+    members_.stepperObj_.residual(odeState, R);
+  }
+
+  void jacobian(const state_type & odeState, jacobian_type & J) const{
+    members_.stepperObj_.jacobian(odeState, J);
+  }
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl
