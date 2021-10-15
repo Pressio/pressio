@@ -103,8 +103,7 @@
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_jac_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_state_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_velocity_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">stepper_type</span><span class="p">;</span></pre></section><section id="autotoc_md93"><h3><a href="#autotoc_md93">Implicit Problem</a></h3><p>The problem meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">GalerkinImplicitProblemClass</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_velocity_type</span><span class="p">;</span></pre></section><section id="autotoc_md93"><h3><a href="#autotoc_md93">Implicit Problem</a></h3><p>The problem meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">GalerkinImplicitProblemClass</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef to access the problem&#39;s traits */</span><span class="p">;</span>
@@ -134,8 +133,7 @@
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_jac_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_state_type</span><span class="p">;</span>
 <span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_residual_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_jacobian_type</span><span class="p">;</span>
-<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">stepper_type</span><span class="p">;</span></pre></section></section><section id="autotoc_md94"><h2><a href="#autotoc_md94">2. Solve in time</a></h2><section id="autotoc_md95"><h3><a href="#autotoc_md95">Example for explicit Galerkin</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_jacobian_type</span><span class="p">;</span></pre></section></section><section id="autotoc_md94"><h2><a href="#autotoc_md94">2. Solve in time</a></h2><section id="autotoc_md95"><h3><a href="#autotoc_md95">Example for explicit Galerkin</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">//...</span>
 

@@ -56,7 +56,6 @@ typename traits::decoder_type;
 typename traits::decoder_jac_type;
 typename traits::galerkin_state_type;
 typename traits::galerkin_velocity_type;
-typename traits::stepper_type;
 ```
 
 ### Implicit Problem
@@ -101,7 +100,6 @@ typename traits::decoder_jac_type;
 typename traits::galerkin_state_type;
 typename traits::galerkin_residual_type;
 typename traits::galerkin_jacobian_type;
-typename traits::stepper_type;
 ```
 
 ## 2. Solve in time

@@ -46,7 +46,6 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::decoder_jac_type;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_state_type;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_velocity_type;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::stepper_type;</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="md_pages_components_rom_galerkin_1autotoc_md93">
@@ -86,7 +85,6 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_state_type;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_residual_type;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_jacobian_type;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::stepper_type;</highlight></codeline>
 </programlisting></para>
 </sect2>
 </sect1>
