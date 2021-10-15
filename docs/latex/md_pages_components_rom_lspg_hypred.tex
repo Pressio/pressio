@@ -12,7 +12,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::lspg}
 \begin{DoxyParagraph}{Prerequisite reading\+:}
 Before you read this page, make sure you read the \href{md_pages_components_rom_lspg_unsteady.html}{\texttt{ overall design idea of the unsteady LSPG}}. 
 \end{DoxyParagraph}
-\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md118}{}\doxysection{API}\label{md_pages_components_rom_lspg_hypred_autotoc_md118}
+\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md120}{}\doxysection{API}\label{md_pages_components_rom_lspg_hypred_autotoc_md120}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// overload for continuous-\/time systems}}
@@ -44,7 +44,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \DoxyCodeLine{                                                \textcolor{keyword}{const} FomReferenceStateType \& fomRefState);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md119}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_autotoc_md119}
+\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md121}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_lspg_hypred_autotoc_md121}
 
 \begin{DoxyItemize}
 \item {\ttfamily fom\+System}\+:
@@ -121,7 +121,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \end{DoxyItemize}
 
 ~\newline
-\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md120}{}\doxysection{Why do we need the Hyp\+Red\+Updater?}\label{md_pages_components_rom_lspg_hypred_autotoc_md120}
+\hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md122}{}\doxysection{Why do we need the Hyp\+Red\+Updater?}\label{md_pages_components_rom_lspg_hypred_autotoc_md122}
 When working with a hyper-\/reduced problem, pressio has to manipulate objects that have different sizes/distributions. For this problem variant, in fact, some operators are naturally defined on the what we refer to as \char`\"{}sample mesh\char`\"{} while some are defined on what we call the \char`\"{}stencil mesh\char`\"{}.
 
 As explained \href{https://pressio.github.io/algos/hyper/}{\texttt{ here}}, recall that\+:
@@ -135,7 +135,7 @@ As explained \href{https://pressio.github.io/algos/hyper/}{\texttt{ here}}, reca
 
 
 
-The {\ttfamily hr\+Updater} is an object that knows how to compute {\ttfamily a$\ast$x + b$\ast$y} for operands {\ttfamily x,y,} that (potentially) do NOT have the same size/data distribution since they are defined on stencil and sample mesh. \hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md121}{}\doxysubsection{Explain it to me better!}\label{md_pages_components_rom_lspg_hypred_autotoc_md121}
+The {\ttfamily hr\+Updater} is an object that knows how to compute {\ttfamily a$\ast$x + b$\ast$y} for operands {\ttfamily x,y,} that (potentially) do NOT have the same size/data distribution since they are defined on stencil and sample mesh. \hypertarget{md_pages_components_rom_lspg_hypred_autotoc_md123}{}\doxysubsection{Explain it to me better!}\label{md_pages_components_rom_lspg_hypred_autotoc_md123}
 Suppose that your FOM problem involves a 2D problem and that your FOM numerical method needs at every cell information from the nearest neighbors. For the sake of explanation, {\itshape it does not matter what problem we are solving}, only what we just said. Now, suppose that you want to try hyper-\/reduced LSPG on it. You come up with a sample and stencil mesh for your problem (read \href{https://pressio.github.io/algos/hyper/}{\texttt{ this page}} for some information about how to select sample mesh cells), and let\textquotesingle{}s say it looks like this\+: 
 
 The stencil mesh is the set of {\itshape all} cells shown, while the sample mesh is the {\itshape subset} color-\/coded yellow. We have added an arbitrary enumeration scheme to uniquely assign a global index to each cell. The enumeration order does not matter, this is just for demonstration purposes. You have an adapter class for your problem that is able to compute the FOM right-\/hand-\/side $f$ on the yellow cells, for a given FOM state $y$ on the stencil mesh.

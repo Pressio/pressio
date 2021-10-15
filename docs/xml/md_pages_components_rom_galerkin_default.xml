@@ -16,7 +16,7 @@
 <para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_galerkin.html">overall design idea of Galerkin</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md97">
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md99">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -43,7 +43,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState)</highlight></codeline>
 </programlisting></para>
 <para>This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md98">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md100">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>scheme</computeroutput>:<itemizedlist>

@@ -16,7 +16,7 @@
 <para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_galerkin.html">overall design idea of Galerkin</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md100">
+<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md102">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -46,7 +46,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProjectorType<sp/>&amp;<sp/>projector);</highlight></codeline>
 </programlisting> This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md101">
+<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md103">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>scheme</computeroutput>:<itemizedlist>
@@ -87,7 +87,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md102">
+<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md104">
 <title>Projector</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: explain what projectos is for since it is critical.</para>
 <para>The projector must be a functor as follows:</para>

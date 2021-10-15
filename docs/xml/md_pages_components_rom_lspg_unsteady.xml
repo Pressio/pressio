@@ -8,7 +8,7 @@
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: finish this, add more details</para>
 <para>The pressio Unsteady LSPG ROMs are designed such that using them involves these steps:</para>
-<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md135">
+<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md137">
 <title>1. Create</title>
 <para>You create an instance of one of the supported &quot;LSPG problem&quot; using the following API:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pressio::rom::lspg::create_&lt;keywords&gt;(<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal"><sp/>);</highlight></codeline>
@@ -20,24 +20,36 @@
 </listitem><listitem><para>Masked: <ulink url="md_pages_components_rom_lspg_masked.html">link</ulink></para>
 </listitem></itemizedlist>
 </para>
-<para>The above <computeroutput>create</computeroutput> function returns a problem object that meets the following interface:</para>
+<para>The above <computeroutput>create</computeroutput> function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">UnsteadyLSPGProblemClass</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>traits<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>nested<sp/>typedef<sp/>to<sp/>access<sp/>the<sp/>problem&apos;s<sp/>traits<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>returns<sp/>the<sp/>underlying<sp/>stepper<sp/>to<sp/>use<sp/>to<sp/>solve<sp/>the<sp/>problem</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper();</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>const<sp/>ref<sp/>to<sp/>the<sp/>object<sp/>knowing<sp/>how<sp/>to<sp/>reconstruct<sp/>a<sp/>FOM<sp/>state</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>fomStateReconstructor()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>createResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residual(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,<sp/>residual_type<sp/>&amp;<sp/>res)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>jacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,<sp/>jacobian_type<sp/>&amp;<sp/>jac)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">TimeType,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepCount,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">...Args&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(lspg_state_type<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>current_time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>time_step_size_to_use,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StepCount<sp/>step_count,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Args<sp/>&amp;&amp;<sp/>...<sp/>args);</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
-<para>The <computeroutput>stepper</computeroutput> method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-const reference to an <ulink url="md_pages_components_ode_steppers_implicit.html">implicit stepper</ulink>. Once you reference the stepper, you can then use it to solve the problem (more on this below).</para>
-<para>What does a stepper have to do with a LSPG ROM? The answer is that practically speaking, at the lowest-level, a LSPG problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. When you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md136">
-<title>2. Extract and Solve</title>
+<sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md138">
+<title>2. Solve in time</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//...</highlight><highlight class="normal"></highlight></codeline>
@@ -47,10 +59,8 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pdoe::StepScheme:BDF1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>plspg::create_default_problem(scheme,<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/><sp/><sp/><sp/>=<sp/>problem.stepper();</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pressio::nonlinearsolvers::create_gauss_newton(stepper,<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>pressio::ode::advance_n_steps_and_observe(stepper,<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal">,<sp/>solver);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>pode::advance_n_steps_and_observe(problem,<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal">,<sp/>solver);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Note that above we used as an example a Gauss-Newton solver because to solve LSPG consists of &quot;advancing&quot; in time by solving at each step a nonlinear least-squares problem. </para>

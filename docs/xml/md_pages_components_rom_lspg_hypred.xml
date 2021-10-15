@@ -16,7 +16,7 @@
 <para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_lspg_unsteady.html">overall design idea of the unsteady LSPG</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md118">
+<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md120">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>for<sp/>continuous-time<sp/>systems</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
@@ -46,7 +46,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md119">
+<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md121">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>
@@ -116,7 +116,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md120">
+<sect1 id="md_pages_components_rom_lspg_hypred_1autotoc_md122">
 <title>Why do we need the HypRedUpdater?</title>
 <para>When working with a hyper-reduced problem, pressio has to manipulate objects that have different sizes/distributions. For this problem variant, in fact, some operators are naturally defined on the what we refer to as &quot;sample mesh&quot; while some are defined on what we call the &quot;stencil mesh&quot;.</para>
 <para>As explained <ulink url="https://pressio.github.io/algos/hyper/">here</ulink>, recall that:</para>
@@ -129,7 +129,7 @@
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
 <para><parblock><para>The <computeroutput>hrUpdater</computeroutput> is an object that knows how to compute <computeroutput>a*x + b*y</computeroutput> for operands <computeroutput>x,y,</computeroutput> that (potentially) do NOT have the same size/data distribution since they are defined on stencil and sample mesh. </para>
 </parblock></para>
-<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md121">
+<sect2 id="md_pages_components_rom_lspg_hypred_1autotoc_md123">
 <title>Explain it to me better!</title>
 <para>Suppose that your FOM problem involves a 2D problem and that your FOM numerical method needs at every cell information from the nearest neighbors. For the sake of explanation, <emphasis>it does not matter what problem we are solving</emphasis>, only what we just said. Now, suppose that you want to try hyper-reduced LSPG on it. You come up with a sample and stencil mesh for your problem (read <ulink url="https://pressio.github.io/algos/hyper/">this page</ulink> for some information about how to select sample mesh cells), and let&apos;s say it looks like this: <image type="html" name="lspg_sample_mesh1.png" width="400px"></image>
 </para>

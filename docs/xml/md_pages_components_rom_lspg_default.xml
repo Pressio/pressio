@@ -17,7 +17,7 @@
 <para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_lspg_unsteady.html">overall design idea of the unsteady LSPG</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_lspg_default_1autotoc_md110">
+<sect1 id="md_pages_components_rom_lspg_default_1autotoc_md112">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>for<sp/>continuous-time<sp/>systems</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
@@ -45,7 +45,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>romState,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_default_1autotoc_md111">
+<sect2 id="md_pages_components_rom_lspg_default_1autotoc_md113">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>

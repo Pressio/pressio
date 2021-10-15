@@ -12,7 +12,7 @@ Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin}
 \begin{DoxyParagraph}{Prerequisite reading\+:}
 Before you read this page, make sure you read the \href{md_pages_components_rom_galerkin.html}{\texttt{ overall design idea of Galerkin}}. 
 \end{DoxyParagraph}
-\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md104}{}\doxysection{API}\label{md_pages_components_rom_galerkin_masked_autotoc_md104}
+\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md106}{}\doxysection{API}\label{md_pages_components_rom_galerkin_masked_autotoc_md106}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -50,7 +50,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \end{DoxyCode}
 
 
-This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md105}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_masked_autotoc_md105}
+This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md107}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_masked_autotoc_md107}
 
 \begin{DoxyItemize}
 \item {\ttfamily scheme}\+:
@@ -96,7 +96,7 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \item functor responsible of \char`\"{}masking\char`\"{} the FOM operators
 \item must be a functor with a specific API, see details below
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md106}{}\doxysection{Masker}\label{md_pages_components_rom_galerkin_masked_autotoc_md106}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_masked_autotoc_md108}{}\doxysection{Masker}\label{md_pages_components_rom_galerkin_masked_autotoc_md108}
 todo\+: explain
 
 Suppose that {\ttfamily fom\+\_\+velocity\+\_\+type} is the type of your FOM velocity, and that {\ttfamily decoder\+\_\+jacobian\+\_\+t} is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, {\ttfamily fom\+\_\+velocity\+\_\+type} can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the {\ttfamily decoder\+\_\+jacobian\+\_\+t}.

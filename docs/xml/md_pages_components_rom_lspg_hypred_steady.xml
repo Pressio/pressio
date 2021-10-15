@@ -16,7 +16,7 @@
 <para><simplesect kind="par"><title>Prerequisite reading:</title><para>Before you read this page, make sure you read the <ulink url="md_pages_components_rom_lspg_steady.html">overall design idea behind steady LSPG</ulink>. </para>
 </simplesect>
 </para>
-<sect1 id="md_pages_components_rom_lspg_hypred_steady_1autotoc_md123">
+<sect1 id="md_pages_components_rom_lspg_hypred_steady_1autotoc_md125">
 <title>Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
@@ -42,7 +42,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRefState,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>PreconditionerType<sp/>&amp;<sp/>preconditioner);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_rom_lspg_hypred_steady_1autotoc_md124">
+<sect2 id="md_pages_components_rom_lspg_hypred_steady_1autotoc_md126">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>

@@ -1,6 +1,6 @@
 todo\+: finish this, add more details
 
-The pressio Unsteady LSPG ROMs are designed such that using them involves these steps\+:\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md135}{}\doxysection{1. Create}\label{md_pages_components_rom_lspg_unsteady_autotoc_md135}
+The pressio Unsteady LSPG ROMs are designed such that using them involves these steps\+:\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md137}{}\doxysection{1. Create}\label{md_pages_components_rom_lspg_unsteady_autotoc_md137}
 You create an instance of one of the supported \char`\"{}\+LSPG problem\char`\"{} using the following API\+:
 
 
@@ -19,7 +19,7 @@ where {\ttfamily $<$keywords$>$} express the variant of the problem you want (mo
 \item Masked\+: \href{md_pages_components_rom_lspg_masked.html}{\texttt{ link}}
 \end{DoxyItemize}
 
-The above {\ttfamily create} function returns a problem object that meets the following interface\+:
+The above {\ttfamily create} function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).
 
 
 \begin{DoxyCode}{0}
@@ -28,19 +28,29 @@ The above {\ttfamily create} function returns a problem object that meets the fo
 \DoxyCodeLine{\textcolor{keyword}{public}:}
 \DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef to access the problem's traits */};}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// returns the underlying stepper to use to solve the problem}}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper();}
-\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
 \DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* ... */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type     = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type  = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = \textcolor{comment}{/* ... */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residual(\textcolor{keyword}{const} state\_type\& x, residual\_type \& res) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} jacobian(\textcolor{keyword}{const} state\_type\& x, jacobian\_type \& jac) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{class }TimeType, \textcolor{keyword}{class }StepCount, \textcolor{keyword}{class }...Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(lspg\_state\_type \& state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} StepCount step\_count,}
+\DoxyCodeLine{                  Args \&\& ... args);}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-
-
-The {\ttfamily stepper} method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-\/const reference to an \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit stepper}}. Once you reference the stepper, you can then use it to solve the problem (more on this below).
-
-What does a stepper have to do with a LSPG ROM? The answer is that practically speaking, at the lowest-\/level, a LSPG problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. When you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md136}{}\doxysection{2. Extract and Solve}\label{md_pages_components_rom_lspg_unsteady_autotoc_md136}
+\hypertarget{md_pages_components_rom_lspg_unsteady_autotoc_md138}{}\doxysection{2. Solve in time}\label{md_pages_components_rom_lspg_unsteady_autotoc_md138}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
@@ -52,10 +62,8 @@ What does a stepper have to do with a LSPG ROM? The answer is that practically s
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pdoe::StepScheme:BDF1;}
 \DoxyCodeLine{  \textcolor{keyword}{auto} problem      = plspg::create\_default\_problem(scheme, \textcolor{comment}{/* args */});}
-\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper    = problem.stepper();}
-\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{auto} solver = pressio::nonlinearsolvers::create\_gauss\_newton(stepper, \textcolor{comment}{/* args */});}
-\DoxyCodeLine{  pressio::ode::advance\_n\_steps\_and\_observe(stepper, \textcolor{comment}{/* args */}, solver);}
+\DoxyCodeLine{  pode::advance\_n\_steps\_and\_observe(problem, \textcolor{comment}{/* args */}, solver);}
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
