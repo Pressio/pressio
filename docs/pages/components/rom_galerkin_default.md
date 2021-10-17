@@ -27,7 +27,7 @@ template<
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType
-  >
+  >																				 (1)
 auto create_default_explicit_problem(pressio::ode::StepScheme scheme,
 								     const FomSystemType & fomSystem,
 									 DecoderType & decoder,
@@ -39,7 +39,7 @@ template<
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType
-  >
+  >																				 (2)
 auto create_default_implicit_problem(pressio::ode::StepScheme scheme,
 								     const FomSystemType & fomSystem,
 									 DecoderType & decoder,
@@ -53,8 +53,8 @@ This function returns an instance of the desired Galerkin problem.
 
 - `scheme`:
   - enum value to specify the stepper scheme
-  - for doing explicit Galerkin, see [explicit choices](md_pages_components_ode_steppers_explicit.html)
-  - for doing implicit Galerkin, seee [implicit choices](md_pages_components_ode_steppers_implicit.html)
+  - (1) explicit Galerkin, see [valid enum scheme choices](md_pages_components_ode_steppers_explicit.html)
+  - (2) implicit Galerkin, seee [valid enum scheme choices](md_pages_components_ode_steppers_implicit.html)
 
 - `fomSystem`:
   - instance of your FOM adapter specifying the FOM problem
@@ -73,3 +73,29 @@ This function returns an instance of the desired Galerkin problem.
   ```cpp
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
+
+<br/>
+
+@m_div{m-button m-primary}
+<a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit.html">
+@m_div{m-big}Explicit Galerkin sample code 1: @m_enddiv
+@m_div{m-small} (for data types natively supported) @m_enddiv
+</a> @m_enddiv
+
+@m_div{m-button m-primary}
+<a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit_custom_types.html">
+@m_div{m-big} Explicit Galerkin sample code 2: @m_enddiv
+@m_div{m-small} (for arbitrary data types) @m_enddiv
+</a> @m_enddiv
+
+@m_div{m-button m-primary}
+<a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit.html">
+@m_div{m-big}Implicit Galerkin sample code 1: @m_enddiv
+@m_div{m-small} (for data types natively supported) @m_enddiv
+</a> @m_enddiv
+
+@m_div{m-button m-primary}
+<a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit_custom_types.html">
+@m_div{m-big} Implicit Galerkin sample code 2: @m_enddiv
+@m_div{m-small} (for arbitrary data types) @m_enddiv
+</a> @m_enddiv

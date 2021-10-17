@@ -2,14 +2,14 @@
 
 Defined in header\+: {\ttfamily $<$pressio/ode\+\_\+advancers.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_advance_autotoc_md46}{}\doxysection{Scope and overview}\label{md_pages_components_ode_advance_autotoc_md46}
+Public namespace\+: {\ttfamily pressio\+::ode} \hypertarget{md_pages_components_ode_advance_autotoc_md45}{}\doxysection{Scope and overview}\label{md_pages_components_ode_advance_autotoc_md45}
 
 
 Provides functionalities implementing various strategies to \char`\"{}update\char`\"{} some information (i.\+e., a state) via an object that satisfies a \char`\"{}steppable\char`\"{} concept (more details below). 
 
 Why is this useful? Suppose that you have a generic application/usecase involving the concept of a discrete time or just discrete steps, a notion of \char`\"{}state\char`\"{} that defines your information at a specific step, and a \char`\"{}stepper\char`\"{} object, i.\+e. an object/abstraction that accepts a state and knows how to take a \char`\"{}step\char`\"{} to update that state. In such a scenario, it can be useful to have different strategies to advance the state, for example\+: advancing for a fixed number of times, advancing until a certain condition is met, etc. This is what the {\ttfamily pressio/ode\+\_\+advancers} provide. We are growing this capability, so if you need something but it is not alrady supported, open an issue or a PR on \href{https://github.com/Pressio/pressio}{\texttt{ github}}.
 
-Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize these functions to be useful for {\itshape time integration} of dynamical systems. This is the reason why these functionalities are currently inside {\ttfamily pressio\+::ode}, and this is also why we specifically use \char`\"{}time\char`\"{} below. Later on, we might move or generalize them.\hypertarget{md_pages_components_ode_advance_autotoc_md47}{}\doxysection{API}\label{md_pages_components_ode_advance_autotoc_md47}
+Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize these functions to be useful for {\itshape time integration} of dynamical systems. This is the reason why these functionalities are currently inside {\ttfamily pressio\+::ode}, and this is also why we specifically use \char`\"{}time\char`\"{} below. Later on, we might move or generalize them.\hypertarget{md_pages_components_ode_advance_autotoc_md46}{}\doxysection{API}\label{md_pages_components_ode_advance_autotoc_md46}
 
 
 Overload set for advancing for fixed number of steps 
@@ -123,7 +123,7 @@ Overload set for advancing to target time
 
 
 ~\newline
-\hypertarget{md_pages_components_ode_advance_autotoc_md48}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_advance_autotoc_md48}
+\hypertarget{md_pages_components_ode_advance_autotoc_md47}{}\doxysection{Parameters and Requirements}\label{md_pages_components_ode_advance_autotoc_md47}
 
 \begin{DoxyItemize}
 \item {\ttfamily stepper}\+:
@@ -188,7 +188,7 @@ Overload set for advancing to target time
 \end{DoxyItemize}
 
 ~\newline
-\hypertarget{md_pages_components_ode_advance_autotoc_md49}{}\doxysection{When are the variadic arguments useful?}\label{md_pages_components_ode_advance_autotoc_md49}
+\hypertarget{md_pages_components_ode_advance_autotoc_md48}{}\doxysection{When are the variadic arguments useful?}\label{md_pages_components_ode_advance_autotoc_md48}
 For example in a scenario like the following\+:
 
 

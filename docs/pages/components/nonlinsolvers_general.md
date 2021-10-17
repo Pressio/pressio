@@ -19,14 +19,6 @@ It is not fully complete, and it can obviously be extended.
 If you are interested in contributing or you need other methods, open an issue and/or PR.
 
 
-<!-- ### Stage A: Operators -->
-
-
-<!-- ### Stage B: Correction term -->
-
-<!-- This is chosen by pressio based on your desired algorithm. -->
-<!-- More details on this can be found in each method's documentation. -->
-
 Currently, we support the following algorithms:
 
 | Name                                 | Doc                                                   | Purpose:                                                                                                                                                                                               |

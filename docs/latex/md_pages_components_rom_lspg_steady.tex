@@ -4,20 +4,27 @@ The pressio steady LSPG ROMs are designed around two main steps\+:\hypertarget{m
 You instantiate a \char`\"{}steady LSPG problem\char`\"{}, e.\+g.\+:
 
 
+
+\begin{DoxyParagraph}{}
+
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{auto} problem = pressio::rom::lspg::create\_default\_unsteady\_problem(\textcolor{comment}{/* args */});}
+\DoxyCodeLine{\textcolor{keyword}{namespace }plspg = pressio::rom::lspg;}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem    = plspg::create\_keyword\_steady\_problem(\textcolor{comment}{/* args */});}
 
 \end{DoxyCode}
+ 
+\end{DoxyParagraph}
 
+
+where {\ttfamily keyword} expresses the variant of the problem you want (more below).
 
 We currently support three variants\+:
 
+ \href{md_pages_components_rom_lspg_default_steady.html}{\texttt{ \enskip{}\quad{}Default Problem\quad{} \enskip{}  click to learn more }}
 
-\begin{DoxyItemize}
-\item Default\+: \href{md_pages_components_rom_lspg_default_steady.html}{\texttt{ link}}
-\item Hyper-\/reduced\+: \href{md_pages_components_rom_lspg_hypred_steady.html}{\texttt{ link}}
-\item Masked\+: \href{md_pages_components_rom_lspg_masked_steady.html}{\texttt{ link}}
-\end{DoxyItemize}
+ \href{md_pages_components_rom_lspg_hypred_steady.html}{\texttt{ Hyper-\/reduced Problem   click to learn more }}
+
+ \href{md_pages_components_rom_lspg_masked_steady.html}{\texttt{ \enskip{}\quad{} Masked Problem\enskip{}\quad{}  click to learn more }}
 
 Refer to each problem page for details on each specific variant.
 
@@ -30,7 +37,7 @@ The returned {\ttfamily problem} object is an instantiation of a class exposing 
 \DoxyCodeLine{\textcolor{keyword}{public}:}
 \DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* ... */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* ... */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} state\_type     = \textcolor{comment}{/* ... */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} residual\_type  = \textcolor{comment}{/* ... */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = \textcolor{comment}{/* ... */};}

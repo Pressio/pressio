@@ -27,7 +27,7 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -90,7 +95,7 @@
   <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">FomReferenceStateType</span>
-  <span class="o">&gt;</span>
+  <span class="o">&gt;</span>                                                                              <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">auto</span> <span class="n">create_default_explicit_problem</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">scheme</span><span class="p">,</span>
                                      <span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span> <span class="n">fomSystem</span><span class="p">,</span>
                                      <span class="n">DecoderType</span> <span class="o">&amp;</span> <span class="n">decoder</span><span class="p">,</span>
@@ -102,12 +107,12 @@
   <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">FomReferenceStateType</span>
-  <span class="o">&gt;</span>
+  <span class="o">&gt;</span>                                                                              <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="k">auto</span> <span class="n">create_default_implicit_problem</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">scheme</span><span class="p">,</span>
                                      <span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span> <span class="n">fomSystem</span><span class="p">,</span>
                                      <span class="n">DecoderType</span> <span class="o">&amp;</span> <span class="n">decoder</span><span class="p">,</span>
                                      <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span> <span class="n">romState</span><span class="p">,</span>
-                                     <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span> <span class="n">fomRefState</span><span class="p">)</span></pre><p>This function returns an instance of the desired Galerkin problem.</p><section id="autotoc_md100"><h3><a href="#autotoc_md100">Parameters and Requirements</a></h3><ul><li><code>scheme</code>:<ul><li>enum value to specify the stepper scheme</li><li>for doing explicit Galerkin, see <a href="md_pages_components_ode_steppers_explicit.html">explicit choices</a></li><li>for doing implicit Galerkin, seee <a href="md_pages_components_ode_steppers_implicit.html">implicit choices</a></li></ul></li><li><code>fomSystem</code>:<ul><li>instance of your FOM adapter specifying the FOM problem</li><li>Must satisfy one of the APIs suitable for Galerkin, see <a href="./md_pages_components_rom_fom_apis.html">API list</a></li></ul></li><li><code>decoder</code>:<ul><li>your decoder object</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>romState</code>:<ul><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>fomRefState</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li></ul></section></section>
+                                     <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span> <span class="n">fomRefState</span><span class="p">)</span></pre><p>This function returns an instance of the desired Galerkin problem.</p><section id="autotoc_md100"><h3><a href="#autotoc_md100">Parameters and Requirements</a></h3><ul><li><code>scheme</code>:<ul><li>enum value to specify the stepper scheme</li><li>(1) explicit Galerkin, see <a href="md_pages_components_ode_steppers_explicit.html">valid enum scheme choices</a></li><li>(2) implicit Galerkin, seee <a href="md_pages_components_ode_steppers_implicit.html">valid enum scheme choices</a></li></ul></li><li><code>fomSystem</code>:<ul><li>instance of your FOM adapter specifying the FOM problem</li><li>Must satisfy one of the APIs suitable for Galerkin, see <a href="./md_pages_components_rom_fom_apis.html">API list</a></li></ul></li><li><code>decoder</code>:<ul><li>your decoder object</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>romState</code>:<ul><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>fomRefState</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li></ul><p><br /></p><div class="m-button m-primary"><a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit.html"><div class="m-big">Explicit Galerkin sample code 1:</div>  <div class="m-small">(for data types natively supported)</div></a></div><div class="m-button m-primary"><a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit_custom_types.html"><div class="m-big">Explicit Galerkin sample code 2:</div>  <div class="m-small">(for arbitrary data types)</div></a></div><div class="m-button m-primary"><a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit.html"><div class="m-big">Implicit Galerkin sample code 1:</div>  <div class="m-small">(for data types natively supported)</div></a></div><div class="m-button m-primary"><a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit_custom_types.html"><div class="m-big">Implicit Galerkin sample code 2:</div>  <div class="m-small">(for arbitrary data types)</div></a></div></section></section>
       </div>
     </div>
   </div>

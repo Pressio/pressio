@@ -22,7 +22,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }ProjectorType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }MaskerType}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                              (1)}
 \DoxyCodeLine{ReturnType create\_masked\_explicit\_problem(pressio::ode::StepScheme scheme,}
 \DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \& fomSystem,}
 \DoxyCodeLine{                                          DecoderType \& decoder,}
@@ -38,7 +38,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }ProjectorType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }MaskerType}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                              (2)}
 \DoxyCodeLine{ReturnType create\_masked\_implicit\_problem(pressio::ode::StepScheme scheme,}
 \DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \& fomSystem,}
 \DoxyCodeLine{                                          DecoderType \& decoder,}
@@ -56,8 +56,8 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \item {\ttfamily scheme}\+:
 \begin{DoxyItemize}
 \item enum value to specify the stepper scheme
-\item for doing explicit Galerkin, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ explicit choices}}
-\item for doing implicit Galerkin, seee \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit choices}}
+\item (1) explicit Galerkin, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ valid enum scheme choices}}
+\item (2) implicit Galerkin, seee \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ valid enum scheme choices}}
 \end{DoxyItemize}
 \item {\ttfamily fom\+System}\+:
 \begin{DoxyItemize}

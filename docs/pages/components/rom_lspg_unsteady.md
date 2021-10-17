@@ -10,17 +10,40 @@ using them involves these steps:
 
 You create an instance of one of the supported "LSPG problem" using the following API:
 
+@m_class{m-block m-primary}
+
+@par
 ```cpp
-auto problem = pressio::rom::lspg::create_<keywords>( /* args */ );
+namespace plspg   = pressio::rom::lspg;
+const auto scheme = pressio::ode::StepScheme::some_value;
+auto problem      = plspg::create_<keywords>(scheme, /* args */ );
 ```
+@endparblock
 
 where `<keywords>` express the variant of the problem you want (more below),
+`some_value` is an enum value to select the time stepping scheme (e.g., BDF1, BDF2, etc),
 and `args` are the arguments needed which depend on the variant you choose.
+
 We currently support the following variants:
 
-- Default: [link](md_pages_components_rom_lspg_default.html)
-- Hyper-reduced: [link](md_pages_components_rom_lspg_hypred.html)
-- Masked: [link](md_pages_components_rom_lspg_masked.html)
+
+@m_div{m-button m-success}
+<a href="md_pages_components_rom_lspg_default.html">
+@m_div{m-medium}&ensp;&emsp;Default Problem&emsp; &ensp; @m_enddiv
+@m_div{m-small} click to learn more @m_enddiv
+</a> @m_enddiv
+
+@m_div{m-button m-primary}
+<a href="md_pages_components_rom_lspg_hypred.html">
+@m_div{m-medium}Hyper-reduced Problem @m_enddiv
+@m_div{m-small} click to learn more @m_enddiv
+</a> @m_enddiv
+
+@m_div{m-button m-warning}
+<a href="md_pages_components_rom_lspg_masked.html">
+@m_div{m-medium}&ensp;&emsp; Masked Problem&ensp;&emsp; @m_enddiv
+@m_div{m-small} click to learn more @m_enddiv
+</a> @m_enddiv
 
 The above `create` function returns a problem object that behaves like a stepper.
 Therefore, you can use the problem like

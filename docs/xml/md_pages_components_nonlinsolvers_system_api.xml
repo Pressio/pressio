@@ -6,7 +6,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<sect1 id="md_pages_components_nonlinsolvers_system_api_1autotoc_md43">
+<sect1 id="md_pages_components_nonlinsolvers_system_api_1autotoc_md42">
 <title>Residual-Jacobian API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemResJac</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -37,7 +37,7 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_system_api_1autotoc_md44">
+<sect1 id="md_pages_components_nonlinsolvers_system_api_1autotoc_md43">
 <title>Hessian-Gradient API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemHessGrad</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

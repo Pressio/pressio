@@ -11,15 +11,18 @@
 <sect1 id="md_pages_components_rom_lspg_unsteady_1autotoc_md137">
 <title>1. Create</title>
 <para>You create an instance of one of the supported &quot;LSPG problem&quot; using the following API:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>pressio::rom::lspg::create_&lt;keywords&gt;(<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal"><sp/>);</highlight></codeline>
-</programlisting></para>
-<para>where <computeroutput>&lt;keywords&gt;</computeroutput> express the variant of the problem you want (more below), and <computeroutput>args</computeroutput> are the arguments needed which depend on the variant you choose. We currently support the following variants:</para>
-<para><itemizedlist>
-<listitem><para>Default: <ulink url="md_pages_components_rom_lspg_default.html">link</ulink></para>
-</listitem><listitem><para>Hyper-reduced: <ulink url="md_pages_components_rom_lspg_hypred.html">link</ulink></para>
-</listitem><listitem><para>Masked: <ulink url="md_pages_components_rom_lspg_masked.html">link</ulink></para>
-</listitem></itemizedlist>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-primary" /></para>
+<para><simplesect kind="par"><title></title><para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">plspg<sp/><sp/><sp/>=<sp/>pressio::rom::lspg;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pressio::ode::StepScheme::some_value;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>plspg::create_&lt;keywords&gt;(scheme,<sp/></highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+</programlisting> </para>
+</simplesect>
 </para>
+<para>where <computeroutput>&lt;keywords&gt;</computeroutput> express the variant of the problem you want (more below), <computeroutput>some_value</computeroutput> is an enum value to select the time stepping scheme (e.g., BDF1, BDF2, etc), and <computeroutput>args</computeroutput> are the arguments needed which depend on the variant you choose.</para>
+<para>We currently support the following variants:</para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-success"> <ulink url="md_pages_components_rom_lspg_default.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-medium"><ensp/><emsp/>Default Problem<emsp/> <ensp/> </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> click to learn more </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-primary"> <ulink url="md_pages_components_rom_lspg_hypred.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-medium">Hyper-reduced Problem </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> click to learn more </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-warning"> <ulink url="md_pages_components_rom_lspg_masked.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-medium"><ensp/><emsp/> Masked Problem<ensp/><emsp/> </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> click to learn more </mcss:div> </ulink> </mcss:div></para>
 <para>The above <computeroutput>create</computeroutput> function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">UnsteadyLSPGProblemClass</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
