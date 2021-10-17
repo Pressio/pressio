@@ -11,9 +11,7 @@ Public namespace: `pressio::nonlinearsolvers`
 @endparblock
 
 
-## Newton-Raphson
-
-### API, Parameters and Requirements
+## API, Parameters and Requirements
 
 ```cpp
 template<class ProblemClassType, class StateType, class LinearSolverType>
@@ -34,7 +32,7 @@ auto create_newton_raphson(const ProblemClassType & system,
   - linear solver called at each inner iteration
   - Requirements: must conform to this [API](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html)
 
-### Ops
+## Ops
 
 When using custom data types not supported in [pressio ops](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html), you need to specialize a trait class and some operations
 such that pressio can operate on your data. For the sake of explanation, suppose that you use:
@@ -96,7 +94,7 @@ void scale(ACustomStateType & v, scalar_type factor){
 }}//end namepsace pressio::ops
 ```
 
-### Example usage
+## Example usage
 ```cpp
 int main()
 {

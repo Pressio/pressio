@@ -27,7 +27,7 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -85,7 +90,9 @@
         <h1>
           rom: Unsteady LSPG
         </h1>
-<p><span class="m-text m-danger">todo</span>: finish this, add more details</p><p>The pressio Unsteady LSPG ROMs are designed such that using them involves these steps:</p><section id="autotoc_md137"><h2><a href="#autotoc_md137">1. Create</a></h2><p>You create an instance of one of the supported &quot;LSPG problem&quot; using the following API:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="o">::</span><span class="n">create_</span><span class="o">&lt;</span><span class="n">keywords</span><span class="o">&gt;</span><span class="p">(</span> <span class="cm">/* args */</span> <span class="p">);</span></pre><p>where <code>&lt;keywords&gt;</code> express the variant of the problem you want (more below), and <code>args</code> are the arguments needed which depend on the variant you choose. We currently support the following variants:</p><ul><li>Default: <a href="md_pages_components_rom_lspg_default.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_lspg_hypred.html">link</a></li><li>Masked: <a href="md_pages_components_rom_lspg_masked.html">link</a></li></ul><p>The above <code>create</code> function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).</p><pre class="m-code"><span class="k">class</span> <span class="nc">UnsteadyLSPGProblemClass</span>
+<p><span class="m-text m-danger">todo</span>: finish this, add more details</p><p>The pressio Unsteady LSPG ROMs are designed such that using them involves these steps:</p><section id="autotoc_md137"><h2><a href="#autotoc_md137">1. Create</a></h2><p>You create an instance of one of the supported &quot;LSPG problem&quot; using the following API:</p><aside class="m-block m-primary"><pre class="m-code"><span class="k">namespace</span> <span class="n">plspg</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="p">;</span>
+<span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="o">::</span><span class="n">some_value</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">problem</span>      <span class="o">=</span> <span class="n">plspg</span><span class="o">::</span><span class="n">create_</span><span class="o">&lt;</span><span class="n">keywords</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span> <span class="p">);</span></pre></aside><p>where <code>&lt;keywords&gt;</code> express the variant of the problem you want (more below), <code>some_value</code> is an enum value to select the time stepping scheme (e.g., BDF1, BDF2, etc), and <code>args</code> are the arguments needed which depend on the variant you choose.</p><p>We currently support the following variants:</p><div class="m-button m-success"><a href="md_pages_components_rom_lspg_default.html"><div class="m-medium">&ensp;&emsp;Default Problem&emsp; &ensp;</div>  <div class="m-small">click to learn more</div></a></div><div class="m-button m-primary"><a href="md_pages_components_rom_lspg_hypred.html"><div class="m-medium">Hyper-reduced Problem</div>  <div class="m-small">click to learn more</div></a></div><div class="m-button m-warning"><a href="md_pages_components_rom_lspg_masked.html"><div class="m-medium">&ensp;&emsp; Masked Problem&ensp;&emsp;</div>  <div class="m-small">click to learn more</div></a></div><p>The above <code>create</code> function returns a problem object that behaves like a stepper. Therefore, you can use the problem like you would with any other stepper object (more on this below).</p><pre class="m-code"><span class="k">class</span> <span class="nc">UnsteadyLSPGProblemClass</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef to access the problem&#39;s traits */</span><span class="p">;</span>

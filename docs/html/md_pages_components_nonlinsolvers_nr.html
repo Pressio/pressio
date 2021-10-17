@@ -27,7 +27,7 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -85,10 +90,10 @@
         <h1>
           Nonlinear Solvers: Newton-Raphson
         </h1>
-<div class="m-note m-default"><p>Defined in header <code>&lt;pressio/solvers_nonlinear.hpp&gt;</code></p><p>Public namespace: <code>pressio::nonlinearsolvers</code></p></div><section id="autotoc_md38"><h2><a href="#autotoc_md38">Newton-Raphson</a></h2><section id="autotoc_md39"><h3><a href="#autotoc_md39">API, Parameters and Requirements</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ProblemClassType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">LinearSolverType</span><span class="o">&gt;</span>
+<div class="m-note m-default"><p>Defined in header <code>&lt;pressio/solvers_nonlinear.hpp&gt;</code></p><p>Public namespace: <code>pressio::nonlinearsolvers</code></p></div><section id="autotoc_md38"><h2><a href="#autotoc_md38">API, Parameters and Requirements</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ProblemClassType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">LinearSolverType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_newton_raphson</span><span class="p">(</span><span class="k">const</span> <span class="n">ProblemClassType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">,</span>
                            <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
-                           <span class="n">LinearSolverType</span> <span class="o">&amp;&amp;</span> <span class="n">lsolver</span><span class="p">);</span></pre><ul><li><code>system</code>:<ul><li>instance of the problem you want to solve</li><li>Requirements: must conform to either the residual-jacobian API or the fused residual-jacobian API</li></ul></li><li><code>state</code>:<ul><li>your state</li><li>Requirements: must be copy constructible</li></ul></li><li><code>lsolver</code>:<ul><li>linear solver called at each inner iteration</li><li>Requirements: must conform to this <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html">API</a></li></ul></li></ul></section><section id="autotoc_md40"><h3><a href="#autotoc_md40">Ops</a></h3><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</p><pre class="m-code"><span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+                           <span class="n">LinearSolverType</span> <span class="o">&amp;&amp;</span> <span class="n">lsolver</span><span class="p">);</span></pre><ul><li><code>system</code>:<ul><li>instance of the problem you want to solve</li><li>Requirements: must conform to either the residual-jacobian API or the fused residual-jacobian API</li></ul></li><li><code>state</code>:<ul><li>your state</li><li>Requirements: must be copy constructible</li></ul></li><li><code>lsolver</code>:<ul><li>linear solver called at each inner iteration</li><li>Requirements: must conform to this <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html">API</a></li></ul></li></ul></section><section id="autotoc_md39"><h2><a href="#autotoc_md39">Ops</a></h2><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</p><pre class="m-code"><span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="n">ACustomStateType</span><span class="p">;</span>    <span class="c1">//this can be any type</span>
 <span class="k">using</span> <span class="n">jacobian_type</span> <span class="o">=</span> <span class="n">ACustomJacobianType</span><span class="p">;</span> <span class="c1">//this can be any type</span></pre><p>Then you need to provide the following specializations:</p><pre class="m-code"><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
 
@@ -135,7 +140,7 @@
   <span class="cm">/* scale v elementwise by factor</span>
 <span class="cm">}</span>
 
-<span class="cm">}}//end namepsace pressio::ops</span></pre></section><section id="autotoc_md41"><h3><a href="#autotoc_md41">Example usage</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="cm">}}//end namepsace pressio::ops</span></pre></section><section id="autotoc_md40"><h2><a href="#autotoc_md40">Example usage</a></h2><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">// assuming that:</span>
   <span class="c1">// problem_t is a problem class that meets API</span>
@@ -152,7 +157,7 @@
   <span class="k">namespace</span> <span class="n">pnls</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">NonLinSolver</span> <span class="o">=</span> <span class="n">pnls</span><span class="o">::</span><span class="n">create_newton_raphson</span><span class="p">(</span><span class="n">myProblem</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">linearSolverObj</span><span class="p">);</span>
   <span class="n">NonLinSolver</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">myProblem</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
-<span class="p">}</span></pre></section></section>
+<span class="p">}</span></pre></section>
       </div>
     </div>
   </div>

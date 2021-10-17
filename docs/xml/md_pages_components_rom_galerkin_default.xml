@@ -23,7 +23,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DecoderType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RomStateType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomReferenceStateType</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1)</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_explicit_problem(pressio::ode::StepScheme<sp/>scheme,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
@@ -35,7 +35,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DecoderType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RomStateType,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomReferenceStateType</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(2)</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_implicit_problem(pressio::ode::StepScheme<sp/>scheme,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSystem,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
@@ -48,8 +48,8 @@
 <para><itemizedlist>
 <listitem><para><computeroutput>scheme</computeroutput>:<itemizedlist>
 <listitem><para>enum value to specify the stepper scheme</para>
-</listitem><listitem><para>for doing explicit Galerkin, see <ulink url="md_pages_components_ode_steppers_explicit.html">explicit choices</ulink></para>
-</listitem><listitem><para>for doing implicit Galerkin, seee <ulink url="md_pages_components_ode_steppers_implicit.html">implicit choices</ulink></para>
+</listitem><listitem><para>(1) explicit Galerkin, see <ulink url="md_pages_components_ode_steppers_explicit.html">valid enum scheme choices</ulink></para>
+</listitem><listitem><para>(2) implicit Galerkin, seee <ulink url="md_pages_components_ode_steppers_implicit.html">valid enum scheme choices</ulink></para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para><computeroutput>fomSystem</computeroutput>:<itemizedlist>
@@ -70,11 +70,17 @@
 <listitem><para>your FOM reference state that is used when reconstructing the FOM state</para>
 </listitem><listitem><para>must be copy-constructible and the following must be true:<linebreak/>
  <programlisting filename=".cpp"><codeline><highlight class="normal">std::is_same&lt;FomReferenceStateType,<sp/>typename<sp/>DecoderType::fom_state_type&gt;::value<sp/>==<sp/></highlight><highlight class="keyword">true</highlight></codeline>
-</programlisting> </para>
+</programlisting></para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
 </para>
+<para><linebreak/>
+</para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-primary"> <ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-big">Explicit Galerkin sample code 1: </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> (for data types natively supported) </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-primary"> <ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit_custom_types.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-big"> Explicit Galerkin sample code 2: </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> (for arbitrary data types) </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-primary"> <ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-big">Implicit Galerkin sample code 1: </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> (for data types natively supported) </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-primary"> <ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit_custom_types.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-big"> Implicit Galerkin sample code 2: </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> (for arbitrary data types) </mcss:div> </ulink> </mcss:div> </para>
 </sect2>
 </sect1>
     </detaileddescription>

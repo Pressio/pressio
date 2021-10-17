@@ -28,7 +28,7 @@ template<
   class RomStateType,
   class FomReferenceStateType,
   class ProjectorType
-  >
+  >																				 (1)
 auto create_hyperreduced_explicit_problem(pressio::ode::StepScheme scheme,
 										  const FomSystemType & fomSystem,
 									      DecoderType & decoder,
@@ -42,7 +42,7 @@ template<
   class RomStateType,
   class FomReferenceStateType,
   class ProjectorType
-  >
+  >																				 (2)
 auto create_hyperreduced_implicit_problem(pressio::ode::StepScheme scheme,
 										  const FomSystemType & fomSystem,
 									      DecoderType & decoder,
@@ -56,8 +56,8 @@ This function returns an instance of the desired Galerkin problem.
 
 - `scheme`:
   - enum value to specify the stepper scheme
-  - for doing explicit Galerkin, see [explicit choices](md_pages_components_ode_steppers_explicit.html)
-  - for doing implicit Galerkin, seee [implicit choices](md_pages_components_ode_steppers_implicit.html)
+  - (1) explicit Galerkin, see [valid enum scheme choices](md_pages_components_ode_steppers_explicit.html)
+  - (2) implicit Galerkin, seee [valid enum scheme choices](md_pages_components_ode_steppers_implicit.html)
 
 - `fomSystem`:
   - instance of your FOM adapter specifying the FOM problem <br/>

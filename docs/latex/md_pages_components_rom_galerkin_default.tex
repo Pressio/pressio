@@ -20,7 +20,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                              (1)}
 \DoxyCodeLine{\textcolor{keyword}{auto} create\_default\_explicit\_problem(pressio::ode::StepScheme scheme,}
 \DoxyCodeLine{                                     \textcolor{keyword}{const} FomSystemType \& fomSystem,}
 \DoxyCodeLine{                                     DecoderType \& decoder,}
@@ -32,7 +32,7 @@ Before you read this page, make sure you read the \href{md_pages_components_rom_
 \DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
-\DoxyCodeLine{  >}
+\DoxyCodeLine{  >                                                                              (2)}
 \DoxyCodeLine{\textcolor{keyword}{auto} create\_default\_implicit\_problem(pressio::ode::StepScheme scheme,}
 \DoxyCodeLine{                                     \textcolor{keyword}{const} FomSystemType \& fomSystem,}
 \DoxyCodeLine{                                     DecoderType \& decoder,}
@@ -48,8 +48,8 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \item {\ttfamily scheme}\+:
 \begin{DoxyItemize}
 \item enum value to specify the stepper scheme
-\item for doing explicit Galerkin, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ explicit choices}}
-\item for doing implicit Galerkin, seee \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit choices}}
+\item (1) explicit Galerkin, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ valid enum scheme choices}}
+\item (2) implicit Galerkin, seee \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ valid enum scheme choices}}
 \end{DoxyItemize}
 \item {\ttfamily fom\+System}\+:
 \begin{DoxyItemize}
@@ -74,6 +74,17 @@ This function returns an instance of the desired Galerkin problem.\hypertarget{m
 \DoxyCodeLine{std::is\_same<FomReferenceStateType, typename DecoderType::fom\_state\_type>::value == \textcolor{keyword}{true}}
 
 \end{DoxyCode}
- 
+
 \end{DoxyItemize}
 \end{DoxyItemize}
+
+~\newline
+
+
+ \href{https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit.html}{\texttt{ Explicit Galerkin sample code 1\+:   (for data types natively supported) }}
+
+ \href{https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit_custom_types.html}{\texttt{  Explicit Galerkin sample code 2\+:  (for arbitrary data types) }}
+
+ \href{https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit.html}{\texttt{ Implicit Galerkin sample code 1\+:   (for data types natively supported) }}
+
+ \href{https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit_custom_types.html}{\texttt{  Implicit Galerkin sample code 2\+:  (for arbitrary data types) }} 

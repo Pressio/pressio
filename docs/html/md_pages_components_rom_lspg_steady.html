@@ -27,7 +27,7 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -85,12 +90,13 @@
         <h1>
           rom: Steady LSPG
         </h1>
-<p><span class="m-text m-danger">todo</span>: write this better</p><p>The pressio steady LSPG ROMs are designed around two main steps:</p><section id="autotoc_md134"><h2><a href="#autotoc_md134">1. Create</a></h2><p>You instantiate a &quot;steady LSPG problem&quot;, e.g.:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="o">::</span><span class="n">create_default_unsteady_problem</span><span class="p">(</span><span class="cm">/* args */</span><span class="p">);</span></pre><p>We currently support three variants:</p><ul><li>Default: <a href="md_pages_components_rom_lspg_default_steady.html">link</a></li><li>Hyper-reduced: <a href="md_pages_components_rom_lspg_hypred_steady.html">link</a></li><li>Masked: <a href="md_pages_components_rom_lspg_masked_steady.html">link</a></li></ul><p>Refer to each problem page for details on each specific variant.</p><p>The returned <code>problem</code> object is an instantiation of a class exposing the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">SteadyLspgProblem</span>
+<p><span class="m-text m-danger">todo</span>: write this better</p><p>The pressio steady LSPG ROMs are designed around two main steps:</p><section id="autotoc_md134"><h2><a href="#autotoc_md134">1. Create</a></h2><p>You instantiate a &quot;steady LSPG problem&quot;, e.g.:</p><aside class="m-block m-primary"><pre class="m-code"><span class="k">namespace</span> <span class="n">plspg</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">problem</span>    <span class="o">=</span> <span class="n">plspg</span><span class="o">::</span><span class="n">create_keyword_steady_problem</span><span class="p">(</span><span class="cm">/* args */</span><span class="p">);</span></pre></aside><p>where <code>keyword</code> expresses the variant of the problem you want (more below).</p><p>We currently support three variants:</p><div class="m-button m-success"><a href="md_pages_components_rom_lspg_default_steady.html"><div class="m-medium">&ensp;&emsp;Default Problem&emsp; &ensp;</div>  <div class="m-small">click to learn more</div></a></div><div class="m-button m-primary"><a href="md_pages_components_rom_lspg_hypred_steady.html"><div class="m-medium">Hyper-reduced Problem</div>  <div class="m-small">click to learn more</div></a></div><div class="m-button m-warning"><a href="md_pages_components_rom_lspg_masked_steady.html"><div class="m-medium">&ensp;&emsp; Masked Problem&ensp;&emsp;</div>  <div class="m-small">click to learn more</div></a></div><p>Refer to each problem page for details on each specific variant.</p><p>The returned <code>problem</code> object is an instantiation of a class exposing the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">SteadyLspgProblem</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef with trait class */</span><span class="p">;</span>
 
-  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* ... */</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">state_type</span>     <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
