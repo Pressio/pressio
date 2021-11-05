@@ -67,7 +67,7 @@ TEST(rom_galerkin_test, const_time_masked_explicit_correctness_tpetra)
   const scalar_t dt = 1.; 
   const int num_steps = 2;
   ObserverA obs;
-  pressio::ode::advance_n_steps_and_observe(problem.stepper(), romState, 0., dt, num_steps, obs);
+  pressio::ode::advance_n_steps_and_observe(problem, romState, 0., dt, num_steps, obs);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 0.);
   EXPECT_DOUBLE_EQ(romState[1], 2611.);

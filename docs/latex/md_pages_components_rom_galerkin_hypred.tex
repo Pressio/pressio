@@ -2,20 +2,17 @@
 
 Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} \hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md100}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_hypred_autotoc_md100}
-Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, that using a pressio Galerkin problem involves three steps\+:
-
-
-\begin{DoxyEnumerate}
-\item {\itshape create}\+: you create an instance of a \char`\"{}\+Galerkin problem\char`\"{}
-\item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
-\item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
-\end{DoxyEnumerate}
+Public namespace\+: {\ttfamily pressio\+::rom\+::galerkin} 
 
 ~\newline
- \DoxyHorRuler{0}
- ~\newline
-\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md101}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_hypred_autotoc_md101}
+
+
+
+
+\begin{DoxyParagraph}{Prerequisite reading\+:}
+Before you read this page, make sure you read the \href{md_pages_components_rom_galerkin.html}{\texttt{ overall design idea of Galerkin}}. 
+\end{DoxyParagraph}
+\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md102}{}\doxysection{API}\label{md_pages_components_rom_galerkin_hypred_autotoc_md102}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -24,13 +21,13 @@ Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, t
 \DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }ProjectorType}
-\DoxyCodeLine{  >}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_explicit\_problem(pressio::ode::StepScheme,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \&,}
-\DoxyCodeLine{                                          DecoderType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \&);}
+\DoxyCodeLine{  >                                                                              (1)}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_explicit\_problem(pressio::ode::StepScheme scheme,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \& fomSystem,}
+\DoxyCodeLine{                                          DecoderType \& decoder,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \& romState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \& fomRefState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \& projector);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
@@ -38,38 +35,41 @@ Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, t
 \DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType,}
 \DoxyCodeLine{  \textcolor{keyword}{class }ProjectorType}
-\DoxyCodeLine{  >}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_implicit\_problem(pressio::ode::StepScheme,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \&,}
-\DoxyCodeLine{                                          DecoderType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \&,}
-\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \&);}
+\DoxyCodeLine{  >                                                                              (2)}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_hyperreduced\_implicit\_problem(pressio::ode::StepScheme scheme,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomSystemType \& fomSystem,}
+\DoxyCodeLine{                                          DecoderType \& decoder,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} RomStateType \& romState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} FomReferenceStateType \& fomRefState,}
+\DoxyCodeLine{                                          \textcolor{keyword}{const} ProjectorType \& projector);}
 
 \end{DoxyCode}
- This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md102}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_hypred_autotoc_md102}
+ This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md103}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_hypred_autotoc_md103}
 
 \begin{DoxyItemize}
-\item {\ttfamily Step\+Scheme}\+:
+\item {\ttfamily scheme}\+:
 \begin{DoxyItemize}
-\item enum value to specify stepper
+\item enum value to specify the stepper scheme
+\item (1) explicit Galerkin, see \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ valid enum scheme choices}}
+\item (2) implicit Galerkin, seee \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ valid enum scheme choices}}
 \end{DoxyItemize}
-\item {\ttfamily Fom\+System\+Type}\+:
+\item {\ttfamily fom\+System}\+:
 \begin{DoxyItemize}
-\item your adapter class type specifying the FOM problem
+\item instance of your FOM adapter specifying the FOM problem ~\newline
+
 \item must satisfy one of the APIs suitable for Galerkin, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ API list}}
 \end{DoxyItemize}
-\item {\ttfamily Decoder\+Type}\+:
+\item {\ttfamily decoder}\+:
 \begin{DoxyItemize}
-\item decoder class type
+\item decoder object
 \item must satify the requirements listed \href{md_pages_components_rom_decoder.html}{\texttt{ here}}
 \end{DoxyItemize}
-\item {\ttfamily Rom\+State\+Type}\+:
+\item {\ttfamily rom\+State}\+:
 \begin{DoxyItemize}
-\item ROM state type
+\item ROM state
 \item currently, it must be either an Eigen vector or a Kokkos 1D view
 \end{DoxyItemize}
-\item {\ttfamily Fom\+Reference\+State\+Type}\+:
+\item {\ttfamily fom\+Ref\+State}\+:
 \begin{DoxyItemize}
 \item your FOM reference state that is used when reconstructing the FOM state
 \item must be copy-\/constructible and the following must be true\+:~\newline
@@ -80,44 +80,12 @@ Recall from \href{md_pages_components_rom_galerkin.html}{\texttt{ this page}}, t
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\item {\ttfamily Projector\+Type}\+:
+\item {\ttfamily projector}\+:
 \begin{DoxyItemize}
-\item an operator is responsible for projectng the FOM operators onto the reduced space
+\item operator responsible for projectng the FOM operators onto the reduced space
 \item must be a functor with a specific API, see details below
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md103}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_galerkin_hypred_autotoc_md103}
-An instance of the hyper-\/reduced Galerkin problem meets the same API as the \href{md_pages_components_rom_galerkin_default.html}{\texttt{ default problem}}.
-
-A hyper-\/reduced Galerkin problem has these traits\+:
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{auto} problem = create\_default\_problem(...);}
-\DoxyCodeLine{\textcolor{keyword}{using} traits = pressio::Traits<decltype(problem)>;}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{// for the explicit case, one can access the following traits:}}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::fom\_system\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::scalar\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_jac\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_state\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_velocity\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::projector\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{// for the implicit case one has:}}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::fom\_system\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::scalar\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_jac\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_state\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_residual\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_jacobian\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::projector\_type;}
-\DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
-
-\end{DoxyCode}
-\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md104}{}\doxysubsection{Projector}\label{md_pages_components_rom_galerkin_hypred_autotoc_md104}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_hypred_autotoc_md104}{}\doxysection{Projector}\label{md_pages_components_rom_galerkin_hypred_autotoc_md104}
 todo\+: explain what projectos is for since it is critical.
 
 The projector must be a functor as follows\+:

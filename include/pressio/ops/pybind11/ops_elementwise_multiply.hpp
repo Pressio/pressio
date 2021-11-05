@@ -68,7 +68,7 @@ elementwise_multiply
 
   assert(extent(x, 0)==extent(z, 0));
   assert(extent(z, 0)==extent(y, 0));
-  for (std::size_t i=0; i<y.extent(0); ++i){
+  for (std::size_t i=0; i<extent(y, 0); ++i){
     y(i) = beta*y(i) + alpha*x(i)*z(i);
   }
 }
@@ -91,7 +91,7 @@ elementwise_multiply
   assert(x.ndim() == y.ndim());
 
   if(x.ndim()==1){
-    for (std::size_t i=0; i<y.extent(0); ++i){
+    for (std::size_t i=0; i<extent(y,0); ++i){
       y(i) = beta*y(i) + alpha*x(i)*z(i);
     }
   }

@@ -25,9 +25,9 @@
         <div class="m-row">
           <ol class="m-col-t-12 m-col-m-none">
             <li><a href="md_pages_introduction.html">Introduction</a></li>
-            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -58,7 +63,7 @@
                 <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_unsteady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -85,7 +90,7 @@
         <h1>
           Linear solvers
         </h1>
-<div class="m-note m-default"><p>Defined in header <code>&lt;pressio/solvers_linear.hpp&gt;</code></p><p>Public namespace: <code>pressio::linearsolvers</code></p></div><section id="autotoc_md3"><h2><a href="#autotoc_md3">Overview</a></h2><p>We clearly state upfront that this component of pressio is not a self-contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an <strong>intentional</strong> choice: there exist already many open-source highly-optimized libraries that do so in both a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</p><aside class="m-block m-warning"><p>The primary goal of the pressio&#x27;s linear solvers is to support usecases that are needed for ROMs.</p></aside><p>As discussed in the introduction, ROMs involve &quot;small&quot; <em>dense</em> systems that suitably fit on a <em>single compute node</em>. Pressio&#x27;s linear solvers are thus designed and implemented to be wrappers (exposing a common interface) to existing shared-memory linear solvers libraries.</p><p>Currently, we support linear systems involving either Eigen or Kokkos data structures. The reason for this is that Eigen and Kokkos are the preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed. Note that even if the scope of the linear solvers is limited, we still emphasize that, like all of the others subpackages in pressio, it can be used idenpendetly.</p></section><section id="autotoc_md4"><h2><a href="#autotoc_md4">API</a></h2><pre class="m-code"><span class="n">pressio</span><span class="o">::</span><span class="n">linearsolvers</span><span class="o">::</span><span class="n">Solver</span><span class="o">&lt;</span><span class="n">Tag</span><span class="p">,</span> <span class="n">MatrixType</span><span class="o">&gt;</span><span class="p">;</span></pre><ul><li><code>Tag</code>: tag type specifying which type of solver to use (more on this below)</li><li><code>MatrixType</code>: data type of the matrix of the linear system to solve (used to choose the proper specialization).</li></ul><p>We distinguish between iterative and direct solvers. Obviously, depending on the structure of the matrix, some methods might not be applicable or might not be efficient.</p><table class="m-table"><thead><tr><th>Tag</th><th>Description</th><th>Works for:</th></tr></thead><tbody><tr><td><code>iterative::CG</code></td><td>Conjugate-gradient</td><td>Eigen</td></tr><tr><td><code>iterative::Bicgstab</code></td><td>Biconjugate gradient stabilized</td><td>Eigen</td></tr><tr><td><code>iterative::LSCG</code></td><td>Conjugate-gradient</td><td>Eigen</td></tr><tr><td><code>direct::HouseholderQR</code></td><td>Uses on householder QR</td><td>Eigen</td></tr><tr><td><code>direct::ColPivHouseholderQR</code></td><td>Uses on Householder QR with pivoting</td><td>Eigen</td></tr><tr><td><code>direct::PartialPivLU</code></td><td>Uses LU factorization with partial pivoting</td><td>Eigen</td></tr><tr><td><code>direct::potrsL</code></td><td>Uses Cholesky, lower part</td><td>Kokkos</td></tr><tr><td><code>direct::potrsU</code></td><td>Uses Cholesky, upper part</td><td>Kokkos</td></tr><tr><td><code>direct::getrs</code></td><td>Uses LU factorization</td><td>Kokkos</td></tr><tr><td><code>direct::geqrf</code></td><td>Uses QR fatorization</td><td>Kokkos</td></tr></tbody></table></section><section id="autotoc_md5"><h2><a href="#autotoc_md5">Class Synopsis</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">MatrixType</span><span class="o">&gt;</span>
+<div class="m-note m-default"><p>Defined in header <code>&lt;pressio/solvers_linear.hpp&gt;</code></p><p>Public namespace: <code>pressio::linearsolvers</code></p></div><section id="autotoc_md3"><h2><a href="#autotoc_md3">Overview</a></h2><p>We clearly state upfront that this component of pressio is not a self-contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an <strong>intentional</strong> choice: there exist already many open-source highly-optimized libraries that provide linear solvers for both shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</p><div class="m-note m-info"><p>The primary goal of the pressio&#x27;s linear solvers is to support usecases that are needed for ROMs. As discussed in the introduction, ROMs involve &quot;small&quot; <em>dense</em> systems that suitably fit on a <em>single compute node</em>. Pressio&#x27;s linear solvers are thus designed and implemented to be wrappers (exposing a common interface) to existing shared-memory linear solvers libraries.</p></div><p>Currently, we support linear systems using either Eigen or Kokkos containers. The reason for this is that Eigen and Kokkos are the supported and preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed. Note that even if the scope of the linear solvers is limited, we still emphasize that, like all of the others subpackages in pressio, it can be used idenpendetly.</p><section id="autotoc_md4"><h3><a href="#autotoc_md4">Why do we need it?</a></h3><p><span class="m-text m-danger">todo</span>: explain that we need to a uniform interface.</p></section></section><section id="autotoc_md5"><h2><a href="#autotoc_md5">API</a></h2><pre class="m-code"><span class="n">pressio</span><span class="o">::</span><span class="n">linearsolvers</span><span class="o">::</span><span class="n">Solver</span><span class="o">&lt;</span><span class="n">Tag</span><span class="p">,</span> <span class="n">MatrixType</span><span class="o">&gt;</span><span class="p">;</span></pre><ul><li><code>Tag</code>: tag type specifying which type of solver to use (more on this below)</li><li><code>MatrixType</code>: data type of the matrix of the linear system to solve (used to choose the proper specialization).</li></ul><p>We distinguish between iterative and direct solvers. Obviously, depending on the structure of the matrix, some methods might not be applicable or might not be efficient.</p><table class="m-table"><thead><tr><th>Tag</th><th>Description</th><th>Works for:</th></tr></thead><tbody><tr><td><code>iterative::CG</code></td><td>Conjugate-gradient</td><td>Eigen</td></tr><tr><td><code>iterative::Bicgstab</code></td><td>Biconjugate gradient stabilized</td><td>Eigen</td></tr><tr><td><code>iterative::LSCG</code></td><td>Conjugate-gradient</td><td>Eigen</td></tr><tr><td><code>direct::HouseholderQR</code></td><td>Uses on householder QR</td><td>Eigen</td></tr><tr><td><code>direct::ColPivHouseholderQR</code></td><td>Uses on Householder QR with pivoting</td><td>Eigen</td></tr><tr><td><code>direct::PartialPivLU</code></td><td>Uses LU factorization with partial pivoting</td><td>Eigen</td></tr><tr><td><code>direct::potrsL</code></td><td>Uses Cholesky, lower part</td><td>Kokkos</td></tr><tr><td><code>direct::potrsU</code></td><td>Uses Cholesky, upper part</td><td>Kokkos</td></tr><tr><td><code>direct::getrs</code></td><td>Uses LU factorization</td><td>Kokkos</td></tr><tr><td><code>direct::geqrf</code></td><td>Uses QR fatorization</td><td>Kokkos</td></tr></tbody></table></section><section id="autotoc_md6"><h2><a href="#autotoc_md6">Class Synopsis</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">MatrixType</span><span class="o">&gt;</span>
 <span class="k">class</span> <span class="nc">LinearSolver</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
@@ -93,7 +98,7 @@
 
   <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">RhsType</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">solve</span><span class="p">(</span><span class="k">const</span> <span class="n">MatrixType</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RhsType</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">,</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">);</span>
-<span class="p">};</span></pre></section><section id="autotoc_md6"><h2><a href="#autotoc_md6">Example Usage</a></h2><p><span class="m-text m-danger">todo</span>: need to discuss difference between iterative and direct</p><pre class="m-code"><span class="c1">//</span>
+<span class="p">};</span></pre></section><section id="autotoc_md7"><h2><a href="#autotoc_md7">Example Usage</a></h2><p><span class="m-text m-danger">todo</span>: need to discuss difference between iterative and direct</p><pre class="m-code"><span class="c1">//</span>
 <span class="c1">// we want to solve `Ax = b`</span>
 <span class="c1">//</span>
 

@@ -25,9 +25,9 @@
         <div class="m-row">
           <ol class="m-col-t-12 m-col-m-none">
             <li><a href="md_pages_introduction.html">Introduction</a></li>
-            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -58,7 +63,7 @@
                 <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_unsteady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -85,16 +90,16 @@
         <h1>
           rom: LSPG: steady default problem
         </h1>
-<div class="m-note m-default"><p>Defined in: <code>&lt;pressio/rom_lspg.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom::lspg</code></p></div><section id="autotoc_md118"><h2><a href="#autotoc_md118">Overview</a></h2></section><section id="autotoc_md119"><h2><a href="#autotoc_md119">1. Creating a problem instance</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span>
+<div class="m-note m-default"><p>Defined in: <code>&lt;pressio/rom_lspg.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom::lspg</code></p></div><p><br /></p><aside class="m-block m-warning"><h3>Prerequisite reading:</h3><p>Before you read this page, make sure you read the <a href="md_pages_components_rom_lspg_steady.html">overall design idea behind steady LSPG</a>.</p></aside><section id="autotoc_md115"><h2><a href="#autotoc_md115">API</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span>
   <span class="k">class</span> <span class="nc">FomSystemType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">FomReferenceStateType</span>
   <span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_default_steady_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="n">DecoderType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span><span class="p">);</span>
+<span class="k">auto</span> <span class="n">create_default_steady_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span> <span class="n">fomSystem</span><span class="p">,</span>
+                                   <span class="n">DecoderType</span> <span class="o">&amp;</span> <span class="n">decoder</span><span class="p">,</span>
+                                   <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span> <span class="n">romState</span><span class="p">,</span>
+                                   <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span> <span class="n">fomRefState</span><span class="p">);</span>
 
 <span class="k">template</span><span class="o">&lt;</span>
   <span class="k">class</span> <span class="nc">FomSystemType</span><span class="p">,</span>
@@ -103,21 +108,11 @@
   <span class="k">class</span> <span class="nc">FomReferenceStateType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">PreconditionerType</span>
   <span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_default_steady_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="n">DecoderType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span><span class="p">,</span>
-                                   <span class="k">const</span> <span class="n">PreconditionerType</span> <span class="o">&amp;</span><span class="p">);</span></pre><section id="autotoc_md120"><h3><a href="#autotoc_md120">Parameters and Requirements</a></h3><ul><li><code>FomSystemType</code>:<ul><li>your adapter class type specifying the FOM problem.<br /></li><li>Must satisfy the steady API, see <a href="./md_pages_components_rom_fom_apis.html">here</a></li></ul></li><li><code>DecoderType</code>:<ul><li>decoder class type</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>RomStateType</code>:<ul><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>FomReferenceStateType</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li></ul></section><section id="autotoc_md121"><h3><a href="#autotoc_md121">Problem class API</a></h3><p>A problem meets the following interface:</p><pre class="m-code"><span class="k">class</span> <span class="nc">SteadyLspgProblem</span>
-<span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-  <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef with trait class */</span><span class="p">;</span>
-
-  <span class="c1">// returns the underlying system to use to solve the problem</span>
-  <span class="k">auto</span> <span class="o">&amp;</span> <span class="nf">system</span><span class="p">();</span>
-
-  <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
-  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></section></section><section id="autotoc_md122"><h2><a href="#autotoc_md122">2.,3. Extract and Solve</a></h2><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="k">auto</span> <span class="n">create_default_steady_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span> <span class="n">fomSystem</span><span class="p">,</span>
+                                   <span class="n">DecoderType</span> <span class="o">&amp;</span> <span class="n">decoder</span><span class="p">,</span>
+                                   <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span> <span class="n">romState</span><span class="p">,</span>
+                                   <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span> <span class="n">fomRefState</span><span class="p">,</span>
+                                   <span class="k">const</span> <span class="n">PreconditionerType</span> <span class="o">&amp;</span> <span class="n">preconditioner</span><span class="p">);</span></pre><section id="autotoc_md116"><h3><a href="#autotoc_md116">Parameters and Requirements</a></h3><ul><li><code>fomSystem</code>:<ul><li>instance of your FOM adapter specifying the FOM problem</li><li>must satisfy the steady API, see <a href="./md_pages_components_rom_fom_apis.html">here</a></li></ul></li><li><code>decoder</code>:<ul><li>decoder object</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>romState</code>:<ul><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>fomRefState</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li></ul></section></section><section id="autotoc_md117"><h2><a href="#autotoc_md117">Solve</a></h2><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
 <span class="c1">// we assume the rom_state, decoder, fom_system, fom_reference_state already exist</span>
 
@@ -125,10 +120,9 @@
 
 <span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">plspg</span><span class="o">::</span><span class="n">create_default_steady_problem</span><span class="p">(</span><span class="n">fom_system</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span>
                                                     <span class="n">rom_state</span><span class="p">,</span> <span class="n">fom_reference_state</span><span class="p">);</span>
-<span class="k">auto</span> <span class="o">&amp;</span> <span class="n">system</span> <span class="o">=</span> <span class="n">problem</span><span class="p">.</span><span class="n">system</span><span class="p">();</span>
 
 <span class="c1">// create nonlinear least-squares solver, for example:</span>
-<span class="k">auto</span> <span class="n">nonlinsolver</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">create_gauss_newton</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">rom_state</span><span class="p">,</span> <span class="p">...);</span>
+<span class="k">auto</span> <span class="n">nonlinsolver</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">create_gauss_newton</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">rom_state</span><span class="p">,</span> <span class="p">...);</span>
 <span class="n">nonlinsolver</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">rom_state</span><span class="p">);</span>
 <span class="c1">//...</span>
 <span class="p">}</span></pre></section>

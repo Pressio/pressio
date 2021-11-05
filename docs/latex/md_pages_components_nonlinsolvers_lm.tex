@@ -2,8 +2,8 @@
 
 Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md32}{}\doxysection{Levenberg–\+Marquardt}\label{md_pages_components_nonlinsolvers_lm_autotoc_md32}
-\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md33}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_lm_autotoc_md33}
+Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md33}{}\doxysection{Levenberg–\+Marquardt}\label{md_pages_components_nonlinsolvers_lm_autotoc_md33}
+\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md34}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_lm_autotoc_md34}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -31,9 +31,9 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 
 
 \begin{DoxyItemize}
-\item {\ttfamily Problem\+Class\+Type}\+:
+\item {\ttfamily system}\+:
 \begin{DoxyItemize}
-\item type of the class defining the problem to solve 
+\item instance of the problem you want to solve 
 
 
 \begin{DoxyItemize}
@@ -45,19 +45,19 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+:
+\item {\ttfamily state}\+:
 \begin{DoxyItemize}
-\item type of the data structure you use for the state
+\item your state data
 \item Requirements\+: must be an Eigen or Kokkos vector\+:todo explain why
 \end{DoxyItemize}
-\item {\ttfamily Linear\+Solver\+Type}\+:
+\item {\ttfamily lsolver}\+:
 \begin{DoxyItemize}
-\item choose one from \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
+\item linear solver for solving the normal equations, choose one from \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
 \item if you want to implement your own, then the linear solver class still has to conform to the \href{md_pages_components_linsolvers.html}{\texttt{ linear solver API}}
 \end{DoxyItemize}
-\item {\ttfamily Weighting\+Op\+Type}\+:
+\item {\ttfamily weight\+Operator}\+:
 \begin{DoxyItemize}
-\item this is the weighting operator if you want to do weighted least-\/squares. Must conform to\+: 
+\item weighting operator for doing weighted least-\/squares. Must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }WeightingOperator}
 \DoxyCodeLine{\{}
@@ -69,5 +69,5 @@ Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers} \hypertarget{md_page
 \end{DoxyCode}
 
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md34}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_lm_autotoc_md34}
-\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md35}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_lm_autotoc_md35}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md35}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_lm_autotoc_md35}
+\hypertarget{md_pages_components_nonlinsolvers_lm_autotoc_md36}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_lm_autotoc_md36}

@@ -7,13 +7,51 @@
     </briefdescription>
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: write this better</para>
-<para>We currently support the following problems:</para>
+<para>The pressio steady LSPG ROMs are designed around two main steps:</para>
+<sect1 id="md_pages_components_rom_lspg_steady_1autotoc_md134">
+<title>1. Create</title>
+<para>You instantiate a &quot;steady LSPG problem&quot;, e.g.:</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-primary" /></para>
+<para><simplesect kind="par"><title></title><para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">plspg<sp/>=<sp/>pressio::rom::lspg;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/><sp/><sp/><sp/>=<sp/>plspg::create_keyword_steady_problem(</highlight><highlight class="comment">/*<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>
+</simplesect>
+</para>
+<para>where <computeroutput>keyword</computeroutput> expresses the variant of the problem you want (more below).</para>
+<para>We currently support three variants:</para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-success"> <ulink url="md_pages_components_rom_lspg_default_steady.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-medium"><ensp/><emsp/>Default Problem<emsp/> <ensp/> </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> click to learn more </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-primary"> <ulink url="md_pages_components_rom_lspg_hypred_steady.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-medium">Hyper-reduced Problem </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> click to learn more </mcss:div> </ulink> </mcss:div></para>
+<para> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-button m-warning"> <ulink url="md_pages_components_rom_lspg_masked_steady.html"> <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-medium"><ensp/><emsp/> Masked Problem<ensp/><emsp/> </mcss:div>  <mcss:div xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-small"> click to learn more </mcss:div> </ulink> </mcss:div></para>
+<para>Refer to each problem page for details on each specific variant.</para>
+<para>The returned <computeroutput>problem</computeroutput> object is an instantiation of a class exposing the following interface:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">SteadyLspgProblem</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>traits<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>nested<sp/>typedef<sp/>with<sp/>trait<sp/>class<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>...<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>createResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residual(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,<sp/>residual_type<sp/>&amp;<sp/>res)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>jacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,<sp/>jacobian_type<sp/>&amp;<sp/>jac)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>const<sp/>ref<sp/>to<sp/>the<sp/>object<sp/>knowing<sp/>how<sp/>to<sp/>reconstruct<sp/>a<sp/>FOM<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>fomStateReconstructor()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_components_rom_lspg_steady_1autotoc_md135">
+<title>2. Solve</title>
 <para><itemizedlist>
-<listitem><para>Default: <ulink url="md_pages_components_rom_lspg_default_steady.html">link</ulink></para>
-</listitem><listitem><para>Hyper-reduced: <ulink url="md_pages_components_rom_lspg_hypred_steady.html">link</ulink></para>
-</listitem><listitem><para>Masked: <ulink url="md_pages_components_rom_lspg_masked_steady.html">link</ulink> </para>
+<listitem><para>you instantiate and use a nonlinear least-squares solver of your choice to solve the problem. Note, in fact, that the problem&apos;s API conforms to the one required by the nonlinear solvers</para>
+</listitem><listitem><para>for this solve stage, you don&apos;t have to use the pressio4py solvers. Once you have the problem object, you can also use your own nonlinear least-squares solver. As shown above, the <computeroutput>problem</computeroutput> exposes all the operators that you need to solve. </para>
 </listitem></itemizedlist>
 </para>
+</sect1>
     </detaileddescription>
     <location file="pages/components/rom_lspg_steady.md"/>
   </compounddef>

@@ -54,7 +54,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 template <class traits> struct UnsteadyMembersCommon
 {
   using At = ::pressio::rom::impl::FomObjHolder<
-    typename traits::fom_system_type, traits::binding_sentinel>;
+    typename traits::fom_system_type>;
 
   using Bt = ::pressio::rom::lspg::impl::AddFomStatesManagerUnsteady<
     At,
@@ -236,17 +236,6 @@ private:
   typename UnsteadyMembers<flag, traits>::type members_;
 
 public:
-  stepper_type & stepper(){ return members_.stepperObj_; }
-
-  const fom_state_type & currentFomState() const{
-    return members_.fomStatesMngr_(::pressio::ode::n());
-  }
-
-  const fom_state_reconstr_type & fomStateReconstructor() const{
-    return members_.fomStateReconstructor_;
-  }
-
-public:
   UnsteadyProblem() = delete;
   UnsteadyProblem(const UnsteadyProblem &) = default;
   UnsteadyProblem & operator=(const UnsteadyProblem &) = delete;
@@ -259,24 +248,110 @@ public:
     mpl::enable_if_t<_flag<=1, int> = 0
     >
   UnsteadyProblem(::pressio::ode::StepScheme name,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+		  const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState
+#else
 		  const fom_system_type & fomObj,
 		  decoder_type & decoder,
 		  const lspg_state_type & romState,
-		  const fom_state_type & fomNominalState)
-    : members_(name, romState, fomObj, decoder, fomNominalState){}
+		  const fom_state_type & fomNominalState
+#endif
+		  )
+    : members_(name, romState, fomObj, decoder, fomNominalState)
+  {}
 
   template<
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=2, int> = 0
     >
   UnsteadyProblem(::pressio::ode::StepScheme name,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+		  const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState,
+		  Args2 ...args
+#else
 		  const fom_system_type & fomObj,
 		  decoder_type & decoder,
 		  const lspg_state_type & romState,
 		  const fom_state_type & fomNominalState,
-		  Args2 && ...args)
-    : members_(name, romState, fomObj, decoder,
-	       fomNominalState, std::forward<Args2>(args) ...){}
+		  Args2 && ...args
+#endif
+		  )
+  : members_(name, romState, fomObj, decoder, fomNominalState,
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+	     args...
+#else
+	     std::forward<Args2>(args) ...
+#endif
+	     )
+  {}
+
+#if defined PRESSIO_ENABLE_TPL_PYBIND11
+  template<
+    int _flag = flag,
+    mpl::enable_if_t<_flag<=1 && traits::is_cont_time==false, int> = 0
+    >
+  UnsteadyProblem(const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState)
+    : members_(::pressio::ode::StepScheme::ImplicitArbitrary, romState,
+	       fomObj, decoder, fomNominalState)
+  {}
+
+  template<
+    int _flag = flag, class ...Args2,
+    mpl::enable_if_t<_flag>=2 && traits::is_cont_time==false, int> = 0
+    >
+  UnsteadyProblem(const pybind11::object fomObj,
+		  decoder_type & decoder,
+		  lspg_state_type romState,
+		  fom_state_type fomNominalState,
+		  Args2 ...args)
+  : members_(::pressio::ode::StepScheme::ImplicitArbitrary, romState,
+	     fomObj, decoder, fomNominalState, args...)
+  {}
+#endif
+
+public:
+  using scalar_type   = typename traits::scalar_type;
+  using state_type    = typename traits::lspg_state_type;
+  using residual_type = typename traits::lspg_residual_type;
+  using jacobian_type = typename traits::lspg_jacobian_type;
+
+  const fom_state_type & currentFomState() const{
+    return members_.fomStatesMngr_(::pressio::ode::n());
+  }
+
+  const fom_state_reconstr_type & fomStateReconstructor() const{
+    return members_.fomStateReconstructor_;
+  }
+
+  template<class ...Args2>
+  void operator()(Args2 && ... args2){
+    members_.stepperObj_(std::forward<Args2>(args2)...);
+  }
+
+  residual_type createResidual() const{
+    return members_.stepperObj_.createResidual();
+  }
+
+  jacobian_type createJacobian() const{
+    return members_.stepperObj_.createJacobian();
+  }
+
+  void residual(const state_type & odeState, residual_type & R) const{
+    members_.stepperObj_.residual(odeState, R);
+  }
+
+  void jacobian(const state_type & odeState, jacobian_type & J) const{
+    members_.stepperObj_.jacobian(odeState, J);
+  }
 };
 
 }}}}//end namespace pressio::rom::lspg::impl

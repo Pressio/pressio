@@ -36,10 +36,32 @@ void initialize(::pressio::logto en, Args && ... args)
 #else //PRESSIO_ENABLE_TPL_PYBIND11
 
 // need this because for pybind11 cannot use variadic directly
-void initialize(::pressio::logto en, std::string fileName = "log")
+void initialize(::pressio::logto en, std::string fileName)
 {
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   auto logger = ::pressio::log::impl::create(en, fileName);
+  // logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] [fnc=%!] : %v");
+
+  // note that the sinks can have different levels. By using trace for the
+  // main logger we make sure it is up to the sinks or the global
+  // define to set the minlevel of output.
+  logger->set_level(spdlog::level::trace);
+
+  // set the singleton
+  spdlog::set_default_logger(logger);
+  logger->log(spdlog::level::info, "Initializing pressio logger");
+#endif
+}
+
+// need this because for pybind11 cannot use variadic directly
+void initialize2(::pressio::logto en)
+{
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
+  if (en != ::pressio::logto::terminal){
+    throw std::runtime_error("logger: this overload of initialize is only for terminal output");
+  }
+
+  auto logger = ::pressio::log::impl::create(en, "null");
   // logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] [fnc=%!] : %v");
 
   // note that the sinks can have different levels. By using trace for the

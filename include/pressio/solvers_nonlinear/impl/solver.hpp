@@ -55,37 +55,6 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T, typename = void>
-struct has_system_ref_method : std::false_type{};
-
-template <typename T>
-struct has_system_ref_method<
-  T,
-  mpl::enable_if_t<
-    !std::is_void<
-      decltype(std::declval<T>().systemRef())
-      >::value
-    >
-  > : std::true_type{};
-
-
-template <typename T, typename = void>
-struct has_stepper_ref_method : std::false_type{};
-
-template <typename T>
-struct has_stepper_ref_method<
-  T,
-  mpl::enable_if_t<
-    !std::is_void<
-      decltype(std::declval<T>().stepperRef())
-      >::value
-    >
-  > : std::true_type{};
-#endif
-// -------------------------------------------
-
-
 template<typename TagType, typename T>
 class Solver
   : public T,
@@ -173,32 +142,6 @@ public:
 	     std::forward<Args>(args)...)
   {}
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /*  here we use this trick just to simplify code for
-//       pressio4py so that users can pass a ROM problem directly.
-//       But this is only supposed to be enabled when
-//       doing bindings for pressio4py */
-//   template <
-//     typename rom_problem_t, typename state_type, typename ...Args,
-//     mpl::enable_if_t<has_system_ref_method<rom_problem_t>::value, int> = 0
-//     >
-//   Solver(rom_problem_t & problem,
-// 	 const state_type & state,
-// 	 Args && ...args)
-//     : Solver(problem.systemRef(),state,std::forward<Args>(args)...)
-//   {}
-
-//   template <
-//     typename rom_problem_t, typename state_type, typename ...Args,
-//     mpl::enable_if_t<has_stepper_ref_method<rom_problem_t>::value, int> = 0
-//     >
-//   Solver(rom_problem_t & problem,
-// 	 const state_type & state,
-// 	 Args && ...args)
-//     : Solver(problem.stepperRef(),state,std::forward<Args>(args)...)
-//   {}
-// #endif
-
 public:
   void printStrippedMetrics(){
     printStrippedMetrics_ = true;
@@ -261,8 +204,6 @@ public:
   scalar_type gradientAbsoluteTolerance()const   { return tolerances_[4]; }
   scalar_type gradientRelativeTolerance()const   { return tolerances_[5]; }
 
-
-  // *** solve ***
   template<typename SystemType>
   void solve(const SystemType & system, state_type & state)
   {
@@ -298,30 +239,22 @@ public:
     updater_->resetFnc_ = resetUpdater<u_t>;
     this->solveImpl(system, state, *updater_);
   }
+
+#else
+  template<typename SystemType>
+  void solveForPy(pybind11::object pySystem, state_type state)
+  {
+    SystemType system(pySystem);
+
+    // before we solve, we check if we need to recreate the updater
+    // for example, this is the case if the system object changes
+    if (recreateUpdater(system)){
+      PRESSIOLOG_INFO("nonlinsolver: create updater");
+      updater_ = createUpdater<this_type, SystemType>(state, updatingE_);
+    }
+    this->solveImpl(system, state, *updater_);
+  }
 #endif
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   // this overload is needed when calling the solver from Python directly,
-//   // For example, this happens when doing steady LSPG since
-//   // the state vector is owned by the Python code
-//   template<typename SystemType, typename _state_type = state_type>
-//   mpl::enable_if_t<
-//     ::pressio::is_array_pybind<_state_type>::value
-//     >
-//   solve(const SystemType & system, _state_type & state)
-//   {
-//     // here we want to view the state since we want to modify its data,
-//     // which is numpy array owned by the user inside their Python code.
-//     // upon exit of this function, the original state is changed.
-//     ::pressio::containers::Tensor<1, _state_type> stateView(state, ::pressio::view());
-
-//     if (recreateUpdater(system)){
-//       PRESSIOLOG_INFO("nonlinsolver: create updater");
-//       updater_ = createUpdater<this_type, SystemType>(stateView, updatingE_);
-//     }
-//     this->solveImpl(system, stateView, *updater_);
-//   }
-// #endif
 
 private:
   template<typename SystemType>

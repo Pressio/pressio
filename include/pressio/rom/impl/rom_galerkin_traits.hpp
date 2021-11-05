@@ -53,7 +53,9 @@ namespace pressio{
 
 namespace rom{ namespace galerkin{ namespace impl{
 //fwd declare problem class
-template <int, class ...> class Problem;
+//template <int, class ...> class ProblemBase;
+template <int, class ...> class ProblemExplicit;
+template <int, class ...> class ProblemImplicit;
 
 template <
   bool is_explicit,
@@ -63,8 +65,6 @@ template <
   >
 struct CommonTraitsContinuousTimeApi
 {
-  static constexpr bool binding_sentinel = false;
-
   using fom_system_type	 = FomSystemType;
   using scalar_type	 = typename fom_system_type::scalar_type;
   using galerkin_state_type = GalerkinStateType;
@@ -163,8 +163,6 @@ struct CommonTraitsDiscreteTimeApi
   static constexpr auto nstates = num_states;
   using fom_states_manager_type = ::pressio::rom::ManagerStencilFomStatesStatic<
     fom_state_type, fom_state_reconstr_type, nstates>;
-
-  static constexpr bool binding_sentinel = false;
 };
 
 }}} // end namespace pressio::rom::galekin::impl
@@ -178,7 +176,7 @@ struct CommonTraitsDiscreteTimeApi
 // conttime explicit
 template <class FomSystemType, class GalerkinStateType, class DecoderType>
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemExplicit<
     0, FomSystemType, GalerkinStateType, DecoderType
     >
   >
@@ -186,7 +184,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     true, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type		= typename common_types::fom_system_type;
@@ -233,7 +230,7 @@ template <
   class DecoderType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     1, FomSystemType, GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
     DecoderType
     >
@@ -242,7 +239,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     false, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -296,7 +292,7 @@ template <
   class DecoderType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     2, FomSystemType,
     GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>
@@ -306,7 +302,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;
@@ -367,7 +362,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemExplicit<
     3, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType
     >
   >
@@ -375,7 +370,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     true, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -435,7 +429,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     4, FomSystemType, GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
     DecoderType, MaskerType, ProjectorType
     >
@@ -444,7 +438,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     false, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -516,7 +509,7 @@ template <
   class MaskerType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     5, FomSystemType,
     GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType, ProjectorType, MaskerType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>
@@ -525,7 +518,6 @@ struct Traits<
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;
@@ -599,7 +591,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemExplicit<
     6, FomSystemType, GalerkinStateType, DecoderType, ProjectorType
     >
   >
@@ -607,7 +599,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     true, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -657,7 +648,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     7, FomSystemType, GalerkinStateType, GalerkinResidualType,
     GalerkinJacobianType, DecoderType, ProjectorType
     >
@@ -666,7 +657,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     false, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
@@ -723,7 +713,7 @@ template <
   class ProjectorType
   >
 struct Traits<
-  ::pressio::rom::galerkin::impl::Problem<
+  ::pressio::rom::galerkin::impl::ProblemImplicit<
     8, FomSystemType,
     GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType, ProjectorType,
     ::pressio::ode::StepperTotalNumberOfStates<num_states>
@@ -733,7 +723,6 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
 
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;

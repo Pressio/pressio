@@ -51,34 +51,19 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template<typename FomSystemType, bool isbinding=false>
-struct FomObjHolder;
-
-template<class FomSystemType>
-struct FomObjHolder<FomSystemType, false>
+template<typename FomSystemType>
+struct FomObjHolder
 {
-  std::reference_wrapper<const FomSystemType> fomObj_;
-
-  FomObjHolder() = delete;
-  FomObjHolder(const FomObjHolder &) = default;
-  FomObjHolder & operator=(const FomObjHolder &) = delete;
-  FomObjHolder(FomObjHolder &&) = default;
-  FomObjHolder & operator=(FomObjHolder &&) = delete;
-  ~FomObjHolder() = default;
-
-  explicit FomObjHolder(const FomSystemType & fomObjIn) : fomObj_(fomObjIn){}
-  const FomSystemType & fomCRef() const{ return fomObj_.get(); }
-};
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<class FomSystemType>
-struct FomObjHolder<FomSystemType, true>
-{
   // when dealing with bindings for pressio4py,
   // we need to copy the fom object, since the c++ object
   // is only a thin wrapper around the Python object
   FomSystemType fomObj_;
 
+#else
+  std::reference_wrapper<const FomSystemType> fomObj_;
+#endif
+
   FomObjHolder() = delete;
   FomObjHolder(const FomObjHolder &) = default;
   FomObjHolder & operator=(const FomObjHolder &) = delete;
@@ -86,12 +71,14 @@ struct FomObjHolder<FomSystemType, true>
   FomObjHolder & operator=(FomObjHolder &&) = delete;
   ~FomObjHolder() = default;
 
-  explicit FomObjHolder(const FomSystemType & fomObjIn) : fomObj_(fomObjIn){}
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  explicit FomObjHolder(const pybind11::object & fomObjIn) : fomObj_(fomObjIn){}
   const FomSystemType & fomCRef() const{ return fomObj_; }
-};
+#else
+  explicit FomObjHolder(const FomSystemType & fomObjIn) : fomObj_(fomObjIn){}
+  const FomSystemType & fomCRef() const{ return fomObj_.get(); }
 #endif
-
-
+};
 
 template <class T, class StepperType>
 struct AddExplicitStepper : T

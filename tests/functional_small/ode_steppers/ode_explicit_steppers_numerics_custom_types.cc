@@ -46,7 +46,7 @@ void deep_copy(VectorType & dest, const VectorType & from){
 VectorType clone(const VectorType & src)
 {
   return VectorType(src.size());
-};
+}
 
 void update(VectorType & v,        const ScalarType a,
 		        const VectorType & v1, const ScalarType b)

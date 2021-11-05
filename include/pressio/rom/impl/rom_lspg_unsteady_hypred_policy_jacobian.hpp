@@ -126,24 +126,26 @@ public:
     // so we just need to update lspgJacobian properly.
 
     constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
-    if (name == ::pressio::ode::StepScheme::BDF1)
-    {
-      const auto cf = dt * ::pressio::ode::constants::bdf1<ScalarType>::c_f_;
-      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
-								       decoderJacobian_.get(), one);
+    auto cf = dt;
+    if (name == ::pressio::ode::StepScheme::BDF1){
+      cf *= ::pressio::ode::constants::bdf1<ScalarType>::c_f_;
     }
-    else if (name == ::pressio::ode::StepScheme::BDF2)
-    {
-      const auto cf = dt*::pressio::ode::constants::bdf2<ScalarType>::c_f_;
-      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
-								       decoderJacobian_.get(), one);
+    else if (name == ::pressio::ode::StepScheme::BDF2){
+      cf *= ::pressio::ode::constants::bdf2<ScalarType>::c_f_;
     }
-    else if (name == ::pressio::ode::StepScheme::CrankNicolson)
-    {
-      const auto cf = dt*::pressio::ode::constants::cranknicolson<ScalarType>::c_fnp1_;
-      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
-								       decoderJacobian_.get(), one);
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
+      cf *= ::pressio::ode::constants::cranknicolson<ScalarType>::c_fnp1_;
     }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    hypredOperatorUpdater_.updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
+								     decoderJacobian_.get(),
+								     one);
+#else
+    hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
+									   decoderJacobian_.get(),
+									   one);
+#endif
   }
 
 protected:
@@ -152,7 +154,11 @@ protected:
   std::reference_wrapper<DecoderType> decoderObj_ = {};
   std::reference_wrapper<const typename DecoderType::jacobian_type> decoderJacobian_ = {};
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const HypRedOperatorUpdater hypredOperatorUpdater_;
+#else
   std::reference_wrapper<const HypRedOperatorUpdater> hypredOperatorUpdater_;
+#endif
 };
 
 }}}}

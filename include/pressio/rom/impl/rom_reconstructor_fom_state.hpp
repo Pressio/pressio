@@ -109,21 +109,6 @@ struct FomStateReconstructor
   }
 #endif
 
-
-//   template <typename rom_state_t>
-//   void operator()(const rom_state_t & romState,
-// 		  fom_state_type    & fomState) const
-//   {
-//     // map current romState to FOM state
-//     decoderObj_.get().applyMapping(romState, fomState);
-//     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
-//     // fomState = fomState + fomNominalState_;
-//     ops::update(fomState, one, fomNominalState_, one);
-//   }
-
-
-// #endif
-
 private:
   const fom_state_type fomNominalState_	= {};
   std::reference_wrapper<const decoder_type> decoderObj_ = {};

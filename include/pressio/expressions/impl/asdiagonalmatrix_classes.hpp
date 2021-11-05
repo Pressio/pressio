@@ -83,7 +83,9 @@ struct AsDiagonalMatrixExpr<
 private:
   std::reference_wrapper<VectorType> vecObj_;
   size_t extent_ = {};
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   native_expr_t nativeExprObj_;
+#endif
 
 public:
   AsDiagonalMatrixExpr() = delete;
@@ -94,9 +96,11 @@ public:
   ~AsDiagonalMatrixExpr() = default;
 
   AsDiagonalMatrixExpr(VectorType & objIn)
-    : vecObj_(objIn),
-      extent_(objIn.size()),
-      nativeExprObj_(vecObj_.get().asDiagonal())
+    : vecObj_(objIn)
+    ,extent_(objIn.size())
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    ,nativeExprObj_(vecObj_.get().asDiagonal())
+#endif
   {}
 
 public:
@@ -105,6 +109,7 @@ public:
     return extent_;
   }
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   native_expr_t const & native() const{
     return nativeExprObj_;
   }
@@ -112,6 +117,7 @@ public:
   native_expr_t & native(){
     return nativeExprObj_;
   }
+#endif
 
   ref_t operator()(size_t i, size_t j)
   {

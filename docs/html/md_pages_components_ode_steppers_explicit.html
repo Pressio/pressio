@@ -25,9 +25,9 @@
         <div class="m-row">
           <ol class="m-col-t-12 m-col-m-none">
             <li><a href="md_pages_introduction.html">Introduction</a></li>
-            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li><a href="md_pages_installation.html">Installation</a></li>
             <li>
-              <a>Documentation</a>
+              <a>Documentation/A</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
                 <li><a href="md_pages_components_utils.html">utils</a></li>
@@ -47,6 +47,11 @@
                 <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+              </ol>
+            </li>
+            <li>
+              <a>Documentation/B</a>
+              <ol>
                 <li><a> rom: </a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
@@ -58,7 +63,7 @@
                 <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
-                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_unsteady.html"> &emsp; - LSPG: unsteady </a></li>
                 <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
@@ -66,9 +71,9 @@
               </ol>
             </li>
             <li><a href="https://pressio.github.io/pressio-tutorials/html/index.html">Tutorials</a></li>
-            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -149,10 +154,10 @@ $t$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-116'/>
 </g>
-</svg> is time.<br />Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</p></section><section id="autotoc_md51"><h2><a href="#autotoc_md51">API</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">name</span><span class="p">,</span>
+</svg> is time.<br />Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</p></section><section id="autotoc_md51"><h2><a href="#autotoc_md51">API, Parameters and Requirements</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">scheme_name</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
-                             <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span></pre><p>where <code>name</code> is one of the following enum class values: <code>ForwardEuler</code>, <code>RungeKutta4</code>, <code>AdamsBashforth2</code>, <code>SSPRungeKutta3</code>. This function returns an instance of the desired stepper. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>, so one can use the &quot;advancers&quot; functions to step forward.</p></section><section id="autotoc_md52"><h2><a href="#autotoc_md52">Parameters and Requirements</a></h2><ul><li><code>StateType</code>: data type of your state, must be copy constructible</li><li><p><code>SystemType</code>: class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
+                             <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span></pre><ul><li><code>scheme_name</code><ul><li>a value of the <code>StepScheme</code> enum</li><li>must be one of: <code>ForwardEuler</code>, <code>RungeKutta4</code>, <code>AdamsBashforth2</code>, <code>SSPRungeKutta3</code>.</li></ul></li><li><code>state</code>:<ul><li>your state, must be copy constructible</li></ul></li><li><code>system</code>:<ul><li><p>problem instance to query for velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>
 $f$
 </title>
@@ -170,7 +175,7 @@ $f$
 
   <span class="n">velocity_type</span> <span class="nf">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><p>the nested aliases <code>scalar_type</code>, <code>state_type</code> and <code>velocity_type</code> must be <em>valid</em> types since they are detected by pressio</p></li><li>if <code>StateType</code> is the type deduced for <code>state</code> from <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename SystemForExplicitOde::state_type&gt;::value == true</code></li></ul></section><section id="autotoc_md53"><h2><a href="#autotoc_md53">Example usage</a></h2><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="p">};</span></pre></li></ul><p>the nested aliases <code>scalar_type</code>, <code>state_type</code> and <code>velocity_type</code> must be <em>valid</em> types since they are detected by pressio</p></li><li>if <code>StateType</code> is the type deduced for <code>state</code> from <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename SystemForExplicitOde::state_type&gt;::value == true</code></li></ul><div class="m-note m-info"><p>The above factory function returns a stepper instance for the desired scheme. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>, so one can use the &quot;advancers&quot; functions to step forward.</p></div></section><section id="autotoc_md52"><h2><a href="#autotoc_md52">Example usage</a></h2><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_advancers.hpp&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_steppers_explicit.hpp&quot;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
@@ -189,7 +194,7 @@ $f$
   <span class="k">const</span> <span class="kt">double</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
   <span class="k">const</span> <span class="n">pode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
   <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">);</span>
-<span class="p">}</span></pre></section><section id="autotoc_md54"><h2><a href="#autotoc_md54">Required specializations for custom types</a></h2><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <code>double</code> as value type and <code>ACustomStateType</code> is what you use for the state, then you would need to do something like this:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="p">}</span></pre></section><section id="autotoc_md53"><h2><a href="#autotoc_md53">Required specializations for custom types</a></h2><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <code>double</code> as value type and <code>ACustomStateType</code> is what you use for the state, then you would need to do something like this:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
 
 <span class="c1">// assuming ACustomStateType has already been declared</span>
 

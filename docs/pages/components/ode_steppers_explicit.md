@@ -25,26 +25,24 @@ from the state of the system at the current time and potentially previous times.
 In pressio, a "stepper" is an abstraction that represents the "how" to take a step.
 
 
-## API
+## API, Parameters and Requirements
 
 ```cpp
 template<class StateType, class SystemType>
-auto create_explicit_stepper(pressio::ode::StepScheme name,
+auto create_explicit_stepper(pressio::ode::StepScheme scheme_name,
 							 const StateType & state,
 	                         const SystemType & system);
 ```
 
-where `name` is one of the following
-enum class values: `ForwardEuler`, `RungeKutta4`, `AdamsBashforth2`, `SSPRungeKutta3`.
-This function returns an instance of the desired stepper.
-The returned stepper object satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
+- `scheme_name`
+  - a value of the `StepScheme` enum
+  - must be one of: `ForwardEuler`, `RungeKutta4`, `AdamsBashforth2`, `SSPRungeKutta3`.
 
+- `state`:
+  - your state, must be copy constructible
 
-## Parameters and Requirements
-
-- `StateType`: data type of your state, must be copy constructible
-
-- `SystemType`: class defining how to create an instance of the velocity @f$f@f$ and how to compute it.<br/>
+- `system`:
+  - problem instance to query for velocity @f$f@f$ and how to compute it.<br/>
   The system class must conform to the following API:
   ```cpp
   struct SystemForExplicitStepper
@@ -63,6 +61,15 @@ The returned stepper object satisfies the "steppable" concept discussed [here](/
 
 - if `StateType` is the type deduced for `state` from `create_...`, the following must hold:<br/>
   `std::is_same<StateType, typename SystemForExplicitOde::state_type>::value == true`
+
+
+@m_class{m-note m-info}
+
+@parblock
+The above factory function returns a stepper instance for the desired scheme.
+The returned stepper object satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
+@endparblock
+
 
 ## Example usage
 

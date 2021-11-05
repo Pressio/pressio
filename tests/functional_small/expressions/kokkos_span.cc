@@ -13,7 +13,7 @@ void fillVector(T & a)
   a(4) = 17.;
   a(5) = 21.;
 }
-};
+}
 
 TEST(expressions_kokkos, span0)
 {

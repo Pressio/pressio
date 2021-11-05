@@ -85,8 +85,13 @@ public:
   mpl::enable_if_t<_Rank==1, GalerkinOperatorType>
   create() const
   {
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    GalerkinOperatorType result(extents_[0]);
+#else
     GalerkinOperatorType result;
     ::pressio::ops::resize(result, extents_[0]);
+#endif
+
     ::pressio::ops::set_zero(result);
     return result;
   }
@@ -95,23 +100,33 @@ public:
   mpl::enable_if_t<_Rank==2, GalerkinOperatorType>
   create() const
   {
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    GalerkinOperatorType result({extents_[0], extents_[1]});
+#else
     GalerkinOperatorType result;
     ::pressio::ops::resize(result, extents_[0], extents_[1]);
+#endif
     ::pressio::ops::set_zero(result);
     return result;
   }
 
-  template<class GalerkinOperatorType, class GalerkinStateType, class TimeType, class ...Args>
+  template<
+    class GalerkinOperatorType,
+    class GalerkinStateType,
+    class TimeType,
+    class ...Args
+    >
   void compute(GalerkinOperatorType & galerkinOperator,
 	       const GalerkinStateType & galerkinState,
 	       TimeType evalTime,
 	       Args && ...args) const
   {
     ProjectableType::compute(galerkinState, evalTime, std::forward<Args>(args)...);
+
     // fomOperand = fom velocity or the fom apply jacobain object
     const auto & fomOperand = ProjectableType::get();
 
-    // galerkinOperator is either galrkin rhs or jacobian
+    // galerkinOperator is either galerkin rhs or jacobian
     projector_(fomOperand, evalTime, galerkinOperator);
   }
 

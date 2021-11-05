@@ -80,17 +80,6 @@ public:
     ::pressio::ops::set_zero(correction_);
   }
 
-  // template <typename SystemType, typename lsT, typename ...Args>
-  // RJCorrector(const SystemType & system,
-	 //      const state_wrapped_t & state,
-	 //      lsT && solverIn,
-	 //      Args && ... args)
-  //   : RJCorrector(system,
-		//   state_type(state) /*needs a wrapped object*/,
-		//   std::forward<lsT>(solverIn),
-		//   std::forward<Args>(args)...)
-  // {}
-
   RJCorrector(RJCorrector const &) = default;
   RJCorrector & operator=(RJCorrector const &) = default;
   RJCorrector(RJCorrector && o) = default;

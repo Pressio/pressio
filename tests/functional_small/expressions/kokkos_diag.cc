@@ -12,7 +12,7 @@ void fillMatrix(T & A)
   A(2,0) = 9.;  A(2,1) = 10.; A(2,2) = 11.2; A(2,3) = 12.;
   A(3,0) = 13.; A(3,1) = 14.; A(3,2) = 15.;  A(3,3) = 16.;
 }
-};
+}
 
 TEST(expressions_kokkos, diag1)
 {

@@ -9,7 +9,7 @@
 TEST(rom_lspg, steady_preconditioned_default_correctness_eigen)
 {
   /*
-    - phi in R^{10,3}: 
+    - phi in R^{10,3}:
         phi[0,:]=0,1,2
         phi[1,:]=3,4,5
         phi[2,:]=6,7,8
@@ -55,10 +55,9 @@ TEST(rom_lspg, steady_preconditioned_default_correctness_eigen)
   PreconditionerSteadyEigen prec;
 
   auto problem = pressio::rom::lspg::create_default_steady_problem(fomSystem, decoder, romState, fomReferenceState, prec);
-  auto & solvableSystem = problem.system();
 
   FakeNonLinSolverSteady nonLinSolver(N);
-  nonLinSolver.solve(solvableSystem, romState);
+  nonLinSolver.solve(problem, romState);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 2.);
   EXPECT_DOUBLE_EQ(romState[1], 3.);
@@ -98,10 +97,9 @@ TEST(rom_lspg, steady_preconditioned_default_correctness_custom_types)
   PreconditionerSteadyCustomTypes<scalar_t> prec;
 
   auto problem = pressio::rom::lspg::create_default_steady_problem(fomSystem, decoder, romState, fomReferenceState, prec);
-  auto & solvableSystem = problem.system();
 
   FakeNonLinSolverSteady nonLinSolver(N);
-  nonLinSolver.solve(solvableSystem, romState);
+  nonLinSolver.solve(problem, romState);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 2.);
   EXPECT_DOUBLE_EQ(romState[1], 3.);

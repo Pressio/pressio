@@ -18,30 +18,34 @@ is not a self-contained, general purpose library of linear solvers
 implemented from scratch.
 In the future, we might revise this, but for now it is
 an **intentional** choice: there exist already many
-open-source highly-optimized libraries that do so in both
-a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK,
+open-source highly-optimized libraries that provide linear solvers
+for both shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK,
 and distributed environment, e.g. Trilinos, PETSc, HYPRE.
 
-@m_class{m-block m-warning}
+@m_class{m-note m-info}
 
-@par
+@parblock
 The primary goal of the pressio's linear solvers is to support usecases that are needed for ROMs.
-
 As discussed in the introduction, ROMs involve "small"
 *dense* systems that suitably fit on a *single compute node*.
 Pressio's linear solvers are thus designed and implemented to be
 wrappers (exposing a common interface) to existing shared-memory
 linear solvers libraries.
+@endparblock
 
-Currently, we support linear systems involving either
-Eigen or Kokkos data structures. The reason for this is that Eigen
-and Kokkos are the preferred choices (for now)
+Currently, we support linear systems using either
+Eigen or Kokkos containers. The reason for this is that Eigen
+and Kokkos are the supported and preferred choices (for now)
 to implement ROMs operators. Kokkos, in particular, allows
 to operate both on host and GPUs.
 Later on, we can easily extend support to other libraries if needed.
 Note that even if the scope of the linear solvers is limited,
 we still emphasize that, like all of the others subpackages in pressio,
 it can be used idenpendetly.
+
+### Why do we need it?
+
+\todo: explain that we need to a uniform interface.
 
 
 ## API

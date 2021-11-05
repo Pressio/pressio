@@ -53,7 +53,7 @@ namespace pressio{
 
 template<class ScalarType>
 struct Traits<pybind11::array_t<ScalarType, pybind11::array::c_style>>
-  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
+  : public impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
 {
 
   static constexpr bool is_static = false;
@@ -69,7 +69,7 @@ struct Traits<pybind11::array_t<ScalarType, pybind11::array::c_style>>
 
 template<class ScalarType>
 struct Traits<pybind11::array_t<ScalarType, pybind11::array::f_style>>
-  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
+  : public impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
 {
 
   static constexpr bool is_static = false;

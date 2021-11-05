@@ -308,7 +308,7 @@ struct CustomBdf1Solver
 				};
     ::pressio::ode::advance_to_target_time_and_observe(stepperObj_, y_, 0.0,
 					  finalTime, dtSetterLambda, observer, solverO);
-  };
+  }
 };
 
 

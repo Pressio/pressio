@@ -6,10 +6,9 @@ LINKS_NAVBAR1 = [
 
   ("<a href=\"md_pages_introduction.html\">Introduction</a>", []),
 
-  ("<a href=\"md_pages_installation.html\">Installation/Dependencies</a>", []),
+  ("<a href=\"md_pages_installation.html\">Installation</a>", []),
 
-  # ("<a href=\"md_pages_components.html\">Components</a>",
-  ("<a>Documentation</a>",
+  ("<a>Documentation/A</a>",
    [
      ("<a href=\"md_pages_components_mpl.html\">mpl</a>",),
      ("<a href=\"md_pages_components_utils.html\">utils</a>",),
@@ -33,8 +32,10 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_ode_advance.html\"> &emsp; - advancers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_explicit.html\"> &emsp; - explicit steppers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_implicit.html\"> &emsp; - implicit steppers</a>",),
+   ]),
 
-     #
+  ("<a>Documentation/B</a>",
+   [
      ("<a> rom: </a>",),
      #("<a href=\"md_pages_components_rom_general.html\"> &emsp; - general info</a>",),
      ("<a href=\"md_pages_components_rom_fom_apis.html\"> &emsp; - FOM adapter API</a>",),
@@ -53,20 +54,19 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_rom_lspg_masked_steady.html\"> &emsp; &emsp; - masked problem </a>",),
 
      #
-     ("<a href=\"md_pages_components_rom_lspg_steady.html\"> &emsp; - LSPG: unsteady </a>",),
+     ("<a href=\"md_pages_components_rom_lspg_unsteady.html\"> &emsp; - LSPG: unsteady </a>",),
      ("<a href=\"md_pages_components_rom_lspg_default.html\"> &emsp; &emsp; - default problem </a>",),
      ("<a href=\"md_pages_components_rom_lspg_hypred.html\"> &emsp; &emsp; - hyper-reduced problem </a>",),
      ("<a href=\"md_pages_components_rom_lspg_masked.html\"> &emsp; &emsp; - masked problem </a>",),
 
      #
      ("<a href=\"md_pages_components_rom_wls.html\">rom: WLS</a>",),
-     #("<a href=\"md_pages_components_rom_hyperreduction.html\">rom: hyper-reduction</a>",),
    ]),
 
   ("<a href=\"https://pressio.github.io/pressio-tutorials/html/index.html\">Tutorials</a>", []),
   #("<a href=\"md_pages_tutorials.html\">Tutorials</a>", []),
 
-  ("<a href=\"https://github.com/Pressio/pressio\">Github Page</a>", []),
+  ("<a href=\"https://github.com/Pressio/pressio\">Github</a>", []),
 
   #("<a href=>Tutorials</a>", ("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
   # #  [

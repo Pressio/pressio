@@ -70,8 +70,6 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <typename DecoderType>
 struct DefaultProjector
 {
-  using dec_jac_t = typename DecoderType::jacobian_type;
-
   DefaultProjector() = delete;
   DefaultProjector(const DefaultProjector &) = default;
   DefaultProjector & operator=(const DefaultProjector &) = delete;
@@ -81,6 +79,32 @@ struct DefaultProjector
 
   DefaultProjector(const DecoderType & decoder)
     : decoderJacobian_(decoder.jacobianCRef()){}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template<class OperandType, class TimeType, class ResultType>
+  mpl::enable_if_t<::pressio::Traits<ResultType>::rank == -1>
+  operator()(OperandType operand, const TimeType time, ResultType result) const
+  {
+    (void)time;
+    using scalar_t = typename ::pressio::Traits<ResultType>::scalar_type;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
+
+    if (operand.ndim() == 1){
+      ::pressio::ops::product(::pressio::transpose(), cnst::one(),
+			      decoderJacobian_, operand,
+			      cnst::zero(), result);
+    }
+    else if (operand.ndim() == 2){
+      ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			      cnst::one(), decoderJacobian_, operand,
+			      cnst::zero(), result);
+    }
+    else{
+      throw std::runtime_error("rom: default projector: case not impl");
+    }
+  }
+
+#else
 
   template<class OperandType, class TimeType, class ResultType>
   mpl::enable_if_t<::pressio::Traits<ResultType>::rank == 1>
@@ -105,9 +129,14 @@ struct DefaultProjector
 			    cnst::one(), decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
   }
+#endif
 
 private:
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  typename DecoderType::jacobian_type decoderJacobian_;
+#else
   std::reference_wrapper<const typename DecoderType::jacobian_type> decoderJacobian_;
+  #endif
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl

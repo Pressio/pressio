@@ -10,16 +10,16 @@
 <para><parblock><para>Defined in header: <computeroutput>&lt;pressio/mpl.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::mpl</computeroutput> </para>
 </parblock></para>
-<sect1 id="md_pages_components_mpl_1autotoc_md8">
+<sect1 id="md_pages_components_mpl_1autotoc_md9">
 <title>Overview</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-note m-info" /></para>
 <para><parblock><para>Provides metaprogramming functionalities that are useful for a variety of purposes and are one of the fundamental building blocks for the other parts of the pressio library. </para>
 </parblock></para>
 <para>If you are familiar with the <computeroutput>&lt;type_traits&gt;</computeroutput> header from the standard library, the <computeroutput>pressio/mpl</computeroutput> will look familiar too. Some parts of <computeroutput>pressio/mpl</computeroutput> have been adapted from the <ulink url="http://sbabbi.github.io/tinympl">tinympl project</ulink>. The tinympl project appears to be no longer maintained.</para>
 </sect1>
-<sect1 id="md_pages_components_mpl_1autotoc_md9">
+<sect1 id="md_pages_components_mpl_1autotoc_md10">
 <title>Content</title>
-<para>The following is a <emphasis>partial</emphasis> list, only meant to provide a glimpse.</para>
+<para>The following is a <emphasis>partial</emphasis> list only intended to provide a general idea of the supported features.</para>
 <para>To find out all supported cases, browse the <ulink url="https://github.com/Pressio/pressio/tree/main/include/pressio/mpl">source</ulink>, and for example usage, see <ulink url="https://github.com/Pressio/pressio/blob/main/tests/functional_small/mpl/all.cc">this</ulink>.</para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
 <para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">not_void;</highlight></codeline>
