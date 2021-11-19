@@ -63,7 +63,7 @@ set_zero(T & o)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  !::pressio::is_sparse_matrix_eigen<T>::value
+  ::pressio::is_sparse_matrix_eigen<T>::value
   >
 set_zero(T & M)
 {
