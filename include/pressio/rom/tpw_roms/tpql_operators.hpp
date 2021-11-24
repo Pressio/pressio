@@ -622,6 +622,80 @@ auto computeTestBasisTransposeTimesJacobianTimesBasisEigen(const app_t & appObj,
   return PhiTJPhi;
 } 
 
+
+
+
+
+template <typename app_t, typename state_t, typename param_t , typename scalar_t, typename basis_t, typename hessian_t, typename vector_t>
+void computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc6(const app_t & appObj,state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, const basis_t & TestBasis, hessian_t & BasisTransposeTimesHessianTimesBasisTimesBasis, vector_t & HCol,const int maxKForHessian, const scalar_t epsilon)
+{
+  auto romDim = ::pressio::ops::extent(Phi,1);
+  auto fomDim = ::pressio::ops::extent(y,0);
+
+  // Create temporary working vectors
+  auto f0 = appObj.createVelocity();
+  appObj.updateScalarParameters(mu);
+  appObj.velocity( y , t , f0);
+
+  auto ynorm = ::pressio::ops::norm2(y);
+
+  auto ftmp = appObj.createVelocity();
+  auto workingVector = appObj.createVelocity();
+
+  auto yp = ::pressio::ops::clone(y); //pressio ops clone 
+
+  //   - 45.0*im1jp3 - 405.0*im2jm1 + 81.0*im2jm2 - 9.0*im2jm3 + 405.0*im2jp1 - 81.0*im2jp2 + 9.0*im2jp3 + 45.0*im3jm1 - 9.0*im3jm2 + im3jm3 - 45.0*im3jp1 + 9.0*im3jp2 - 1.0*im3jp3 - 2025.0*ip1jm1 + 405.0*ip1jm2 - 45.0*ip1jm3 + 2025.0*ip1jp1 - 405.0*ip1jp2 + 45.0*ip1jp3 + 405.0*ip2jm1 - 81.0*ip2jm2 + 9.0*ip2jm3 - 405.0*ip2jp1 + 81.0*ip2jp2 - 9.0*ip2jp3 - 45.0*ip3jm1 + 9.0*ip3jm2 - 1.0*ip3jm3 + 45.0*ip3jp1 - 9.0*ip3jp2 + ip3jp3
+  scalar_t scales[6];
+  scales[0] =  -1./60.;
+  scales[1] =   3./20.;
+  scales[2] =  -3./4.;
+  scales[3] =   3./4.;
+  scales[4] =  -3./20.;
+  scales[5] =   1./60.;
+
+  int pert[6];
+  pert[0] = -3;
+  pert[1] = -2;
+  pert[2] = -1;
+  pert[3] = 1;
+  pert[4] = 2;
+  pert[5] = 3;
+
+  for  (int i = 0; i < maxKForHessian; i++){
+    for (int j=0; j <= i; j++){
+      ::pressio::ops::set_zero(workingVector);
+      auto PhiCol_i = getCol<scalar_t>(Phi,i);
+      auto PhiCol_j = getCol<scalar_t>(Phi,j);
+      auto PhiColINorm = ::pressio::ops::norm2(PhiCol_i);
+      auto PhiColJNorm = ::pressio::ops::norm2(PhiCol_j);
+      scalar_t eps_i =  std::sqrt( (1. + ynorm)*epsilon ) / PhiColINorm;
+      scalar_t eps_j =  std::sqrt( (1. + ynorm)*epsilon ) / PhiColJNorm;
+      for (int k1=0; k1 < 6; k1++){
+        for (int k2=0; k2 < 6; k2++){
+          //first term
+         ::pressio::ops::update(yp,0.,y,1.,PhiCol_i,eps_i*pert[k1],PhiCol_j,eps_j*pert[k2]);
+         ::pressio::ops::set_zero(ftmp);
+          appObj.velocity(yp,t,ftmp);
+          ::pressio::ops::update(workingVector,0.,ftmp,scales[k1]*scales[k2]);
+        }
+      }
+      ::pressio::ops::product(::pressio::transpose(),1.,TestBasis,workingVector , 0., HCol);
+      setSymmetricHessianCol(BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,i,j);
+    }
+  }
+} 
+
+
+
+
+
+
+
+
+
+
+
+
 template <typename app_t, typename state_t, typename param_t , typename scalar_t, typename basis_t, typename hessian_t, typename vector_t>
 void computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc4(const app_t & appObj,state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, const basis_t & TestBasis, hessian_t & BasisTransposeTimesHessianTimesBasisTimesBasis, vector_t & HCol,const int maxKForHessian, const scalar_t epsilon)
 {
@@ -854,7 +928,7 @@ auto computeTestBasisTransposeTimesHessianTimesBasisTimesBasisKokkos(const app_t
   vector_t HCol("HCol",romDim);
 
 
-  computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc4(appObj,y,mu,t,Phi,TestBasis,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,maxKForHessian,epsilon);
+  computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc6(appObj,y,mu,t,Phi,TestBasis,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,maxKForHessian,epsilon);
   return BasisTransposeTimesHessianTimesBasisTimesBasis; 
 } 
 
@@ -894,7 +968,7 @@ auto computeTestBasisTransposeTimesHessianTimesBasisTimesBasisEigen(const app_t 
     }
   }
 
-  computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc4(appObj,y,mu,t,Phi,TestBasis,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,maxKForHessian,epsilon);
+  computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc6(appObj,y,mu,t,Phi,TestBasis,BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,maxKForHessian,epsilon);
   return BasisTransposeTimesHessianTimesBasisTimesBasis; 
 } 
 
