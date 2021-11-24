@@ -54,10 +54,25 @@ namespace pressio{ namespace ops{
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  and !::pressio::is_sparse_matrix_eigen<T>::value
   >
 set_zero(T & o)
 {
-	impl::get_native(o).setZero();
+  impl::get_native(o).setZero();
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_sparse_matrix_eigen<T>::value
+  >
+set_zero(T & M)
+{
+  using scalar_type = typename ::pressio::Traits<T>::scalar_type;
+
+  auto values = M.valuePtr();
+  for (decltype(M.nonZeros()) i=0; i<M.nonZeros(); ++i){
+    values[i] = static_cast<scalar_type>(0);
+  }
 }
 
 }}//end namespace pressio::ops
