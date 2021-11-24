@@ -235,6 +235,7 @@ void computeTestBasisTransposeTimesParameterHessian_calc(const app_t & appObj,st
   for  (int i = 0; i < numParams; i++){
     for (int j=0; j <= i; j++){
       ::pressio::ops::set_zero(workingVector);
+      /*
       if (i == j){
         muP(i) += 2.*eps;
         appObj.updateScalarParameters(muP);
@@ -267,6 +268,7 @@ void computeTestBasisTransposeTimesParameterHessian_calc(const app_t & appObj,st
         muP(i) += 2.*eps;
       }
       else{
+      */
         muP(i) += eps;
         muP(j) += eps;
         appObj.updateScalarParameters(muP);
@@ -302,7 +304,7 @@ void computeTestBasisTransposeTimesParameterHessian_calc(const app_t & appObj,st
         ::pressio::ops::update(workingVector,1.,ftmp,1.*scale2);
         muP(i) += eps;
         muP(j) += eps;
-      }
+      //}
       ::pressio::ops::product(::pressio::transpose(),1., TestBasis ,workingVector , 0.,BasisTransposeTimesParameterHessianCol);
 
 
@@ -676,7 +678,7 @@ void computeTestBasisTransposeTimesHessianTimesBasisTimesBasis_calc6(const app_t
          ::pressio::ops::update(yp,0.,y,1.,PhiCol_i,eps_i*pert[k1],PhiCol_j,eps_j*pert[k2]);
          ::pressio::ops::set_zero(ftmp);
           appObj.velocity(yp,t,ftmp);
-          ::pressio::ops::update(workingVector,0.,ftmp,scales[k1]*scales[k2]);
+          ::pressio::ops::update(workingVector,1.,ftmp,scales[k1]*scales[k2]*1./(eps_i*eps_j));
         }
       }
       ::pressio::ops::product(::pressio::transpose(),1.,TestBasis,workingVector , 0., HCol);

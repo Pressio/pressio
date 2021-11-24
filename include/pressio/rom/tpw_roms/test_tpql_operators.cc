@@ -9,6 +9,94 @@
 #include <Tpetra_Core.hpp>
 #include <Tpetra_MultiVector.hpp>
 
+class MyTpetraBlockApp
+{
+protected:
+  using map_t		= Tpetra::Map<>;
+  using nativeVec	= Tpetra::BlockVector<double>;
+
+  using go_t		= typename map_t::global_ordinal_type;
+  using lo_t		= typename map_t::local_ordinal_type;
+
+  using tcomm_t		= Teuchos::MpiComm<int>;
+  using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
+  using rcpmap_t	= Teuchos::RCP<const map_t>;
+
+  int N_ = 2;
+  int nVars_ = 1;
+  int myRank_{};
+  int totRanks_{};
+  template<typename T> using stdrcp = std::shared_ptr<T>;
+
+public:
+  using velocity_t = nativeVec;
+  using state_t = nativeVec;
+  using scalar_t = double;
+
+  using execution_space = Kokkos::DefaultExecutionSpace;
+  using kll   = Kokkos::LayoutLeft;
+  mutable Kokkos::View<scalar_t*, kll, execution_space> params_; 
+
+  MyTpetraBlockApp(rcpcomm_t comm): comm_{comm}, params_("params",3){
+    params_(0) = 2;
+    params_(1) = 7;
+    params_(2) = 4;
+    this->setup();
+  }
+
+  rcpmap_t getDataMap(){
+    return dataMap_;
+  };
+
+  
+  Tpetra::BlockVector<> createVelocity() const{
+    velocity_t f(*dataMap_,nVars_);
+    return f;
+  }
+  
+  template <typename state_t, typename velocity_t> 
+  void velocity(state_t & y, const double t, velocity_t & f)
+  const {
+    auto fV = f.getVectorView();
+    auto f_v = fV.getDataNonConst();
+    auto yV = y.getVectorView();
+    auto y_v = yV.getData();
+    f_v[0] = y_v[0]*y_v[1]*y_v[1] + params_(0)*params_(1)*params_(1);
+    f_v[1] = y_v[1]*y_v[0] + y_v[0]*y_v[0] + params_(2)*params_(2)*y_v[1]*params_(1);
+  }
+  
+  state_t const & initialCondition() const{
+    return *U0_;
+  }
+
+  template <typename params_t>
+  void updateScalarParameters(params_t & params_in) const {
+    for (int i = 0; i < 3; i++){
+      params_(i) = params_in(i);
+    }
+  }
+
+protected:
+  void setup()
+  {
+    //myRank_ =  comm_->getRank();
+    //totRanks_ =  comm_->getSize();
+    // distribute cells
+    dataMap_ = Teuchos::rcp(new map_t(2, 0, comm_));
+    U0_ = std::make_shared<state_t>(*dataMap_,nVars_);
+    auto U0V_ = (*U0_).getVectorView();
+    auto ud = (U0V_).getDataNonConst();
+
+    ud[0] = 3.;
+    ud[1] = 2.;
+
+  }
+  Teuchos::RCP<Teuchos::FancyOStream> wrappedCout_;
+  rcpcomm_t comm_{};
+  rcpmap_t dataMap_{};
+  mutable stdrcp<state_t> U0_{}; // initial state vector
+
+};
 
 
 class MyTpetraApp
@@ -219,25 +307,32 @@ int main(int argc, char *argv[])
     int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
 
-    auto appObj = MyTpetraApp(Comm);
+    auto appObj = MyTpetraBlockApp(Comm);
     auto dataMap = appObj.getDataMap();
-    using basis_t	= Tpetra::MultiVector<>;
-    basis_t Phi(dataMap,N,true);
-    auto Phi0 = Phi.getDataNonConst(0);
+    using basis_t	= Tpetra::BlockMultiVector<>;
+    basis_t Phi(*dataMap,1,N);
+    auto PhiMultiVector = Phi.getMultiVectorView();
+    auto Phi0 = PhiMultiVector.getDataNonConst(0);
     Phi0[0] = 1.;
-    auto Phi1 = Phi.getDataNonConst(1);
+    auto Phi1 = PhiMultiVector.getDataNonConst(1);
     Phi1[1] = 1.;
+    //basis_t Phi(dataMap,N,true);
+    //auto Phi0 = Phi.getDataNonConst(0);
+    //Phi0[0] = 1.;
+    //auto Phi1 = Phi.getDataNonConst(1);
+    //Phi1[1] = 1.;
 
     auto u = appObj.initialCondition();
- 
+
+    double epsilon = 1.e-5; 
     Eigen::Matrix<scalar_t , -1,1> mu(3);
     mu(0) = 2;
     mu(1) = 7;
     mu(2) = 4;
 
     //auto romDataTypeEnum = pressio::rom::experimental::RomDataType::Kokkos;
-    auto PhiTJPhiKokkos = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi);
-    auto PhiTJPhiEigen = ::pressio::rom::experimental::computeBasisTransposeTimesJacobianTimesBasisEigen<eigen_data_t>(appObj, u, mu, 0., Phi);
+    auto PhiTJPhiKokkos = ::pressio::rom::experimental::computeTestBasisTransposeTimesJacobianTimesBasisKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon);
+    auto PhiTJPhiEigen = ::pressio::rom::experimental::computeTestBasisTransposeTimesJacobianTimesBasisEigen<eigen_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon);
 
     double tol = 1e-3; 
     Eigen::Matrix<scalar_t, -1,-1> PhiTJPhi_exact(N,N);
@@ -258,8 +353,8 @@ int main(int argc, char *argv[])
     }
     //std::cout << PhiTJPhi - PhiTJPhi_exact << std::endl;
 
-    auto PhiTHJPhiKokkos = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi);
-    auto PhiTHJPhiEigen = ::pressio::rom::experimental::computeBasisTransposeTimesHessianTimesBasisTimesBasisEigen<eigen_data_t>(appObj, u, mu, 0., Phi);
+    auto PhiTHJPhiKokkos = ::pressio::rom::experimental::computeTestBasisTransposeTimesHessianTimesBasisTimesBasisKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi,Phi,2,epsilon);
+    auto PhiTHJPhiEigen = ::pressio::rom::experimental::computeTestBasisTransposeTimesHessianTimesBasisTimesBasisEigen<eigen_data_t>(appObj, u, mu, 0., Phi,Phi,2,epsilon);
 
     Eigen::Matrix<scalar_t, -1, 1> Hexact_list(8);
     Hexact_list(0) = 0;
@@ -284,8 +379,8 @@ int main(int argc, char *argv[])
           indx += 1;}}}
 
 
-    auto PhiTJParamsKokkos = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi);
-    auto PhiTJParamsEigen = ::pressio::rom::experimental::computeBasisTransposeTimesParameterJacobianEigen<eigen_data_t>(appObj, u, mu, 0., Phi);
+    auto PhiTJParamsKokkos = ::pressio::rom::experimental::computeTestBasisTransposeTimesParameterJacobianKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon);
+    auto PhiTJParamsEigen = ::pressio::rom::experimental::computeTestBasisTransposeTimesParameterJacobianEigen<eigen_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon);
 
     Eigen::Matrix<scalar_t, -1,-1> PhiTJParams_exact(N,3);
     PhiTJParams_exact(0,0) = 49;
@@ -310,8 +405,8 @@ int main(int argc, char *argv[])
 
     
 
-    auto PhiTHParamsKokkos = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi);
-    auto PhiTHParamsEigen = ::pressio::rom::experimental::computeBasisTransposeTimesParameterHessianEigen<eigen_data_t>(appObj, u, mu, 0., Phi);
+    auto PhiTHParamsKokkos = ::pressio::rom::experimental::computeTestBasisTransposeTimesParameterHessianKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon);
+    auto PhiTHParamsEigen = ::pressio::rom::experimental::computeTestBasisTransposeTimesParameterHessianEigen<eigen_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon);
 
     kokkos_data_t::dense_hessian_t PhiTHParams_exact("Hparams",2,3,3);
     PhiTHParams_exact(0,0,0) = 0;
@@ -340,16 +435,16 @@ int main(int argc, char *argv[])
           auto e1 = PhiTHParamsKokkos(i,j,k) - PhiTHParams_exact(i,j,k);
           auto e2 = PhiTHParamsEigen[i][j][k] - PhiTHParams_exact(i,j,k);
           if (std::abs(e1) > tol){
-            std::cout << " error in parameter Hessian routine for Kokkos, Kokkos evaluates to " <<   PhiTHParamsKokkos(i,j,k)  << " vs " << PhiTHParams_exact(i,j,k) << std::endl;}
+            std::cout << " error in parameter Hessian routine for Kokkos at " << i << " " << j << " " << k << " " << " Kokkos evaluates to " <<   PhiTHParamsKokkos(i,j,k)  << " vs " << PhiTHParams_exact(i,j,k) << std::endl;}
           if (std::abs(e2) > tol){
-            std::cout << " error in parameter Hessian routine for Eigen, Eigen evaluates to " <<  PhiTHParamsEigen[i][j][k]  << " vs " << PhiTHParams_exact(i,j,k)  << std::endl;}
+            std::cout << " error in parameter Hessian routine for Eigen at " << i << " " << j << " " << k << " , Eigen evaluates to " <<  PhiTHParamsEigen[i][j][k]  << " vs " << PhiTHParams_exact(i,j,k)  << std::endl;}
         }
       }
     }
 
 
-    auto PhiTHMixedKokkos = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi);
-    auto PhiTHMixedEigen = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<eigen_data_t>(appObj, u, mu, 0., Phi);
+    auto PhiTHMixedKokkos = ::pressio::rom::experimental::computeTestBasisTransposeTimesMixedHessianKokkos<kokkos_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon,epsilon);
+    auto PhiTHMixedEigen = ::pressio::rom::experimental::computeTestBasisTransposeTimesMixedHessianEigen<eigen_data_t>(appObj, u, mu, 0., Phi,Phi,epsilon,epsilon);
 
     kokkos_data_t::dense_hessian_t PhiTHMixed_exact("Hparams",2,2,3);
     PhiTHMixed_exact(1,1,1) = 16.;
