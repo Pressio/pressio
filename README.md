@@ -14,9 +14,12 @@ and in a self-contained fashion.
 One of the main outcome of this is that regardless of your interest in ROMs,
 you might find useful some of the components of the library.
 
-[![](https://img.shields.io/website?label=EXPLORE%20THE%20DOCUMENTATION&url=https%3A%2F%2Fpressio.github.io%2Fpressio4py%2Fhtml%2Findex.html)](https://pressio.github.io/pressio/html/index.html)
 
-<!-- [Link to the full Pressio project](https://pressio.github.io). -->
+Click below to checkout the documentation:
+
+<a href="https://pressio.github.io/pressio/html/index.html" target="_blank">
+    <img src='logo-readme.svg' width='95%'>
+</a>
 
 ## Questions?
 Find us on Slack: https://pressioteam.slack.com and/or
