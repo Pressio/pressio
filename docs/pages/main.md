@@ -38,7 +38,7 @@ This is the documentation of the [C++ library](https://github.com/Pressio/pressi
 
 * [how to install](./md_pages_installation.html): it is a header-only library, should be trivial
 
-* [explore the tutorials](https://pressio.github.io/pressio-tutorials/html/index.html)
+* [explore the tutorials](https://pressio.github.io/pressio-tutorials)
 
 
 <!-- ## What if your types are not natively supported in pressio? -->

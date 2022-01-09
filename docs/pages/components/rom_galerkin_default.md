@@ -77,25 +77,26 @@ This function returns an instance of the desired Galerkin problem.
 <br/>
 
 @m_div{m-button m-primary}
-<a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit.html">
+<a href="https://pressio.github.io/pressio-tutorials/known_types/proms_galerkin_default_explicit.html">
 @m_div{m-big}Explicit Galerkin sample code 1: @m_enddiv
 @m_div{m-small} (for data types natively supported) @m_enddiv
 </a> @m_enddiv
 
-@m_div{m-button m-primary}
+<!-- @m_div{m-button m-primary}
 <a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_explicit_custom_types.html">
 @m_div{m-big} Explicit Galerkin sample code 2: @m_enddiv
 @m_div{m-small} (for arbitrary data types) @m_enddiv
 </a> @m_enddiv
-
+ -->
 @m_div{m-button m-primary}
-<a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit.html">
+<a href="https://pressio.github.io/pressio-tutorials/known_types/proms_galerkin_default_implicit.html">
 @m_div{m-big}Implicit Galerkin sample code 1: @m_enddiv
 @m_div{m-small} (for data types natively supported) @m_enddiv
 </a> @m_enddiv
 
-@m_div{m-button m-primary}
+<!-- @m_div{m-button m-primary}
 <a href="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_galerkin_default_implicit_custom_types.html">
 @m_div{m-big} Implicit Galerkin sample code 2: @m_enddiv
 @m_div{m-small} (for arbitrary data types) @m_enddiv
 </a> @m_enddiv
+ -->

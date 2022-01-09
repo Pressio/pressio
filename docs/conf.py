@@ -63,7 +63,7 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_rom_wls.html\">rom: WLS</a>",),
    ]),
 
-  ("<a href=\"https://pressio.github.io/pressio-tutorials/html/index.html\">Tutorials</a>", []),
+  ("<a href=\"https://pressio.github.io/pressio-tutorials\">Tutorials</a>", []),
   #("<a href=\"md_pages_tutorials.html\">Tutorials</a>", []),
 
   ("<a href=\"https://github.com/Pressio/pressio\">Github</a>", []),

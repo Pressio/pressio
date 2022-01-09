@@ -141,7 +141,7 @@ general info <linebreak/>
 <para><itemizedlist>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> providing an overview, objectives and design ideas</para>
 </listitem><listitem><para><ulink url="./md_pages_installation.html">how to install</ulink>: it is a header-only library, should be trivial</para>
-</listitem><listitem><para><ulink url="https://pressio.github.io/pressio-tutorials/html/index.html">explore the tutorials</ulink></para>
+</listitem><listitem><para><ulink url="https://pressio.github.io/pressio-tutorials">explore the tutorials</ulink></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
