@@ -358,15 +358,3 @@ void resize(
 ```
 - Resizes matrix `o` into `newCols` x `newRows` number of elements.
 @endparblock
-
-## Type Traits
-
-These pseudo-ops provide simple and convenient form for selected [type traits](md_pages_components_type_traits.html):
-
-| Name | Description |
-|------|-------------|
-| `template<class T>` <br/> `bool is_column_major(const T& o)` | Returns `true` if container has column layout |
-| `template<class T>` <br/> `bool _pybind_is_pybind<T>::value` | Yields `true` if `T` is `pybind` container |
-| `template<class T>` <br/> `bool _pybind_is_rank1<T>::value` | Yields `true` for rank one `pybind` containers (vectors) |
-| `template<class T>` <br/> `bool _pybind_is_rank2<T>::value` | Yields `true` for rank two `pybind` containers (matrices) |
-| `template<class T>` <br/> `bool _pybind_is_rank_dyn<T>::value` | Yields `true` for dynamic rank `pybind` containers |
