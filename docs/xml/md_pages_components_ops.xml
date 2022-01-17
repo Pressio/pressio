@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
   <compounddef id="md_pages_components_ops" kind="page">
     <compoundname>md_pages_components_ops</compoundname>
     <title>ops</title>
@@ -12,7 +12,319 @@
 </parblock></para>
 <sect1 id="md_pages_components_ops_1autotoc_md65">
 <title>Overview</title>
-<para>... </para>
+<para>Operations provide algebraic routines and copy/assignment utilities that can be executed on containers and aim to offer relevant type and rank flexibility.</para>
+</sect1>
+<sect1 id="md_pages_components_ops_1autotoc_md66">
+<title>Math</title>
+<sect3 id="md_pages_components_ops_1autotoc_md67">
+<title>abs()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>abs(T1&amp;<sp/>y,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>x)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes the absolute value of <computeroutput>x</computeroutput> storing the result in <computeroutput>y</computeroutput>: <formula id="11">$y_i := |x_i|$</formula></para>
+</listitem><listitem><para>Works on vectors (matrix support in progress). </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md68">
+<title>min() and max()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal">Traits&lt;T&gt;::scalar_type<sp/>min(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>obj)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal">Traits&lt;T&gt;::scalar_type<sp/>max(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>obj)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para><computeroutput>min()</computeroutput> selects the minimal and <computeroutput>max()</computeroutput> the maximal value from the elements contained in <computeroutput>obj</computeroutput>. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md69">
+<title>scale()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>scale(T&amp;<sp/>o,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T&gt;::scalar_type<sp/>value)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Scales each element in <computeroutput>o</computeroutput> (vector or matrix) by scalar <computeroutput>value</computeroutput>: <formula id="12">$o_\lambda := o_\lambda value$</formula><linebreak/>
+ (where <formula id="13">$\lambda$</formula> is rank one or rank two index). </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md70">
+<title>pow() and abs_pow()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>pow(T&amp;<sp/>x,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T&gt;::scalar_type&amp;<sp/>exponent)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Replaces each element in <computeroutput>x</computeroutput> with computed expotential: <formula id="14">$x_i := x_i^{expotent}$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>pow(T1&amp;<sp/>y,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>x,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T1&gt;::scalar_type&amp;<sp/>exponent)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes the expotential of <computeroutput>x</computeroutput>: <formula id="15">$y_i := x_i^{expotent}$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>abs_pow(T1&amp;<sp/>y,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>x,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T&gt;::scalar_type&amp;<sp/>exponent)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes the expotential of absolute <computeroutput>x</computeroutput>: <formula id="16">$y_i := |x_i|^{expotent}$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>abs_pow(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>T1&amp;<sp/>y,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>x,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T1&gt;::scalar_type&amp;<sp/>exponent,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T1&gt;::scalar_type&amp;<sp/>eps)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes the <emphasis>negative</emphasis> expotential (requires <computeroutput>expotent &lt; 0</computeroutput>) of absolute <computeroutput>x</computeroutput>: <formula id="17">$y_i := \frac{1}{ max(|x_i|^{-expotent}, \epsilon) }$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md71">
+<title>norm1() and norm2()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal">Traits&lt;T&gt;::scalar_type<sp/>norm1(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>o)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal">Traits&lt;T&gt;::scalar_type<sp/>norm2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>o)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para><computeroutput>norm1()</computeroutput> computes and returns L1 norm for <computeroutput>o</computeroutput>: <formula id="18">$||o||_1 = \sum_i{ |o_i| }$</formula></para>
+</listitem><listitem><para><computeroutput>norm2()</computeroutput> computes and returns L2 norm for <computeroutput>o</computeroutput>: <formula id="19">$||o||_2 = \sqrt{ \sum_i{ o_i^2 }}$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md72">
+<title>add_to_diagonal()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>add_to_diagonal(T&amp;<sp/>mtx,<sp/>Traits&lt;T&gt;::scalar_type<sp/>value)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Adds scalar <computeroutput>value</computeroutput> to each diagonal element of <computeroutput>mtx</computeroutput> (<computeroutput>mtx(i, i)</computeroutput>). </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md73">
+<title>dot()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>dot(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>a,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>b,<sp/><sp/>Traits&lt;T1&gt;::scalar_type&amp;<sp/>result)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal">Traits&lt;T1&gt;::scalar_type<sp/>dot(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>a,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>b)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes the dot product of <computeroutput>a</computeroutput> and <computeroutput>b</computeroutput> storing the result in <computeroutput>result</computeroutput> (first variant) or returning it directly (second variant). </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md74">
+<title>elementwise_multiply()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>elementwise_multiply(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Traits&lt;T&gt;::scalar_type<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>x,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>z,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Traits&lt;T&gt;::scalar_type<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>T2&amp;<sp/>y)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Multiplies <computeroutput>x</computeroutput> and <computeroutput>z</computeroutput> vectors element-wise computing: <formula id="20">$y_i := \alpha x_i z_i + \beta y_i$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md75">
+<title>update()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>scalar_t&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(T&amp;<sp/>v,<sp/>scalar_t<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>u1,<sp/>scalar_t<sp/>b1)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>scalar_t&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(T&amp;<sp/>v,<sp/>scalar_t<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>u1,<sp/>scalar_t<sp/>b1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>u2,<sp/>scalar_t<sp/>b2)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T3,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>scalar_t&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(T&amp;<sp/>v,<sp/>scalar_t<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>u1,<sp/>scalar_t<sp/>b1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>u2,<sp/>scalar_t<sp/>b2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T3&amp;<sp/>u3,<sp/>scalar_t<sp/>b3)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T3,<sp/><sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T4,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>scalar_t&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(T&amp;<sp/>v,<sp/>scalar_t<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>u1,<sp/>scalar_t<sp/>b1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>u2,<sp/>scalar_t<sp/>b2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T3&amp;<sp/>u3,<sp/>scalar_t<sp/>b3,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T4&amp;<sp/>u4,<sp/>scalar_t<sp/>b4)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Updates <computeroutput>v</computeroutput> with <computeroutput>u1</computeroutput>-<computeroutput>u4</computeroutput> (all vectors or matrices) computing <formula id="21">$v_\lambda := \alpha v_\lambda + \sum_{j=1}^k{\beta_j u_{j\lambda}}$</formula><linebreak/>
+ where <formula id="13">$\lambda$</formula> is rank one or rank two index and <formula id="22">$k=1,2,3,4$</formula> depends on the selected overload. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md76">
+<title>product()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Mode,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>scalar_type,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">A_type,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">x_type,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">y_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>product(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Mode<sp/></highlight><highlight class="comment">/*<sp/>mode<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>A_type&amp;<sp/>A,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>x_type&amp;<sp/>x,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>y_type&amp;<sp/>y)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Multiplies matrix <computeroutput>A</computeroutput> and vector <computeroutput>x</computeroutput> computing <formula id="23">$y := \alpha A x + \beta y$</formula> for <computeroutput>Mode = pressio::nontranspose</computeroutput> and <formula id="24">$y := \alpha A^T x + \beta y$</formula> for <computeroutput>Mode = pressio::transpose</computeroutput>. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ModeA,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ModeB,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>scalar_type,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">A_type,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">B_type,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>product(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>ModeA<sp/></highlight><highlight class="comment">/*<sp/>modeA<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>ModeB<sp/></highlight><highlight class="comment">/*<sp/>modeB<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>A_type&amp;<sp/>A,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>B_type&amp;<sp/>B,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>C_type&amp;<sp/>C)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Multiplies matrices <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> computing <formula id="25">$C := \alpha A B + \beta C$</formula> if both modes are <computeroutput>pressio::nontranspose</computeroutput>. Use <computeroutput>pressio::transpose</computeroutput> to transpose input matrices of choice. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>scalar_type,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>A_type,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>product(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>::pressio::transpose<sp/></highlight><highlight class="comment">/*<sp/>modeA<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>::pressio::nontranspose<sp/></highlight><highlight class="comment">/*<sp/>modeB<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>A_type&amp;<sp/>A,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>C_type&amp;<sp/>C)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes <formula id="26">$C := \alpha A^T A + \beta C$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C_type,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>scalar_type,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>A_type&gt;</highlight></codeline>
+<codeline><highlight class="normal">C_type<sp/>product(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>::pressio::transpose<sp/></highlight><highlight class="comment">/*<sp/>modeA<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>::pressio::nontranspose<sp/></highlight><highlight class="comment">/*<sp/>modeB<sp/>*/</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>A_type&amp;<sp/>A)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Computes and returns <formula id="27">$C = \alpha A^T A$</formula> </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+</sect1>
+<sect1 id="md_pages_components_ops_1autotoc_md77">
+<title>Utilities</title>
+<sect3 id="md_pages_components_ops_1autotoc_md78">
+<title>extent()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>IndexType&gt;</highlight></codeline>
+<codeline><highlight class="normal">Traits&lt;T&gt;::size_type<sp/>extent(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>objectIn,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>IndexType<sp/>i)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Returns the number of elements that <computeroutput>objectIn</computeroutput> has in <computeroutput>i</computeroutput>-th dimension (zero based). </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md79">
+<title>matching_extents::compare()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>matching_extents&lt;T1,<sp/>T2&gt;::compare(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>a,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>b)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Returns <computeroutput>true</computeroutput> if objects <computeroutput>a</computeroutput> and <computeroutput>b</computeroutput> have same number of elements in each dimension. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md80">
+<title>clone()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal">T<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T&amp;<sp/>src)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Creates a copy of <computeroutput>src</computeroutput> object. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md81">
+<title>deep_copy()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>deep_copy(T1&amp;<sp/>dest,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>src)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Copies <computeroutput>src</computeroutput> to <computeroutput>dest</computeroutput> assuring a deep copy. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md82">
+<title>fill() and set_zero()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>fill(T&amp;<sp/>o,<sp/>Traits&lt;T&gt;::scalar_type<sp/>value)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(T&amp;<sp/>o)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para><computeroutput>fill()</computeroutput> populates <computeroutput>o</computeroutput> (matrix or vector) with given scalar <computeroutput>value</computeroutput>.</para>
+</listitem><listitem><para><computeroutput>set_zero()</computeroutput> populates <computeroutput>o</computeroutput> (matrix or vector) with zeros. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+</sect3>
+<sect3 id="md_pages_components_ops_1autotoc_md83">
+<title>resize()</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>resize(T&amp;<sp/>o,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T&gt;::size_type<sp/>newSize)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Resizes vector <computeroutput>o</computeroutput> into <computeroutput>newSize</computeroutput> number of elements. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
+<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>resize(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>T&amp;<sp/>o,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T&gt;::size_type<sp/>newRows,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Traits&lt;T&gt;::size_type<sp/>newCols)</highlight></codeline>
+</programlisting><itemizedlist>
+<listitem><para>Resizes matrix <computeroutput>o</computeroutput> into <computeroutput>newCols</computeroutput> x <computeroutput>newRows</computeroutput> number of elements. </para>
+</listitem></itemizedlist>
+</para>
+</parblock></para>
+</sect3>
 </sect1>
     </detaileddescription>
     <location file="pages/components/ops.md"/>

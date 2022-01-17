@@ -1,6 +1,366 @@
 
 
-Defined in header\+: {\ttfamily $<$pressio/ops.\+hpp$>$}
+Defined in header\+: {\ttfamily \texorpdfstring{$<$}{<}pressio/ops.\+hpp\texorpdfstring{$>$}{>}}
 
 Public namespace\+: {\ttfamily pressio\+::ops} \hypertarget{md_pages_components_ops_autotoc_md65}{}\doxysection{Overview}\label{md_pages_components_ops_autotoc_md65}
-... 
+Operations provide algebraic routines and copy/assignment utilities that can be executed on containers and aim to offer relevant type and rank flexibility.\hypertarget{md_pages_components_ops_autotoc_md66}{}\doxysection{Math}\label{md_pages_components_ops_autotoc_md66}
+\hypertarget{md_pages_components_ops_autotoc_md67}{}\doxysubsubsection{abs()}\label{md_pages_components_ops_autotoc_md67}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{class} T1, \textcolor{keyword}{class} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} abs(T1\& y, \textcolor{keyword}{const} T2\& x)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes the absolute value of {\ttfamily x} storing the result in {\ttfamily y}\+: $y_i := |x_i|$
+\item Works on vectors (matrix support in progress). 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md68}{}\doxysubsubsection{min() and max()}\label{md_pages_components_ops_autotoc_md68}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{Traits<T>::scalar\_type min(\textcolor{keyword}{const} T\& obj)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{Traits<T>::scalar\_type max(\textcolor{keyword}{const} T\& obj)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item {\ttfamily min()} selects the minimal and {\ttfamily max()} the maximal value from the elements contained in {\ttfamily obj}. 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md69}{}\doxysubsubsection{scale()}\label{md_pages_components_ops_autotoc_md69}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} scale(T\& o, \textcolor{keyword}{const} Traits<T>::scalar\_type value)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Scales each element in {\ttfamily o} (vector or matrix) by scalar {\ttfamily value}\+: $o_\lambda := o_\lambda value$~\newline
+ (where $\lambda$ is rank one or rank two index). 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md70}{}\doxysubsubsection{pow() and abs\+\_\+pow()}\label{md_pages_components_ops_autotoc_md70}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} pow(T\& x, \textcolor{keyword}{const} Traits<T>::scalar\_type\& exponent)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Replaces each element in {\ttfamily x} with computed expotential\+: $x_i := x_i^{expotent}$ 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} pow(T1\& y, \textcolor{keyword}{const} T2\& x, \textcolor{keyword}{const} Traits<T1>::scalar\_type\& exponent)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes the expotential of {\ttfamily x}\+: $y_i := x_i^{expotent}$ 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} abs\_pow(T1\& y, \textcolor{keyword}{const} T2\& x, \textcolor{keyword}{const} Traits<T>::scalar\_type\& exponent)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes the expotential of absolute {\ttfamily x}\+: $y_i := |x_i|^{expotent}$ 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} abs\_pow(}
+\DoxyCodeLine{  T1\& y,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T2\& x,}
+\DoxyCodeLine{  \textcolor{keyword}{const} Traits<T1>::scalar\_type\& exponent,}
+\DoxyCodeLine{  \textcolor{keyword}{const} Traits<T1>::scalar\_type\& eps)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes the {\itshape negative} expotential (requires {\ttfamily expotent \texorpdfstring{$<$}{<} 0}) of absolute {\ttfamily x}\+: $y_i := \frac{1}{ max(|x_i|^{-expotent}, \epsilon) }$ 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md71}{}\doxysubsubsection{norm1() and norm2()}\label{md_pages_components_ops_autotoc_md71}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{Traits<T>::scalar\_type norm1(\textcolor{keyword}{const} T\& o)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{Traits<T>::scalar\_type norm2(\textcolor{keyword}{const} T\& o)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item {\ttfamily norm1()} computes and returns L1 norm for {\ttfamily o}\+: $||o||_1 = \sum_i{ |o_i| }$
+\item {\ttfamily norm2()} computes and returns L2 norm for {\ttfamily o}\+: $||o||_2 = \sqrt{ \sum_i{ o_i^2 }}$ 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md72}{}\doxysubsubsection{add\+\_\+to\+\_\+diagonal()}\label{md_pages_components_ops_autotoc_md72}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} add\_to\_diagonal(T\& mtx, Traits<T>::scalar\_type value)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Adds scalar {\ttfamily value} to each diagonal element of {\ttfamily mtx} ({\ttfamily mtx(i, i)}). 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md73}{}\doxysubsubsection{dot()}\label{md_pages_components_ops_autotoc_md73}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} dot(\textcolor{keyword}{const} T1\& a, \textcolor{keyword}{const} T2\& b,  Traits<T1>::scalar\_type\& result)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{Traits<T1>::scalar\_type dot(\textcolor{keyword}{const} T1\& a, \textcolor{keyword}{const} T2\& b)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes the dot product of {\ttfamily a} and {\ttfamily b} storing the result in {\ttfamily result} (first variant) or returning it directly (second variant). 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md74}{}\doxysubsubsection{elementwise\+\_\+multiply()}\label{md_pages_components_ops_autotoc_md74}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T, \textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} elementwise\_multiply(}
+\DoxyCodeLine{  Traits<T>::scalar\_type alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T\& x,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T1\& z,}
+\DoxyCodeLine{  Traits<T>::scalar\_type beta,}
+\DoxyCodeLine{  T2\& y)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Multiplies {\ttfamily x} and {\ttfamily z} vectors element-\/wise computing\+: $y_i := \alpha x_i z_i + \beta y_i$ 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md75}{}\doxysubsubsection{update()}\label{md_pages_components_ops_autotoc_md75}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} T, \textcolor{keyword}{class} T1, \textcolor{keyword}{class} scalar\_t>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(T\& v, scalar\_t alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T1\& u1, scalar\_t b1)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} T, \textcolor{keyword}{class} T1, \textcolor{keyword}{class} T2, \textcolor{keyword}{class} scalar\_t>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(T\& v, scalar\_t alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T1\& u1, scalar\_t b1,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T2\& u2, scalar\_t b2)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} T, \textcolor{keyword}{class} T1, \textcolor{keyword}{class} T2, \textcolor{keyword}{class} T3, \textcolor{keyword}{class} scalar\_t>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(T\& v, scalar\_t alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T1\& u1, scalar\_t b1,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T2\& u2, scalar\_t b2,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T3\& u3, scalar\_t b3)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} T, \textcolor{keyword}{class} T1, \textcolor{keyword}{class} T2, \textcolor{keyword}{class} T3,  \textcolor{keyword}{class} T4, \textcolor{keyword}{class} scalar\_t>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(T\& v, scalar\_t alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T1\& u1, scalar\_t b1,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T2\& u2, scalar\_t b2,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T3\& u3, scalar\_t b3,}
+\DoxyCodeLine{  \textcolor{keyword}{const} T4\& u4, scalar\_t b4)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Updates {\ttfamily v} with {\ttfamily u1}-\/{\ttfamily u4} (all vectors or matrices) computing $v_\lambda := \alpha v_\lambda + \sum_{j=1}^k{\beta_j u_{j\lambda}}$~\newline
+ where $\lambda$ is rank one or rank two index and $k=1,2,3,4$ depends on the selected overload. 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md76}{}\doxysubsubsection{product()}\label{md_pages_components_ops_autotoc_md76}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} Mode, \textcolor{keyword}{typename} scalar\_type,}
+\DoxyCodeLine{  \textcolor{keyword}{class }A\_type, \textcolor{keyword}{class }x\_type, \textcolor{keyword}{class }y\_type>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} product(}
+\DoxyCodeLine{  Mode \textcolor{comment}{/* mode */},}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} A\_type\& A,}
+\DoxyCodeLine{  \textcolor{keyword}{const} x\_type\& x,}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type beta,}
+\DoxyCodeLine{  y\_type\& y)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Multiplies matrix {\ttfamily A} and vector {\ttfamily x} computing $y := \alpha A x + \beta y$ for {\ttfamily Mode = pressio\+::nontranspose} and $y := \alpha A^T x + \beta y$ for {\ttfamily Mode = pressio\+::transpose}. 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} ModeA, \textcolor{keyword}{typename} ModeB, \textcolor{keyword}{typename} scalar\_type,}
+\DoxyCodeLine{  \textcolor{keyword}{class }A\_type, \textcolor{keyword}{class }B\_type, \textcolor{keyword}{class }C\_type>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} product(}
+\DoxyCodeLine{  ModeA \textcolor{comment}{/* modeA */},}
+\DoxyCodeLine{  ModeB \textcolor{comment}{/* modeB */},}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} A\_type\& A,}
+\DoxyCodeLine{  \textcolor{keyword}{const} B\_type\& B,}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type beta,}
+\DoxyCodeLine{  C\_type\& C)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Multiplies matrices {\ttfamily A} and {\ttfamily B} computing $C := \alpha A B + \beta C$ if both modes are {\ttfamily pressio\+::nontranspose}. Use {\ttfamily pressio\+::transpose} to transpose input matrices of choice. 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{class} scalar\_type, \textcolor{keyword}{class} A\_type, \textcolor{keyword}{class} C\_type>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} product(}
+\DoxyCodeLine{  ::pressio::transpose \textcolor{comment}{/* modeA */},}
+\DoxyCodeLine{  ::pressio::nontranspose \textcolor{comment}{/* modeB */},}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} A\_type\& A,}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type beta,}
+\DoxyCodeLine{  C\_type\& C)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes $C := \alpha A^T A + \beta C$ 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{class} C\_type, \textcolor{keyword}{class} scalar\_type, \textcolor{keyword}{class} A\_type>}
+\DoxyCodeLine{C\_type product(}
+\DoxyCodeLine{  ::pressio::transpose \textcolor{comment}{/* modeA */},}
+\DoxyCodeLine{  ::pressio::nontranspose \textcolor{comment}{/* modeB */},}
+\DoxyCodeLine{  \textcolor{keyword}{const} scalar\_type alpha,}
+\DoxyCodeLine{  \textcolor{keyword}{const} A\_type\& A)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Computes and returns $C = \alpha A^T A$ 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md77}{}\doxysection{Utilities}\label{md_pages_components_ops_autotoc_md77}
+\hypertarget{md_pages_components_ops_autotoc_md78}{}\doxysubsubsection{extent()}\label{md_pages_components_ops_autotoc_md78}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} T, \textcolor{keyword}{class} IndexType>}
+\DoxyCodeLine{Traits<T>::size\_type extent(\textcolor{keyword}{const} T\& objectIn, \textcolor{keyword}{const} IndexType i)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Returns the number of elements that {\ttfamily object\+In} has in {\ttfamily i}-\/th dimension (zero based). 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md79}{}\doxysubsubsection{matching\+\_\+extents\+::compare()}\label{md_pages_components_ops_autotoc_md79}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{bool} matching\_extents<T1, T2>::compare(\textcolor{keyword}{const} T1\& a, \textcolor{keyword}{const} T2\& b)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Returns {\ttfamily true} if objects {\ttfamily a} and {\ttfamily b} have same number of elements in each dimension. 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md80}{}\doxysubsubsection{clone()}\label{md_pages_components_ops_autotoc_md80}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{T clone(\textcolor{keyword}{const} T\& src)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Creates a copy of {\ttfamily src} object. 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md81}{}\doxysubsubsection{deep\+\_\+copy()}\label{md_pages_components_ops_autotoc_md81}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} deep\_copy(T1\& dest, \textcolor{keyword}{const} T2\& src)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Copies {\ttfamily src} to {\ttfamily dest} assuring a deep copy. 
+\end{DoxyItemize}\hypertarget{md_pages_components_ops_autotoc_md82}{}\doxysubsubsection{fill() and set\+\_\+zero()}\label{md_pages_components_ops_autotoc_md82}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} fill(T\& o, Traits<T>::scalar\_type value)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(T\& o)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item {\ttfamily fill()} populates {\ttfamily o} (matrix or vector) with given scalar {\ttfamily value}.
+\item {\ttfamily set\+\_\+zero()} populates {\ttfamily o} (matrix or vector) with zeros. 
+\end{DoxyItemize}
+
+\hypertarget{md_pages_components_ops_autotoc_md83}{}\doxysubsubsection{resize()}\label{md_pages_components_ops_autotoc_md83}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} resize(T\& o, \textcolor{keyword}{const} Traits<T>::size\_type newSize)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Resizes vector {\ttfamily o} into {\ttfamily new\+Size} number of elements. 
+\end{DoxyItemize}
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\textcolor{keywordtype}{void} resize(}
+\DoxyCodeLine{  T\& o,}
+\DoxyCodeLine{  \textcolor{keyword}{const} Traits<T>::size\_type newRows,}
+\DoxyCodeLine{  \textcolor{keyword}{const} Traits<T>::size\_type newCols)}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Resizes matrix {\ttfamily o} into {\ttfamily new\+Cols} x {\ttfamily new\+Rows} number of elements. 
+\end{DoxyItemize}
