@@ -280,18 +280,6 @@ Traits<T>::size_type extent(const T& objectIn, const IndexType i)
 - Returns the number of elements that `objectIn` has in `i`-th dimension (zero based).
 @endparblock
 
-#### matching_extents::compare()
-
-@m_class{m-block m-default}
-
-@parblock
-```cpp
-template<typename T1, typename T2>
-bool matching_extents<T1, T2>::compare(const T1& a, const T2& b)
-```
-- Returns `true` if objects `a` and `b` have same number of elements in each dimension.
-@endparblock
-
 #### clone()
 
 @m_class{m-block m-default}
