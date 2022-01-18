@@ -255,17 +255,6 @@
 </parblock></para>
 </sect3>
 <sect3 id="md_pages_components_ops_1autotoc_md79">
-<title>matching_extents::compare()</title>
-<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
-<para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>matching_extents&lt;T1,<sp/>T2&gt;::compare(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T1&amp;<sp/>a,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T2&amp;<sp/>b)</highlight></codeline>
-</programlisting><itemizedlist>
-<listitem><para>Returns <computeroutput>true</computeroutput> if objects <computeroutput>a</computeroutput> and <computeroutput>b</computeroutput> have same number of elements in each dimension. </para>
-</listitem></itemizedlist>
-</para>
-</parblock></para>
-</sect3>
-<sect3 id="md_pages_components_ops_1autotoc_md80">
 <title>clone()</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
 <para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
@@ -276,7 +265,7 @@
 </para>
 </parblock></para>
 </sect3>
-<sect3 id="md_pages_components_ops_1autotoc_md81">
+<sect3 id="md_pages_components_ops_1autotoc_md80">
 <title>deep_copy()</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
 <para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
@@ -287,7 +276,7 @@
 </para>
 </parblock></para>
 </sect3>
-<sect3 id="md_pages_components_ops_1autotoc_md82">
+<sect3 id="md_pages_components_ops_1autotoc_md81">
 <title>fill() and set_zero()</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
 <para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
@@ -303,7 +292,7 @@
 </parblock></para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
 </sect3>
-<sect3 id="md_pages_components_ops_1autotoc_md83">
+<sect3 id="md_pages_components_ops_1autotoc_md82">
 <title>resize()</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-default" /></para>
 <para><parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
