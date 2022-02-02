@@ -138,22 +138,22 @@ public:
 
     if (name_ == ode::StepScheme::ForwardEuler){
       doStepImpl(ode::ForwardEuler(), odeState,
-		 currentTime, dt, step, dummyRhsObserver);
+		 currentTime, dt, stepNumber, dummyRhsObserver);
     }
 
     else if (name_ == ode::StepScheme::RungeKutta4){
       doStepImpl(ode::RungeKutta4(), odeState,
-		 currentTime, dt, step, dummyRhsObserver);
+		 currentTime, dt, stepNumber, dummyRhsObserver);
     }
 
     else if (name_ == ode::StepScheme::AdamsBashforth2){
       doStepImpl(ode::AdamsBashforth2(), odeState,
-		 currentTime, dt, step, dummyRhsObserver);
+		 currentTime, dt, stepNumber, dummyRhsObserver);
     }
 
     else if (name_ == ode::StepScheme::SSPRungeKutta3){
       doStepImpl(ode::SSPRungeKutta3(), odeState,
-		 currentTime, dt, step, dummyRhsObserver);
+		 currentTime, dt, stepNumber, dummyRhsObserver);
     }
   }
 
