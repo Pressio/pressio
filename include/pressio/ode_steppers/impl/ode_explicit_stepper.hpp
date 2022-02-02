@@ -134,8 +134,8 @@ public:
   {
     auto dummyRhsObserver = [](const StepCountType &,
 			       const ScalarType &,
-			       VelocityType &) { /*no op*/ };
-    (*this)(odeState, currentTime, dt, stepNumber, dummyRhsObserver);
+			       const VelocityType &) { /*no op*/ };
+    this->operator()(odeState, currentTime, dt, stepNumber, dummyRhsObserver);
   }
 
   template<class StepCountType, class RhsObserverType>
