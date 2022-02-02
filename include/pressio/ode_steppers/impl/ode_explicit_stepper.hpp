@@ -128,48 +128,73 @@ public:
 
   template<class StepCountType>
   void operator()(StateType & odeState,
-		  const ScalarType & time,
+		  const ScalarType & currentTime,
 		  const ScalarType & dt,
-		  const StepCountType & step)
+		  const StepCountType & stepNumber)
+  {
+    auto dummyRhsObserver = [](const StepCountType &,
+			       const ScalarType &,
+			       const VelocityType &) { /*no op*/ };
+    (*this)(odeState, currentTime, dt, stepNumber, dummyRhsObserver);
+  }
+
+  template<class StepCountType, class RhsObserverType>
+  void operator()(StateType & odeState,
+		  const ScalarType & currentTime,
+		  const ScalarType & dt,
+		  const StepCountType & step,
+		  RhsObserverType & rhsObs)
   {
     if (name_ == ode::StepScheme::ForwardEuler){
-      doStepImpl(ode::ForwardEuler(), odeState, time, dt, step);
+      doStepImpl(ode::ForwardEuler(), odeState,
+		 currentTime, dt, step, rhsObs);
     }
+
     else if (name_ == ode::StepScheme::RungeKutta4){
-      doStepImpl(ode::RungeKutta4(), odeState, time, dt, step);
+      doStepImpl(ode::RungeKutta4(), odeState,
+		 currentTime, dt, step, rhsObs);
     }
+
     else if (name_ == ode::StepScheme::AdamsBashforth2){
-      doStepImpl(ode::AdamsBashforth2(), odeState, time, dt, step);
+      doStepImpl(ode::AdamsBashforth2(), odeState,
+		 currentTime, dt, step, rhsObs);
     }
+
     else if (name_ == ode::StepScheme::SSPRungeKutta3){
-      doStepImpl(ode::SSPRungeKutta3(), odeState, time, dt, step);
+      doStepImpl(ode::SSPRungeKutta3(), odeState,
+		 currentTime, dt, step, rhsObs);
     }
   }
 
 private:
-  template<class StepCountType>
+  template<class StepCountType, class RhsObserverType>
   void doStepImpl(ode::ForwardEuler,
 		  StateType & odeState,
-		  const ScalarType & time,
+		  const ScalarType & currentTime,
 		  const ScalarType & dt,
-		  const StepCountType & step)
+		  const StepCountType & stepNumber,
+		  RhsObserverType & rhsObs)
   {
     PRESSIOLOG_DEBUG("euler forward stepper: do step");
 
     auto & rhs = velocities_[0];
-    //eval RHS
-    systemObj_.get().velocity(odeState, time, rhs);
+
+    //eval and observe RHS
+    systemObj_.get().velocity(odeState, currentTime, rhs);
+    rhsObs(stepNumber, currentTime, rhs);
+
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
     ::pressio::ops::update(odeState, one, rhs, dt);
   }
 
-  template<class StepCountType>
+  template<class StepCountType, class RhsObserverType>
   void doStepImpl(ode::AdamsBashforth2,
 		  StateType & odeState,
 		  const ScalarType & currentTime,
 		  const ScalarType & dt,
-		  const StepCountType & stepNumber)
+		  const StepCountType & stepNumber,
+		  RhsObserverType & rhsObs)
   {
     PRESSIOLOG_DEBUG("adams-bashforth2 stepper: do step");
 
@@ -182,6 +207,7 @@ private:
       // use Euler forward or we could use something else here maybe RK4
       auto & rhs = velocities_[0];
       systemObj_.get().velocity(odeState, currentTime, rhs);
+      rhsObs(stepNumber, currentTime, rhs);
 
       constexpr auto one   = ::pressio::utils::Constants<ScalarType>::one();
       ::pressio::ops::update(odeState, one, rhs, dt);
@@ -193,17 +219,19 @@ private:
       ::pressio::ops::deep_copy(fnm1, fn);
 
       systemObj_.get().velocity(odeState, currentTime, fn);
+      rhsObs(stepNumber, currentTime, fn);
       constexpr auto one   = ::pressio::utils::Constants<ScalarType>::one();
       ::pressio::ops::update(odeState, one, fn, cfn, fnm1, cfnm1);
     }
   }
 
-  template<class StepCountType>
+  template<class StepCountType, class RhsObserverType>
   void doStepImpl(ode::SSPRungeKutta3,
 		  StateType & odeState,
-		  const ScalarType & time,
+		  const ScalarType & currentTime,
 		  const ScalarType & dt,
-		  const StepCountType & step)
+		  const StepCountType & stepNumber,
+		  RhsObserverType & rhsObs)
   {
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
@@ -223,33 +251,35 @@ private:
     // see e.g. https://gkeyll.readthedocs.io/en/latest/dev/ssp-rk.html
 
     // rhs(u_n, t_n)
-    systemObj_.get().velocity(odeState, time, rhs0);
+    systemObj_.get().velocity(odeState, currentTime, rhs0);
     // u_1 = u_n + dt * rhs(u_n, t_n)
     ::pressio::ops::update(auxiliaryState_, zero,
-                           odeState,     one,
+                           odeState,        one,
                            rhs0,            dt);
+    rhsObs(stepNumber, currentTime, rhs0);
 
     // rhs(u_1, t_n+dt)
-    systemObj_.get().velocity(auxiliaryState_, time+dt, rhs0);
+    systemObj_.get().velocity(auxiliaryState_, currentTime+dt, rhs0);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*dt*rhs(u_1, t_n+dt)
     ::pressio::ops::update(auxiliaryState_, fourInv,
-			   odeState,     threeOvFour,
+			   odeState,        threeOvFour,
                            rhs0,            fourInv*dt);
 
     // rhs(u_2, t_n + 0.5*dt)
-    systemObj_.get().velocity(auxiliaryState_, time + oneOvTwo*dt, rhs0);
+    systemObj_.get().velocity(auxiliaryState_, currentTime + oneOvTwo*dt, rhs0);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*dt*rhs(u_2, t_n+0.5*dt)
-    ::pressio::ops::update(odeState,     oneOvThree,
+    ::pressio::ops::update(odeState,        oneOvThree,
 			   auxiliaryState_, twoOvThree,
                            rhs0,            twoOvThree*dt);
   }
 
-  template<class StepCountType>
+  template<class StepCountType, class RhsObserverType>
   void doStepImpl(ode::RungeKutta4,
 		  StateType & odeState,
-		  const ScalarType & t,
+		  const ScalarType & currentTime,
 		  const ScalarType & dt,
-		  const StepCountType & step)
+		  const StepCountType & stepNumber,
+		  RhsObserverType & rhsObs)
   {
     PRESSIOLOG_DEBUG("rk4 stepper: do step");
 
@@ -263,12 +293,13 @@ private:
     constexpr auto six  = two * three;
 
     const ScalarType dt_half = dt / two;
-    const ScalarType t_phalf = t + dt_half;
+    const ScalarType t_phalf = currentTime + dt_half;
     const ScalarType dt6 = dt / six;
     const ScalarType dt3 = dt / three;
 
     // stage 1: ytmp = y + rhs0*dt_half;
-    systemObj_.get().velocity(odeState, t, rhs0);
+    systemObj_.get().velocity(odeState, currentTime, rhs0);
+    rhsObs(stepNumber, currentTime, rhs0);
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs0, dt_half);
 
     // stage 2: ytmp = y + rhs1*dt_half;
@@ -280,7 +311,7 @@ private:
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    systemObj_.get().velocity(auxiliaryState_,  t + dt, rhs3);
+    systemObj_.get().velocity(auxiliaryState_, currentTime + dt, rhs3);
     this->rk4_stage_update_impl(odeState, rhs0, rhs1, rhs2, rhs3, dt6, dt3);
   }
 
