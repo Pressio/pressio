@@ -135,26 +135,7 @@ public:
     auto dummyRhsObserver = [](const StepCountType &,
 			       const ScalarType &,
 			       const VelocityType &) { /*no op*/ };
-
-    if (name_ == ode::StepScheme::ForwardEuler){
-      doStepImpl(ode::ForwardEuler(), odeState,
-		 currentTime, dt, stepNumber, dummyRhsObserver);
-    }
-
-    else if (name_ == ode::StepScheme::RungeKutta4){
-      doStepImpl(ode::RungeKutta4(), odeState,
-		 currentTime, dt, stepNumber, dummyRhsObserver);
-    }
-
-    else if (name_ == ode::StepScheme::AdamsBashforth2){
-      doStepImpl(ode::AdamsBashforth2(), odeState,
-		 currentTime, dt, stepNumber, dummyRhsObserver);
-    }
-
-    else if (name_ == ode::StepScheme::SSPRungeKutta3){
-      doStepImpl(ode::SSPRungeKutta3(), odeState,
-		 currentTime, dt, stepNumber, dummyRhsObserver);
-    }
+    (*this)(odeState, currentTime, dt, stepNumber, dummyRhsObserver);
   }
 
   template<class StepCountType, class RhsObserverType>
@@ -318,7 +299,7 @@ private:
 
     // stage 1: ytmp = y + rhs0*dt_half;
     systemObj_.get().velocity(odeState, currentTime, rhs0);
-    rhsObs(stepNumber, time, rhs0);
+    rhsObs(stepNumber, currentTime, rhs0);
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs0, dt_half);
 
     // stage 2: ytmp = y + rhs1*dt_half;
