@@ -26,7 +26,7 @@
   phiFull.getVectorNonConst(1)->putScalar(1.);\
   phiFull.getVectorNonConst(2)->putScalar(2.);\
 \
-  auto lv = phiFull.getLocalViewHost();\
+  auto lv = phiFull.getLocalViewHost(Tpetra::Access::ReadWriteStruct());\
   auto mygids = full_map->getMyGlobalIndices();\
   for (std::size_t i=0; i<mygids.extent(0); ++i){\
     if (std::find(corrupt_indices.cbegin(), corrupt_indices.cend(), mygids(i))!=corrupt_indices.cend()){\

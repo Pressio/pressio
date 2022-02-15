@@ -127,13 +127,13 @@ public:
     // store Q into replicated Tpetra::Multivector
     const auto & Q2 = myImpl_.QFactor();
     Q_type locQ( rcp_local_map, Q2.cols() );
-    // auto trilD = locQ.data();
-    locQ.template sync<Kokkos::HostSpace>();
+    // // auto trilD = locQ.data();
+    // locQ.template sync<Kokkos::HostSpace>();
 
-    auto v2d = locQ.template getLocalView<Kokkos::HostSpace>();
+    auto v2d = locQ.template getLocalView<Kokkos::HostSpace>(Tpetra::Access::ReadWriteStruct());
     auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
-    // //we are going to change the host view
-    locQ.template modify<Kokkos::HostSpace>();
+    // // //we are going to change the host view
+    // locQ.template modify<Kokkos::HostSpace>();
     for (int i=0;i<Q2.rows();i++)
       for (int j=0;j<Q2.cols();j++)
     	v2d(i,j) = Q2(i,j);

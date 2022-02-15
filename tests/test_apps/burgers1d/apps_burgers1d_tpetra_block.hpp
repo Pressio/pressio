@@ -109,7 +109,7 @@ public:
     constexpr int tag_ = 1;
 
     if( myRank_ < totRanks_ - 1 ){
-      auto uC = u.getLocalBlock(NumMyElem_ - 1);
+      auto uC = u.getLocalBlockHost(NumMyElem_ - 1, Tpetra::Access::ReadOnlyStruct());
       MPI_Send( &uC(0), 1, MPI_DOUBLE,
 		myRank_+1, tag_, *comm_->getRawMpiComm() );
     }
@@ -124,11 +124,11 @@ public:
     for (auto const & it : myGel_)
     {
       uim1 = valueFromLeft;
-      const auto uCi = u.getLocalBlock(i)(0);
+      const auto uCi = u.getLocalBlockHost(i, Tpetra::Access::ReadOnlyStruct())(0);
       if (it==0)
 	uim1 = mu_[0];
       if (i>0)
-	uim1 = u.getLocalBlock(i-1)(0);
+	uim1 = u.getLocalBlockHost(i-1, Tpetra::Access::ReadOnlyStruct())(0);
 
       rhsLoc = ( 0.5*(uim1*uim1 - uCi*uCi) )/dx_;
       rhs.replaceLocalValues(i,&rhsLoc);
@@ -137,7 +137,7 @@ public:
 
     auto xgrid_v = xGrid_->getDataNonConst();
     for (i=0; i<NumMyElem_; ++i){
-      auto rhsVal = rhs.getLocalBlock(i);
+      auto rhsVal = rhs.getLocalBlockHost(i, Tpetra::Access::ReadOnlyStruct());
       rhsLoc = rhsVal(0) + mu_[1]*exp(mu_[2] * xgrid_v[i]);
       rhs.replaceLocalValues(i,&rhsLoc);
     }
@@ -228,28 +228,34 @@ protected:
   {
     const scalar_type buffer = exchangeFlux(u);
 
-    const lo_t* localColInds;
-    scalar_type* vals;
+    // const lo_t* localColInds;
+    // scalar_type* vals;
     for (lo_t i=0; i<NumMyElem_; i++)
     {
       auto thisGID = myGel_[i];
-      auto uC = u.getLocalBlock(i);
+      auto uC = u.getLocalBlockHost(i, Tpetra::Access::ReadOnlyStruct());
       if (thisGID==0)
 	{
-	  lo_t numEntries = 1;
-	  int err = 0;
-	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
-	  if (err != 0) {
-	    break;
-	  }
+    typename jacobian_type::local_inds_host_view_type localColInds("a",1);
+    typename jacobian_type::nonconst_values_host_view_type vals("b", 1);
+    jac.getLocalRowViewNonConst(i, localColInds, vals);
+
+	  // lo_t numEntries = 1;
+	  // int err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+	  // if (err != 0) break;
+
 	  vals[0]  =  -dxInv_ * uC(0);
 	}
       else
 	{
-	  lo_t numEntries = 2;
-	  int err = 0;
-	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
-    (void)err;
+    typename jacobian_type::local_inds_host_view_type localColInds("a",2);
+    typename jacobian_type::nonconst_values_host_view_type vals("b",2);
+    jac.getLocalRowViewNonConst(i, localColInds, vals);
+
+	  // lo_t numEntries = 2;
+	  // int err = 0;
+	  // err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+   //  (void)err;
     
 	  if (i==0){
 	    // don't know why the indices here must be inverted, but this is right/
@@ -258,7 +264,7 @@ protected:
 	    vals[0] = -dxInv_ * uC(0);
 	  }
 	  if (i>0){
-	    vals[0] = dxInv_ * u.getLocalBlock(i-1)(0);
+	    vals[0] = dxInv_ * u.getLocalBlockHost(i-1, Tpetra::Access::ReadOnlyStruct())(0);
 	    vals[1] = -dxInv_ * uC(0);
 	  }
 	}
@@ -294,7 +300,7 @@ protected:
     MPI_Status st;
     constexpr int tag_ = 1;
     if (myRank_ < totRanks_-1){
-      auto uC = u.getLocalBlock(NumMyElem_ - 1);
+      auto uC = u.getLocalBlockHost(NumMyElem_ - 1, Tpetra::Access::ReadOnlyStruct());
       MPI_Send(&uC(0), 1, MPI_DOUBLE,
 	       myRank_+1, tag_, *comm_->getRawMpiComm());
     }

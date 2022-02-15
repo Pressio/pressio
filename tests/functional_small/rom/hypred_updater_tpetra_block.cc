@@ -122,41 +122,41 @@ TEST(rom_lspg, hypred_updater_vector)
 					      vec_stencil, 3.);
 
   if (rank==0){
-    auto row0 = vec_sample.getLocalBlock(0);
+    auto row0 = vec_sample.getLocalBlockHost(0, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row0(0), 41.*3.+1.*2.);
     EXPECT_DOUBLE_EQ(row0(1), 41.*3.+1.*2.);
     EXPECT_DOUBLE_EQ(row0(2), 41.*3.+1.*2.);
 
-    auto row1 = vec_sample.getLocalBlock(1);
+    auto row1 = vec_sample.getLocalBlockHost(1, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row1(0),  2.*3.+2.*2.);
     EXPECT_DOUBLE_EQ(row1(1),  2.*3.+2.*2.);
     EXPECT_DOUBLE_EQ(row1(2),  2.*3.+2.*2.);
   }
 
   else if (rank==1){
-    auto row0 = vec_sample.getLocalBlock(0);
+    auto row0 = vec_sample.getLocalBlockHost(0, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row0(0), 45.*3.+3.*2);
     EXPECT_DOUBLE_EQ(row0(1), 45.*3.+3.*2);
     EXPECT_DOUBLE_EQ(row0(2), 45.*3.+3.*2);
 
-    auto row1 = vec_sample.getLocalBlock(1);
+    auto row1 = vec_sample.getLocalBlockHost(1, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row1(0), 11.*3.+4.*2);
     EXPECT_DOUBLE_EQ(row1(1), 11.*3.+4.*2);
     EXPECT_DOUBLE_EQ(row1(2), 11.*3.+4.*2);
 
-    auto row2 = vec_sample.getLocalBlock(2);
+    auto row2 = vec_sample.getLocalBlockHost(2, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row2(0), -8.*3.+5.*2);
     EXPECT_DOUBLE_EQ(row2(1), -8.*3.+5.*2);
     EXPECT_DOUBLE_EQ(row2(2), -8.*3.+5.*2);
   }
 
   else if (rank==2){
-    auto row0 = vec_sample.getLocalBlock(0);
+    auto row0 = vec_sample.getLocalBlockHost(0, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row0(0), 3.5*3.+6.*2);
     EXPECT_DOUBLE_EQ(row0(1), 3.5*3.+6.*2);
     EXPECT_DOUBLE_EQ(row0(2), 3.5*3.+6.*2);
 
-    auto row1 = vec_sample.getLocalBlock(1);
+    auto row1 = vec_sample.getLocalBlockHost(1, Tpetra::Access::ReadOnlyStruct());
     EXPECT_DOUBLE_EQ(row1(0),  6.*3.+7.*2);
     EXPECT_DOUBLE_EQ(row1(1),  6.*3.+7.*2);
     EXPECT_DOUBLE_EQ(row1(2),  6.*3.+7.*2);

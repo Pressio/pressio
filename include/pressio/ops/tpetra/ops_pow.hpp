@@ -74,8 +74,8 @@ abs_pow(T1 & y,
     throw std::runtime_error("this overload is only for exponent > 0");
   }
 
-  auto x_kv = x.getLocalViewDevice();
-  auto y_kv = y.getLocalViewDevice();
+  auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
+  auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i){
 			 using std::pow;
@@ -110,8 +110,8 @@ abs_pow(T1 & y,
 
   constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
-  auto x_kv = x.getLocalViewDevice();
-  auto y_kv = y.getLocalViewDevice();
+  auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
+  auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i){
 			 using std::pow;
@@ -129,7 +129,7 @@ pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
   using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  auto x_kv = x.getLocalViewDevice();
+  auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i)
 		       {
