@@ -317,7 +317,7 @@ public:
   }
 
 public:
-  const std::size_t size() const { return data_.size(); }
+  std::size_t size() const { return data_.size(); }
 
   // n
   FomStateType const & operator()(::pressio::ode::n) const {
@@ -389,7 +389,7 @@ public:
   }
 
 public:
-  const std::size_t size() const { return data_.size(); }
+  std::size_t size() const { return data_.size(); }
 
   // n+1
   FomStateType const & operator()(::pressio::ode::nPlusOne) const {

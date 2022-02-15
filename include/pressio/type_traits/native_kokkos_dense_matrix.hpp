@@ -51,7 +51,7 @@
 
 #include <KokkosSparse_CrsMatrix.hpp>
 
-namespace pressio{ 
+namespace pressio{
 
 // T is a static kokkos view if T:
 // - is a view with rank==2
@@ -64,8 +64,8 @@ struct is_static_dense_matrix_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     Kokkos::is_view<T>::value &&
-    T::traits::rank==2 &&
-    T::traits::rank_dynamic==0
+    Kokkos::ViewTraits<T>::rank==2 &&
+    Kokkos::ViewTraits<T>::rank_dynamic==0
     >
   > : std::true_type{};
 
@@ -78,8 +78,8 @@ struct is_dynamic_dense_matrix_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     Kokkos::is_view<T>::value &&
-    T::traits::rank==2 &&
-    T::traits::rank_dynamic!=0
+    Kokkos::ViewTraits<T>::rank==2 &&
+    Kokkos::ViewTraits<T>::rank_dynamic!=0
     >
   > : std::true_type{};
 
@@ -96,5 +96,5 @@ struct is_dense_matrix_kokkos<
     >
   > : std::true_type{};
 
-}//end namespace 
+}//end namespace
 #endif  // TYPE_TRAITS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
