@@ -58,5 +58,11 @@ RUN sed -i 's/GTESTBRANCH=master/GTESTBRANCH=main/g' tpls/tpls_versions_details.
 RUN chmod +x main_tpls.sh
 RUN ./main_tpls.sh -dryrun=no -build-mode=Release -target-dir=../../pressio_builds -tpls=gtest,eigen,trilinos -cmake-generator-names=default,default,default
 
+# Cleaning after builds
+WORKDIR /home
+RUN rm -rf pressio_builds/gtest/build && rm -rf pressio_builds/gtest/googletest
+RUN rm -rf pressio_builds/trilinos/build && rm -rf pressio_builds/trilinos/Trilinos
+RUN rm -rf pressio_builds/eigen/eigen-3.3.7 && rm pressio_builds/eigen/eigen-3.3.7.tar.gz
+
 # Setting workdir to /
 WORKDIR /
