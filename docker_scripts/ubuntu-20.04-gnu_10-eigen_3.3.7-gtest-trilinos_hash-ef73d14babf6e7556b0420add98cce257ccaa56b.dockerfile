@@ -54,6 +54,7 @@ WORKDIR /home/pressio_repos/pressio-builder
 RUN git checkout main
 RUN sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_tpls.sh
 RUN sed -i 's/9fec35276d846a667bc668ff4cbdfd8be0dfea08/ef73d14babf6e7556b0420add98cce257ccaa56b/g' tpls/tpls_versions_details.sh
+RUN sed -i 's/GTESTBRANCH=master/GTESTBRANCH=main/g' tpls/tpls_versions_details.sh
 RUN chmod +x main_tpls.sh
 RUN ./main_tpls.sh -dryrun=no -build-mode=Release -target-dir=../../pressio_builds -tpls=gtest,eigen,trilinos -cmake-generator-names=default,default,default
 
