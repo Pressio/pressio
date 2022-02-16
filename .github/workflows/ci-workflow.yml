@@ -139,6 +139,7 @@ jobs:
           config:
           - {
               os: ubuntu-latest,
+              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
               build_type: "Release", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
@@ -148,6 +149,7 @@ jobs:
 
           - {
               os: ubuntu-latest,
+              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
               build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
