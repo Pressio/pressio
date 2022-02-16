@@ -165,7 +165,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Creating environnement
       run: |
-        apt-get update ${{ matrix.config.requirements }}
+        apt-get update -y
+        ${{ matrix.config.requirements }}
 
     - name: Pressio Builder Update
       run: |
