@@ -72,6 +72,9 @@ struct is_static_vector_kokkos< Kokkos::View<DataType, Properties...> >
     view_type::traits::rank_dynamic==0;
 };
 
+template <class T>
+struct is_static_vector_kokkos<const T>: public is_static_vector_kokkos<T> {};
+
 // -------------------------------------------------
 // T is a dynamic kokkos view if T:
 // - is a view with rank==1
@@ -89,6 +92,9 @@ struct is_dynamic_vector_kokkos< Kokkos::View<DataType, Properties...> >
   static constexpr bool value = view_type::traits::rank==1 &&
     view_type::traits::rank_dynamic!=0;
 };
+
+template <class T>
+struct is_dynamic_vector_kokkos<const T>: public is_dynamic_vector_kokkos<T> {};
 
 // -------------------------------------------------
 template <class T, class enable = void>

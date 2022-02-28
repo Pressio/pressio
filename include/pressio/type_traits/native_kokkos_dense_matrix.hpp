@@ -96,5 +96,8 @@ struct is_dense_matrix_kokkos<
     >
   > : std::true_type{};
 
+template <typename T>
+struct is_dense_matrix_kokkos<const T>: public is_dense_matrix_kokkos<T>{};
+
 }//end namespace
 #endif  // TYPE_TRAITS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
