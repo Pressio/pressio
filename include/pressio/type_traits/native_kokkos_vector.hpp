@@ -56,41 +56,45 @@ namespace pressio{
 // T is a static kokkos view if T:
 // - is a view with rank==1
 // - the number of runtime determined dimensions == 0
-template <typename T, typename enable = void>
-struct is_static_vector_kokkos : std::false_type {};
+// template <typename T, typename enable = void>
+// struct is_static_vector_kokkos : std::false_type {};
 
-template <typename T>
-struct is_static_vector_kokkos<
-  T,
-  ::pressio::mpl::enable_if_t<
-    Kokkos::is_view<T>::value &&
-    Kokkos::ViewTraits<T>::rank==1 &&
-    Kokkos::ViewTraits<T>::rank_dynamic==0
-    >
-  > : std::true_type{};
+template <class T>
+struct is_static_vector_kokkos{
+  static constexpr bool value = false;
+};
+
+template <class DataType, class ...Properties>
+struct is_static_vector_kokkos< Kokkos::View<DataType, Properties...> >
+{
+  using view_type = Kokkos::View<DataType, Properties...>;
+  static constexpr bool value = view_type::traits::rank==1 &&
+    view_type::traits::rank_dynamic==0;
+};
 
 // -------------------------------------------------
 // T is a dynamic kokkos view if T:
 // - is a view with rank==1
 // - the number of runtime determined dimensions != 0
-template <typename T, typename enable = void>
-struct is_dynamic_vector_kokkos : std::false_type {};
 
-template <typename T>
-struct is_dynamic_vector_kokkos<
-  T,
-  ::pressio::mpl::enable_if_t<
-    Kokkos::is_view<T>::value &&
-    Kokkos::ViewTraits<T>::rank==1 &&
-    Kokkos::ViewTraits<T>::rank_dynamic!=0
-    >
-  > : std::true_type{};
+template <class T>
+struct is_dynamic_vector_kokkos{
+  static constexpr bool value = false;
+};
+
+template <class DataType, class ...Properties>
+struct is_dynamic_vector_kokkos< Kokkos::View<DataType, Properties...> >
+{
+  using view_type = Kokkos::View<DataType, Properties...>;
+  static constexpr bool value = view_type::traits::rank==1 &&
+    view_type::traits::rank_dynamic!=0;
+};
 
 // -------------------------------------------------
-template <typename T, typename enable = void>
+template <class T, class enable = void>
 struct is_vector_kokkos : std::false_type {};
 
-template <typename T>
+template <class T>
 struct is_vector_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
