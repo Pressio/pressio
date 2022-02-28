@@ -3,10 +3,13 @@ add_serial_utest(${TESTING_LEVEL}_rom_concepts ${CMAKE_CURRENT_SOURCE_DIR}/rom_c
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
  add_serial_utest(${TESTING_LEVEL}_rom_linear_decoder_arbitrary_types
- 		${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_arbitrary_types.cc)
+   ${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_arbitrary_types.cc)
 
  add_serial_utest(${TESTING_LEVEL}_rom_linear_decoder_eigen
- 		${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_eigen.cc)
+   ${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_eigen.cc)
+
+ add_serial_utest(${TESTING_LEVEL}_rom_residual_evaluator_eigen_bdf1
+   ${CMAKE_CURRENT_SOURCE_DIR}/residual_evaluator_eigen_bdf1.cc)
 endif()
 
 add_subdirectory(correctness_galerkin)
