@@ -171,8 +171,10 @@ jobs:
     - name: Pressio Builder Update
       run: |
         cd ${{ env.pressio_builder_dir }}
-        git pull
-        git checkout main
+        ## FIXME: updating the repo here fails,
+        ## because the source code is modified
+        ## (see the image Dockerfile)
+        # git pull
 
     - name: Build
       env:
