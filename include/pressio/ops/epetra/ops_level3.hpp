@@ -89,13 +89,17 @@ product(::pressio::transpose modeA,
   assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t)numVecsB );
 
   auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const bool has_beta = beta != ::pressio::utils::Constants<scalar_type>::zero();
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
     {
       A(i)->Dot( *(B(j)), &tmp );
-      C(i,j) = beta*C(i,j) + alpha*tmp;
+      tmp *= alpha;
+      // Note: block NaN injection through beta=0 and C(i,j)=NaN
+      //       as we allow uninitialized C with zero beta
+      C(i,j) = has_beta ? beta * C(i,j) + tmp : tmp;
     }
   }
 }
