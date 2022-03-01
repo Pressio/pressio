@@ -193,6 +193,8 @@ jobs:
       run: |
         cd ${{ env.ctest_build }}
         export LD_LIBRARY_PATH=${{ env.pressio_builds_dir }}/trilinos/install/lib
+        export OMPI_ALLOW_RUN_AS_ROOT=1
+        export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
         ctest --output-on-failure
 
     # - if: ${{ matrix.config.coverage }}
