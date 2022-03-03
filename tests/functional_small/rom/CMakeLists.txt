@@ -10,6 +10,10 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
  add_serial_utest(${TESTING_LEVEL}_rom_residual_evaluator_eigen_bdf1
    ${CMAKE_CURRENT_SOURCE_DIR}/residual_evaluator_eigen_bdf1.cc)
+ add_serial_utest(${TESTING_LEVEL}_rom_residual_evaluator_eigen_bdf2
+   ${CMAKE_CURRENT_SOURCE_DIR}/residual_evaluator_eigen_bdf2.cc)
+ add_serial_utest(${TESTING_LEVEL}_rom_residual_evaluator_eigen_cn
+   ${CMAKE_CURRENT_SOURCE_DIR}/residual_evaluator_eigen_cn.cc)
 endif()
 
 add_subdirectory(correctness_galerkin)
