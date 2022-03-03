@@ -57,6 +57,7 @@ RUN sed -i 's/9fec35276d846a667bc668ff4cbdfd8be0dfea08/ef73d14babf6e7556b0420add
 RUN sed -i 's/GTESTBRANCH=master/GTESTBRANCH=main/g' tpls/tpls_versions_details.sh
 RUN chmod +x main_tpls.sh
 RUN ./main_tpls.sh -dryrun=no -build-mode=Release -target-dir=../../pressio_builds -tpls=gtest,eigen,trilinos -cmake-generator-names=default,default,default
+RUN git reset --hard origin/main
 
 # Cleaning after builds
 WORKDIR /home
