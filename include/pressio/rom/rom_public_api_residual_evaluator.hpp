@@ -121,12 +121,17 @@ public:
       return this->bdf1impl(fomObj, romStatesProducer, fomResidual,
 			    std::forward<ObserverType>(observer));
     }
-    // else if (name == ::pressio::ode::StepScheme::BDF2){
-    //   return this->bdf2impl(fomObj, romStatesProducer, fomResidual, observer);
-    // }
-    // else if (name == ::pressio::ode::StepScheme::CrankNicolson){
-    //   return this->cnimpl(fomObj, romStatesProducer, fomResidual, observer);
-    // }
+
+    else if (step_scheme_ == ::pressio::ode::StepScheme::BDF2){
+      return this->bdf2impl(fomObj, romStatesProducer, fomResidual,
+			    std::forward<ObserverType>(observer));
+    }
+
+    else if (step_scheme_ == ::pressio::ode::StepScheme::CrankNicolson){
+      return this->cnimpl(fomObj, romStatesProducer, fomResidual,
+			  std::forward<ObserverType>(observer));
+    }
+
     else{
       throw std::runtime_error("Invalid scheme");
     }
@@ -139,20 +144,21 @@ private:
 		ResidualType & fomResidual,
 		ObserverType && observer) const
   {
+    ::pressio::ops::set_zero(fomResidual);
     const std::size_t numInstances = romStatesProducer.numberOfTimeSchemeStencilInstances();
 
-    for (std::size_t iStep=0; iStep<numInstances; ++iStep){
+    for (std::size_t instanceIt=0; instanceIt<numInstances; ++instanceIt){
       //
       // r(y_n) = y_n - y_n-1 - dt F(y_n, t_n)
       //
-      auto romState_nm1 = romStatesProducer.stateAt(iStep, ::pressio::ode::nMinusOne());
+      auto romState_nm1 = romStatesProducer.stateAt(instanceIt, ::pressio::ode::nMinusOne());
       auto fomState_nm1 = fomRec_(romState_nm1);
 
-      auto romState_n = romStatesProducer.stateAt(iStep, ::pressio::ode::n());
+      auto romState_n = romStatesProducer.stateAt(instanceIt, ::pressio::ode::n());
       auto fomState_n = fomRec_(romState_n);
 
-      const auto time_n = romStatesProducer.timeAt(iStep, ::pressio::ode::n());
-      const auto dt   = romStatesProducer.timeStepSizeAt(iStep);
+      const auto time_n = romStatesProducer.timeAt(instanceIt, ::pressio::ode::n());
+      const auto dt   = romStatesProducer.timeStepSizeAt(instanceIt);
 
       fomObj.velocity(fomState_n, time_n, fomResidual);
 
@@ -162,7 +168,88 @@ private:
 			     fomState_n, one,
 			     fomState_nm1, -one);
 
-      observer(iStep, fomResidual);
+      observer(instanceIt, fomResidual);
+    }
+  }
+
+  template<class FomAppType, class RomStatesProducer, class ResidualType, class ObserverType>
+  void bdf2impl(const FomAppType & fomObj,
+		const RomStatesProducer & romStatesProducer,
+		ResidualType & fomResidual,
+		ObserverType && observer) const
+  {
+    ::pressio::ops::set_zero(fomResidual);
+    const std::size_t numInstances = romStatesProducer.numberOfTimeSchemeStencilInstances();
+
+    for (std::size_t instanceIt=0; instanceIt<numInstances; ++instanceIt){
+      //
+      // r(y_n) = y_n - (4/3) y_n-1 + (1/3) y_n-2 - dt F(y_n, t_n)
+      //
+      auto romState_nm2 = romStatesProducer.stateAt(instanceIt, ::pressio::ode::nMinusTwo());
+      auto fomState_nm2 = fomRec_(romState_nm2);
+
+      auto romState_nm1 = romStatesProducer.stateAt(instanceIt, ::pressio::ode::nMinusOne());
+      auto fomState_nm1 = fomRec_(romState_nm1);
+
+      auto romState_n = romStatesProducer.stateAt(instanceIt, ::pressio::ode::n());
+      auto fomState_n = fomRec_(romState_n);
+
+      const auto time_n = romStatesProducer.timeAt(instanceIt, ::pressio::ode::n());
+      const auto dt   = romStatesProducer.timeStepSizeAt(instanceIt);
+      fomObj.velocity(fomState_n, time_n, fomResidual);
+
+      using scalar_type = typename ::pressio::Traits<ResidualType>::scalar_type;
+      constexpr auto one = static_cast<scalar_type>(1);
+      constexpr auto two = static_cast<scalar_type>(2);
+      constexpr auto three = static_cast<scalar_type>(3);
+      constexpr auto four  = two*two;
+
+      ::pressio::ops::update(fomResidual, -(two/three)*dt,
+			     fomState_n, one,
+			     fomState_nm1, -four/three,
+			     fomState_nm2,  one/three);
+
+      observer(instanceIt, fomResidual);
+    }
+  }
+
+  template<class FomAppType, class RomStatesProducer, class ResidualType, class ObserverType>
+  void cnimpl(const FomAppType & fomObj,
+	      const RomStatesProducer & romStatesProducer,
+	      ResidualType & fomResidual,
+	      ObserverType && observer) const
+  {
+    auto fomVel = ::pressio::ops::clone(fomResidual);
+    ::pressio::ops::set_zero(fomResidual);
+    ::pressio::ops::set_zero(fomVel);
+
+    const std::size_t numInstances = romStatesProducer.numberOfTimeSchemeStencilInstances();
+    for (std::size_t instanceIt=0; instanceIt<numInstances; ++instanceIt){
+      //
+      // r(y_n) = y_n - y_n-1 - 0.5 dt (F(y_n, t_n) + F(y_nm1, t_nm1))
+      //
+      auto romState_nm1 = romStatesProducer.stateAt(instanceIt, ::pressio::ode::nMinusOne());
+      auto fomState_nm1 = fomRec_(romState_nm1);
+
+      auto romState_n = romStatesProducer.stateAt(instanceIt, ::pressio::ode::n());
+      auto fomState_n = fomRec_(romState_n);
+
+      const auto time_nm1 = romStatesProducer.timeAt(instanceIt, ::pressio::ode::nMinusOne());
+      const auto time_n   = romStatesProducer.timeAt(instanceIt, ::pressio::ode::n());
+      const auto dt   = romStatesProducer.timeStepSizeAt(instanceIt);
+
+      fomObj.velocity(fomState_n, time_n, fomResidual);
+      fomObj.velocity(fomState_nm1, time_nm1, fomVel);
+
+      using scalar_type = typename ::pressio::Traits<ResidualType>::scalar_type;
+      constexpr auto one = static_cast<scalar_type>(1);
+      constexpr auto two = static_cast<scalar_type>(2);
+      ::pressio::ops::update(fomResidual, -(one/two)*dt,
+			     fomVel, -(one/two)*dt,
+			     fomState_n, one,
+			     fomState_nm1, -one);
+
+      observer(instanceIt, fomResidual);
     }
   }
 
