@@ -32,7 +32,7 @@ struct RomStateProducerBdf2
   // NOTE: what M contains is NOT necessarily
   // ALL time steps could be a subset
 
-  // for BDF1 it could look like:
+  // for BDF2 it could look like:
   //             n-2     n-1   n
   // M(:,0,2) = [y_t2,  y_t3,  y_t4]
   // M(:,3,5) = [y_t10, y_t11, y_t12]
@@ -98,7 +98,7 @@ struct RomStateProducerBdf2
   }
 };
 
-struct ObserverBdf1
+struct ObserverBdf2
 {
   TrivialFomContTimeEigen fomObj_;
   Eigen::MatrixXd phi_;
@@ -107,7 +107,7 @@ struct ObserverBdf1
   Eigen::VectorXd f_;
   Eigen::VectorXd R_gold_;
 
-  ObserverBdf1(Eigen::MatrixXd phiIn,
+  ObserverBdf2(Eigen::MatrixXd phiIn,
 	       Eigen::MatrixXd Min,
 	       std::vector<double> times)
     : fomObj_(phiIn.rows()),
@@ -177,6 +177,6 @@ TEST(rom, residual_evaluator_bdf2)
 
   RomStateProducerBdf2 romP(romSize);
   auto R = fomObj.createVelocity();
-  ObserverBdf1 obs(A, romP.getMatrix(), romP.getTimes());
+  ObserverBdf2 obs(A, romP.getMatrix(), romP.getTimes());
   eval(fomObj, romP, R, obs);
 }
