@@ -1,0 +1,384 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Unsteady default problem" href="rom_lspg_default.html" /><link rel="prev" title="Steady masked problem" href="rom_lspg_masked_steady.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>Unsteady LSPG - Pressio 0.12.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/hacks.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Pressio 0.12.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Pressio 0.12.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_system_api.html">Problem APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_nr.html">Newton-Raphson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn.html">Gauss-Newton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_lm.html">Levenberg-Marquardt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_irls.html">Iteratively reweighted least squares</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="rom_general.html">General info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_fom_apis.html">Full-order model (FOM) adapter API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_decoder.html">Decoder</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_galerkin.html">Galerkin: high-level details</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_default.html">Default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_masked.html">Masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_lspg_steady.html">Steady LSPG</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_default_steady.html">Steady default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_hypred_steady.html">Steady hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_masked_steady.html">Steady masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Unsteady LSPG</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_default.html">Unsteady default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_masked.html">Masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rom_wls.html">WLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_hyperreduction.html">Hyperreduction</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="unsteady-lspg">
+<h1>Unsteady LSPG<a class="headerlink" href="#unsteady-lspg" title="Permalink to this headline">¶</a></h1>
+<p>todo: finish this, add more details</p>
+<p>The pressio Unsteady LSPG ROMs are designed such that
+using them involves these steps:</p>
+<div class="section" id="create">
+<h2>1. Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
+<p>You create an instance of one of the supported “LSPG problem” using the following API:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">plspg</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="p">;</span>
+<span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="o">::</span><span class="n">some_value</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">problem</span>      <span class="o">=</span> <span class="n">plspg</span><span class="o">::</span><span class="n">create_</span><span class="o">&lt;</span><span class="n">keywords</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&lt;keywords&gt;</span></code> express the variant of the problem you want (more below),
+<code class="docutils literal notranslate"><span class="pre">some_value</span></code> is an enum value to select the time stepping scheme (e.g., BDF1, BDF2, etc),
+and <code class="docutils literal notranslate"><span class="pre">args</span></code> are the arguments needed which depend on the variant you choose.</p>
+<p>We currently support the following variants:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rom_lspg_default.html">Unsteady default problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rom_lspg_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rom_lspg_masked.html">Masked problem</a></li>
+</ul>
+</div>
+<p>The above <code class="docutils literal notranslate"><span class="pre">create</span></code> function returns a problem object that behaves like a stepper.
+Therefore, you can use the problem like
+you would with any other stepper object (more on this below).</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UnsteadyLSPGProblemClass</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="cm">/* nested typedef to access the problem's traits */</span><span class="p">;</span>
+
+  <span class="c1">// const ref to the object knowing how to reconstruct a FOM state</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span> <span class="n">fomStateReconstructor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* ... */</span>
+  <span class="k">using</span> <span class="n">state_type</span>     <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+
+  <span class="n">residual_type</span> <span class="nf">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">jacobian_type</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">residual_type</span> <span class="o">&amp;</span> <span class="n">res</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">jacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jac</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StepCount</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span><span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">lspg_state_type</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">StepCount</span> <span class="n">step_count</span><span class="p">,</span>
+                  <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="solve-in-time">
+<h2>2. Solve in time<a class="headerlink" href="#solve-in-time" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+
+  <span class="k">namespace</span> <span class="n">pode</span>  <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="p">;</span>
+  <span class="k">namespace</span> <span class="n">plspg</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">lspg</span><span class="p">;</span>
+
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pdoe</span><span class="o">::</span><span class="nl">StepScheme</span><span class="p">:</span><span class="n">BDF1</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">problem</span>      <span class="o">=</span> <span class="n">plspg</span><span class="o">::</span><span class="n">create_default_problem</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">solver</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="o">::</span><span class="n">create_gauss_newton</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">);</span>
+  <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="cm">/* args */</span><span class="p">,</span> <span class="n">solver</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that above we used as an example a Gauss-Newton solver because to solve
+LSPG consists of “advancing” in time by solving at each step a
+nonlinear least-squares problem.</p>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="rom_lspg_default.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Unsteady default problem</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="rom_lspg_masked_steady.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Steady masked problem</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, National Technology &amp; Engineering Solutions of Sandia, LLC (NTESS) |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/components/rom_lspg_unsteady.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Unsteady LSPG</a><ul>
+<li><a class="reference internal" href="#create">1. Create</a></li>
+<li><a class="reference internal" href="#solve-in-time">2. Solve in time</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    </body>
+</html>

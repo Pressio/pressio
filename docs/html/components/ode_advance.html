@@ -1,0 +1,573 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="explicit steppers" href="ode_steppers_explicit.html" /><link rel="prev" title="ode" href="ode.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>advancers - Pressio 0.12.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/hacks.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Pressio 0.12.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Pressio 0.12.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_system_api.html">Problem APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_nr.html">Newton-Raphson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn.html">Gauss-Newton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_lm.html">Levenberg-Marquardt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_irls.html">Iteratively reweighted least squares</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">advancers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="rom_general.html">General info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_fom_apis.html">Full-order model (FOM) adapter API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_decoder.html">Decoder</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_galerkin.html">Galerkin: high-level details</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_default.html">Default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_masked.html">Masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_lspg_steady.html">Steady LSPG</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_default_steady.html">Steady default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_hypred_steady.html">Steady hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_masked_steady.html">Steady masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_lspg_unsteady.html">Unsteady LSPG</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_default.html">Unsteady default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_masked.html">Masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rom_wls.html">WLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_hyperreduction.html">Hyperreduction</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="advancers">
+<h1>advancers<a class="headerlink" href="#advancers" title="Permalink to this headline">¶</a></h1>
+<p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_advancers.hpp&gt;</span></code></p>
+<p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio::ode</span></code></p>
+<div class="section" id="scope-and-overview">
+<h2>Scope and overview<a class="headerlink" href="#scope-and-overview" title="Permalink to this headline">¶</a></h2>
+<p><cite>Provides functionalities implementing various strategies
+to “update” some information (i.e., a state) via an object
+that satisfies a “steppable” concept (more details below).</cite></p>
+<p>Why is this useful? Suppose that you have a generic application/usecase
+involving the concept of a discrete time or just discrete steps,
+a notion of “state” that defines your information at a specific step,
+and a “stepper” object, i.e. an object/abstraction that accepts a state
+and knows how to take a “step” to update that state.
+In such a scenario, it can be useful to have different strategies
+to advance the state, for example: advancing for a fixed number of times,
+advancing until a certain condition is met, etc.
+This is what the <code class="docutils literal notranslate"><span class="pre">pressio/ode_advancers</span></code> provide.
+We are growing this capability, so if you need something but it is
+not alrady supported, open an issue or a PR on <a class="reference external" href="https://github.com/Pressio/pressio">github</a>.</p>
+<p>Obviously, this is not necessarily specific to applied math problems or
+scientific computing applications, but can be something generic.
+In the context of scientific computing, one might immediately recognize
+these functions to be useful for <em>time integration</em> of dynamical systems.
+This is the reason why these functionalities are currently inside <code class="docutils literal notranslate"><span class="pre">pressio::ode</span></code>,
+and this is also why we specifically use “time” below.
+Later on, we might move or generalize them.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Overload set for advancing for fixed number of steps</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">pressio</span> <span class="p">{</span> <span class="k">namespace</span> <span class="n">ode</span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span><span class="n">Args</span>
+<span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">advance_n_steps</span><span class="p">(</span><span class="n">StepperType</span> <span class="o">&amp;</span> <span class="n">stepper</span><span class="p">,</span>                           <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                     <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="n">TimeType</span> <span class="n">start_time</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span><span class="p">,</span>
+                     <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+
+<span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">StepSizeSetterType</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span><span class="n">Args</span>
+ <span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">advance_n_steps</span><span class="p">(</span><span class="n">StepperType</span> <span class="o">&amp;</span> <span class="n">stepper</span><span class="p">,</span>                           <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                     <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="n">TimeType</span> <span class="n">start_time</span><span class="p">,</span>
+                     <span class="n">StepSizeSetterType</span> <span class="o">&amp;&amp;</span> <span class="n">time_step_size_manager</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span><span class="p">,</span>
+                     <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+
+<span class="k">template</span><span class="o">&lt;</span>
+ <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span>  <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span>
+ <span class="k">class</span> <span class="nc">ObserverType</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span><span class="n">Args</span>
+ <span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">StepperType</span> <span class="o">&amp;</span> <span class="n">stepper</span><span class="p">,</span>               <span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                                <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">start_time</span><span class="p">,</span>
+                                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size</span><span class="p">,</span>
+                                <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span><span class="p">,</span>
+                                <span class="n">ObserverType</span> <span class="o">&amp;</span> <span class="n">observer</span><span class="p">,</span>
+                                <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+
+<span class="k">template</span><span class="o">&lt;</span>
+ <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span>
+ <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span>
+ <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span>
+ <span class="k">class</span> <span class="nc">StepSizeSetterType</span><span class="p">,</span>
+ <span class="k">class</span> <span class="nc">ObserverType</span><span class="p">,</span>
+ <span class="k">class</span> <span class="p">...</span><span class="n">Args</span>
+ <span class="o">&gt;</span>                                                                     <span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="kt">void</span> <span class="n">advance_n_steps_and_observe</span><span class="p">(</span><span class="n">StepperType</span> <span class="o">&amp;</span> <span class="n">stepper</span><span class="p">,</span>
+                                <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">start_time</span><span class="p">,</span>
+                                <span class="n">StepSizeSetterType</span> <span class="o">&amp;&amp;</span> <span class="n">time_step_size_manager</span><span class="p">,</span>
+                                <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span><span class="p">,</span>
+                                <span class="n">ObserverType</span> <span class="o">&amp;</span> <span class="n">observer</span><span class="p">,</span>
+                                <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+
+<span class="p">}}</span> <span class="c1">// end namespace pressio::ode</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>(1,2): overload set for advancing for a fixed number of steps</p></li>
+<li><p>(3,4): overload set for advancing for a fixed number of steps accepting
+also an “observer” to monitor the evolution of the state at each step (more on this below)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Overload set for advancing to target time</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">StepSizeSetterType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="p">...</span><span class="n">Args</span>
+  <span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">advance_to_target_time</span><span class="p">(</span><span class="n">StepperType</span> <span class="o">&amp;</span> <span class="n">stepper</span><span class="p">,</span>
+                            <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">TimeType</span> <span class="n">start_time</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">TimeType</span> <span class="n">final_time</span><span class="p">,</span>
+                            <span class="n">StepSizeSetterType</span> <span class="o">&amp;&amp;</span> <span class="n">time_step_size_manager</span><span class="p">,</span>
+                            <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+
+<span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">StepSizeSetterType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">ObserverType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="p">...</span><span class="n">Args</span>
+  <span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">advance_to_target_time_and_observe</span><span class="p">(</span><span class="n">StepperType</span> <span class="o">&amp;</span> <span class="n">stepper</span><span class="p">,</span>
+                                        <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                                        <span class="k">const</span> <span class="n">TimeType</span> <span class="n">start_time</span><span class="p">,</span>
+                                        <span class="k">const</span> <span class="n">TimeType</span> <span class="n">final_time</span><span class="p">,</span>
+                                        <span class="n">StepSizeSetterType</span> <span class="o">&amp;&amp;</span> <span class="n">time_step_size_manager</span><span class="p">,</span>
+                                        <span class="n">ObserverType</span> <span class="o">&amp;</span> <span class="n">observer</span><span class="p">,</span>
+                                        <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span><span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameters-and-requirements">
+<h2>Parameters and Requirements<a class="headerlink" href="#parameters-and-requirements" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">stepper</span></code>:</p>
+<ul>
+<li><p>the steppable object, must conform to:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SteppableClass</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
+                <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span>
+                <span class="cm">/*[, other arguments needed: these will be forwarded to your</span>
+<span class="cm">                stepper object by the advance methods as shown above ]*/</span><span class="p">)</span>
+<span class="p">{</span>
+ <span class="c1">// do what you need to update state</span>
+<span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: self-explanatory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code>: self-explanatory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">final_time</span></code>: self-explanatory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_steps</span></code>: self-explanatory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time_ste_size_manager</span></code>:</p>
+<ul>
+<li><p>functor for setting the time step size</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StepSizeSetter</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span><span class="p">,</span>
+                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
+                <span class="n">TimeType</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+ <span class="c1">// update somehow dt</span>
+<span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">observer</span></code>:</p>
+<ul>
+<li><p>functor to “observe” the state during the time integration,
+allowing you to potentially collect necessary data/metrics/statistics.
+Must conform to:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ObserverClass</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="o">&amp;</span> <span class="n">step_count</span><span class="p">,</span>
+                <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">current_state</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args...</span></code>: optional objects to forward to stepper’s <code class="docutils literal notranslate"><span class="pre">operator()</span></code> that are
+potentially needed to perform one step.
+Note that these are optional, because your stepper might not need anything.
+The advance functions will simply forward all these to the <code class="docutils literal notranslate"><span class="pre">operator()</span></code>
+of the stepper object. Is having these optional argument really needed?
+One might argue that if the stepper needs to have access to
+some objects, then these auxiliary objects can be passed to the stepper
+upon construction, and so the stepper would already have access to them
+when its <code class="docutils literal notranslate"><span class="pre">operator()</span></code> is called.
+This is true <em>if</em> there is a valid reason for making these auxiliary object
+data members of the steppable class.
+The problem with this approach is that the stepper would need to know
+about all theses other types, and this creates a very tight
+coupling between different objects,
+that might be not even needed.
+By letting users provide a pack to the advance functions,
+we are able to decouple this structure such that any object
+<em>only</em> needed within the stepper’s <code class="docutils literal notranslate"><span class="pre">operator()</span></code> can be directly passed.
+To explain this, look at the example below.</p></li>
+</ul>
+</div>
+<div class="section" id="when-are-the-variadic-arguments-useful">
+<h2>When are the variadic arguments useful?<a class="headerlink" href="#when-are-the-variadic-arguments-useful" title="Permalink to this headline">¶</a></h2>
+<p>For example in a scenario like the following:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">SteppableClass</span>
+<span class="p">{</span>
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">AuxiliaryType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span><span class="p">,</span>
+                  <span class="n">AuxiliaryType</span> <span class="o">&amp;</span> <span class="n">aux</span><span class="p">)</span>
+  <span class="p">{</span>
+     <span class="k">const</span> <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="n">aux</span><span class="p">.</span><span class="n">doComplicateCalculation</span><span class="p">();</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+       <span class="c1">// update state somehow</span>
+     <span class="p">}</span>
+     <span class="k">else</span><span class="p">{</span>
+       <span class="c1">// update state in a different way</span>
+     <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">{</span>
+  <span class="kt">int</span> <span class="nf">doComplicateCalculation</span><span class="p">(){}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Bar</span><span class="p">{</span>
+  <span class="kt">int</span> <span class="nf">doComplicateCalculation</span><span class="p">(){}</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">AuxType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">run</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">AuxType</span> <span class="n">a</span><span class="p">;</span>
+  <span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="cm">/*state*/</span><span class="p">,</span> <span class="cm">/*start t*/</span><span class="p">,</span> <span class="cm">/*step size*/</span><span class="p">,</span> <span class="cm">/*num steps*/</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">SteppableClass</span> <span class="n">stepper</span><span class="p">;</span>
+  <span class="n">run</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">();</span>
+  <span class="n">run</span><span class="o">&lt;</span><span class="n">Bar</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here, we don’t want to parametrize the <code class="docutils literal notranslate"><span class="pre">StepperClass</span></code>
+on the auxiliary class needed because we don’t need it as member.
+We just need to access the auxiliary class inside the <code class="docutils literal notranslate"><span class="pre">operator()</span></code>.</p>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="ode_steppers_explicit.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">explicit steppers</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="ode.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title"><code class="docutils literal notranslate"><span class="pre">ode</span></code></div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, National Technology &amp; Engineering Solutions of Sandia, LLC (NTESS) |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/components/ode_advance.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">advancers</a><ul>
+<li><a class="reference internal" href="#scope-and-overview">Scope and overview</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+<li><a class="reference internal" href="#parameters-and-requirements">Parameters and Requirements</a></li>
+<li><a class="reference internal" href="#when-are-the-variadic-arguments-useful">When are the variadic arguments useful?</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    </body>
+</html>

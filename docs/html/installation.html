@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Introduction" href="introduction.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="mpl" href="components/mpl.html" /><link rel="prev" title="Introduction" href="introduction.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Pressio 0.12.0 documentation</title>
+        <title>Installation and Dependencies - Pressio 0.12.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Pressio 0.12.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Pressio 0.12.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -144,7 +144,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
   <span class="sidebar-brand-text">Pressio 0.12.0 documentation</span>
@@ -155,12 +155,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Dependencies</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio">GitHub Repo</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio/issues">Open an issue/feature req.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation and Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="components/mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="components/utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="components/type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
@@ -234,112 +231,224 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="pressio-c-library">
-<h1>pressio C++ library<a class="headerlink" href="#pressio-c-library" title="Permalink to this headline">¶</a></h1>
-<div class="note admonition">
-<p class="admonition-title">Advancing reduced order models (ROMs) for dynamical systems in science and engineering</p>
-<p>This is the documentation of the <a class="reference external" href="https://github.com/Pressio/pressio">C++ library</a>, one component of the <a class="reference external" href="https://pressio.github.io/">Pressio ecosystem</a>.</p>
+          <div class="section" id="installation-and-dependencies">
+<h1>Installation and Dependencies<a class="headerlink" href="#installation-and-dependencies" title="Permalink to this headline">¶</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>pressio is header-only, so it does not need to be precompiled and linked to.
+However, since we use preprocessor directives to conditionally
+enable/disable code based on target third-party libraries,
+one needs to account for this. See below for the details.</p>
 </div>
-<div class="table-wrapper"><table class="colwidths-given docutils align-left">
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To use pressio, you need a C++14 compiler.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Some parts of <code class="docutils literal notranslate"><span class="pre">pressio</span></code> contain code and implementations
+that are specific to third-party libraries (TPLs).
+An example is <code class="docutils literal notranslate"><span class="pre">pressio/ops</span></code>, which contains kernels specializations
+for widely-used HPC libraries (e.g. Trilinos, Kokkos).
+The main reason for doing this is that we aim, where possible,
+to alleviate the user from writing custom operations and allow <code class="docutils literal notranslate"><span class="pre">pressio</span></code> to decide when and how to leverage
+the native libraries’ operations to obtain the best performance.
+This should facilitate the integration and use of <code class="docutils literal notranslate"><span class="pre">pressio</span></code> by existing applications.
+This is a growing capability and we currently only
+provide built-in support to some external HPC libraries (see below).
+Obviously, these TPLs-specific specializations need to be guarded with
+preprecessor directives, and enabled only if one can access the TPLs.</p>
+<p>Enabling/disabling specific dependencies can be done via the following cmake variables:</p>
+<div class="table-wrapper"><table class="docutils align-default">
 <colgroup>
-<col style="width: 10%"/>
-<col style="width: 50%"/>
-<col style="width: 40%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"></th>
-<th class="head"><p>Description/Content</p></th>
-<th class="head"><p>Header(s)</p></th>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default Value</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><span class="packnameindexpage">mpl</span></p></td>
-<td><p>metaprogramming functionalities</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/mpl.hpp&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ON</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="packnameindexpage">utils</span></p></td>
-<td><p>logger, constants, etc</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/utils.hpp&gt;</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="packnameindexpage">type_traits</span></p></td>
-<td><p>type traits and detection</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/type_traits.hpp&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_MPI</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>  automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="packnameindexpage">expressions</span></p></td>
-<td><p>Expr templates for span, diagonal, subspan, etc.</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/expressions.hpp&gt;</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>; automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="packnameindexpage">ops</span></p></td>
-<td><p>specializations of shared-memory and distributed linear algebra kernels</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/ops.hpp&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TEUCHOS_TIMERS</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>  automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="packnameindexpage">qr</span></p></td>
-<td><p>QR factorization functionalities</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/qr.hpp&gt;</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_BLAS</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>; automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_LAPACK=ON</span></code> or <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="packnameindexpage">solvers_linear</span></p></td>
-<td><p>linear <em>dense</em> solvers</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_linear.hpp&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_LAPACK</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>; automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_BLAS=ON</span></code> or <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="packnameindexpage">solvers_nonlinear</span></p></td>
-<td><p>Including Newton-Raphson, Gauss-Newton, Levenberg-Marquardt</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_nonlinear.hpp&gt;</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_PYBIND11</span></code></p></td>
+<td><p>self-explanatory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="packnameindexpage">ode</span></p></td>
-<td><p>explicit time steppers <span class="raw-html-m2r"><br/></span> implicit time steppers <span class="raw-html-m2r"><br/></span> advancers <span class="raw-html-m2r"><br/></span> <span class="raw-html-m2r"><br/></span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_steppers_explicit.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_steppers_implicit.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_advancers.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode.hpp&gt;</span></code> <span class="small">to include all</span></p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="packnameindexpage">rom</span></p></td>
-<td><p>decoder <span class="raw-html-m2r"><br/></span> Galerkin <span class="raw-html-m2r"><br/></span> LSPG: steady/unsteady <span class="raw-html-m2r"><br/></span> WLS <span class="raw-html-m2r"><br/></span> <span class="raw-html-m2r"><br/></span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/rom_decoder.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/rom_galerkin.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/rom_lspg.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/rom_wls.hpp&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">&lt;pressio/rom.hpp&gt;</span></code> <span class="small">to include all</span></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_DEBUG_PRINT</span></code></p></td>
+<td><p>to enable debugging print statements</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code></p></td>
 </tr>
 </tbody>
 </table></div>
-<!-- This structure benefits: -->
-<!-- * Maintability: the components depend on one another through well-defined public interfaces, -->
-<!-- and appropriate namespaces are used to properly scope the code. --><!-- * Selective usability: users can leverage invidual functionalities. -->
-<!-- This allows finer-grained control on what you include and use. --><div class="section" id="get-started">
-<h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference external" href="introduction.html">introduction</a>: describes objectives and design ideas</p></li>
-<li><p><a class="reference external" href="installation.html">how to install</a>: it is a header-only library, should be trivial</p></li>
-<li><p><a class="reference external" href="https://pressio.github.io/pressio-tutorials">explore the tutorials</a></p></li>
-</ul>
-<!-- ## What if your types are not natively supported in pressio? --><!-- Check if your types are supported by lookig at the -->
-<!-- [dependencies](md_pages_getstarted_build_and_install.html): if they are -->
-<!-- listed there, most likely you are good to go, and you don't need to provide extra information to pressio. --><!-- Not supported? You can file an [issue](https://github.com/Pressio/pressio/issues) -->
-<!-- to request it and wait on it, or can proceed -->
-<!-- as in [tutorialsB](./md_pages_tutorials_tutorial1udops.html). Or do both! --></div>
-<div class="section" id="license-and-citation">
-<h2>License and Citation<a class="headerlink" href="#license-and-citation" title="Permalink to this headline">¶</a></h2>
-<p>The full license (BSD-3) is available <a class="reference external" href="https://pressio.github.io/various/license/">here</a>.</p>
-<p>We are working on publishing this: you can find our arXiv preprint at: <a class="reference external" href="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</a></p>
+<div class="section" id="optional-vs-required">
+<h3>Optional vs Required<a class="headerlink" href="#optional-vs-required" title="Permalink to this headline">¶</a></h3>
+<p>Eigen is the only required dependency because it is the
+default choice for instantiating the ROM data structures
+and solving the (dense) ROM problem.</p>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>TPL Library Name</p></th>
+<th class="head"><p>Optional/Required</p></th>
+<th class="head"><p>Version Known to Work</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Eigen</p></td>
+<td><p>Required</p></td>
+<td><p>3.3.7</p></td>
+</tr>
+<tr class="row-odd"><td><p>Trilinos</p></td>
+<td><p>Optional</p></td>
+<td><p>12.17.00</p></td>
+</tr>
+<tr class="row-even"><td><p>MPI</p></td>
+<td><p>Optional</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kokkos</p></td>
+<td><p>Optional</p></td>
+<td><p>3.1.0</p></td>
+</tr>
+<tr class="row-even"><td><p>BLAS</p></td>
+<td><p>Optional</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>LAPACK</p></td>
+<td><p>Optional</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>Pybind11</p></td>
+<td><p>Optional</p></td>
+<td><p>v2.6</p></td>
+</tr>
+<tr class="row-odd"><td><p>GoogleTest</p></td>
+<td><p>Optional</p></td>
+<td><p>1.10.0</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>Obviously, the choice of which TPLs to enable is related to
+your application’s dependency requirements.
+For example, if you have an application that relies on
+Trilinos data structures and want to use <code class="docutils literal notranslate"><span class="pre">pressio</span></code>,
+then it makes sense to enable the Trilinos dependency.
+On the contrary, if you have an application that relies only on
+Eigen data structures, then it makes sense to only leave only Eigen on
+and disable the rest.</p>
+<p>Also, we note that some of the cmake variables listed above are connected
+and cannot be turned on individualy.
+For example, if we enable Trilinos then <code class="docutils literal notranslate"><span class="pre">pressio</span></code> automatically
+enables also Kokkos, BLAS, LAPACK and MPI.
+The reason for this choice is that in a production scenario—which is what
+pressio mainly targets—it is reasonable
+to expect a user to have Trilinos built with BLAS, LAPACK, MPI and Kokkos support.</p>
+<p>There might be other constraints on the variables one can set.
+The reason for this is twofold: (a) to simplify what the user needs
+to provide; and (b) we belive some of these constraints are necessary, like
+the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.
+<span class="raw-html-m2r"><!-- Note that, since `pressio</span> is header-only, any TPL you want to enable –&gt;`
+<span class="raw-html-m2r"><!-- is not really needed when installing `pressio</span>, but it is needed when –&gt;`
+<span class="raw-html-m2r"><!-- you build any code that *uses* pressio. --></span>
+<span class="raw-html-m2r"><!-- Therefore, you need to make sure that before you use `pressio</span> in your code, –&gt;`
+<span class="raw-html-m2r"><!-- you include/link to any TPL you want to use. --></span>
+<span class="raw-html-m2r"><!-- At the very minimum, you need to have Eigen installed. --></span></p>
 </div>
-<div class="section" id="questions">
-<h2>Questions?<a class="headerlink" href="#questions" title="Permalink to this headline">¶</a></h2>
-<p>Find us on Slack: <a class="reference external" href="https://pressioteam.slack.com">https://pressioteam.slack.com</a> or
-open an issue on <a class="reference external" href="https://github.com/Pressio/pressio">github</a>.</p>
-<div class="line-block">
-<div class="line"><br/></div>
 </div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Dependencies</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio">GitHub Repo</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio/issues">Open an issue/feature req.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a></li>
-</ul>
+<div class="section" id="in-practice-what-are-the-steps-to-get-install-and-use-pressio">
+<h2>In practice, what are the steps to get, install and use Pressio?<a class="headerlink" href="#in-practice-what-are-the-steps-to-get-install-and-use-pressio" title="Permalink to this headline">¶</a></h2>
+<p>todo: add description for using pressio without configuring,
+so one has to define the options directly when configuring
+their code or inside the code directly.</p>
+<p>1. Clone <a class="reference external" href="https://github.com/Pressio/pressio">pressio</a> (defaults to the main branch),
+or you can pick a <a class="reference external" href="https://github.com/Pressio/pressio/releases">release version</a></p>
+<ol class="arabic simple" start="2">
+<li><p>Create a build and install subdirectories</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;where-you-cloned-pressio&gt;
+mkdir build <span class="o">&amp;&amp;</span> mkdir install
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Use cmake to configure by passing to the comand line the target list of cmake variables to define.</p></li>
+</ol>
+<p>For example, suppose we want to enable support for Trilinos and the debug prints. We would do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PRESSIO_SRC</span><span class="o">=</span>&lt;where-you-cloned-pressio&gt;
+<span class="nb">cd</span> &lt;where-you-cloned-pressio&gt;/build
+
+cmake -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>../install <span class="se">\</span>
+      -D <span class="nv">PRESSIO_ENABLE_TPL_TRILINOS</span><span class="o">=</span>ON <span class="se">\</span>
+      -D <span class="nv">PRESSIO_ENABLE_DEBUG_PRINT</span><span class="o">=</span>ON <span class="se">\</span>
+      <span class="si">${</span><span class="nv">PRESSIO_SRC</span><span class="si">}</span>
+
+make install <span class="c1"># nothing is built, just headers copied to installation</span>
+</pre></div>
+</div>
+<p>Note that this step does <strong>not</strong> build anything because <code class="docutils literal notranslate"><span class="pre">pressio</span></code> is header-only,
+but only processes the cmake arguments and copies the pressio headers to the
+install prefix <code class="docutils literal notranslate"><span class="pre">&lt;where-you-cloned-pressio&gt;/install</span></code>.
+If you want, inspect the file <code class="docutils literal notranslate"><span class="pre">&lt;where-you-cloned-pressio&gt;/install/presssio_cmake_config.h</span></code>
+which contains the cmake variables configuration.</p>
+<p>We also remark that during the configuration step above pressio
+does not need to know where a target TPL exists in your system.
+In the configuration step above, you are simply telling Pressio that you have
+a certain TPL and want to enable the corresponding code in pressio.
+The TPLs will be needed at linking stage when you build <em>your</em> code that <em>uses</em> pressio.</p>
+<p>4. When building your application to use pressio, you just have to point to
+the installation directory <code class="docutils literal notranslate"><span class="pre">&lt;where-you-cloned-pressio&gt;/install</span></code> with the installed
+pressio headers, and you can access all pressio functionalities via the C++ include <code class="docutils literal notranslate"><span class="pre">#include&lt;pressio.hpp&gt;</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">"pressio/what_you_need.hpp"</span><span class="cp"></span>
+<span class="c1">// ...</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+ <span class="c1">// do something</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The procedure above is advised because it enables <code class="docutils literal notranslate"><span class="pre">pressio</span></code>
+to properly process the cmake options and turn on/off based
+on certain conditions (as explained above).
+The alternative way to use pressio would be to just clone the repo,
+point to the <code class="docutils literal notranslate"><span class="pre">&lt;where-you-cloned-pressio&gt;/include</span></code> subdirectory
+and use cmake variables directly when building your code.
+However, this could have unexpected consequences since
+you would be resposible to set the variables correctly but you would not
+know exactly all the possible constraints.</p>
 </div>
 </div>
 </div>
@@ -349,23 +458,33 @@ open an issue on <a class="reference external" href="https://github.com/Pressio/
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="introduction.html">
+          <a class="next-page" href="components/mpl.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Introduction</div>
+                <div class="title"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          
+          <a class="prev-page" href="introduction.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Introduction</div>
+                
+              </div>
+            </a>
         </div>
 
         <div class="related-information">
               Copyright &#169; 2021, National Technology &amp; Engineering Solutions of Sandia, LLC (NTESS) |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            | <a class="muted-link" href="_sources/index.rst.txt"
+            | <a class="muted-link" href="_sources/installation.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -385,10 +504,12 @@ open an issue on <a class="reference external" href="https://github.com/Pressio/
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">pressio C++ library</a><ul>
-<li><a class="reference internal" href="#get-started">Get Started</a></li>
-<li><a class="reference internal" href="#license-and-citation">License and Citation</a></li>
-<li><a class="reference internal" href="#questions">Questions?</a></li>
+<li><a class="reference internal" href="#">Installation and Dependencies</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
+<li><a class="reference internal" href="#optional-vs-required">Optional vs Required</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#in-practice-what-are-the-steps-to-get-install-and-use-pressio">In practice, what are the steps to get, install and use Pressio?</a></li>
 </ul>
 </li>
 </ul>

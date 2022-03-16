@@ -1,0 +1,455 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="expressions" href="expressions.html" /><link rel="prev" title="utils" href="utils.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>type_traits - Pressio 0.12.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/hacks.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #002b36;
+  --color-code-foreground: #839496;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Pressio 0.12.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Pressio 0.12.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_system_api.html">Problem APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_nr.html">Newton-Raphson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn.html">Gauss-Newton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_lm.html">Levenberg-Marquardt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_irls.html">Iteratively reweighted least squares</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="rom_general.html">General info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_fom_apis.html">Full-order model (FOM) adapter API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_decoder.html">Decoder</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_galerkin.html">Galerkin: high-level details</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_default.html">Default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_galerkin_masked.html">Masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_lspg_steady.html">Steady LSPG</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_default_steady.html">Steady default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_hypred_steady.html">Steady hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_masked_steady.html">Steady masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rom_lspg_unsteady.html">Unsteady LSPG</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_default.html">Unsteady default problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_hypred.html">Hyper-reduced problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rom_lspg_masked.html">Masked problem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rom_wls.html">WLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_hyperreduction.html">Hyperreduction</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="type-traits">
+<h1><code class="docutils literal notranslate"><span class="pre">type_traits</span></code><a class="headerlink" href="#type-traits" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Defined in header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/type_traits.hpp&gt;</span></code></p>
+<p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio</span></code></p>
+</div>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Provides functionalities for type support and detection.
+One of the main design features of pressio is that it supports arbitrary
+types via generic programming and type introspection, but also
+provides special support for some data types commonly used.</p>
+</div>
+<div class="section" id="traits-class">
+<h2>Traits class<a class="headerlink" href="#traits-class" title="Permalink to this headline">¶</a></h2>
+<p>todo: finish</p>
+<p>One of the most important things inside <code class="docutils literal notranslate"><span class="pre">type_traits</span></code> is the <code class="docutils literal notranslate"><span class="pre">Traits</span></code> class:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="o">=</span> <span class="kt">void</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To understand the purpose and usage of the traits pattern in C++ there are several resources online.
+Quoting Bjarne Stroustrup: “Think of a trait as a small object whose main purpose
+is to carry information used by another object or algorithm
+to determine “policy” or “implementation details”.
+Pressio uses specializations of this class to gather <em>in a uniform way</em>
+compile-time information enabling it to reason about types.
+The key point here is that <em>different TPLs use a variety of naming conventions
+for nested typedefs and related things</em>, so there is not easy way to access
+similar information from types of various libraries.
+This is what motivated us to implement this <code class="docutils literal notranslate"><span class="pre">type_traits</span></code> component.
+We need a standard, uniform way to query types for compile-time information.
+We currently have traits specialized for types of a few TPLs, like Trilinos, Kokkos, Eigen.
+An example of <a class="reference external" href="https://github.com/Pressio/pressio/blob/main/include/pressio/type_traits/traits_vector.hpp">one such specialization</a> (in this case for Eigen) is:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span>
+  <span class="n">T</span><span class="p">,</span> <span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">mpl</span><span class="o">::</span><span class="n">enable_if_t</span><span class="o">&lt;</span><span class="n">is_dynamic_vector_eigen</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">value</span><span class="o">&gt;</span>
+  <span class="o">&gt;</span>
+<span class="p">{</span>
+
+  <span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">is_static</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">is_dynamic</span>  <span class="o">=</span> <span class="o">!</span><span class="n">is_static</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="k">typename</span> <span class="nc">T</span><span class="o">::</span><span class="n">Scalar</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">size_type</span>     <span class="o">=</span> <span class="k">typename</span> <span class="nc">T</span><span class="o">::</span><span class="n">StorageIndex</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">reference_type</span> <span class="o">=</span> <span class="n">scalar_type</span> <span class="o">&amp;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">const_reference_type</span> <span class="o">=</span> <span class="n">scalar_type</span> <span class="k">const</span> <span class="o">&amp;</span><span class="p">;</span>
+
+  <span class="c1">// some other things</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">Traits</span></code> class play a key role when users want to use arbitrary types (i.e. types
+which are not known to presso) and to do so, users shoud specialize this class and make
+these specialization visibile to pressio to provide information about their generic types. <span class="raw-html-m2r"><br/></span></p>
+<p>For practical examples of how this class is used, see:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="nonlinsolvers_nr.html">Newton-Raphson solver</a></p></li>
+<li><p><a class="reference external" href="ode_steppers_explicit.html">ode explicit steppers</a></p></li>
+<li><p><a class="reference external" href="ode_steppers_implicit.html">ode implicit steppers</a></p></li>
+</ul>
+</div>
+<div class="section" id="type-detection-and-identification">
+<h2>Type detection and identification<a class="headerlink" href="#type-detection-and-identification" title="Permalink to this headline">¶</a></h2>
+<p>We support several metafunctions for detecting
+data types commonly used from existing TPLs.
+The following list is partial, and more will be added as we continue the development.</p>
+<div class="table-wrapper"><table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 45%"/>
+<col style="width: 55%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_static_vector_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static Eigen vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dynamic_vector_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a dynamic Eigen vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_vector_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static or dynamic Eigen vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_sparse_matrix_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static or dynamic sparse Eigen matrix. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_static_dense_matrix_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static dense Eigen matrix. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dynamic_dense_matrix_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a dynamic dense Eigen matrix. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dense_matrix_eigen;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static or dynamic dense Eigen matrix. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_EIGEN==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dense_vector_teuchos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a dense Teuchos vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dense_matrix_teuchos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a dense Teuchos matrix. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_vector_epetra;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is Epetra vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_multi_vector_epetra;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is an Epetra multi vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_vector_tpetra;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a Tpetra vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_multi_vector_tpetra;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a Tpetra multi vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_vector_tpetra_block;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a Tpetra-block vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_multi_vector_tpetra_block;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a Tpetra-block multi vector. <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_static_vector_kokkos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static Kokkos vector (rank-1 View). <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dynamic_vector_kokkos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a dynamic Kokkos vector (rank-1 View).  <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_vector_kokkos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static or dynamic Kokkos vector (rank-1 View).  <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_static_dense_matrix_kokkos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static dense Kokkos matrix (rank-2 View). <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS==On</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dynamic_dense_matrix_kokkos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a dynamic dense Kokkos matrix (rank-2 View). <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS==On</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">template&lt;class</span> <span class="pre">T&gt;</span></code> <span class="raw-html-m2r"><br/></span> <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">is_dense_matrix_kokkos;</span></code></p></td>
+<td><p>Provides static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> equal to <code class="docutils literal notranslate"><span class="pre">true</span></code> <span class="raw-html-m2r"><br/></span> if <code class="docutils literal notranslate"><span class="pre">T</span></code> is a static or dynamic dense Kokkos matrix (rank-2 View).       <span class="raw-html-m2r"><br/></span> Requires: <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_KOKKOS==On</span></code></p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="expressions.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="utils.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title"><code class="docutils literal notranslate"><span class="pre">utils</span></code></div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, National Technology &amp; Engineering Solutions of Sandia, LLC (NTESS) |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/components/type_traits.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#traits-class">Traits class</a></li>
+<li><a class="reference internal" href="#type-detection-and-identification">Type detection and identification</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    </body>
+</html>
