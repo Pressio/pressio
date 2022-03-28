@@ -104,14 +104,14 @@ TEST(rom_lspg, hypred_updater_vector)
 
   const LO num_lel_stencil = stencil_map->getNodeNumElements();
   vec_t vec_stencil(stencil_map);
-  auto vh = vec_stencil.getLocalViewHost();
+  auto vh = vec_stencil.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (LO i=0; i<num_lel_stencil; ++i){
     vh(i,0) = vec_stencil_std[shift_stencil+i];
   }
 
   const LO num_lel_sample = sample_map->getNodeNumElements();
   vec_t vec_sample(sample_map);
-  auto vh2 = vec_sample.getLocalViewHost();
+  auto vh2 = vec_sample.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (LO i=0; i<num_lel_sample; ++i){
     vh2(i,0) = vec_sample_std[shift_sample+i];
   }
@@ -120,7 +120,7 @@ TEST(rom_lspg, hypred_updater_vector)
   F.updateSampleMeshOperandWithStencilMeshOne(vec_sample,  2.,
 						     vec_stencil, 3.);
 
-  auto vh3 = vec_sample.getLocalViewHost();
+  auto vh3 = vec_sample.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   if (rank==0){
     EXPECT_DOUBLE_EQ(vh3(0,0), 41.*3.+1.*2.);
     EXPECT_DOUBLE_EQ(vh3(1,0),  2.*3.+2.*2.);
@@ -233,7 +233,7 @@ TEST(rom_lspg, hypred_updater_multi_vector)
 
   const LO num_lel_stencil = stencil_map->getNodeNumElements();
   mv_t mv_stencil(stencil_map, 4);
-  auto vh = mv_stencil.getLocalViewHost();
+  auto vh = mv_stencil.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (LO i=0; i<num_lel_stencil; ++i){
     vh(i,0) = mv_stencil_std[shift_stencil+i];
     vh(i,1) = mv_stencil_std[shift_stencil+i]+1;
@@ -243,7 +243,7 @@ TEST(rom_lspg, hypred_updater_multi_vector)
 
   const LO num_lel_sample = sample_map->getNodeNumElements();
   mv_t mv_sample(sample_map, 4);
-  auto vh2 = mv_sample.getLocalViewHost();
+  auto vh2 = mv_sample.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (LO i=0; i<num_lel_sample; ++i){
     vh2(i,0) = mv_sample_std[shift_sample+i];
     vh2(i,1) = mv_sample_std[shift_sample+i]+1;
@@ -255,7 +255,7 @@ TEST(rom_lspg, hypred_updater_multi_vector)
   F.updateSampleMeshOperandWithStencilMeshOne(mv_sample,  2.,
 						     mv_stencil, 3.);
 
-  auto vh3 = mv_sample.getLocalViewHost();
+  auto vh3 = mv_sample.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   if (rank==0){
     EXPECT_DOUBLE_EQ(vh3(0,0), 41.*3.+1.*2.);
     EXPECT_DOUBLE_EQ(vh3(0,1), 42.*3.+2.*2.);

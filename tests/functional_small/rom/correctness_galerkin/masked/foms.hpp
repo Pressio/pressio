@@ -344,7 +344,7 @@ struct TrivialFomOnlyVelocityTpetra
     f.putScalar(time);
     pressio::ops::update(f, 1, u, 1);
 
-    auto lv = f.getLocalViewHost();
+    auto lv = f.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     auto mygids = contigMap_->getMyGlobalIndices();
     for (std::size_t i=0; i<mygids.extent(0); ++i){
       if (std::find(indices_to_corrupt_.cbegin(), indices_to_corrupt_.cend(), mygids(i))!=indices_to_corrupt_.cend()){

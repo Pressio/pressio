@@ -53,9 +53,17 @@ RUN git clone https://github.com/Pressio/pressio-builder.git
 WORKDIR /home/pressio_repos/pressio-builder
 RUN git checkout main
 RUN sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_tpls.sh
-RUN sed -i 's/9fec35276d846a667bc668ff4cbdfd8be0dfea08/4796b92fb0644ba8c531dd9953e7a4878b05c62d/g' tpls/tpls_versions_details.sh
+RUN sed -i 's/9fec35276d846a667bc668ff4cbdfd8be0dfea08/ef73d14babf6e7556b0420add98cce257ccaa56b/g' tpls/tpls_versions_details.sh
+RUN sed -i 's/GTESTBRANCH=master/GTESTBRANCH=main/g' tpls/tpls_versions_details.sh
 RUN chmod +x main_tpls.sh
 RUN ./main_tpls.sh -dryrun=no -build-mode=Release -target-dir=../../pressio_builds -tpls=gtest,eigen,trilinos -cmake-generator-names=default,default,default
+RUN git reset --hard origin/main
+
+# Cleaning after builds
+WORKDIR /home
+RUN rm -rf pressio_builds/gtest/build && rm -rf pressio_builds/gtest/googletest
+RUN rm -rf pressio_builds/trilinos/build && rm -rf pressio_builds/trilinos/Trilinos
+RUN rm -rf pressio_builds/eigen/eigen-3.3.7 && rm pressio_builds/eigen/eigen-3.3.7.tar.gz
 
 # Setting workdir to /
 WORKDIR /

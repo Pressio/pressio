@@ -132,8 +132,8 @@ struct HypRedUpdaterTrilinos
     const auto stencil_gIDs = stencil_map->getMyGlobalIndices();
 
     //loop over LOCAL elements of the sample_operand
-    auto sample_op_data  = sample_operand.getLocalViewHost();
-    auto stencil_op_data = stencil_operand.getLocalViewHost();
+    auto sample_op_data  = sample_operand.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+    auto stencil_op_data = stencil_operand.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (std::size_t i=0; i<sample_operand.getLocalLength(); i++)
     {
 
@@ -166,8 +166,8 @@ struct HypRedUpdaterTrilinos
     const auto stencil_gIDs = stencil_map->getMyGlobalIndices();
 
     //loop over LOCAL elements of the sample_operand
-    auto sample_op_data  = sample_operand.getLocalViewHost();
-    auto stencil_op_data = stencil_operand.getLocalViewHost();
+    auto sample_op_data  = sample_operand.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+    auto stencil_op_data = stencil_operand.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
 
     for (std::size_t j=0; j<sample_operand.getNumVectors(); j++){
       for (std::size_t i=0; i<sample_operand.getLocalLength(); i++){

@@ -5,7 +5,7 @@
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        mv_prod_kokkos_vector)
 {
-  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost();
+  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       myMv_h(i,j) = (double)j;
@@ -19,7 +19,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   y.putScalar(0.);
   pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 1., y);
 
-  auto y_h = y.getVectorView().getLocalViewHost();
+  auto y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
@@ -28,7 +28,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        mv_T_vector_storein_kokkos_vector)
 {
-  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost();
+  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       myMv_h(i,j) = (double)i;
@@ -53,7 +53,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        mv_prod_eigen_vector)
 {
-  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost();
+  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       myMv_h(i,j) = (double)j;
@@ -67,7 +67,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   y.putScalar(0.);
   pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 1., y);
 
-  auto y_h = y.getMultiVectorView().getLocalViewHost();
+  auto y_h = y.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
@@ -76,7 +76,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        mv_T_vector_storein_eigen_vector)
 {
-  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost();
+  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       myMv_h(i,j) = (double)i;
