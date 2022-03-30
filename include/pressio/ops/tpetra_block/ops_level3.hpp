@@ -142,7 +142,8 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  return product<C_type>(modeA, modeB, alpha, A);
+  auto A_tp = A.getMultiVectorView();
+  return product<C_type>(modeA, modeB, alpha, A_tp);
 }
 #endif
 
