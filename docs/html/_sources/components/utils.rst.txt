@@ -1,19 +1,20 @@
 
 ``utils``
-=========
+#########
 
-.. note::
+.. admonition:: Info
+   :class: important
 
-    Defined in header: ``<pressio/utils.hpp>``
+   Header: ``<pressio/utils.hpp>``
 
-    Public namespaces: ``pressio``\ , ``pressio::utils``
+   Public namespaces: ``pressio``\ , ``pressio::utils``
 
 Logger
-------
+======
 
 One of the main functionalities inside ``utils`` is the logger.
-To implement the pressio logging functionalities, we have used `spdlog <https://github.com/gabime/spdlog>`_\ ,
-modified a subset of it, for example to work seamlessly with MPI.
+The implementation is based on a modified version of `spdlog <https://github.com/gabime/spdlog>`_,
+for example to work seamlessly with MPI.
 
 .. warning::
 
@@ -24,12 +25,12 @@ modified a subset of it, for example to work seamlessly with MPI.
    <!-- If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed!<br/> -->
    <!-- @m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan -->
 
-.. note::
+To enable logging, you need to do two things:
 
-    To enable logging, you need to do two things:
+- insert a ``define`` statement to set the *minimum* level *before* including the utils header
 
-    #. insert a ``define`` statement to set the *minimum* level *before* including the utils header
-    #. initialize and finalize the logger singleton
+- initialize and finalize the logger singleton
+
 
 The following snippet provides the main idea:
 
@@ -52,6 +53,30 @@ The following snippet provides the main idea:
 
      // finalize logger (see below for details)
    }
+
+
+The supported levels are:
+
+.. code-block:: cpp
+
+   #define PRESSIO_LOG_LEVEL_TRACE     0
+   #define PRESSIO_LOG_LEVEL_DEBUG     1
+   #define PRESSIO_LOG_LEVEL_INFO      2
+   #define PRESSIO_LOG_LEVEL_WARN      3
+   #define PRESSIO_LOG_LEVEL_ERROR     4
+   #define PRESSIO_LOG_LEVEL_CRITICAL  5
+   #define PRESSIO_LOG_LEVEL_OFF       6
+
+
+.. attention::
+
+    The log statements issued for a specific level will be printed
+    *only if* ``PRESSIO_LOG_ACTIVE_MIN_LEVEL`` is smaller or equal than that level.
+    If the logger is disabled, the macros are expanded to a no-op.
+    So it does not cost you anything to place log statements in your code,
+    because in production mode you can just compile to no-op.
+
+|
 
 Initializing and finalizing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -103,21 +128,6 @@ files ``log_file.txt_0``\ , and ``log_file.txt_1``.
 Currently, the logger works only for the world communicator.
 We will later extend the API to accept a communicator object.
 
-Levels
-^^^^^^
-
-The supported levels are:
-
-.. code-block:: cpp
-
-   #define PRESSIO_LOG_LEVEL_TRACE     0
-   #define PRESSIO_LOG_LEVEL_DEBUG     1
-   #define PRESSIO_LOG_LEVEL_INFO      2
-   #define PRESSIO_LOG_LEVEL_WARN      3
-   #define PRESSIO_LOG_LEVEL_ERROR     4
-   #define PRESSIO_LOG_LEVEL_CRITICAL  5
-   #define PRESSIO_LOG_LEVEL_OFF       6
-
 Resetting the level
 ^^^^^^^^^^^^^^^^^^^
 
@@ -157,12 +167,3 @@ To actually issue log statements, you use the macros as in the following example
 
 where we note that you can use the `{fmt} library <https://github.com/fmtlib/fmt>`_
 to properly format the print statements.
-
-.. warning::
-
-    Keep in mind:
-    The log statements issued for a specific level will be printed
-    *only if* ``PRESSIO_LOG_ACTIVE_MIN_LEVEL`` is smaller or equal than that level.
-    If the logger is disabled, the macros are expanded to a no-op.
-    So it does not cost you anything to place log statements in your code,
-    because in production mode you can just compile to no-op.

@@ -236,36 +236,32 @@
         <article role="main">
           <div class="section" id="mpl">
 <h1><code class="docutils literal notranslate"><span class="pre">mpl</span></code><a class="headerlink" href="#mpl" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Defined in header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/mpl.hpp&gt;</span></code></p>
+<div class="important admonition">
+<p class="admonition-title">Info</p>
+<p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/mpl.hpp&gt;</span></code></p>
 <p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio::mpl</span></code></p>
 </div>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Provides metaprogramming functionalities that are useful for a variety of purposes
-and are one of the fundamental building blocks for the other parts of the pressio library.</p>
+<div class="admonition-description admonition">
+<p class="admonition-title">Description</p>
+<p><span class="medium">Provides metaprogramming functionalities that are always useful
+for generic programming and are one of the fundamental
+building blocks of the pressio library.</span></p>
 </div>
 <p>If you are familiar with the <code class="docutils literal notranslate"><span class="pre">&lt;type_traits&gt;</span></code> header from
 the standard library, the <code class="docutils literal notranslate"><span class="pre">pressio/mpl</span></code> will look familiar too.
 Some parts of <code class="docutils literal notranslate"><span class="pre">pressio/mpl</span></code> have been adapted from the <a class="reference external" href="http://sbabbi.github.io/tinympl">tinympl project</a>.
 The tinympl project appears to be no longer maintained.</p>
-</div>
 <div class="section" id="content">
 <h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
 <p>The following is a <em>partial</em> list only intended to provide a general idea of the supported features.</p>
-<p>To find out all supported cases, browse the <a class="reference external" href="https://github.com/Pressio/pressio/tree/main/include/pressio/mpl">source</a>,
-and for example usage, see <a class="reference external" href="https://github.com/Pressio/pressio/blob/main/tests/functional_small/mpl/all.cc">this</a>.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<p>To find out all supported cases, browse the <a class="reference external" href="https://github.com/Pressio/pressio/tree/main/include/pressio/mpl">source</a>.</p>
+<div class="section" id="not-void">
+<h3><code class="docutils literal notranslate"><span class="pre">not_void</span></code><a class="headerlink" href="#not-void" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">not_void</span><span class="p">;</span>
 </pre></div>
 </div>
 <ul>
-<li><p>Checks if a type <code class="docutils literal notranslate"><span class="pre">T</span></code> is NOT a void type.
-Provides the static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> that is equal to true, if <code class="docutils literal notranslate"><span class="pre">T</span></code> is NOT of
+<li><p>Provides the static member constant <code class="docutils literal notranslate"><span class="pre">value</span></code> that is equal to true, if <code class="docutils literal notranslate"><span class="pre">T</span></code> is NOT of
 the type <code class="docutils literal notranslate"><span class="pre">void</span></code>, <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">void</span></code>, <code class="docutils literal notranslate"><span class="pre">volatile</span> <span class="pre">void</span></code>, or <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">volatile</span> <span class="pre">void</span></code>.
 Otherwise, value is true.</p></li>
 <li><p>Example:<span class="raw-html-m2r"><br/></span></p>
@@ -276,8 +272,8 @@ Otherwise, value is true.</p></li>
 </li>
 </ul>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="section" id="all-of">
+<h3><code class="docutils literal notranslate"><span class="pre">all_of</span></code><a class="headerlink" href="#all-of" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span> <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">all_of</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -295,8 +291,8 @@ Otherwise, value is false.</p></li>
 </li>
 </ul>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="section" id="any-of">
+<h3><code class="docutils literal notranslate"><span class="pre">any_of</span></code><a class="headerlink" href="#any-of" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span> <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">any_of</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -308,8 +304,8 @@ at least one element in the sequence satisfies the predicate <code class="docuti
 Otherwise, value is equal to false.</p></li>
 </ul>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="section" id="none-of">
+<h3><code class="docutils literal notranslate"><span class="pre">none_of</span></code><a class="headerlink" href="#none-of" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span> <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">none_of</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -321,8 +317,8 @@ none of the elements in the sequence satisfy the predicate <code class="docutils
 Otherwise, value is equal to false.</p></li>
 </ul>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="section" id="is-subscriptable-as">
+<h3><code class="docutils literal notranslate"><span class="pre">is_subscriptable_as</span></code><a class="headerlink" href="#is-subscriptable-as" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="nc">IndexType</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">is_subscriptable_as</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -388,8 +384,14 @@ Otherwise, value is equal to false.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#content">Content</a></li>
+<li><a class="reference internal" href="#content">Content</a><ul>
+<li><a class="reference internal" href="#not-void"><code class="docutils literal notranslate"><span class="pre">not_void</span></code></a></li>
+<li><a class="reference internal" href="#all-of"><code class="docutils literal notranslate"><span class="pre">all_of</span></code></a></li>
+<li><a class="reference internal" href="#any-of"><code class="docutils literal notranslate"><span class="pre">any_of</span></code></a></li>
+<li><a class="reference internal" href="#none-of"><code class="docutils literal notranslate"><span class="pre">none_of</span></code></a></li>
+<li><a class="reference internal" href="#is-subscriptable-as"><code class="docutils literal notranslate"><span class="pre">is_subscriptable_as</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

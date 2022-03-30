@@ -7,19 +7,19 @@
 ``mpl``
 =======
 
-.. note::
+.. admonition:: Info
+   :class: important
 
-    Defined in header: ``<pressio/mpl.hpp>``
+   Header: ``<pressio/mpl.hpp>``
 
-    Public namespace: ``pressio::mpl``
+   Public namespace: ``pressio::mpl``
 
-Overview
---------
 
-.. note::
+.. admonition:: Description
 
-    Provides metaprogramming functionalities that are useful for a variety of purposes
-    and are one of the fundamental building blocks for the other parts of the pressio library.
+    :medium:`Provides metaprogramming functionalities that are always useful
+    for generic programming and are one of the fundamental
+    building blocks of the pressio library.`
 
 
 If you are familiar with the ``<type_traits>`` header from
@@ -32,81 +32,89 @@ Content
 
 The following is a *partial* list only intended to provide a general idea of the supported features.
 
-To find out all supported cases, browse the `source <https://github.com/Pressio/pressio/tree/main/include/pressio/mpl>`_\ ,
-and for example usage, see `this <https://github.com/Pressio/pressio/blob/main/tests/functional_small/mpl/all.cc>`_.
+To find out all supported cases, browse the `source <https://github.com/Pressio/pressio/tree/main/include/pressio/mpl>`__.
 
-.. tip::
 
-    .. code-block:: cpp
+``not_void``
+~~~~~~~~~~~~
 
-       template<class T> struct not_void;
+.. code-block:: cpp
 
-    *
-      Checks if a type ``T`` is NOT a void type.
-      Provides the static member constant ``value`` that is equal to true, if ``T`` is NOT of
-      the type ``void``\ , ``const void``\ , ``volatile void``\ , or ``const volatile void``.
-      Otherwise, value is true.
+   template<class T> struct not_void;
 
-    *
-      Example:\ :raw-html-m2r:`<br/>`
+*
+  Provides the static member constant ``value`` that is equal to true, if ``T`` is NOT of
+  the type ``void``\ , ``const void``\ , ``volatile void``\ , or ``const volatile void``.
+  Otherwise, value is true.
 
-      .. code-block:: cpp
+*
+  Example:\ :raw-html-m2r:`<br/>`
 
-         namespace pmpl = pressio::mpl;
-         static_assert(pmpl::not_void<double>::value, "" );
+  .. code-block:: cpp
 
-.. tip::
+     namespace pmpl = pressio::mpl;
+     static_assert(pmpl::not_void<double>::value, "" );
 
-    .. code-block:: cpp
 
-       template< template<class ... T> class F, class ... Args> struct all_of;
+``all_of``
+~~~~~~~~~~
 
-    *
-      Determines whether every element in the sequence satisfies the given predicate.
-      The predicate ``F`` must be such that ``F<T>::value`` must be convertible to ``bool``.
-      Provides the static member constant ``value`` that is equal to true iff
-      all the elements in the sequence satisfy the predicate ``F``.
-      Otherwise, value is false.
+.. code-block:: cpp
 
-    *
-      Example:\ :raw-html-m2r:`<br/>`
+   template< template<class ... T> class F, class ... Args> struct all_of;
 
-      .. code-block:: cpp
+*
+  Determines whether every element in the sequence satisfies the given predicate.
+  The predicate ``F`` must be such that ``F<T>::value`` must be convertible to ``bool``.
+  Provides the static member constant ``value`` that is equal to true iff
+  all the elements in the sequence satisfy the predicate ``F``.
+  Otherwise, value is false.
 
-         namespace pmpl = pressio::mpl;
-         static_assert(pmpl::all_of<std::is_floating_point, double, float>::value, "" );
+*
+  Example:\ :raw-html-m2r:`<br/>`
 
-.. tip::
+  .. code-block:: cpp
 
-    .. code-block:: cpp
+     namespace pmpl = pressio::mpl;
+     static_assert(pmpl::all_of<std::is_floating_point, double, float>::value, "" );
 
-       template< template<class ... T> class F, class ... Args> struct any_of;
 
-    * Determines whether any element in the sequence satisfies the given predicate.
-      The predicate ``F`` must be such that ``F<T>::value`` must be convertible to ``bool``.
-      Provides the static member constant ``value`` that is equal to true iff
-      at least one element in the sequence satisfies the predicate ``F``.
-      Otherwise, value is equal to false.
+``any_of``
+~~~~~~~~~~
 
-.. tip::
+.. code-block:: cpp
 
-    .. code-block:: cpp
+   template< template<class ... T> class F, class ... Args> struct any_of;
 
-       template< template<class ... T> class F, class ... Args> struct none_of;
+* Determines whether any element in the sequence satisfies the given predicate.
+  The predicate ``F`` must be such that ``F<T>::value`` must be convertible to ``bool``.
+  Provides the static member constant ``value`` that is equal to true iff
+  at least one element in the sequence satisfies the predicate ``F``.
+  Otherwise, value is equal to false.
 
-    * Determines whether none of the elements in the sequence satisfy the given predicate.
-      The predicate ``F`` must be such that ``F<T>::value`` must be convertible to ``bool``.
-      Provides the static member constant ``value`` that is equal to true iff
-      none of the elements in the sequence satisfy the predicate ``F``.
-      Otherwise, value is equal to false.
 
-.. tip::
+``none_of``
+~~~~~~~~~~~
 
-    .. code-block:: cpp
+.. code-block:: cpp
 
-       template<class T, class IndexType> struct is_subscriptable_as;
+   template< template<class ... T> class F, class ... Args> struct none_of;
 
-    * Provides the static member constant ``value`` that is equal to true if
-      ``T`` has subscript operator ``[]``\ , it can be indexed by an instance of ``IndexType``\ ,
-      and the return type is not void.
-      Otherwise, value is equal to false.
+* Determines whether none of the elements in the sequence satisfy the given predicate.
+  The predicate ``F`` must be such that ``F<T>::value`` must be convertible to ``bool``.
+  Provides the static member constant ``value`` that is equal to true iff
+  none of the elements in the sequence satisfy the predicate ``F``.
+  Otherwise, value is equal to false.
+
+
+``is_subscriptable_as``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: cpp
+
+   template<class T, class IndexType> struct is_subscriptable_as;
+
+* Provides the static member constant ``value`` that is equal to true if
+  ``T`` has subscript operator ``[]``\ , it can be indexed by an instance of ``IndexType``\ ,
+  and the return type is not void.
+  Otherwise, value is equal to false.

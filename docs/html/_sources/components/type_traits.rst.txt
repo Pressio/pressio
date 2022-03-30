@@ -1,23 +1,26 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
+.. include:: ../mydefs.rst
 
 ``type_traits``
 ===============
 
-.. note::
+.. admonition:: Info
+   :class: important
 
-    Defined in header: ``<pressio/type_traits.hpp>``
+   Header: ``<pressio/type_traits.hpp>``
 
-    Public namespace: ``pressio``
+   Public namespace: ``pressio``
 
-Overview
---------
 
-Provides functionalities for type support and detection.
-One of the main design features of pressio is that it supports arbitrary
-types via generic programming and type introspection, but also
-provides special support for some data types commonly used.
+.. admonition:: Description
+
+   :medium:`Provides functionalities for type support and detection.
+   One of the main design features of pressio is that it supports arbitrary
+   types via generic programming and type introspection, but also
+   provides special support for some data types commonly used.`
+
 
 Traits class
 ------------
@@ -29,7 +32,7 @@ One of the most important things inside ``type_traits`` is the ``Traits`` class:
 .. code-block:: cpp
 
    namespace pressio{
-     template<class T, class = void> struct Traits;
+   template<class T, class = void> struct Traits;
    }
 
 To understand the purpose and usage of the traits pattern in C++ there are several resources online.

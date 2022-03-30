@@ -21,8 +21,8 @@ pressio C++ library
    :header-rows: 1
    :align: left
 
-   * - 
-     - Description/Content
+   * -
+     - Description
      - Header(s)
 
    * - :packnameindexpage:`mpl`
@@ -33,8 +33,8 @@ pressio C++ library
      - logger, constants, etc
      - ``<pressio/utils.hpp>``
 
-   * - :packnameindexpage:`type_traits` 
-     - type traits and detection 
+   * - :packnameindexpage:`type_traits`
+     - type traits and detection
      - ``<pressio/type_traits.hpp>``
 
    * - :packnameindexpage:`expressions`
@@ -80,13 +80,13 @@ pressio C++ library
 Get Started
 -----------
 
-* 
+*
   `introduction <introduction.html>`_: describes objectives and design ideas
 
-* 
+*
   `how to install <installation.html>`_: it is a header-only library, should be trivial
 
-* 
+*
   `explore the tutorials <https://pressio.github.io/pressio-tutorials>`_
 
 .. raw:: html

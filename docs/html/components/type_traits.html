@@ -158,6 +158,9 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio">GitHub Repo</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio/issues">Open an issue/feature req.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
@@ -233,24 +236,24 @@
         <article role="main">
           <div class="section" id="type-traits">
 <h1><code class="docutils literal notranslate"><span class="pre">type_traits</span></code><a class="headerlink" href="#type-traits" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Defined in header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/type_traits.hpp&gt;</span></code></p>
+<div class="important admonition">
+<p class="admonition-title">Info</p>
+<p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/type_traits.hpp&gt;</span></code></p>
 <p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio</span></code></p>
 </div>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>Provides functionalities for type support and detection.
+<div class="admonition-description admonition">
+<p class="admonition-title">Description</p>
+<p><span class="medium">Provides functionalities for type support and detection.
 One of the main design features of pressio is that it supports arbitrary
 types via generic programming and type introspection, but also
-provides special support for some data types commonly used.</p>
+provides special support for some data types commonly used.</span></p>
 </div>
 <div class="section" id="traits-class">
 <h2>Traits class<a class="headerlink" href="#traits-class" title="Permalink to this headline">¶</a></h2>
 <p>todo: finish</p>
 <p>One of the most important things inside <code class="docutils literal notranslate"><span class="pre">type_traits</span></code> is the <code class="docutils literal notranslate"><span class="pre">Traits</span></code> class:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="o">=</span> <span class="kt">void</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="p">;</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="o">=</span> <span class="kt">void</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -430,7 +433,6 @@ The following list is partial, and more will be added as we continue the develop
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#traits-class">Traits class</a></li>
 <li><a class="reference internal" href="#type-detection-and-identification">Type detection and identification</a></li>
 </ul>

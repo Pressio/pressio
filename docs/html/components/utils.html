@@ -158,6 +158,9 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio">GitHub Repo</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio/issues">Open an issue/feature req.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
@@ -233,29 +236,26 @@
         <article role="main">
           <div class="section" id="utils">
 <h1><code class="docutils literal notranslate"><span class="pre">utils</span></code><a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Defined in header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/utils.hpp&gt;</span></code></p>
+<div class="important admonition">
+<p class="admonition-title">Info</p>
+<p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/utils.hpp&gt;</span></code></p>
 <p>Public namespaces: <code class="docutils literal notranslate"><span class="pre">pressio</span></code>, <code class="docutils literal notranslate"><span class="pre">pressio::utils</span></code></p>
 </div>
 <div class="section" id="logger">
 <h2>Logger<a class="headerlink" href="#logger" title="Permalink to this headline">¶</a></h2>
 <p>One of the main functionalities inside <code class="docutils literal notranslate"><span class="pre">utils</span></code> is the logger.
-To implement the pressio logging functionalities, we have used <a class="reference external" href="https://github.com/gabime/spdlog">spdlog</a>,
-modified a subset of it, for example to work seamlessly with MPI.</p>
+The implementation is based on a modified version of <a class="reference external" href="https://github.com/gabime/spdlog">spdlog</a>,
+for example to work seamlessly with MPI.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>By default, for performance reasons, the logger is disabled, so pressio will not output anything.</p>
 </div>
 <!-- If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed!<br/> -->
-<!-- @m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan --><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To enable logging, you need to do two things:</p>
-<ol class="arabic simple">
+<!-- @m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan --><p>To enable logging, you need to do two things:</p>
+<ul class="simple">
 <li><p>insert a <code class="docutils literal notranslate"><span class="pre">define</span></code> statement to set the <em>minimum</em> level <em>before</em> including the utils header</p></li>
 <li><p>initialize and finalize the logger singleton</p></li>
-</ol>
-</div>
+</ul>
 <p>The following snippet provides the main idea:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// this sets the default min level</span>
 <span class="cp">#define PRESSIO_LOG_ACTIVE_MIN_LEVEL 2</span>
@@ -275,6 +275,27 @@ modified a subset of it, for example to work seamlessly with MPI.</p>
   <span class="c1">// finalize logger (see below for details)</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<p>The supported levels are:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define PRESSIO_LOG_LEVEL_TRACE     0</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_DEBUG     1</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_INFO      2</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_WARN      3</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_ERROR     4</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_CRITICAL  5</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_OFF       6</span>
+</pre></div>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The log statements issued for a specific level will be printed
+<em>only if</em> <code class="docutils literal notranslate"><span class="pre">PRESSIO_LOG_ACTIVE_MIN_LEVEL</span></code> is smaller or equal than that level.
+If the logger is disabled, the macros are expanded to a no-op.
+So it does not cost you anything to place log statements in your code,
+because in production mode you can just compile to no-op.</p>
+</div>
+<div class="line-block">
+<div class="line"><br/></div>
 </div>
 <div class="section" id="initializing-and-finalizing">
 <h3>Initializing and finalizing<a class="headerlink" href="#initializing-and-finalizing" title="Permalink to this headline">¶</a></h3>
@@ -319,19 +340,6 @@ files <code class="docutils literal notranslate"><span class="pre">log_file.txt_
 Currently, the logger works only for the world communicator.
 We will later extend the API to accept a communicator object.</p>
 </div>
-<div class="section" id="levels">
-<h3>Levels<a class="headerlink" href="#levels" title="Permalink to this headline">¶</a></h3>
-<p>The supported levels are:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define PRESSIO_LOG_LEVEL_TRACE     0</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_DEBUG     1</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_INFO      2</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_WARN      3</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_ERROR     4</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_CRITICAL  5</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_OFF       6</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="resetting-the-level">
 <h3>Resetting the level<a class="headerlink" href="#resetting-the-level" title="Permalink to this headline">¶</a></h3>
 <p>If you want, you can use the define statement to set the min level,
@@ -366,15 +374,6 @@ one you set via the <code class="docutils literal notranslate"><span class="pre"
 </div>
 <p>where we note that you can use the <a class="reference external" href="https://github.com/fmtlib/fmt">{fmt} library</a>
 to properly format the print statements.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Keep in mind:
-The log statements issued for a specific level will be printed
-<em>only if</em> <code class="docutils literal notranslate"><span class="pre">PRESSIO_LOG_ACTIVE_MIN_LEVEL</span></code> is smaller or equal than that level.
-If the logger is disabled, the macros are expanded to a no-op.
-So it does not cost you anything to place log statements in your code,
-because in production mode you can just compile to no-op.</p>
-</div>
 </div>
 </div>
 </div>
@@ -434,7 +433,6 @@ because in production mode you can just compile to no-op.</p>
 <li><a class="reference internal" href="#logger">Logger</a><ul>
 <li><a class="reference internal" href="#initializing-and-finalizing">Initializing and finalizing</a></li>
 <li><a class="reference internal" href="#if-running-with-mpi">If running with MPI</a></li>
-<li><a class="reference internal" href="#levels">Levels</a></li>
 <li><a class="reference internal" href="#resetting-the-level">Resetting the level</a></li>
 <li><a class="reference internal" href="#the-loggin-macros">The loggin macros</a></li>
 </ul>

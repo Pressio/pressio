@@ -34,6 +34,7 @@
 .. role:: ob
 
 .. role:: small
+.. role:: medium
 .. role:: large
 
 .. role:: packnameindexpage

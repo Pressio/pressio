@@ -1,19 +1,28 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
+.. include:: ../mydefs.rst
+
 explicit steppers
 =================
 
-.. note::
+.. admonition:: Info
+   :class: important
 
-    Defined in: ``<pressio/ode_steppers_explicit.hpp>``
+   Header: ``<pressio/ode_steppers_explicit.hpp>``
 
-    Public namespace: ``pressio::ode``
+   Public namespace: ``pressio::ode``
+
+
+.. admonition:: Description
+
+   :medium:`Classes representing different methods
+   to execute a *single step* when doing explicit time integration.`
 
 Overview
 --------
 
-Applicable to systems of the form:
+Suppose that you have a system of the form:
 
 .. math::
 
@@ -22,63 +31,86 @@ Applicable to systems of the form:
 
 where :math:`y` is the state, :math:`f` is the RHS (also called velocity below), :math:`t` is time.\ :raw-html-m2r:`<br/>`
 Explicit methods calculate the state of a system at a later time
-from the state of the system at the current time and potentially previous times.
-In pressio, a "stepper" is an abstraction that represents the "how" to take a step.
+from the state at the current time and potentially previous times.
+A pressio "explicit stepper" is an abstraction that represents the "how" to take a step.
 
 API, Parameters and Requirements
 --------------------------------
 
 .. code-block:: cpp
 
+   namespace pressio{ namespace ode{
+
    template<class StateType, class SystemType>
    auto create_explicit_stepper(pressio::ode::StepScheme scheme_name,
                                 const StateType & state,
                                 const SystemType & system);
 
-* 
+   }}
+
+*
   ``scheme_name``
 
-  * a value of the ``StepScheme`` enum
-  * must be one of: ``ForwardEuler``\ , ``RungeKutta4``\ , ``AdamsBashforth2``\ , ``SSPRungeKutta3``.
+  * one of the following enum values ``pressio::ode::StepScheme::{ForwardEuler, RungeKutta4, AdamsBashforth2, SSPRungeKutta3}``.
 
-* 
+*
   ``state``\ :
 
-  * your state, must be copy constructible
+  * an instance of your state. The type must be copy constructible.
 
-* 
+*
   ``system``\ :
 
-  * 
-    problem instance to query for velocity :math:`f` and how to compute it.\ :raw-html-m2r:`<br/>`
+  *
+    an instance of your problem class that encapsulated how to compute the velocity :math:`f` for a given state and time.
     The system class must conform to the following API:
 
     .. code-block:: cpp
 
         struct SystemForExplicitStepper
         {
-        using scalar_type   = /* */;
-        using state_type    = /* */;
-        using velocity_type = /* */;
+	  using scalar_type   = /* */;
+	  using state_type    = /* */;
+	  using velocity_type = /* */;
 
-        velocity_type createVelocity() const;
-        void velocity(const state_type &, scalar_type time, velocity_type &) const;
+	  velocity_type createVelocity() const;
+	  void velocity(const state_type &, scalar_type time, velocity_type &) const;
         };
 
   the nested aliases ``scalar_type``\ , ``state_type`` and ``velocity_type`` must be *valid* types since
   they are detected by pressio
 
-* 
+*
   if ``StateType`` is the type deduced for ``state`` from ``create_...``\ , the following must hold:\ :raw-html-m2r:`<br/>`
   ``std::is_same<StateType, typename SystemForExplicitOde::state_type>::value == true``
 
-.. note::
 
-    The above factory function returns a stepper instance for the desired scheme.
-    The returned stepper object satisfies the "steppable" concept discussed `here <ode_advance.html>`_\ , so one can use the "advancers" functions to step forward.
 
-Example usage
--------------
+Stepper Class Public API
+------------------------
+
+A stepper class meets the following API:
+
+.. code-block:: cpp
+
+    template<class ScalarType, class StateType, class ... Args>
+    class ExplicitStepper
+    {
+       template<class StepCountType>
+       void operator()(StateType odeState,
+		       const ScalarType & currentTime,
+		       const ScalarType & dt,
+		       StepCountType stepNumber);
+    }
+
+
+.. tip::
+
+   The stepper class satisfies the "steppable" concept discussed `here <ode_advance.html>`_\ , so one can use the "advancers" functions to step forward.
+
+
+Example code
+------------
 
 .. code-block:: cpp
 
@@ -88,20 +120,24 @@ Example usage
    int main()
    {
      // assuming that:
-     // stateObj  is the state
-     // systemObj is the system instance
+     // myState  is the state
+     // mySystem is the system instance
 
      namespace pode = pressio::ode;
      const auto scheme = pode::StepScheme::ForwardEuler;
-     auto stepper = pode::create_explicit_stepper(scheme, stateObj, systemObj);
+     auto stepper = pode::create_explicit_stepper(scheme, myState, mySystem);
 
      // use the stepper to advance in time,
      // for example using the advancer function
      const double time0 = 0.;
      const double dt = 0.1;
      const pode::step_count_type num_steps = 100;
-     pode::advance_n_steps(stepper, stateObj, time0, dt, num_steps);
+     pode::advance_n_steps(stepper, myState, time0, dt, num_steps);
    }
+
+
+|
+
 
 Required specializations for custom types
 -----------------------------------------

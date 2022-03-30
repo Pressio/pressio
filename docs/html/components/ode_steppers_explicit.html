@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="implicit steppers" href="ode_steppers_implicit.html" /><link rel="prev" title="advancers" href="ode_advance.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="implicit steppers" href="ode_steppers_implicit.html" /><link rel="prev" title="ode" href="ode.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>explicit steppers - Pressio 0.12.0 documentation</title>
@@ -22,14 +22,14 @@
   
   }
   body[data-theme="dark"] {
-    --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+    --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
   }
   @media (prefers-color-scheme: dark) {
     body:not([data-theme="light"]) {
-      --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
     }
   }
@@ -158,6 +158,9 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio">GitHub Repo</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Pressio/pressio/issues">Open an issue/feature req.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
@@ -174,9 +177,9 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">explicit steppers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -233,54 +236,62 @@
         <article role="main">
           <div class="section" id="explicit-steppers">
 <h1>explicit steppers<a class="headerlink" href="#explicit-steppers" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Defined in: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_steppers_explicit.hpp&gt;</span></code></p>
+<div class="important admonition">
+<p class="admonition-title">Info</p>
+<p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_steppers_explicit.hpp&gt;</span></code></p>
 <p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio::ode</span></code></p>
+</div>
+<div class="admonition-description admonition">
+<p class="admonition-title">Description</p>
+<p><span class="medium">Classes representing different methods
+to execute a *single step* when doing explicit time integration.</span></p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>Applicable to systems of the form:</p>
+<p>Suppose that you have a system of the form:</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[\frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; ...)\]</div></div>
 <p>where <span class="math notranslate nohighlight">\(y\)</span> is the state, <span class="math notranslate nohighlight">\(f\)</span> is the RHS (also called velocity below), <span class="math notranslate nohighlight">\(t\)</span> is time.<span class="raw-html-m2r"><br/></span>
 Explicit methods calculate the state of a system at a later time
-from the state of the system at the current time and potentially previous times.
-In pressio, a “stepper” is an abstraction that represents the “how” to take a step.</p>
+from the state at the current time and potentially previous times.
+A pressio “explicit stepper” is an abstraction that represents the “how” to take a step.</p>
 </div>
 <div class="section" id="api-parameters-and-requirements">
 <h2>API, Parameters and Requirements<a class="headerlink" href="#api-parameters-and-requirements" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span> <span class="k">namespace</span> <span class="n">ode</span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">scheme_name</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                              <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span>
+
+<span class="p">}}</span>
 </pre></div>
 </div>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">scheme_name</span></code></p>
 <ul class="simple">
-<li><p>a value of the <code class="docutils literal notranslate"><span class="pre">StepScheme</span></code> enum</p></li>
-<li><p>must be one of: <code class="docutils literal notranslate"><span class="pre">ForwardEuler</span></code>, <code class="docutils literal notranslate"><span class="pre">RungeKutta4</span></code>, <code class="docutils literal notranslate"><span class="pre">AdamsBashforth2</span></code>, <code class="docutils literal notranslate"><span class="pre">SSPRungeKutta3</span></code>.</p></li>
+<li><p>one of the following enum values <code class="docutils literal notranslate"><span class="pre">pressio::ode::StepScheme::{ForwardEuler,</span> <span class="pre">RungeKutta4,</span> <span class="pre">AdamsBashforth2,</span> <span class="pre">SSPRungeKutta3}</span></code>.</p></li>
 </ul>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>:</p>
 <ul class="simple">
-<li><p>your state, must be copy constructible</p></li>
+<li><p>an instance of your state. The type must be copy constructible.</p></li>
 </ul>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">system</span></code>:</p>
 <ul>
-<li><p>problem instance to query for velocity <span class="math notranslate nohighlight">\(f\)</span> and how to compute it.<span class="raw-html-m2r"><br/></span>
+<li><p>an instance of your problem class that encapsulated how to compute the velocity <span class="math notranslate nohighlight">\(f\)</span> for a given state and time.
 The system class must conform to the following API:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">SystemForExplicitStepper</span>
 <span class="p">{</span>
-<span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">velocity_type</span> <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">velocity_type</span> <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
 
-<span class="n">velocity_type</span> <span class="nf">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">velocity_type</span> <span class="nf">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -292,35 +303,52 @@ they are detected by pressio</p>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">StateType</span></code> is the type deduced for <code class="docutils literal notranslate"><span class="pre">state</span></code> from <code class="docutils literal notranslate"><span class="pre">create_...</span></code>, the following must hold:<span class="raw-html-m2r"><br/></span>
 <code class="docutils literal notranslate"><span class="pre">std::is_same&lt;StateType,</span> <span class="pre">typename</span> <span class="pre">SystemForExplicitOde::state_type&gt;::value</span> <span class="pre">==</span> <span class="pre">true</span></code></p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The above factory function returns a stepper instance for the desired scheme.
-The returned stepper object satisfies the “steppable” concept discussed <a class="reference external" href="ode_advance.html">here</a>, so one can use the “advancers” functions to step forward.</p>
+</div>
+<div class="section" id="stepper-class-public-api">
+<h2>Stepper Class Public API<a class="headerlink" href="#stepper-class-public-api" title="Permalink to this headline">¶</a></h2>
+<p>A stepper class meets the following API:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ScalarType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">class</span> <span class="nc">ExplicitStepper</span>
+<span class="p">{</span>
+   <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
+   <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">StateType</span> <span class="n">odeState</span><span class="p">,</span>
+                   <span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">currentTime</span><span class="p">,</span>
+                   <span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                   <span class="n">StepCountType</span> <span class="n">stepNumber</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The stepper class satisfies the “steppable” concept discussed <a class="reference external" href="ode_advance.html">here</a>, so one can use the “advancers” functions to step forward.</p>
 </div>
 </div>
-<div class="section" id="example-usage">
-<h2>Example usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example-code">
+<h2>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">"pressio/type_traits.hpp"</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">"pressio/ode_advancers.hpp"</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">"pressio/ode_steppers_explicit.hpp"</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">// assuming that:</span>
-  <span class="c1">// stateObj  is the state</span>
-  <span class="c1">// systemObj is the system instance</span>
+  <span class="c1">// myState  is the state</span>
+  <span class="c1">// mySystem is the system instance</span>
 
   <span class="k">namespace</span> <span class="n">pode</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="p">;</span>
   <span class="k">const</span> <span class="k">auto</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">StepScheme</span><span class="o">::</span><span class="n">ForwardEuler</span><span class="p">;</span>
-  <span class="k">auto</span> <span class="n">stepper</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">systemObj</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">stepper</span> <span class="o">=</span> <span class="n">pode</span><span class="o">::</span><span class="n">create_explicit_stepper</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">myState</span><span class="p">,</span> <span class="n">mySystem</span><span class="p">);</span>
 
   <span class="c1">// use the stepper to advance in time,</span>
   <span class="c1">// for example using the advancer function</span>
   <span class="k">const</span> <span class="kt">double</span> <span class="n">time0</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">;</span>
   <span class="k">const</span> <span class="kt">double</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
   <span class="k">const</span> <span class="n">pode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-  <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">);</span>
+  <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">myState</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br/></div>
 </div>
 </div>
 <div class="section" id="required-specializations-for-custom-types">
@@ -424,14 +452,14 @@ to a separate header file, but make sure to keep the correct order, for example 
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="ode_advance.html">
+          <a class="prev-page" href="ode.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">advancers</div>
+                <div class="title"><code class="docutils literal notranslate"><span class="pre">ode</span></code></div>
                 
               </div>
             </a>
@@ -464,7 +492,8 @@ to a separate header file, but make sure to keep the correct order, for example 
 <li><a class="reference internal" href="#">explicit steppers</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#api-parameters-and-requirements">API, Parameters and Requirements</a></li>
-<li><a class="reference internal" href="#example-usage">Example usage</a></li>
+<li><a class="reference internal" href="#stepper-class-public-api">Stepper Class Public API</a></li>
+<li><a class="reference internal" href="#example-code">Example code</a></li>
 <li><a class="reference internal" href="#required-specializations-for-custom-types">Required specializations for custom types</a></li>
 </ul>
 </li>
