@@ -40,8 +40,3 @@ COMMAND ${CMAKE_COMMAND}
 -DEXENAME=$<TARGET_FILE:${exename}>
 -P ${CMAKE_CURRENT_SOURCE_DIR}/test.cmake
 )
-
-# set_tests_properties(${testname}
-#   PROPERTIES PASS_REGULAR_EXPRESSION "PASS"
-#   FAIL_REGULAR_EXPRESSION "FAILED"
-# )
