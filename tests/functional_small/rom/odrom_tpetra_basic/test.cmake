@@ -1,6 +1,6 @@
 include(FindUnixCommands)
 
-set(CMD "mpirun -np 5 ${EXENAME}")
+set(CMD "mpirun --oversubscribe -np 5 ${EXENAME}")
 execute_process(COMMAND ${BASH} -c ${CMD} RESULT_VARIABLE RES)
 if(RES)
   message(FATAL_ERROR "executable failed")
