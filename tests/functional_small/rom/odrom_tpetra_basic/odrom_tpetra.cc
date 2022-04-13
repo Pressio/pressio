@@ -1,5 +1,6 @@
 
-#include <gtest/gtest.h>
+// #include <gtest/gtest.h>
+#include <Tpetra_Core.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Tpetra_MultiVector.hpp>
@@ -475,9 +476,10 @@ void product(::pressio::transpose /*mode*/, ScalarType alpha,
 
 #include "pressio/rom_galerkin.hpp"
 
-TEST(odrom, tpetra_draft)
+
+void run()
 {
-  using tcomm_t	  = Teuchos::MpiComm<int>;
+  using tcomm_t    = Teuchos::MpiComm<int>;
   using rcpcomm_t = Teuchos::RCP<const tcomm_t>;
 
   // namespace plog = pressio::log;
@@ -504,10 +506,10 @@ TEST(odrom, tpetra_draft)
 
     int K = 3;
     ModesDataHolder modesHolder(myRank, K, myTileIds,
-				myStateVecRowsForEachTile, *dataMapRcp);
+       myStateVecRowsForEachTile, *dataMapRcp);
 
     OdRomDecoder decoder(myRank, K, myTileIds,
-			 myStateVecRowsForEachTile, modesHolder);
+      myStateVecRowsForEachTile, modesHolder);
 
     using rom_type = Kokkos::View<double*>;
     rom_type romState("romState", K*totalNumTiles);
@@ -537,8 +539,8 @@ TEST(odrom, tpetra_draft)
       const auto & dJ = decoder.jacobianCRef();
       pressio::ops::product(pressio::transpose(), 1., dJ, velo, 0., romState);
       //if (myRank==0){
-	write_kokkos_view_to_ascii_file("rom_state_projected_"+std::to_string(myRank)+".txt", romState);
-	//}
+ write_kokkos_view_to_ascii_file("rom_state_projected_"+std::to_string(myRank)+".txt", romState);
+ //}
     }
 
     // typename MyApp::state_type fomRefState(dataMapRcp);
@@ -546,7 +548,7 @@ TEST(odrom, tpetra_draft)
     // namespace pgal = pressio::rom::galerkin;
     // constexpr auto odeScheme = pode::StepScheme::RungeKutta4;
     // auto galProb = pgal::create_default_explicit_problem(odeScheme, appObj, decoder,
-    // 							 romState, fomRefState);
+    //                romState, fomRefState);
     // pode::advance_n_steps(galProb, romState, 0., 0.01, 10);
 
     std::cout << std::flush;
@@ -555,3 +557,13 @@ TEST(odrom, tpetra_draft)
   sleep(3.);
   //plog::finalize();
 }
+
+int main(int argc, char **argv)
+{
+  Tpetra::ScopeGuard tpetraScope (&argc, &argv);
+  {
+    run();
+  }
+  return 0;
+}
+

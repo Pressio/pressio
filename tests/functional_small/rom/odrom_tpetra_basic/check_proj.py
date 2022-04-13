@@ -39,3 +39,8 @@ for r in range(5):
 
 y = np.dot(phi.transpose(), fomVelo)
 print(y)
+
+for i in [0,1,2,3,4]:
+  computedRomState = np.loadtxt("rom_state_projected_"+str(i)+".txt")
+  assert(np.allclose(computedRomState, y,rtol=1e-8, atol=1e-10))
+

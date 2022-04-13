@@ -27,11 +27,22 @@ for p in range(numPartitions):
 fomY = np.dot(phi, romY)
 np.savetxt("py_fom_state.txt", fomY, fmt='%14.12f')
 
-fig = plt.figure()
-plt.plot(np.arange(fomTotalDofsCount), fomY, '*k', markersize=5)
-
+computed = {}
 for i in range(numRanks):
   y = np.loadtxt("fomTmpState_"+str(i)+".txt", dtype=float)
   gids = np.loadtxt("tpetra_map_gids_"+str(i)+".txt", dtype=int)
-  plt.plot(gids, y, 'ob', markerfacecolor='None', markersize=6)
-plt.show()
+  for gidIt, valIt in zip(gids, y):
+    computed[gidIt] = valIt
+computed = dict(sorted(computed.items()))
+assert(np.allclose(np.array(list(computed.values()), dtype=float), fomY,rtol=1e-8, atol=1e-10))
+
+
+# # print()
+# fig = plt.figure()
+# plt.plot(np.arange(fomTotalDofsCount), fomY, '*k', markersize=5)
+# plt.plot(np.arange(fomTotalDofsCount), computed.values(), 'ob', markerfacecolor='None', markersize=6)
+# for i in range(numRanks):
+#   y = np.loadtxt("fomTmpState_"+str(i)+".txt", dtype=float)
+#   gids = np.loadtxt("tpetra_map_gids_"+str(i)+".txt", dtype=int)
+#   plt.plot(gids, y, 'ob', markerfacecolor='None', markersize=6)
+# plt.show()
