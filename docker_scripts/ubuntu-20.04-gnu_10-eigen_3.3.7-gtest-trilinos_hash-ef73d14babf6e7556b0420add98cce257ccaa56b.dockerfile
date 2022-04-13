@@ -13,7 +13,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # System update and packages installation
 RUN apt-get update && apt-get upgrade -y
 # Installing Utilities
-RUN apt-get install -y wget git make python3
+RUN apt-get install -y wget git make python3 python3-numpy
 # Installing OpenMPI
 RUN apt-get install -y openmpi-bin openmpi-doc
 # Installing BLAS, LAPACK
