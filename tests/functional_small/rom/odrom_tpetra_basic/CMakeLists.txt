@@ -28,15 +28,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/check_rec.py ${CMAKE_CURRENT_BINARY_D
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/rank_partition_mapping.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
-# set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/odrom_tpetra.cc)
-# add_utest_mpi(${TESTING_LEVEL}_odrom_trilinos_tpetra "${SRC1}" gTestMain_tpetra 5)
-
 set(exename odrom_trilinos_tpetra)
 add_executable(${exename} ${CMAKE_CURRENT_SOURCE_DIR}/odrom_tpetra.cc)
 target_link_libraries(${exename} ${MPI_CXX_LIBRARIES})
 
 add_test(NAME ${TESTING_LEVEL}_odrom_trilinos_tpetra
-COMMAND ${CMAKE_COMMAND}
--DEXENAME=$<TARGET_FILE:${exename}>
--P ${CMAKE_CURRENT_SOURCE_DIR}/test.cmake
+  COMMAND ${CMAKE_COMMAND}
+  -DEXENAME=$<TARGET_FILE:${exename}>
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/test.cmake
 )
