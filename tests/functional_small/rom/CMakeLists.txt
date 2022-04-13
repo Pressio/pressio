@@ -13,8 +13,9 @@ add_subdirectory(correctness_galerkin)
 add_subdirectory(correctness_lspg_steady)
 add_subdirectory(correctness_lspg_unsteady)
 
-
 if(PRESSIO_ENABLE_TPL_TRILINOS)
+ add_subdirectory(odrom_tpetra_basic)
+
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra.cc)
  add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra "${SRC1}" gTestMain_tpetra 3)
 
@@ -23,7 +24,4 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
 
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra_block.cc)
  add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra_block "${SRC1}" gTestMain_tpetra 3)
-
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/odrom_tpetra.cc)
- add_utest_mpi(${TESTING_LEVEL}_odrom_trilinos_tpetra "${SRC1}" gTestMain_tpetra 5)
 endif()
