@@ -91,44 +91,44 @@ The following list is partial, and more will be added as we continue the develop
    * - Name
      - Description
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_static_vector_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static Eigen vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static Eigen vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dynamic_vector_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a dynamic Eigen vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a dynamic Eigen vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_vector_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static or dynamic Eigen vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static or dynamic Eigen vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_sparse_matrix_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static or dynamic sparse Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static or dynamic sparse Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_static_dense_matrix_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static dense Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static dense Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dynamic_dense_matrix_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a dynamic dense Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a dynamic dense Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dense_matrix_eigen;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static or dynamic dense Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static or dynamic dense Eigen matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_EIGEN==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dense_vector_teuchos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a dense Teuchos vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a dense Teuchos vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dense_matrix_teuchos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a dense Teuchos matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a dense Teuchos matrix. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_vector_epetra;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is Epetra vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is Epetra vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_multi_vector_epetra;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is an Epetra multi vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is an Epetra multi vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_vector_tpetra;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a Tpetra vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a Tpetra vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_multi_vector_tpetra;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a Tpetra multi vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a Tpetra multi vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_vector_tpetra_block;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a Tpetra-block vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a Tpetra-block vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_multi_vector_tpetra_block;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a Tpetra-block multi vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a Tpetra-block multi vector. :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_TRILINOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_static_vector_kokkos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static Kokkos vector (rank-1 View). :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static Kokkos vector (rank-1 View). :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dynamic_vector_kokkos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a dynamic Kokkos vector (rank-1 View).  :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a dynamic Kokkos vector (rank-1 View).  :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_vector_kokkos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static or dynamic Kokkos vector (rank-1 View).  :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static or dynamic Kokkos vector (rank-1 View).  :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_static_dense_matrix_kokkos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static dense Kokkos matrix (rank-2 View). :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static dense Kokkos matrix (rank-2 View). :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dynamic_dense_matrix_kokkos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a dynamic dense Kokkos matrix (rank-2 View). :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a dynamic dense Kokkos matrix (rank-2 View). :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
    * - ``template<class T>`` :raw-html-m2r:`<br/>` ``struct is_dense_matrix_kokkos;``
-     - Provides static member constant ``value`` equal to ``true`` :raw-html-m2r:`<br/>` if ``T`` is a static or dynamic dense Kokkos matrix (rank-2 View).       :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``
+     - Provides static member constant ``value`` equal to ``true`` if ``T`` is a static or dynamic dense Kokkos matrix (rank-2 View).       :raw-html-m2r:`<br/>` Requires: ``PRESSIO_ENABLE_TPL_KOKKOS==On``

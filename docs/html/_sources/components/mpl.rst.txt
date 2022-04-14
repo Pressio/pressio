@@ -17,9 +17,9 @@
 
 .. admonition:: Description
 
-    :medium:`Provides metaprogramming functionalities that are always useful
-    for generic programming and are one of the fundamental
-    building blocks of the pressio library.`
+    :medium:`Metaprogramming functionalities useful
+    for generic programming, which is a fundamental
+    building block of the pressio library.`
 
 
 If you are familiar with the ``<type_traits>`` header from
@@ -35,8 +35,8 @@ The following is a *partial* list only intended to provide a general idea of the
 To find out all supported cases, browse the `source <https://github.com/Pressio/pressio/tree/main/include/pressio/mpl>`__.
 
 
-``not_void``
-~~~~~~~~~~~~
+``pressio::mpl::not_void``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: cpp
 
@@ -56,8 +56,8 @@ To find out all supported cases, browse the `source <https://github.com/Pressio/
      static_assert(pmpl::not_void<double>::value, "" );
 
 
-``all_of``
-~~~~~~~~~~
+``pressio::mpl::all_of``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: cpp
 
@@ -79,8 +79,8 @@ To find out all supported cases, browse the `source <https://github.com/Pressio/
      static_assert(pmpl::all_of<std::is_floating_point, double, float>::value, "" );
 
 
-``any_of``
-~~~~~~~~~~
+``pressio::mpl::any_of``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: cpp
 
@@ -93,8 +93,8 @@ To find out all supported cases, browse the `source <https://github.com/Pressio/
   Otherwise, value is equal to false.
 
 
-``none_of``
-~~~~~~~~~~~
+``pressio::mpl::none_of``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: cpp
 
@@ -107,8 +107,8 @@ To find out all supported cases, browse the `source <https://github.com/Pressio/
   Otherwise, value is equal to false.
 
 
-``is_subscriptable_as``
-~~~~~~~~~~~~~~~~~~~~~~~
+``pressio::mpl::is_subscriptable_as``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: cpp
 

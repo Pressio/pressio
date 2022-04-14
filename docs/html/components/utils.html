@@ -22,14 +22,14 @@
   
   }
   body[data-theme="dark"] {
-    --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+    --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
   }
   @media (prefers-color-scheme: dark) {
     body:not([data-theme="light"]) {
-      --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
     }
   }
@@ -177,9 +177,10 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_conttime.html">implicit steppers (continouos-time systems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_disctime.html">implicit steppers (discrete-time systems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -248,16 +249,16 @@ The implementation is based on a modified version of <a class="reference externa
 for example to work seamlessly with MPI.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>By default, for performance reasons, the logger is disabled, so pressio will not output anything.</p>
+<p>By default, for performance reasons, the logger is disabled.</p>
 </div>
 <!-- If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed!<br/> -->
 <!-- @m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan --><p>To enable logging, you need to do two things:</p>
 <ul class="simple">
 <li><p>insert a <code class="docutils literal notranslate"><span class="pre">define</span></code> statement to set the <em>minimum</em> level <em>before</em> including the utils header</p></li>
-<li><p>initialize and finalize the logger singleton</p></li>
+<li><p>initialize and finalize the logger</p></li>
 </ul>
 <p>The following snippet provides the main idea:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// this sets the default min level</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// set the min level</span>
 <span class="cp">#define PRESSIO_LOG_ACTIVE_MIN_LEVEL 2</span>
 
 <span class="c1">// this is needed since it contains the logging code</span>

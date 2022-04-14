@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="implicit steppers" href="ode_steppers_implicit.html" /><link rel="prev" title="ode" href="ode.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="implicit steppers for continouos-time formulations" href="ode_steppers_implicit_conttime.html" /><link rel="prev" title="ode" href="ode.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>explicit steppers - Pressio 0.12.0 documentation</title>
@@ -178,7 +178,8 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">explicit steppers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_conttime.html">implicit steppers for continouos-time formulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_disctime.html">implicit steppers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 </ul>
 </li>
@@ -252,10 +253,11 @@ to execute a *single step* when doing explicit time integration.</span></p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[\frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; ...)\]</div></div>
-<p>where <span class="math notranslate nohighlight">\(y\)</span> is the state, <span class="math notranslate nohighlight">\(f\)</span> is the RHS (also called velocity below), <span class="math notranslate nohighlight">\(t\)</span> is time.<span class="raw-html-m2r"><br/></span>
+<p>where <span class="math notranslate nohighlight">\(y\)</span> is the state, <span class="math notranslate nohighlight">\(f\)</span> is the
+RHS (also called velocity below), <span class="math notranslate nohighlight">\(t\)</span> is time.<span class="raw-html-m2r"><br/></span>
 Explicit methods calculate the state of a system at a later time
 from the state at the current time and potentially previous times.
-A pressio “explicit stepper” is an abstraction that represents the “how” to take a step.</p>
+In pressio, an “explicit stepper” is an abstraction that represents “how” to take a step.</p>
 </div>
 <div class="section" id="api-parameters-and-requirements">
 <h2>API, Parameters and Requirements<a class="headerlink" href="#api-parameters-and-requirements" title="Permalink to this headline">¶</a></h2>
@@ -306,7 +308,7 @@ they are detected by pressio</p>
 </div>
 <div class="section" id="stepper-class-public-api">
 <h2>Stepper Class Public API<a class="headerlink" href="#stepper-class-public-api" title="Permalink to this headline">¶</a></h2>
-<p>A stepper class meets the following API:</p>
+<p>A stepper class exposes the following public API:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ScalarType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
 <span class="k">class</span> <span class="nc">ExplicitStepper</span>
 <span class="p">{</span>
@@ -315,12 +317,14 @@ they are detected by pressio</p>
                    <span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">currentTime</span><span class="p">,</span>
                    <span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
                    <span class="n">StepCountType</span> <span class="n">stepNumber</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>The stepper class satisfies the “steppable” concept discussed <a class="reference external" href="ode_advance.html">here</a>, so one can use the “advancers” functions to step forward.</p>
+<p>The stepper class satisfies the “steppable” concept
+discussed <a class="reference external" href="ode_advance.html">here</a>, so one can use the “advancers”
+functions to step forward.</p>
 </div>
 </div>
 <div class="section" id="example-code">
@@ -443,12 +447,12 @@ to a separate header file, but make sure to keep the correct order, for example 
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="ode_steppers_implicit.html">
+          <a class="next-page" href="ode_steppers_implicit_conttime.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">implicit steppers</div>
+                <div class="title">implicit steppers for continouos-time formulations</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

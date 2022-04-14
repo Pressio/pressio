@@ -18,7 +18,7 @@ for example to work seamlessly with MPI.
 
 .. warning::
 
-    By default, for performance reasons, the logger is disabled, so pressio will not output anything.
+    By default, for performance reasons, the logger is disabled.
 
 .. raw:: html
 
@@ -29,14 +29,14 @@ To enable logging, you need to do two things:
 
 - insert a ``define`` statement to set the *minimum* level *before* including the utils header
 
-- initialize and finalize the logger singleton
+- initialize and finalize the logger
 
 
 The following snippet provides the main idea:
 
 .. code-block:: cpp
 
-   // this sets the default min level
+   // set the min level
    #define PRESSIO_LOG_ACTIVE_MIN_LEVEL 2
 
    // this is needed since it contains the logging code

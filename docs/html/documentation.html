@@ -22,14 +22,14 @@
   
   }
   body[data-theme="dark"] {
-    --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+    --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
   }
   @media (prefers-color-scheme: dark) {
     body:not([data-theme="light"]) {
-      --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
     }
   }
@@ -178,7 +178,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="components/ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_explicit.html">explicit steppers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_implicit.html">implicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_implicit_conttime.html">implicit steppers (continouos-time systems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_implicit_disctime.html">implicit steppers (discrete-time systems)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="components/ode_advance.html">advancers</a></li>
 </ul>
 </li>
@@ -240,11 +241,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="components/mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="components/mpl.html#content">Content</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#not-void"><code class="docutils literal notranslate"><span class="pre">not_void</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#all-of"><code class="docutils literal notranslate"><span class="pre">all_of</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#any-of"><code class="docutils literal notranslate"><span class="pre">any_of</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#none-of"><code class="docutils literal notranslate"><span class="pre">none_of</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#is-subscriptable-as"><code class="docutils literal notranslate"><span class="pre">is_subscriptable_as</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#pressio-mpl-not-void"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::not_void</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#pressio-mpl-all-of"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::all_of</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#pressio-mpl-any-of"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::any_of</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#pressio-mpl-none-of"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::none_of</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/mpl.html#pressio-mpl-is-subscriptable-as"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::is_subscriptable_as</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -284,11 +285,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="components/nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#overview">Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="components/nonlinsolvers.html#a-glimpse-of-the-api">A glimpse of the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#a-glimpse-of-the-api">A glimpse of the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#what-are-you-responsible-of">What are you responsible of?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="components/nonlinsolvers.html#a-problem-class">A: problem class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/nonlinsolvers.html#b-convergence-and-tolerance">B: Convergence and tolerance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/nonlinsolvers.html#c-setting-the-update">C: Setting the update</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#what-are-you-responsible-of">What are you responsible of?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#default-settings">Default Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="components/nonlinsolvers.html#a-note-on-the-solvers-design">A note on the solvers’ design</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="components/nonlinsolvers_system_api.html">Problem APIs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="components/nonlinsolvers_nr.html">Newton-Raphson</a></li>
@@ -303,14 +308,21 @@
 <li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_explicit.html">explicit steppers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_explicit.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_explicit.html#api-parameters-and-requirements">API, Parameters and Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_explicit.html#example-usage">Example usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_explicit.html#stepper-class-public-api">Stepper Class Public API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_explicit.html#example-code">Example code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_explicit.html#required-specializations-for-custom-types">Required specializations for custom types</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_implicit.html">implicit steppers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit.html#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit.html#api-for-continuous-time-systems">API for continuous-time systems</a></li>
-<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit.html#api-for-discrete-time-systems">API for discrete-time systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_implicit_conttime.html">implicit steppers (continouos-time systems)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit_conttime.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit_conttime.html#api-parameters-and-requirements">API, Parameters and Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit_conttime.html#stepper-class-public-api">Stepper Class Public API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="components/ode_steppers_implicit_disctime.html">implicit steppers (discrete-time systems)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit_disctime.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit_disctime.html#api-for-continuous-time-systems">API for continuous-time systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="components/ode_steppers_implicit_disctime.html#api-for-discrete-time-systems">API for discrete-time systems</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="components/ode_advance.html">advancers</a><ul>

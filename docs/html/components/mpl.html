@@ -22,14 +22,14 @@
   
   }
   body[data-theme="dark"] {
-    --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+    --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
   }
   @media (prefers-color-scheme: dark) {
     body:not([data-theme="light"]) {
-      --color-code-background: #002b36;
-  --color-code-foreground: #839496;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   
     }
   }
@@ -177,9 +177,10 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_conttime.html">implicit steppers (continouos-time systems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_disctime.html">implicit steppers (discrete-time systems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -243,9 +244,9 @@
 </div>
 <div class="admonition-description admonition">
 <p class="admonition-title">Description</p>
-<p><span class="medium">Provides metaprogramming functionalities that are always useful
-for generic programming and are one of the fundamental
-building blocks of the pressio library.</span></p>
+<p><span class="medium">Metaprogramming functionalities useful
+for generic programming, which is a fundamental
+building block of the pressio library.</span></p>
 </div>
 <p>If you are familiar with the <code class="docutils literal notranslate"><span class="pre">&lt;type_traits&gt;</span></code> header from
 the standard library, the <code class="docutils literal notranslate"><span class="pre">pressio/mpl</span></code> will look familiar too.
@@ -255,8 +256,8 @@ The tinympl project appears to be no longer maintained.</p>
 <h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
 <p>The following is a <em>partial</em> list only intended to provide a general idea of the supported features.</p>
 <p>To find out all supported cases, browse the <a class="reference external" href="https://github.com/Pressio/pressio/tree/main/include/pressio/mpl">source</a>.</p>
-<div class="section" id="not-void">
-<h3><code class="docutils literal notranslate"><span class="pre">not_void</span></code><a class="headerlink" href="#not-void" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pressio-mpl-not-void">
+<h3><code class="docutils literal notranslate"><span class="pre">pressio::mpl::not_void</span></code><a class="headerlink" href="#pressio-mpl-not-void" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">not_void</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -272,8 +273,8 @@ Otherwise, value is true.</p></li>
 </li>
 </ul>
 </div>
-<div class="section" id="all-of">
-<h3><code class="docutils literal notranslate"><span class="pre">all_of</span></code><a class="headerlink" href="#all-of" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pressio-mpl-all-of">
+<h3><code class="docutils literal notranslate"><span class="pre">pressio::mpl::all_of</span></code><a class="headerlink" href="#pressio-mpl-all-of" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span> <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">all_of</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -291,8 +292,8 @@ Otherwise, value is false.</p></li>
 </li>
 </ul>
 </div>
-<div class="section" id="any-of">
-<h3><code class="docutils literal notranslate"><span class="pre">any_of</span></code><a class="headerlink" href="#any-of" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pressio-mpl-any-of">
+<h3><code class="docutils literal notranslate"><span class="pre">pressio::mpl::any_of</span></code><a class="headerlink" href="#pressio-mpl-any-of" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span> <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">any_of</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -304,8 +305,8 @@ at least one element in the sequence satisfies the predicate <code class="docuti
 Otherwise, value is equal to false.</p></li>
 </ul>
 </div>
-<div class="section" id="none-of">
-<h3><code class="docutils literal notranslate"><span class="pre">none_of</span></code><a class="headerlink" href="#none-of" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pressio-mpl-none-of">
+<h3><code class="docutils literal notranslate"><span class="pre">pressio::mpl::none_of</span></code><a class="headerlink" href="#pressio-mpl-none-of" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span> <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">none_of</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -317,8 +318,8 @@ none of the elements in the sequence satisfy the predicate <code class="docutils
 Otherwise, value is equal to false.</p></li>
 </ul>
 </div>
-<div class="section" id="is-subscriptable-as">
-<h3><code class="docutils literal notranslate"><span class="pre">is_subscriptable_as</span></code><a class="headerlink" href="#is-subscriptable-as" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pressio-mpl-is-subscriptable-as">
+<h3><code class="docutils literal notranslate"><span class="pre">pressio::mpl::is_subscriptable_as</span></code><a class="headerlink" href="#pressio-mpl-is-subscriptable-as" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="nc">IndexType</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">is_subscriptable_as</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -385,11 +386,11 @@ Otherwise, value is equal to false.</p></li>
             <ul>
 <li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a><ul>
 <li><a class="reference internal" href="#content">Content</a><ul>
-<li><a class="reference internal" href="#not-void"><code class="docutils literal notranslate"><span class="pre">not_void</span></code></a></li>
-<li><a class="reference internal" href="#all-of"><code class="docutils literal notranslate"><span class="pre">all_of</span></code></a></li>
-<li><a class="reference internal" href="#any-of"><code class="docutils literal notranslate"><span class="pre">any_of</span></code></a></li>
-<li><a class="reference internal" href="#none-of"><code class="docutils literal notranslate"><span class="pre">none_of</span></code></a></li>
-<li><a class="reference internal" href="#is-subscriptable-as"><code class="docutils literal notranslate"><span class="pre">is_subscriptable_as</span></code></a></li>
+<li><a class="reference internal" href="#pressio-mpl-not-void"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::not_void</span></code></a></li>
+<li><a class="reference internal" href="#pressio-mpl-all-of"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::all_of</span></code></a></li>
+<li><a class="reference internal" href="#pressio-mpl-any-of"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::any_of</span></code></a></li>
+<li><a class="reference internal" href="#pressio-mpl-none-of"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::none_of</span></code></a></li>
+<li><a class="reference internal" href="#pressio-mpl-is-subscriptable-as"><code class="docutils literal notranslate"><span class="pre">pressio::mpl::is_subscriptable_as</span></code></a></li>
 </ul>
 </li>
 </ul>

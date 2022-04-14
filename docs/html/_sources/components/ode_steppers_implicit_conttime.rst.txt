@@ -1,8 +1,8 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
-implicit steppers
-=================
+implicit steppers (continuous-time systems)
+===========================================
 
 .. note::
 
@@ -18,25 +18,19 @@ Recall that implicit methods update the state of a system
 by solving a system of equations involving both the current and next state.
 An implicit stepper is an object that knows how to do one such *implicit* step.
 
-Pressio implicit steppers are applicable to any system written in *continuous-time* form:
+This page describes functionalities applicable to any system
+expressible in *continuous-time* form:
 
 .. math::
 
     \frac{d \boldsymbol{y}}{dt} =
     \boldsymbol{f}(\boldsymbol{y},t; ...)
 
-and/or in a *discrete-time* form
+Here, :math:`y` is the state, :math:`f` the velocity, :math:`t` is time.
 
-.. math::
 
-    \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}
-
-Here, :math:`y` is the state, :math:`f` the velocity, :math:`t` is time, and :math:`R` is the residual.
-
-API for continuous-time systems
--------------------------------
-
-In this case, pressio exposes the following functions to create an instance of a desired stepper:
+API, Parameters and Requirements
+--------------------------------
 
 .. code-block:: cpp
 
@@ -53,8 +47,6 @@ In this case, pressio exposes the following functions to create an instance of a
                                  ResidualPolicyType && residual_policy,
                                  JacobianPolicyType && jacobian_policy);   (2)
 
-Parameters and Requirements
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``scheme_name``\ :
 
@@ -83,7 +75,7 @@ Parameters and Requirements
 
   * problem instance defining your problem to query the velocity :math:`f` and its jacobian;
 
-  * must conform to the following API:
+  * must conform to:
 
   .. code-block:: cpp
 
@@ -158,48 +150,8 @@ Parameters and Requirements
 			 jacobian_type & J) const;
       };
 
-
-.. raw:: html
-
-   <!-- ### Implicit stepper class synopsis -->
-   <!-- @code{.cpp} -->
-   <!-- class Stepper -->
-   <!-- { -->
-   <!-- public: -->
-   <!--   // these aliases are detected by solver -->
-   <!--   using scalar_type    = ScalarType; -->
-   <!--   using state_type = StateType; -->
-   <!--   using residual_type  = ResidualType; -->
-   <!--   using jacobian_type  = JacobianType; -->
-
-.. raw:: html
-
-   <!--   using tag_name = /* tag identifying the scheme */ -->
-   <!--   static constexpr bool is_implicit = true; -->
-   <!--   static constexpr bool is_explicit = false; -->
-
-.. raw:: html
-
-   <!--   template<typename SolverType, typename ...Args> -->
-   <!--   void operator()(state_type & odeState, -->
-   <!--                  const ScalarType & currentTime, -->
-   <!--                  const ScalarType & dt, -->
-   <!--                  const int32_t & stepNumber, -->
-   <!--                  SolverType & solver, -->
-   <!--                  Args&& ...args); -->
-
-.. raw:: html
-
-   <!--   ResidualType createResidual() const; -->
-   <!--   JacobianType createJacobian() const; -->
-   <!--   void residual(const StateType & odeState, ResidualType & R) const; -->
-   <!--   void jacobian(const StateType & odeState, JacobianType & J) const; -->
-   <!-- }; -->
-   <!-- @endcode -->
-
-
 If you use custom policies:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you want to use custom policies for computing residual and Jacobian,
 you need are responsible for ensuring things are correct.
@@ -231,15 +183,52 @@ In particular, you should be aware of the following:
    * - ``CrankNicolson``
      - `auxStates`: contains: states at n-th step :raw-html-m2r:`<br/>` Use: ``const auto & yn = auxStates(pressio::ode::n());`` :raw-html-m2r:`<br/>` `auxRhs`: contains evaluations of the RHS are n-th and (n+1)-th steps :raw-html-m2r:`<br/>` Use: ``auto & fn = auxRhs(pressio::ode::n());`` :raw-html-m2r:`<br/>` ``auto & fnp1 = auxRhs(pressio::ode::nPlusOne());``
 
-.. note::
 
-    The above factory function returns a stepper instance for the desired scheme.
-    The returned stepper object satisfies the "steppable" concept discussed `here <ode_advance.html>`_\ , so one can use the "advancers" functions to step forward.
+|
+
+
+Stepper Class Public API
+------------------------
+
+A stepper class exposes the following public API:
+
+.. code-block:: cpp
+
+   class Stepper
+   {
+   public:
+     // these aliases are detected by solver
+     using scalar_type    = ScalarType;
+     using state_type = StateType;
+     using residual_type  = ResidualType;
+     using jacobian_type  = JacobianType;
+
+     template<typename SolverType, typename ...Args>
+     void operator()(state_type & odeState,
+                    const ScalarType & currentTime,
+                    const ScalarType & dt,
+                    const int32_t & stepNumber,
+                    SolverType & solver,
+                    Args&& ...args);
+
+     ResidualType createResidual() const;
+     JacobianType createJacobian() const;
+     void residual(const StateType & odeState, ResidualType & R) const;
+     void jacobian(const StateType & odeState, JacobianType & J) const;
+   };
+
+
+.. tip::
+
+   The stepper class satisfies the "steppable" concept
+   discussed `here <ode_advance.html>`_\ , so one can use the "advancers"
+   functions to step forward.
+
 
 :raw-html-m2r:`<br/>`
 
 What to do after a stepper is created?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 
 Any stepper created using the functions above is guaranteed to satisfy
 the "steppable" concept discussed `here <ode_advance.html>`_. Therefore, once you create a stepper, you can use
@@ -277,6 +266,7 @@ An example is below:
       const pode::step_count_type num_steps = 100;
       pode::advance_n_steps(stepper, stateObj, time0, dt, num_steps, nonLinearSolver);
     }
+
 
 Required specializations for custom types
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -362,81 +352,3 @@ use for matrix, then you would need to do something like this:
 
 Obviously, if you want to use pressio nonlinear solvers, then you need provide
 also the specializations described `here <nonlinsolvers.html>`_.
-
-API for discrete-time systems
------------------------------
-
-\todo FINISH
-
-.. code-block:: cpp
-
-    template<int num_states, class StateType, class SystemType>
-    auto create_arbitrary_stepper(const StateType & state,
-                                  SystemType && system);
-
-Parameters and Requirements
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-*
-  ``num_states``\ : total number of states you need.
-
-*
-  ``state``\ : your state data
-
-*
-  ``system``\ :
-
-  * problem instance knowing how to create and compute the residual and Jacobian.
-  *
-    Must conform to the following API:
-
-    .. code-block:: cpp
-
-        class ValidDiscreteTimeSystem
-        {
-        using scalar_type = //\ * whatever you need *\ /;
-        using state_type  = //\ * your type *\ /;
-        using discrete_time_residual_type = //\ * your type *\ /;
-        using discrete_time_jacobian_type = //\ * your type *\ /;
-
-        discrete_time_residual_type createDiscreteTimeResidual() const;
-        discrete_time_jacobian_type createDiscreteTimeJacobian() const;
-
-        // overload accepting 1 auxiliary state
-        template<class StepCountType>
-        void discreteTimeResidual(StepCountType,
-                                 scalar_type time,
-                                 scalar_type dt,
-                                 discrete_time_residual_type &,
-                                 const state_type &) const;
-
-
-        // overload accepting 2 auxiliary states
-        template<class StepCountType>
-        void discreteTimeResidual(StepCountType,
-                                   scalar_type time,
-                                   scalar_type dt,
-                                   discrete_time_residual_type &,
-                                   const state_type &,
-                                   const state_type &) const;
-
-
-        // overload accepting 1 auxiliary state
-        template<class StepCountType>
-        void discreteTimeJacobian(StepCountType,
-                                   scalar_type time,
-                                   scalar_type dt,
-                                   discrete_time_jacobian_type &,
-                                   const state_type &) const;
-
-
-        // overload accepting 2 auxiliary states
-        template<class StepCountType>
-        void discreteTimeJacobian(StepCountType,
-                                   scalar_type time,
-                                   scalar_type dt,
-                                   discrete_time_jacobian_type &,
-                                   const state_type &,
-                                   const state_type &) const;
-
-        };

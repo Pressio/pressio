@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="advancers" href="ode_advance.html" /><link rel="prev" title="explicit steppers" href="ode_steppers_explicit.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="implicit steppers (discrete-time systems)" href="ode_steppers_implicit_disctime.html" /><link rel="prev" title="explicit steppers" href="ode_steppers_explicit.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>implicit steppers - Pressio 0.12.0 documentation</title>
+        <title>implicit steppers (continuous-time systems) - Pressio 0.12.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -178,7 +178,8 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">implicit steppers</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">implicit steppers (continuous-time systems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_disctime.html">implicit steppers (discrete-time systems)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 </ul>
 </li>
@@ -234,8 +235,8 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="implicit-steppers">
-<h1>implicit steppers<a class="headerlink" href="#implicit-steppers" title="Permalink to this headline">¶</a></h1>
+          <div class="section" id="implicit-steppers-continuous-time-systems">
+<h1>implicit steppers (continuous-time systems)<a class="headerlink" href="#implicit-steppers-continuous-time-systems" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Defined in: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_steppers_implicit.hpp&gt;</span></code></p>
@@ -247,18 +248,15 @@
 Recall that implicit methods update the state of a system
 by solving a system of equations involving both the current and next state.
 An implicit stepper is an object that knows how to do one such <em>implicit</em> step.</p>
-<p>Pressio implicit steppers are applicable to any system written in <em>continuous-time</em> form:</p>
+<p>This page describes functionalities applicable to any system
+expressible in <em>continuous-time</em> form:</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[\frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; ...)\]</div></div>
-<p>and/or in a <em>discrete-time</em> form</p>
-<div class="math-wrapper"><div class="math notranslate nohighlight">
-\[\boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}\]</div></div>
-<p>Here, <span class="math notranslate nohighlight">\(y\)</span> is the state, <span class="math notranslate nohighlight">\(f\)</span> the velocity, <span class="math notranslate nohighlight">\(t\)</span> is time, and <span class="math notranslate nohighlight">\(R\)</span> is the residual.</p>
+<p>Here, <span class="math notranslate nohighlight">\(y\)</span> is the state, <span class="math notranslate nohighlight">\(f\)</span> the velocity, <span class="math notranslate nohighlight">\(t\)</span> is time.</p>
 </div>
-<div class="section" id="api-for-continuous-time-systems">
-<h2>API for continuous-time systems<a class="headerlink" href="#api-for-continuous-time-systems" title="Permalink to this headline">¶</a></h2>
-<p>In this case, pressio exposes the following functions to create an instance of a desired stepper:</p>
+<div class="section" id="api-parameters-and-requirements">
+<h2>API, Parameters and Requirements<a class="headerlink" href="#api-parameters-and-requirements" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// overload 1</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_implicit_stepper</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span> <span class="n">name</span><span class="p">,</span>
@@ -273,8 +271,6 @@ An implicit stepper is an object that knows how to do one such <em>implicit</em>
                              <span class="n">JacobianPolicyType</span> <span class="o">&amp;&amp;</span> <span class="n">jacobian_policy</span><span class="p">);</span>   <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="parameters-and-requirements">
-<h3>Parameters and Requirements<a class="headerlink" href="#parameters-and-requirements" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">scheme_name</span></code>:</p></li>
 </ul>
@@ -311,7 +307,7 @@ An implicit stepper is an object that knows how to do one such <em>implicit</em>
 <li><p><code class="docutils literal notranslate"><span class="pre">system</span></code>:</p>
 <ul class="simple">
 <li><p>problem instance defining your problem to query the velocity <span class="math notranslate nohighlight">\(f\)</span> and its jacobian;</p></li>
-<li><p>must conform to the following API:</p></li>
+<li><p>must conform to:</p></li>
 </ul>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">SystemForImplicitOde</span>
 <span class="p">{</span>
@@ -380,29 +376,6 @@ An implicit stepper is an object that knows how to do one such <em>implicit</em>
 </ul>
 </li>
 </ul>
-<!-- ### Implicit stepper class synopsis -->
-<!-- @code{.cpp} -->
-<!-- class Stepper -->
-<!-- { -->
-<!-- public: -->
-<!--   // these aliases are detected by solver -->
-<!--   using scalar_type    = ScalarType; -->
-<!--   using state_type = StateType; -->
-<!--   using residual_type  = ResidualType; -->
-<!--   using jacobian_type  = JacobianType; --><!--   using tag_name = /* tag identifying the scheme */ -->
-<!--   static constexpr bool is_implicit = true; -->
-<!--   static constexpr bool is_explicit = false; --><!--   template<typename SolverType, typename ...Args> -->
-<!--   void operator()(state_type & odeState, -->
-<!--                  const ScalarType & currentTime, -->
-<!--                  const ScalarType & dt, -->
-<!--                  const int32_t & stepNumber, -->
-<!--                  SolverType & solver, -->
-<!--                  Args&& ...args); --><!--   ResidualType createResidual() const; -->
-<!--   JacobianType createJacobian() const; -->
-<!--   void residual(const StateType & odeState, ResidualType & R) const; -->
-<!--   void jacobian(const StateType & odeState, JacobianType & J) const; -->
-<!-- }; -->
-<!-- @endcode --></div>
 <div class="section" id="if-you-use-custom-policies">
 <h3>If you use custom policies:<a class="headerlink" href="#if-you-use-custom-policies" title="Permalink to this headline">¶</a></h3>
 <p>If you want to use custom policies for computing residual and Jacobian,
@@ -444,15 +417,48 @@ for a certain scheme. All you need to know about these containers is the followi
 </tr>
 </tbody>
 </table></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The above factory function returns a stepper instance for the desired scheme.
-The returned stepper object satisfies the “steppable” concept discussed <a class="reference external" href="ode_advance.html">here</a>, so one can use the “advancers” functions to step forward.</p>
+<div class="line-block">
+<div class="line"><br/></div>
+</div>
+</div>
+</div>
+<div class="section" id="stepper-class-public-api">
+<h2>Stepper Class Public API<a class="headerlink" href="#stepper-class-public-api" title="Permalink to this headline">¶</a></h2>
+<p>A stepper class exposes the following public API:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Stepper</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// these aliases are detected by solver</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="n">ScalarType</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">state_type</span> <span class="o">=</span> <span class="n">StateType</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="n">ResidualType</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="n">JacobianType</span><span class="p">;</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">SolverType</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span><span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">odeState</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">currentTime</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="kt">int32_t</span> <span class="o">&amp;</span> <span class="n">stepNumber</span><span class="p">,</span>
+                 <span class="n">SolverType</span> <span class="o">&amp;</span> <span class="n">solver</span><span class="p">,</span>
+                 <span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span><span class="n">args</span><span class="p">);</span>
+
+  <span class="n">ResidualType</span> <span class="nf">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">JacobianType</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">odeState</span><span class="p">,</span> <span class="n">ResidualType</span> <span class="o">&amp;</span> <span class="n">R</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">jacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">odeState</span><span class="p">,</span> <span class="n">JacobianType</span> <span class="o">&amp;</span> <span class="n">J</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The stepper class satisfies the “steppable” concept
+discussed <a class="reference external" href="ode_advance.html">here</a>, so one can use the “advancers”
+functions to step forward.</p>
 </div>
 <p><span class="raw-html-m2r"><br/></span></p>
 </div>
 <div class="section" id="what-to-do-after-a-stepper-is-created">
-<h3>What to do after a stepper is created?<a class="headerlink" href="#what-to-do-after-a-stepper-is-created" title="Permalink to this headline">¶</a></h3>
+<h2>What to do after a stepper is created?<a class="headerlink" href="#what-to-do-after-a-stepper-is-created" title="Permalink to this headline">¶</a></h2>
 <p>Any stepper created using the functions above is guaranteed to satisfy
 the “steppable” concept discussed <a class="reference external" href="ode_advance.html">here</a>. Therefore, once you create a stepper, you can use
 the <a class="reference external" href="ode_advance.html">advancers</a> to step forward or you can use your own.<span class="raw-html-m2r"><br/></span>
@@ -487,7 +493,6 @@ An example is below:</p>
   <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">,</span> <span class="n">nonLinearSolver</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-</div>
 </div>
 <div class="section" id="required-specializations-for-custom-types">
 <h3>Required specializations for custom types<a class="headerlink" href="#required-specializations-for-custom-types" title="Permalink to this headline">¶</a></h3>
@@ -572,79 +577,6 @@ use for matrix, then you would need to do something like this:</p>
 also the specializations described <a class="reference external" href="nonlinsolvers.html">here</a>.</p>
 </div>
 </div>
-<div class="section" id="api-for-discrete-time-systems">
-<h2>API for discrete-time systems<a class="headerlink" href="#api-for-discrete-time-systems" title="Permalink to this headline">¶</a></h2>
-<p>todo FINISH</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">num_states</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
-<span class="k">auto</span> <span class="n">create_arbitrary_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
-                              <span class="n">SystemType</span> <span class="o">&amp;&amp;</span> <span class="n">system</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="section" id="id3">
-<h3>Parameters and Requirements<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">num_states</span></code>: total number of states you need.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: your state data</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">system</span></code>:</p>
-<ul>
-<li><p>problem instance knowing how to create and compute the residual and Jacobian.</p></li>
-<li><p>Must conform to the following API:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ValidDiscreteTimeSystem</span>
-<span class="p">{</span>
-<span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="c1">//\ * whatever you need *\ /;</span>
-<span class="k">using</span> <span class="n">state_type</span>  <span class="o">=</span> <span class="c1">//\ * your type *\ /;</span>
-<span class="k">using</span> <span class="n">discrete_time_residual_type</span> <span class="o">=</span> <span class="c1">//\ * your type *\ /;</span>
-<span class="k">using</span> <span class="n">discrete_time_jacobian_type</span> <span class="o">=</span> <span class="c1">//\ * your type *\ /;</span>
-
-<span class="n">discrete_time_residual_type</span> <span class="n">createDiscreteTimeResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="n">discrete_time_jacobian_type</span> <span class="nf">createDiscreteTimeJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-
-<span class="c1">// overload accepting 1 auxiliary state</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
-                         <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
-                         <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
-                         <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span><span class="p">,</span>
-                         <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-
-
-<span class="c1">// overload accepting 2 auxiliary states</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
-                           <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
-                           <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
-                           <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-
-
-<span class="c1">// overload accepting 1 auxiliary state</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">discreteTimeJacobian</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
-                           <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
-                           <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
-                           <span class="n">discrete_time_jacobian_type</span> <span class="o">&amp;</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-
-
-<span class="c1">// overload accepting 2 auxiliary states</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">discreteTimeJacobian</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
-                           <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
-                           <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
-                           <span class="n">discrete_time_jacobian_type</span> <span class="o">&amp;</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-
-<span class="p">};</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
 </div>
 
         </article>
@@ -652,12 +584,12 @@ also the specializations described <a class="reference external" href="nonlinsol
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="ode_advance.html">
+          <a class="next-page" href="ode_steppers_implicit_disctime.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">advancers</div>
+                <div class="title">implicit steppers (discrete-time systems)</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -678,7 +610,7 @@ also the specializations described <a class="reference external" href="nonlinsol
               Copyright &#169; 2021, National Technology &amp; Engineering Solutions of Sandia, LLC (NTESS) |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            | <a class="muted-link" href="../_sources/components/ode_steppers_implicit.rst.txt"
+            | <a class="muted-link" href="../_sources/components/ode_steppers_implicit_conttime.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -698,17 +630,15 @@ also the specializations described <a class="reference external" href="nonlinsol
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">implicit steppers</a><ul>
+<li><a class="reference internal" href="#">implicit steppers (continuous-time systems)</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#api-for-continuous-time-systems">API for continuous-time systems</a><ul>
-<li><a class="reference internal" href="#parameters-and-requirements">Parameters and Requirements</a></li>
+<li><a class="reference internal" href="#api-parameters-and-requirements">API, Parameters and Requirements</a><ul>
 <li><a class="reference internal" href="#if-you-use-custom-policies">If you use custom policies:</a></li>
-<li><a class="reference internal" href="#what-to-do-after-a-stepper-is-created">What to do after a stepper is created?</a></li>
-<li><a class="reference internal" href="#required-specializations-for-custom-types">Required specializations for custom types</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#api-for-discrete-time-systems">API for discrete-time systems</a><ul>
-<li><a class="reference internal" href="#id3">Parameters and Requirements</a></li>
+<li><a class="reference internal" href="#stepper-class-public-api">Stepper Class Public API</a></li>
+<li><a class="reference internal" href="#what-to-do-after-a-stepper-is-created">What to do after a stepper is created?</a><ul>
+<li><a class="reference internal" href="#required-specializations-for-custom-types">Required specializations for custom types</a></li>
 </ul>
 </li>
 </ul>

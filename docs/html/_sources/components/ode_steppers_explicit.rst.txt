@@ -29,10 +29,12 @@ Suppose that you have a system of the form:
     \frac{d \boldsymbol{y}}{dt} =
     \boldsymbol{f}(\boldsymbol{y},t; ...)
 
-where :math:`y` is the state, :math:`f` is the RHS (also called velocity below), :math:`t` is time.\ :raw-html-m2r:`<br/>`
+where :math:`y` is the state, :math:`f` is the
+RHS (also called velocity below), :math:`t` is time.\ :raw-html-m2r:`<br/>`
 Explicit methods calculate the state of a system at a later time
 from the state at the current time and potentially previous times.
-A pressio "explicit stepper" is an abstraction that represents the "how" to take a step.
+In pressio, an "explicit stepper" is an abstraction that represents "how" to take a step.
+
 
 API, Parameters and Requirements
 --------------------------------
@@ -54,12 +56,12 @@ API, Parameters and Requirements
   * one of the following enum values ``pressio::ode::StepScheme::{ForwardEuler, RungeKutta4, AdamsBashforth2, SSPRungeKutta3}``.
 
 *
-  ``state``\ :
+  ``state``:
 
   * an instance of your state. The type must be copy constructible.
 
 *
-  ``system``\ :
+  ``system``:
 
   *
     an instance of your problem class that encapsulated how to compute the velocity :math:`f` for a given state and time.
@@ -89,7 +91,7 @@ API, Parameters and Requirements
 Stepper Class Public API
 ------------------------
 
-A stepper class meets the following API:
+A stepper class exposes the following public API:
 
 .. code-block:: cpp
 
@@ -101,12 +103,13 @@ A stepper class meets the following API:
 		       const ScalarType & currentTime,
 		       const ScalarType & dt,
 		       StepCountType stepNumber);
-    }
-
+    };
 
 .. tip::
 
-   The stepper class satisfies the "steppable" concept discussed `here <ode_advance.html>`_\ , so one can use the "advancers" functions to step forward.
+   The stepper class satisfies the "steppable" concept
+   discussed `here <ode_advance.html>`_\ , so one can use the "advancers"
+   functions to step forward.
 
 
 Example code

@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="nonlinear solvers" href="nonlinsolvers.html" /><link rel="prev" title="qr" href="qr.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="advancers" href="ode_advance.html" /><link rel="prev" title="implicit steppers (continuous-time systems)" href="ode_steppers_implicit_conttime.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>linear solvers - Pressio 0.12.0 documentation</title>
+        <title>implicit steppers (discrete-time systems) - Pressio 0.12.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -167,7 +167,7 @@
 <li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_system_api.html">Problem APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_nr.html">Newton-Raphson</a></li>
@@ -176,9 +176,10 @@
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_irls.html">Iteratively reweighted least squares</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">explicit steppers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit.html">implicit steppers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_steppers_implicit_conttime.html">implicit steppers (continuous-time systems)</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">implicit steppers (discrete-time systems)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ode_advance.html">advancers</a></li>
 </ul>
 </li>
@@ -234,151 +235,101 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="linear-solvers">
-<h1><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code><a class="headerlink" href="#linear-solvers" title="Permalink to this headline">¶</a></h1>
+          <div class="section" id="implicit-steppers-discrete-time-systems">
+<h1>implicit steppers (discrete-time systems)<a class="headerlink" href="#implicit-steppers-discrete-time-systems" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Defined in header <code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_linear.hpp&gt;</span></code></p>
-<p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio::linearsolvers</span></code></p>
+<p>Defined in: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/ode_steppers_implicit.hpp&gt;</span></code></p>
+<p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio::ode</span></code></p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>We clearly state upfront that this component of pressio
-is not a self-contained, general purpose library of linear solvers
-implemented from scratch.
-In the future, we might revise this, but for now it is
-an <strong>intentional</strong> choice: there exist already many
-open-source highly-optimized libraries that provide linear solvers
-for both shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK,
-and distributed environment, e.g. Trilinos, PETSc, HYPRE.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The primary goal of the pressio’s linear solvers is to support usecases that are needed for ROMs.
-As discussed in the introduction, ROMs involve “small”
-<em>dense</em> systems that suitably fit on a <em>single compute node</em>.
-Pressio’s linear solvers are thus designed and implemented to be
-wrappers (exposing a common interface) to existing shared-memory
-linear solvers libraries.</p>
+<p>Provides functionalities to create steppers for implicit methods.
+Recall that implicit methods update the state of a system
+by solving a system of equations involving both the current and next state.
+An implicit stepper is an object that knows how to do one such <em>implicit</em> step.</p>
+<p>This page describes functionalities applicable to any system
+expressible in a <em>discrete-time</em> form</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\boldsymbol{R}(\boldsymbol{y_{n}}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}\]</div></div>
+<p>Here, <span class="math notranslate nohighlight">\(y_{n}\)</span> is the state at the n-th time step,
+<span class="math notranslate nohighlight">\(t\)</span> is time, and <span class="math notranslate nohighlight">\(R\)</span> is the residual.</p>
 </div>
-<p>Currently, we support linear systems using either
-Eigen or Kokkos containers. The reason for this is that Eigen
-and Kokkos are the supported and preferred choices (for now)
-to implement ROMs operators. Kokkos, in particular, allows
-to operate both on host and GPUs.
-Later on, we can easily extend support to other libraries if needed.
-Note that even if the scope of the linear solvers is limited,
-we still emphasize that, like all of the others subpackages in pressio,
-it can be used idenpendetly.</p>
-<div class="section" id="why-do-we-need-it">
-<h3>Why do we need it?<a class="headerlink" href="#why-do-we-need-it" title="Permalink to this headline">¶</a></h3>
-<p>todo: explain that we need to a uniform interface.</p>
-</div>
-</div>
-<div class="section" id="api">
-<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">pressio</span><span class="o">::</span><span class="n">linearsolvers</span><span class="o">::</span><span class="n">Solver</span><span class="o">&lt;</span><span class="n">Tag</span><span class="p">,</span> <span class="n">MatrixType</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="section" id="api-parameters-and-requirements">
+<h2>API, Parameters and Requirements<a class="headerlink" href="#api-parameters-and-requirements" title="Permalink to this headline">¶</a></h2>
+<p>todo FINISH</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">num_states</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_arbitrary_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                              <span class="n">SystemType</span> <span class="o">&amp;&amp;</span> <span class="n">system</span><span class="p">);</span>
 </pre></div>
 </div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_states</span></code>: total number of states you need.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Tag</span></code>: tag type specifying which type of solver to use (more on this below)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MatrixType</span></code>: data type of the matrix of the linear system to solve
-(used to choose the proper specialization).</p></li>
+<li><p>self-explanatory</p></li>
+<li><p>must be copy constructible and the following condition must be true:
+<code class="docutils literal notranslate"><span class="pre">std::is_same&lt;StateType,</span> <span class="pre">typename</span> <span class="pre">SystemType::state_type&gt;::value</span> <span class="pre">==</span> <span class="pre">true</span></code></p></li>
 </ul>
-<p>We distinguish between iterative and direct solvers.
-Obviously, depending on the structure of the matrix, some methods
-might not be applicable or might not be efficient.</p>
-<div class="table-wrapper"><table class="docutils align-default">
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Tag</p></th>
-<th class="head"><p>Description</p></th>
-<th class="head"><p>Works for:</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">iterative::CG</span></code></p></td>
-<td><p>Conjugate-gradient</p></td>
-<td><p>Eigen</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iterative::Bicgstab</span></code></p></td>
-<td><p>Biconjugate gradient stabilized</p></td>
-<td><p>Eigen</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">iterative::LSCG</span></code></p></td>
-<td><p>Conjugate-gradient</p></td>
-<td><p>Eigen</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">direct::HouseholderQR</span></code></p></td>
-<td><p>Uses on householder QR</p></td>
-<td><p>Eigen</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">direct::ColPivHouseholderQR</span></code></p></td>
-<td><p>Uses on Householder QR with pivoting</p></td>
-<td><p>Eigen</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">direct::PartialPivLU</span></code></p></td>
-<td><p>Uses LU factorization with partial pivoting</p></td>
-<td><p>Eigen</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">direct::potrsL</span></code></p></td>
-<td><p>Uses Cholesky, lower part</p></td>
-<td><p>Kokkos</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">direct::potrsU</span></code></p></td>
-<td><p>Uses Cholesky, upper part</p></td>
-<td><p>Kokkos</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">direct::getrs</span></code></p></td>
-<td><p>Uses LU factorization</p></td>
-<td><p>Kokkos</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">direct::geqrf</span></code></p></td>
-<td><p>Uses QR fatorization</p></td>
-<td><p>Kokkos</p></td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<div class="section" id="class-synopsis">
-<h2>Class Synopsis<a class="headerlink" href="#class-synopsis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">MatrixType</span><span class="o">&gt;</span>
-<span class="k">class</span> <span class="nc">LinearSolver</span>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">system</span></code>:</p>
+<ul>
+<li><p>problem instance knowing how to create and compute the residual and Jacobian.</p></li>
+<li><p>Must conform to:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ValidDiscreteTimeSystem</span>
 <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-  <span class="k">using</span> <span class="n">matrix_type</span> <span class="o">=</span> <span class="n">MatrixType</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">state_type</span>  <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">discrete_time_residual_type</span> <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">discrete_time_jacobian_type</span> <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
 
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">RhsType</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">solve</span><span class="p">(</span><span class="k">const</span> <span class="n">MatrixType</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RhsType</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">,</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">);</span>
+<span class="n">discrete_time_residual_type</span> <span class="nf">createDiscreteTimeResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="n">discrete_time_jacobian_type</span> <span class="nf">createDiscreteTimeJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="c1">// overload accepting 1 auxiliary state</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
+                         <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
+                         <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
+                         <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                         <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+
+<span class="c1">// overload accepting 2 auxiliary states</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
+                           <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
+                           <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
+                           <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+
+<span class="c1">// overload accepting 1 auxiliary state</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">discreteTimeJacobian</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
+                           <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
+                           <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
+                           <span class="n">discrete_time_jacobian_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+
+<span class="c1">// overload accepting 2 auxiliary states</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StepCountType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">discreteTimeJacobian</span><span class="p">(</span><span class="n">StepCountType</span><span class="p">,</span>
+                           <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span>
+                           <span class="n">scalar_type</span> <span class="n">dt</span><span class="p">,</span>
+                           <span class="n">discrete_time_jacobian_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
 <span class="p">};</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="example-usage">
-<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
-<p>todo: need to discuss difference between iterative and direct</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
-<span class="c1">// we want to solve `Ax = b`</span>
-<span class="c1">//</span>
-
-<span class="k">using</span> <span class="n">matrix_type</span> <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXd</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">vector_type</span> <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">VectorXd</span><span class="p">;</span>
-<span class="n">matrix_type</span> <span class="nf">A</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-<span class="c1">// fill A</span>
-<span class="n">vector_type</span> <span class="nf">b</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-<span class="c1">// fill b</span>
-
-<span class="k">namespace</span> <span class="n">pls</span>  <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">linearsolvers</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">tag</span>      <span class="o">=</span> <span class="n">pls</span><span class="o">::</span><span class="n">direct</span><span class="o">::</span><span class="n">HouseholderQr</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">solver_t</span> <span class="o">=</span> <span class="n">pls</span><span class="o">::</span><span class="n">Solver</span><span class="o">&lt;</span><span class="n">tag</span><span class="p">,</span> <span class="n">matrix_type</span><span class="o">&gt;</span><span class="p">;</span>
-<span class="n">solver</span> <span class="n">mySolver</span><span class="p">;</span>
-<span class="n">vector_type</span> <span class="nf">x</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-<span class="n">mySolver</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
-</pre></div>
-</div>
+</li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 
@@ -387,23 +338,23 @@ might not be applicable or might not be efficient.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="nonlinsolvers.html">
+          <a class="next-page" href="ode_advance.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title"><code class="docutils literal notranslate"><span class="pre">nonlinear</span> <span class="pre">solvers</span></code></div>
+                <div class="title">advancers</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="qr.html">
+          <a class="prev-page" href="ode_steppers_implicit_conttime.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><code class="docutils literal notranslate"><span class="pre">qr</span></code></div>
+                <div class="title">implicit steppers (continuous-time systems)</div>
                 
               </div>
             </a>
@@ -413,7 +364,7 @@ might not be applicable or might not be efficient.</p>
               Copyright &#169; 2021, National Technology &amp; Engineering Solutions of Sandia, LLC (NTESS) |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            | <a class="muted-link" href="../_sources/components/linsolvers.rst.txt"
+            | <a class="muted-link" href="../_sources/components/ode_steppers_implicit_disctime.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -433,14 +384,9 @@ might not be applicable or might not be efficient.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">linear</span> <span class="pre">solvers</span></code></a><ul>
-<li><a class="reference internal" href="#overview">Overview</a><ul>
-<li><a class="reference internal" href="#why-do-we-need-it">Why do we need it?</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#api">API</a></li>
-<li><a class="reference internal" href="#class-synopsis">Class Synopsis</a></li>
-<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#">implicit steppers (discrete-time systems)</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#api-parameters-and-requirements">API, Parameters and Requirements</a></li>
 </ul>
 </li>
 </ul>
@@ -459,5 +405,6 @@ might not be applicable or might not be efficient.</p>
     <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

@@ -41,7 +41,7 @@ Currently, we support the following algorithms:
      - optimization problem formulated in a p-norm (see `link <https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares>`_ )
 
 A glimpse of the API
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 To create a solver, we expose specific factory functions for each algorithm.
 
@@ -87,30 +87,30 @@ The following table helps clarifying the problem API/algorithms admissibility:
      - Hessian-Gradient API
      - Fused Hessian-Gradient API
    * - Newton-Raphson
-     - admissible
-     - admissible
-     - -
-     - -
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -`
    * - Gauss-Newton via Normal-Equations
-     - admissible
-     - admissible
-     - admissible
-     - admissible
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
    * - Gauss-Newton via QR
-     - admissible
-     - admissible
-     - -
-     - -
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -`
    * - Levenberg-Marquardt
-     - admissible
-     - admissible
-     - admissible
-     - admissible
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
    * - irls
-     - admissible
-     - admissible
-     - -
-     - -
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#10003`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -`
+     - :raw-html-m2r:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -`
 
 Please refer to each method's documentation for the details on how you provide
 a problem instance to pressio.
@@ -230,14 +230,17 @@ To set or query the update method, you use the following methods of the solver c
      ...
    };
 
-.. tip::
 
-    By default, a nonlinear solver uses:
+Default Settings
+----------------
 
-    * update: ``Update::Standard``\ ;
-    * stopping: ``Stop::WhenCorrectionAbsoluteNormBelowTolerance``\ ;
-    * max number of iterations = 100
-    * tolerance = 0.000001 (for everything)
+By default, a nonlinear solver uses:
+
+* update: ``Update::Standard``\ ;
+* stopping: ``Stop::WhenCorrectionAbsoluteNormBelowTolerance``\ ;
+* max number of iterations = 100
+* tolerance = 0.000001 (for everything)
+
 
 A note on the solvers' design
 -----------------------------
@@ -247,16 +250,16 @@ The design of the nonlinear solvers has been based on recognizing that, at a ver
 a nonlinear solver operates by repeatedly updating a given "state" until a certain criterion is met,
 and each "iteration" involves the following stages:
 
-* 
+*
   A: computing/updating the operators
 
-* 
+*
   B: computing the new correction term
 
-* 
+*
   C: assessing convergence
 
-* 
+*
   D: updating the state using the correction
 
 This view forms the basis of our design approach: when a solver object is instantiated,
