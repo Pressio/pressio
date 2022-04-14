@@ -81,8 +81,8 @@ _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
   kokkos_view_t xview(x.data(), ::pressio::ops::extent(x,0));
 
-  const auto ALocalView_h = A.getLocalViewHost();
-  const auto yLocalView_h = y.getLocalViewHost();
+  const auto ALocalView_h = A.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  const auto yLocalView_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   const char ctA = 'N';
   // Tpetra::Vector is implemented as a special case of MultiVector //
   // so getLocalView returns a rank-2 view so in order to get
@@ -112,12 +112,12 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
 
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x,0)));
   const char ctA = 'N';
-  const auto ALocalView_d = A.getLocalViewDevice();
+  const auto ALocalView_d = A.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
 
   // Tpetra::Vector is implemented as a special case of MultiVector //
   // so getLocalView returns a rank-2 view so in order to get
   // view with rank==1 I need to explicitly get the subview of that
-  const auto yLocalView_drank2 = y.getLocalViewDevice();
+  const auto yLocalView_drank2 = y.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
   ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, x, beta, yLocalView_drank1);
 }

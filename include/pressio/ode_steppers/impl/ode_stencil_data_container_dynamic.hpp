@@ -77,7 +77,7 @@ public:
   ~StencilDataContainerDynImpl() = default;
 
 public:
-  const std::size_t size() const{ return size_; }
+  std::size_t size() const{ return size_; }
 
   // non-const overloads
   ValueType & operator()(::pressio::ode::nPlusOne){
@@ -150,7 +150,7 @@ public:
   ~StencilDataContainerDynImpl() = default;
 
 public:
-  const std::size_t size() const{ return size_; }
+  std::size_t size() const{ return size_; }
 
   // non-const overloads
   ValueType & operator()(::pressio::ode::n){

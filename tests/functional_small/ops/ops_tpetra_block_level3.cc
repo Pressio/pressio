@@ -62,6 +62,32 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
     }
   }
 }
+
+TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
+       mv_T_self_create_result_eigen_C)
+{
+  auto A = pressio::ops::clone(*myMv_);
+  std::array<double, 4> ac{1.,2.,3.,4.};
+  for (std::size_t i=0; i<A.getMultiVectorView().getNumVectors(); ++i) {
+    A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
+  }
+
+  // C = 1.5 A^T A
+  auto C = pressio::ops::product<Eigen::MatrixXd>(pressio::transpose(),
+						  pressio::nontranspose(),
+						  1.5, A);
+
+  if(rank_==0){
+    std::cout << C << std::endl;
+  }
+
+  for (auto i=0; i<C.rows(); i++){
+    for (auto j=0; j<C.cols(); j++){
+      const auto gold = ac[i]*A.getMultiVectorView().getGlobalLength()*1.5*ac[j];
+      EXPECT_NEAR( C(i,j), gold, 1e-12);
+    }
+  }
+}
 #endif
 
 
