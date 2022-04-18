@@ -27,13 +27,25 @@
    - note that for some rows you have to pad with -1 to ensure all rows have same # of values
 
 
+## num_modes_per_tile.txt
+
+  - contains the num of modes to use for each tile
+
+  - example:
+  ```
+  3
+  4
+  5
+  6
+  ```
+
 ## bases_p_{0,1,...,n}.txt
 
   - contains bases in ascii format for partition `0` to `n`:
 
-  - if i-th partitions has `N_i` state dofs, then the file should have a matrix of `N_i \times K` where `K` is num of modes
+  - if i-th partitions has `N_i` state dofs, then the file should have a matrix of `N_i \times K_i` where `K_i` is num of modes for this partition, so the num of columns must be consistent with the correspinding entry in num_modes_per_tile.txt
 
-  - example for `N_i = 12` (for example a partition with 3 cells and 4 dofs/cell) and `K=3`:
+  - example for `N_i = 12` (for example a partition with 3 cells and 4 dofs/cell) and `K_i=3`:
     ```
     7.385650552745359754e-01 9.558753197446867578e-02 1.287464274747743831e-01
     1.364995925095853213e-01 5.684999169722433354e-01 9.270582132695502908e-01
