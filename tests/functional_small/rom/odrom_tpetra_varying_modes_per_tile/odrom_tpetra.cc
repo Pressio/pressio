@@ -9,6 +9,7 @@
 #include <Tpetra_Map_decl.hpp>
 #include <KokkosBlas.hpp>
 #include "pressio/utils.hpp"
+#include <numeric>
 
 template<class VecType>
 void write_tpetra_vector_to_ascii_file(std::string fileName,
@@ -46,6 +47,27 @@ void read_integers_from_ascii_into_view(const std::string & fileName,
     std::istringstream in(line);
     in >> colv;
     v.push_back(std::atoi(colv.c_str()));
+  }
+  source.close();
+
+  Kokkos::resize(dest, v.size());
+  for (int i=0; i<v.size(); ++i){
+    dest(i) = v[i];
+  }
+}
+
+template<class T>
+void read_random_rom_state(const std::string & fileName,
+			   Kokkos::View<T*> & dest)
+{
+  std::vector<T> v;
+  std::ifstream source;
+  source.open(fileName, std::ios_base::in);
+  std::string line, colv;
+  while (std::getline(source, line) ){
+    std::istringstream in(line);
+    in >> colv;
+    v.push_back(std::atof(colv.c_str()));
   }
   source.close();
 
@@ -138,6 +160,24 @@ std::map<int, std::vector<int>> read_my_state_vec_rows(const std::vector<int> & 
     res[it] = create_stdvector_and_fill_from_ascii(fileName);
   }
   return res;
+}
+
+
+std::vector<int> read_modes_per_tile(const std::string & fileName)
+{
+
+  std::vector<int> v;
+  std::ifstream source;
+  source.open(fileName, std::ios_base::in);
+  std::string line, tmp;
+
+  while (std::getline(source, line) ){
+    std::istringstream in(line);
+    in >> tmp;
+    v.push_back( std::atoi(tmp.c_str()) );
+  }
+  source.close();
+  return v;
 }
 
 
@@ -234,17 +274,19 @@ struct ModesDataHolder
   using basis_mat_type = Kokkos::View<double**>;
 
   int rank_ = {};
-  int modesPerTile_ = {};
+  std::vector<int> modesPerTile_;
   const std::vector<int> & myTileIds_;
   std::map<int, std::vector<int>> tileLocalIndices_;
   std::map<int, basis_mat_type> phi_;
 
   template<class TpetraMapType>
-  ModesDataHolder(int rank, int modesPerTile,
+  ModesDataHolder(int rank,
+		  const std::vector<int> & modesPerTile,
 		  const std::vector<int> & myTileIds,
 		  const std::map<int, std::vector<int>> & myStateVecRowsForEachTile,
 		  const TpetraMapType & dataMap)
-    : rank_(rank), modesPerTile_(modesPerTile),
+    : rank_(rank),
+      modesPerTile_(modesPerTile),
       myTileIds_(myTileIds)
   {
     auto myGlobalInd = dataMap.getMyGlobalIndices();
@@ -258,37 +300,11 @@ struct ModesDataHolder
 		<< "tileId = " << " " << tileId << " "
 		<< "rows = " << rows.size() << '\n';
 
-      basis_mat_type M("M", rows.size(), modesPerTile);
+      basis_mat_type M("M", rows.size(), modesPerTile_[tileId]);
       const auto currFile = "bases_p_" + std::to_string(tileId) + ".txt";
       read_phi_from_ascii_into_view(currFile, M, rows);
       phi_[tileId] = M;
-      // if (rank==1){
-      // 	std::cout << tileId << " ";
-      // 	for (int j=0; j<M.extent(1); ++j){ std::cout << M(0,j) << " "; }
-      // 	for (int j=0; j<M.extent(1); ++j){ std::cout << M(M.extent(0)-1,j) << " "; }
-      // 	std::cout << "\n";
-      // }
-      // if (rank==1 && tileId==6){
-      // 	std::for_each(rows.begin(), rows.end(), [](int v){ std::cout << v << '\n'; });
-      // }
     }
-
-    // // figure out what is largest count of stencil dofs among tiles I own
-    // int maxCount=0;
-    // for (auto it : myStateVecRowsForEachTile){
-    //   maxCount = std::max(maxCount, (int) it.second.size());
-    // }
-    // std::cout << "rank = " << " " << rank << " "
-    // 	      << "maxCount = " << " " << maxCount << '\n';
-
-    // // read bases
-    // Kokkos::resize(phi_, myTileIds_.size(), maxCount, modesPerTile_);
-    // for (int i=0; i<myTileIds_.size(); ++i){
-    //   const int tileId = myTileIds[i];
-    //   auto sv = Kokkos::subview(phi_, i, Kokkos::ALL(), Kokkos::ALL());
-    //   const auto currFile = "bases_p_" + std::to_string(tileId) + ".txt";
-    //   read_phi_from_ascii_into_view(currFile, sv);
-    // }
   }
 
   const std::vector<int> & tileLocalIndices(int tileId) const {
@@ -304,15 +320,25 @@ struct OdRomDecoderJacobian
 {
   using fom_state_type = Tpetra::Vector<>;
 
-  OdRomDecoderJacobian(int rank, int modesPerTile,
+  OdRomDecoderJacobian(int rank,
+		       const std::vector<int> & modesPerTile,
 		       const std::vector<int> & myTileIds,
 		       const std::map<int, std::vector<int>> & myStateVecRowsForEachTile,
 		       const ModesDataHolder & modesHolder)
-    : rank_(rank), modesPerTile_(modesPerTile),
+    : rank_(rank),
+      modesPerTile_(modesPerTile),
       myTileIds_(&myTileIds),
       myStateVecRowsForEachTile_(&myStateVecRowsForEachTile),
       modesHolder_(&modesHolder)
-  {}
+  {
+    romStateSpanStarts_.resize(modesPerTile_.size());
+    // should use scan but needs c++17
+    int count=0;
+    for (std::size_t i=0; i<modesPerTile_.size(); ++i){
+      romStateSpanStarts_[i] = count;
+      count += modesPerTile_[i];
+    }
+  }
 
   template <class DataType, class ...Props>
   void applyTranspose(Tpetra::Vector<> x,
@@ -339,11 +365,12 @@ struct OdRomDecoderJacobian
 
     for (int tileIt=0; tileIt<myTileIds_->size(); ++tileIt){
       const int tileId = (*myTileIds_)[tileIt];
+      const int myK = modesPerTile_[tileId];
 
       auto phi = modesHolder_->viewBasis(tileId);
 
-      const int romStateSpanStart = tileId*modesPerTile_;
-      const int romStateSpanEnd   = romStateSpanStart + modesPerTile_;
+      const int romStateSpanStart = romStateSpanStarts_[tileId];
+      const int romStateSpanEnd   = romStateSpanStart + myK;
       auto ysp = Kokkos::subview(replY_h, std::make_pair(romStateSpanStart, romStateSpanEnd));
 
       const auto & stateVecRows = myStateVecRowsForEachTile_->at(tileId);
@@ -369,10 +396,11 @@ struct OdRomDecoderJacobian
 
 private:
   int rank_ = {};
-  int modesPerTile_ = {};
+  std::vector<int> modesPerTile_;
   const std::vector<int> * myTileIds_;
   const std::map<int, std::vector<int>> * myStateVecRowsForEachTile_;
   const ModesDataHolder * modesHolder_;
+  std::vector<int> romStateSpanStarts_;
 };
 
 class OdRomDecoder
@@ -381,16 +409,29 @@ public:
   using fom_state_type = Tpetra::Vector<>;
   using jacobian_type  = OdRomDecoderJacobian;
 
-  OdRomDecoder(int rank, int modesPerTile,
+  OdRomDecoder(int rank,
+	       const std::vector<int> & modesPerTile,
 	       const std::vector<int> & myTileIds,
 	       const std::map<int, std::vector<int>> & myStateVecRowsForEachTile,
 	       const ModesDataHolder & modesHolder)
-    : rank_(rank), modesPerTile_(modesPerTile),
+    : rank_(rank),
+      modesPerTile_(modesPerTile),
       myTileIds_(myTileIds),
       myStateVecRowsForEachTile_(myStateVecRowsForEachTile),
       modesHolder_(modesHolder),
       jac_(rank, modesPerTile, myTileIds, myStateVecRowsForEachTile, modesHolder)
-  {}
+  {
+    romStateSpanStarts_.resize(modesPerTile_.size());
+    // should use scan but needs c++17
+    int count=0;
+    for (std::size_t i=0; i<modesPerTile_.size(); ++i){
+      romStateSpanStarts_[i] = count;
+      count += modesPerTile_[i];
+    }
+    // if (rank==0){
+    //   std::for_each(romStateSpanStarts_.begin(), romStateSpanStarts_.end(), [](int v){ std::cout << v << ' '; });
+    // }
+  }
 
   template <class DataType, class ...Props>
   void applyMapping(const Kokkos::View<DataType, Props...> romState,
@@ -399,23 +440,12 @@ public:
 
     for (int i=0; i<myTileIds_.size(); ++i){
       const int tileId = myTileIds_[i];
+      const int myK = modesPerTile_[tileId];
 
-      const int romStateSpanStart = tileId*modesPerTile_;
-      const auto spbounds = std::make_pair(romStateSpanStart,
-					   romStateSpanStart + modesPerTile_);
+      const int romStateSpanStart = romStateSpanStarts_[tileId];
+      const auto spbounds = std::make_pair(romStateSpanStart, romStateSpanStart + myK);
       auto sp = Kokkos::subview(romState, std::move(spbounds));
-      // if (rank_==1){
-      // 	std::cout << tileId << " ";
-      // 	for (int j=0; j<sp.extent(0); ++j){
-      //          std::cout << sp(j) << " "; }
-      // 	std::cout << "\n";
-      // }
-
       auto phi = modesHolder_.viewBasis(tileId);
-      // std::cout << rank_ << " " << tileId << " "
-      // 	   << phi.extent(0) << " "
-      //           << phi.extent(1) << "\n";
-
       Kokkos::View<double*> tmp("tmp", phi.extent(0));
       KokkosBlas::gemv("N", 1., phi, sp, 0., tmp);
 
@@ -426,11 +456,6 @@ public:
 	const auto gid = stateVecRows[rowIndex];
 	fomState.replaceGlobalValue(gid, tmp(k));
       }
-      // if (rank_==1 && tileId==2){
-      // 	std::for_each(tileLocIndices.begin(),
-      //                      tileLocIndices.end(),
-      //                      [](int v){ std::cout << v << '\n'; });
-      // }
     }
   }
 
@@ -443,11 +468,12 @@ public:
 
 private:
   int rank_ = {};
-  int modesPerTile_ = {};
+  std::vector<int> modesPerTile_;
   const std::vector<int> & myTileIds_;
   const std::map<int, std::vector<int>> & myStateVecRowsForEachTile_;
   const ModesDataHolder & modesHolder_;
   OdRomDecoderJacobian jac_;
+  std::vector<int> romStateSpanStarts_;
 };
 
 #include "pressio/ops.hpp"
@@ -482,8 +508,6 @@ void run()
   using tcomm_t    = Teuchos::MpiComm<int>;
   using rcpcomm_t = Teuchos::RCP<const tcomm_t>;
 
-  // namespace plog = pressio::log;
-  // plog::initialize(pressio::logto::terminal);
   {
 
     int myRank; MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
@@ -504,24 +528,21 @@ void run()
     std::cout << "rank: " << totalNumTiles << "\n";
     std::cout << std::flush;
 
-    int K = 3;
-    ModesDataHolder modesHolder(myRank, K, myTileIds,
-       myStateVecRowsForEachTile, *dataMapRcp);
+    const auto modesPerTile = read_modes_per_tile("num_modes_per_tile.txt");
+    const int totalNumModes = std::accumulate(modesPerTile.cbegin(), modesPerTile.cend(), 0);
 
-    OdRomDecoder decoder(myRank, K, myTileIds,
-      myStateVecRowsForEachTile, modesHolder);
+    ModesDataHolder modesHolder(myRank, modesPerTile, myTileIds,
+    				myStateVecRowsForEachTile, *dataMapRcp);
+
+    OdRomDecoder decoder(myRank, modesPerTile, myTileIds,
+			 myStateVecRowsForEachTile, modesHolder);
 
     using rom_type = Kokkos::View<double*>;
-    rom_type romState("romState", K*totalNumTiles);
-    for (int iTile=0; iTile<totalNumTiles; ++iTile){
-      const int start = iTile*K;
-      auto sp = Kokkos::subview(romState, std::make_pair(start, start+K));
-      for (int j=0; j<sp.extent(0); ++j){ sp(j) = (double) (iTile+1); }
-    }
+    rom_type romState("romState", totalNumModes);
+    read_random_rom_state("rom_state_rand.txt", romState);
     if (myRank==0){
       write_kokkos_view_to_ascii_file("rom_state_initial.txt", romState);
     }
-
 
     // reconstruction
     typename MyApp::state_type fomTmpState(dataMapRcp);
@@ -538,24 +559,21 @@ void run()
       write_tpetra_vector_to_ascii_file("velo_"+std::to_string(myRank)+".txt", velo);
       const auto & dJ = decoder.jacobianCRef();
       pressio::ops::product(pressio::transpose(), 1., dJ, velo, 0., romState);
-      //if (myRank==0){
- write_kokkos_view_to_ascii_file("rom_state_projected_"+std::to_string(myRank)+".txt", romState);
- //}
+      write_kokkos_view_to_ascii_file("rom_state_projected_"+std::to_string(myRank)+".txt", romState);
     }
 
-    // typename MyApp::state_type fomRefState(dataMapRcp);
-    // namespace pode = pressio::ode;
-    // namespace pgal = pressio::rom::galerkin;
-    // constexpr auto odeScheme = pode::StepScheme::RungeKutta4;
-    // auto galProb = pgal::create_default_explicit_problem(odeScheme, appObj, decoder,
-    //                romState, fomRefState);
-    // pode::advance_n_steps(galProb, romState, 0., 0.01, 10);
+    // // typename MyApp::state_type fomRefState(dataMapRcp);
+    // // namespace pode = pressio::ode;
+    // // namespace pgal = pressio::rom::galerkin;
+    // // constexpr auto odeScheme = pode::StepScheme::RungeKutta4;
+    // // auto galProb = pgal::create_default_explicit_problem(odeScheme, appObj, decoder,
+    // //                romState, fomRefState);
+    // // pode::advance_n_steps(galProb, romState, 0., 0.01, 10);
 
     std::cout << std::flush;
     comm->barrier();
   }
   sleep(3.);
-  //plog::finalize();
 }
 
 int main(int argc, char **argv)
@@ -566,4 +584,3 @@ int main(int argc, char **argv)
   }
   return 0;
 }
-

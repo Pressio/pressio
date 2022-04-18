@@ -21,7 +21,8 @@ add_subdirectory(correctness_lspg_steady)
 add_subdirectory(correctness_lspg_unsteady)
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
- add_subdirectory(odrom_tpetra_basic)
+ add_subdirectory(odrom_tpetra_constant_modes_per_tile)
+ add_subdirectory(odrom_tpetra_varying_modes_per_tile)
 
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra.cc)
  add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra "${SRC1}" gTestMain_tpetra 3)

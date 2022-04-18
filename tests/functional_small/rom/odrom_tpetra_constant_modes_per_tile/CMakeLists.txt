@@ -32,7 +32,7 @@ set(exename odrom_trilinos_tpetra)
 add_executable(${exename} ${CMAKE_CURRENT_SOURCE_DIR}/odrom_tpetra.cc)
 target_link_libraries(${exename} ${MPI_CXX_LIBRARIES})
 
-add_test(NAME ${TESTING_LEVEL}_odrom_trilinos_tpetra
+add_test(NAME ${TESTING_LEVEL}_odrom_trilinos_tpetra_const_modes_per_tile
   COMMAND ${CMAKE_COMMAND}
   -DEXENAME=$<TARGET_FILE:${exename}>
   -P ${CMAKE_CURRENT_SOURCE_DIR}/test.cmake
