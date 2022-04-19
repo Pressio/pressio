@@ -11,7 +11,7 @@
   4 3 -1 -1 -1
   ```
   where
-   - 5 on first line specifies how many ranks exist
+   - 5 on first line specifies the TOTAL num of columns in the file
    - each row contains the rank (on first column) and list of partitions ids belonging to that rank
    so
    ```

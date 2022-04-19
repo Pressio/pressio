@@ -494,10 +494,10 @@ void run()
     std::cout << std::flush;
 
     const auto myTileIds = read_my_tile_ids(myRank, "rank_partition_mapping.txt");
-    sleep((myRank+1.)*0.5);
-    std::cout << "rank: " << myRank << " tileIds: ";
-    std::for_each(myTileIds.begin(), myTileIds.end(), [](int v){ std::cout << v << ' '; });
-    std::cout << "\n";
+    // sleep((myRank+1.)*0.5);
+    // std::cout << "rank: " << myRank << " tileIds: ";
+    // std::for_each(myTileIds.begin(), myTileIds.end(), [](int v){ std::cout << v << ' '; });
+    // std::cout << "\n";
 
     const auto myStateVecRowsForEachTile = read_my_state_vec_rows(myTileIds);
     const int totalNumTiles = calculate_total_num_of_tiles(comm, myTileIds);
@@ -506,10 +506,10 @@ void run()
 
     int K = 3;
     ModesDataHolder modesHolder(myRank, K, myTileIds,
-       myStateVecRowsForEachTile, *dataMapRcp);
+				myStateVecRowsForEachTile, *dataMapRcp);
 
     OdRomDecoder decoder(myRank, K, myTileIds,
-      myStateVecRowsForEachTile, modesHolder);
+			 myStateVecRowsForEachTile, modesHolder);
 
     using rom_type = Kokkos::View<double*>;
     rom_type romState("romState", K*totalNumTiles);
@@ -539,8 +539,8 @@ void run()
       const auto & dJ = decoder.jacobianCRef();
       pressio::ops::product(pressio::transpose(), 1., dJ, velo, 0., romState);
       //if (myRank==0){
- write_kokkos_view_to_ascii_file("rom_state_projected_"+std::to_string(myRank)+".txt", romState);
- //}
+      write_kokkos_view_to_ascii_file("rom_state_projected_"+std::to_string(myRank)+".txt", romState);
+      //}
     }
 
     // typename MyApp::state_type fomRefState(dataMapRcp);
@@ -553,6 +553,7 @@ void run()
 
     std::cout << std::flush;
     comm->barrier();
+
   }
   sleep(3.);
   //plog::finalize();
