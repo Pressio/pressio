@@ -422,9 +422,14 @@ TEST(ops_tpetra, vector_elementwiseMultiply)
 
   // 3. compute ewise multiply
   vec_t c(map);
-  pressio::ops::fill(c, 0.);
-  pressio::ops::elementwise_multiply(1., x, b, 0., c);
+  const double offset = -5.0;
+  pressio::ops::fill(c, offset);
+  pressio::ops::elementwise_multiply(1., x, b, 1., c);
   auto ch = c.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  vec_t c0(map);
+  pressio::ops::fill(c0, NAN); // test beta=0 with simulated NaN in uninitialized c
+  pressio::ops::elementwise_multiply(1., x, b, 0., c0);
+  auto ch0 = c0.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
 
   // 5. check correctness
   Eigen::VectorXd g(numGlobalEntries);
@@ -436,6 +441,7 @@ TEST(ops_tpetra, vector_elementwiseMultiply)
   g(5) = 35.;
 
   for (int i=0; i<numLocalEntries; ++i){
-    EXPECT_DOUBLE_EQ(ch(i,0), g(shift+i));
+    EXPECT_DOUBLE_EQ(ch0(i,0), g(shift+i));
+    EXPECT_DOUBLE_EQ(ch(i,0), g(shift+i) + offset);
   }
 }

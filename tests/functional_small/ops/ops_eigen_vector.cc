@@ -188,7 +188,7 @@ TEST(ops_eigen, vector_absPowNeg)
   T y(6);
   T x(6);
   for (int i=0; i<6; ++i){
-    x(i) = (double) i; 
+    x(i) = (double) i;
     x(i)*=-1.;
   }
 
@@ -293,4 +293,11 @@ TEST(ops_eigen, vector_elementwiseMultiply)
   EXPECT_DOUBLE_EQ( y(0), 7.0);
   EXPECT_DOUBLE_EQ( y(1), 14.0);
   EXPECT_DOUBLE_EQ( y(2), 23.0);
+
+  // test beta=0 with simulated NaN in uninitialized y
+  y(0) = NAN;
+  pressio::ops::elementwise_multiply(1., x, z, 0., y);
+  EXPECT_DOUBLE_EQ( y(0), 6.0);
+  EXPECT_DOUBLE_EQ( y(1), 12.0);
+  EXPECT_DOUBLE_EQ( y(2), 20.0);
 }
