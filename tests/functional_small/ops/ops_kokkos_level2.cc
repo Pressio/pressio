@@ -16,7 +16,7 @@
   M_h(2,2) = 1.; \
   Kokkos::deep_copy(M, M_h); \
   Kokkos::View<double*> myR("myR", 3); \
-  myR(0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), alpha, M, VECIN, beta, myR); \
@@ -42,7 +42,7 @@
   M_h(3,2) = 4.; \
   Kokkos::deep_copy(M, M_h); \
   Kokkos::View<double*> myR("myR", 3); \
-  myR(0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), alpha, M, VECIN, beta, myR); \

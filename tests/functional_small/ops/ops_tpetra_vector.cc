@@ -427,7 +427,7 @@ TEST(ops_tpetra, vector_elementwiseMultiply)
   pressio::ops::elementwise_multiply(1., x, b, 1., c);
   auto ch = c.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   vec_t c0(map);
-  pressio::ops::fill(c0, NAN); // test beta=0 with simulated NaN in uninitialized c
+  pressio::ops::fill(c0, std::nan("0")); // test beta=0 with simulated NaN in uninitialized c
   pressio::ops::elementwise_multiply(1., x, b, 0., c0);
   auto ch0 = c0.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
 

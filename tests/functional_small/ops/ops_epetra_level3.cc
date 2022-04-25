@@ -51,7 +51,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_T_mv_storein_eigen_C_beta0)
     }
 
     Eigen::MatrixXd C(A.NumVectors(), B.NumVectors());
-    C.setConstant(NAN);
+    C.setConstant(std::nan("0"));
 
     // C = 0*NAN + 1.5 A^T B
     pressio::ops::product(pressio::transpose(), pressio::nontranspose(),
@@ -105,7 +105,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_T_self_storein_eigen_C_beta0)
     }
 
     Eigen::MatrixXd C(A.NumVectors(), A.NumVectors());
-    C.setConstant(NAN);
+    C.setConstant(std::nan("0"));
 
     // C = 0*NAN + 1.5 A^T A
     pressio::ops::product(pressio::transpose(), pressio::nontranspose(),

@@ -49,7 +49,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_mv_storein_eigen_C_beta0)
     }
 
     Eigen::MatrixXd C(A.getNumVectors(), B.getNumVectors());
-    C.setConstant(NAN);
+    C.setConstant(std::nan("0"));
 
     // C = 1*C + 1.5 A^T B
     pressio::ops::product(
@@ -103,7 +103,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_self_storein_eigen_C_beta0)
     }
 
     Eigen::MatrixXd C(A.getNumVectors(), A.getNumVectors());
-    C.setConstant(NAN);
+    C.setConstant(std::nan("0"));
 
     // C = 0*NAN + 1.5 A^T A
     pressio::ops::product(
@@ -225,7 +225,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_self_storein_kokkos_C_beta0)
     }
 
     Kokkos::View<double**, Kokkos::LayoutLeft> C("C", A.getNumVectors(), A.getNumVectors());
-    Kokkos::deep_copy(C, NAN);
+    Kokkos::deep_copy(C, std::nan("0"));
 
     // C = 0*NAN + 1.5 A^T A
     pressio::ops::product(
@@ -294,7 +294,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_mv_storein_kokkos_C_beta0)
     }
 
     Kokkos::View<double**, Kokkos::LayoutLeft> C("C", A.getNumVectors(), B.getNumVectors());
-    Kokkos::deep_copy(C, NAN);
+    Kokkos::deep_copy(C, std::nan("0"));
 
     // C = 0*NAN + 1.5 A^T B
     pressio::ops::product(

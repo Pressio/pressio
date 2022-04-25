@@ -8,7 +8,7 @@ using mat_t = Eigen::MatrixXd;
   mat_t M(4,3);                     \
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
   mat_t myR(4,4);         \
-  myR(0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
@@ -56,7 +56,7 @@ using mat_t = Eigen::MatrixXd;
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
                                   \
   mat_t myR(3,3);         \
-  myR(0, 0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
@@ -90,7 +90,7 @@ using mat_t = Eigen::MatrixXd;
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
                                   \
   mat_t myR(3,3);         \
-  myR(0, 0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta, myR); \

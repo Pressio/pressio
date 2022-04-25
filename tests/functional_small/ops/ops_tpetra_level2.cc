@@ -38,7 +38,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector_beta0)
     KokkosBlas::fill(a, 1.);
 
     vec_t y(contigMap_);
-    y.putScalar(NAN);
+    y.putScalar(std::nan("0"));
     pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
 
     auto y_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
@@ -109,7 +109,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector_beta0)
     a.setConstant(1.);
 
     vec_t y(contigMap_);
-    y.putScalar(NAN);
+    y.putScalar(std::nan("0"));
     pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
 
     auto y_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());

@@ -299,7 +299,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_elementwiseMultiply)
   // test beta=0 with simulated NaN in uninitialized y
   pressio::ops::fill(x, 3.);
   pressio::ops::fill(z, 2.);
-  pressio::ops::fill(y, NAN);
+  pressio::ops::fill(y, std::nan("0"));
   pressio::ops::elementwise_multiply(2., x,z, 0., y);
   auto y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){

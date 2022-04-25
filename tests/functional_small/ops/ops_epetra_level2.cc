@@ -36,7 +36,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector_beta0)
     a.setConstant(1.);
 
     Epetra_Vector y(*contigMap_);
-    y.PutScalar(NAN);
+    y.PutScalar(std::nan("0"));
     pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
 
     EXPECT_DOUBLE_EQ(y[0], 6.);

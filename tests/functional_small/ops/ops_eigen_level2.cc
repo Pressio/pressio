@@ -7,7 +7,7 @@
   M_t M(3,3);                  \
   M << 1.,0.,2.,2.,1.,3.,0.,0.,1.;      \
   Eigen::VectorXd myR(3);      \
-  myR(0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), alpha, M, VECIN, beta, myR); \
@@ -27,7 +27,7 @@
   M << 1.,0.,2.,2.,1.,3.,0.,0.,1.,2.,3.,4.; \
                                \
   Eigen::VectorXd myR(3);      \
-  myR(0) = NAN; /* simulate uninitialized Nan */ \
+  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), alpha, M, VECIN, beta, myR); \
@@ -63,7 +63,7 @@ TEST(ops_eigen, dense_matrix_T_vector_prod)
 TEST(ops_eigen, dense_matrix_span_prod)
 {
   using V_t = Eigen::VectorXd;
-  V_t a(7); 
+  V_t a(7);
   a(3)=4.;
   a(4)=2.;
   a(5)=6.;
@@ -89,7 +89,7 @@ TEST(ops_eigen, dense_matrix_T_span_prod)
 TEST(ops_eigen, dense_matrix_diag_prod)
 {
   using T = Eigen::MatrixXd;
-  T M0(3,3); 
+  T M0(3,3);
   M0(0,0)=4.;
   M0(1,1)=2.;
   M0(2,2)=6.;

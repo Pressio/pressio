@@ -329,7 +329,7 @@ TEST(ops_kokkos, vector_elementwiseMultiply)
   EXPECT_DOUBLE_EQ( y_h(2), 23.0);
 
   // test beta=0 with simulated NaN in uninitialized y
-  Kokkos::deep_copy(y, NAN);
+  Kokkos::deep_copy(y, std::nan("0"));
   pressio::ops::elementwise_multiply(1., x, z, 0., y);
   Kokkos::deep_copy(y_h, y);
   EXPECT_DOUBLE_EQ( y_h(0), 6.0);
