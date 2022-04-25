@@ -93,7 +93,11 @@ product(::pressio::transpose modeA,
     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
     {
       const auto colJ = B.getVector(j);
-      C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
+      if (beta == pressio::utils::Constants<scalar_type>::zero()) {
+        C(i,j) = alpha * colI->dot(*colJ);
+      } else {
+        C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
+      }
     }
   }
 }
@@ -154,7 +158,9 @@ product(::pressio::transpose modeA,
   const auto numVecsA = A.getNumVectors();
   assert((std::size_t)C.rows() == (std::size_t)numVecsA);
   assert((std::size_t)C.cols() == (std::size_t)numVecsA);
-  scalar_type tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = pressio::utils::Constants<scalar_type>::zero();
+  const auto has_beta = beta != zero;
+  scalar_type tmp = zero;
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
@@ -166,9 +172,9 @@ product(::pressio::transpose modeA,
     {
       auto colJ = A.getVector(j);
       tmp = alpha*colI->dot(*colJ);
-      C(i,j) = beta*C(i,j) + tmp;
+      C(i,j) = has_beta ? beta*C(i,j) + tmp : tmp;
       if(j!=i){
-        C(j,i) = beta*C(j,i) + tmp;
+        C(j,i) = has_beta ? beta*C(j,i) + tmp : tmp;
       }
     }
   }

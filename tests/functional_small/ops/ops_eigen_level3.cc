@@ -8,6 +8,7 @@ using mat_t = Eigen::MatrixXd;
   mat_t M(4,3);                     \
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
   mat_t myR(4,4);         \
+  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
@@ -28,6 +29,26 @@ using mat_t = Eigen::MatrixXd;
   EXPECT_DOUBLE_EQ(myR(3,1), 6.0); \
   EXPECT_DOUBLE_EQ(myR(3,2), 12.0); \
   EXPECT_DOUBLE_EQ(myR(3,3), 18.0); \
+  /* also cover non-zero beta */ \
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
+      alpha, M, OPERAND, beta1, myR);\
+  EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(0,1), 6.0); \
+  EXPECT_DOUBLE_EQ(myR(0,2), 12.0); \
+  EXPECT_DOUBLE_EQ(myR(0,3), 18.0); \
+  EXPECT_DOUBLE_EQ(myR(1,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(1,1), 12.0); \
+  EXPECT_DOUBLE_EQ(myR(1,2), 24.0); \
+  EXPECT_DOUBLE_EQ(myR(1,3), 36.0); \
+  EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(2,1), 2.0); \
+  EXPECT_DOUBLE_EQ(myR(2,2), 4.0); \
+  EXPECT_DOUBLE_EQ(myR(2,3), 6.0); \
+  EXPECT_DOUBLE_EQ(myR(3,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(3,1), 12.0); \
+  EXPECT_DOUBLE_EQ(myR(3,2), 24.0); \
+  EXPECT_DOUBLE_EQ(myR(3,3), 36.0); \
 
 
 #define OPS_EIGEN_DENSE_MAT_T_MAT_PROD(OPERAND) \
@@ -35,6 +56,7 @@ using mat_t = Eigen::MatrixXd;
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
                                   \
   mat_t myR(3,3);         \
+  myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
@@ -48,6 +70,19 @@ using mat_t = Eigen::MatrixXd;
   EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
   EXPECT_DOUBLE_EQ(myR(2,1), 8.0); \
   EXPECT_DOUBLE_EQ(myR(2,2), 16.0); \
+  /* also cover non-zero beta */ \
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
+      alpha, M, OPERAND, beta1, myR); \
+  EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(0,1), 10.0); \
+  EXPECT_DOUBLE_EQ(myR(0,2), 20.0); \
+  EXPECT_DOUBLE_EQ(myR(1,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(1,1), 6.0); \
+  EXPECT_DOUBLE_EQ(myR(1,2), 12.0); \
+  EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
+  EXPECT_DOUBLE_EQ(myR(2,1), 16.0); \
+  EXPECT_DOUBLE_EQ(myR(2,2), 32.0); \
 
 
 #define OPS_EIGEN_DENSE_MAT_T_SELF_PROD \
@@ -55,6 +90,7 @@ using mat_t = Eigen::MatrixXd;
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
                                   \
   mat_t myR(3,3);         \
+  myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
   constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
   constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta, myR); \
@@ -67,6 +103,18 @@ using mat_t = Eigen::MatrixXd;
   EXPECT_DOUBLE_EQ(myR(2,0), 12.0); \
   EXPECT_DOUBLE_EQ(myR(2,1), 7.0); \
   EXPECT_DOUBLE_EQ(myR(2,2), 18.0); \
+  /* also cover non-zero beta */ \
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta1, myR); \
+  EXPECT_DOUBLE_EQ(myR(0,0), 18.0); \
+  EXPECT_DOUBLE_EQ(myR(0,1), 12.0); \
+  EXPECT_DOUBLE_EQ(myR(0,2), 24.0); \
+  EXPECT_DOUBLE_EQ(myR(1,0), 12.0); \
+  EXPECT_DOUBLE_EQ(myR(1,1), 10.0); \
+  EXPECT_DOUBLE_EQ(myR(1,2), 14.0); \
+  EXPECT_DOUBLE_EQ(myR(2,0), 24.0); \
+  EXPECT_DOUBLE_EQ(myR(2,1), 14.0); \
+  EXPECT_DOUBLE_EQ(myR(2,2), 36.0); \
 
 
 namespace {

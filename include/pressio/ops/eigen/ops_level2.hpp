@@ -84,7 +84,10 @@ product(::pressio::nontranspose mode,
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  y_n = beta * y_n + alpha * A_n * x_n;
+  if (beta == static_cast<ScalarType>(0))
+    y_n = alpha * A_n * x_n;
+  else
+    y_n = beta * y_n + alpha * A_n * x_n;
 }
 
 //-------------------------------
@@ -116,7 +119,10 @@ product(::pressio::transpose mode,
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  y_n = beta * y_n + alpha * A_n.transpose() * x_n;
+  if (beta == static_cast<ScalarType>(0))
+    y_n = alpha * A_n.transpose() * x_n;
+  else
+    y_n = beta * y_n + alpha * A_n.transpose() * x_n;
 }
 
 //-------------------------------

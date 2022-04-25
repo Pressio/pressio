@@ -65,12 +65,12 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 				      const scalar_type beta,
 				      Epetra_Vector & y)
 {
-
+  constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
   const int numVecs = A.NumVectors();
   using lo_t = typename ::pressio::Traits<A_type>::local_ordinal_type;
   for (lo_t i=0; i< A.MyLength(); i++)
   {
-    y[i] = beta*y[i];
+    y[i] = (beta == zero) ? zero : beta * y[i];
     for (int j=0; j< (int)numVecs; j++){
       y[i] += alpha * A[j][i] * x(j);
     }
@@ -132,11 +132,13 @@ product(::pressio::transpose mode,
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.length() == (std::size_t)numVecs );
 
-  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
     A(i)->Dot(x, &tmp);
-    y(i) = beta * y(i) + alpha * tmp;
+    y(i) = (beta == zero) ? zero : beta * y(i);
+    y(i) += alpha * tmp;
   }
 }
 
@@ -195,11 +197,13 @@ product(::pressio::transpose mode,
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.size() == (std::size_t)numVecs );
 
-  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
     A(i)->Dot(x, &tmp);
-    y(i) = beta * y(i) + alpha * tmp;
+    y(i) = (beta == zero) ? zero : beta * y(i);
+    y(i) += alpha * tmp;
   }
 }
 #endif

@@ -242,12 +242,14 @@ product(::pressio::transpose mode,
 
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(y,0)));
 
+  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
   const auto numVecs = ::pressio::ops::extent(A, 1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
     {
       // colI is a Teuchos::RCP<Vector<...>>
       const auto colI = A.getVector(i);
-      y(i) = beta * y(i) + alpha * colI->dot(x);
+      y(i) = beta == zero ? zero : beta * y(i);
+      y(i) += alpha * colI->dot(x);
     }
 }
 #endif

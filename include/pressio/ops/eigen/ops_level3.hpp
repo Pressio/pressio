@@ -79,7 +79,11 @@ product(::pressio::transpose modeA,
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0) );
-  C = beta * C + alpha * A.transpose() * B;
+  if (beta == pressio::utils::Constants<ScalarType>::zero()) {
+    C = alpha * A.transpose() * B;
+  } else {
+    C = beta * C + alpha * A.transpose() * B;
+  }
 }
 
 //-------------------------------------------
@@ -106,7 +110,11 @@ product(::pressio::nontranspose modeA,
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-  C = beta * C + alpha * A * B;
+  if (beta == pressio::utils::Constants<ScalarType>::zero()) {
+    C = alpha * A * B;
+  } else {
+    C = beta * C + alpha * A * B;
+  }
 }
 
 /***********************************
@@ -127,7 +135,11 @@ product(::pressio::transpose modeA,
   static_assert
     (::pressio::are_scalar_compatible<A_type, C_type>::value,
      "Types are not scalar compatible");
-  C = beta * C + alpha * A.transpose() * A;
+  if (beta == pressio::utils::Constants<ScalarType>::zero()) {
+    C = alpha * A.transpose() * A;
+  } else {
+    C = beta * C + alpha * A.transpose() * A;
+  }
 }
 
 template <typename C_type, typename A_type, typename ScalarType>
@@ -158,8 +170,8 @@ product(::pressio::transpose modeA,
 template <typename A_type, typename B_type, typename ScalarType, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value and 
-  ::pressio::is_expression_asdiagonalmatrix<A_type>::value and 
+  ::pressio::is_dense_matrix_eigen<C_type>::value and
+  ::pressio::is_expression_asdiagonalmatrix<A_type>::value and
   ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
   >
 product(::pressio::nontranspose modeA,
@@ -177,7 +189,11 @@ product(::pressio::nontranspose modeA,
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-  C = beta*C + alpha * A.native() * B;
+  if (beta == pressio::utils::Constants<ScalarType>::zero()) {
+    C = alpha * A.native() * B;
+  } else {
+    C = beta*C + alpha * A.native() * B;
+  }
 }
 
 }}//end namespace pressio::ops

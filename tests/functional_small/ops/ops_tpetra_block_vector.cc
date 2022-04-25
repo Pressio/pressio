@@ -5,7 +5,7 @@
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_clone)
 {
   auto a = pressio::ops::clone(*myVector_);
-  ASSERT_TRUE(a.getVectorView().getLocalViewDevice(Tpetra::Access::ReadWriteStruct()).data() 
+  ASSERT_TRUE(a.getVectorView().getLocalViewDevice(Tpetra::Access::ReadWriteStruct()).data()
     != myVector_->getVectorView().getLocalViewDevice(Tpetra::Access::ReadWriteStruct()).data());
 
   auto a_h = a.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
@@ -295,4 +295,15 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_elementwiseMultiply)
   for (int i=0; i<localSize_*blockSize_; ++i){
     EXPECT_DOUBLE_EQ(z_h(i,0), 18.);
   }
+
+  // test beta=0 with simulated NaN in uninitialized y
+  pressio::ops::fill(x, 3.);
+  pressio::ops::fill(z, 2.);
+  pressio::ops::fill(y, std::nan("0"));
+  pressio::ops::elementwise_multiply(2., x,z, 0., y);
+  auto y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  for (int i=0; i<localSize_*blockSize_; ++i){
+    EXPECT_DOUBLE_EQ(y_h(i,0), 12);
+  }
+
 }

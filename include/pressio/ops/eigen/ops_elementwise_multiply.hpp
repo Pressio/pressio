@@ -76,7 +76,11 @@ elementwise_multiply
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
   const auto & z_n = impl::get_native(z);
-  y_n = beta * y_n + alpha * x_n.cwiseProduct(z_n);
+  if (beta == static_cast<typename ::pressio::Traits<T>::scalar_type>(0)) {
+    y_n = alpha * x_n.cwiseProduct(z_n);
+  } else {
+    y_n = beta * y_n + alpha * x_n.cwiseProduct(z_n);
+  }
 }
 
 }}//end namespace pressio::ops
