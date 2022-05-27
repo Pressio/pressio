@@ -7,12 +7,16 @@ namespace
 {
 struct MyApp1
 {
-  using scalar_type   = double;
+  using time_type   = double;
   using state_type    = Eigen::VectorXd;
   using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
+  state_type createState() const{
+    return state_type(3);
+  }
+
   velocity_type createVelocity() const{
     velocity_type f(3);
     return f;
@@ -24,16 +28,16 @@ public:
   }
 
   void velocity(const state_type & yn,
-		const scalar_type& time,
+		const time_type& evaltime,
 		velocity_type & f) const
   {
-    std::cout << "f: t=" << time << "\n";
-    f[0] = time+1.;
-    f[1] = time+2.;
-    f[2] = time+3.;
+    std::cout << "f: t=" << evaltime << "\n";
+    f[0] = evaltime+1.;
+    f[1] = evaltime+2.;
+    f[2] = evaltime+3.;
   }
 
-  void jacobian(const state_type&, const scalar_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -75,7 +79,7 @@ TEST(ode, implicit_euler_appVelocityCalledWithCorrectTime)
   app_t appObj;
   state_t y(3); y.setConstant(1.5);
 
-  auto stepperObj = ode::create_bdf1_stepper(y,appObj);
+  auto stepperObj = ode::create_bdf1_stepper(appObj);
   MyFakeSolver1 solver;
   double dt = 1.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 1, solver);
@@ -86,12 +90,16 @@ namespace
 {
 struct MyApp2
 {
-  using scalar_type   = double;
+  using time_type   = double;
   using state_type    = Eigen::VectorXd;
   using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
+  state_type createState() const{
+    return state_type(3);
+  }
+
   velocity_type createVelocity() const{
     velocity_type f(3);
     return f;
@@ -103,16 +111,16 @@ public:
   }
 
   void velocity(const state_type & yn,
-    const scalar_type& time,
+    const time_type& evaltime,
     velocity_type & f) const
   {
-    std::cout << "f: t=" << time << "\n";
-    f[0] = time+1.;
-    f[1] = time+2.;
-    f[2] = time+3.;
+    std::cout << "f: t=" << evaltime << "\n";
+    f[0] = evaltime+1.;
+    f[1] = evaltime+2.;
+    f[2] = evaltime+3.;
   }
 
-  void jacobian(const state_type&, const scalar_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -174,7 +182,7 @@ TEST(ode, implicit_bdf2_appVelocityCalledWithCorrectTime)
   app_t appObj;
   state_t y(3); y.setConstant(1.5);
 
-  auto stepperObj = ode::create_bdf2_stepper(y,appObj);
+  auto stepperObj = ode::create_bdf2_stepper(appObj);
   MyFakeSolver2 solver;
   double dt = 1.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
@@ -186,12 +194,16 @@ namespace
 struct MyApp3
 {
   mutable int count_ = 0;
-  using scalar_type = double;
+  using time_type = double;
   using state_type    = Eigen::VectorXd;
   using discrete_time_residual_type = Eigen::VectorXd;
   using discrete_time_jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
+  state_type createState() const{
+    return state_type(3);
+  }
+
   discrete_time_residual_type createDiscreteTimeResidual() const{
     discrete_time_residual_type R(3);
     return R;
@@ -203,8 +215,8 @@ public:
 
   template <typename step_t>
   void discreteTimeResidual(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
+                            const time_type & time,
+                            const time_type & dt,
                             discrete_time_residual_type & R,
                             const state_type &,
                             const state_type &) const
@@ -230,8 +242,8 @@ public:
 
   template <typename step_t>
   void discreteTimeJacobian(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
+                            const time_type & time,
+                            const time_type & dt,
                             discrete_time_jacobian_type & J,
                             const state_type &,
                             const state_type &) const
@@ -273,7 +285,7 @@ TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
 
   using res_t  = typename app_t::discrete_time_residual_type;
   using jac_t = typename app_t::discrete_time_jacobian_type;
@@ -292,7 +304,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime2)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
@@ -308,7 +320,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime3)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);

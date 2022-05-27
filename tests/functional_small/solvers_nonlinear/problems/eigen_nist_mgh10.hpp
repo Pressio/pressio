@@ -53,6 +53,7 @@ struct EigenNISTmgh10
       2.8720E+03
     };
 
+  state_type createState() const{return state_type(3);}
   residual_type createResidual() const{return residual_type(16);}
   jacobian_type createJacobian() const{return jacobian_type(16,3);}
 

@@ -7,13 +7,15 @@ using VectorType = std::vector<ScalarType>;
 namespace
 {
 struct MyApp{
-  using scalar_type   = ScalarType;
+  using time_type   = ScalarType;
   using state_type    = VectorType;
   using velocity_type = VectorType;
 
 public:
+  state_type createState() const{ return state_type(3); }
+
   void velocity(const state_type & y,
-	   	          scalar_type t, 
+	   	          time_type evalt,
                 velocity_type & R) const
   {
     R[0] = -10. * y[0];
@@ -30,7 +32,7 @@ public:
 
 #include "pressio/type_traits.hpp"
 
-namespace pressio{ 
+namespace pressio{
 
 template<>
 struct Traits<VectorType>
@@ -89,7 +91,7 @@ TEST(ode, explicit_euler_custom_types)
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  auto stepperObj = ode::create_forward_euler_stepper(y,appObj);
+  auto stepperObj = ode::create_forward_euler_stepper(appObj);
 
   ScalarType dt = 0.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 1);
@@ -107,7 +109,7 @@ TEST(ode, explicit_rk4_custom_types)
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
-  auto stepperObj = ode::create_runge_kutta4_stepper(y,appObj);
+  auto stepperObj = ode::create_runge_kutta4_stepper(appObj);
 
   ScalarType dt = 0.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 1);
@@ -119,18 +121,21 @@ TEST(ode, explicit_rk4_custom_types)
 
 struct MyAppForAb2
 {
-  using scalar_type   = ScalarType;
+  using time_type   = ScalarType;
   using state_type    = VectorType;
   using velocity_type = VectorType;
 
 public:
+  state_type createState() const{
+    return state_type(3);
+  }
+
   void velocity(const state_type & y,
-    scalar_type t,
-    velocity_type & R) const
+    time_type evaltime, velocity_type & R) const
   {
-    R[0] = t;
-    R[1] = t;
-    R[2] = t;
+    R[0] = evaltime;
+    R[1] = evaltime;
+    R[2] = evaltime;
   };
 
   velocity_type createVelocity() const
@@ -200,7 +205,7 @@ TEST(ode, explicit_ab2_custom_types)
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(y,appObj);
+  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj);
   ScalarType dt = 2.;
   CollectorTestAb2 C;
   ode::advance_n_steps_and_observe(stepperObj, y, 0.0, dt, 3, C);

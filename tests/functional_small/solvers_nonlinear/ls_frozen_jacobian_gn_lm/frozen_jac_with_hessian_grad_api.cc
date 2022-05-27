@@ -4,12 +4,12 @@
 
 struct MySystem
 {
-  using scalar_type = double;
   using state_type = vec_type;
   using hessian_type  = mat_type;
   using gradient_type = vec_type;
   using residual_type = state_type;
   using jacobian_type = mat_type;
+  using residual_norm_type = double;
 
   std::string & checkStr_;
   mutable std::size_t iterCountR_ = {0};
@@ -34,6 +34,10 @@ struct MySystem
     if(iterCountJ_ != 6) checkStr_="FAILED";
   }
 
+  state_type createState() const {
+    return state_type(numVars);
+  }
+
   hessian_type createHessian() const {
     return hessian_type(numVars, numVars);
   }
@@ -53,7 +57,7 @@ struct MySystem
   void gradient(const state_type & , 
                 gradient_type & g, 
                 pressio::Norm normKind, 
-                scalar_type & residualNorm,
+                residual_norm_type & residualNorm,
                 bool updateJacobian) const
   {
     ++iterCountR_;
@@ -75,7 +79,7 @@ struct MySystem
 
   void residualNorm(const state_type &, 
                     pressio::Norm normKind, 
-                    scalar_type & resNorm) const
+                    residual_norm_type & resNorm) const
   {
     if (normKind == pressio::Norm::L2){
       resNorm = R_.norm();
@@ -140,7 +144,7 @@ int main()
 
 // test GN normal eq
 #if defined USE_GN_NEQ
-    auto solver = pressio::nonlinearsolvers::create_gauss_newton(sysObj, x, linSolverObj);    
+    auto solver = pressio::nonlinearsolvers::create_gauss_newton(sysObj, linSolverObj);    
     solver.setMaxIterations(6);
     solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
@@ -149,7 +153,7 @@ int main()
 
 // test LM 
 #if defined USE_LM_NEQ
-    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sysObj, x, linSolverObj);    
+    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sysObj, linSolverObj);    
     solver.setMaxIterations(6);
     solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);

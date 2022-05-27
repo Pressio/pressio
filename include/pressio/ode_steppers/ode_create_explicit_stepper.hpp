@@ -53,12 +53,9 @@
 
 namespace pressio{ namespace ode{
 
-template<class StateType, class SystemType>
-auto create_explicit_stepper(StepScheme name,
-			     const StateType & state,
-			     SystemType && system)
-{
-  return impl::create_explicit_stepper(name, state, system);
+template<class SystemType>
+auto create_explicit_stepper(StepScheme name, SystemType && system){
+  return impl::create_explicit_stepper(name, system);
 }
 
 template<class ...Args>

@@ -28,6 +28,10 @@ struct NonLinearLeastSquareSystem
     jac(1,1) = x(1)*(x(1) + 1.) - (-2.*x(1) - 1.)*x(1) - 14.;
   }
 
+  state_type createState() const {
+    return state_type("S", 2);
+  }
+
   residual_type createResidual() const {
     return residual_type("R", 2);
   }
@@ -58,7 +62,7 @@ int main()
       x0(0) = 0.5;
       x0(1) = -2.;
 
-      auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, x0, linSolverObj);
+      auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, linSolverObj);
       solver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::LMSchedule1);
       solver.setTolerance(1e-15);
       solver.solve(sys, x0);
@@ -69,7 +73,7 @@ int main()
     {
       x1(0) = 0.5;
       x1(1) = -2.;
-      auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, x0, linSolverObj);
+      auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, linSolverObj);
       solver.setTolerance(1e-15);
       solver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::LMSchedule2);
       solver.solve(sys, x1);
@@ -82,7 +86,7 @@ int main()
     vector_t x2a("x", 2);
     vector_t x2b("x", 2);
     {
-      auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, x0, linSolverObj);
+      auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, linSolverObj);
       solver.setMaxIterations(4);
       solver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::LMSchedule1);
 

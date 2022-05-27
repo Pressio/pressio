@@ -10,7 +10,7 @@ struct MyFakeStepperExplicit
   void operator()(VectorType & odeState,
 	      const ScalarType & time,
 	      const ScalarType & dt,
-	      const pressio::ode::step_count_type & step)
+	      const typename pressio::ode::StepCount::value_type & step)
   {
     for (std::size_t i=0; i<odeState.size(); i++){
       odeState[i] += time;
@@ -28,7 +28,7 @@ TEST(ode, explicit_advance_n_steps_fix_dt)
   ScalarType dt = 2.2;
 
   ScalarType t0 = 1.2;
-  pressio::ode::advance_n_steps(stepper, odeState, t0, dt, 4);
+  pressio::ode::advance_n_steps(stepper, odeState, t0, dt, pressio::ode::StepCount(4));
   std::for_each(odeState.begin(), odeState.end(),
 		[](const ScalarType & val){ EXPECT_DOUBLE_EQ(val, 18.);});
 }
@@ -40,7 +40,7 @@ struct MyFakeStepper
   void operator()(VectorType & odeState,
 		  const ScalarType & t,
 		  const ScalarType & dt,
-		  const int32_t & step,
+		  const typename pressio::ode::StepCount::value_type & step,
 		  solver_type & solver)
   {
     for (int i=0; i<odeState.size(); i++){
@@ -72,7 +72,7 @@ TEST(ode, advance_n_steps_with_dt_setter_and_collector)
 
   std::string checkStr= "PASSED";
 
-  auto dtManager = [](const int32_t & step,
+  auto dtManager = [](const typename pressio::ode::StepCount::value_type & step,
 		      const ScalarType & time,
 		      ScalarType & dt)
 		{
@@ -81,7 +81,7 @@ TEST(ode, advance_n_steps_with_dt_setter_and_collector)
 		  if(step==3) dt = 1.;
 		};
 
-  auto collector = [&checkStr](const int32_t & step,
+  auto collector = [&checkStr](const typename pressio::ode::StepCount::value_type & step,
 			       const ScalarType & time,
 			       const VectorType & y)
 		   {
@@ -102,5 +102,7 @@ TEST(ode, advance_n_steps_with_dt_setter_and_collector)
 			 checkStr = "FAILED";
 		     }
 		   };
-  pressio::ode::advance_n_steps_and_observe(stepper, y, 0., dtManager, 3, collector, solver);
+  pressio::ode::advance_n_steps_and_observe(stepper, y, 0., dtManager,
+					    pressio::ode::StepCount(3),
+					    collector, solver);
 }

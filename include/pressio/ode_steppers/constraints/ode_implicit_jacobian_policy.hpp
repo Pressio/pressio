@@ -51,40 +51,35 @@
 
 namespace pressio{ namespace ode{
 
-template<
-  class T,
-  class StateType,
-  class ScalarType,
-  class = void
-  >
+template<class T, class = void>
 struct implicit_jacobian_policy : std::false_type{};
 
-template<
-  class T,
-  class StateType,
-  class ScalarType
-  >
+template<class T>
 struct implicit_jacobian_policy<
-  T, StateType, ScalarType,
+  T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::has_jacobian_typedef<T>::value
-    and
-    std::is_same<
+    ::pressio::has_time_typedef<T>::value
+    and ::pressio::has_state_typedef<T>::value
+    and ::pressio::has_jacobian_typedef<T>::value
+    //
+    and ::pressio::ode::has_const_create_state_method_return_result<
+      T, typename T::state_type>::value
+    //
+    and std::is_same<
       typename T::jacobian_type,
       decltype(std::declval<T const>().create())
       >::value
-    and
     //
-    std::is_void<
+    and std::is_void<
       decltype
       (
        std::declval<T const>()
        (
 	std::declval<StepScheme const &>(),
-	std::declval<StateType const &>(),
-	std::declval<ImplicitStencilStatesContainerDyn<StateType> const & >(),
-	std::declval<ScalarType const &>(),
-	std::declval<ScalarType const &>(),
+	std::declval<typename T::state_type const &>(),
+	std::declval<ImplicitStencilStatesContainerDyn<typename T::state_type> const & >(),
+	std::declval<typename T::time_type const &>(),
+	std::declval<typename T::time_type const &>(),
 	std::declval<int const &>(),
 	std::declval<typename T::jacobian_type &>()
 	)
@@ -94,17 +89,17 @@ struct implicit_jacobian_policy<
   > : std::true_type{};
 //------------------------------------------------------------------
 
-template<class T, class ... args>
+template<class T>
 using implicit_euler_jacobian_policy =
-  implicit_jacobian_policy<T, args...>;
+  implicit_jacobian_policy<T>;
 
-template<class T, class ... args>
+template<class T>
 using implicit_bdf2_jacobian_policy =
-  implicit_jacobian_policy<T, args...>;
+  implicit_jacobian_policy<T>;
 
-template<class T, class ... args>
+template<class T>
 using implicit_cranknicolson_jacobian_policy =
-  implicit_jacobian_policy<T, args...>;
+  implicit_jacobian_policy<T>;
 
 }} // namespace pressio::ode::constraints
 #endif  // ODE_STEPPERS_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_

@@ -61,14 +61,5 @@ struct explicit_state<T,
    >
   > : std::true_type{};
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<typename T>
-// struct explicit_state<::pressio::containers::Tensor<1, T>> : std::true_type{};
-// template<typename T>
-// struct explicit_state<::pressio::containers::Tensor<2, T>> : std::true_type{};
-// template<typename T>
-// struct explicit_state<::pressio::containers::Tensor<3, T>> : std::true_type{};
-// #endif
-
 }} // namespace pressio::ode::constraints
 #endif  // ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_

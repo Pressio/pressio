@@ -54,8 +54,17 @@
 #include "./type_traits.hpp"
 
 namespace pressio{ namespace ode{
-using step_count_type = int32_t;
-}}
+
+struct StepCount{
+  using value_type = int32_t;
+  value_type value_{};
+  StepCount() = delete;
+  constexpr explicit StepCount(value_type valueIn) : value_(valueIn){}
+  constexpr value_type get() const { return value_; }
+};
+
+constexpr typename StepCount::value_type stepZero(0);
+}}// end namespace ode
 
 #include "./ode_advancers/exceptions.hpp"
 #include "./ode_advancers/constraints/ode_observer.hpp"

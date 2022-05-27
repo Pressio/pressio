@@ -54,9 +54,9 @@ namespace pressio{ namespace ode{ namespace impl{
 template <typename TimeType, typename StateType>
 struct NoOpObserver
 {
-    void operator()(const int & step,
-		  const TimeType & time,
-		  const StateType & stateIn)
+  void operator()(const typename ::pressio::ode::StepCount::value_type & /*step*/,
+		  const TimeType & /*time*/,
+		  const StateType & /*state*/)
   {
     // no op
   }

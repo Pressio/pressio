@@ -64,6 +64,7 @@
 #include "solvers_nonlinear/constraints/solvers_least_squares_weighting_operator.hpp"
 #include "solvers_nonlinear/impl/updaters/solvers_create_updater.hpp"
 #include "solvers_nonlinear/impl/solvers_observer.hpp"
+#include "solvers_nonlinear/predicates/solvers_has_const_create_state_method_return_result.hpp"
 
 // *** newton raphson *** //
 #include "solvers_nonlinear/constraints/solvers_admissible_linear_solver_for_newton_raphson.hpp"

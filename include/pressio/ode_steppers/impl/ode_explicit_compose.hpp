@@ -53,62 +53,68 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<class StateType, class SystemType>
+template<class SystemType>
 struct ExplicitCompose
 {
-  static_assert
-  (::pressio::ode::continuous_time_system_with_at_least_velocity<mpl::remove_cvref_t<SystemType>>::value,
-   "The system passed to the ExplicitStepper does not meet the required API");
+  using sys_type = mpl::remove_cvref_t<SystemType>;
 
-  static_assert(::pressio::ode::explicit_state<StateType>::value,
+  // these static asserts are here because it allows to produce
+  // readable error messages to the user if something is wrong.
+  // If we were to us sfinae here, we would get a huge mess
+  // for errors, so it is better to leave these are static asserts.
+  // Ideally a system should be a concept. We cannot do that yet.
+
+  static_assert
+  (::pressio::ode::continuous_time_system_with_at_least_velocity<sys_type>::value,
+   "To create an explicit stepper your system class MUST meet at least the velocity API");
+
+  // if we get here, it means the above static assertion passed so
+  // the system meets at least the velocity API
+  using state_type = typename sys_type::state_type;
+  static_assert(::pressio::ode::explicit_state<state_type>::value,
 		"Invalid state type for explicit stepper");
-  static_assert
-  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
-   "Incompatible StateType and state_type alias deduced from the system class");
 
-  using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
-  using scalar_type_from_system = typename mpl::remove_cvref_t<SystemType>::scalar_type;
-  static_assert(std::is_same<scalar_type, scalar_type_from_system>::value,
-		"State and system have inconsistent scalar types");
-
-  using velocity_type = typename mpl::remove_cvref_t<SystemType>::velocity_type;
+  using velocity_type = typename sys_type::velocity_type;
   static_assert(::pressio::ode::explicit_velocity<velocity_type>::value,
 		"Invalid velocity type for explicit time stepping");
 
-  // it is very important that the stepper is given "SystemType" because
-  // that contains the right logic for how we store the system
-  using type = ExplicitStepper<scalar_type, StateType, SystemType, velocity_type>;
+  // it is very important to use "SystemType" as template arg
+  // because that it the right type carrying how we store the system
+  // since SystemType comes from the deduction below
+  using mass_matrix_type = typename find_mass_matrix_if_any_or_noop<sys_type>::type;
+  using type = ExplicitStepper<state_type, SystemType, velocity_type, mass_matrix_type>;
 };
 
-template<class StateType, class SystemType>
-auto create_explicit_stepper(StepScheme name,
-			     const StateType & state,
-			     SystemType && system)
+template<class SystemType>
+auto create_explicit_stepper(StepScheme name, SystemType && system)
 {
 
-  // note that here it is important to use SystemType and NOT SystemType &&.
-  // When user passes a non-temporary system, SystemType is deduced to be a reference,
-  // so the concrete stepper class composed inside the ExplicitCompose will
-  // be composed such that it will hold a reference to the provided system arg.
-  // When the user passes a temporary system object, SystemType will be correctly
-  // deduced so that the stepper will hold an instance of the system that
+  // When user passes a non-temporary system object, SystemType is
+  // deduced to be a reference, so the concrete stepper class
+  // composed inside the ExplicitCompose will be composed such
+  // that it will hold a reference to the provided system arg.
+  // When the user passes system to be a temporary object,
+  // SystemType will be deduced so that the stepper will
+  // hold an **instance** of the system that
   // is move-constructed (if applicable) from the system argument.
-  using ReturnType = typename impl::ExplicitCompose<StateType, SystemType>::type;
+  // So here it is important to use SystemType as template argument
+  // for ExplicitCompose and NOT SystemType &&.
+  using ReturnType = typename impl::ExplicitCompose<SystemType>::type;
 
   if (name == StepScheme::ForwardEuler){
-    return ReturnType(ode::ForwardEuler(), state, std::forward<SystemType>(system));
+    return ReturnType(ode::ForwardEuler(), std::forward<SystemType>(system));
   }
 
   else if (name == StepScheme::RungeKutta4){
-    return ReturnType(ode::RungeKutta4(), state, std::forward<SystemType>(system));
+    return ReturnType(ode::RungeKutta4(), std::forward<SystemType>(system));
   }
 
   else if (name == StepScheme::AdamsBashforth2){
-    return ReturnType(ode::AdamsBashforth2(), state, std::forward<SystemType>(system));
+    return ReturnType(ode::AdamsBashforth2(), std::forward<SystemType>(system));
   }
 
   else if (name == StepScheme::SSPRungeKutta3){
-    return ReturnType(ode::SSPRungeKutta3(), state, std::forward<SystemType>(system));
+    return ReturnType(ode::SSPRungeKutta3(), std::forward<SystemType>(system));
   }
 
   else{

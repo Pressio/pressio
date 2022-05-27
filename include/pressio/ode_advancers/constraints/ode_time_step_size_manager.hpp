@@ -64,7 +64,7 @@ struct time_step_size_manager<
       (
        std::declval<T const>()
        (
-	std::declval<::pressio::ode::step_count_type const &>(), //step
+	std::declval<typename ::pressio::ode::StepCount::value_type const &>(), //step
 	std::declval<TimeType const &>(), //time
 	std::declval<TimeType &>()        //dt
 	)
@@ -82,7 +82,7 @@ struct time_step_size_manager<
       (
        std::declval<T const>()
        (
-	std::declval<::pressio::ode::step_count_type const &>(), //step
+	std::declval<typename ::pressio::ode::StepCount::value_type const &>(), //step
 	std::declval<TimeType const &>(), //time
 	std::declval<TimeType &>(),       //dt
 	std::declval<TimeType &>(),       //min dt

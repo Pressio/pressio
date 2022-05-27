@@ -5,26 +5,27 @@
 
 struct MyApp
 {
-  using scalar_type   = double;
+  using time_type   = double;
   using state_type    = Eigen::VectorXd;
   using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
+  state_type createState() const{ return state_type(3); }
   velocity_type createVelocity() const{ return velocity_type(3); }
   jacobian_type createJacobian() const{return jacobian_type(3,3);}
 
   void velocity(const state_type & y,
-		const scalar_type& time,
+		const time_type& evaltime,
 		velocity_type & f) const
   {
-    std::cout << "velo: t=" << time << "\n";
-    f[0] = y(0)+time;
-    f[1] = y(1)+time;
-    f[2] = y(2)+time;
+    std::cout << "velo: t=" << evaltime << "\n";
+    f[0] = y(0)+evaltime;
+    f[1] = y(1)+evaltime;
+    f[2] = y(2)+evaltime;
   }
 
-  void jacobian(const state_type&, const scalar_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -225,7 +226,7 @@ TEST(ode, implicit_crank_nicolson_correctness_default_policy)
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
-  auto stepperObj = pressio::ode::create_cranknicolson_stepper(y,appObj);
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(appObj);
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
   std::cout << y << '\n';
 
@@ -251,10 +252,11 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
 
   using res_t  = typename app_t::velocity_type;
   using jac_t  = typename app_t::jacobian_type;
-  using res_pol_t = pressio::ode::impl::ResidualStandardPolicy<app_t&, state_t, res_t>;
-  using jac_pol_t = pressio::ode::impl::JacobianStandardPolicy<app_t&, state_t, jac_t>;
+  using time_type = typename app_t::time_type;
+  using res_pol_t = pressio::ode::impl::ResidualStandardPolicy<app_t&, time_type, state_t, res_t>;
+  using jac_pol_t = pressio::ode::impl::JacobianStandardPolicy<app_t&, time_type, state_t, jac_t>;
 
-  auto stepperObj = pressio::ode::create_cranknicolson_stepper(y, res_pol_t(appObj), jac_pol_t(appObj));
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(res_pol_t(appObj), jac_pol_t(appObj));
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
 
   EXPECT_TRUE(y(0)==7.);

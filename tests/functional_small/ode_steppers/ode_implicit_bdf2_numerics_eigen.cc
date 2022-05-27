@@ -13,12 +13,12 @@ TEST(ode, implicit_bdf2_policy_default_created)
   problem_t problemObj;
   state_t y(3);
   y = problemObj.getInitCond();
-  auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF2, y,problemObj);
+  auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF2, problemObj);
 
   using jac_t = typename problem_t::jacobian_type;
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,linSolverObj);
 
   // integrate in time
   ode::step_count_type nSteps = 4;
@@ -38,19 +38,20 @@ TEST(ode, implicit_bdf2_custom_policy)
 {
   using namespace pressio;
   using problem_t = ode::testing::refAppForImpEigen;
+  using time_type = typename problem_t::time_type;
   using state_t = typename problem_t::state_type;
   problem_t problemObj;
   state_t y = problemObj.getInitCond();
 
   using res_t = typename problem_t::velocity_type;
   using jac_t = typename problem_t::jacobian_type;
-  using res_pol_t = ode::impl::ResidualStandardPolicy<problem_t&, state_t, res_t>;
-  using jac_pol_t = ode::impl::JacobianStandardPolicy<problem_t&, state_t, jac_t>;
-  auto stepperObj = ode::create_bdf2_stepper(y, res_pol_t(problemObj), jac_pol_t(problemObj));
+  using res_pol_t = ode::impl::ResidualStandardPolicy<problem_t&, time_type, state_t, res_t>;
+  using jac_pol_t = ode::impl::JacobianStandardPolicy<problem_t&, time_type, state_t, jac_t>;
+  auto stepperObj = ode::create_bdf2_stepper(res_pol_t(problemObj), jac_pol_t(problemObj));
 
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,linSolverObj);
 
   // integrate in time
   ode::step_count_type nSteps = 4;

@@ -101,51 +101,5 @@ void discrete_time_jacobian(JacobianType & jac,
   ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// /*
-//   BDF1 time-discrete jacobian:
-//   J(y_n+1) = I - dt*df_n+1/dy_n+1
-
-//   - on input jac contains  df_n+1/dy_n+1
-//   - on output, jac contains the time-discrete jacobian
-// */
-// template <typename T, typename ScalarType>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_array_pybind<T>::value
-// >
-// discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
-//           const ScalarType & dt,
-//           ::pressio::ode::BDF1)
-// {
-//   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-//   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
-//   const auto cf    = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
-//   ::pressio::ops::scale(jac, cf);
-//   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
-// }
-
-// /*
-//   BDF2 time-discrete jacobian:
-//   J(y_n+1) = I - (2/3)*dt*df_n+1/dy_n+1
-
-//   - on input jac contains  df_n+1/dy_n+1
-//   - on output, jac contains the time-discrete jacobian
-// */
-// template <typename T, typename ScalarType>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_array_pybind<T>::value
-// >
-// discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
-//           const ScalarType & dt,
-//           ::pressio::ode::BDF2)
-// {
-//   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-//   constexpr auto cnp1   = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;
-//   const auto cf    = ::pressio::ode::constants::bdf2<ScalarType>::c_f_ * dt;
-//   ::pressio::ops::scale(jac, cf);
-//   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
-// }
-// #endif
-
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_

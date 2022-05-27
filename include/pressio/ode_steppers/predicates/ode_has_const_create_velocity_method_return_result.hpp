@@ -52,17 +52,17 @@
 
 namespace pressio{ namespace ode{
 
-template <typename T, typename velo_type, typename = void>
+template <class T, class VeloType, class = void>
 struct has_const_create_velocity_method_return_result
   : std::false_type{};
 
-template <typename T, typename velo_type>
+template <class T, class VeloType>
 struct has_const_create_velocity_method_return_result<
-  T, velo_type,
+  T, VeloType,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<velo_type>::value and
+    !std::is_void<VeloType>::value and
     mpl::is_same<
-      velo_type,
+      VeloType,
       decltype(
 	       std::declval<T const>().createVelocity()
 	       )

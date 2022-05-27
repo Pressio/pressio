@@ -59,12 +59,13 @@ void advance_n_steps(StepperType & stepper,
 		     StateType & state,
 		     const TimeType start_time,
 		     const TimeType time_step_size,
-		     const ::pressio::ode::step_count_type num_steps,
+		     const StepCount num_steps,
 		     Args && ... args)
 {
 
   // check
-  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_is_steppable_with(stepper, state, start_time,
+					std::forward<Args>(args)...);
 
   // run
   using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
@@ -87,12 +88,13 @@ advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const TimeType start_time,
 		StepSizeSetterType && time_step_size_manager,
-		const ::pressio::ode::step_count_type num_steps,
+		const StepCount num_steps,
 		Args && ... args)
 {
 
   // check
-  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_is_steppable_with(stepper, state, start_time,
+					std::forward<Args>(args)...);
   impl::static_assert_admissible_time_step_setter(time_step_size_manager, start_time);
 
   // run
@@ -110,13 +112,14 @@ void advance_n_steps_and_observe(StepperType & stepper,
 				 StateType & state,
 				 const TimeType start_time,
 				 const TimeType time_step_size,
-				 const ::pressio::ode::step_count_type num_steps,
+				 const StepCount num_steps,
 				 ObserverType & observer,
 				 Args && ... args)
 {
 
   // check
-  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_is_steppable_with(stepper, state, start_time,
+					std::forward<Args>(args)...);
   impl::static_assert_admissible_observer(observer, state, start_time);
 
   // run
@@ -135,18 +138,20 @@ advance_n_steps_and_observe(StepperType & stepper,
 			    StateType & state,
 			    const TimeType start_time,
 			    StepSizeSetterType && time_step_size_manager,
-			    const ::pressio::ode::step_count_type num_steps,
+			    const StepCount num_steps,
 			    ObserverType & observer,
 			    Args && ... args)
 {
 
   // check
-  impl::static_assert_is_steppable_with(stepper, state, start_time, std::forward<Args>(args)...);
+  impl::static_assert_is_steppable_with(stepper, state, start_time,
+					std::forward<Args>(args)...);
   impl::static_assert_admissible_time_step_setter(time_step_size_manager, start_time);
   impl::static_assert_admissible_observer(observer, state, start_time);
 
   // run
-  impl::advance_n_steps_with_dt_setter(stepper, num_steps, start_time, state,
+  impl::advance_n_steps_with_dt_setter(stepper, num_steps,
+				       start_time, state,
 				       std::forward<StepSizeSetterType>(time_step_size_manager),
 				       observer,
 				       std::forward<Args>(args)...);

@@ -3,10 +3,13 @@
 
 struct ValidSystem 
 {
-  using scalar_type = double;
   using state_type = Eigen::VectorXd;
   using residual_type = state_type;
-  using jacobian_type = Eigen::SparseMatrix<scalar_type>;
+  using jacobian_type = Eigen::SparseMatrix<double>;
+
+  state_type createState() const {
+    return state_type(2);
+  }
 
   residual_type createResidual() const {
     return residual_type(2);
@@ -51,7 +54,7 @@ int main()
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::LSCG, jacobian_t>;
   lin_solver_t linearSolverObj;
 
-  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(sys, y, linearSolverObj);
+  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(sys, linearSolverObj);
   NonLinSolver.solve(sys, y);
 
   std::string strOut = "PASSED";

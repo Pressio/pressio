@@ -19,11 +19,11 @@ struct CustomUpdate
 
 struct FakeProblem
 {
-  using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
+  state_type createState() const{return state_type(2);}
   residual_type createResidual() const{return residual_type(10);}
   jacobian_type createJacobian() const{return jacobian_type(10,2);}
 
@@ -71,7 +71,7 @@ int main()
 
   FakeLinS<hessian_t> linSolver;
 
-  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
+  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem, linSolver);
   auto criterion = nonlinearsolvers::Stop::AfterMaxIters;
   GNSolver.setStoppingCriterion(criterion);
   GNSolver.setMaxIterations(2);

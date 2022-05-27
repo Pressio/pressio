@@ -65,7 +65,7 @@ struct steppable_with<
 	std::declval<StateType &>(),
 	std::declval<TimeType const &>(),
 	std::declval<TimeType const &>(),
-	std::declval<step_count_type const &>(),
+	std::declval<typename ::pressio::ode::StepCount::value_type const &>(),
 	std::declval<Args>()...
 	)
        )

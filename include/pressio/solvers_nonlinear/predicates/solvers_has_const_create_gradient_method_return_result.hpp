@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_CREATE_GRADIENT_METHOD_RETURN_RESULT_HPP_
 #define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_CREATE_GRADIENT_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
+namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename GradientType, typename enable = void>
 struct has_const_create_gradient_method_return_result : std::false_type{};
@@ -65,5 +65,5 @@ struct has_const_create_gradient_method_return_result
    >
  > : std::true_type{};
 
-}}} // namespace pressio::solvers::predicates
+}} // namespace pressio::solvers
 #endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_CREATE_GRADIENT_METHOD_RETURN_RESULT_HPP_

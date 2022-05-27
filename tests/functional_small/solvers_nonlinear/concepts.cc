@@ -4,11 +4,11 @@
 
 struct ValidSystemResJac 
 {
-  using scalar_type    = double;
-  using state_type     = std::vector<scalar_type>;
+  using state_type     = std::vector<double>;
   using residual_type  = state_type;
-  using jacobian_type  = std::vector<std::vector<scalar_type>>;
+  using jacobian_type  = std::vector<std::vector<double>>;
 
+  state_type createState() const;
   residual_type createResidual() const;
   jacobian_type createJacobian() const;
 
@@ -18,12 +18,12 @@ struct ValidSystemResJac
 
 struct NonValidSystemResJac 
 {
-  using scalar_type     = double;
-  using state_type     = std::vector<scalar_type>;
+  using state_type     = std::vector<double>;
   using residual_type  = state_type;
-  using jacobian_type  = std::vector<std::vector<scalar_type>>;
+  using jacobian_type  = std::vector<std::vector<double>>;
 
   //residual_type createResidual() const; // missing on purpose to fail assert
+  state_type createState() const;
   jacobian_type createJacobian() const;
   void residual(const state_type& x, residual_type & res) const;
   void jacobian(const state_type& x, jacobian_type & jac) const;
@@ -31,11 +31,11 @@ struct NonValidSystemResJac
 
 struct ValidSystemFusedResJac
 {
-  using scalar_type     = double;
-  using state_type     = std::vector<scalar_type>;
+  using state_type     = std::vector<double>;
   using residual_type  = state_type;
-  using jacobian_type  = std::vector<std::vector<scalar_type>>;
+  using jacobian_type  = std::vector<std::vector<double>>;
 
+  state_type createState() const;
   residual_type createResidual() const;
   jacobian_type createJacobian() const;
 
@@ -46,45 +46,68 @@ struct ValidSystemFusedResJac
 };
 
 struct ValidSystemHessGrad {
-  using scalar_type     = double;
-  using state_type  = std::vector<scalar_type>;
-  using hessian_type  = std::vector<std::vector<scalar_type>>;
+  using state_type  = std::vector<double>;
+  using hessian_type  = std::vector<std::vector<double>>;
   using gradient_type = state_type;
+  using residual_norm_type = double;
 
+  state_type createState() const;
   hessian_type createHessian() const;
   gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
           pressio::Norm normKind,
-          scalar_type & resNorm) const;
+          residual_norm_type & resNorm) const;
 
   void gradient(const state_type &,
     gradient_type &,
     ::pressio::Norm normKind,
-    scalar_type & normResidual,
+    double & normResidual,
     bool recomputeJacobian) const;
 
   void hessian(const state_type &, hessian_type &) const;
 };
 
 struct ValidSystemFusedHessGrad {
-  using scalar_type     = double;
-  using state_type  = std::vector<scalar_type>;
-  using hessian_type  = std::vector<std::vector<scalar_type>>;
+  using state_type  = std::vector<double>;
+  using hessian_type  = std::vector<std::vector<double>>;
   using gradient_type = state_type;
+  using residual_norm_type = double;
 
+  state_type createState() const;
   hessian_type createHessian() const;
   gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
           pressio::Norm normKind,
-          scalar_type & resNorm) const;
+          residual_norm_type & resNorm) const;
 
   void hessianAndGradient(const state_type &, hessian_type &,
         gradient_type &,
         ::pressio::Norm normKind,
-        scalar_type & normResidual,
+        residual_norm_type & normResidual,
         bool recomputeJacobian) const;
+};
+
+struct ValidLinearSolver 
+{
+  using matrix_type = std::vector<std::vector<double>>;
+
+  template  <typename state_type>
+  void solve(const matrix_type &, const state_type &, state_type &);
+};
+
+struct InvalidLinearSolver {
+  using matrix_type = std::vector<std::vector<double>>;
+};
+
+template <typename A_t, typename r_t, typename state_type>
+struct ValidQRSolver 
+{
+  void computeThin(const A_t &);
+  void applyQTranspose(const r_t &, state_type &) const;
+  void applyRTranspose(const state_type &, state_type &) const;
+  void solve(const state_type &, state_type &) const;
 };
 
 TEST(solvers_nonlinear, res_jac_api)
@@ -116,26 +139,12 @@ TEST(solvers_nonlinear, hes_gra_api){
   static_assert(!nonlinearsolvers::compliant_with_fused_hessian_gradient_api<system_t>::value, "");
 }
 
-
 TEST(solvers_nonlinear, fused_hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemFusedHessGrad;
   static_assert(!nonlinearsolvers::compliant_with_hessian_gradient_api<system_t>::value, "");
   static_assert(nonlinearsolvers::compliant_with_fused_hessian_gradient_api<system_t>::value, "");
 }
-
-struct ValidLinearSolver 
-{
-  using matrix_type = std::vector<std::vector<double>>;
-
-  template  <typename state_type>
-  void solve(const matrix_type &, const state_type &, state_type &);
-};
-
-struct InvalidLinearSolver {
-  using matrix_type = std::vector<std::vector<double>>;
-};
-
 
 TEST(solvers_meta, admissible_linear_solver_newtonraphon)
 {
@@ -152,15 +161,6 @@ TEST(solvers_meta, admissible_linear_solver_nonlinear_ls)
   static_assert(nonlinearsolvers::admissible_linear_solver_for_nonlinear_least_squares<ValidLinearSolver, state_type>::value, "");
   static_assert(!nonlinearsolvers::admissible_linear_solver_for_nonlinear_least_squares<InvalidLinearSolver, state_type>::value, "");
 }
-
-template <typename A_t, typename r_t, typename state_type>
-struct ValidQRSolver 
-{
-  void computeThin(const A_t &);
-  void applyQTranspose(const r_t &, state_type &) const;
-  void applyRTranspose(const state_type &, state_type &) const;
-  void solve(const state_type &, state_type &) const;
-};
 
 TEST(solvers_nonlinear, admissible_qr_solver)
 {

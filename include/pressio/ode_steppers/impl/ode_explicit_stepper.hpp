@@ -50,14 +50,18 @@
 #define ODE_STEPPERS_IMPL_ODE_EXPLICIT_STEPPER_HPP_
 
 #include <array>
+#include "./ode_trivial_mass_matrix.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
+// this class is not meant for direct instantiation.
+// One needs to use the public create_* functions because
+// templates are handled and passed properly there.
 template<
-  class ScalarType,
   class StateType,
   class SystemType,
-  class VelocityType
+  class VelocityType,
+  class MassMatrixType
   >
 class ExplicitStepper
 {
@@ -68,6 +72,7 @@ private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::vector<VelocityType> velocities_;
   StateType auxiliaryState_;
+  MassMatrixType massMatrix_;
 
 public:
   ExplicitStepper() = delete;
@@ -78,102 +83,168 @@ public:
   ~ExplicitStepper() = default;
 
   ExplicitStepper(ode::ForwardEuler,
-		  const StateType & state,
 		  SystemType && systemObj)
     : name_(StepScheme::ForwardEuler),
       order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity()},
-      auxiliaryState_{::pressio::ops::clone(state)}
+      auxiliaryState_{systemObj.createState()},
+      massMatrix_(createMassMatrix<MassMatrixType>()(systemObj_.get()))
   {}
 
   ExplicitStepper(ode::RungeKutta4,
-		  const StateType & state,
 		  SystemType && systemObj)
     : name_(StepScheme::RungeKutta4),
       order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity(),
-    systemObj.createVelocity(),
-    systemObj.createVelocity(),
-    systemObj.createVelocity()},
-      auxiliaryState_{::pressio::ops::clone(state)}
+		  systemObj.createVelocity(),
+		  systemObj.createVelocity(),
+		  systemObj.createVelocity()},
+      auxiliaryState_{systemObj.createState()},
+      massMatrix_(createMassMatrix<MassMatrixType>()(systemObj_.get()))
   {}
 
   ExplicitStepper(ode::AdamsBashforth2,
-		  const StateType & state,
 		  SystemType && systemObj)
     : name_(StepScheme::AdamsBashforth2),
       order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
-      velocities_{systemObj.createVelocity(), systemObj.createVelocity()},
-      auxiliaryState_{::pressio::ops::clone(state)}
+      velocities_{systemObj.createVelocity(),
+                  systemObj.createVelocity()},
+      auxiliaryState_{systemObj.createState()},
+      massMatrix_(createMassMatrix<MassMatrixType>()(systemObj_.get()))
   {}
 
   ExplicitStepper(ode::SSPRungeKutta3,
-		  const StateType & state,
 		  SystemType && systemObj)
     : name_(StepScheme::SSPRungeKutta3),
       order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),
       velocities_{systemObj.createVelocity()},
-      auxiliaryState_{::pressio::ops::clone(state)}
+      auxiliaryState_{systemObj.createState()},
+      massMatrix_(createMassMatrix<MassMatrixType>()(systemObj_.get()))
   {}
 
 public:
-  stepper_order_type order() const
-  {
+  stepper_order_type order() const{
     return order_;
   }
 
-  template<class StepCountType>
-  void operator()(StateType & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
-		  const StepCountType & stepNumber)
+  // sfinae for when mass matrix is dummy one
+  template<
+    class StepCountType,
+    class TimeType,
+    class _MassMatrixType = MassMatrixType>
+  mpl::enable_if_t< is_trivial_mass_matrix<_MassMatrixType>::value >
+  operator()(StateType & odeState,
+	     const TimeType & currentTime,
+	     const TimeType & dt,
+	     const StepCountType & stepNumber)
   {
     auto dummyRhsObserver = [](const StepCountType &,
-			       const ScalarType &,
+			       const TimeType &,
 			       const VelocityType &) { /*no op*/ };
     (*this)(odeState, currentTime, dt, stepNumber, dummyRhsObserver);
   }
 
-  template<class StepCountType, class RhsObserverType>
-  void operator()(StateType & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
-		  const StepCountType & step,
-		  RhsObserverType & rhsObs)
+  // sfinae for when mass matrix is dummy one
+  template<
+    class StepCountType,
+    class TimeType,
+    class RhsObserverType,
+    class _MassMatrixType = MassMatrixType>
+  mpl::enable_if_t< is_trivial_mass_matrix<_MassMatrixType>::value >
+  operator()(StateType & odeState,
+	     const TimeType & currentTime,
+	     const TimeType & dt,
+	     const StepCountType & step,
+	     RhsObserverType & rhsObs)
   {
     if (name_ == ode::StepScheme::ForwardEuler){
-      doStepImpl(ode::ForwardEuler(), odeState,
-		 currentTime, dt, step, rhsObs);
+      doStepImplNoMM(ode::ForwardEuler(), odeState,
+		     currentTime, dt, step, rhsObs);
     }
 
     else if (name_ == ode::StepScheme::RungeKutta4){
-      doStepImpl(ode::RungeKutta4(), odeState,
-		 currentTime, dt, step, rhsObs);
+      doStepImplNoMM(ode::RungeKutta4(), odeState,
+		     currentTime, dt, step, rhsObs);
     }
 
     else if (name_ == ode::StepScheme::AdamsBashforth2){
-      doStepImpl(ode::AdamsBashforth2(), odeState,
-		 currentTime, dt, step, rhsObs);
+      doStepImplNoMM(ode::AdamsBashforth2(), odeState,
+		     currentTime, dt, step, rhsObs);
     }
 
     else if (name_ == ode::StepScheme::SSPRungeKutta3){
-      doStepImpl(ode::SSPRungeKutta3(), odeState,
-		 currentTime, dt, step, rhsObs);
+      doStepImplNoMM(ode::SSPRungeKutta3(), odeState,
+		     currentTime, dt, step, rhsObs);
     }
   }
 
+  // sfinae for when mass matrix is meaningful
+  template<
+    class StepCountType,
+    class TimeType,
+    class LinearSolverType,
+    class _MassMatrixType = MassMatrixType>
+  mpl::enable_if_t< !is_trivial_mass_matrix<_MassMatrixType>::value >
+  operator()(StateType & odeState,
+	     const TimeType & currentTime,
+	     const TimeType & dt,
+	     const StepCountType & stepNumber,
+	     LinearSolverType & solver)
+  {
+    auto dummyRhsObserver = [](const StepCountType &,
+			       const TimeType &,
+			       const VelocityType &) { /*no op*/ };
+    (*this)(odeState, currentTime, dt, stepNumber,
+	    solver, dummyRhsObserver);
+  }
+
+  template<
+    class StepCountType,
+    class TimeType,
+    class LinearSolverType,
+    class RhsObserverType,
+    class _MassMatrixType = MassMatrixType>
+  mpl::enable_if_t< !is_trivial_mass_matrix<_MassMatrixType>::value >
+  operator()(StateType & odeState,
+	     const TimeType & currentTime,
+	     const TimeType & dt,
+	     const StepCountType & step,
+	     LinearSolverType & solver,
+	     RhsObserverType & rhsObs)
+  {
+    if (name_ == ode::StepScheme::ForwardEuler){
+      doStepImplWithMM(ode::ForwardEuler(), odeState,
+		       currentTime, dt, step, solver, rhsObs);
+    }
+
+    // else if (name_ == ode::StepScheme::RungeKutta4){
+    //   doStepImplWithMM(ode::RungeKutta4(), odeState,
+    // 		       currentTime, dt, step, solver, rhsObs);
+    // }
+
+    // else if (name_ == ode::StepScheme::AdamsBashforth2){
+    //   doStepImplWithMM(ode::AdamsBashforth2(), odeState,
+    // 		       currentTime, dt, step, rhsObs);
+    // }
+
+    // else if (name_ == ode::StepScheme::SSPRungeKutta3){
+    //   doStepImplWithMM(ode::SSPRungeKutta3(), odeState,
+    // 		       currentTime, dt, step, rhsObs);
+    // }
+  }
+
 private:
-  template<class StepCountType, class RhsObserverType>
-  void doStepImpl(ode::ForwardEuler,
-		  StateType & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
-		  const StepCountType & stepNumber,
-		  RhsObserverType & rhsObs)
+  template<class StepCountType, class TimeType, class RhsObserverType>
+  void doStepImplNoMM(ode::ForwardEuler,
+		      StateType & odeState,
+		      const TimeType & currentTime,
+		      const TimeType & dt,
+		      const StepCountType & stepNumber,
+		      RhsObserverType & rhsObs)
   {
     PRESSIOLOG_DEBUG("euler forward stepper: do step");
 
@@ -184,15 +255,57 @@ private:
     rhsObs(stepNumber, currentTime, rhs);
 
     // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(odeState, one, rhs, dt);
   }
 
-  template<class StepCountType, class RhsObserverType>
-  void doStepImpl(ode::AdamsBashforth2,
+  template<
+    class StepCountType, class TimeType,
+    class LinearSolver, class RhsObserverType
+    >
+  void doStepImplWithMM(ode::ForwardEuler,
+			StateType & odeState,
+			const TimeType & currentTime,
+			const TimeType & dt,
+			const StepCountType & stepNumber,
+			LinearSolver & solver,
+			RhsObserverType & rhsObs)
+  {
+    //
+    // M(t_n, ...) (y_n+1 - y_n) = dt * rhs(t_n, ...)
+    //
+    // so we can do: M x = dy * rhs
+    // and then y_n+1 = y_n + x
+
+    PRESSIOLOG_DEBUG("euler forward stepper: do step");
+
+    // eval rhs and mass matrix
+    auto & rhs = velocities_[0];
+    systemObj_.get().velocity(odeState, currentTime, rhs);
+    systemObj_.get().massMatrix(odeState, currentTime, massMatrix_);
+
+    // observe RHS
+    rhsObs(stepNumber, currentTime, rhs);
+
+    // solve for x storing into auxiliaryState_
+    // CAREFUL: we are changing rhs here so pay attention afterwards
+    ::pressio::ops::scale(rhs, dt);
+    solver.solve(massMatrix_, auxiliaryState_, rhs);
+
+    // need to do: y_n+1 = y_n + x
+    // since y_n+1 already contains y_n, and auxiliaryState_ = x
+    // we can do: y_n+1 += auxiliaryState_
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+    ::pressio::ops::update(odeState, one, auxiliaryState_, one);
+  }
+
+  template<class StepCountType, class TimeType, class RhsObserverType>
+  void doStepImplNoMM(ode::AdamsBashforth2,
 		  StateType & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
+		  const TimeType & currentTime,
+		  const TimeType & dt,
 		  const StepCountType & stepNumber,
 		  RhsObserverType & rhsObs)
   {
@@ -200,8 +313,9 @@ private:
 
     // y_n+1 = y_n + dt*[ (3/2)*f(y_n, t_n) - (1/2)*f(y_n-1, t_n-1) ]
 
-    const auto cfn   = ::pressio::utils::Constants<ScalarType>::threeOvTwo()*dt;
-    const auto cfnm1 = ::pressio::utils::Constants<ScalarType>::negOneHalf()*dt;
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    const auto cfn   = ::pressio::utils::Constants<scalar_type>::threeOvTwo()*dt;
+    const auto cfnm1 = ::pressio::utils::Constants<scalar_type>::negOneHalf()*dt;
 
     if (stepNumber==1){
       // use Euler forward or we could use something else here maybe RK4
@@ -209,7 +323,8 @@ private:
       systemObj_.get().velocity(odeState, currentTime, rhs);
       rhsObs(stepNumber, currentTime, rhs);
 
-      constexpr auto one   = ::pressio::utils::Constants<ScalarType>::one();
+      using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+      constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
       ::pressio::ops::update(odeState, one, rhs, dt);
     }
     else{
@@ -220,26 +335,29 @@ private:
 
       systemObj_.get().velocity(odeState, currentTime, fn);
       rhsObs(stepNumber, currentTime, fn);
-      constexpr auto one   = ::pressio::utils::Constants<ScalarType>::one();
+
+      using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+      constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
       ::pressio::ops::update(odeState, one, fn, cfn, fnm1, cfnm1);
     }
   }
 
-  template<class StepCountType, class RhsObserverType>
-  void doStepImpl(ode::SSPRungeKutta3,
+  template<class StepCountType, class TimeType, class RhsObserverType>
+  void doStepImplNoMM(ode::SSPRungeKutta3,
 		  StateType & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
+		  const TimeType & currentTime,
+		  const TimeType & dt,
 		  const StepCountType & stepNumber,
 		  RhsObserverType & rhsObs)
   {
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
-    constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
-    constexpr auto one   = ::pressio::utils::Constants<ScalarType>::one();
-    constexpr auto two   = ::pressio::utils::Constants<ScalarType>::two();
-    constexpr auto three = ::pressio::utils::Constants<ScalarType>::three();
-    constexpr auto four  = ::pressio::utils::Constants<ScalarType>::four();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto one   = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto two   = ::pressio::utils::Constants<scalar_type>::two();
+    constexpr auto three = ::pressio::utils::Constants<scalar_type>::three();
+    constexpr auto four  = ::pressio::utils::Constants<scalar_type>::four();
     constexpr auto oneOvTwo = one/two;
     constexpr auto oneOvThree = one/three;
     constexpr auto twoOvThree = two/three;
@@ -273,11 +391,11 @@ private:
                            rhs0,            twoOvThree*dt);
   }
 
-  template<class StepCountType, class RhsObserverType>
-  void doStepImpl(ode::RungeKutta4,
+  template<class StepCountType, class TimeType, class RhsObserverType>
+  void doStepImplNoMM(ode::RungeKutta4,
 		  StateType & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
+		  const TimeType & currentTime,
+		  const TimeType & dt,
 		  const StepCountType & stepNumber,
 		  RhsObserverType & rhsObs)
   {
@@ -288,14 +406,15 @@ private:
     auto & rhs2 = velocities_[2];
     auto & rhs3 = velocities_[3];
 
-    constexpr auto two  = ::pressio::utils::Constants<ScalarType>::two();
-    constexpr auto three  = ::pressio::utils::Constants<ScalarType>::three();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
+    constexpr auto three  = ::pressio::utils::Constants<scalar_type>::three();
     constexpr auto six  = two * three;
 
-    const ScalarType dt_half = dt / two;
-    const ScalarType t_phalf = currentTime + dt_half;
-    const ScalarType dt6 = dt / six;
-    const ScalarType dt3 = dt / three;
+    const TimeType dt_half = dt / two;
+    const TimeType t_phalf = currentTime + dt_half;
+    const TimeType dt6 = dt / six;
+    const TimeType dt3 = dt / three;
 
     // stage 1: ytmp = y + rhs0*dt_half;
     systemObj_.get().velocity(odeState, currentTime, rhs0);
@@ -315,27 +434,29 @@ private:
     this->rk4_stage_update_impl(odeState, rhs0, rhs1, rhs2, rhs3, dt6, dt3);
   }
 
-  template<class rhs_t>
+  template<class rhs_t, class TimeType>
   void rk4_stage_update_impl(StateType & yIn,
 			     const StateType & stateIn,
 			     const rhs_t & rhsIn,
-			     ScalarType dtValue)
+			     TimeType dtValue)
   {
-    constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
-    constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(yIn, zero, stateIn, one, rhsIn, dtValue);
   }
 
-  template<class rhs_t>
+  template<class rhs_t, class TimeType>
   void rk4_stage_update_impl(StateType & stateIn,
 			     const rhs_t & rhsIn0,
 			     const rhs_t & rhsIn1,
 			     const rhs_t & rhsIn2,
 			     const rhs_t & rhsIn3,
-			     ScalarType dt6,
-			     ScalarType dt3)
+			     TimeType dt6,
+			     TimeType dt3)
   {
-    constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(stateIn, one,
 			   rhsIn0, dt6,
 			   rhsIn1, dt3,

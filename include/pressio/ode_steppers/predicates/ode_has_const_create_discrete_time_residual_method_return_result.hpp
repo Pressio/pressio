@@ -51,17 +51,17 @@
 
 namespace pressio{ namespace ode{
 
-template <typename T, typename result_t, typename = void>
+template <class T, class ResultType, class = void>
 struct has_const_create_discrete_time_residual_method_return_result
   : std::false_type{};
 
-template <typename T, typename result_t>
+template <class T, class ResultType>
 struct has_const_create_discrete_time_residual_method_return_result<
-  T, result_t,
+  T, ResultType,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<result_t>::value and
+    !std::is_void<ResultType>::value and
     mpl::is_same<
-      result_t,
+      ResultType,
       decltype
       (
        std::declval<T const>().createDiscreteTimeResidual()

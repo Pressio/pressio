@@ -55,27 +55,26 @@ template<typename T, typename enable = void>
 struct compliant_with_residual_jacobian_api : std::false_type{};
 
 template<typename T>
-struct compliant_with_residual_jacobian_api
-<T,
- ::pressio::mpl::enable_if_t<
-   ::pressio::has_scalar_typedef<T>::value   and
-   ::pressio::has_state_typedef<T>::value    and
-   ::pressio::has_residual_typedef<T>::value and
-   ::pressio::has_jacobian_typedef<T>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_create_residual_method_return_result<
-      T, typename T::residual_type>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_create_jacobian_method_return_result<
-      T, typename T::jacobian_type>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_residual_method_accept_state_result_return_void<
-      T, typename T::state_type, typename T::residual_type>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_jacobian_method_accept_state_result_return_void<
-      T, typename T::state_type, typename T::jacobian_type>::value 
-   >
- > : std::true_type{};
+struct compliant_with_residual_jacobian_api<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::has_state_typedef<T>::value
+    and ::pressio::has_residual_typedef<T>::value
+    and ::pressio::has_jacobian_typedef<T>::value
+    //
+    and ::pressio::nonlinearsolvers::has_const_create_state_method_return_result<
+      T, typename T::state_type>::value
+    and ::pressio::nonlinearsolvers::has_const_create_residual_method_return_result<
+      T, typename T::residual_type>::value
+    and ::pressio::nonlinearsolvers::has_const_create_jacobian_method_return_result<
+      T, typename T::jacobian_type>::value
+    //
+    and ::pressio::nonlinearsolvers::has_const_residual_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::residual_type>::value
+    and ::pressio::nonlinearsolvers::has_const_jacobian_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::jacobian_type>::value
+    >
+  > : std::true_type{};
 
 }}
 #endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_HPP_

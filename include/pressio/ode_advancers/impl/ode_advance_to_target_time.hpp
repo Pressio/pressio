@@ -57,11 +57,11 @@ namespace pressio{ namespace ode{ namespace impl{
 template <bool b, typename TimeStepSizeManagerType, typename TimeType>
 mpl::enable_if_t<b==true>
 call_dt_manager(TimeStepSizeManagerType && dtManager,
-	      const ::pressio::ode::step_count_type & step,
-	      const TimeType & time,
-	      TimeType & dt,
-	      TimeType & minDt,
-	      TimeType & dtRedFactor)
+		const typename StepCount::value_type & step,
+		const TimeType & time,
+		TimeType & dt,
+		TimeType & minDt,
+		TimeType & dtRedFactor)
 {
   dtManager(step, time, dt, minDt, dtRedFactor);
 }
@@ -69,11 +69,11 @@ call_dt_manager(TimeStepSizeManagerType && dtManager,
 template <bool b, typename TimeStepSizeManagerType, typename TimeType>
 mpl::enable_if_t<b==false>
 call_dt_manager(TimeStepSizeManagerType && dtManager,
-	      const ::pressio::ode::step_count_type & step,
-	      const TimeType & time,
-	      TimeType & dt,
-	      TimeType & minDt,
-	      TimeType & dtRedFactor)
+		const typename StepCount::value_type & step,
+		const TimeType & time,
+		TimeType & dt,
+		TimeType & minDt,
+		TimeType & dtRedFactor)
 {
   dtManager(step, time, dt);
 }
@@ -96,7 +96,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 						     Args && ... args)
 {
 
-  using step_t = ::pressio::ode::step_count_type;
+  using step_t = typename StepCount::value_type;
   constexpr auto zero = ::pressio::utils::Constants<step_t>::zero();
 
   if (final_time < start_time){

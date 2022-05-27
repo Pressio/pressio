@@ -52,10 +52,10 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template <
-  typename T,
-  typename StateType,
-  typename rhs_type = StateType,
-  typename enable = void
+  class T,
+  class StateType,
+  class RhsType = StateType,
+  class enable = void
   >
 struct admissible_linear_solver_for_nonlinear_least_squares : std::false_type
 {
@@ -64,7 +64,7 @@ struct admissible_linear_solver_for_nonlinear_least_squares : std::false_type
    "The linear solver type cannot be cv-qualified: maybe you are using a const object?");
 };
 
-template <typename T, typename StateType>
+template <class T, class StateType>
 struct admissible_linear_solver_for_nonlinear_least_squares<
   T, StateType, StateType,
   ::pressio::mpl::enable_if_t<

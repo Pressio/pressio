@@ -64,7 +64,7 @@ struct observer_callable_with_step_time_container_return_void<
       (
        std::declval<T>()
        (
-        std::declval<::pressio::ode::step_count_type>(),
+        std::declval<typename ::pressio::ode::StepCount::value_type>(),
         std::declval<TimeType>(),
         std::declval<const StateType &>()
        )
@@ -87,7 +87,7 @@ struct observer_callable_with_step_container_time_return_void<
       (
        std::declval<T>()
        (
-        std::declval<::pressio::ode::step_count_type>(),
+        std::declval<typename ::pressio::ode::StepCount::value_type>(),
         std::declval<const StateType &>(),
         std::declval<TimeType>()
        )
@@ -111,7 +111,7 @@ struct observer_callable_with_container_step_time_return_void<
        std::declval<T>()
        (
         std::declval<const StateType &>(),
-        std::declval<::pressio::ode::step_count_type>(),
+        std::declval<typename ::pressio::ode::StepCount::value_type>(),
         std::declval<TimeType>()
        )
       )
@@ -134,7 +134,7 @@ struct observer_callable_with_time_container_step_return_void<
        (
         std::declval<TimeType>(),
         std::declval<const StateType &>(),
-        std::declval<::pressio::ode::step_count_type>()
+        std::declval<typename ::pressio::ode::StepCount::value_type>()
        )
       )
       >::value

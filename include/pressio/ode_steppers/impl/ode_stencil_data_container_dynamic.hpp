@@ -68,7 +68,12 @@ public:
   StencilDataContainerDynImpl() = default;
 
   StencilDataContainerDynImpl(std::initializer_list<ValueType> il)
-    : data_{il}, size_(data_.size()){}
+    : data_{il}, size_(data_.size())
+  {
+    for (auto & it : data_){
+      ::pressio::ops::set_zero(it);
+    }
+  }
 
   StencilDataContainerDynImpl(StencilDataContainerDynImpl const & other) = default;
   StencilDataContainerDynImpl & operator=(StencilDataContainerDynImpl const & other) = default;
@@ -141,7 +146,12 @@ public:
   StencilDataContainerDynImpl() = default;
 
   StencilDataContainerDynImpl(std::initializer_list<ValueType> il)
-    : data_{il}, size_(data_.size()){}
+    : data_{il}, size_(data_.size())
+  {
+    for (auto & it : data_){
+      ::pressio::ops::set_zero(it);
+    }
+  }
 
   StencilDataContainerDynImpl(StencilDataContainerDynImpl const & other) = default;
   StencilDataContainerDynImpl & operator=(StencilDataContainerDynImpl const & other) = default;

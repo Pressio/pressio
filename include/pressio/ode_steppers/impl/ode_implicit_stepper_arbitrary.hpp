@@ -53,7 +53,7 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template<
   int n_states,
-  class ScalarType,
+  class TimeType,
   class StateType,
   class ResidualType,
   class JacobianType,
@@ -63,7 +63,7 @@ class StepperArbitrary
 {
 public:
   // these need to be here because are detected by solver
-  using scalar_type	= ScalarType;
+  using scalar_type	= TimeType;
   using state_type	= StateType;
   using residual_type	= ResidualType;
   using jacobian_type	= JacobianType;
@@ -74,8 +74,8 @@ public:
   using stencil_states_t = ImplicitStencilStatesContainerStatic<StateType, numAuxStates>;
 
 private:
-  ScalarType rhsEvaluationTime_  = {};
-  ScalarType dt_ = {};
+  TimeType rhsEvaluationTime_  = {};
+  TimeType dt_ = {};
   int32_t stepNumber_  = {};
 
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
@@ -91,11 +91,10 @@ public:
   StepperArbitrary & operator=(StepperArbitrary && other) = delete;
   ~StepperArbitrary() = default;
 
-  StepperArbitrary(const StateType & state,
-		   SystemType && systemObj)
+  StepperArbitrary(SystemType && systemObj)
     : systemObj_(std::forward<SystemType>(systemObj)),
-      stencilStates_(state), //stencilstates handles right semantics
-      recoveryState_{::pressio::ops::clone(state)}
+      stencilStates_(systemObj.createState()), //stencilstates handles right semantics
+      recoveryState_{systemObj.createState()}
     {}
 
 public:
@@ -169,8 +168,8 @@ public:
     const auto & ynm2 = stencilStates_(ode::nMinusTwo());
 
     try{
-    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_,
-      dt_, R, odeState, yn, ynm1, ynm2);
+      systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_,
+						     dt_, R, odeState, yn, ynm1, ynm2);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -191,8 +190,8 @@ public:
 
   template<typename SolverType, class StepCountType, typename ...Args>
   void operator()(StateType & odeState,
-	      const ScalarType & currentTime,
-	      const ScalarType & dt,
+	      const TimeType & currentTime,
+	      const TimeType & dt,
 	      const StepCountType & step,
 	      SolverType & solver,
 	      Args&& ...args)

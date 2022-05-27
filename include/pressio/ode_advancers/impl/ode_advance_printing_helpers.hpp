@@ -51,8 +51,8 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template <typename TimeType, class StepCountType>
-void print_step_time(const StepCountType & step,
+template <typename TimeType>
+void print_step_time(const typename StepCount::value_type & step,
 		     const TimeType & time,
 		     const TimeType & dt)
 {

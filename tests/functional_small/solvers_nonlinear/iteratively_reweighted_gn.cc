@@ -87,7 +87,6 @@ using mat_type = eig_mat;
 
 struct MySystem
 {
-  using scalar_type = double;
   using state_type = vec_type;
   using residual_type = state_type;
   using jacobian_type = mat_type;
@@ -100,6 +99,12 @@ struct MySystem
     : checkStr_(checkStr){}
 
   ~MySystem(){}
+
+  state_type createState() const {
+    auto a = state_type(numVars);
+    a.setConstant(0);
+    return a;
+  }
 
   residual_type createResidual() const {
     auto a = residual_type(numEquations);
@@ -210,7 +215,7 @@ TEST(solvers_nonlinear, irwls_gauss_newton)
   state_t x(numVars);
 
   using pressio::nonlinearsolvers::experimental::create_irls_gauss_newton;
-  auto solver = create_irls_gauss_newton(sysObj, x, linSolverObj);
+  auto solver = create_irls_gauss_newton(sysObj, linSolverObj);
   solver.setMaxIterations(3);
   solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);

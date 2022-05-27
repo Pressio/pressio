@@ -51,42 +51,36 @@
 
 namespace pressio{ namespace ode{
 
-template<
-  class T,
-  class StateType,
-  class ScalarType,
-  class enable = void
-  >
+template<class T, class enable = void>
 struct implicit_residual_policy : std::false_type{};
 
-template<
-  class T,
-  class StateType,
-  class ScalarType
-  >
+template<class T>
 struct implicit_residual_policy<
-  T, StateType, ScalarType,
+  T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::has_residual_typedef<T>::value
-    and
+    ::pressio::has_time_typedef<T>::value
+    and ::pressio::has_state_typedef<T>::value
+    and ::pressio::has_residual_typedef<T>::value
     //
-    std::is_same<
+    and ::pressio::ode::has_const_create_state_method_return_result<
+      T, typename T::state_type>::value
+    //
+    and std::is_same<
       typename T::residual_type,
       decltype(std::declval<T const>().create())
       >::value
-    and
     //
-    std::is_void<
+    and std::is_void<
       decltype
       (
        std::declval<T const>()
        (
 	std::declval<StepScheme const &>(),
-	std::declval<StateType const &>(),
-	std::declval<ImplicitStencilStatesContainerDyn<StateType> const & >(),
+	std::declval<typename T::state_type const &>(),
+	std::declval<ImplicitStencilStatesContainerDyn<typename T::state_type> const & >(),
 	std::declval<ImplicitStencilVelocitiesContainerDyn<typename T::residual_type> & >(),
-	std::declval<ScalarType const &>(),
-	std::declval<ScalarType const &>(),
+	std::declval<typename T::time_type const &>(),
+	std::declval<typename T::time_type const &>(),
 	std::declval<int>(),
 	std::declval<typename T::residual_type &>()
 	)
@@ -97,17 +91,17 @@ struct implicit_residual_policy<
 
 //------------------------------------------------------------------
 
-template<typename T, typename ... Args>
-using implicit_euler_residual_policy =
-  implicit_residual_policy<T, Args...>;
+template<typename T>
+using implicit_euler_residual_policy = 
+  implicit_residual_policy<T>;
 
-template<typename T, typename ... Args>
-using implicit_bdf2_residual_policy =
-  implicit_residual_policy<T, Args...>;
+template<typename T>
+using implicit_bdf2_residual_policy = 
+  implicit_residual_policy<T>;
 
-template<typename T, typename ... Args>
-using implicit_cranknicolson_residual_policy =
-  implicit_residual_policy<T, Args...>;
+template<typename T>
+using implicit_cranknicolson_residual_policy = 
+  implicit_residual_policy<T>;
 
 }} // namespace pressio::ode::constraints
 #endif  // ODE_STEPPERS_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

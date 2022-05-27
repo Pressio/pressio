@@ -52,31 +52,32 @@
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <
-  typename HessianType,
-  typename GradientType,
-  typename ResidualType,
-  typename JacobianType,
-  typename ScalarType,
-  template<typename ...> class hgRJApi_t,
-  typename ...Args
+  class HessianType,
+  class GradientType,
+  class ResidualType,
+  class JacobianType,
+  template<class ...> class hgRJApi_t,
+  class ...Args
   >
 class LMHessianGradientOperatorsRJApi
 {
 public:
-  using scalar_type = ScalarType;
+  using residual_norm_type = decltype(::pressio::ops::norm2(std::declval<ResidualType>()));
 
 private:
   static constexpr auto pT  = ::pressio::transpose();
   static constexpr auto pnT = ::pressio::nontranspose();
 
   // HGOpRJApi_ computes H = J^T J, and g = J^T r
-  hgRJApi_t<HessianType, GradientType, ResidualType, JacobianType, scalar_type, Args...>  HGOpRJApi_;
+  hgRJApi_t<HessianType, GradientType, ResidualType, JacobianType, Args...>  HGOpRJApi_;
 
   // lmH = H + lm*diag(H)
   HessianType lmH_;
 
-  // damping factor for LM
-  scalar_type dampParam_ = pressio::utils::Constants<scalar_type>::one();
+  // damping factor for LM: we use the same scalar_type of the hessian since
+  // the damp factor is used to modify the diagonal of the hessian
+  using hessian_scalar_type = typename ::pressio::Traits<HessianType>::scalar_type;
+  hessian_scalar_type dampParam_ = pressio::utils::Constants<hessian_scalar_type>::one();
 
 public:
   LMHessianGradientOperatorsRJApi() = delete;
@@ -88,16 +89,14 @@ public:
 
   template <
     typename SystemType,
-    typename StateType,
     mpl::enable_if_t<
       (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
        ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value),
       int
       > = 0
     >
-  LMHessianGradientOperatorsRJApi(const SystemType & system,
-                                  const StateType & state)
-    : HGOpRJApi_(system, state),
+  LMHessianGradientOperatorsRJApi(const SystemType & system)
+    : HGOpRJApi_(system),
       lmH_(::pressio::ops::clone(HGOpRJApi_.hessianCRef()))
   {
     ::pressio::ops::set_zero(lmH_);
@@ -105,7 +104,6 @@ public:
 
   template <
     typename SystemType,
-    typename StateType,
     typename ...ArgsIn,
     mpl::enable_if_t<
       (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
@@ -114,10 +112,8 @@ public:
       int
       > = 0
     >
-  LMHessianGradientOperatorsRJApi(const SystemType & system,
-				  const StateType & state,
-				  ArgsIn && ...args)
-    : HGOpRJApi_(system, state, std::forward<ArgsIn>(args)...),
+  LMHessianGradientOperatorsRJApi(const SystemType & system, ArgsIn && ...args)
+    : HGOpRJApi_(system, std::forward<ArgsIn>(args)...),
       lmH_(::pressio::ops::clone(HGOpRJApi_.hessianCRef()))
   {
     ::pressio::ops::set_zero(lmH_);
@@ -133,18 +129,18 @@ public:
     return HGOpRJApi_.hessianCRef();
   }
 
-  void setLMDampParam(scalar_type parIn){ dampParam_ = parIn; }
-  scalar_type lmDampParam() const{ return dampParam_; }
+  void setLMDampParam(hessian_scalar_type parIn){ dampParam_ = parIn; }
+  auto lmDampParam() const{ return dampParam_; }
 
 public:
   void resetForNewCall(){
-    dampParam_ = pressio::utils::Constants<scalar_type>::one();
+    dampParam_ = pressio::utils::Constants<hessian_scalar_type>::one();
   }
 
   template<typename SystemType, typename StateType>
   void computeOperators(const SystemType & sys,
 			const StateType & state,
-			scalar_type & residualNorm,
+			residual_norm_type & residualNorm,
 			bool recomputeSystemJacobian=true)
   {
     HGOpRJApi_.computeOperators(sys, state,
@@ -158,7 +154,7 @@ public:
 
       const auto diagH   = ::pressio::diag(H);
       auto diaglmH = ::pressio::diag(lmH_);
-      constexpr auto one  = pressio::utils::Constants<scalar_type>::one();
+      constexpr auto one  = pressio::utils::Constants<hessian_scalar_type>::one();
       ::pressio::ops::update(diaglmH, one, diagH, dampParam_);
     }
   }
@@ -166,7 +162,7 @@ public:
   template< typename SystemType, typename StateType>
   void residualNorm(const SystemType & system,
 		    const StateType & state,
-		    scalar_type & residualNorm) const
+		    residual_norm_type & residualNorm) const
   {
     HGOpRJApi_.residualNorm(system, state, residualNorm);
   }

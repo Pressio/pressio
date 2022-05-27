@@ -179,6 +179,7 @@ using ImplicitStencilStatesContainerDyn
    on the top-level "pressio_ode_{explicit,implicit}.hpp".
 */
 #include "ode_exceptions.hpp"
+#include "predicates/ode_has_const_create_state_method_return_result.hpp"
 #include "predicates/ode_has_const_create_velocity_method_return_result.hpp"
 #include "predicates/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
 #include "predicates/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
@@ -187,10 +188,10 @@ using ImplicitStencilStatesContainerDyn
 #include "predicates/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "predicates/ode_has_const_create_jacobian_method_return_result.hpp"
 #include "predicates/ode_has_const_jacobian_method_accept_state_time_result_return_void.hpp"
+#include "predicates/ode_has_const_create_mass_matrix_method_return_result.hpp"
+#include "predicates/ode_has_const_mass_matrix_method_accept_state_time_result_return_void.hpp"
 
-#include "constraints/ode_continuous_time_system_with_at_least_velocity.hpp"
-#include "constraints/ode_continuous_time_system_with_user_provided_jacobian.hpp"
-#include "constraints/ode_discrete_time_system_with_user_provided_jacobian.hpp"
+#include "constraints/ode_system.hpp"
 #include "constraints/ode_explicit_state.hpp"
 #include "constraints/ode_explicit_velocity.hpp"
 #include "constraints/ode_implicit_state.hpp"

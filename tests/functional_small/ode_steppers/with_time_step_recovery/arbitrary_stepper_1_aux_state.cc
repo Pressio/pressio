@@ -5,13 +5,15 @@
 struct MyApp
 {
   std::string & checkStr_;
-  using scalar_type   = double;
+  using time_type   = double;
   using state_type    = Eigen::VectorXd;
   using discrete_time_residual_type = state_type;
   using discrete_time_jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
   MyApp(std::string & strin) : checkStr_(strin){}
+
+  state_type createState() const{ return state_type(3); }
 
   discrete_time_residual_type createDiscreteTimeResidual() const{
     discrete_time_residual_type R(3);
@@ -25,8 +27,8 @@ public:
 
   template <typename step_t>
   void discreteTimeResidual(const step_t & step,
-				const scalar_type & time,
-				const scalar_type & dt,
+				const time_type & evaltime,
+				const time_type & dt,
 				discrete_time_residual_type & R,
 				const state_type & yn,
 				const state_type & ynm1) const
@@ -92,8 +94,8 @@ public:
 
   template <typename step_t>
   void discreteTimeJacobian(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
+                            const time_type & evaltime,
+                            const time_type & dt,
                             discrete_time_jacobian_type & J,
                             const state_type & yn,
                             const state_type & ynm1) const
@@ -134,15 +136,14 @@ int main(int argc, char *argv[])
   pressio::log::setVerbosity({pressio::log::level::trace});
 
   using app_t		= MyApp;
-  using sc_t		= typename app_t::scalar_type;
   using state_t	= typename app_t::state_type;
 
   auto dtManager =
     [](const ::pressio::ode::step_count_type & step,
-       const sc_t & time,
-       sc_t & dt,
-       sc_t & minDt,
-       sc_t & dtRedFactor)
+       const typename app_t::time_type & time,
+       typename app_t::time_type & dt,
+       typename app_t::time_type & minDt,
+       typename app_t::time_type & dtRedFactor)
     {
       dt = 0.1;
       minDt = 0.01;
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
 
   auto collector =
     [](const ::pressio::ode::step_count_type & step,
-		const sc_t & time,
+		const typename app_t::time_type & time,
 		const state_t & y)
     {};
 
@@ -165,7 +166,7 @@ int main(int argc, char *argv[])
   (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
    app_t, 2>::value,"");
 
-  auto stepperObj = pressio::ode::create_arbitrary_stepper<2>(y,appObj);
+  auto stepperObj = pressio::ode::create_arbitrary_stepper<2>(appObj);
   pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 

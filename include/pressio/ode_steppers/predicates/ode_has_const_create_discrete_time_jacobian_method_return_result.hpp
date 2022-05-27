@@ -49,23 +49,19 @@
 #ifndef ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_TIME_JACOBIAN_METHOD_RETURN_RESULT_HPP_
 #define ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_TIME_JACOBIAN_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace ode{ 
+namespace pressio{ namespace ode{
 
-template <
-  typename T, typename jacobian_t,
-  typename = void
-  >
+template <class T, class JacobianType, class = void>
 struct has_const_create_discrete_time_jacobian_method_return_result
   : std::false_type{};
 
-
-template <typename T, typename jacobian_t>
+template <class T, class JacobianType>
 struct has_const_create_discrete_time_jacobian_method_return_result<
-  T, jacobian_t,
+  T, JacobianType,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<jacobian_t>::value and
+    !std::is_void<JacobianType>::value and
     mpl::is_same<
-      jacobian_t,
+      JacobianType,
       decltype(
 	       std::declval<T const>().createDiscreteTimeJacobian()
 	       )

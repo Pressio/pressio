@@ -49,13 +49,23 @@
 #ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_JACOBIAN_HPP_
 #define ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_JACOBIAN_HPP_
 
+#include "./ode_trivial_mass_matrix.hpp"
+
 namespace pressio{ namespace ode{ namespace impl{
 
-template<class SystemType, class StateType, class JacobianType>
+template<
+  class SystemType,
+  class TimeType,
+  class StateType,
+  class JacobianType,
+  class MassMatrixType = NoOpMassMatrix
+  >
 class JacobianStandardPolicy
 {
 public:
   // required
+  using time_type     = TimeType;
+  using state_type    = StateType;
   using jacobian_type = JacobianType;
 
 public:
@@ -63,10 +73,12 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   explicit JacobianStandardPolicy(SystemType systemIn)
-    : systemObj_(systemIn){}
+    : systemObj_(systemIn),
+      massMatrix_(createMassMatrix<MassMatrixType>()(systemIn)){}
 #else
   explicit JacobianStandardPolicy(SystemType && systemIn)
-    : systemObj_( std::forward<SystemType>(systemIn) ){}
+    : systemObj_( std::forward<SystemType>(systemIn) ),
+      massMatrix_(createMassMatrix<MassMatrixType>()(systemIn)){}
 #endif
 
   JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
@@ -76,22 +88,31 @@ public:
   ~JacobianStandardPolicy() = default;
 
 public:
-  JacobianType create() const
-  {
+  StateType createState() const{
+    StateType result(systemObj_.get().createState());
+    return result;
+  }
+
+  JacobianType create() const{
     JacobianType JJ(systemObj_.get().createJacobian());
     return JJ;
   }
 
-  template <class StencilStatesContainerType, class ScalarType, class StepType>
-  void operator()(StepScheme name,
-		  const StateType & odeCurrentState,
-		  const StencilStatesContainerType & stencilStates,
-		  const ScalarType & time,
-		  const ScalarType & dt,
-		  const StepType &  step,
-		  JacobianType & J) const
+  template <
+    class StencilStatesContainerType,
+    class StepType,
+    class _MassMatrixType = MassMatrixType
+    >
+  mpl::enable_if_t< is_trivial_mass_matrix<_MassMatrixType>::value >
+  operator()(StepScheme name,
+	     const StateType & odeCurrentState,
+	     const StencilStatesContainerType & stencilStates,
+	     const TimeType & evalTime,
+	     const TimeType & dt,
+	     const StepType &  step,
+	     JacobianType & J) const
   {
-    systemObj_.get().jacobian(odeCurrentState, time, J);
+    systemObj_.get().jacobian(odeCurrentState, evalTime, J);
 
     if (name == StepScheme::BDF1){
       ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF1());
@@ -104,8 +125,36 @@ public:
     }
   }
 
+  template <
+    class StencilStatesContainerType,
+    class StepType,
+    class _MassMatrixType = MassMatrixType
+    >
+  mpl::enable_if_t< !is_trivial_mass_matrix<_MassMatrixType>::value >
+  operator()(StepScheme name,
+	     const StateType & odeCurrentState,
+	     const StencilStatesContainerType & stencilStates,
+	     const TimeType & evalTime,
+	     const TimeType & dt,
+	     const StepType &  step,
+	     JacobianType & J) const
+  {
+    systemObj_.get().jacobian(odeCurrentState, evalTime, J);
+
+    // if (name == StepScheme::BDF1){
+    //   ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF1());
+    // }
+    // else if (name == StepScheme::BDF2){
+    //   ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF2());
+    // }
+    // else if (name == StepScheme::CrankNicolson){
+    //   ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::CrankNicolson());
+    // }
+  }
+
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  MassMatrixType massMatrix_;
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy

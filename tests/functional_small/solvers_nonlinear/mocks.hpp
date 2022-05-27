@@ -23,6 +23,7 @@ struct ConcreteSystemRJ
    >::type;
 
  public:
+  state_type createState() const { return residual_type(5); }
   residual_type createResidual() const { return residual_type(5); }
   jacobian_type createJacobian() const { return jacobian_type(5, 5); }
   void residual(const state_type& x, residual_type& res) const
@@ -113,6 +114,10 @@ struct MockSystemRJ
  public:
   MockSystemRJ()
   {
+    ON_CALL(*this, createState).WillByDefault(
+      [this]() {
+      return mySystem_.createState();
+    });
     ON_CALL(*this, createResidual).WillByDefault(
       [this]() {
       return mySystem_.createResidual();
@@ -131,6 +136,7 @@ struct MockSystemRJ
     });
   }
 
+  MOCK_CONST_METHOD0(createState,    state_type());
   MOCK_CONST_METHOD0(createResidual, residual_type());
   MOCK_CONST_METHOD0(createJacobian, jacobian_type());
   MOCK_CONST_METHOD2(residual, void(const state_type& x, residual_type& R));
@@ -155,6 +161,7 @@ struct ConcreteSystemRJFused
   using jacobian_type = typename helper_t::jacobian_type;
 
  public:
+  state_type createState() const { return mySystem_.createState(); }
   residual_type createResidual() const { return mySystem_.createResidual(); }
   jacobian_type createJacobian() const { return mySystem_.createJacobian(); }
   void residualAndJacobian(const state_type& x, residual_type& res, 
@@ -180,6 +187,10 @@ struct MockSystemRJFused
  public:
   MockSystemRJFused()
   {
+    ON_CALL(*this, createState).WillByDefault(
+      [this]() {
+      return mySystem_.createState();
+    });
     ON_CALL(*this, createResidual).WillByDefault(
       [this]() {
       return mySystem_.createResidual();
@@ -194,6 +205,7 @@ struct MockSystemRJFused
     });
   }
 
+  MOCK_CONST_METHOD0(createState, state_type());
   MOCK_CONST_METHOD0(createResidual, residual_type());
   MOCK_CONST_METHOD0(createJacobian, jacobian_type());
   MOCK_CONST_METHOD4(residualAndJacobian, void(const state_type& x, residual_type& R, 
@@ -215,14 +227,16 @@ struct ConcreteSystemHessGrad
   using state_type  = Eigen::VectorXd;
   using gradient_type = state_type;
   using hessian_type = Eigen::MatrixXd;
+  using residual_norm_type = double;
 
  public:
+  state_type createState() const { return state_type(5); }
   gradient_type createGradient() const { return gradient_type(5); }
   hessian_type  createHessian() const  { return hessian_type(5,5); }
   void gradient(const state_type& x, 
                 gradient_type& g, 
                 pressio::Norm whichNorm, 
-                scalar_type & residualNorm,
+                residual_norm_type & residualNorm,
                 bool recomputeJacobian) const
   {
     g.setConstant(3.4);
@@ -230,7 +244,7 @@ struct ConcreteSystemHessGrad
 
   void residualNorm(const state_type& x, 
                 pressio::Norm whichNorm, 
-                scalar_type & residualNorm) const
+                residual_norm_type & residualNorm) const
   {
     residualNorm = 8.;
   }
@@ -260,10 +274,15 @@ struct MockSystemHessGrad
   using state_type    = typename concrete_t::state_type;
   using gradient_type = typename concrete_t::gradient_type;
   using hessian_type = typename concrete_t::hessian_type;
+  using residual_norm_type = double;
 
  public:
   MockSystemHessGrad()
   {
+    ON_CALL(*this, createState).WillByDefault(
+      [this]() {
+      return mySystem_.createState();
+    });
     ON_CALL(*this, createGradient).WillByDefault(
       [this]() {
       return mySystem_.createGradient();
@@ -274,7 +293,7 @@ struct MockSystemHessGrad
     });
     ON_CALL(*this, gradient).WillByDefault(
       [this](const state_type& x, gradient_type& g, pressio::Norm whichNorm, 
-        scalar_type & residualNorm, bool recomputeJacobian) 
+        residual_norm_type & residualNorm, bool recomputeJacobian) 
       {
       mySystem_.gradient(x, g, whichNorm, residualNorm, recomputeJacobian);
     });
@@ -283,17 +302,18 @@ struct MockSystemHessGrad
       mySystem_.hessian(x, H);
     });
     ON_CALL(*this, residualNorm).WillByDefault(
-      [this](const state_type& x, pressio::Norm whichNorm, scalar_type & residualNorm) 
+      [this](const state_type& x, pressio::Norm whichNorm, residual_norm_type & residualNorm) 
       {
       mySystem_.residualNorm(x, whichNorm, residualNorm);
     });
   }
 
+  MOCK_CONST_METHOD0(createState, state_type());
   MOCK_CONST_METHOD0(createGradient, gradient_type());
   MOCK_CONST_METHOD0(createHessian, hessian_type());
-  MOCK_CONST_METHOD5(gradient, void(const state_type&, gradient_type&, pressio::Norm, scalar_type&, bool));
+  MOCK_CONST_METHOD5(gradient, void(const state_type&, gradient_type&, pressio::Norm, residual_norm_type&, bool));
   MOCK_CONST_METHOD2(hessian, void(const state_type&, hessian_type&));
-  MOCK_CONST_METHOD3(residualNorm, void(const state_type, pressio::Norm, scalar_type&));
+  MOCK_CONST_METHOD3(residualNorm, void(const state_type, pressio::Norm, residual_norm_type&));
 
   const concrete_t & viewConcrete(){ return mySystem_; }
 
@@ -311,15 +331,17 @@ struct ConcreteSystemHessGradFused
   using state_type  = Eigen::VectorXd;
   using gradient_type = state_type;
   using hessian_type = Eigen::MatrixXd;
+  using residual_norm_type = double;
 
  public:
+  state_type createState() const { return mySystem_.createState(); }
   gradient_type createGradient() const { return mySystem_.createGradient(); }
   hessian_type  createHessian() const  { return mySystem_.createHessian(); }
   void hessianAndGradient(const state_type& x, 
                 hessian_type & H,
                 gradient_type& g, 
                 pressio::Norm whichNorm, 
-                scalar_type & residualNorm,
+                residual_norm_type & residualNorm,
                 bool recomputeJacobian) const
   {
     g.setConstant(3.4);
@@ -330,7 +352,7 @@ struct ConcreteSystemHessGradFused
 
   void residualNorm(const state_type& x, 
                 pressio::Norm whichNorm, 
-                scalar_type & residualNorm) const
+                residual_norm_type & residualNorm) const
   {
     residualNorm = 8.;
   }
@@ -351,10 +373,15 @@ struct MockSystemHessGradFused
   using state_type    = typename concrete_t::state_type;
   using gradient_type = typename concrete_t::gradient_type;
   using hessian_type = typename concrete_t::hessian_type;
+  using residual_norm_type = double;
 
  public:
   MockSystemHessGradFused()
   {
+    ON_CALL(*this, createState).WillByDefault(
+      [this]() {
+      return mySystem_.createState();
+    });
     ON_CALL(*this, createGradient).WillByDefault(
       [this]() {
       return mySystem_.createGradient();
@@ -365,22 +392,23 @@ struct MockSystemHessGradFused
     });
     ON_CALL(*this, hessianAndGradient).WillByDefault(
       [this](const state_type& x, hessian_type &H, gradient_type& g, pressio::Norm whichNorm, 
-        scalar_type & residualNorm, bool recomputeJacobian) 
+        residual_norm_type & residualNorm, bool recomputeJacobian) 
       {
       mySystem_.hessianAndGradient(x, H, g, whichNorm, residualNorm, recomputeJacobian);
     });
     ON_CALL(*this, residualNorm).WillByDefault(
-      [this](const state_type& x, pressio::Norm whichNorm, scalar_type & residualNorm) 
+      [this](const state_type& x, pressio::Norm whichNorm, residual_norm_type & residualNorm) 
       {
       mySystem_.residualNorm(x, whichNorm, residualNorm);
     });
   }
 
+  MOCK_CONST_METHOD0(createState, state_type());
   MOCK_CONST_METHOD0(createGradient, gradient_type());
   MOCK_CONST_METHOD0(createHessian, hessian_type());
   MOCK_CONST_METHOD6(hessianAndGradient, 
-    void(const state_type&, hessian_type &, gradient_type&, pressio::Norm, scalar_type&, bool));
-  MOCK_CONST_METHOD3(residualNorm, void(const state_type, pressio::Norm, scalar_type&));
+    void(const state_type&, hessian_type &, gradient_type&, pressio::Norm, residual_norm_type&, bool));
+  MOCK_CONST_METHOD3(residualNorm, void(const state_type, pressio::Norm, residual_norm_type&));
 
   const concrete_t & viewConcrete(){ return mySystem_; }
 

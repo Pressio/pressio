@@ -52,12 +52,12 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
-  typename ScalarType,
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType,
+  class TimeType,
+  class StateType,
+  class ResidualType,
+  class JacobianType,
+  class ResidualPolicyType,
+  class JacobianPolicyType,
   bool using_default_policies
   >
 class StepperRt
@@ -65,7 +65,7 @@ class StepperRt
 
 public:
   // required
-  using scalar_type = ScalarType;
+  // using scalar_type = TimeType; // this has to change
   using state_type  = StateType;
   using residual_type = ResidualType;
   using jacobian_type = JacobianType;
@@ -74,8 +74,8 @@ private:
   ::pressio::ode::StepScheme name_;
   ::pressio::ode::stepper_order_type order_;
 
-  ScalarType t_np1_  = {};
-  ScalarType dt_ = {};
+  TimeType t_np1_  = {};
+  TimeType dt_ = {};
   int32_t step_number_  = {};
 
   // state object to ensure the strong guarantee for handling excpetions
@@ -85,7 +85,6 @@ private:
   // bdf1: y_n
   // bdf2: y_n, y_n-1
   // cn  : y_n
-  //
   ImplicitStencilStatesContainerDyn<StateType> stencil_states_;
 
   // policies
@@ -112,13 +111,11 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::BDF1,
-	    const state_type & state,
-	    const SystemType & systemObj)
+  StepperRt(::pressio::ode::BDF1, const SystemType & systemObj)
     : name_(StepScheme::BDF1),
       order_(1),
-      recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state)},
+      recovery_state_{systemObj.createState()},
+      stencil_states_{systemObj.createState()},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}}
   {}
@@ -130,13 +127,12 @@ public:
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
   StepperRt(::pressio::ode::BDF1,
-	    const state_type & state,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::BDF1),
       order_(1),
-      recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state)},
+      recovery_state_{resPolicyObj.createState()},
+      stencil_states_{resPolicyObj.createState()},
       res_policy_{resPolicyObj},
       jac_policy_{jacPolicyObj}
   {}
@@ -147,14 +143,12 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::BDF2,
-	    const state_type & state,
-	    const SystemType & systemObj)
+  StepperRt(::pressio::ode::BDF2, const SystemType & systemObj)
     : name_(StepScheme::BDF2),
       order_(2),
-      recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state),
-		      ::pressio::ops::clone(state)},
+      recovery_state_{systemObj.createState()},
+      stencil_states_{systemObj.createState(),
+		      systemObj.createState()},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}}
   {}
@@ -166,14 +160,13 @@ public:
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
   StepperRt(::pressio::ode::BDF2,
-	    const state_type & state,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::BDF2),
       order_(2),
-      recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state),
-		      ::pressio::ops::clone(state)},
+      recovery_state_{resPolicyObj.createState()},
+      stencil_states_{resPolicyObj.createState(),
+		      resPolicyObj.createState()},
       res_policy_{resPolicyObj},
       jac_policy_{jacPolicyObj}
   {}
@@ -184,13 +177,11 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::CrankNicolson,
-	    const state_type & state,
-	    const SystemType & systemObj)
+  StepperRt(::pressio::ode::CrankNicolson, const SystemType & systemObj)
     : name_(StepScheme::CrankNicolson),
       order_(2),
-      recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state)},
+      recovery_state_{systemObj.createState()},
+      stencil_states_{systemObj.createState()},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}},
       stencil_velocities_{res_policy_.get().create(),
@@ -204,13 +195,12 @@ public:
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
   StepperRt(::pressio::ode::CrankNicolson,
-	    const state_type & state,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::CrankNicolson),
       order_(2),
-      recovery_state_{::pressio::ops::clone(state)},
-      stencil_states_{::pressio::ops::clone(state)},
+      recovery_state_{resPolicyObj.createState()},
+      stencil_states_{resPolicyObj.createState()},
       res_policy_{resPolicyObj},
       jac_policy_{jacPolicyObj},
       stencil_velocities_{res_policy_.get().create(),
@@ -224,15 +214,15 @@ public:
 
   template<typename solver_type, typename ...Args>
   void operator()(state_type & odeState,
-		  const ScalarType &  currentTime,
-		  const ScalarType &  dt,
+		  const TimeType &  currentTime,
+		  const TimeType &  dt,
 		  const int32_t & stepNumber,
 		  solver_type & solver,
 		  Args&& ...args)
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step");
     auto dummyGuesser =
-      [](const int32_t &, const ScalarType &, state_type &){ /*no op*/ };
+      [](const int32_t &, const TimeType &, state_type &){ /*no op*/ };
 
     if (name_==::pressio::ode::StepScheme::BDF1){
       doStepImpl(::pressio::ode::BDF1(),
@@ -257,8 +247,8 @@ public:
   // overload for when we have a guesser callback
   template<typename solver_type, typename guess_callback_t, typename ...Args>
   void operator()(state_type & odeState,
-		  const ScalarType &  currentTime,
-		  const ScalarType &  dt,
+		  const TimeType &  currentTime,
+		  const TimeType &  dt,
 		  const int32_t & stepNumber,
 		  guess_callback_t && guesserCb,
 		  solver_type & solver,
@@ -286,6 +276,10 @@ public:
     }
   }
 
+  auto createState() const{
+    return res_policy_.get().createState();
+  }
+
   ResidualType createResidual() const{
     return res_policy_.get().create();
   }
@@ -311,8 +305,8 @@ private:
   template<typename solver_type, typename guess_callback_t, typename ...Args>
   void doStepImpl(::pressio::ode::BDF1,
 		  state_type & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
+		  const TimeType & currentTime,
+		  const TimeType & dt,
 		  const int32_t & stepNumber,
 		  guess_callback_t && guesserCb,
 		  solver_type & solver,
@@ -358,8 +352,8 @@ private:
   template<typename solver_type, typename guess_callback_t, typename ...Args>
   void doStepImpl(::pressio::ode::BDF2,
 		  state_type & odeState,
-		  const ScalarType & currentTime,
-		  const ScalarType & dt,
+		  const TimeType & currentTime,
+		  const TimeType & dt,
 		  const int32_t & stepNumber,
 		  guess_callback_t && guesserCb,
 		  solver_type & solver,
@@ -387,10 +381,10 @@ private:
     // first step, use auxiliary stepper
     if (stepNumber == 1){
         using aux_type = StepperRt<
-	  ScalarType, StateType, ResidualType, JacobianType,
+	  TimeType, StateType, ResidualType, JacobianType,
 	  const ResidualPolicyType &, const JacobianPolicyType &, false>;
 
-	aux_type auxStepper(::pressio::ode::BDF1(), odeState,
+	aux_type auxStepper(::pressio::ode::BDF1(),
 			    res_policy_.get(), jac_policy_.get());
 
 	// step ==1 means that we are going from y_0 to y_1
@@ -448,8 +442,8 @@ private:
   template<typename solver_type, typename guess_callback_t, typename ...Args>
   void doStepImpl(::pressio::ode::CrankNicolson,
 		  state_type & odeState,
-		  const ScalarType &  currentTime,
-		  const ScalarType &  dt,
+		  const TimeType & currentTime,
+		  const TimeType & dt,
 		  const int32_t & stepNumber,
 		  guess_callback_t && guesserCb,
 		  solver_type & solver,

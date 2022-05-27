@@ -60,18 +60,17 @@ template <
   class dt_setter,
   class StateType,
   class ObserverType,
-  class StepCountType,
   class ... Args
   >
 void advance_n_steps_with_dt_setter(StepperType & stepper,
-				    const StepCountType & numSteps,
+				    ::pressio::ode::StepCount numSteps,
 				    const TimeType & start_time,
 				    StateType & odeStateInOut,
 				    dt_setter && dtManager,
 				    ObserverType & observer,
 				    Args && ... args)
 {
-  using step_t = StepCountType;
+  using step_t = typename ::pressio::ode::StepCount::value_type;
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -80,14 +79,12 @@ void advance_n_steps_with_dt_setter(StepperType & stepper,
 
   TimeType time = start_time;
   // pass initial condition to observer object
-  call_observer(observer,
-		 ::pressio::utils::Constants<step_t>::zero(),
-		 time, odeStateInOut);
+  call_observer(observer, ::pressio::ode::stepZero, time, odeStateInOut);
 
   TimeType dt = {};
   step_t step = 1;
   PRESSIOLOG_INFO("impl: advance_n_steps_with_dt_setter");
-  for( ; step <= numSteps ; ++step)
+  for( ; step <= numSteps.get(); ++step)
     {
       // call the dt manager to set the dt to use
       dtManager(step, time, dt);
@@ -116,11 +113,10 @@ template <
   class TimeType,
   class StateType,
   class ObserverType,
-  class StepCountType,
   class ... Args
   >
 void advance_n_steps_with_fixed_dt(StepperType & stepper,
-				   const StepCountType & numSteps,
+				   const ::pressio::ode::StepCount & numSteps,
 				   const TimeType & start_time,
 				   const TimeType & step_size,
 				   StateType & odeStateInOut,
@@ -142,23 +138,22 @@ void advance_n_steps_with_fixed_dt(StepperType & stepper,
   timer->start("time loop");
 #endif
 
-  using step_t = StepCountType;
+  using step_t = typename ::pressio::ode::StepCount::value_type;
 
   TimeType time = start_time;
-  call_observer(observer,
-		 ::pressio::utils::Constants<step_t>::zero(),
-		 time, odeStateInOut);
+  call_observer(observer, ::pressio::ode::stepZero, time, odeStateInOut);
 
   step_t step = 1;
   PRESSIOLOG_INFO("impl: advance_n_steps_with_fixed_dt");
-  for( ; step <= numSteps ; ++step)
+  for( ; step <= numSteps.get(); ++step)
     {
       print_step_time(step, time, step_size);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepper(odeStateInOut, time, step_size, step, std::forward<Args>(args)...);
+      stepper(odeStateInOut, time, step_size,
+	      step, std::forward<Args>(args)...);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");

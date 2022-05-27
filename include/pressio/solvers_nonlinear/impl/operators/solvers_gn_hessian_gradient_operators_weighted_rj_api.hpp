@@ -73,17 +73,17 @@ void _applyWeightingHelper(const T & functorM, const OperandType & operand, Resu
 }
 
 template <
-  typename HessianType,
-  typename GradientType,
-  typename ResidualType,
-  typename JacobianType,
-  typename scalarType,
-  typename weighting_functor_t = void
+  class HessianType,
+  class GradientType,
+  class ResidualType,
+  class JacobianType,
+  class weighting_functor_t = void
   >
 class WeightedHessianGradientOperatorsRJApi
 {
 public:
-  using scalar_type = scalarType;
+  using scalar_type = typename ::pressio::Traits<ResidualType>::scalar_type;
+  using residual_norm_type = scalar_type;
 
 private:
   static constexpr auto pT  = ::pressio::transpose();
@@ -101,7 +101,7 @@ private:
   static constexpr auto is_irwls =
     std::is_same<
     weighting_functor_t,
-    ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<ResidualType, JacobianType, scalar_type>
+    ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<ResidualType, JacobianType>
     >::value;
 
 public:
@@ -114,7 +114,6 @@ public:
 
   template <
     typename SystemType,
-    typename StateType,
     typename _weigh_t,
     mpl::enable_if_t<
       (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
@@ -123,14 +122,14 @@ public:
       > = 0
     >
   WeightedHessianGradientOperatorsRJApi(const SystemType & system,
-					const StateType & state,
 					_weigh_t && functorM)
   : r_(system.createResidual()),
     Mr_(::pressio::ops::clone(r_)),
     J_(system.createJacobian()),
     MJ_(::pressio::ops::clone(J_)),
-    g_(::pressio::ops::clone(state)),
-    H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::Constants<scalar_type>::one(), J_)),
+    g_(system.createState()),
+    H_(::pressio::ops::product<HessianType>(pT, pnT,
+        ::pressio::utils::Constants<typename ::pressio::Traits<JacobianType>::scalar_type>::one(), J_)),
     functorM_(std::forward<_weigh_t>(functorM))
   {
     ::pressio::ops::set_zero(r_);
@@ -175,7 +174,7 @@ public:
     >
   computeOperators(const SystemType & system,
 		   const StateType & state,
-		   scalar_type & residualNorm,
+		   residual_norm_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     callCount_++;
@@ -208,7 +207,7 @@ public:
     >
   computeOperators(const SystemType & system,
 		   const StateType & state,
-		   scalar_type & residualNorm,
+		   residual_norm_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     callCount_++;
@@ -237,7 +236,7 @@ public:
     >
   residualNorm(const SystemType & system,
 	       const StateType & state,
-	       scalar_type & residualNorm) const
+	       residual_norm_type & residualNorm) const
   {
     system.residual(state, r_);
     _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, Mr_);
@@ -254,7 +253,7 @@ public:
     >
   residualNorm(const SystemType & system,
 	       const StateType & state,
-	       scalar_type & residualNorm) const
+	       residual_norm_type & residualNorm) const
   {
     // here we query system to recompute r_ only (that is why we pass false)
     system.residualAndJacobian(state, r_, J_, false);
@@ -267,23 +266,28 @@ public:
   }
 
 private:
-  scalar_type _computeNorm() const
+  residual_norm_type _computeNorm() const
   {
     return std::sqrt(::pressio::ops::dot(r_, Mr_));
   }
 
   void _computeHessian()
   {
-    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::one();
+    using H_scalar_type = typename ::pressio::Traits<HessianType>::scalar_type;
+    constexpr auto beta  = ::pressio::utils::Constants<H_scalar_type>::zero();
+
+    using J_scalar_type = typename ::pressio::Traits<JacobianType>::scalar_type;
+    constexpr auto alpha = ::pressio::utils::Constants<J_scalar_type>::one();
     ::pressio::ops::product(pT, pnT, alpha, J_, MJ_, beta, H_);
   }
 
 
   void _computeGradient()
   {
-    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::one();
+    using g_scalar_type = typename ::pressio::Traits<GradientType>::scalar_type;
+    constexpr auto beta  = ::pressio::utils::Constants<g_scalar_type>::zero();
+    using J_scalar_type = typename ::pressio::Traits<JacobianType>::scalar_type;
+    constexpr auto alpha = ::pressio::utils::Constants<J_scalar_type>::one();
     // compute gradient (g_ = J^T M r)
     ::pressio::ops::product(pT, alpha, J_, Mr_, beta, g_);
     // scale because of sign convention

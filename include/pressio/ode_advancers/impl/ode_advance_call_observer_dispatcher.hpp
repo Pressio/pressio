@@ -51,58 +51,58 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template <class ObserverType, class TimeType, class StateType, class StepCountType>
+template <class ObserverType, class TimeType, class StateType>
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::observer_callable_with_step_time_container_return_void<
     ObserverType, TimeType, StateType
     >::value
   >
 call_observer(ObserverType & observer,
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
+	      const typename ::pressio::ode::StepCount::value_type & step,
+	      const TimeType & time,
+	      const StateType & odeState)
 {
   observer(step, time, odeState);
 }
 
-template <class ObserverType, class TimeType, class StateType, class StepCountType>
+template <class ObserverType, class TimeType, class StateType>
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::observer_callable_with_step_container_time_return_void<
     ObserverType, TimeType, StateType
     >::value
   >
 call_observer(ObserverType & observer,
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
+	      const typename ::pressio::ode::StepCount::value_type & step,
+	      const TimeType & time,
+	      const StateType & odeState)
 {
   observer(step, odeState, time);
 }
 
-template <class ObserverType, class TimeType, class StateType, class StepCountType>
+template <class ObserverType, class TimeType, class StateType>
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::observer_callable_with_container_step_time_return_void<
     ObserverType, TimeType, StateType
     >::value
   >
 call_observer(ObserverType & observer,
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
+	      const typename ::pressio::ode::StepCount::value_type & step,
+	      const TimeType & time,
+	      const StateType & odeState)
 {
   observer(odeState, step, time);
 }
 
-template <class ObserverType, class TimeType, class StateType, class StepCountType>
+template <class ObserverType, class TimeType, class StateType>
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::observer_callable_with_time_container_step_return_void<
     ObserverType, TimeType, StateType
     >::value
   >
 call_observer(ObserverType & observer,
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
+	      const typename ::pressio::ode::StepCount::value_type & step,
+	      const TimeType & time,
+	      const StateType & odeState)
 {
   observer(time, odeState, step);
 }

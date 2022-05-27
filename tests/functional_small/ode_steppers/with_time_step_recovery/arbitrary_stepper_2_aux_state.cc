@@ -5,13 +5,15 @@
 struct MyApp
 {
   std::string & checkStr_;
-  using scalar_type   = double;
+  using time_type   = double;
   using state_type    = Eigen::VectorXd;
   using discrete_time_residual_type = state_type;
   using discrete_time_jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
   MyApp(std::string & strin) : checkStr_(strin){}
+
+  state_type createState() const{ return state_type(3); }
 
   discrete_time_residual_type createDiscreteTimeResidual() const{
     discrete_time_residual_type R(3);
@@ -25,8 +27,8 @@ public:
 
   template <typename step_t, typename state_type>
   void discreteTimeResidual(const step_t & step,
-				const scalar_type & time,
-				const scalar_type & dt,
+				const time_type & evaltime,
+				const time_type & dt,
 				discrete_time_residual_type & R,
 				const state_type & yn,
 				const state_type & ynm1,
@@ -49,9 +51,33 @@ public:
     R[1] = ynm1[1]+dt;
     R[2] = ynm1[2]+dt;
 
+    if (step==1){
+      if( std::abs(ynm1[0]-1.) > 1e-13 or
+    	  std::abs(ynm1[1]-1.) > 1e-13 or
+    	  std::abs(ynm1[2]-1.) > 1e-13){
+    	checkStr_ = "FAILED";
+      }
+      if( std::abs(ynm2[0]-0) > 1e-13 or
+    	  std::abs(ynm2[1]-0) > 1e-13 or
+    	  std::abs(ynm2[2]-0) > 1e-13){
+    	checkStr_ = "FAILED";
+      }
+    }
+
+    if (step==2){
+      if( std::abs(ynm1[0]-1.2) > 1e-13 or
+    	  std::abs(ynm1[1]-1.4) > 1e-13 or
+    	  std::abs(ynm1[2]-1.6) > 1e-13){
+    	checkStr_ = "FAILED";
+      }
+      if( std::abs(ynm2[0]-1) > 1e-13 or
+    	  std::abs(ynm2[1]-1) > 1e-13 or
+    	  std::abs(ynm2[2]-1) > 1e-13){
+    	checkStr_ = "FAILED";
+      }
+    }
+
     if (step==3){
-      // no matter how many times step 3 is attemped, we should always have
-      // the same state stencil
       if( std::abs(ynm1[0]-1.4) > 1e-13 or
     	  std::abs(ynm1[1]-1.8) > 1e-13 or
     	  std::abs(ynm1[2]-2.2) > 1e-13){
@@ -80,8 +106,8 @@ public:
 
   template <typename step_t>
   void discreteTimeJacobian(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
+                            const time_type & evaltime,
+                            const time_type & dt,
                             discrete_time_jacobian_type & J,
                             const state_type & yn,
         const state_type & ynm1,
@@ -120,15 +146,14 @@ struct MyFakeSolver
 int main(int argc, char *argv[])
 {
   using app_t		= MyApp;
-  using sc_t		= typename app_t::scalar_type;
   using state_t = typename app_t::state_type;
 
   auto dtManager =
     [](const ::pressio::ode::step_count_type & step,
-       const sc_t & time,
-       sc_t & dt,
-       sc_t & minDt,
-       sc_t & dtRedFactor)
+       const typename app_t::time_type & time,
+       typename app_t::time_type & dt,
+       typename app_t::time_type & minDt,
+       typename app_t::time_type & dtRedFactor)
     {
       dt = 0.1;
       minDt = 0.01;
@@ -137,7 +162,7 @@ int main(int argc, char *argv[])
 
   auto collector =
     [](const ::pressio::ode::step_count_type & step,
-		const sc_t & time,
+		const typename app_t::time_type & time,
 		const state_t & y)
     {};
 
@@ -147,7 +172,7 @@ int main(int argc, char *argv[])
   pressio::ops::fill(y, 1);
   MyFakeSolver solver;
 
-  auto stepperObj = pressio::ode::create_arbitrary_stepper<3>(y,appObj);
+  auto stepperObj = pressio::ode::create_arbitrary_stepper<3>(appObj);
   pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 

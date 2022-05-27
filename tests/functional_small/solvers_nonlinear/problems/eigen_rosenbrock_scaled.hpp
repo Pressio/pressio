@@ -17,6 +17,7 @@ struct EigenRosenbrockscaledImpl
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
+  state_type createState() const{return state_type(4);}
   residual_type createResidual() const{return residual_type(6);}
   jacobian_type createJacobian() const{return jacobian_type(6, 4);}
 
@@ -62,10 +63,13 @@ struct EigenRosenbrockscaledHessGradApi
   using state_type	= Eigen::VectorXd;
   using hessian_type	= Eigen::MatrixXd;
   using gradient_type	= state_type;
+  using residual_norm_type = double;
 
   EigenRosenbrockscaledImpl rosImpl;
 
 public:
+  state_type createState() const{return state_type(4);}
+
   hessian_type createHessian() const{
     // this only constructs empty object
     return hessian_type(4,4);
@@ -78,7 +82,7 @@ public:
 
   void residualNorm(const state_type & state,
 		    pressio::Norm normKind,
-		    scalar_type & normResidual) const
+		    residual_norm_type & normResidual) const
   {
     auto R = rosImpl.createResidual();
     rosImpl.residual(state, R);//, normKind, normResidual);
@@ -90,7 +94,7 @@ public:
 			  hessian_type & hess,
 			  gradient_type & grad,
 			  pressio::Norm normType,
-			  scalar_type & residualNorm,
+			  residual_norm_type & residualNorm,
         bool recomputeJacobian) const
   {
     auto J = rosImpl.createJacobian();

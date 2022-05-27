@@ -71,7 +71,7 @@ int main()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
+  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem, linSolver);
 
   x(0) = 2.0; x(1) = 0.25;
   testC1(sentinel, problem, x, GNSolver);

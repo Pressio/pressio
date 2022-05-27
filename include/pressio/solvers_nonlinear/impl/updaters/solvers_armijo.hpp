@@ -51,11 +51,10 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename StateType, class ScalarType>
+template <typename StateType>
 class ArmijoUpdater
 {
   StateType trialState_;
-  const ScalarType beta_  = 0.0001;
 
 public:
   ArmijoUpdater() = delete;
@@ -68,8 +67,7 @@ public:
   ArmijoUpdater(const StateType & state)
     : trialState_(::pressio::ops::clone(state))
   {
-    constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
-    ::pressio::ops::fill(trialState_, zero);
+    setTrialStateToZero();
   }
 
 public:
@@ -82,11 +80,7 @@ public:
   {
     PRESSIOLOG_DEBUG("Armijo update");
 
-    constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
-    auto alpha = static_cast<ScalarType>(1);
-
-    ::pressio::ops::fill(trialState_,
-			 ::pressio::utils::Constants<ScalarType>::zero());
+    setTrialStateToZero();
 
     // https://people.maths.ox.ac.uk/hauser/hauser_lecture2.pdf
 
@@ -102,11 +96,16 @@ public:
     const auto & p_k   = solver.correctionCRef();
     const auto & g_k   = solver.gradientCRef();
     auto fx_k    = solver.residualNormCurrentCorrectionStep();
-    fx_k = std::pow(fx_k, ::pressio::utils::Constants<ScalarType>::two());
+
+    using scalar_type = decltype(fx_k);
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
+    auto alpha = static_cast<scalar_type>(1);
+    const scalar_type beta_ = static_cast<scalar_type>(0.0001);
+    fx_k = std::pow(fx_k, ::pressio::utils::Constants<scalar_type>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
     PRESSIOLOG_DEBUG("starting backtracking");
-    ScalarType ftrial = {};
+    scalar_type ftrial = {};
     bool done = false;
     while (not done)
     {
@@ -116,7 +115,7 @@ public:
       }
 
       // update : trialState = x_k + alpha*p_k
-      constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
+      constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
       ::pressio::ops::update(trialState_, zero, state, one, p_k, alpha);
 
       // compute rhs_l = alpha_l * beta * dot(g_k, p_k)
@@ -124,7 +123,7 @@ public:
 
       // eval f(x_k + alpha_l * p_k)
       solver.residualNorm(system, trialState_, ftrial);
-      ftrial = std::pow(ftrial, ::pressio::utils::Constants<ScalarType>::two());
+      ftrial = std::pow(ftrial, ::pressio::utils::Constants<scalar_type>::two());
 
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;
@@ -148,6 +147,13 @@ public:
 
     // solution update: state = state + alpha*p_k
     ::pressio::ops::update(state, one, p_k, alpha);
+  }
+
+private:
+  void setTrialStateToZero(){
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+    ::pressio::ops::fill(trialState_, zero);
   }
 };
 

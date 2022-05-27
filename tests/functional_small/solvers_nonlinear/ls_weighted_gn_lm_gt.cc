@@ -95,7 +95,6 @@ struct WeightingOperator
 
 struct MySystem
 {
-  using scalar_type = double;
   using state_type = eig_vec;
   using residual_type = state_type;
   using jacobian_type = eig_mat;
@@ -108,6 +107,12 @@ struct MySystem
     : checkStr_(checkStr){}
 
   ~MySystem(){}
+
+  state_type createState() const {
+    auto a = state_type(numVars);
+    a.setConstant(0);
+    return a;
+  }
 
   residual_type createResidual() const {
     auto a = residual_type(numEquations);
@@ -154,7 +159,7 @@ TEST(solvers_nonlinear, weighted_least_squares_gauss_newton)
   state_t x(numVars);
 
   auto solver = pressio::nonlinearsolvers::create_gauss_newton
-    (sysObj,x,linSolverObj, WeightingOperator());
+    (sysObj, linSolverObj, WeightingOperator());
   solver.setMaxIterations(2);
   solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);
@@ -173,7 +178,7 @@ TEST(solvers_nonlinear, weighted_least_squares_lm)
   state_t x(numVars);
 
   auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt
-    (sysObj,x,linSolverObj, WeightingOperator());
+    (sysObj, linSolverObj, WeightingOperator());
   solver.setMaxIterations(2);
   solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);

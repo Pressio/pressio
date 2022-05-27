@@ -51,7 +51,6 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename ScalarType>
 class DefaultUpdater
 {
 public:
@@ -70,10 +69,12 @@ public:
 		  StateType & state,
 		  SolverMixinType & solver)
   {
+
     PRESSIOLOG_DEBUG("nonlinsolver: default update");
     // default update: y = y + alpha*correction
     const auto & correction = solver.correctionCRef();
-    constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(state, one, correction, one);
   }
 };

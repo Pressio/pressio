@@ -114,6 +114,7 @@ struct EpetraExpDataFitN11
     return x(0)*temp1 + x(1)*temp2 + x(2)*temp3 + x(3)*temp4;
   }
 
+  state_type createState() const{ return state_type(numUn_); }
   residual_type createResidual() const{ return *R_; }
   jacobian_type createJacobian() const{ return *J_; }
 

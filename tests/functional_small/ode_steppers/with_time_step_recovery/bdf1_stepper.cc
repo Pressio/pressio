@@ -4,12 +4,14 @@
 
 struct MyApp
 {
-  using scalar_type   = double;
+  using time_type   = double;
   using state_type    = Eigen::VectorXd;
   using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
+  state_type createState() const{ return state_type(3); }
+
   velocity_type createVelocity() const{
     velocity_type f(3);
     return f;
@@ -21,12 +23,12 @@ public:
   }
 
   void velocity(const state_type & yn,
-		const scalar_type& time,
+		const time_type& evaltime,
 		velocity_type & f) const
   {
-    std::cout << "f: t=" << time << "\n";
+    std::cout << "f: t=" << evaltime << "\n";
 
-    if (std::abs(time-0.2) < 1e-13)
+    if (std::abs(evaltime-0.2) < 1e-13)
     {
       throw pressio::eh::VelocityFailureUnrecoverable();
     }
@@ -36,7 +38,7 @@ public:
     f[2] = 2.;
   }
 
-  void jacobian(const state_type&, const scalar_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -134,15 +136,14 @@ int main(int argc, char *argv[])
 
 
   using app_t		= MyApp;
-  using sc_t		= typename app_t::scalar_type;
   using state_t	= typename app_t::state_type;
 
   auto dtManager =
     [](const ::pressio::ode::step_count_type & step,
-       const sc_t & time,
-       sc_t & dt,
-       sc_t & minDt,
-       sc_t & dtRedFactor)
+       const typename app_t::time_type & time,
+       typename app_t::time_type & dt,
+       typename app_t::time_type & minDt,
+       typename app_t::time_type & dtRedFactor)
     {
       dt = 0.1;
       minDt = 0.01;
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
 
   auto collector =
     [](const ::pressio::ode::step_count_type & step,
-       const sc_t & time,
+       const typename app_t::time_type & time,
        const state_t & y)
     {};
 
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
   state_t y(3);
   pressio::ops::fill(y, 1);
 
-  auto stepperObj = pressio::ode::create_bdf1_stepper(y,appObj);
+  auto stepperObj = pressio::ode::create_bdf1_stepper(appObj);
   pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 

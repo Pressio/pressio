@@ -49,8 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUALNORM_METHOD_ACCEPT_STATE_NORM_RETURN_VOID_HPP_
 #define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUALNORM_METHOD_ACCEPT_STATE_NORM_RETURN_VOID_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
-  
+namespace pressio{ namespace nonlinearsolvers{
 
 template <
   typename T,
@@ -82,5 +81,5 @@ struct has_const_residualnorm_method_accept_state_norm_return_void<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::solvers::predicates
+}} // namespace pressio::solvers
 #endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUALNORM_METHOD_ACCEPT_STATE_NORM_RETURN_VOID_HPP_

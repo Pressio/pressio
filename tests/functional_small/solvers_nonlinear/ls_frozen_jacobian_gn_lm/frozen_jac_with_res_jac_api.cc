@@ -4,7 +4,6 @@
 
 struct MySystem
 {
-  using scalar_type = double;
   using state_type = vec_type;
   using residual_type = state_type;
   using jacobian_type = mat_type;
@@ -22,6 +21,10 @@ struct MySystem
     // we know what iterCount_ should be 
     if(iterCountR_ != 6) checkStr_="FAILED";
     if(iterCountJ_ != 3) checkStr_="FAILED";
+  }
+
+  state_type createState() const {
+    return state_type(numVars);
   }
 
   residual_type createResidual() const {
@@ -104,7 +107,7 @@ int main()
 
 // test GN with QR
 #if defined USE_GN_QR
-    auto solver = pressio::nonlinearsolvers::create_gauss_newtonQR(sysObj, x, solverObjQR);    
+    auto solver = pressio::nonlinearsolvers::create_gauss_newtonQR(sysObj, solverObjQR);    
     solver.setMaxIterations(6);
     solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
@@ -114,7 +117,7 @@ int main()
 
 // test GN normal eq
 #if defined USE_GN_NEQ
-    auto solver = pressio::nonlinearsolvers::create_gauss_newton(sysObj, x, linSolverObj);    
+    auto solver = pressio::nonlinearsolvers::create_gauss_newton(sysObj, linSolverObj);    
     solver.setMaxIterations(6);
     solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
@@ -123,7 +126,7 @@ int main()
 
 // test LM 
 #if defined USE_LM_NEQ
-    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sysObj, x, linSolverObj);    
+    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sysObj, linSolverObj);    
     solver.setMaxIterations(6);
     solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);

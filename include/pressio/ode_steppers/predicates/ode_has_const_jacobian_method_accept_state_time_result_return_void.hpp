@@ -51,30 +51,19 @@
 
 namespace pressio{ namespace ode{
 
-template <
-  typename T,
-  typename state_t,
-  typename time_type,
-  typename jac_t,
-  typename = void
-  >
+template <class T, class StateType, class TimeType, class JacType, class = void>
 struct has_const_jacobian_method_accept_state_time_result_return_void
   : std::false_type{};
 
-template <
-  typename T,
-  typename state_t,
-  typename time_type,
-  typename jac_t
-  >
+template <class T, class StateType, class TimeType, class JacType>
 struct has_const_jacobian_method_accept_state_time_result_return_void<
-  T, state_t, time_type, jac_t,
+  T, StateType, TimeType, JacType,
   ::pressio::mpl::void_t<
   decltype(
 	   std::declval<T const>().jacobian(
-					    std::declval<state_t const&>(),
-					    std::declval<time_type const &>(),
-					    std::declval<jac_t &>()
+					    std::declval<StateType const&>(),
+					    std::declval<TimeType const &>(),
+					    std::declval<JacType &>()
 					    )
 	   )
     >

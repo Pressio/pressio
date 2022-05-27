@@ -52,25 +52,25 @@
 namespace pressio{ namespace ode{
 
 template <
-  typename T, int n, typename step_t, typename sc_t, typename state_t, typename result_t,
-  typename = void
+  class T, int n, class StepType, class TimeType, class state_t, class ResultType,
+  class = void
   >
 struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void
   : std::false_type{};
 
-template <typename T, typename step_t, typename sc_t, typename state_t, typename result_t>
+template <class T, class StepType, class TimeType, class state_t, class ResultType>
 struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-  T, 1, step_t, sc_t, state_t, result_t,
+  T, 1, StepType, TimeType, state_t, ResultType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>().discreteTimeResidual
        (
-	std::declval<step_t const &>(),
-	std::declval<sc_t const &>(),
-	std::declval<sc_t const &>(),
-	std::declval<result_t &>(),
+	std::declval<StepType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<ResultType &>(),
 	std::declval<state_t const&>()
 	)
        )
@@ -79,19 +79,19 @@ struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_stat
   > : std::true_type{};
 
 
-template <typename T, typename step_t, typename sc_t, typename state_t, typename result_t>
+template <class T, class StepType, class TimeType, class state_t, class ResultType>
 struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-  T, 2, step_t, sc_t, state_t, result_t,
+  T, 2, StepType, TimeType, state_t, ResultType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>().discreteTimeResidual
        (
-	std::declval<step_t const &>(),
-	std::declval<sc_t const &>(),
-	std::declval<sc_t const &>(),
-	std::declval<result_t &>(),
+	std::declval<StepType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<ResultType &>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>()
 	)
@@ -100,19 +100,19 @@ struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_stat
     >
   > : std::true_type{};
 
-template <typename T, typename step_t, typename sc_t, typename state_t, typename result_t>
+template <class T, class StepType, class TimeType, class state_t, class ResultType>
 struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-  T, 3, step_t, sc_t, state_t, result_t,
+  T, 3, StepType, TimeType, state_t, ResultType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>().discreteTimeResidual
        (
-	std::declval<step_t const &>(),
-	std::declval<sc_t const &>(),
-	std::declval<sc_t const &>(),
-	std::declval<result_t &>(),
+	std::declval<StepType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<ResultType &>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>()
@@ -123,24 +123,24 @@ struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_stat
   > : std::true_type{};
 
 
-template <typename T, typename step_t, typename sc_t, typename state_t, typename result_t>
+template <class T, class StepType, class TimeType, class state_t, class ResultType>
 struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-  T, 4, step_t, sc_t, state_t, result_t,
+  T, 4, StepType, TimeType, state_t, ResultType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>().discreteTimeResidual
        (
-  std::declval<step_t const &>(),
-  std::declval<sc_t const &>(),
-  std::declval<sc_t const &>(),
-  std::declval<result_t &>(),
-  std::declval<state_t const&>(),
-  std::declval<state_t const&>(),
-  std::declval<state_t const&>(),
-  std::declval<state_t const&>()
-  )
+	std::declval<StepType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<ResultType &>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>()
+	)
        )
       >::value
     >

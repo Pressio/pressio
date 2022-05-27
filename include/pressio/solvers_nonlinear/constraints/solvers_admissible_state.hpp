@@ -57,9 +57,7 @@ struct admissible_state : std::false_type{};
 template<typename T>
 struct admissible_state<
   T,
-  mpl::enable_if_t<
-  	std::is_copy_constructible<T>::value
-    >
+  mpl::enable_if_t< std::is_copy_constructible<T>::value >
   > : std::true_type{};
 
 }} // namespace pressio::solvers::constraints

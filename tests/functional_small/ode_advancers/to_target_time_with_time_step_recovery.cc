@@ -9,7 +9,7 @@ struct MyFakeStepper
   void operator()(ode_state_type & odeState,
 	      const double & t,
 	      const double & dt,
-	      const pressio::ode::step_count_type & step,
+	      const typename pressio::ode::StepCount::value_type & step,
 	      solver_type & solver)
   {
     if (step==3 and dt==0.1)
@@ -17,7 +17,7 @@ struct MyFakeStepper
     if (step==5 and (dt==0.1 or dt==0.05))
       throw pressio::eh::TimeStepFailure();
 
-    for (int i=0; i<odeState.size(); i++){ 
+    for (int i=0; i<odeState.size(); i++){
       odeState(i) += dt;
     }
   }
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
   MyFakeSolver solver;
   std::string checkStr= "PASSED";
 
-  auto dtManager = [](const ::pressio::ode::step_count_type & step,
+  auto dtManager = [](const typename pressio::ode::StepCount::value_type & step,
 		      const double & time,
 		      double & dt,
 		      double & minDt,
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 		};
 
   auto collector =
-    [&checkStr](const ::pressio::ode::step_count_type & step,
+    [&checkStr](const typename pressio::ode::StepCount::value_type & step,
 		const double & time,
 		const ode_state_t & y)
     {

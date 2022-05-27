@@ -15,14 +15,18 @@ void resize_jacobian(MatrixType & M){
 }
 
 struct MyApp{
-  using scalar_type   = ScalarType;
+  using time_type   = ScalarType;
   using state_type    = VectorType;
   using velocity_type = VectorType;
   using jacobian_type = MatrixType;
 
 public:
+  state_type createState() const{
+    return state_type(3);
+  }
+
   void velocity(const state_type & y,
-	   	          scalar_type t, 
+	   	          time_type evaltime,
                 velocity_type & f) const
   {
     f[0] = 1.;
@@ -31,7 +35,7 @@ public:
   };
 
   void jacobian(const state_type & yIn,
-                scalar_type t, 
+                time_type evaltime,
                 jacobian_type & J) const
   {
     for (auto & it : J){
@@ -58,7 +62,7 @@ public:
 
 #include "pressio/type_traits.hpp"
 
-namespace pressio{ 
+namespace pressio{
 
 template<> struct Traits<VectorType>{
   using scalar_type = ScalarType;
@@ -83,6 +87,10 @@ void scale(MatrixType & M, ScalarType factor){
       it2 *= factor;
     }
   }
+}
+
+void set_zero(VectorType & a){
+  for (auto & it : a){ it = 0.; }
 }
 
 void add_to_diagonal(MatrixType & M, ScalarType value)
@@ -157,7 +165,7 @@ struct MySolverForBDF1
       for (int j=0; j<3; ++j){
         if (i==j) {
           EXPECT_DOUBLE_EQ(J[i][j], -9.);
-        } 
+        }
         else{
           EXPECT_DOUBLE_EQ(J[i][j], -10.);
         }
@@ -179,7 +187,7 @@ TEST(ode, implicit_bdf1_custom_types)
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  auto stepperObj = ode::create_bdf1_stepper(y,appObj);
+  auto stepperObj = ode::create_bdf1_stepper(appObj);
 
   ScalarType dt = 10.;
   MySolverForBDF1 solver;
@@ -218,7 +226,7 @@ struct MySolverForBDF2
         for (int j=0; j<3; ++j){
           if (i==j) {
             EXPECT_DOUBLE_EQ(J[i][j], -9.);
-          } 
+          }
           else{
             EXPECT_DOUBLE_EQ(J[i][j], -10.);
           }
@@ -237,7 +245,7 @@ struct MySolverForBDF2
         for (int j=0; j<3; ++j){
           if (i==j) {
             EXPECT_DOUBLE_EQ(J[i][j], -(2./3)*10.*1. + 1.);
-          } 
+          }
           else{
             EXPECT_DOUBLE_EQ(J[i][j], -(2./3)*10.*1.);
           }
@@ -259,7 +267,7 @@ TEST(ode, implicit_bdf2_custom_types)
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  auto stepperObj = ode::create_bdf2_stepper(y,appObj);
+  auto stepperObj = ode::create_bdf2_stepper(appObj);
 
   ScalarType dt = 10.;
   MySolverForBDF2 solver;
@@ -298,7 +306,7 @@ struct MySolverForCrankNic
         for (int j=0; j<3; ++j){
           if (i==j) {
             EXPECT_DOUBLE_EQ(J[i][j], -4.);
-          } 
+          }
           else{
             EXPECT_DOUBLE_EQ(J[i][j], -5.);
           }
@@ -321,7 +329,7 @@ TEST(ode, implicit_crank_nicolson_custom_types)
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  auto stepperObj = ode::create_cranknicolson_stepper(y,appObj);
+  auto stepperObj = ode::create_cranknicolson_stepper(appObj);
 
   ScalarType dt = 10.;
   MySolverForCrankNic solver;

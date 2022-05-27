@@ -73,20 +73,27 @@ public:
   // constructor for n == 1
   template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
-    : data_{::pressio::ops::clone(y)}{}
+    : data_{::pressio::ops::clone(y)}
+  {
+    setZero();
+  }
 
   // constructor for n == 2
   template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
-            ::pressio::ops::clone(y)}{}
+            ::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   // constructor for n == 3
   template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
-            ::pressio::ops::clone(y)}{}
+            ::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   // constructor for n == 4
   template <std::size_t _N = N, mpl::enable_if_t<_N == 4, int> = 0>
@@ -94,7 +101,9 @@ public:
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
-            ::pressio::ops::clone(y)}{}
+            ::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   StencilDataContainerStaticImpl(StencilDataContainerStaticImpl const & other) = default;
   StencilDataContainerStaticImpl & operator=(StencilDataContainerStaticImpl const & other) = default;
@@ -152,6 +161,13 @@ public:
       "Calling operator()(::pressio::ode::nMinusTwo) requires N>=4");
     return data_[3];
   }
+
+private:
+  void setZero(){
+    for (auto & it : data_){
+      ::pressio::ops::set_zero(it);
+    }
+  }
 };
 
 
@@ -174,20 +190,26 @@ public:
   // constructor for n == 1
   template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
-    : data_{::pressio::ops::clone(y)}{}
+    : data_{::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   // constructor for n == 2
   template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
-            ::pressio::ops::clone(y)}{}
+            ::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   // constructor for n == 3
   template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
-            ::pressio::ops::clone(y)}{}
+            ::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   // constructor for n == 4
   template <std::size_t _N = N, mpl::enable_if_t<_N == 4, int> = 0>
@@ -195,7 +217,9 @@ public:
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
-            ::pressio::ops::clone(y)}{}
+            ::pressio::ops::clone(y)}{
+    setZero();
+  }
 
   StencilDataContainerStaticImpl(StencilDataContainerStaticImpl const & other) = default;
   StencilDataContainerStaticImpl & operator=(StencilDataContainerStaticImpl const & other) = default;
@@ -252,6 +276,13 @@ public:
     static_assert( N>=4,
       "Calling operator()(::pressio::ode::nMinusThree) requires N>=4");
     return data_[3];
+  }
+
+private:
+  void setZero(){
+    for (auto & it : data_){
+      ::pressio::ops::set_zero(it);
+    }
   }
 };
 

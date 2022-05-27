@@ -32,13 +32,13 @@ struct Observer
 
 struct FakeProblem
 {
-  using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
   mutable int count_ = 0;
 
+  state_type createState() const{return state_type(4);}
   residual_type createResidual() const{return residual_type(10);}
   jacobian_type createJacobian() const{return jacobian_type(10,4);}
 
@@ -97,7 +97,7 @@ int main()
   state_t x(4);
   x(0)=1.0; x(1)=2.; x(2)=3.; x(3)=4.;
 
-  auto solver = pressio::nonlinearsolvers::create_gauss_newton(problem, x, FakeLinS<hessian_t>{});
+  auto solver = pressio::nonlinearsolvers::create_gauss_newton(problem, FakeLinS<hessian_t>{});
   auto criterion = pressio::nonlinearsolvers::Stop::AfterMaxIters;
   solver.setStoppingCriterion(criterion);
   solver.setMaxIterations(3);

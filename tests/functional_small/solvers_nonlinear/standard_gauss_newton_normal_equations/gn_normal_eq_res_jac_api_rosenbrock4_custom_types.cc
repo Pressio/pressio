@@ -91,11 +91,11 @@ private:
 
 struct MyRosenbrockSystem
 {
-  using scalar_type   = double;
   using state_type    = Eigen::VectorXd;
   using residual_type = MyCustomVector;
   using jacobian_type = MyCustomMatrix;
 
+  state_type createState() const{ return state_type(4); }
   residual_type createResidual() const{ return residual_type(6);   }
   jacobian_type createJacobian() const{ return jacobian_type(6, 4);}
 
@@ -238,7 +238,7 @@ int main()
   using lin_solver_t = pls::Solver<lin_tag, hessian_t>;
   lin_solver_t linSolver;
 
-  auto gnSolver = pnonls::create_gauss_newton(problem, x, linSolver);
+  auto gnSolver = pnonls::create_gauss_newton(problem, linSolver);
   gnSolver.setTolerance(1e-5);
   gnSolver.solve(problem, x);
   std::cout << std::setprecision(14) << x << std::endl;

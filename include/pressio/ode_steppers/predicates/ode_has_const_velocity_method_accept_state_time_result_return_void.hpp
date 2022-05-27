@@ -51,31 +51,20 @@
 
 namespace pressio{ namespace ode{
 
-template <
-  typename T,
-  typename state_type,
-  typename time_type,
-  typename velo_type,
-  typename = void
-  >
-struct has_const_velocity_method_accept_state_time_result_return_void 
+template <class T, class StateType, class TimeType, class VeloType, class = void>
+struct has_const_velocity_method_accept_state_time_result_return_void
   : std::false_type{};
 
-template <
-  typename T,
-  typename state_type,
-  typename time_type,
-  typename velo_type
-  >
+template <class T, class StateType, class TimeType, class VeloType>
 struct has_const_velocity_method_accept_state_time_result_return_void<
-  T, state_type, time_type, velo_type,
+  T, StateType, TimeType, VeloType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>().velocity(
-					  std::declval<state_type const&>(),
-					  std::declval<time_type const &>(),
-					  std::declval<velo_type &>()
+					  std::declval<StateType const&>(),
+					  std::declval<TimeType const &>(),
+					  std::declval<VeloType &>()
 					  )
 	   )
       >::value

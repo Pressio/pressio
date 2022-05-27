@@ -21,7 +21,6 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   add_serial_utest(${TESTNAME} ${SRC1})
 endif()
 
-
 set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
 add_subdirectory(newton_raphson)
 add_subdirectory(standard_gauss_newton_normal_equations)

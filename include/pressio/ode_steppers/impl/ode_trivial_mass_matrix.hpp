@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_admissible_qr_solver_for_gn_qr.hpp
+// ode_explicit_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,68 +46,43 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_QR_SOLVER_FOR_GN_QR_HPP_
-#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_QR_SOLVER_FOR_GN_QR_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_TRIVIAL_MASS_MATRIX_HPP_
+#define ODE_STEPPERS_IMPL_ODE_TRIVIAL_MASS_MATRIX_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
+namespace pressio{ namespace ode{ namespace impl{
 
-template <class T, class StateType, class MatrixType, class RType, class enable = void>
-struct admissible_qr_solver_for_gn_qr
-  : std::false_type{};
+struct NoOpMassMatrix{};
 
-template <class T, class StateType, class MatrixType, class RType>
-struct admissible_qr_solver_for_gn_qr<
-  T, StateType, MatrixType, RType,
-  ::pressio::mpl::enable_if_t<
-  	// 1.
-  	// must have computeThin
-	std::is_void<
-	  decltype
-	  (
-	   std::declval<T>().computeThin
-	   (
-	    std::declval<MatrixType const &>()
-	    )
-	   )
-	  >::value and
-  	// 2.
-  	// must have applyQTranspose
-	std::is_void<
-	  decltype
-	  (
-	   std::declval<T const>().applyQTranspose
-	   (
-	    std::declval<RType const &>(),
-	    std::declval<StateType &>()
-	    )
-	   )
-	  >::value and
-  	// 3.
-  	// must have applyRTranspose
-	std::is_void<
-	  decltype
-	  (
-	   std::declval<T const>().applyRTranspose
-	   (
-	    std::declval<StateType const &>(),
-	    std::declval<StateType &>()
-	    )
-	   )
-	  >::value and
-  	// 4.
-  	// must have solve
-	std::is_void<
-	  decltype
-	  (
-	   std::declval<T const>().solve
-	   (
-	    std::declval<StateType const &>(),
-	    std::declval<StateType &>()
-	    )
-	   )
-	  >::value
-	>
-  > : std::true_type{};
+template<class T> struct is_trivial_mass_matrix : std::false_type{};
+template<> struct is_trivial_mass_matrix<NoOpMassMatrix> : std::true_type{};
 
-}}
-#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_QR_SOLVER_FOR_GN_QR_HPP_
+template<class T>
+struct createMassMatrix{
+  template<class SysType>
+  T operator()(const SysType & system){
+    return system.createMassMatrix();
+  }
+};
+
+template<>
+struct createMassMatrix<NoOpMassMatrix>{
+  template<class SysType>
+  NoOpMassMatrix operator()(const SysType & /*system*/){
+    return NoOpMassMatrix();
+  }
+};
+
+template<class T, class = void>
+struct find_mass_matrix_if_any_or_noop{
+  using type = NoOpMassMatrix;
+};
+
+template<class T>
+struct find_mass_matrix_if_any_or_noop<
+  T, mpl::enable_if_t<system_has_complete_mass_matrix_api<T>::value>
+  >{
+  using type = typename T::mass_matrix_type;
+};
+
+}}}//end namespace pressio::ode::explicitmethods::impl
+#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_STEPPER_HPP_

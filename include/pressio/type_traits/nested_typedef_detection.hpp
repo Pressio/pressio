@@ -61,12 +61,30 @@ struct has_state_typedef<
   > : std::true_type{};
 
 template <typename T, typename enable = void>
+struct has_time_typedef : std::false_type{};
+
+template <typename T>
+struct has_time_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::time_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
 struct has_velocity_typedef : std::false_type{};
 
 template <typename T>
 struct has_velocity_typedef<
   T,
   mpl::enable_if_t< !std::is_void<typename T::velocity_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
+struct has_mass_matrix_typedef : std::false_type{};
+
+template <typename T>
+struct has_mass_matrix_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::mass_matrix_type>::value >
   > : std::true_type{};
 
 template <typename T, typename enable = void>
@@ -148,6 +166,15 @@ template <typename T>
 struct has_gradient_typedef<
   T,
   mpl::enable_if_t< !std::is_void<typename T::gradient_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
+struct has_residual_norm_typedef : std::false_type{};
+
+template <typename T>
+struct has_residual_norm_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::residual_norm_type>::value >
   > : std::true_type{};
 
 template <typename T, typename enable = void>

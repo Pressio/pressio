@@ -49,16 +49,16 @@
 #ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
 #define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{ 
+namespace pressio{ namespace nonlinearsolvers{
 
-template <typename T, typename StateType, typename enable = void>
+template <class T, class StateType, class enable = void>
 struct admissible_linear_solver_for_newton_raphson : std::false_type
 {
   static_assert
   (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
 };
 
-template <typename T, typename StateType>
+template <class T, class StateType>
 struct admissible_linear_solver_for_newton_raphson<
   T, StateType,
   ::pressio::mpl::enable_if_t<
