@@ -60,7 +60,6 @@
 
 #include "solvers_nonlinear/solvers_nonlinear_tags.hpp"
 #include "solvers_nonlinear/solvers_nonlinear_enums.hpp"
-#include "solvers_nonlinear/constraints/solvers_admissible_state.hpp"
 #include "solvers_nonlinear/constraints/solvers_least_squares_weighting_operator.hpp"
 #include "solvers_nonlinear/impl/updaters/solvers_create_updater.hpp"
 #include "solvers_nonlinear/impl/solvers_observer.hpp"

@@ -53,10 +53,10 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename enable = void>
-struct compliant_with_fused_hessian_gradient_api : std::false_type{};
+struct SystemWithFusedHessianAndGradient : std::false_type{};
 
 template<typename T>
-struct compliant_with_fused_hessian_gradient_api<
+struct SystemWithFusedHessianAndGradient<
  T,
  ::pressio::mpl::enable_if_t<
    ::pressio::has_state_typedef<T>::value

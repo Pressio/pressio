@@ -52,10 +52,10 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template <class T, class RType, class JType, class enable = void>
-struct admissible_least_squares_weighting_operator : std::false_type{};
+struct LeastSquaresWeightingOperator : std::false_type{};
 
 template <class T, class RType, class JType>
-struct admissible_least_squares_weighting_operator<
+struct LeastSquaresWeightingOperator<
   T, RType, JType,
   ::pressio::mpl::enable_if_t<
     std::is_void<

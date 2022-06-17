@@ -116,8 +116,8 @@ public:
     typename SystemType,
     typename _weigh_t,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
-       ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value),
+      (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value),
       int
       > = 0
     >
@@ -170,7 +170,7 @@ public:
 
   template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value
+    ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
     >
   computeOperators(const SystemType & system,
 		   const StateType & state,
@@ -203,7 +203,7 @@ public:
 
   template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value
+    ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value
     >
   computeOperators(const SystemType & system,
 		   const StateType & state,
@@ -232,7 +232,7 @@ public:
 
   template< typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value
+    ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
     >
   residualNorm(const SystemType & system,
 	       const StateType & state,
@@ -249,7 +249,7 @@ public:
 
   template< typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value
+    ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value
     >
   residualNorm(const SystemType & system,
 	       const StateType & state,

@@ -1,0 +1,106 @@
+
+#include <gtest/gtest.h>
+#include "pressio/ode_steppers_explicit.hpp"
+#include "pressio/ode_advancers.hpp"
+
+struct MyAppWithMassMatrixEigen
+{
+  using independent_variable_type = double;
+  using state_type = Eigen::VectorXd;
+  using right_hand_side_type = state_type;
+  using mass_matrix_type = Eigen::MatrixXd;
+
+  state_type createState() const{
+    state_type ret(3); ret.setZero();
+    return ret;
+  }
+
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type ret(3); ret.setZero();
+    return ret;
+  };
+
+  mass_matrix_type createMassMatrix() const{
+    mass_matrix_type ret(3,3); ret.setZero();
+    return ret;
+  };
+
+  void rightHandSide(const state_type & y,
+		     independent_variable_type evaltime,
+		     right_hand_side_type & rhs) const
+  {
+    for (int i=0; i<y.size(); i++){
+      rhs[i] = evaltime + y[i];
+    }
+  };
+
+  void massMatrix(const state_type & y,
+		  independent_variable_type evaltime,
+		  mass_matrix_type & M) const
+  {
+    for (int i=0; i<M.rows(); i++){
+      for (int j=0; j<M.cols(); j++){
+	M(i,j) = evaltime + (double) i;
+      }
+    }
+  };
+};
+
+struct FakeLinearSolver
+{
+  void solve(const Eigen::MatrixXd & A,
+	     Eigen::VectorXd & x,
+	     const Eigen::VectorXd & b)
+  {
+    // we don't need to do anything meaningful here
+    // we just need numbers. To make things simple
+    // pretend that solving this system boils down
+    // to doing x = Ab
+    x = A*b;
+  }
+};
+
+// EULER
+TEST(ode, explicit_euler_mass_matrix)
+{
+  using namespace pressio;
+  using app_t   = MyAppWithMassMatrixEigen;
+  app_t appObj;
+  auto stepperObj = ode::create_forward_euler_stepper(appObj);
+
+  FakeLinearSolver solver;
+
+  using state_t = typename app_t::state_type;
+  {
+    state_t y(3);
+    y(0) = 1.; y(1) = 2.; y(2) = 3.;
+    double dt = 2.;
+    ode::advance_n_steps(stepperObj, y, 0.0, dt,
+                         ::pressio::ode::StepCount(1), solver);
+    EXPECT_DOUBLE_EQ( y(0), 1.);
+    EXPECT_DOUBLE_EQ( y(1), 14.);
+    EXPECT_DOUBLE_EQ( y(2), 27.);
+  }
+
+  {
+    state_t y(3);
+    y(0) = 1.; y(1) = 2.; y(2) = 3.;
+    double dt = 2.;
+    ode::advance_n_steps(stepperObj, y, 0.0, dt,
+                         ::pressio::ode::StepCount(2), solver);
+    EXPECT_DOUBLE_EQ( y(0), 193.);
+    EXPECT_DOUBLE_EQ( y(1), 302.);
+    EXPECT_DOUBLE_EQ( y(2), 411.);
+  }
+
+  {
+    state_t y(3);
+    y(0) = 1.; y(1) = 2.; y(2) = 3.;
+    double dt = 2.;
+    ode::advance_n_steps(stepperObj, y, 0.0, dt,
+                         ::pressio::ode::StepCount(3), solver);
+    EXPECT_DOUBLE_EQ( y(0), 7344.+ 193.);
+    EXPECT_DOUBLE_EQ( y(1), 9180.+ 302.);
+    EXPECT_DOUBLE_EQ( y(2), 11016.+411.);
+  }
+}

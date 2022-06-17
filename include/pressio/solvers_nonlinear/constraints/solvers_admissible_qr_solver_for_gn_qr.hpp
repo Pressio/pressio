@@ -52,11 +52,11 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template <class T, class StateType, class MatrixType, class RType, class enable = void>
-struct admissible_qr_solver_for_gn_qr
+struct QRSolverForGnQr
   : std::false_type{};
 
 template <class T, class StateType, class MatrixType, class RType>
-struct admissible_qr_solver_for_gn_qr<
+struct QRSolverForGnQr<
   T, StateType, MatrixType, RType,
   ::pressio::mpl::enable_if_t<
   	// 1.

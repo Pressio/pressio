@@ -55,8 +55,9 @@
 #include "./ops.hpp"
 #include "./solvers.hpp"
 
-#include "./ode_advancers/exceptions.hpp"
-#include "./ode_steppers/pressio_ode_common.hpp"
-#include "./ode_steppers/ode_create_implicit_stepper.hpp"
+#include "./ode/exceptions.hpp"
+#include "./ode/strong_types.hpp"
+#include "./ode/steppers/common.hpp"
+#include "./ode/steppers/ode_create_implicit_stepper.hpp"
 
 #endif

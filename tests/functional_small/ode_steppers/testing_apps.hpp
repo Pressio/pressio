@@ -6,9 +6,9 @@ namespace pressio{ namespace ode{ namespace testing{
 
 struct refAppEigen
 {
-  using time_type = double;
+  using independent_variable_type = double;
   using state_type = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
 
   state_type createState() const{
     state_type ret(3);
@@ -16,13 +16,13 @@ struct refAppEigen
     return ret;
   }
 
-  velocity_type createVelocity() const{
-    velocity_type ret(3);
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type ret(3);
     ret.setZero();
     return ret;
   };
 
-  void velocity(const state_type & y, time_type evalt, velocity_type & rhs) const
+  void rightHandSide(const state_type & y, independent_variable_type evalt, right_hand_side_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){
@@ -53,9 +53,9 @@ struct refAppForImpEigen
 	  den = 1 + (20/3) * dt
           y_n = num/den
    */
-  using time_type = double;
+  using independent_variable_type = double;
   using state_type    = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
   state_type y0_;
@@ -74,8 +74,8 @@ public:
     return y0_;
   }
 
-  void velocity(const state_type & yIn,
-    time_type evalt, velocity_type & R) const{
+  void rightHandSide(const state_type & yIn,
+    independent_variable_type evalt, right_hand_side_type & R) const{
     assert(yIn.size()==3);
     R = -10. * yIn;
   };
@@ -86,14 +86,14 @@ public:
     return ret;
   }
 
-  velocity_type createVelocity() const{
-    velocity_type R(3);
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type R(3);
     R.setZero();
     return R;
   };
 
   void jacobian(const state_type & yIn,
-                time_type evalt, 
+                independent_variable_type evalt,
                 jacobian_type & JJ) const
   {
     assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
@@ -144,7 +144,7 @@ public:
   void analyticAdvanceRK4(double dt)
   {
     assert(dt==0.1);
-    velocity_type k1(3), k2(3), k3(3), k4(3);
+    right_hand_side_type k1(3), k2(3), k3(3), k4(3);
     //I did the math...
     k1 << -1., -2, -3.;
     k2 << -0.5, -1, -1.5;

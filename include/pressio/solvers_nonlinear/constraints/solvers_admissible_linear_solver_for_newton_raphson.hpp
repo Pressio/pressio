@@ -52,14 +52,14 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template <class T, class StateType, class enable = void>
-struct admissible_linear_solver_for_newton_raphson : std::false_type
+struct LinearSolverForNewtonRaphson : std::false_type
 {
   static_assert
   (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
 };
 
 template <class T, class StateType>
-struct admissible_linear_solver_for_newton_raphson<
+struct LinearSolverForNewtonRaphson<
   T, StateType,
   ::pressio::mpl::enable_if_t<
     ::pressio::has_matrix_typedef<T>::value and

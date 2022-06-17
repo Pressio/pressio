@@ -79,6 +79,15 @@ struct has_velocity_typedef<
   > : std::true_type{};
 
 template <typename T, typename enable = void>
+struct has_right_hand_side_typedef : std::false_type{};
+
+template <typename T>
+struct has_right_hand_side_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::right_hand_side_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
 struct has_mass_matrix_typedef : std::false_type{};
 
 template <typename T>
@@ -94,6 +103,15 @@ template <typename T>
 struct has_residual_typedef<
   T,
   mpl::enable_if_t< !std::is_void<typename T::residual_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
+struct has_independent_variable_typedef : std::false_type{};
+
+template <typename T>
+struct has_independent_variable_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::independent_variable_type>::value >
   > : std::true_type{};
 
 template <typename T, typename enable = void>
@@ -196,6 +214,15 @@ struct has_data_map_typedef<
   > : std::true_type{};
 
 template <typename T, typename enable = void>
+struct has_discrete_residual_typedef : std::false_type{};
+
+template <typename T>
+struct has_discrete_residual_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::discrete_residual_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
 struct has_discrete_time_residual_typedef : std::false_type{};
 
 template <typename T>
@@ -211,6 +238,15 @@ template <typename T>
 struct has_discrete_time_jacobian_typedef<
   T,
   mpl::enable_if_t< !std::is_void<typename T::discrete_time_jacobian_type>::value >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
+struct has_discrete_jacobian_typedef : std::false_type{};
+
+template <typename T>
+struct has_discrete_jacobian_typedef<
+  T,
+  mpl::enable_if_t< !std::is_void<typename T::discrete_jacobian_type>::value >
   > : std::true_type{};
 
 template <typename T, typename enable = void>

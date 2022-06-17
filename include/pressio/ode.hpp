@@ -49,8 +49,8 @@
 #ifndef PRESSIO_ODE_HPP_
 #define PRESSIO_ODE_HPP_
 
-#include "./ode_advancers.hpp"
 #include "./ode_steppers_explicit.hpp"
 #include "./ode_steppers_implicit.hpp"
+#include "./ode_advancers.hpp"
 
 #endif

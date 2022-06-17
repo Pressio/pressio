@@ -46,33 +46,25 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_ADVANCE_HPP_
-#define PRESSIO_ODE_ADVANCE_HPP_
+#ifndef PRESSIO_ODE_ADVANCERS_HPP_
+#define PRESSIO_ODE_ADVANCERS_HPP_
 
 #include "./mpl.hpp"
 #include "./utils.hpp"
 #include "./type_traits.hpp"
 
-namespace pressio{ namespace ode{
+#include "./ode/exceptions.hpp"
+#include "./ode/strong_types.hpp"
+#include "./ode/advancers/constraints/ode_observer.hpp"
+#include "./ode/advancers/constraints/ode_guesser.hpp"
+#include "./ode/advancers/constraints/ode_step_size_policy.hpp"
+#include "./ode/advancers/constraints/ode_steppable.hpp"
+#include "./ode/advancers/constraints/ode_steppable_with_args.hpp"
 
-struct StepCount{
-  using value_type = int32_t;
-  value_type value_{};
-  StepCount() = delete;
-  constexpr explicit StepCount(value_type valueIn) : value_(valueIn){}
-  constexpr value_type get() const { return value_; }
-};
-
-constexpr typename StepCount::value_type stepZero(0);
-}}// end namespace ode
-
-#include "./ode_advancers/exceptions.hpp"
-#include "./ode_advancers/constraints/ode_observer.hpp"
-#include "./ode_advancers/constraints/ode_guesser.hpp"
-#include "./ode_advancers/constraints/ode_time_step_size_manager.hpp"
-#include "./ode_advancers/constraints/ode_steppable.hpp"
-#include "./ode_advancers/constraints/ode_static_assert_helpers.hpp"
-#include "./ode_advancers/ode_advance_n_steps.hpp"
-#include "./ode_advancers/ode_advance_to_target_time.hpp"
+// public functions
+#include "./ode/advancers/ode_advance_n_steps.hpp"
+#include "./ode/advancers/ode_advance_n_steps_with_guesser.hpp"
+#include "./ode/advancers/ode_advance_to_target_point.hpp"
+#include "./ode/advancers/ode_advance_to_target_point_with_step_recovery.hpp"
 
 #endif

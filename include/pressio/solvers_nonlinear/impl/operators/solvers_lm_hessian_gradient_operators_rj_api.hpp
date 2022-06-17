@@ -90,8 +90,8 @@ public:
   template <
     typename SystemType,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
-       ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value),
+      (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value),
       int
       > = 0
     >
@@ -106,8 +106,8 @@ public:
     typename SystemType,
     typename ...ArgsIn,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
-       ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value)
+      (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value)
       and sizeof ...(ArgsIn) >= 1,
       int
       > = 0

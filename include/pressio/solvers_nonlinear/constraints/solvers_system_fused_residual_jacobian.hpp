@@ -52,10 +52,10 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename enable = void>
-struct compliant_with_fused_residual_jacobian_api : std::false_type{};
+struct SystemWithFusedResidualAndJacobian : std::false_type{};
 
 template<typename T>
-struct compliant_with_fused_residual_jacobian_api
+struct SystemWithFusedResidualAndJacobian
 <T,
  ::pressio::mpl::enable_if_t<
    ::pressio::has_state_typedef<T>::value
@@ -73,6 +73,12 @@ struct compliant_with_fused_residual_jacobian_api
      T, typename T::state_type, typename T::residual_type, typename T::jacobian_type>::value
   >
  > : std::true_type{};
+
+template<typename T>
+using DeterminedSystemWithFusedResidualAndJacobian = SystemWithFusedResidualAndJacobian<T>;
+
+template<typename T>
+using OverdeterminedSystemWithFusedResidualAndJacobian = SystemWithFusedResidualAndJacobian<T>;
 
 }}
 #endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_SYSTEM_FUSED_RESIDUAL_JACOBIAN_HPP_

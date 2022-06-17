@@ -57,7 +57,7 @@ template <
   class RhsType = StateType,
   class enable = void
   >
-struct admissible_linear_solver_for_nonlinear_least_squares : std::false_type
+struct LinearSolverForNonlinearLeastSquares : std::false_type
 {
   static_assert
   (!std::is_const<T>::value,
@@ -65,7 +65,7 @@ struct admissible_linear_solver_for_nonlinear_least_squares : std::false_type
 };
 
 template <class T, class StateType>
-struct admissible_linear_solver_for_nonlinear_least_squares<
+struct LinearSolverForNonlinearLeastSquares<
   T, StateType, StateType,
   ::pressio::mpl::enable_if_t<
     ::pressio::has_matrix_typedef<T>::value and
