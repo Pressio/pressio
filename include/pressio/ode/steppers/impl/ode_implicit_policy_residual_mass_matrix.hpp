@@ -1,5 +1,3 @@
-
-
 /*
 //@HEADER
 // ************************************************************************
@@ -48,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_RESIDUAL_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_RESIDUAL_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_RESIDUAL_WITH_MASS_MAT_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_RESIDUAL_WITH_MASS_MAT_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -57,9 +55,10 @@ template<
   class SystemType,
   class IndVarType,
   class StateType,
-  class ResidualType
+  class ResidualType,
+  class MassMatrixType
   >
-class ResidualStandardPolicy
+class ResidualWithMassMatrixStandardPolicy
 {
 public:
   // required
@@ -68,21 +67,23 @@ public:
   using residual_type = ResidualType;
 
 public:
-  ResidualStandardPolicy() = delete;
+  ResidualWithMassMatrixStandardPolicy() = delete;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  explicit ResidualStandardPolicy(SystemType systemIn)
-    : systemObj_(systemIn){}
+  explicit ResidualWithMassMatrixStandardPolicy(SystemType systemIn)
+    : systemObj_(systemIn),
+      massMatrix_(systemIn.createMassMatrix()){}
 #else
-  explicit ResidualStandardPolicy(SystemType && systemIn)
-    : systemObj_( std::forward<SystemType>(systemIn) ){}
+  explicit ResidualWithMassMatrixStandardPolicy(SystemType && systemIn)
+    : systemObj_( std::forward<SystemType>(systemIn) ),
+      massMatrix_(systemIn.createMassMatrix()){}
 #endif
 
-  ResidualStandardPolicy(const ResidualStandardPolicy &) = default;
-  ResidualStandardPolicy & operator=(const ResidualStandardPolicy &) = default;
-  ResidualStandardPolicy(ResidualStandardPolicy &&) = default;
-  ResidualStandardPolicy & operator=(ResidualStandardPolicy &&) = default;
-  ~ResidualStandardPolicy() = default;
+  ResidualWithMassMatrixStandardPolicy(const ResidualWithMassMatrixStandardPolicy &) = default;
+  ResidualWithMassMatrixStandardPolicy & operator=(const ResidualWithMassMatrixStandardPolicy &) = default;
+  ResidualWithMassMatrixStandardPolicy(ResidualWithMassMatrixStandardPolicy &&) = default;
+  ResidualWithMassMatrixStandardPolicy & operator=(ResidualWithMassMatrixStandardPolicy &&) = default;
+  ~ResidualWithMassMatrixStandardPolicy() = default;
 
 public:
   StateType createState() const{
@@ -98,7 +99,9 @@ public:
   template <
     class StencilStatesContainerType,
     class StencilVelocitiesContainerType,
-    class StepType>
+    class StepType,
+    class _MassMatrixType = MassMatrixType
+    >
   void operator()(StepScheme name,
 		  const StateType & predictedState,
 		  const StencilStatesContainerType & stencilStatesManager,
@@ -110,24 +113,24 @@ public:
   {
 
     if (name == StepScheme::BDF1){
-      (*this).template compute_impl_bdf_no_mm<ode::BDF1>(predictedState, stencilStatesManager,
+      (*this).template compute_impl_bdf_with_mm<ode::BDF1>(predictedState, stencilStatesManager,
 							 stencilVelocities, rhsEvaluationTime,
 							 dt, step, R);
     }
-    else if (name == StepScheme::BDF2){
-      (*this).template compute_impl_bdf_no_mm<ode::BDF2>(predictedState, stencilStatesManager,
-							 stencilVelocities, rhsEvaluationTime,
-							 dt, step, R);
-    }
-    else if (name == StepScheme::CrankNicolson){
-      this->compute_impl_cn_no_mm(predictedState, stencilStatesManager,
-				  stencilVelocities, rhsEvaluationTime, dt, step, R);
-    }
+    // else if (name == StepScheme::BDF2){
+    //   (*this).template compute_impl_bdf_with_mm<ode::BDF2>(predictedState, stencilStatesManager,
+    // 							 stencilVelocities, rhsEvaluationTime,
+    // 							 dt, step, R);
+    // }
+    // else if (name == StepScheme::CrankNicolson){
+    //   this->compute_impl_cn_with_mm(predictedState, stencilStatesManager,
+    // 				  stencilVelocities, rhsEvaluationTime, dt, step, R);
+    // }
   }
 
 private:
   //
-  // BDF
+  // BDF WITH mass matrix
   //
   template <
   class OdeTag,
@@ -135,63 +138,32 @@ private:
   class StencilVelocitiesContainerType,
   class StepType
   >
-  void compute_impl_bdf_no_mm(const StateType & predictedState,
-			      const StencilStatesContainerType & stencilStatesManager,
-			      StencilVelocitiesContainerType & stencilVelocities,
-			      const IndVarType & rhsEvaluationTime,
-			      const IndVarType & dt,
-			      const StepType & step,
-			      ResidualType & R) const
+  void compute_impl_bdf_with_mm(const StateType & predictedState,
+				const StencilStatesContainerType & stencilStatesManager,
+				StencilVelocitiesContainerType & stencilVelocities,
+				const IndVarType & rhsEvaluationTime,
+				const IndVarType & dt,
+				const StepType & step,
+				ResidualType & R) const
   {
 
-    try{
-      systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, R);
-      ::pressio::ode::impl::discrete_time_residual(predictedState,
-						   R, stencilStatesManager,
-						   dt, OdeTag());
-      stepTracker_ = step;
-    }
-    catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
-      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
-    }
-  }
-
-  //
-  // CN
-  //
-  template <
-    class StencilStatesContainerType,
-    class StencilVelocitiesContainerType,
-    class StepType
-    >
-  void compute_impl_cn_no_mm(const StateType & predictedState,
-			     const StencilStatesContainerType & stencilStates,
-			     StencilVelocitiesContainerType & stencilVelocities,
-			     const IndVarType & t_np1,
-			     const IndVarType & dt,
-			     const StepType & step,
-			     ResidualType & R) const
-  {
-
-    if (stepTracker_ != step){
-      auto & f_n = stencilVelocities(::pressio::ode::n());
-      auto & state_n = stencilStates(::pressio::ode::n());
-      const auto tn = t_np1-dt;
-      systemObj_.get().rightHandSide(state_n, tn, f_n);
-    }
-
-    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
-    systemObj_.get().rightHandSide(predictedState, t_np1, f_np1);
-    ::pressio::ode::impl::discrete_time_residual
-      (predictedState, R, stencilStates, stencilVelocities, dt,
-       ode::CrankNicolson());
-
-    stepTracker_ = step;
+    // try{
+    // systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, R);
+    // systemObj_.get().massMatrix(predictedState, rhsEvaluationTime, massMatrix_);
+    // ::pressio::ode::impl::discrete_time_residual(predictedState,
+    // 						   R, stencilStatesManager,
+    // 						   dt, OdeTag());
+    //   stepTracker_ = step;
+    // }
+    // catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
+    //   throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
+    // }
   }
 
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   mutable int32_t stepTracker_ = -1;
+  MassMatrixType massMatrix_;
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy

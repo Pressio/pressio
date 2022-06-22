@@ -148,22 +148,22 @@ class nMinusFour{};
 namespace pressio{ namespace ode{
 
 // static one
-template<typename VelocityType, std::size_t N>
+template<typename T, std::size_t N>
 using ImplicitStencilVelocitiesContainerStatic
-  = impl::StencilDataContainerStaticImpl<VelocityType, N, nPlusOne /*stencil ends with n+1*/>;
+  = impl::StencilDataContainerStaticImpl<T, N, nPlusOne /*stencil ends with n+1*/>;
 
-template<typename StateType, std::size_t N>
+template<typename T, std::size_t N>
 using ImplicitStencilStatesContainerStatic
-  = impl::StencilDataContainerStaticImpl<StateType, N, n /*stencils ends at n*/>;
+  = impl::StencilDataContainerStaticImpl<T, N, n /*stencils ends at n*/>;
 
 // dynamic
-template<typename VelocityType>
+template<typename T>
 using ImplicitStencilVelocitiesContainerDyn
-  = impl::StencilDataContainerDynImpl<VelocityType, nPlusOne /*stencil ends with n+1*/>;
+  = impl::StencilDataContainerDynImpl<T, nPlusOne /*stencil ends with n+1*/>;
 
-template<typename StateType>
+template<typename T>
 using ImplicitStencilStatesContainerDyn
-  = impl::StencilDataContainerDynImpl<StateType, n /*stencils end at n*/>;
+  = impl::StencilDataContainerDynImpl<T, n /*stencils end at n*/>;
 
 }}//end namespace pressio::ode
 
@@ -193,11 +193,7 @@ using ImplicitStencilStatesContainerDyn
 #include "predicates/ode_has_const_discrete_residual_method_accept_step_indvar_dt_result_states_return_void.hpp"
 
 #include "constraints/ode_system.hpp"
-#include "constraints/ode_explicit_state.hpp"
-#include "constraints/ode_explicit_rhs.hpp"
-#include "constraints/ode_implicit_state.hpp"
-#include "constraints/ode_implicit_residual.hpp"
-#include "constraints/ode_implicit_jacobian.hpp"
+#include "constraints/ode_various.hpp"
 #include "constraints/ode_implicit_residual_policy.hpp"
 #include "constraints/ode_implicit_jacobian_policy.hpp"
 

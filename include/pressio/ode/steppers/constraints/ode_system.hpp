@@ -140,7 +140,7 @@ struct SemiDiscreteSystemWithJacobian<
   > : std::true_type{};
 
 //
-// (4) rhs, jac, mass matrix
+// (4) complete means it has rhs, jac, mass matrix
 //
 template<class T, class enable = void>
 struct SemiDiscreteSystemComplete : std::false_type{};
@@ -150,13 +150,7 @@ struct SemiDiscreteSystemComplete<
   T,
   mpl::enable_if_t<
     SemiDiscreteSystemWithJacobian<T>::value
-    and ::pressio::has_mass_matrix_typedef<T>::value
-    //
-    // mass matrix
-    and ::pressio::ode::has_const_create_mass_matrix_method_return_result<
-      T, typename T::mass_matrix_type >::value
-    and ::pressio::ode::has_const_mass_matrix_method_accept_state_indvar_result_return_void<
-      T, typename T::state_type,typename T::independent_variable_type,typename T::mass_matrix_type>::value
+    and SemiDiscreteSystemWithMassMatrix<T>::value
     >
   > : std::true_type{};
 
@@ -181,17 +175,17 @@ struct FullyDiscreteSystemWithJacobian<
     //
     // time-discrete residual
     and ::pressio::ode::has_const_create_discrete_residual_method_return_result<
-      T, typename T::discrete_time_residual_type>::value
+      T, typename T::discrete_residual_type>::value
     and ::pressio::ode::has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
       T, NumStates, int, typename T::independent_variable_type, typename T::state_type,
-      typename T::discrete_time_residual_type>::value
+      typename T::discrete_residual_type>::value
     //
     // time-discrete jacobian
     and ::pressio::ode::has_const_create_discrete_jacobian_method_return_result<
-      T, typename T::discrete_time_jacobian_type>::value
+      T, typename T::discrete_jacobian_type>::value
     and ::pressio::ode::has_const_discrete_jacobian_method_accept_step_indvar_dt_result_n_states_return_void<
       T, NumStates, int, typename T::independent_variable_type, typename T::state_type,
-      typename T::discrete_time_jacobian_type>::value
+      typename T::discrete_jacobian_type>::value
     >
   > : std::true_type{};
 

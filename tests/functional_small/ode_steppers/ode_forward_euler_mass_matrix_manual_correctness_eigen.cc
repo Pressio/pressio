@@ -3,12 +3,12 @@
 #include "pressio/ode_steppers_explicit.hpp"
 #include "pressio/ode_advancers.hpp"
 
-struct MyAppWithMassMatrixEigen
+struct MyApp1
 {
   using independent_variable_type = double;
-  using state_type = Eigen::VectorXd;
+  using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
-  using mass_matrix_type = Eigen::MatrixXd;
+  using mass_matrix_type     = Eigen::MatrixXd;
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -46,7 +46,7 @@ struct MyAppWithMassMatrixEigen
   };
 };
 
-struct FakeLinearSolver
+struct FakeLinearSolver1
 {
   void solve(const Eigen::MatrixXd & A,
 	     Eigen::VectorXd & x,
@@ -60,15 +60,17 @@ struct FakeLinearSolver
   }
 };
 
-// EULER
-TEST(ode, explicit_euler_mass_matrix)
+TEST(ode_explicit_steppers, forward_euler_with_mass_matrix)
 {
+  // this test checkes that things match
+  // numbers precomputed manually
+
   using namespace pressio;
-  using app_t   = MyAppWithMassMatrixEigen;
+  using app_t   = MyApp1;
   app_t appObj;
   auto stepperObj = ode::create_forward_euler_stepper(appObj);
 
-  FakeLinearSolver solver;
+  FakeLinearSolver1 solver;
 
   using state_t = typename app_t::state_type;
   {

@@ -52,7 +52,7 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
-  class TimeType,
+  class IndVarType,
   class StateType,
   class ResidualType,
   class JacobianType,
@@ -60,12 +60,12 @@ template<
   class JacobianPolicyType,
   bool using_default_policies
   >
-class StepperRt
+class ImplicitStepperStandardImpl
 {
 
 public:
   // required
-  using time_type = TimeType;
+  using independent_variable_type = IndVarType;
   using state_type  = StateType;
   using residual_type = ResidualType;
   using jacobian_type = JacobianType;
@@ -74,8 +74,8 @@ private:
   ::pressio::ode::StepScheme name_;
   ::pressio::ode::stepper_order_type order_;
 
-  TimeType t_np1_  = {};
-  TimeType dt_ = {};
+  IndVarType t_np1_  = {};
+  IndVarType dt_ = {};
   int32_t step_number_  = {};
 
   // state object to ensure the strong guarantee for handling excpetions
@@ -97,12 +97,12 @@ private:
   mutable ImplicitStencilVelocitiesContainerDyn<ResidualType> stencil_velocities_;
 
 public:
-  StepperRt() = delete;
-  StepperRt(const StepperRt & other)  = default;
-  StepperRt & operator=(const StepperRt & other) = delete;
-  StepperRt(StepperRt && other)  = default;
-  StepperRt & operator=(StepperRt && other) = delete;
-  ~StepperRt() = default;
+  ImplicitStepperStandardImpl() = delete;
+  ImplicitStepperStandardImpl(const ImplicitStepperStandardImpl & other)  = default;
+  ImplicitStepperStandardImpl & operator=(const ImplicitStepperStandardImpl & other) = delete;
+  ImplicitStepperStandardImpl(ImplicitStepperStandardImpl && other)  = default;
+  ImplicitStepperStandardImpl & operator=(ImplicitStepperStandardImpl && other) = delete;
+  ~ImplicitStepperStandardImpl() = default;
 
 
   // *** BDF1 ***//
@@ -111,7 +111,7 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::BDF1, const SystemType & systemObj)
+  ImplicitStepperStandardImpl(::pressio::ode::BDF1, const SystemType & systemObj)
     : name_(StepScheme::BDF1),
       order_(1),
       recovery_state_{systemObj.createState()},
@@ -126,7 +126,7 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::BDF1,
+  ImplicitStepperStandardImpl(::pressio::ode::BDF1,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::BDF1),
@@ -143,7 +143,7 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::BDF2, const SystemType & systemObj)
+  ImplicitStepperStandardImpl(::pressio::ode::BDF2, const SystemType & systemObj)
     : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{systemObj.createState()},
@@ -159,7 +159,7 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::BDF2,
+  ImplicitStepperStandardImpl(::pressio::ode::BDF2,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::BDF2),
@@ -177,7 +177,7 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::CrankNicolson, const SystemType & systemObj)
+  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson, const SystemType & systemObj)
     : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{systemObj.createState()},
@@ -194,7 +194,7 @@ public:
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
-  StepperRt(::pressio::ode::CrankNicolson,
+  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
 	    _ResidualPolicyType && resPolicyObj,
 	    _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::CrankNicolson),
@@ -212,66 +212,34 @@ public:
     return order_;
   }
 
-  template<typename solver_type, typename ...Args>
-  void operator()(state_type & odeState,
-		  const TimeType &  currentTime,
-		  const TimeType &  dt,
-		  const int32_t & stepNumber,
-		  solver_type & solver,
-		  Args&& ...args)
+  template<class SolverType, class ...Args>
+  void operator()(StateType & odeState,
+		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
+		  ::pressio::ode::StepCount stepNumber,
+		  ::pressio::ode::StepSize<independent_variable_type> stepSize,
+		  SolverType & solver,
+		  Args && ...args)
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step");
-    auto dummyGuesser =
-      [](const int32_t &, const TimeType &, state_type &){ /*no op*/ };
 
     if (name_==::pressio::ode::StepScheme::BDF1){
       doStepImpl(::pressio::ode::BDF1(),
-		 odeState, currentTime, dt, stepNumber,
-		 dummyGuesser, solver,
+		 odeState, stepStartVal.get(), stepSize.get(),
+		 stepNumber.get(), solver,
 		 std::forward<Args>(args)...);
     }
+
     else if (name_==::pressio::ode::StepScheme::BDF2){
       doStepImpl(::pressio::ode::BDF2(),
-		 odeState, currentTime, dt, stepNumber,
-		 dummyGuesser, solver,
+		 odeState, stepStartVal.get(), stepSize.get(),
+		 stepNumber.get(), solver,
 		 std::forward<Args>(args)...);
     }
+
     else if (name_==::pressio::ode::StepScheme::CrankNicolson){
       doStepImpl(::pressio::ode::CrankNicolson(),
-		 odeState, currentTime, dt, stepNumber,
-		 dummyGuesser, solver,
-		 std::forward<Args>(args)...);
-    }
-  }
-
-  // overload for when we have a guesser callback
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
-  void operator()(state_type & odeState,
-		  const TimeType &  currentTime,
-		  const TimeType &  dt,
-		  const int32_t & stepNumber,
-		  guess_callback_t && guesserCb,
-		  solver_type & solver,
-		  Args&& ...args)
-  {
-    PRESSIOLOG_DEBUG("implicit stepper: do step with callback to state guesser");
-
-    if (name_==::pressio::ode::StepScheme::BDF1){
-      doStepImpl(::pressio::ode::BDF1(),
-		 odeState, currentTime, dt, stepNumber,
-		 std::forward<guess_callback_t>(guesserCb), solver,
-		 std::forward<Args>(args)...);
-    }
-    else if (name_==::pressio::ode::StepScheme::BDF2){
-      doStepImpl(::pressio::ode::BDF2(),
-		 odeState, currentTime, dt, stepNumber,
-		 std::forward<guess_callback_t>(guesserCb), solver,
-		 std::forward<Args>(args)...);
-    }
-    else if (name_==::pressio::ode::StepScheme::CrankNicolson){
-      doStepImpl(::pressio::ode::CrankNicolson(),
-		 odeState, currentTime, dt, stepNumber,
-		 std::forward<guess_callback_t>(guesserCb), solver,
+		 odeState, stepStartVal.get(), stepSize.get(),
+		 stepNumber.get(), solver,
 		 std::forward<Args>(args)...);
     }
   }
@@ -302,13 +270,12 @@ public:
   }
 
 private:
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template<typename solver_type, typename ...Args>
   void doStepImpl(::pressio::ode::BDF1,
 		  state_type & odeState,
-		  const TimeType & currentTime,
-		  const TimeType & dt,
+		  const IndVarType & currentTime,
+		  const IndVarType & dt,
 		  const int32_t & stepNumber,
-		  guess_callback_t && guesserCb,
 		  solver_type & solver,
 		  Args&& ...args)
   {
@@ -331,8 +298,8 @@ private:
     auto & odeState_n = stencil_states_(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeState);
 
-    // if provided, callback to provide a guess for the odeState
-    guesserCb(stepNumber, t_np1_, odeState);
+    // // if provided, callback to provide a guess for the odeState
+    // guesserCb(stepNumber, t_np1_, odeState);
 
     try{
       solver.solve(*this, odeState, std::forward<Args>(args)...);
@@ -349,13 +316,12 @@ private:
     }
   }
 
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template<typename solver_type, typename ...Args>
   void doStepImpl(::pressio::ode::BDF2,
 		  state_type & odeState,
-		  const TimeType & currentTime,
-		  const TimeType & dt,
+		  const IndVarType & currentTime,
+		  const IndVarType & dt,
 		  const int32_t & stepNumber,
-		  guess_callback_t && guesserCb,
 		  solver_type & solver,
 		  Args&& ...args)
   {
@@ -380,8 +346,8 @@ private:
 
     // first step, use auxiliary stepper
     if (stepNumber == 1){
-        using aux_type = StepperRt<
-	  TimeType, StateType, ResidualType, JacobianType,
+        using aux_type = ImplicitStepperStandardImpl<
+	  IndVarType, StateType, ResidualType, JacobianType,
 	  const ResidualPolicyType &, const JacobianPolicyType &, false>;
 
 	aux_type auxStepper(::pressio::ode::BDF1(),
@@ -391,9 +357,10 @@ private:
 	// stencil_states_(0) now holds y_0
 	::pressio::ops::deep_copy(stencil_states_(ode::n()), odeState);
 	::pressio::ops::deep_copy(stencil_states_(ode::nMinusOne()), odeState);
-	auxStepper(odeState, currentTime, dt,
-		   stepNumber, solver,
-		   std::forward<Args>(args)...);
+	auxStepper(odeState, StepStartAt<independent_variable_type>(currentTime),
+		   StepCount(stepNumber),
+		   StepSize<independent_variable_type>(dt),
+		   solver, std::forward<Args>(args)...);
     }
     if (stepNumber >= 2)
     {
@@ -424,7 +391,7 @@ private:
       ::pressio::ops::deep_copy(odeState_n, odeState);
 
       try{
-	guesserCb(stepNumber, t_np1_, odeState);
+	//guesserCb(stepNumber, t_np1_, odeState);
 	solver.solve(*this, odeState, std::forward<Args>(args)...);
       }
       catch (::pressio::eh::NonlinearSolveFailure const & e)
@@ -439,13 +406,12 @@ private:
     }
   }
 
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template<typename solver_type, typename ...Args>
   void doStepImpl(::pressio::ode::CrankNicolson,
 		  state_type & odeState,
-		  const TimeType & currentTime,
-		  const TimeType & dt,
+		  const IndVarType & currentTime,
+		  const IndVarType & dt,
 		  const int32_t & stepNumber,
-		  guess_callback_t && guesserCb,
 		  solver_type & solver,
 		  Args&& ...args)
   {
@@ -469,8 +435,8 @@ private:
     auto & odeState_n = stencil_states_(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeState);
 
-    // if provided, callback to provide a guess for the odeState
-    guesserCb(stepNumber, t_np1_, odeState);
+    // // if provided, callback to provide a guess for the odeState
+    // guesserCb(stepNumber, t_np1_, odeState);
 
     try{
       solver.solve(*this, odeState, std::forward<Args>(args)...);

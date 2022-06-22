@@ -60,12 +60,12 @@ auto create_implicit_stepper(StepScheme name, const SystemType & system){
 
 template<class ResidualPolicyType, class JacobianPolicyType>
 auto create_implicit_stepper(StepScheme name,
-			     ResidualPolicyType && rPol,
-			     JacobianPolicyType && jPol)
+			     ResidualPolicyType && resPolicy,
+			     JacobianPolicyType && jacPolicy)
 {
   return impl::create_implicit_stepper_impl(name,
-					    std::forward<ResidualPolicyType>(rPol),
-					    std::forward<JacobianPolicyType>(jPol));
+					    std::forward<ResidualPolicyType>(resPolicy),
+					    std::forward<JacobianPolicyType>(jacPolicy));
 }
 
 template<class ...Args>

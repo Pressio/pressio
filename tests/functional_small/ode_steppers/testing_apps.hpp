@@ -158,8 +158,6 @@ public:
 //************************************************
 //************************************************
 
-
-
 struct refAppForArbitraryImpl
 {
   using scalar_type   = double;

@@ -7,9 +7,9 @@ namespace
 {
 struct MyApp1
 {
-  using time_type   = double;
+  using independent_variable_type   = double;
   using state_type    = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
@@ -17,8 +17,8 @@ public:
     return state_type(3);
   }
 
-  velocity_type createVelocity() const{
-    velocity_type f(3);
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type f(3);
     return f;
   }
 
@@ -27,9 +27,9 @@ public:
     return J;
   }
 
-  void velocity(const state_type & yn,
-		const time_type& evaltime,
-		velocity_type & f) const
+  void rightHandSide(const state_type & yn,
+		const independent_variable_type& evaltime,
+		right_hand_side_type & f) const
   {
     std::cout << "f: t=" << evaltime << "\n";
     f[0] = evaltime+1.;
@@ -37,7 +37,7 @@ public:
     f[2] = evaltime+3.;
   }
 
-  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const independent_variable_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -90,9 +90,9 @@ namespace
 {
 struct MyApp2
 {
-  using time_type   = double;
+  using independent_variable_type   = double;
   using state_type    = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
@@ -100,8 +100,8 @@ public:
     return state_type(3);
   }
 
-  velocity_type createVelocity() const{
-    velocity_type f(3);
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type f(3);
     return f;
   }
 
@@ -110,9 +110,9 @@ public:
     return J;
   }
 
-  void velocity(const state_type & yn,
-    const time_type& evaltime,
-    velocity_type & f) const
+  void rightHandSide(const state_type & yn,
+    const independent_variable_type& evaltime,
+    right_hand_side_type & f) const
   {
     std::cout << "f: t=" << evaltime << "\n";
     f[0] = evaltime+1.;
@@ -120,7 +120,7 @@ public:
     f[2] = evaltime+3.;
   }
 
-  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const independent_variable_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -189,139 +189,139 @@ TEST(ode, implicit_bdf2_appVelocityCalledWithCorrectTime)
 }
 
 
-namespace
-{
-struct MyApp3
-{
-  mutable int count_ = 0;
-  using time_type = double;
-  using state_type    = Eigen::VectorXd;
-  using discrete_time_residual_type = Eigen::VectorXd;
-  using discrete_time_jacobian_type = Eigen::SparseMatrix<double>;
+// namespace
+// {
+// struct MyApp3
+// {
+//   mutable int count_ = 0;
+//   using independent_variable_type = double;
+//   using state_type    = Eigen::VectorXd;
+//   using discrete_time_residual_type = Eigen::VectorXd;
+//   using discrete_time_jacobian_type = Eigen::SparseMatrix<double>;
 
-public:
-  state_type createState() const{
-    return state_type(3);
-  }
+// public:
+//   state_type createState() const{
+//     return state_type(3);
+//   }
 
-  discrete_time_residual_type createDiscreteTimeResidual() const{
-    discrete_time_residual_type R(3);
-    return R;
-  }
-  discrete_time_jacobian_type createDiscreteTimeJacobian() const{
-    discrete_time_jacobian_type J(3,3);
-    return J;
-  }
+//   discrete_time_residual_type createDiscreteTimeResidual() const{
+//     discrete_time_residual_type R(3);
+//     return R;
+//   }
+//   discrete_time_jacobian_type createDiscreteTimeJacobian() const{
+//     discrete_time_jacobian_type J(3,3);
+//     return J;
+//   }
 
-  template <typename step_t>
-  void discreteTimeResidual(const step_t & step,
-                            const time_type & time,
-                            const time_type & dt,
-                            discrete_time_residual_type & R,
-                            const state_type &,
-                            const state_type &) const
-  {
-    ++count_;
-    std::cout << count_ << " " << time << " " << dt << std::endl;
+//   template <typename step_t>
+//   void discreteTimeResidual(const step_t & step,
+//                             const independent_variable_type & time,
+//                             const independent_variable_type & dt,
+//                             discrete_time_residual_type & R,
+//                             const state_type &,
+//                             const state_type &) const
+//   {
+//     ++count_;
+//     std::cout << count_ << " " << time << " " << dt << std::endl;
 
-    EXPECT_DOUBLE_EQ(dt, 2.5);
-    // count_==1: we are doing first step: t_0 -> t_1
-    // so evaluation time should be at following step
-    if(count_==1){
-      EXPECT_EQ(step, 1);
-      EXPECT_DOUBLE_EQ(time, dt);
-    }
+//     EXPECT_DOUBLE_EQ(dt, 2.5);
+//     // count_==1: we are doing first step: t_0 -> t_1
+//     // so evaluation time should be at following step
+//     if(count_==1){
+//       EXPECT_EQ(step, 1);
+//       EXPECT_DOUBLE_EQ(time, dt);
+//     }
 
-    // count_==2: we are doing step: t_1 -> t_2
-    // so evaluation time should be at following step
-    if(count_==2){
-      EXPECT_EQ(step, 2);
-      EXPECT_DOUBLE_EQ(time, 2.*dt);
-    }
-  }
+//     // count_==2: we are doing step: t_1 -> t_2
+//     // so evaluation time should be at following step
+//     if(count_==2){
+//       EXPECT_EQ(step, 2);
+//       EXPECT_DOUBLE_EQ(time, 2.*dt);
+//     }
+//   }
 
-  template <typename step_t>
-  void discreteTimeJacobian(const step_t & step,
-                            const time_type & time,
-                            const time_type & dt,
-                            discrete_time_jacobian_type & J,
-                            const state_type &,
-                            const state_type &) const
-  {
-    EXPECT_DOUBLE_EQ(dt, 2.5);
-    if(count_==1){
-      EXPECT_EQ(step, 1);
-      EXPECT_DOUBLE_EQ(time, dt);
-    }
-    if(count_==2){
-      EXPECT_EQ(step, 2);
-      EXPECT_DOUBLE_EQ(time, 2.*dt);
-    }
-  }
-};
+//   template <typename step_t>
+//   void discreteTimeJacobian(const step_t & step,
+//                             const independent_variable_type & time,
+//                             const independent_variable_type & dt,
+//                             discrete_time_jacobian_type & J,
+//                             const state_type &,
+//                             const state_type &) const
+//   {
+//     EXPECT_DOUBLE_EQ(dt, 2.5);
+//     if(count_==1){
+//       EXPECT_EQ(step, 1);
+//       EXPECT_DOUBLE_EQ(time, dt);
+//     }
+//     if(count_==2){
+//       EXPECT_EQ(step, 2);
+//       EXPECT_DOUBLE_EQ(time, 2.*dt);
+//     }
+//   }
+// };
 
-template<typename R_t, typename J_t>
-struct MyFakeSolver3
-{
-  template<typename system_t, typename state_t>
-  void solve(const system_t & sys, state_t & state)
-  {
-    R_t R(3);
-    J_t J(3,3);
-    sys.residual(state, R);
-    sys.jacobian(state, J);
-  }
-};
-}
+// template<typename R_t, typename J_t>
+// struct MyFakeSolver3
+// {
+//   template<typename system_t, typename state_t>
+//   void solve(const system_t & sys, state_t & state)
+//   {
+//     R_t R(3);
+//     J_t J(3,3);
+//     sys.residual(state, R);
+//     sys.jacobian(state, J);
+//   }
+// };
+// }
 
-TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
-{
-  // fake test to make sure the integrator calls
-  // the model with the correct time
+// TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
+// {
+//   // fake test to make sure the integrator calls
+//   // the model with the correct time
 
-  using namespace pressio;
-  using app_t = MyApp3;
-  using state_t  = typename app_t::state_type;
-  app_t appObj;
-  state_t y(3); y.setConstant(1.);
+//   using namespace pressio;
+//   using app_t = MyApp3;
+//   using state_t  = typename app_t::state_type;
+//   app_t appObj;
+//   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
+//   auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
 
-  using res_t  = typename app_t::discrete_time_residual_type;
-  using jac_t = typename app_t::discrete_time_jacobian_type;
-  MyFakeSolver3<res_t, jac_t> solver;
-  double dt = 2.5;
-  ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(2), solver);
-}
+//   using res_t  = typename app_t::discrete_time_residual_type;
+//   using jac_t = typename app_t::discrete_time_jacobian_type;
+//   MyFakeSolver3<res_t, jac_t> solver;
+//   double dt = 2.5;
+//   ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(2), solver);
+// }
 
-TEST(ode, implicit_arbitrary_callWithCorrectTime2)
-{
-  using namespace pressio;
-  using app_t = MyApp3;
-  using state_t  = typename app_t::state_type;
-  using res_t  = typename app_t::discrete_time_residual_type;
-  using jac_t = typename app_t::discrete_time_jacobian_type;
-  app_t appObj;
-  state_t y(3); y.setConstant(1.);
+// TEST(ode, implicit_arbitrary_callWithCorrectTime2)
+// {
+//   using namespace pressio;
+//   using app_t = MyApp3;
+//   using state_t  = typename app_t::state_type;
+//   using res_t  = typename app_t::discrete_time_residual_type;
+//   using jac_t = typename app_t::discrete_time_jacobian_type;
+//   app_t appObj;
+//   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
-  MyFakeSolver3<res_t, jac_t> solver;
-  double dt = 2.5;
-  ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(2), solver);
-}
+//   auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
+//   MyFakeSolver3<res_t, jac_t> solver;
+//   double dt = 2.5;
+//   ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(2), solver);
+// }
 
-TEST(ode, implicit_arbitrary_callWithCorrectTime3)
-{
-  using namespace pressio;
-  using app_t = MyApp3;
-  using state_t  = typename app_t::state_type;
-  using res_t  = typename app_t::discrete_time_residual_type;
-  using jac_t = typename app_t::discrete_time_jacobian_type;
-  app_t appObj;
-  state_t y(3); y.setConstant(1.);
+// TEST(ode, implicit_arbitrary_callWithCorrectTime3)
+// {
+//   using namespace pressio;
+//   using app_t = MyApp3;
+//   using state_t  = typename app_t::state_type;
+//   using res_t  = typename app_t::discrete_time_residual_type;
+//   using jac_t = typename app_t::discrete_time_jacobian_type;
+//   app_t appObj;
+//   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
-  MyFakeSolver3<res_t, jac_t> solver;
-  double dt = 2.5;
-  ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(2), solver);
-}
+//   auto stepperObj = ode::create_arbitrary_stepper<2>(appObj);
+//   MyFakeSolver3<res_t, jac_t> solver;
+//   double dt = 2.5;
+//   ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(2), solver);
+// }

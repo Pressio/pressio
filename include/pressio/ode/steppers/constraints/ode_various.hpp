@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity.hpp
+// ode_implicit_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,45 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
-#define ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
+#ifndef ODE_STEPPERS_CONSTRAINTS_ODE_VARIOUS_HPP_
+#define ODE_STEPPERS_CONSTRAINTS_ODE_VARIOUS_HPP_
 
 namespace pressio{ namespace ode{
+
+template<typename T, typename enable = void>
+struct ImplicitState : std::false_type{};
+
+template<typename T>
+struct ImplicitState<
+  T, mpl::enable_if_t<std::is_copy_constructible<T>::value>
+  > : std::true_type{};
+
+template<typename T, typename enable = void>
+struct ImplicitResidual : std::false_type{};
+
+template<typename T>
+struct ImplicitResidual<
+  T, mpl::enable_if_t< std::is_copy_constructible<T>::value >
+  > : std::true_type{};
+
+template<typename T, typename enable = void>
+struct ImplicitJacobian : std::false_type{};
+
+template<typename T>
+struct ImplicitJacobian<
+  T, mpl::enable_if_t< std::is_copy_constructible<T>::value >
+ > : std::true_type{};
+
+template<typename T, typename enable = void>
+struct ExplicitState : std::false_type{};
+
+template<typename T>
+struct ExplicitState<
+  T, mpl::enable_if_t<std::is_copy_constructible<T>::value>
+  > : std::true_type{};
 
 template<typename T>
 struct ExplicitRightHandSide : ExplicitState<T>{};
 
-}} // namespace pressio::ode::constraints
-#endif  // ODE_STEPPERS_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_HPP_
+}} // namespace pressio::ode
+#endif

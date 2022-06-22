@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_JACOBIAN_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_JACOBIAN_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_JACOBIAN_WITH_MASS_MAT_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_JACOBIAN_WITH_MASS_MAT_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -55,9 +55,10 @@ template<
   class SystemType,
   class IndVarType,
   class StateType,
-  class JacobianType
+  class JacobianType,
+  class MassMatrixType
   >
-class JacobianStandardPolicy
+class JacobianWithMassMatrixStandardPolicy
 {
 public:
   // required
@@ -66,21 +67,23 @@ public:
   using jacobian_type = JacobianType;
 
 public:
-  JacobianStandardPolicy() = delete;
+  JacobianWithMassMatrixStandardPolicy() = delete;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  explicit JacobianStandardPolicy(SystemType systemIn)
-    : systemObj_(systemIn){}
+  explicit JacobianWithMassMatrixStandardPolicy(SystemType systemIn)
+    : systemObj_(systemIn),
+      massMatrix_(systemIn.createMassMatrix()){}
 #else
-  explicit JacobianStandardPolicy(SystemType && systemIn)
-    : systemObj_( std::forward<SystemType>(systemIn) ){}
+  explicit JacobianWithMassMatrixStandardPolicy(SystemType && systemIn)
+    : systemObj_( std::forward<SystemType>(systemIn) ),
+      massMatrix_(systemIn.createMassMatrix()){}
 #endif
 
-  JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
-  JacobianStandardPolicy & operator=(const JacobianStandardPolicy &) = default;
-  JacobianStandardPolicy(JacobianStandardPolicy &&) = default;
-  JacobianStandardPolicy & operator=(JacobianStandardPolicy &&) = default;
-  ~JacobianStandardPolicy() = default;
+  JacobianWithMassMatrixStandardPolicy(const JacobianWithMassMatrixStandardPolicy &) = default;
+  JacobianWithMassMatrixStandardPolicy & operator=(const JacobianWithMassMatrixStandardPolicy &) = default;
+  JacobianWithMassMatrixStandardPolicy(JacobianWithMassMatrixStandardPolicy &&) = default;
+  JacobianWithMassMatrixStandardPolicy & operator=(JacobianWithMassMatrixStandardPolicy &&) = default;
+  ~JacobianWithMassMatrixStandardPolicy() = default;
 
 public:
   StateType createState() const{
@@ -107,19 +110,20 @@ public:
   {
     systemObj_.get().jacobian(odeCurrentState, evalTime, J);
 
-    if (name == StepScheme::BDF1){
-      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF1());
-    }
-    else if (name == StepScheme::BDF2){
-      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF2());
-    }
-    else if (name == StepScheme::CrankNicolson){
-      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::CrankNicolson());
-    }
+    // if (name == StepScheme::BDF1){
+    //   ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF1());
+    // }
+    // else if (name == StepScheme::BDF2){
+    //   ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF2());
+    // }
+    // else if (name == StepScheme::CrankNicolson){
+    //   ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::CrankNicolson());
+    // }
   }
 
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  MassMatrixType massMatrix_;
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy

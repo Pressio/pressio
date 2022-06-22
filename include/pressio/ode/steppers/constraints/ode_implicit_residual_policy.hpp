@@ -58,7 +58,7 @@ template<class T>
 struct ImplicitResidualPolicy<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::has_time_typedef<T>::value
+    ::pressio::has_independent_variable_typedef<T>::value
     and ::pressio::has_state_typedef<T>::value
     and ::pressio::has_residual_typedef<T>::value
     //
@@ -67,7 +67,7 @@ struct ImplicitResidualPolicy<
     //
     and std::is_same<
       typename T::residual_type,
-      decltype(std::declval<T const>().create())
+      decltype(std::declval<T const>().createResidual())
       >::value
     //
     and std::is_void<
@@ -79,8 +79,8 @@ struct ImplicitResidualPolicy<
 	std::declval<typename T::state_type const &>(),
 	std::declval<ImplicitStencilStatesContainerDyn<typename T::state_type> const & >(),
 	std::declval<ImplicitStencilVelocitiesContainerDyn<typename T::residual_type> & >(),
-	std::declval<typename T::time_type const &>(),
-	std::declval<typename T::time_type const &>(),
+	std::declval<typename T::independent_variable_type const &>(),
+	std::declval<typename T::independent_variable_type const &>(),
 	std::declval<int>(),
 	std::declval<typename T::residual_type &>()
 	)
@@ -92,16 +92,13 @@ struct ImplicitResidualPolicy<
 //------------------------------------------------------------------
 
 template<typename T>
-using ImplicitEulerResidualPolicy =
-  ImplicitResidualPolicy<T>;
+using ImplicitEulerResidualPolicy = ImplicitResidualPolicy<T>;
 
 template<typename T>
-using ImplicitBdf2ResidualPolicy =
-  ImplicitResidualPolicy<T>;
+using ImplicitBdf2ResidualPolicy = ImplicitResidualPolicy<T>;
 
 template<typename T>
-using ImplicitCranknicolsonResidualPolicy =
-  ImplicitResidualPolicy<T>;
+using ImplicitCranknicolsonResidualPolicy = ImplicitResidualPolicy<T>;
 
 }} // namespace pressio::ode::constraints
 #endif  // ODE_STEPPERS_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

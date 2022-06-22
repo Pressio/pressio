@@ -53,7 +53,7 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-// this class is not meant for direct instantiation.
+// this class is NOT meant for direct instantiation.
 // One needs to use the public create_* functions because
 // templates are handled and passed properly there.
 template<
@@ -62,8 +62,9 @@ template<
   class SystemType,
   class RightHandSideType
   >
-class ExplicitStepperBasic
+class ExplicitStepperNoMassMatrixImpl
 {
+
 public:
   using independent_variable_type  = IndVarType;
   using state_type  = StateType;
@@ -76,15 +77,15 @@ private:
   StateType auxiliaryState_;
 
 public:
-  ExplicitStepperBasic() = delete;
-  ExplicitStepperBasic(const ExplicitStepperBasic &) = default;
-  ExplicitStepperBasic & operator=(const ExplicitStepperBasic &) = delete;
-  ExplicitStepperBasic(ExplicitStepperBasic &&) = default;
-  ExplicitStepperBasic & operator=(ExplicitStepperBasic &&) = delete;
-  ~ExplicitStepperBasic() = default;
+  ExplicitStepperNoMassMatrixImpl() = delete;
+  ExplicitStepperNoMassMatrixImpl(const ExplicitStepperNoMassMatrixImpl &) = default;
+  ExplicitStepperNoMassMatrixImpl & operator=(const ExplicitStepperNoMassMatrixImpl &) = delete;
+  ExplicitStepperNoMassMatrixImpl(ExplicitStepperNoMassMatrixImpl &&) = default;
+  ExplicitStepperNoMassMatrixImpl & operator=(ExplicitStepperNoMassMatrixImpl &&) = delete;
+  ~ExplicitStepperNoMassMatrixImpl() = default;
 
-  ExplicitStepperBasic(ode::ForwardEuler,
-		       SystemType && systemObj)
+  ExplicitStepperNoMassMatrixImpl(ode::ForwardEuler,
+				  SystemType && systemObj)
     : name_(StepScheme::ForwardEuler),
       order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
@@ -92,20 +93,20 @@ public:
       auxiliaryState_{systemObj.createState()}
   {}
 
-  ExplicitStepperBasic(ode::RungeKutta4,
-		       SystemType && systemObj)
+  ExplicitStepperNoMassMatrixImpl(ode::RungeKutta4,
+				  SystemType && systemObj)
     : name_(StepScheme::RungeKutta4),
       order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
       rhsInstances_{systemObj.createRightHandSide(),
-		  systemObj.createRightHandSide(),
-		  systemObj.createRightHandSide(),
-		  systemObj.createRightHandSide()},
+    systemObj.createRightHandSide(),
+    systemObj.createRightHandSide(),
+    systemObj.createRightHandSide()},
       auxiliaryState_{systemObj.createState()}
   {}
 
-  ExplicitStepperBasic(ode::AdamsBashforth2,
-		       SystemType && systemObj)
+  ExplicitStepperNoMassMatrixImpl(ode::AdamsBashforth2,
+				  SystemType && systemObj)
     : name_(StepScheme::AdamsBashforth2),
       order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
@@ -114,8 +115,8 @@ public:
       auxiliaryState_{systemObj.createState()}
   {}
 
-  ExplicitStepperBasic(ode::SSPRungeKutta3,
-		       SystemType && systemObj)
+  ExplicitStepperNoMassMatrixImpl(ode::SSPRungeKutta3,
+				  SystemType && systemObj)
     : name_(StepScheme::SSPRungeKutta3),
       order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),
@@ -182,6 +183,8 @@ private:
     PRESSIOLOG_DEBUG("adams-bashforth2 stepper: do step");
 
     // y_n+1 = y_n + stepSize*[ (3/2)*f(y_n, t_n) - (1/2)*f(y_n-1, t_n-1) ]
+
+    // M_n (y_n+1 - y_n) = 3h/2*f_n - h/2*M_n*M_n-1^-1*f_n-1
 
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
     const auto cfn   = ::pressio::utils::Constants<scalar_type>::threeOvTwo()*stepSize;

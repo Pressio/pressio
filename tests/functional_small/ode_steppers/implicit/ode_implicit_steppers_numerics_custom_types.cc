@@ -15,9 +15,9 @@ void resize_jacobian(MatrixType & M){
 }
 
 struct MyApp{
-  using time_type   = ScalarType;
+  using independent_variable_type   = ScalarType;
   using state_type    = VectorType;
-  using velocity_type = VectorType;
+  using right_hand_side_type = VectorType;
   using jacobian_type = MatrixType;
 
 public:
@@ -25,9 +25,9 @@ public:
     return state_type(3);
   }
 
-  void velocity(const state_type & y,
-	   	          time_type evaltime,
-                velocity_type & f) const
+  void rightHandSide(const state_type & y,
+		independent_variable_type evaltime,
+                right_hand_side_type & f) const
   {
     f[0] = 1.;
     f[1] = 1.;
@@ -35,7 +35,7 @@ public:
   };
 
   void jacobian(const state_type & yIn,
-                time_type evaltime,
+                independent_variable_type evaltime,
                 jacobian_type & J) const
   {
     for (auto & it : J){
@@ -45,8 +45,8 @@ public:
     }
   }
 
-  velocity_type createVelocity() const{
-    velocity_type R(3);
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type R(3);
     return R;
   };
 

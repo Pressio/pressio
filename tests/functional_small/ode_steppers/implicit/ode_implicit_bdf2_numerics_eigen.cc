@@ -3,7 +3,7 @@
 #include "pressio/solvers.hpp"
 #include "pressio/ode_steppers_implicit.hpp"
 #include "pressio/ode_advancers.hpp"
-#include "testing_apps.hpp"
+#include "../testing_apps.hpp"
 
 TEST(ode, implicit_bdf2_policy_default_created)
 {
@@ -37,12 +37,12 @@ TEST(ode, implicit_bdf2_custom_policy)
 {
   using namespace pressio;
   using problem_t = ode::testing::refAppForImpEigen;
-  using time_type = typename problem_t::time_type;
+  using time_type = typename problem_t::independent_variable_type;
   using state_t = typename problem_t::state_type;
   problem_t problemObj;
   state_t y = problemObj.getInitCond();
 
-  using res_t = typename problem_t::velocity_type;
+  using res_t = typename problem_t::right_hand_side_type;
   using jac_t = typename problem_t::jacobian_type;
   using res_pol_t = ode::impl::ResidualStandardPolicy<problem_t&, time_type, state_t, res_t>;
   using jac_pol_t = ode::impl::JacobianStandardPolicy<problem_t&, time_type, state_t, jac_t>;

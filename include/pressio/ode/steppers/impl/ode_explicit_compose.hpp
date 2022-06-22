@@ -56,16 +56,15 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template<class SystemType, class = void>
 struct ExplicitStepperWithOrWithoutMassMatrix{
-  template<class ...Args> using type = ExplicitStepperBasic<Args...>;
+  template<class ...Args> using type = ExplicitStepperNoMassMatrixImpl<Args...>;
 };
 
 template<class SystemType>
 struct ExplicitStepperWithOrWithoutMassMatrix<
-  SystemType,
-  mpl::enable_if_t<system_has_complete_mass_matrix_api<SystemType>::value>
+  SystemType, mpl::enable_if_t<system_has_complete_mass_matrix_api<SystemType>::value>
   >
 {
-  template<class ...Args> using type = ExplicitStepperWithMassMatrix<
+  template<class ...Args> using type = ExplicitStepperWithMassMatrixImpl<
     typename SystemType::mass_matrix_type, Args...>;
 };
 
@@ -78,7 +77,7 @@ struct ExplicitCompose
   // readable error messages to the user if something is wrong.
   // If we were to us sfinae here, we would get a huge mess
   // for errors, so it is better to leave these are static asserts.
-  // Ideally a system should be a concept. We cannot do that yet.
+  // Ideally we should use concepts for better errors. We cannot do that yet.
 
   static_assert
   (::pressio::ode::SemiDiscreteSystem<sys_type>::value,

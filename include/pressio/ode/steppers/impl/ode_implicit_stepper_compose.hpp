@@ -49,10 +49,14 @@
 #ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_
 #define ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_
 
-#include "ode_implicit_discrete_time_residual.hpp"
-#include "ode_implicit_discrete_time_jacobian.hpp"
+#include "ode_implicit_discrete_residual.hpp"
+#include "ode_implicit_discrete_jacobian.hpp"
+
 #include "ode_implicit_policy_residual.hpp"
 #include "ode_implicit_policy_jacobian.hpp"
+#include "ode_implicit_policy_residual_mass_matrix.hpp"
+#include "ode_implicit_policy_jacobian_mass_matrix.hpp"
+
 #include "ode_implicit_stepper_arbitrary.hpp"
 #include "ode_implicit_stepper_standard.hpp"
 #include "ode_trivial_mass_matrix.hpp"
@@ -62,12 +66,12 @@ namespace pressio{ namespace ode{ namespace impl{
 template<class StateType, class ResidualType,class JacobianType>
 struct ImplicitComposeAssertValidStateResJac
 {
-  static_assert(::pressio::ode::implicit_state<StateType>::value,
-    "Invalid state type for implicit time stepping");
-  static_assert(::pressio::ode::implicit_residual<ResidualType>::value,
-    "Invalid residual type for implicit time stepping");
-  static_assert(::pressio::ode::implicit_jacobian<JacobianType>::value,
-    "Invalid jacobian type for implicit time stepping");
+  static_assert(::pressio::ode::ImplicitState<StateType>::value,
+    "Invalid state type for implicit stepping");
+  static_assert(::pressio::ode::ImplicitResidual<ResidualType>::value,
+    "Invalid residual type for implicit stepping");
+  static_assert(::pressio::ode::ImplicitJacobian<JacobianType>::value,
+    "Invalid jacobian type for implicit stepping");
   static_assert(::pressio::are_scalar_compatible<StateType, ResidualType, JacobianType>::value,
    "state, residual and jacobian are not scalar compatible ");
 
@@ -77,17 +81,17 @@ struct ImplicitComposeAssertValidStateResJac
 template<class ResidualPolicyType, class JacobianPolicyType>
 struct ImplicitComposeAssertValidPolicies
 {
-  static_assert(::pressio::ode::implicit_residual_policy<
+  static_assert(::pressio::ode::ImplicitResidualPolicy<
 		ResidualPolicyType >::value, "Invalid residual policy");
 
-  static_assert(::pressio::ode::implicit_jacobian_policy<
+  static_assert(::pressio::ode::ImplicitJacobianPolicy<
 		JacobianPolicyType >::value, "Invalid jacobian policy");
 
   static_assert(std::is_same<
-		typename ResidualPolicyType::time_type,
-		typename JacobianPolicyType::time_type
+		typename ResidualPolicyType::independent_variable_type,
+		typename JacobianPolicyType::independent_variable_type
 		>::value,
-		"Residual and jacobian policies have mismatching time_type");
+		"Residual and jacobian policies have mismatching independent_variable_type");
 
   static_assert( std::is_same<
 		 typename ResidualPolicyType::state_type,
@@ -107,30 +111,55 @@ struct ImplicitComposeArb
 
   using sys_type = mpl::remove_cvref_t<SystemType>;
   static_assert
-  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
+  (::pressio::ode::FullyDiscreteSystemWithJacobian<
    sys_type, num_states>::value,
    "The system passed does not meet the required API");
 
   using state_type = typename sys_type::state_type;
-  static_assert(::pressio::ode::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::ImplicitState<state_type>::value,
 		"Invalid state type for implicit stepper");
 
-  using residual_type = typename sys_type::discrete_time_residual_type;
-  using jacobian_type = typename sys_type::discrete_time_jacobian_type;
-  static_assert(::pressio::ode::implicit_residual<residual_type>::value,
-		"Invalid residual type for implicit time stepping");
-  static_assert(::pressio::ode::implicit_jacobian<jacobian_type>::value,
-		"Invalid jacobian type for implicit time stepping");
+  using residual_type = typename sys_type::discrete_residual_type;
+  using jacobian_type = typename sys_type::discrete_jacobian_type;
+  static_assert(::pressio::ode::ImplicitResidual<residual_type>::value,
+		"Invalid residual type for implicit stepping");
+  static_assert(::pressio::ode::ImplicitJacobian<jacobian_type>::value,
+		"Invalid jacobian type for implicit stepping");
 
-  using time_type = typename sys_type::time_type;
+  using independent_variable_type = typename sys_type::independent_variable_type;
   using type = StepperArbitrary<
-    num_states, time_type, state_type, residual_type, jacobian_type, SystemType
+    num_states, independent_variable_type, state_type, residual_type, jacobian_type, SystemType
     >;
 };
 
 ////////////////////////////////////////
 /// standard stepper
 ////////////////////////////////////////
+
+template<class T, class = void>
+struct PoliciesTypes{
+  template<class ...Args>
+  using r_policy_type = ResidualStandardPolicy<T, Args ...>;
+
+  template<class ...Args>
+  using j_policy_type = JacobianStandardPolicy<T, Args...>;
+};
+
+template<class T>
+struct PoliciesTypes<
+  T,
+  mpl::enable_if_t<
+    system_has_complete_mass_matrix_api< mpl::remove_cvref_t<T> >::value
+    >
+  >
+{
+  template<class ...Args>
+    using r_policy_type = ResidualWithMassMatrixStandardPolicy<T, Args ..., typename T::mass_matrix_type>;
+
+  template<class ...Args>
+    using j_policy_type = JacobianWithMassMatrixStandardPolicy<T, Args..., typename T::mass_matrix_type>;
+};
+
 template<class ...Args>
 struct ImplicitCompose{
   using type = void;
@@ -140,25 +169,26 @@ template<class SystemType>
 struct ImplicitCompose<SystemType>
 {
   using sys_type = mpl::remove_cvref_t<SystemType>;
-  static_assert(::pressio::ode::continuous_time_system_with_user_provided_jacobian<
+  static_assert(::pressio::ode::SemiDiscreteSystemWithJacobian<
 		sys_type>::value, "The system passed does not meet the required API");
 
-  using time_type     = typename sys_type::time_type;
+  using independent_variable_type     = typename sys_type::independent_variable_type;
   using state_type    = typename sys_type::state_type;
-  using residual_type = typename sys_type::velocity_type;
+  using residual_type = typename sys_type::right_hand_side_type;
   using jacobian_type = typename sys_type::jacobian_type;
   static_assert(ImplicitComposeAssertValidStateResJac<
 		state_type, residual_type, jacobian_type>::value, "");
 
-  using mass_matrix_type = typename find_mass_matrix_if_any_or_noop<sys_type>::type;
+  // we HAVE to pass SystemType here as template because it carries
+  // the correct qualifiers or the policy instantiation won't work
+  using residual_policy_type = typename PoliciesTypes<SystemType>::template r_policy_type<
+    independent_variable_type, state_type, residual_type>;
+  using jacobian_policy_type = typename PoliciesTypes<SystemType>::template j_policy_type<
+    independent_variable_type, state_type, jacobian_type>;
 
-  using residual_policy_type = ResidualStandardPolicy<
-    SystemType, time_type, state_type, residual_type, mass_matrix_type>;
-  using jacobian_policy_type = JacobianStandardPolicy<
-    SystemType, time_type, state_type, jacobian_type, mass_matrix_type>;
-
-  using type = StepperRt<time_type, state_type, residual_type, jacobian_type,
-			 residual_policy_type, jacobian_policy_type, true>;
+  using type = ImplicitStepperStandardImpl<
+    independent_variable_type, state_type, residual_type, jacobian_type,
+    residual_policy_type, jacobian_policy_type, true>;
 };
 
 template<class ResidualPolicyType, class JacobianPolicyType>
@@ -168,8 +198,8 @@ struct ImplicitCompose<ResidualPolicyType, JacobianPolicyType>
   using jacobian_policy_type = typename mpl::remove_cvref_t<JacobianPolicyType>;
   static_assert(ImplicitComposeAssertValidPolicies<
 		residual_policy_type, jacobian_policy_type>::value, "");
-  // time and state types are same for residual and jacobian policies
-  using time_type  = typename residual_policy_type::time_type;
+  // ind_var and state types are same for residual and jacobian policies
+  using independent_variable_type  = typename residual_policy_type::independent_variable_type;
   using state_type = typename residual_policy_type::state_type;
 
   using residual_type = typename residual_policy_type::residual_type;
@@ -177,8 +207,9 @@ struct ImplicitCompose<ResidualPolicyType, JacobianPolicyType>
   static_assert(ImplicitComposeAssertValidStateResJac<
 		state_type, residual_type, jacobian_type>::value, "");
 
-  using type = StepperRt<time_type, state_type, residual_type, jacobian_type,
-			 ResidualPolicyType, jacobian_policy_type, false>;
+  using type = ImplicitStepperStandardImpl<
+    independent_variable_type, state_type, residual_type, jacobian_type,
+    ResidualPolicyType, jacobian_policy_type, false>;
 };
 
 template<class SystemType>
@@ -208,8 +239,8 @@ auto create_implicit_stepper_impl(StepScheme name,
 				  ResidualPolicyType && rPol,
 				  JacobianPolicyType && jPol)
 {
-  using return_t = typename ImplicitCompose<ResidualPolicyType,
-					    JacobianPolicyType>::type;
+  using return_t = typename ImplicitCompose<
+    ResidualPolicyType, JacobianPolicyType>::type;
 
   if (name == StepScheme::BDF1){
     return return_t(::pressio::ode::BDF1(),

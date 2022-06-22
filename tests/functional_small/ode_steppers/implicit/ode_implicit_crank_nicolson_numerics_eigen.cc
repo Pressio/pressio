@@ -5,19 +5,19 @@
 
 struct MyApp
 {
-  using time_type   = double;
+  using independent_variable_type   = double;
   using state_type    = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
   state_type createState() const{ return state_type(3); }
-  velocity_type createVelocity() const{ return velocity_type(3); }
+  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(3); }
   jacobian_type createJacobian() const{return jacobian_type(3,3);}
 
-  void velocity(const state_type & y,
-		const time_type& evaltime,
-		velocity_type & f) const
+  void rightHandSide(const state_type & y,
+		const independent_variable_type& evaltime,
+		right_hand_side_type & f) const
   {
     std::cout << "velo: t=" << evaltime << "\n";
     f[0] = y(0)+evaltime;
@@ -25,7 +25,7 @@ public:
     f[2] = y(2)+evaltime;
   }
 
-  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
+  void jacobian(const state_type&, const independent_variable_type&, jacobian_type&) const{
     // not used by the test
   }
 };
@@ -250,9 +250,9 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
-  using res_t  = typename app_t::velocity_type;
+  using res_t  = typename app_t::right_hand_side_type;
   using jac_t  = typename app_t::jacobian_type;
-  using time_type = typename app_t::time_type;
+  using time_type = typename app_t::independent_variable_type;
   using res_pol_t = pressio::ode::impl::ResidualStandardPolicy<app_t&, time_type, state_t, res_t>;
   using jac_pol_t = pressio::ode::impl::JacobianStandardPolicy<app_t&, time_type, state_t, jac_t>;
 
