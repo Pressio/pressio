@@ -202,13 +202,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	::pressio::containers::Tensor<3, C_type> & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<
-//      ::pressio::containers::Tensor<3, A_type>,
-//      ::pressio::containers::Tensor<3, B_type>,
-//      ::pressio::containers::Tensor<3, C_type>
-//      >::value, "Types are not scalar compatible");
-
 //   pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 //   const auto & nativeA = *A.data();
 //   const auto & nativeB = *B.data();
@@ -268,13 +261,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	::pressio::containers::Tensor<2, C_type> & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<
-//      ::pressio::containers::Tensor<3, A_type>,
-//      ::pressio::containers::Tensor<2, B_type>,
-//      ::pressio::containers::Tensor<2, C_type>
-//      >::value, "Types are not scalar compatible");
-
 //   pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 //   const auto & nativeA = *A.data();
 //   const auto & nativeB = *B.data();
@@ -323,10 +309,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	C_type & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-//      "Types are not scalar compatible");
-
 //   // NOTE: need to check if doing this import is expensive,
 //   // and assess whether we can use blas directly when we know
 //   // that objects involved are dense with not strange layout.
@@ -359,10 +341,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	::pressio::containers::expressions::SubspanExpr<C_type> & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-//      "Types are not scalar compatible");
-
 //   for (std::size_t i=0; i<A.extent(1); i++){
 //     for (std::size_t j=0; j<B.extent(1); j++){
 //       C(i,j) = beta * C(i,j);
@@ -395,13 +373,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	::pressio::containers::Tensor<2, C_type> & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<
-//      ::pressio::containers::Tensor<3, A_type>,
-//      ::pressio::containers::Tensor<2, B_type>,
-//      ::pressio::containers::Tensor<2, C_type>
-//      >::value, "Types are not scalar compatible");
-
 //   pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 
 //   const auto & nativeA = *A.data();
@@ -460,10 +431,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	C_type & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
-//      "Types are not scalar compatible");
-
 //   assert( A.extent(0) == A.extent(1) );
 //   assert( C.extent(0) == A.extent(0) );
 //   assert( C.extent(1) == B.extent(1) );

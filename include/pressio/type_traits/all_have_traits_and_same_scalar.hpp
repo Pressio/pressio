@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// are_scalar_compatible.hpp
+// all_have_traits_and_same_scalar.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
