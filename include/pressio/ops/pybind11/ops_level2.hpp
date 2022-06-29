@@ -67,8 +67,6 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
@@ -103,8 +101,6 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
@@ -141,10 +137,6 @@ product(::pressio::transpose mode,
 // 	const scalar_type beta,
 // 	y_type & y)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-//      "Types are not scalar compatible");
-
 //   assert( y.extent(0) == A.extent(0) );
 //   assert( x.extent(0) == A.extent(1) );
 
@@ -178,10 +170,6 @@ product(::pressio::transpose mode,
 // 	const scalar_type beta,
 // 	pressio::containers::expressions::SpanExpr<y_type> & y)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-//      "Types are not scalar compatible");
-
 //   assert( y.extent(0) == A.extent(1) );
 //   assert( x.extent(0) == A.extent(0) );
 //   for (std::size_t i=0; i<A.extent(1); i++){

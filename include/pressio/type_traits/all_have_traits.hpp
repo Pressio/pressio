@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// all_have_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,51 @@
 //@HEADER
 */
 
-#ifndef OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
-#define OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
+#ifndef TYPE_TRAITS_HAS_TRAITS_HPP_
+#define TYPE_TRAITS_HAS_TRAITS_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace impl{
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
-  >
-norm1(const vec_type & a)
-{
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
-  sc_t result = 0.0;
-  a.Norm1(&result);
-  return result;
+template <class T, class = void>
+struct has_traits : std::false_type{};
+
+template <class T>
+struct has_traits<
+  T, mpl::enable_if_t<
+       // I need to check for something meaninful
+       // because if I only check for ::pressio::Traits<T>
+       // any type would yield true since ::pressio::Traits<T>
+       // is always the default case
+       mpl::not_void<
+	 typename ::pressio::Traits<T>::scalar_type
+	 >::value
+       &&
+       ::pressio::Traits<T>::rank != 0
+       >
+  > : std::true_type{};
+
+} //end namespace impl
+
+template <class ... Args>
+struct all_have_traits;
+
+template <class T>
+struct all_have_traits<T>{
+  static constexpr auto value = impl::has_traits<T>::value;
+};
+
+template <class T1, class T2>
+struct all_have_traits<T1, T2>{
+  static constexpr auto value = impl::has_traits<T1>::value
+    && impl::has_traits<T2>::value;
+};
+
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits<T1, T2, T3, rest...>{
+  static constexpr auto value =
+    all_have_traits<T1, T2>::value &&
+    all_have_traits<T3, rest...>::value;
+};
+
 }
-
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
-  >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
-  sc_t result = 0.0;
-  a.Norm2(&result);
-  return result;
-}
-
-}}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
+#endif

@@ -54,16 +54,16 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2>
+template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra_block<T>::value and
   ::pressio::is_vector_tpetra_block<T1>::value and
   ::pressio::is_vector_tpetra_block<T2>::value
   >
-elementwise_multiply(typename ::pressio::Traits<T>::scalar_type alpha,
+elementwise_multiply(const alpha_t & alpha,
 		     const T & x,
 		     const T1 & z,
-		     typename ::pressio::Traits<T>::scalar_type beta,
+		     const beta_t & beta,
 		     T2 & y)
 {
   assert(extent(x,0)==extent(z,0));

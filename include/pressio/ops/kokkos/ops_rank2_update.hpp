@@ -71,9 +71,6 @@ update(T1 & mv,     const scalar_t &a,
     (!std::is_const<T1>::value,
      "cannot modify a const-qualified wrapper of a Kokkos view");
   static_assert
-    (containers::predicates::are_scalar_compatible<T1, T2>::value,
-     "Types are not scalar compatible");
-  static_assert
     (::pressio::containers::predicates::have_matching_execution_space<T1, T2>::value,
      "operands need to have same execution space" );
 

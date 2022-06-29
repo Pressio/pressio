@@ -54,21 +54,27 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2>
+
+template <class T, class T1, class T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and
-  ::pressio::Traits<T2>::rank == 1
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  /* constrained via is_convertible because the impl is using
+     Eigen native operations which are based on expressions and require
+     coefficients to be convertible to scalar types of the vector/matrices */
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<T>::scalar_type>::value
   >
-elementwise_multiply
-(typename ::pressio::Traits<T>::scalar_type alpha,
- const T & x,
- const T1 & z,
- typename ::pressio::Traits<T>::scalar_type beta,
- T2 & y)
+elementwise_multiply(const alpha_t & alpha,
+		     const T & x,
+		     const T1 & z,
+		     const beta_t & beta,
+		     T2 & y)
 {
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
@@ -76,7 +82,7 @@ elementwise_multiply
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
   const auto & z_n = impl::get_native(z);
-  if (beta == static_cast<typename ::pressio::Traits<T>::scalar_type>(0)) {
+  if (beta == static_cast<beta_t>(0)) {
     y_n = alpha * x_n.cwiseProduct(z_n);
   } else {
     y_n = beta * y_n + alpha * x_n.cwiseProduct(z_n);

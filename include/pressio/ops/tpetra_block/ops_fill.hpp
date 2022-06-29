@@ -51,15 +51,14 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra_block<T>::value or
   ::pressio::is_multi_vector_tpetra_block<T>::value
   >
-fill(T & v, typename ::pressio::Traits<T>::scalar_type value)
+fill(T & v, const ScalarType & value)
 {
   v.putScalar( value );
-  // v.data()->needSync();
 }
 
 }}//end namespace pressio::ops

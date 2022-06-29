@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// are_scalar_compatible.hpp
+// all_have_traits_and_same_scalar.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,24 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
-#define TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
+#ifndef TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
+#define TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
 
-namespace pressio{
+namespace pressio{ namespace impl{
 
-template <typename ... Args>
-struct are_scalar_compatible;
+template <class, class ... Args>
+struct all_have_traits_and_same_scalar;
 
-template <typename T1>
-struct are_scalar_compatible<T1>
-{
+template <class T1>
+struct all_have_traits_and_same_scalar<void, T1>{
   static constexpr auto value = true;
 };
 
-template <typename T1, typename T2>
-struct are_scalar_compatible<T1, T2>
+template <class T1, class T2>
+struct all_have_traits_and_same_scalar<
+  mpl::enable_if_t< all_have_traits<T1, T2>::value >,
+  T1, T2
+  >
 {
   static constexpr auto value = std::is_same<
     typename ::pressio::Traits<T1>::scalar_type,
@@ -69,13 +71,21 @@ struct are_scalar_compatible<T1, T2>
     >::value;
 };
 
-template <typename T1, typename T2, typename ... rest>
-struct are_scalar_compatible<T1, T2, rest...>
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits_and_same_scalar<
+  mpl::enable_if_t< all_have_traits<T1, T2, T3, rest...>::value >,
+  T1, T2, T3, rest...>
 {
   static constexpr auto value =
-    are_scalar_compatible<T1, T2>::value and
-    are_scalar_compatible<T2, rest...>::value;
+    all_have_traits_and_same_scalar<void, T1, T2>::value and
+    all_have_traits_and_same_scalar<void, T2, T3>::value and
+    all_have_traits_and_same_scalar<void, T3, rest...>::value;
 };
 
-} // namespace 
+} //end namespace impl
+
+template <class ...Args>
+using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
+
+} // namespace
 #endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_

@@ -59,25 +59,21 @@ template <typename T1, typename T2>
   >
 dot(const T1 & a, const T2 & b)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
 
   assert(extent(a,0) == extent(b,0));
-  // I have to constcast here because for block vector getVectorView is non-const
+  // constcast here because for block vector
+  // getVectorView is non-const method
   auto a_tp = const_cast<T1 &>(a).getVectorView();
   auto b_tp = const_cast<T2 &>(b).getVectorView();
   return a_tp.dot(b_tp);
 }
 
-template <typename T1, typename T2>
+template <typename T1, typename T2, class DotResult>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra_block<T1>::value and
-  ::pressio::is_vector_tpetra_block<T2>::value
+  ::pressio::is_vector_tpetra_block<T1>::value
+  && ::pressio::is_vector_tpetra_block<T2>::value
   >
-dot(const T1 & a,
-    const T2 & b,
-    typename ::pressio::Traits<T1>::scalar_type & result)
+dot(const T1 & a, const T2 & b, DotResult & result)
 {
   result = dot(a,b);
 }

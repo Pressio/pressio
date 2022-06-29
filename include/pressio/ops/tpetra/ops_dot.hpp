@@ -55,25 +55,24 @@ template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<T1>::value and
   ::pressio::is_vector_tpetra<T2>::value,
-  typename ::pressio::Traits<T1>::scalar_type
+  decltype( std::declval<const T1>().dot(std::declval<const T2>()) )
   >
-dot(const T1 & a, const T2 & b)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+dot(const T1 & a, const T2 & b){
 
   assert(::pressio::ops::extent(a, 0) == ::pressio::ops::extent(b, 0));
   return a.dot(b);
 }
 
-template <typename T1, typename T2>
+template <typename T1, typename T2, class DotResult>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T1>::value and
-  ::pressio::is_vector_tpetra<T2>::value
+  ::pressio::is_vector_tpetra<T1>::value
+  && ::pressio::is_vector_tpetra<T2>::value
+  && std::is_convertible<
+    decltype( dot(std::declval<const T1>(), std::declval<const T2>()) ),
+    DotResult
+    >::value
   >
-dot(const T1 & a, const T2 & b,
-    typename ::pressio::Traits<T1>::scalar_type & result)
+dot(const T1 & a, const T2 & b, DotResult & result)
 {
   result = dot(a,b);
 }

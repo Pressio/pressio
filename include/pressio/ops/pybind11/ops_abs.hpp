@@ -59,9 +59,6 @@ template <class T1, class T2>
   >
 abs(T1 & to, const T2 & from)
 {
-  static_assert(::pressio::are_scalar_compatible<T1, T2>::value,
-		"Types are not scalar compatible");
-
   assert(to.ndim() == from.ndim());
 
   using size_t = typename ::pressio::Traits<T1>::size_type;

@@ -51,28 +51,42 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+/*
+  constrained via is_convertible because the impl is using
+  identity.coeffs() which returns an Eigen expression and for "*= value"
+  to work, value has to be convertible to the the scalar type of ide
+*/
+template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_sparse_matrix_eigen<T>::value
+  && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-add_to_diagonal(T & o, typename ::pressio::Traits<T>::scalar_type value)
+add_to_diagonal(T & o, const ScalarType & value)
 {
-  auto ide(o);
-  ide.setIdentity();
-  ide.coeffs() *= value;
-  o += ide;
+  auto identity(o);
+  identity.setIdentity();
+  identity.coeffs() *= value;
+  o += identity;
 }
 
-template <typename T>
+/*
+  constrained by checking directly if the operation is well-formed
+  since below I am doing the loop myself so I just need to check that
+  operation is well-formed
+*/
+template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<T>::value
+  && std::is_assignable<
+    decltype( std::declval<T>()(0,0) ),
+    decltype( std::declval<T>()(0,0) + std::declval<ScalarType>() )
+    >::value
   >
-add_to_diagonal(T & o,
-	typename ::pressio::Traits<T>::scalar_type value)
+add_to_diagonal(T & o, const ScalarType & value)
 {
   assert(o.rows() == o.cols());
-  for (int i=0; i<o.rows(); ++i){
-    o(i,i) += value;
+  for ( decltype(o.rows()) i=0; i<o.rows(); ++i){
+    o(i,i) = o(i,i) + value;
   }
 }
 

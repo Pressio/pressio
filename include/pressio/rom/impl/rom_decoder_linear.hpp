@@ -99,10 +99,6 @@ public:
   mpl::enable_if_t<::pressio::Traits<gen_coords_t>::rank == 1>
   applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
-    static_assert
-      (::pressio::are_scalar_compatible<gen_coords_t, fom_state_type>::value, 
-        "Types are not scalar compatible");
-
     using scalar_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
 
     constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
@@ -116,10 +112,6 @@ public:
   mpl::enable_if_t<::pressio::Traits<gen_coords_t>::rank >= 2>
   applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
-    static_assert
-      (::pressio::are_scalar_compatible<gen_coords_t, fom_state_type>::value, 
-        "Types are not scalar compatible");
-
     using scalar_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
 
     constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();

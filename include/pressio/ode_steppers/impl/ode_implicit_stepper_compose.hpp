@@ -67,8 +67,6 @@ struct ImplicitComposeAssertValidStateResJac
     "Invalid residual type for implicit time stepping");
   static_assert(::pressio::ode::implicit_jacobian<JacobianType>::value,
     "Invalid jacobian type for implicit time stepping");
-  static_assert(::pressio::are_scalar_compatible<StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
 
   static constexpr bool value = true;
 };
@@ -117,8 +115,6 @@ struct ImplicitComposeArb
     "Invalid residual type for implicit time stepping");
   static_assert(::pressio::ode::implicit_jacobian<JacobianType>::value,
     "Invalid jacobian type for implicit time stepping");
-  static_assert(::pressio::are_scalar_compatible<StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
 
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
   using type = StepperArbitrary<

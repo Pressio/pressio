@@ -64,11 +64,6 @@ struct _kokkosUpdateAdmissibleOperands
     (!std::is_const<T1>::value,
      "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
   static_assert
-    (are_scalar_compatible<T1, Args...>::value and
-     std::is_same<
-     typename pressio::Traits<T1>::scalar_type,
-     scalar_type>::value, "Types are not scalar compatible");
-  static_assert
     (::pressio::have_matching_execution_space<T1,Args...>::value,
      "operands need to have same execution space" );
 

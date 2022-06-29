@@ -58,8 +58,6 @@ template<typename T1, typename T2>
   >
 deep_copy(T1 & dest, const T2 & src)
 {
-  static_assert(::pressio::are_scalar_compatible<T1, T2>::value,
-		"Types are not scalar compatible");
   assert(dest.ndim() == src.ndim());
 
   constexpr bool dest_is_cm = ::pressio::Traits<T1>::layout == 1;

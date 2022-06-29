@@ -51,11 +51,15 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+/* constrained via is_convertible because the impl is using
+   Eigen native operations which are based on expressions and require
+   coefficients to be convertible to scalar types of the vector/matrix operand */
+template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-scale(T & o, typename ::pressio::Traits<T>::scalar_type value)
+scale(T & o, const ScalarType & value)
 {
   impl::get_native(o) *= value;
 }
