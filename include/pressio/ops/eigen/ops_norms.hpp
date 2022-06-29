@@ -55,7 +55,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::Traits<T>::rank == 1,
-  typename ::pressio::Traits<T>::scalar_type
+  decltype( impl::get_native(std::declval<const T>()).template lpNorm<1>() )
   >
 norm1(const T & a)
 {
@@ -66,7 +66,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::Traits<T>::rank == 1,
-  typename ::pressio::Traits<T>::scalar_type
+  decltype( impl::get_native(std::declval<const T>()).template lpNorm<2>() )
   >
 norm2(const T & a)
 {

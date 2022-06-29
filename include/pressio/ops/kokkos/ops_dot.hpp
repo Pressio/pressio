@@ -64,8 +64,6 @@ kokkos_ops_dot(const T1 & a,
     const T2 & b)
 {
   static_assert
-    (are_scalar_compatible<T1, T2>::value, "dot: types are not scalar compatible");
-  static_assert
     (have_matching_execution_space<T1, T2>::value,
      "dot: types must have matching execution space");
 

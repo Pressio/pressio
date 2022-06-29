@@ -60,8 +60,6 @@ dot(const T0 & a,
     const T1 & b,
     typename ::pressio::Traits<T0>::scalar_type & result)
 {
-  static_assert(::pressio::are_scalar_compatible<T0,T1>::value,
-		"vectors are not scalar compatible");
 
   using sc_t = typename ::pressio::Traits<T0>::scalar_type;
   assert(a.ndim() == b.ndim());

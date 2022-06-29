@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// are_scalar_compatible.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,46 @@
 //@HEADER
 */
 
-#ifndef OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
-#define OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
+#ifndef TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
+#define TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace impl{
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
+template <class, class ... Args>
+struct all_have_traits_and_same_scalar;
+
+template <class T1>
+struct all_have_traits_and_same_scalar<void, T1>{
+  static constexpr auto value = true;
+};
+
+template <class T1, class T2>
+struct all_have_traits_and_same_scalar<
+  mpl::enable_if_t< all_have_traits<T1, T2>::value >,
+  T1, T2
   >
-norm1(const vec_type & a)
 {
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
-  sc_t result = 0.0;
-  a.Norm1(&result);
-  return result;
-}
+  static constexpr auto value = std::is_same<
+    typename ::pressio::Traits<T1>::scalar_type,
+    typename ::pressio::Traits<T2>::scalar_type
+    >::value;
+};
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
-  >
-norm2(const vec_type & a)
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits_and_same_scalar<
+  mpl::enable_if_t< all_have_traits<T1, T2, T3, rest...>::value >,
+  T1, T2, T3, rest...>
 {
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
-  sc_t result = 0.0;
-  a.Norm2(&result);
-  return result;
-}
+  static constexpr auto value =
+    all_have_traits_and_same_scalar<void, T1, T2>::value and
+    all_have_traits_and_same_scalar<void, T2, T3>::value and
+    all_have_traits_and_same_scalar<void, T3, rest...>::value;
+};
 
-}}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
+} //end namespace impl
+
+template <class ...Args>
+using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
+
+} // namespace
+#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_

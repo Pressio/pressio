@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_dot.hpp
+// are_scalar_compatible.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,51 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_OPS_DOT_HPP_
-#define OPS_TPETRA_OPS_DOT_HPP_
+#ifndef TYPE_TRAITS_HAS_TRAITS_HPP_
+#define TYPE_TRAITS_HAS_TRAITS_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace impl{
 
-template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T1>::value and
-  ::pressio::is_vector_tpetra<T2>::value,
-  decltype( std::declval<const T1>().dot(std::declval<const T2>()) )
-  >
-dot(const T1 & a, const T2 & b){
+template <class T, class = void>
+struct has_traits : std::false_type{};
 
-  assert(::pressio::ops::extent(a, 0) == ::pressio::ops::extent(b, 0));
-  return a.dot(b);
+template <class T>
+struct has_traits<
+  T, mpl::enable_if_t<
+       // I need to check for something meaninful
+       // because if I only check for ::pressio::Traits<T>
+       // any type would yield true since ::pressio::Traits<T>
+       // is always the default case
+       mpl::not_void<
+	 typename ::pressio::Traits<T>::scalar_type
+	 >::value
+       &&
+       ::pressio::Traits<T>::rank != 0
+       >
+  > : std::true_type{};
+
+} //end namespace impl
+
+template <class ... Args>
+struct all_have_traits;
+
+template <class T>
+struct all_have_traits<T>{
+  static constexpr auto value = impl::has_traits<T>::value;
+};
+
+template <class T1, class T2>
+struct all_have_traits<T1, T2>{
+  static constexpr auto value = impl::has_traits<T1>::value
+    && impl::has_traits<T2>::value;
+};
+
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits<T1, T2, T3, rest...>{
+  static constexpr auto value =
+    all_have_traits<T1, T2>::value &&
+    all_have_traits<T3, rest...>::value;
+};
+
 }
-
-template <typename T1, typename T2, class DotResult>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
-  && std::is_convertible<
-    decltype( dot(std::declval<const T1>(), std::declval<const T2>()) ),
-    DotResult
-    >::value
-  >
-dot(const T1 & a, const T2 & b, DotResult & result)
-{
-  result = dot(a,b);
-}
-
-}}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_DOT_HPP_
+#endif

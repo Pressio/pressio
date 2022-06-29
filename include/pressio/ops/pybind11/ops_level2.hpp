@@ -67,8 +67,6 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
@@ -103,8 +101,6 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know

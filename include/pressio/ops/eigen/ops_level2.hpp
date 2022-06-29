@@ -58,25 +58,28 @@ namespace pressio{ namespace ops{
 //-------------------------------
 // op(A) = A
 //-------------------------------
-template < typename A_type, typename x_type, typename ScalarType, typename y_type>
+template <
+  class A_type, class x_type, class y_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<A_type>::rank == 2 and
-  ::pressio::Traits<x_type>::rank == 1 and
-  ::pressio::Traits<y_type>::rank == 1
+     ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
   >
 product(::pressio::nontranspose mode,
-	const ScalarType alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const ScalarType beta,
+	const beta_t & beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
@@ -84,34 +87,39 @@ product(::pressio::nontranspose mode,
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  if (beta == static_cast<ScalarType>(0))
+  if (beta == static_cast<beta_t>(0)){
     y_n = alpha * A_n * x_n;
-  else
+  }
+  else{
     y_n = beta * y_n + alpha * A_n * x_n;
+  }
 }
 
 //-------------------------------
 // op(A) = A^T
 //-------------------------------
-template < typename A_type, typename x_type, typename ScalarType, typename y_type>
+template <
+  class A_type, class x_type, class y_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<A_type>::rank == 2 and
-  ::pressio::Traits<x_type>::rank == 1 and
-  ::pressio::Traits<y_type>::rank == 1
+     ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
   >
 product(::pressio::transpose mode,
-	const ScalarType alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const ScalarType beta,
+	const beta_t & beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
@@ -119,38 +127,39 @@ product(::pressio::transpose mode,
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  if (beta == static_cast<ScalarType>(0))
+  if (beta == static_cast<beta_t>(0)){
     y_n = alpha * A_n.transpose() * x_n;
-  else
+  }
+  else{
     y_n = beta * y_n + alpha * A_n.transpose() * x_n;
+  }
 }
 
 //-------------------------------
 // op(A) = A^T, construct result
 //-------------------------------
-template <typename y_type, typename A_type, typename x_type, typename ScalarType>
+template <class y_type, class A_type, class x_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<A_type>::rank == 2 and
-  ::pressio::Traits<x_type>::rank == 1 and
-  ::pressio::Traits<y_type>::rank == 1,
+     ::pressio::all_have_traits_and_same_scalar<A_type, y_type, x_type>::value
+  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1,
   y_type
   >
 product(::pressio::transpose mode,
-  const ScalarType alpha,
-  const A_type & A,
-  const x_type & x)
+	const alpha_t & alpha,
+	const A_type & A,
+	const x_type & x)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
   y_type y(::pressio::ops::extent(A, 1));
 
-  product(mode, alpha, A, x, ScalarType(0), y);
+  using sc_t = typename ::pressio::Traits<y_type>::scalar_type;
+  product(mode, alpha, A, x, sc_t{0}, y);
   return y;
 }
 

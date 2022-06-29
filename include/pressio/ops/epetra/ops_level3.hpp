@@ -79,8 +79,6 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
 
   const auto numVecsA = A.NumVectors();
   const auto numVecsB = B.NumVectors();
@@ -125,8 +123,6 @@ product(::pressio::transpose modeA,
  const A_type & A,
  const B_type & B)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
   constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
 
   const auto numVecsA = A.NumVectors();
@@ -159,8 +155,6 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
 
   // how many vectors are in A and B
   const int numVecsA = A.NumVectors();
@@ -206,8 +200,6 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
   C_type C(A.NumVectors(), A.NumVectors());

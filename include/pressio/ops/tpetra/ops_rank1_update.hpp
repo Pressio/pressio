@@ -54,28 +54,40 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<class T, class T1, class a_Type, class b_Type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T>::value
+     ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && ::pressio::is_vector_tpetra<T>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v, const scalar_t a,
-	  const T & v1, const scalar_t b)
+update(T & v,         const a_Type & a,
+       const T1 & v1, const b_Type & b)
 {
-  v.update(b, v1, a); // v = a*v + b * v1
+  v.update(b, v1, a);
 }
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T>::value
+template<
+  class T, class T1, class T2,
+  class a_Type, class b_Type, class c_Type
   >
-update(T & v,        const scalar_t &a,
-	     const T & v1, const scalar_t &b,
-	     const T & v2, const scalar_t &c)
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && ::pressio::is_vector_tpetra<T>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c)
 {
-  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
   v.update(b, v1, a); // v = v*a + b * v1
   v.update(c, v2, one); // add c*v2
 }
@@ -84,17 +96,27 @@ update(T & v,        const scalar_t &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T>::value
+template<
+  class T, class T1, class T2, class T3,
+  class a_Type, class b_Type, class c_Type, class d_Type
   >
-update(T & v,        const scalar_t &a,
-	     const T & v1, const scalar_t &b,
-	     const T & v2, const scalar_t &c,
-	     const T & v3, const scalar_t &d)
-{
-  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
+  && ::pressio::is_vector_tpetra<T>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
 
+  >
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c,
+       const T3 & v3, const d_Type &d)
+{
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
   v.update(b, v1, a); // v = a*v + b*v1
   v.update(c, v2, one); // add c*v2
   v.update(d, v3, one); // add d*v3
@@ -104,18 +126,28 @@ update(T & v,        const scalar_t &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T>::value
+template<
+  class T, class T1, class T2, class T3, class T4,
+  class a_Type, class b_Type, class c_Type, class d_Type, class e_Type
   >
-update(T & v, const scalar_t &a,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c,
-	  const T & v3, const scalar_t &d,
-	  const T & v4, const scalar_t &e)
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
+  && ::pressio::is_vector_tpetra<T>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<e_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c,
+       const T3 & v3, const d_Type &d,
+       const T4 & v4, const e_Type &e)
 {
-  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
   v.update(b, v1, a); // v = a*v + b*v1
   v.update(c, v2, one); // add c*v2
   v.update(d, v3, one); // add d*v3

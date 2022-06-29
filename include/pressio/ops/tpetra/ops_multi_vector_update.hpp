@@ -55,19 +55,22 @@ namespace pressio{ namespace ops{
 //  overloads for computing: MV = a * MV + b * MV1
 // where MV is an tpetra multivector wrapper
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+
+template<typename T, class T2, typename a_t, class b_t>
 ::pressio::mpl::enable_if_t<
   is_multi_vector_tpetra<T>::value
+  && is_multi_vector_tpetra<T2>::value
   >
-update(T & mv, const scalar_t &a,
-	  const T & mv1, const scalar_t &b)
+update(T & mv, const a_t &a,
+       const T2 & mv1, const b_t &b)
 {
   mv.update(b, mv1, a);
 }
 
-template<typename T, typename scalar_t>
+template<typename T, class T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra<T>::value
+  && ::pressio::is_multi_vector_tpetra<T2>::value
   >
 update(T & mv, const T & mv1, const scalar_t & b)
 {
