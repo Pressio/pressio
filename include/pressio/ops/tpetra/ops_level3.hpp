@@ -60,24 +60,23 @@ C is an Eigen dense matrix
 *-------------------------------------------------------------------*/
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <
-  typename A_type, typename B_type, typename scalar_type, typename C_type
+  class A_type, class B_type, class C_type,
+  class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_multi_vector_tpetra<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+     ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_multi_vector_tpetra<B_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
-	const scalar_type beta,
+	const beta_t & beta,
 	C_type & C)
 {
-  static_assert
-    (are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
 
   const auto numVecsA = A.getNumVectors();
   const auto numVecsB = B.getNumVectors();
@@ -93,7 +92,7 @@ product(::pressio::transpose modeA,
     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
     {
       const auto colJ = B.getVector(j);
-      if (beta == pressio::utils::Constants<scalar_type>::zero()) {
+      if (beta == pressio::utils::Constants<beta_t>::zero()) {
         C(i,j) = alpha * colI->dot(*colJ);
       } else {
         C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
@@ -110,25 +109,25 @@ B = tpetra multivector
 C is an Eigen dense matrix returned by the function
 *-------------------------------------------------------------------*/
 template <
-  typename C_type, typename A_type, typename B_type, typename scalar_type
+  class C_type, class A_type, class B_type,
+  class alpha_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_multi_vector_tpetra<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value,
+     ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_multi_vector_tpetra<B_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
- ::pressio::nontranspose modeB,
- const scalar_type alpha,
- const A_type & A,
- const B_type & B)
+	::pressio::nontranspose modeB,
+	const alpha_t & alpha,
+	const A_type & A,
+	const B_type & B)
 {
-  static_assert
-    (are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
 
+  using sc_t = typename ::pressio::Traits<C_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   const auto numVecsA = A.getNumVectors();
   const auto numVecsB = B.getNumVectors();
   C_type C(numVecsA, numVecsB);
@@ -139,28 +138,30 @@ product(::pressio::transpose modeA,
 // /***********************************
 //  * special case A==B
 // **********************************/
-template <typename A_type, typename scalar_type, typename C_type>
+template <
+  class A_type, class C_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+     ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
- ::pressio::nontranspose modeB,
- const scalar_type alpha,
- const A_type & A,
- const scalar_type beta,
- C_type & C)
+	::pressio::nontranspose modeB,
+	const alpha_t & alpha,
+	const A_type & A,
+	const beta_t & beta,
+	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-   "Types are not scalar compatible");
 
   // how many vectors are in A and mvB
   const auto numVecsA = A.getNumVectors();
   assert((std::size_t)C.rows() == (std::size_t)numVecsA);
   assert((std::size_t)C.cols() == (std::size_t)numVecsA);
-  const auto zero = pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = pressio::utils::Constants<beta_t>::zero();
   const auto has_beta = beta != zero;
-  scalar_type tmp = zero;
+  beta_t tmp = zero;
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
@@ -180,21 +181,21 @@ product(::pressio::transpose modeA,
   }
 }
 
-template <typename C_type, typename A_type, typename scalar_type>
+template <class C_type, class A_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value,
+     ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
- ::pressio::nontranspose modeB,
- const scalar_type alpha,
- const A_type & A)
+	::pressio::nontranspose modeB,
+	const alpha_t & alpha,
+	const A_type & A)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-   "Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<C_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C(A.getNumVectors(), A.getNumVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;
@@ -208,21 +209,19 @@ C = beta * C + alpha * A^T * A
 A = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
-template <typename A_type, typename scalar_type, typename C_type>
+template <class A_type, class C_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dense_matrix_kokkos<C_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_dense_matrix_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
- ::pressio::nontranspose modeB,
- const scalar_type alpha,
- const A_type & A,
- const scalar_type beta,
- C_type & C)
+	::pressio::nontranspose modeB,
+	const alpha_t & alpha,
+	const A_type & A,
+	const beta_t & beta,
+	C_type & C)
 {
-  static_assert
-    (are_scalar_compatible<A_type, C_type>::value,
-     "Types are not scalar compatible");
 
   static_assert
     (std::is_same<
@@ -257,26 +256,25 @@ C = alpha * A^T * A
 A = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
-template <class C_type, typename A_type, typename scalar_type>
+template <class C_type, class A_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dense_matrix_kokkos<C_type>::value,
+  ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_dense_matrix_kokkos<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
- ::pressio::nontranspose modeB,
- const scalar_type alpha,
- const A_type & A)
+	::pressio::nontranspose modeB,
+	const alpha_t & alpha,
+	const A_type & A)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-    "Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<C_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C("opsProdC", A.getNumVectors(), A.getNumVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;
 }
-
 
 /* -------------------------------------------------------------------
 C = beta * C + alpha * A^T * B
@@ -285,22 +283,20 @@ A = tpetra multivector
 B = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
-template <typename A_type, typename scalar_type, typename C_type>
+template <class A_type, class C_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dense_matrix_kokkos<C_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_dense_matrix_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
- ::pressio::nontranspose modeB,
- const scalar_type alpha,
- const A_type & A,
- const A_type & B,
- const scalar_type beta,
- C_type & C)
+	::pressio::nontranspose modeB,
+	const alpha_t & alpha,
+	const A_type & A,
+	const A_type & B,
+	const beta_t & beta,
+	C_type & C)
 {
-  static_assert
-    (are_scalar_compatible<A_type, C_type>::value,
-     "Types are not scalar compatible");
 
   static_assert
     (std::is_same<
@@ -328,6 +324,8 @@ product(::pressio::transpose modeA,
 
 }}//end namespace pressio::ops
 
+#endif  // OPS_TPETRA_OPS_LEVEL3_HPP_
+
 
 
 
@@ -349,10 +347,6 @@ product(::pressio::transpose modeA,
 // 	const scalar_type beta,
 // 	C_type & C)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
-//      "Types are not scalar compatible");
-
 //   assert( C.extent(0) == A.extent(0) );
 //   assert( C.extent(1) == B.extent(1) );
 //   assert( A.extent(1) == B.extent(0) );
@@ -362,4 +356,3 @@ product(::pressio::transpose modeA,
 //   auto & Btp = *B.data();
 //   Ctp.elementWiseMultiply(alpha, Atp, Btp, beta);
 // }
-#endif  // OPS_TPETRA_OPS_LEVEL3_HPP_

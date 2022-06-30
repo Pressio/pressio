@@ -58,17 +58,20 @@ namespace pressio{ namespace ops{
 //-------------------------------
 // specialize for op(A) = A
 //-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <
+  typename A_type, typename x_type, typename y_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_teuchos<A_type>::value and
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_eigen<y_type>::value
   >
 product(::pressio::nontranspose mode,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
   assert( ::pressio::ops::extent(y,0) == A.numRows() );
@@ -86,17 +89,20 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 // specialize for op(A) = A^T
 //-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <
+  typename A_type, typename x_type, typename y_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
   is_dense_matrix_teuchos<A_type>::value and
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_eigen<y_type>::value
   >
 product(::pressio::transpose mode,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
   assert( ::pressio::ops::extent(y,0) == A.numCols() );

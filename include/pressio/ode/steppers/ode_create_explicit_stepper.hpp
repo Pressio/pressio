@@ -65,33 +65,21 @@ auto create_forward_euler_stepper(Args && ...args){
 }
 
 template<class ...Args>
-auto create_runge_kutta4_stepper(Args && ...args){
-  return create_explicit_stepper(StepScheme::RungeKutta4,
-				 std::forward<Args>(args)...);
-}
-
-template<class ...Args>
 auto create_rk4_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::RungeKutta4,
 				 std::forward<Args>(args)...);
 }
 
 template<class ...Args>
-auto create_adams_bashforth2_stepper(Args && ...args){
+auto create_ab2_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::AdamsBashforth2,
 				 std::forward<Args>(args)...);
 }
 
 template<class ...Args>
-auto create_ssp_runge_kutta3_stepper(Args && ...args){
-  return create_explicit_stepper(StepScheme::SSPRungeKutta3,
-				 std::forward<Args>(args)...);
-}
-
-template<class ...Args>
 auto create_ssprk3_stepper(Args && ...args){
-  return create_explicit_stepper(StepScheme::SSPRungeKutta3,
-				 std::forward<Args>(args)...);
+  return create_explicit_stepper
+    (StepScheme::SSPRungeKutta3, std::forward<Args>(args)...);
 }
 
 }} // end namespace pressio::ode

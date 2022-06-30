@@ -52,10 +52,10 @@
 namespace pressio{ namespace ops{
 
 // x^exponent
-template <typename T>
+template <class T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::rank==1 and 
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen 
+  ::pressio::Traits<T>::rank==1 and
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
   >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
@@ -67,19 +67,16 @@ pow(T & x,
 }
 
 // y= x^exponent
-template <typename T1, typename T2>
+template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1 
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen 
+  ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
+  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
   and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 pow(T1 & y,
     const T2 & x,
     const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
   using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
@@ -89,19 +86,17 @@ pow(T1 & y,
 }
 
 // y = |x|^exponent, expo>0
-template <typename T1, typename T2>
+template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1 
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen 
+  ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
+  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
   and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
 
@@ -117,10 +112,10 @@ abs_pow(T1 & y,
 }
 
 // y = |x|^exponent, expo<0
-template <typename T1, typename T2>
+template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1 
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen 
+  ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
+  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
   and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 abs_pow(T1 & y,
@@ -128,9 +123,7 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
 

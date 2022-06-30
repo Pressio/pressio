@@ -78,9 +78,6 @@ abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   using ord_t = typename ::pressio::Traits<T1>::size_type;
 
@@ -111,9 +108,6 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   using ord_t = typename ::pressio::Traits<T1>::size_type;
 

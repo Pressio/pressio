@@ -58,7 +58,9 @@ template<typename T>
 struct VectorSpaceElement<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::has_scalar_typedef<T>::value
+    ::pressio::has_scalar_typedef<
+      ::pressio::Traits<T>
+      >::value
     >
   > : std::true_type{};
 
@@ -67,4 +69,4 @@ template<typename T>
 using RealVectorSpaceElement =  VectorSpaceElement<T>;
 
 } // namespace pressio
-#endif 
+#endif

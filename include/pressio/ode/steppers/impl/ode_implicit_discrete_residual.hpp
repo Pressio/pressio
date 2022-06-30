@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_discrete_time_residual.hpp
+// ode_implicit_discrete_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,103 +46,284 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
 /*
-  BDF1 residual: R(y_n+1) = y_n+1 - y_n - dt*f(t_n+1, y_n+1)
+  BDF1 residual:
+  R(y_n+1) = y_n+1 - y_n - dt*f(t_n+1, y_n+1)
 
-  - on input R contains the application RHS: R = f(t_n+1, y_n+1, ...)
-  - on output, R contains the time-discrete residual
+  on entry R contains the application RHS: R = f(t_n+1, y_n+1, ...)
 */
 template <
-  typename StateType,
-  typename ResidualType,
-  typename StencilStatesContainerType,
-  typename ScalarType
+  class StateType,
+  class ResidualType,
+  class StencilStatesContainerType,
+  class StepSizeType
   >
-void discrete_time_residual(const StateType & y_np1,
-			    ResidualType & R,
-			    const StencilStatesContainerType & stencilStates,
-			    const ScalarType & dt,
-			    ::pressio::ode::BDF1)
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<ResidualType>::scalar_type
+    >::value
+  >
+discrete_residual(::pressio::ode::BDF1,
+		  const StateType & y_np1,
+		  ResidualType & R,
+		  const StencilStatesContainerType & stencilStates,
+		  const StepSizeType & dt)
 {
-  constexpr auto cnp1 = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
-  constexpr auto cn   = ::pressio::ode::constants::bdf1<ScalarType>::c_n_;
-  const auto cf	      = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
-  ::pressio::ops::update(R, cf,
-			 y_np1, cnp1,
-			 stencilStates(::pressio::ode::n()), cn);
+
+  using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
+  const sc_t cf = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
+  constexpr sc_t cnp1 = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
+  constexpr sc_t cn = ::pressio::ode::constants::bdf1<sc_t>::c_n_;
+  const auto & y_n = stencilStates(::pressio::ode::n());
+
+  ::pressio::ops::update(R, cf, y_np1, cnp1, y_n, cn);
+}
+
+/*
+  BDF1 with MM residual:
+  R(y_n+1) = M_n+1(y_n+1 - y_n) - dt*f(t_n+1, y_n+1)
+
+  - on entry R is empty
+  - on entry f contains the application f(t_n+1, y_n+1, ...)
+  - on entry M contains mass matrix M_n+1
+*/
+template <
+  class StateType,
+  class MassMatrixType,
+  class ResidualType,
+  class StencilStatesContainerType,
+  class StepSizeType
+  >
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType, MassMatrixType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<ResidualType>::scalar_type
+    >::value
+  >
+discrete_residual(::pressio::ode::BDF1,
+		  const StateType & y_np1,
+		  const ResidualType & f_np1,
+		  const MassMatrixType & M_np1,
+		  ResidualType & R,
+		  const StencilStatesContainerType & stencilStates,
+		  const StepSizeType & dt)
+{
+
+  using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
+  constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
+  constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
+  constexpr sc_t cnp1 = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
+  constexpr sc_t cn   = ::pressio::ode::constants::bdf1<sc_t>::c_n_;
+  const sc_t cf	      = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
+  const auto & y_n = stencilStates(::pressio::ode::n());
+
+  // R = M_n+1 * y_np1
+  ::pressio::ops::product(::pressio::nontranspose(), one, M_np1, y_np1, zero, R);
+  // R = R - M_n+1 * y_n
+  ::pressio::ops::product(::pressio::nontranspose(), cn, M_np1, y_n, one, R);
+  // R = R - dt * f_n+1
+  ::pressio::ops::update(R, one, f_np1, cf);
 }
 
 /*
   BDF2 residual: R(y_n+1) = y_n+1 - (4/3)*y_n + (1/3)*y_n-1 - (2/3)*dt*f(t_n+1, y_n+1)
 
-  - on input R contains the application RHS: R = f(t_n+1, y_n+1, ...)
-  - on output, R contains the time-discrete residual
+  on entry R contains the application RHS: R = f(t_n+1, y_n+1, ...)
 */
 template <
-  typename StateType,
-  typename ResidualType,
-  typename StencilStatesContainerType,
-  typename ScalarType
+  class StateType,
+  class ResidualType,
+  class StencilStatesContainerType,
+  class StepSizeType
   >
-void discrete_time_residual(const StateType	& y_np1,
-			    ResidualType & R,
-			    const StencilStatesContainerType & stencilStates,
-			    const ScalarType & dt,
-			    ::pressio::ode::BDF2)
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<ResidualType>::scalar_type
+    >::value
+  >
+discrete_residual(::pressio::ode::BDF2,
+		  const StateType & y_np1,
+		  ResidualType & R,
+		  const StencilStatesContainerType & stencilStates,
+		  const StepSizeType & dt)
 {
-  using nm1 = ode::nMinusOne;
-  constexpr auto cnp1 = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;
-  constexpr auto cn   = ::pressio::ode::constants::bdf2<ScalarType>::c_n_;
-  constexpr auto cnm1 = ::pressio::ode::constants::bdf2<ScalarType>::c_nm1_;
-  const auto cf	      = ::pressio::ode::constants::bdf2<ScalarType>::c_f_ * dt;
 
-  ::pressio::ops::update(R, cf,
-                         y_np1, cnp1,
-			 stencilStates(::pressio::ode::n()), cn,
-			 stencilStates(nm1()), cnm1);
+  using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
+
+  constexpr sc_t cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
+  constexpr sc_t cn   = ::pressio::ode::constants::bdf2<sc_t>::c_n_;
+  constexpr sc_t cnm1 = ::pressio::ode::constants::bdf2<sc_t>::c_nm1_;
+  const sc_t cf	      = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
+
+  const auto & y_n = stencilStates(::pressio::ode::n());
+  const auto & y_nm1 = stencilStates(::pressio::ode::nMinusOne());
+
+  ::pressio::ops::update(R, cf, y_np1, cnp1, y_n, cn, y_nm1, cnm1);
+}
+
+/*
+  BDF2 with MM:
+   R(y_n+1) = M_n+1(y_n+1 - (4/3)*y_n + (1/3)*y_n-1) - (2/3)*dt*f(t_n+1, y_n+1)
+
+  on entry R is empty
+  on entry f_np1 contains f(t_n+1, y_n+1, ...)
+  on output, R contains the discrete residual
+*/
+template <
+  class StateType,
+  class MassMatrixType,
+  class ResidualType,
+  class StencilStatesContainerType,
+  class StepSizeType
+  >
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType, MassMatrixType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<ResidualType>::scalar_type
+    >::value
+  >
+discrete_residual(::pressio::ode::BDF2,
+		  const StateType & y_np1,
+		  const ResidualType & f_np1,
+		  const MassMatrixType & M_np1,
+		  ResidualType & R,
+		  const StencilStatesContainerType & stencilStates,
+		  const StepSizeType & dt)
+{
+
+  using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
+  constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
+  constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
+  constexpr sc_t cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
+  constexpr sc_t cn   = ::pressio::ode::constants::bdf2<sc_t>::c_n_;
+  constexpr sc_t cnm1 = ::pressio::ode::constants::bdf2<sc_t>::c_nm1_;
+  const sc_t cf	      = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
+
+  const auto & y_n = stencilStates(::pressio::ode::n());
+  const auto & y_nm1 = stencilStates(::pressio::ode::nMinusOne());
+
+  // R = M_n+1 * y_np1
+  ::pressio::ops::product(::pressio::nontranspose(), cnp1, M_np1, y_np1, zero, R);
+  // R = R - M_n+1 * (4/3)y_n
+  ::pressio::ops::product(::pressio::nontranspose(), cn, M_np1, y_n, one, R);
+  // R = R + M_n+1 * (1/3)y_n-1
+  ::pressio::ops::product(::pressio::nontranspose(), cnm1, M_np1, y_nm1, one, R);
+  // R = R - dt * f_n+1
+  ::pressio::ops::update(R, one, f_np1, cf);
 }
 
 /*
   CrankNicolson residual:
   R(y_n+1) = y_n+1 - y_n - 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
 
-  - Note that on entry, R does not contain anything, should be fully overwritten
+  - on entry, R does not contain anything, should be fully overwritten
   - stencilStates contain: y_n
   - stencilVelocities contain f_n, f_n+1
 */
 template <
-  typename StateType,
-  typename ResidualType,
-  typename StencilStatesContainerType,
-  typename StencilVelocitiesContainerType,
-  typename ScalarType
+  class StateType,
+  class ResidualType,
+  class StencilStatesContainerType,
+  class StencilVelocitiesContainerType,
+  class StepSizeType
   >
-void discrete_time_residual(const StateType & y_np1,
-			    ResidualType & R,
-			    const StencilStatesContainerType & stencilStates,
-			    const StencilVelocitiesContainerType & stencilVelocities,
-			    const ScalarType & dt,
-			    ::pressio::ode::CrankNicolson)
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<ResidualType>::scalar_type
+    >::value
+  >
+discrete_residual(::pressio::ode::CrankNicolson,
+		  const StateType & y_np1,
+		  ResidualType & R,
+		  const StencilStatesContainerType & stencilStates,
+		  const StencilVelocitiesContainerType & stencilVelocities,
+		  const StepSizeType & dt)
 {
-  using cnst = ::pressio::ode::constants::cranknicolson<ScalarType>;
-  constexpr auto cnp1  = cnst::c_np1_;
-  constexpr auto cn    = cnst::c_n_;
-  constexpr auto cfn   = cnst::c_fn_;
-  const auto cfnDt   = cfn*dt;
-  const auto cfnp1Dt = cfn*dt;
 
-  constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
+  using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
+
+  constexpr auto zero  = ::pressio::utils::Constants<sc_t>::zero();
+  using cnst = ::pressio::ode::constants::cranknicolson<sc_t>;
+  constexpr sc_t cnp1  = cnst::c_np1_;
+  constexpr sc_t cn    = cnst::c_n_;
+  constexpr sc_t cfn   = cnst::c_fn_;
+  const sc_t cfnDt   = cfn*dt;
+  const sc_t cfnp1Dt = cfn*dt;
+
+  const auto & y_n   = stencilStates(::pressio::ode::n());
+  const auto & f_n   = stencilVelocities(::pressio::ode::n());
+  const auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+
   ::pressio::ops::update(R, zero,
 			 y_np1, cnp1,
-			 stencilStates(::pressio::ode::n()), cn,
-			 stencilVelocities(::pressio::ode::n()), cfnDt,
-			 stencilVelocities(::pressio::ode::nPlusOne()), cfnp1Dt);
+			 y_n, cn,
+			 f_n, cfnDt,
+			 f_np1, cfnp1Dt);
 }
 
+/*
+  CrankNicolson:
+  R(y_n+1) = M_n+1*(y_n+1 - y_n) - 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
+
+  - on entry, R does not contain anything, should be fully overwritten
+  - stencilStates contain: y_n
+  - stencilVelocities contain f_n, f_n+1
+*/
+template <
+  class StateType,
+  class MassMatrixType,
+  class ResidualType,
+  class StencilStatesContainerType,
+  class StencilVelocitiesContainerType,
+  class StepSizeType
+  >
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType, MassMatrixType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<ResidualType>::scalar_type
+    >::value
+  >
+discrete_residual(::pressio::ode::CrankNicolson,
+		  const StateType & y_np1,
+		  const MassMatrixType & M_np1,
+		  ResidualType & R,
+		  const StencilStatesContainerType & stencilStates,
+		  const StencilVelocitiesContainerType & stencilVelocities,
+		  const StepSizeType & dt)
+{
+
+  using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
+
+  constexpr auto zero  = ::pressio::utils::Constants<sc_t>::zero();
+  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
+
+  using cnst = ::pressio::ode::constants::cranknicolson<sc_t>;
+  constexpr sc_t cnp1  = cnst::c_np1_;
+  constexpr sc_t cn    = cnst::c_n_;
+  constexpr sc_t cfn   = cnst::c_fn_;
+  const sc_t cfnDt   = cfn*dt;
+  const sc_t cfnp1Dt = cfn*dt;
+
+  const auto & y_n   = stencilStates(::pressio::ode::n());
+  const auto & f_n   = stencilVelocities(::pressio::ode::n());
+  const auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+
+  // R = M_n+1 * y_np1
+  ::pressio::ops::product(::pressio::nontranspose(), cnp1, M_np1, y_np1, zero, R);
+  // R = R - M_n+1 * y_n
+  ::pressio::ops::product(::pressio::nontranspose(), cn, M_np1, y_n, one, R);
+  // R = R - 0.5*dt*f_n+1 - 0.5*dt*f_n
+  ::pressio::ops::update(R, one, f_n, cfnDt, f_np1, cfnp1Dt);
+}
+
+
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_

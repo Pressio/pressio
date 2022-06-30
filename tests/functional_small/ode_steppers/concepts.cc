@@ -1,16 +1,25 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode_steppers_explicit.hpp"
-#include "pressio/ode_steppers_implicit.hpp"
 
-namespace
-{
+#include "pressio/type_traits.hpp"
 
 struct FakeStateTypeForTesting{};
 struct FakeRhsTypeForTesting{};
 struct FakeMassMatrixTypeForTesting{};
 struct FakeJacTypeForTesting{};
-struct FakeIndVarTypeForTesting{};
+struct FakeIndVarTypeForTesting{
+  operator double(){ return double{}; }
+};
+
+namespace pressio{
+template<> struct Traits<FakeStateTypeForTesting>{ using scalar_type = double; };
+template<> struct Traits<FakeRhsTypeForTesting>{ using scalar_type = double; };
+template<> struct Traits<FakeMassMatrixTypeForTesting>{ using scalar_type = double; };
+template<> struct Traits<FakeJacTypeForTesting>{ using scalar_type = double; };
+}
+
+#include "pressio/ode_steppers_explicit.hpp"
+#include "pressio/ode_steppers_implicit.hpp"
 
 //
 // rhs only
@@ -74,9 +83,29 @@ struct System4{
 };
 
 //
-// rhs and jacobian
+// rhs and constant mass matrix
 //
 struct System5{
+  using independent_variable_type = FakeIndVarTypeForTesting;
+  using state_type = FakeStateTypeForTesting;
+  using right_hand_side_type = FakeRhsTypeForTesting;
+  using mass_matrix_type = FakeMassMatrixTypeForTesting;
+
+  state_type createState() const{ return state_type(); }
+  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
+  mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
+
+  void rightHandSide(const state_type &        /*unused*/,
+		     independent_variable_type /*unused*/,
+		     right_hand_side_type &    /*unused*/) const{}
+
+  void massMatrix(mass_matrix_type & /*unused*/) const{}
+};
+
+//
+// rhs and jacobian
+//
+struct System6{
   using independent_variable_type = FakeIndVarTypeForTesting;
   using state_type = FakeStateTypeForTesting;
   using right_hand_side_type = FakeRhsTypeForTesting;
@@ -98,7 +127,7 @@ struct System5{
 //
 // rhs and jacobian and mass matrix
 //
-struct System6{
+struct System7{
   using independent_variable_type = FakeIndVarTypeForTesting;
   using state_type = FakeStateTypeForTesting;
   using right_hand_side_type = FakeRhsTypeForTesting;
@@ -123,12 +152,38 @@ struct System6{
 		jacobian_type &           /*unused*/) const{}
 };
 
-
-struct System7{
+//
+// rhs and jacobian and constant mass matrix
+//
+struct System8{
   using independent_variable_type = FakeIndVarTypeForTesting;
-  using state_type = std::vector<independent_variable_type>;
-  using discrete_residual_type = state_type;
-  using discrete_jacobian_type = std::vector<std::vector<independent_variable_type>>;
+  using state_type = FakeStateTypeForTesting;
+  using right_hand_side_type = FakeRhsTypeForTesting;
+  using jacobian_type = FakeJacTypeForTesting;
+  using mass_matrix_type = FakeMassMatrixTypeForTesting;
+
+  state_type createState() const{ return state_type(); }
+  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
+  jacobian_type createJacobian() const{ return jacobian_type(); }
+  mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
+
+  void rightHandSide(const state_type &        /*unused*/,
+		     independent_variable_type /*unused*/,
+		     right_hand_side_type &    /*unused*/) const{}
+
+  void massMatrix(mass_matrix_type &        /*unused*/) const{}
+
+  void jacobian(const state_type &        /*unused*/,
+		independent_variable_type /*unused*/,
+		jacobian_type &           /*unused*/) const{}
+};
+
+
+struct System9{
+  using independent_variable_type = FakeIndVarTypeForTesting;
+  using state_type = FakeStateTypeForTesting;
+  using discrete_residual_type = FakeRhsTypeForTesting;
+  using discrete_jacobian_type = FakeJacTypeForTesting;
 
   state_type createState() const{ return state_type(); }
 
@@ -184,9 +239,9 @@ public:
 		  const StateType &		    /*unused*/,
 		  const prev_states_type &	    /*unused*/,
 		  rhs_container &		    /*unused*/,
-		  const independent_variable_type & /*unused*/,
-		  const independent_variable_type & /*unused*/,
-		  int32_t			    /*unused*/,
+		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
+		  ::pressio::ode::StepCount /*unused*/,
+		  const ::pressio::ode::StepSize<double> & /*unused*/,
 		  residual_type &		    /*unused*/) const
   {}
 };
@@ -206,34 +261,83 @@ public:
   void operator()(pressio::ode::StepScheme          /*unused*/,
 		  const StateType &		    /*unused*/,
 		  const prev_states_type &	    /*unused*/,
-		  const independent_variable_type & /*unused*/,
-		  const independent_variable_type & /*unused*/,
-		  int32_t			    /*unused*/,
+		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
+		  ::pressio::ode::StepCount /*unused*/,
+		  const ::pressio::ode::StepSize<double> & /*unused*/,
 		  jacobian_type &		    /*unused*/) const
   {}
 };
 
-}//end anonym namespace
 
 TEST(ode, concepts)
 {
   using namespace pressio::ode;
 
-  static_assert(SemiDiscreteSystem<System1>::value, "");
-  static_assert(SemiDiscreteSystemWithMassMatrix<System4>::value, "");
-  static_assert(SemiDiscreteSystemWithJacobian<System5>::value, "");
-  static_assert(SemiDiscreteSystemComplete<System6>::value, "");
-  static_assert(SemiDiscreteSystem<System5>::value, "");
-  static_assert(SemiDiscreteSystem<System4>::value, "");
-  static_assert(!SemiDiscreteSystemComplete<System1>::value, "");
-  static_assert(!SemiDiscreteSystemWithMassMatrix<System1>::value, "");
-  static_assert(!SemiDiscreteSystemWithMassMatrix<System5>::value, "");
-  static_assert(!SemiDiscreteSystem<System2>::value, "");
-  static_assert(!SemiDiscreteSystem<System3>::value, "");
-  static_assert(!SemiDiscreteSystemWithJacobian<System1>::value, "");
-  static_assert(FullyDiscreteSystemWithJacobian<System7, 1>::value, "");
-  static_assert(FullyDiscreteSystemWithJacobian<System7, 2>::value, "");
-  static_assert(!FullyDiscreteSystemWithJacobian<System7,3>::value, "");
+  static_assert( SemiDiscreteSystemWithRhs<System1>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System1>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System1>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System1>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System1>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System1>::value, "");
+
+  static_assert(!SemiDiscreteSystemWithRhs<System2>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System2>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System2>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System2>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System2>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System2>::value, "");
+
+  static_assert(!SemiDiscreteSystemWithRhs<System3>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System3>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System3>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System3>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System3>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System3>::value, "");
+
+  static_assert( SemiDiscreteSystemWithRhs<System4>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System4>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndMassMatrix<System4>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System4>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System4>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System4>::value, "");
+
+  static_assert( SemiDiscreteSystemWithRhs<System5>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System5>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System5>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndConstantMassMatrix<System5>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System5>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System5>::value, "");
+
+  static_assert( SemiDiscreteSystemWithRhs<System6>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndJacobian<System6>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System6>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System6>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System6>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System6>::value, "");
+
+  static_assert( SemiDiscreteSystemWithRhs<System7>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndJacobian<System7>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndMassMatrix<System7>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System7>::value, "");
+  static_assert( CompleteSemiDiscreteSystem<System7>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System7>::value, "");
+
+  static_assert( SemiDiscreteSystemWithRhs<System8>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndJacobian<System8>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System8>::value, "");
+  static_assert( SemiDiscreteSystemWithRhsAndConstantMassMatrix<System8>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System8>::value, "");
+  static_assert( CompleteSemiDiscreteSystemWithConstantMassMatrix<System8>::value, "");
+
+  static_assert(FullyDiscreteSystemWithJacobian<System9,  1>::value, "");
+  static_assert(FullyDiscreteSystemWithJacobian<System9,  2>::value, "");
+  static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhs<System9>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System9>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System9>::value, "");
+  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System9>::value, "");
+  static_assert(!CompleteSemiDiscreteSystem<System9>::value, "");
+  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System9>::value, "");
 
   {
     using state_t = FakeStateTypeForTesting;

@@ -52,6 +52,7 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
+  bool massMatrixIsFixed,
   class SystemType,
   class IndVarType,
   class StateType,
@@ -69,15 +70,13 @@ public:
 public:
   ResidualWithMassMatrixStandardPolicy() = delete;
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  explicit ResidualWithMassMatrixStandardPolicy(SystemType systemIn)
-    : systemObj_(systemIn),
-      massMatrix_(systemIn.createMassMatrix()){}
-#else
   explicit ResidualWithMassMatrixStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ),
-      massMatrix_(systemIn.createMassMatrix()){}
-#endif
+      massMatrix_(systemIn.createMassMatrix()),
+      rhs_(systemIn.createRightHandSide())
+  {
+    computeMassMatrixOnceIfInvariant();
+  }
 
   ResidualWithMassMatrixStandardPolicy(const ResidualWithMassMatrixStandardPolicy &) = default;
   ResidualWithMassMatrixStandardPolicy & operator=(const ResidualWithMassMatrixStandardPolicy &) = default;
@@ -86,6 +85,10 @@ public:
   ~ResidualWithMassMatrixStandardPolicy() = default;
 
 public:
+  const MassMatrixType & viewMassMatrix() const {
+    return massMatrix_;
+  }
+
   StateType createState() const{
     StateType result(systemObj_.get().createState());
     return result;
@@ -99,71 +102,135 @@ public:
   template <
     class StencilStatesContainerType,
     class StencilVelocitiesContainerType,
-    class StepType,
     class _MassMatrixType = MassMatrixType
     >
   void operator()(StepScheme name,
 		  const StateType & predictedState,
 		  const StencilStatesContainerType & stencilStatesManager,
 		  StencilVelocitiesContainerType & stencilVelocities,
-		  const IndVarType & rhsEvaluationTime,
-		  const IndVarType & dt,
-		  const StepType & step,
+		  const ::pressio::ode::StepEndAt<IndVarType> & rhsEvaluationTime,
+		  ::pressio::ode::StepCount step,
+		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  ResidualType & R) const
   {
 
     if (name == StepScheme::BDF1){
-      (*this).template compute_impl_bdf_with_mm<ode::BDF1>(predictedState, stencilStatesManager,
-							 stencilVelocities, rhsEvaluationTime,
-							 dt, step, R);
+      (*this).template compute_impl_bdf
+	<ode::BDF1>(predictedState, stencilStatesManager,
+		    stencilVelocities, rhsEvaluationTime.get(),
+		    dt.get(), step.get(), R);
     }
-    // else if (name == StepScheme::BDF2){
-    //   (*this).template compute_impl_bdf_with_mm<ode::BDF2>(predictedState, stencilStatesManager,
-    // 							 stencilVelocities, rhsEvaluationTime,
-    // 							 dt, step, R);
-    // }
-    // else if (name == StepScheme::CrankNicolson){
-    //   this->compute_impl_cn_with_mm(predictedState, stencilStatesManager,
-    // 				  stencilVelocities, rhsEvaluationTime, dt, step, R);
-    // }
+    else if (name == StepScheme::BDF2){
+      (*this).template compute_impl_bdf
+	<ode::BDF2>(predictedState, stencilStatesManager,
+		    stencilVelocities, rhsEvaluationTime.get(),
+		    dt.get(), step.get(), R);
+    }
+    else if (name == StepScheme::CrankNicolson){
+
+      if (!massMatrixIsFixed){
+	throw std::runtime_error("CrankNicolson with varying mass matrix is not implemented yet");
+      }
+      this->compute_impl_cn(predictedState, stencilStatesManager,
+			    stencilVelocities, rhsEvaluationTime.get(),
+			    dt.get(), step.get(), R);
+    }
   }
 
 private:
-  //
-  // BDF WITH mass matrix
-  //
+  template<bool _massMatrixIsFixed = massMatrixIsFixed>
+  ::pressio::mpl::enable_if_t<_massMatrixIsFixed>
+  computeMassMatrixOnceIfInvariant(){
+    systemObj_.get().massMatrix(massMatrix_);
+  }
+
+  template<bool _massMatrixIsFixed = massMatrixIsFixed>
+  ::pressio::mpl::enable_if_t<!_massMatrixIsFixed>
+  computeMassMatrixOnceIfInvariant(){
+    // no op
+  }
+
+  template<bool _massMatrixIsFixed = massMatrixIsFixed>
+  ::pressio::mpl::enable_if_t<_massMatrixIsFixed>
+  computeMassMatrixIfNeeded(const StateType & /*unused*/,
+			    const IndVarType & /*unused*/) const{
+    // no op
+  }
+
+  template<bool _massMatrixIsFixed = massMatrixIsFixed>
+  ::pressio::mpl::enable_if_t<!_massMatrixIsFixed>
+  computeMassMatrixIfNeeded(const StateType & odeState,
+			    const IndVarType & eval) const{
+    systemObj_.get().massMatrix(odeState, eval, massMatrix_);
+  }
+
+  // BDF
   template <
   class OdeTag,
   class StencilStatesContainerType,
   class StencilVelocitiesContainerType,
   class StepType
   >
-  void compute_impl_bdf_with_mm(const StateType & predictedState,
-				const StencilStatesContainerType & stencilStatesManager,
-				StencilVelocitiesContainerType & stencilVelocities,
-				const IndVarType & rhsEvaluationTime,
-				const IndVarType & dt,
-				const StepType & step,
-				ResidualType & R) const
+  void compute_impl_bdf(const StateType & predictedState,
+			const StencilStatesContainerType & stencilStatesManager,
+			StencilVelocitiesContainerType & stencilVelocities,
+			const IndVarType & rhsEvaluationTime,
+			const IndVarType & dt,
+			const StepType & step,
+			ResidualType & R) const
   {
 
-    // try{
-    // systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, R);
-    // systemObj_.get().massMatrix(predictedState, rhsEvaluationTime, massMatrix_);
-    // ::pressio::ode::impl::discrete_time_residual(predictedState,
-    // 						   R, stencilStatesManager,
-    // 						   dt, OdeTag());
-    //   stepTracker_ = step;
-    // }
-    // catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
-    //   throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
-    // }
+    try{
+      systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, rhs_);
+      computeMassMatrixIfNeeded(predictedState, rhsEvaluationTime);
+      ::pressio::ode::impl::discrete_residual(OdeTag(), predictedState, rhs_,
+					      massMatrix_, R, stencilStatesManager, dt);
+      stepTracker_ = step;
+    }
+    catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
+    }
+
+  }
+
+  //
+  // CN
+  //
+  template <
+    class StencilStatesContainerType,
+    class StencilVelocitiesContainerType,
+    class StepType
+    >
+  void compute_impl_cn(const StateType & predictedState,
+		       const StencilStatesContainerType & stencilStates,
+		       StencilVelocitiesContainerType & stencilVelocities,
+		       const IndVarType & t_np1,
+		       const IndVarType & dt,
+		       const StepType & step,
+		       ResidualType & R) const
+  {
+
+    if (stepTracker_ != step){
+      auto & f_n     = stencilVelocities(::pressio::ode::n());
+      auto & state_n = stencilStates(::pressio::ode::n());
+      const auto tn = t_np1-dt;
+      systemObj_.get().rightHandSide(state_n, tn, f_n);
+    }
+
+    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+    systemObj_.get().rightHandSide(predictedState, t_np1, f_np1);
+    ::pressio::ode::impl::discrete_residual
+	(ode::CrankNicolson(), predictedState, massMatrix_,
+	 R, stencilStates, stencilVelocities, dt);
+
+    stepTracker_ = step;
   }
 
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   mutable int32_t stepTracker_ = -1;
-  MassMatrixType massMatrix_;
+  mutable MassMatrixType massMatrix_;
+  mutable ResidualType rhs_;
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy

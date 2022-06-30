@@ -51,13 +51,17 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+/*constrained via is_convertible because the impl is using
+  native Eigen ops which use expressions, so value has to
+  be convertible to the the scalar type of the object */
+template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-fill(T & o, const typename ::pressio::Traits<T>::scalar_type value)
+fill(T & o, const ScalarType & value)
 {
-	impl::get_native(o).setConstant(value);
+  impl::get_native(o).setConstant(value);
 }
 
 }}//end namespace pressio::ops

@@ -82,19 +82,19 @@ private:
   state_type recovery_state_;
 
   // stencilStates contains:
-  // bdf1: y_n
-  // bdf2: y_n, y_n-1
-  // cn  : y_n
-  ImplicitStencilStatesContainerDyn<StateType> stencil_states_;
+  // for bdf1: y_n
+  // for bdf2: y_n, y_n-1
+  // for cn  : y_n
+  ImplicitStencilStatesDynamicContainer<StateType> stencil_states_;
 
   // policies
   ::pressio::utils::InstanceOrReferenceWrapper<ResidualPolicyType> res_policy_;
   ::pressio::utils::InstanceOrReferenceWrapper<JacobianPolicyType> jac_policy_;
 
-  // stencilVelocities contains:
-  // bdf1,2: nothing
-  // cn:     f(y_n,t_n) and f(y_np1, t_np1)
-  mutable ImplicitStencilVelocitiesContainerDyn<ResidualType> stencil_velocities_;
+  // stencilRightHandSide contains:
+  // for bdf1,2: nothing
+  // for cn:  f(y_n,t_n) and f(y_np1, t_np1)
+  mutable ImplicitStencilRightHandSideDynamicContainer<ResidualType> stencil_rhs_;
 
 public:
   ImplicitStepperStandardImpl() = delete;
@@ -104,14 +104,33 @@ public:
   ImplicitStepperStandardImpl & operator=(ImplicitStepperStandardImpl && other) = delete;
   ~ImplicitStepperStandardImpl() = default;
 
-
   // *** BDF1 ***//
   template<
     class SystemType,
     bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
+    ::pressio::mpl::enable_if_t<
+      _using_default_policies &&
+      system_has_one_of_the_mass_matrix_api<SystemType>::value, int > = 0
     >
-  ImplicitStepperStandardImpl(::pressio::ode::BDF1, const SystemType & systemObj)
+  ImplicitStepperStandardImpl(::pressio::ode::BDF1,
+			      const SystemType & systemObj)
+    : name_(StepScheme::BDF1),
+      order_(1),
+      recovery_state_{systemObj.createState()},
+      stencil_states_{systemObj.createState()},
+      res_policy_{ResidualPolicyType{systemObj}},
+      jac_policy_{JacobianPolicyType{systemObj, res_policy_.get()}}
+  {}
+
+  template<
+    class SystemType,
+    bool _using_default_policies = using_default_policies,
+    ::pressio::mpl::enable_if_t<
+      _using_default_policies &&
+      !system_has_one_of_the_mass_matrix_api<SystemType>::value, int > = 0
+    >
+  ImplicitStepperStandardImpl(::pressio::ode::BDF1,
+			      const SystemType & systemObj)
     : name_(StepScheme::BDF1),
       order_(1),
       recovery_state_{systemObj.createState()},
@@ -127,8 +146,8 @@ public:
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
   ImplicitStepperStandardImpl(::pressio::ode::BDF1,
-	    _ResidualPolicyType && resPolicyObj,
-	    _JacobianPolicyType && jacPolicyObj)
+			      _ResidualPolicyType && resPolicyObj,
+			      _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::BDF1),
       order_(1),
       recovery_state_{resPolicyObj.createState()},
@@ -141,14 +160,35 @@ public:
   template<
     class SystemType,
     bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
+    ::pressio::mpl::enable_if_t<
+      _using_default_policies &&
+      system_has_one_of_the_mass_matrix_api<SystemType>::value, int > = 0
     >
-  ImplicitStepperStandardImpl(::pressio::ode::BDF2, const SystemType & systemObj)
+  ImplicitStepperStandardImpl(::pressio::ode::BDF2,
+			      const SystemType & systemObj)
     : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{systemObj.createState()},
       stencil_states_{systemObj.createState(),
-		      systemObj.createState()},
+                      systemObj.createState()},
+      res_policy_{ResidualPolicyType{systemObj}},
+      jac_policy_{JacobianPolicyType{systemObj, res_policy_.get()}}
+  {}
+
+  template<
+    class SystemType,
+    bool _using_default_policies = using_default_policies,
+    ::pressio::mpl::enable_if_t<
+      _using_default_policies &&
+      !system_has_one_of_the_mass_matrix_api<SystemType>::value, int > = 0
+    >
+  ImplicitStepperStandardImpl(::pressio::ode::BDF2,
+			      const SystemType & systemObj)
+    : name_(StepScheme::BDF2),
+      order_(2),
+      recovery_state_{systemObj.createState()},
+      stencil_states_{systemObj.createState(),
+                      systemObj.createState()},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}}
   {}
@@ -160,8 +200,8 @@ public:
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
   ImplicitStepperStandardImpl(::pressio::ode::BDF2,
-	    _ResidualPolicyType && resPolicyObj,
-	    _JacobianPolicyType && jacPolicyObj)
+			      _ResidualPolicyType && resPolicyObj,
+			      _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::BDF2),
       order_(2),
       recovery_state_{resPolicyObj.createState()},
@@ -175,17 +215,39 @@ public:
   template<
     class SystemType,
     bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<_using_default_policies, int > = 0
+    ::pressio::mpl::enable_if_t<
+      _using_default_policies &&
+      system_has_one_of_the_mass_matrix_api<SystemType>::value, int > = 0
     >
-  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson, const SystemType & systemObj)
+  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
+			      const SystemType & systemObj)
+    : name_(StepScheme::CrankNicolson),
+      order_(2),
+      recovery_state_{systemObj.createState()},
+      stencil_states_{systemObj.createState()},
+      res_policy_{ResidualPolicyType{systemObj}},
+      jac_policy_{JacobianPolicyType{systemObj, res_policy_.get()}},
+      stencil_rhs_{res_policy_.get().createResidual(),
+                   res_policy_.get().createResidual()}
+  {}
+
+  template<
+    class SystemType,
+    bool _using_default_policies = using_default_policies,
+    ::pressio::mpl::enable_if_t<
+      _using_default_policies &&
+      !system_has_one_of_the_mass_matrix_api<SystemType>::value, int > = 0
+    >
+  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
+			      const SystemType & systemObj)
     : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{systemObj.createState()},
       stencil_states_{systemObj.createState()},
       res_policy_{ResidualPolicyType{systemObj}},
       jac_policy_{JacobianPolicyType{systemObj}},
-      stencil_velocities_{res_policy_.get().create(),
-			  res_policy_.get().create()}
+      stencil_rhs_{res_policy_.get().createResidual(),
+                   res_policy_.get().createResidual()}
   {}
 
   template<
@@ -195,16 +257,16 @@ public:
     ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
     >
   ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
-	    _ResidualPolicyType && resPolicyObj,
-	    _JacobianPolicyType && jacPolicyObj)
+			      _ResidualPolicyType && resPolicyObj,
+			      _JacobianPolicyType && jacPolicyObj)
     : name_(StepScheme::CrankNicolson),
       order_(2),
       recovery_state_{resPolicyObj.createState()},
       stencil_states_{resPolicyObj.createState()},
       res_policy_{resPolicyObj},
       jac_policy_{jacPolicyObj},
-      stencil_velocities_{res_policy_.get().create(),
-			  res_policy_.get().create()}
+      stencil_rhs_{res_policy_.get().createResidual(),
+                   res_policy_.get().createResidual()}
   {}
 
 public:
@@ -216,7 +278,7 @@ public:
   void operator()(StateType & odeState,
 		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
 		  ::pressio::ode::StepCount stepNumber,
-		  ::pressio::ode::StepSize<independent_variable_type> stepSize,
+		  const ::pressio::ode::StepSize<independent_variable_type> & stepSize,
 		  SolverType & solver,
 		  Args && ...args)
   {
@@ -249,28 +311,35 @@ public:
   }
 
   ResidualType createResidual() const{
-    return res_policy_.get().create();
+    return res_policy_.get().createResidual();
   }
 
   JacobianType createJacobian() const{
-    return jac_policy_.get().create();
+    return jac_policy_.get().createJacobian();
   }
 
   void residual(const StateType & odeState, ResidualType & R) const
   {
+
     res_policy_.get()(name_, odeState, stencil_states_,
-		      stencil_velocities_, t_np1_, dt_,
-		      step_number_, R);
+		      stencil_rhs_,
+		      ::pressio::ode::StepEndAt<IndVarType>(t_np1_),
+		      ::pressio::ode::StepCount(step_number_),
+		      ::pressio::ode::StepSize<IndVarType>(dt_),
+		      R);
   }
 
   void jacobian(const StateType & odeState, JacobianType & J) const
   {
     jac_policy_.get()(name_, odeState, stencil_states_,
-		      t_np1_, dt_, step_number_, J);
+		      ::pressio::ode::StepEndAt<IndVarType>(t_np1_),
+		      ::pressio::ode::StepCount(step_number_),
+		      ::pressio::ode::StepSize<IndVarType>(dt_),
+		      J);
   }
 
 private:
-  template<typename solver_type, typename ...Args>
+  template<class solver_type, class ...Args>
   void doStepImpl(::pressio::ode::BDF1,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
@@ -281,13 +350,14 @@ private:
   {
 
     /*
-      upon entering this, we are at time step = stepNumber.
+      here, we are at step = stepNumber.
       The current step starts at time = currentTime and
-      need to use timestep size = dt.
+      we need to use timestep size = dt.
+
+      bdf1 predicts next state y_n+1 by solving:
+          R = y_n+1 - y_n - dt*f(t_n+1, y_n+1) = 0
       predict/compute the solution at the next step: stepNumber+1
       and store that into odeState.
-
-      for bdf1, this is done by solving:  y_n+1 = y_n + dt*f(t_n+1, y_n+1)
      */
 
     dt_ = dt;
@@ -297,9 +367,6 @@ private:
     // copy current solution into y_n
     auto & odeState_n = stencil_states_(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeState);
-
-    // // if provided, callback to provide a guess for the odeState
-    // guesserCb(stepNumber, t_np1_, odeState);
 
     try{
       solver.solve(*this, odeState, std::forward<Args>(args)...);
@@ -316,7 +383,7 @@ private:
     }
   }
 
-  template<typename solver_type, typename ...Args>
+  template<class solver_type, class ...Args>
   void doStepImpl(::pressio::ode::BDF2,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
@@ -325,20 +392,6 @@ private:
 		  solver_type & solver,
 		  Args&& ...args)
   {
-
-    // static_assert(::pressio::ode::legitimate_solver_for_implicit_stepper<
-    //   solver_type, decltype(*this), state_type>::value,
-    //   "Invalid solver for BDF2 stepper");
-
-    /*
-      upon entering this, we are at time step = stepNumber.
-      The current step starts at time = currentTime and
-      need to use timestep size = dt.
-      predict/compute the solution at the next step: stepNumber+1
-      and store that into odeState.
-
-      for bdf1, this is done by solving:  y_n+1 = y_n + dt*f(t_n+1, y_n+1)
-     */
 
     dt_ = dt;
     t_np1_ = currentTime + dt;
@@ -354,7 +407,7 @@ private:
 			    res_policy_.get(), jac_policy_.get());
 
 	// step ==1 means that we are going from y_0 to y_1
-	// stencil_states_(0) now holds y_0
+	// copy y_0 into stencil_states_(0)
 	::pressio::ops::deep_copy(stencil_states_(ode::n()), odeState);
 	::pressio::ops::deep_copy(stencil_states_(ode::nMinusOne()), odeState);
 	auxStepper(odeState, StepStartAt<independent_variable_type>(currentTime),
@@ -391,7 +444,6 @@ private:
       ::pressio::ops::deep_copy(odeState_n, odeState);
 
       try{
-	//guesserCb(stepNumber, t_np1_, odeState);
 	solver.solve(*this, odeState, std::forward<Args>(args)...);
       }
       catch (::pressio::eh::NonlinearSolveFailure const & e)
@@ -406,7 +458,7 @@ private:
     }
   }
 
-  template<typename solver_type, typename ...Args>
+  template<class solver_type, class ...Args>
   void doStepImpl(::pressio::ode::CrankNicolson,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
@@ -417,13 +469,6 @@ private:
   {
 
     /*
-      upon entering this, we are at time step = stepNumber.
-      The current step starts at time = currentTime and
-      need to use timestep size = dt.
-      predict/compute the solution at the next step: stepNumber+1
-      and store that into odeState.
-
-      for CN, this is done by solving:
       y_n+1 = y_n + 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
     */
 
@@ -434,9 +479,6 @@ private:
     // current solution becomes y_n
     auto & odeState_n = stencil_states_(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeState);
-
-    // // if provided, callback to provide a guess for the odeState
-    // guesserCb(stepNumber, t_np1_, odeState);
 
     try{
       solver.solve(*this, odeState, std::forward<Args>(args)...);

@@ -52,6 +52,7 @@
 #include "./mpl.hpp"
 #include "./utils.hpp"
 #include "./type_traits.hpp"
+#include "./concepts.hpp"
 #include "./ops.hpp"
 #include "./solvers.hpp"
 

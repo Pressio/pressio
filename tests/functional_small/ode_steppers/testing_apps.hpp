@@ -4,7 +4,7 @@
 
 namespace pressio{ namespace ode{ namespace testing{
 
-struct refAppEigen
+struct AppEigenA
 {
   using independent_variable_type = double;
   using state_type = Eigen::VectorXd;
@@ -22,7 +22,9 @@ struct refAppEigen
     return ret;
   };
 
-  void rightHandSide(const state_type & y, independent_variable_type evalt, right_hand_side_type & rhs) const
+  void rightHandSide(const state_type & y,
+		     independent_variable_type evalt,
+		     right_hand_side_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){
@@ -32,7 +34,8 @@ struct refAppEigen
 };
 //************************************************
 
-struct refAppForImpEigen
+template<class IndVarType>
+struct AppEigenBImpl
 {
 
   /*
@@ -53,7 +56,7 @@ struct refAppForImpEigen
 	  den = 1 + (20/3) * dt
           y_n = num/den
    */
-  using independent_variable_type = double;
+  using independent_variable_type = IndVarType;
   using state_type    = Eigen::VectorXd;
   using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
@@ -64,7 +67,7 @@ struct refAppForImpEigen
   state_type y_nm2;
 
 public:
-  refAppForImpEigen(){
+  AppEigenBImpl(){
     y.resize(3);
     y << 1., 2., 3.;
     y0_ = y;
@@ -152,13 +155,14 @@ public:
     k4 << -0.25, -0.5, -0.75;
     y += (1./6.) * (k1 + 2.*k2 + 2.*k3 + k4);
   };
+};
 
+using AppEigenB = AppEigenBImpl<double>;
 
-};//end app refAppForImpEigen
 //************************************************
 //************************************************
 
-struct refAppForArbitraryImpl
+struct AppEigenC
 {
   using scalar_type   = double;
   using state_type    = Eigen::VectorXd;

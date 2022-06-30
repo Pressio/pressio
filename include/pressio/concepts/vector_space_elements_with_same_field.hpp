@@ -49,22 +49,43 @@
 #ifndef PRESSIO_CONCEPTS_VECTOR_SPACE_ELEMENTS_WITH_SAME_FIELD_HPP_
 #define PRESSIO_CONCEPTS_VECTOR_SPACE_ELEMENTS_WITH_SAME_FIELD_HPP_
 
-namespace pressio{
+namespace pressio{ namespace impl{
 
-template<typename T1, typename T2, typename enable = void>
-struct VectorSpaceElementsWithSameField : std::false_type{};
+template<class, class ...Args>
+struct VectorSpaceElementsWithSameField;
 
-template<typename T1, typename T2>
+template<class T>
+struct VectorSpaceElementsWithSameField<void, T>{
+  static constexpr auto value = true;
+};
+
+template<class T1, class T2>
 struct VectorSpaceElementsWithSameField<
-  T1, T2,
   ::pressio::mpl::enable_if_t<
-    ::pressio::VectorSpaceElement<T1>::value
+       ::pressio::VectorSpaceElement<T1>::value
     && ::pressio::VectorSpaceElement<T2>::value
-    && std::is_same<
-        typename pressio::Traits<T1>::scalar_type, 
-        typename pressio::Traits<T2>::scalar_type>::value
-    >
-  > : std::true_type{};
+    >, T1, T2
+  >
+{
+  static constexpr auto value = std::is_same<
+    typename pressio::Traits<T1>::scalar_type,
+    typename pressio::Traits<T2>::scalar_type>::value;
+};
+
+template <class T1, class T2, class T3, class ... rest>
+struct VectorSpaceElementsWithSameField<
+  void, T1, T2, T3, rest...>
+{
+  static constexpr auto value =
+    VectorSpaceElementsWithSameField<void, T1, T2>::value and
+    VectorSpaceElementsWithSameField<void, T2, T3>::value and
+    VectorSpaceElementsWithSameField<void, T3, rest...>::value;
+};
+
+}//end impl
+
+template <class ...Args>
+using VectorSpaceElementsWithSameField = impl::VectorSpaceElementsWithSameField<void, Args...>;
 
 } // namespace pressio
-#endif 
+#endif

@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 
-using ScalarType = double;
-using VectorType = std::vector<ScalarType>;
+#include "custom_types_and_ops_for_explicit.hpp"
+#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
 
 struct MyAppForAb2
 {
@@ -29,10 +30,6 @@ public:
     return R;
   };
 };
-
-#include "custom_types_ops.hpp"
-#include "pressio/ode_advancers.hpp"
-#include "pressio/ode_steppers_explicit.hpp"
 
 struct CollectorTestAb2
 {
@@ -95,7 +92,7 @@ TEST(ode, explicit_ab2_custom_types)
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj);
+  auto stepperObj = ode::create_ab2_stepper(appObj);
   ScalarType dt = 2.;
   CollectorTestAb2 C;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(3), C);

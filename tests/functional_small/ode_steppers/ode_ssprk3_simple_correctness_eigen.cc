@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include "pressio/ode_steppers_explicit.hpp"
 #include "pressio/ode_advancers.hpp"
-#include "testing_apps.hpp"
 
 struct AppForSSPRK3
 {
@@ -37,7 +36,7 @@ TEST(ode_explicit_steppers, ssprk3)
   app_t appObj;
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
-  auto stepperObj = ode::create_ssp_runge_kutta3_stepper(appObj);
+  auto stepperObj = ode::create_ssprk3_stepper(appObj);
   double dt = 2.;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, pressio::ode::StepCount(1));
   EXPECT_DOUBLE_EQ( y(0), 29./3.);

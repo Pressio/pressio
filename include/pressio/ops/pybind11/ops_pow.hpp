@@ -82,9 +82,6 @@ pow(T1 & y,
     throw std::runtime_error("pow: only allowed for rank-1");
   }
 
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
 
   using ord_t = typename ::pressio::Traits<T1>::size_type;
   assert(extent(x,0) == extent(y,0));
@@ -107,9 +104,6 @@ abs_pow(T1 & y,
     throw std::runtime_error("pow: only allowed for rank-1");
   }
 
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   using ord_t = typename ::pressio::Traits<T1>::size_type;
 
@@ -140,9 +134,6 @@ abs_pow(T1 & y,
     throw std::runtime_error("pow: only allowed for rank-1");
   }
 
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   using ord_t = typename ::pressio::Traits<T1>::size_type;
 

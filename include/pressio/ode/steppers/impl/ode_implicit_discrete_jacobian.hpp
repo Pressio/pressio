@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_discrete_time_jacobian.hpp
+// ode_implicit_discrete_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,60 +46,154 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
 /*
   BDF1: J(y_n+1) = I - dt*df_n+1/dy_n+1
   on input jac contains  df_n+1/dy_n+1
-  on output, jac contains the time-discrete jacobian
+  on output, jac contains the discrete jacobian
 */
-template <typename JacobianType, typename ScalarType>
-void discrete_time_jacobian(JacobianType & jac,
-                            const ScalarType & dt,
-                            ::pressio::ode::BDF1)
+template <class JacobianType, class StepSizeType>
+mpl::enable_if_t<
+  std::is_convertible<
+    StepSizeType, typename Traits<JacobianType>::scalar_type
+    >::value
+  >
+discrete_jacobian(::pressio::ode::BDF1,
+		  JacobianType & jac,
+		  const StepSizeType & dt)
 {
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
-  const auto cf   = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
+
+  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
+  constexpr sc_t cnp1   = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
+  const sc_t cf   = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::add_to_diagonal(jac, cnp1);
+}
+
+/*
+  BDF1 WITH MM: J(y_n+1) = M_n+1 - dt*df_n+1/dy_n+1
+  on input jac contains  df_n+1/dy_n+1
+  on output, jac contains the discrete jacobian
+*/
+template <class JacobianType, class MassMatrixType, class StepSizeType>
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<JacobianType>::scalar_type
+    >::value
+  >
+discrete_jacobian(::pressio::ode::BDF1,
+		  JacobianType & jac,
+		  const MassMatrixType & M_np1,
+		  const StepSizeType & dt)
+{
+
+  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
+  constexpr sc_t cnp1   = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
+  const sc_t cf   = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
+  ::pressio::ops::update(jac, cf, M_np1, cnp1);
 }
 
 /*
   BDF2: J(y_n+1) = I - (2/3)*dt*df_n+1/dy_n+1
   - on input jac contains  df_n+1/dy_n+1
-  - on output, jac contains the time-discrete jacobian
+  - on output, jac contains the discrete jacobian
 */
-template <typename JacobianType, typename ScalarType>
-void discrete_time_jacobian(JacobianType & jac,
-			    const ScalarType & dt,
-			    ::pressio::ode::BDF2)
+template <class JacobianType, class StepSizeType>
+mpl::enable_if_t<
+  std::is_convertible<
+    StepSizeType, typename Traits<JacobianType>::scalar_type
+    >::value
+  >
+discrete_jacobian(::pressio::ode::BDF2,
+		  JacobianType & jac,
+		  const StepSizeType & dt)
 {
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;
-  const auto cf   = ::pressio::ode::constants::bdf2<ScalarType>::c_f_ * dt;
-  using namespace ::pressio::ode::constants;
+
+  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
+  constexpr sc_t cnp1   = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
+  const sc_t cf   = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
 /*
+  BDF2 WITH MM: J(y_n+1) = M_n+1 - (2/3)*dt*df_n+1/dy_n+1
+  - on input jac contains  df_n+1/dy_n+1
+  - on output, jac contains the discrete jacobian
+*/
+template <class JacobianType, class MassMatrixType, class StepSizeType>
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<JacobianType>::scalar_type
+    >::value
+  >
+discrete_jacobian(::pressio::ode::BDF2,
+		  JacobianType & jac,
+		  const MassMatrixType & M_np1,
+		  const StepSizeType & dt)
+{
+
+  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
+  constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
+  constexpr sc_t cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
+  const sc_t cf   = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
+  ::pressio::ops::update(jac, cf, M_np1, cnp1);
+}
+
+/*
   CRANK NICOLSON: J(y_n+1) = I - 0.5*dt*df_n+1/dy_n+1
   - on input jac contains  df_n+1/dy_n+1
-  - on output, jac contains the time-discrete jacobian
+  - on output, jac contains the discrete jacobian
 */
-template <typename JacobianType, typename ScalarType>
-void discrete_time_jacobian(JacobianType & jac,
-			    const ScalarType & dt,
-			    ::pressio::ode::CrankNicolson)
+template <class JacobianType, class StepSizeType>
+mpl::enable_if_t<
+  std::is_convertible<
+    StepSizeType, typename Traits<JacobianType>::scalar_type
+    >::value
+  >
+discrete_jacobian(::pressio::ode::CrankNicolson,
+		  JacobianType & jac,
+		  const StepSizeType & dt)
 {
-  using cnst = ::pressio::ode::constants::cranknicolson<ScalarType>;
-  constexpr auto cnp1  = cnst::c_np1_;
-  const auto cf = cnst::c_fnp1_ * dt;
+
+  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
+  using cnst = ::pressio::ode::constants::cranknicolson<sc_t>;
+  constexpr sc_t cnp1  = cnst::c_np1_;
+  const sc_t cf = cnst::c_fnp1_ * dt;
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
+/*
+  CRANK NICOLSON WITH MM: J(y_n+1) = M_n+1 - 0.5*dt*df_n+1/dy_n+1
+  - on input jac contains  df_n+1/dy_n+1
+  - on output, jac contains the discrete jacobian
+*/
+template <class JacobianType, class MassMatrixType, class StepSizeType>
+mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
+  && std::is_convertible<
+    StepSizeType, typename Traits<JacobianType>::scalar_type
+    >::value
+  >
+discrete_jacobian(::pressio::ode::CrankNicolson,
+		  JacobianType & jac,
+		  const MassMatrixType & M_np1,
+		  const StepSizeType & dt)
+{
+
+  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
+  using cnst = ::pressio::ode::constants::cranknicolson<sc_t>;
+  constexpr sc_t cnp1  = cnst::c_np1_;
+  const sc_t cf = cnst::c_fnp1_ * dt;
+  ::pressio::ops::update(jac, cf, M_np1, cnp1);
+}
+
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_

@@ -51,21 +51,21 @@
 
 namespace pressio{ namespace ode{
 
-// template<class T>
-// struct IndVarValue{
-//   using value_type = T;
-//   value_type value_{};
-//   IndVarValue() = default;
-//   constexpr explicit IndVarValue(value_type valueIn) : value_(std::move(valueIn)){}
-//   constexpr value_type get() const { return value_; }
-// };
-
 template<class T>
 struct StepStartAt{
   using value_type = T;
   value_type value_{};
   StepStartAt() = default;
   constexpr explicit StepStartAt(value_type valueIn) : value_(std::move(valueIn)){}
+  constexpr value_type get() const { return value_; }
+};
+
+template<class T>
+struct StepEndAt{
+  using value_type = T;
+  value_type value_{};
+  StepEndAt() = default;
+  constexpr explicit StepEndAt(value_type valueIn) : value_(std::move(valueIn)){}
   constexpr value_type get() const { return value_; }
 };
 

@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
-using ScalarType = double;
-using VectorType = std::vector<ScalarType>;
+#include "custom_types_and_ops_for_explicit.hpp"
+#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
 
-namespace
-{
 struct MyApp{
   using independent_variable_type   = ScalarType;
   using state_type    = VectorType;
@@ -27,11 +26,6 @@ public:
     return R;
   };
 };
-} // end namespace
-
-#include "custom_types_ops.hpp"
-#include "pressio/ode_advancers.hpp"
-#include "pressio/ode_steppers_explicit.hpp"
 
 TEST(ode, explicit_rk4_custom_types)
 {
@@ -42,7 +36,7 @@ TEST(ode, explicit_rk4_custom_types)
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
-  auto stepperObj = ode::create_runge_kutta4_stepper(appObj);
+  auto stepperObj = ode::create_rk4_stepper(appObj);
 
   ScalarType dt = 0.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, ::pressio::ode::StepCount(1));

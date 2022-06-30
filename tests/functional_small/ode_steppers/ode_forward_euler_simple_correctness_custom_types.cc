@@ -1,11 +1,10 @@
 
 #include <gtest/gtest.h>
 
-using ScalarType = double;
-using VectorType = std::vector<ScalarType>;
+#include "custom_types_and_ops_for_explicit.hpp"
+#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
 
-namespace
-{
 struct MyApp{
   using independent_variable_type   = ScalarType;
   using state_type    = VectorType;
@@ -28,11 +27,6 @@ public:
     return R;
   };
 };
-} // end namespace
-
-#include "custom_types_ops.hpp"
-#include "pressio/ode_advancers.hpp"
-#include "pressio/ode_steppers_explicit.hpp"
 
 TEST(ode, explicit_euler_custom_types)
 {

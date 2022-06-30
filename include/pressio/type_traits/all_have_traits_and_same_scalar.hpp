@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_state.hpp
+// are_scalar_compatible.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,46 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_CONSTRAINTS_ODE_VARIOUS_HPP_
-#define ODE_STEPPERS_CONSTRAINTS_ODE_VARIOUS_HPP_
+#ifndef TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
+#define TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace impl{
 
-template<typename T, typename enable = void>
-struct ImplicitState : std::false_type{};
+template <class, class ... Args>
+struct all_have_traits_and_same_scalar;
 
-template<typename T>
-struct ImplicitState<
-  T, mpl::enable_if_t<std::is_copy_constructible<T>::value>
-  > : std::true_type{};
+template <class T1>
+struct all_have_traits_and_same_scalar<void, T1>{
+  static constexpr auto value = true;
+};
 
-template<typename T, typename enable = void>
-struct ImplicitResidual : std::false_type{};
+template <class T1, class T2>
+struct all_have_traits_and_same_scalar<
+  mpl::enable_if_t< all_have_traits<T1, T2>::value >,
+  T1, T2
+  >
+{
+  static constexpr auto value = std::is_same<
+    typename ::pressio::Traits<T1>::scalar_type,
+    typename ::pressio::Traits<T2>::scalar_type
+    >::value;
+};
 
-template<typename T>
-struct ImplicitResidual<
-  T, mpl::enable_if_t< std::is_copy_constructible<T>::value >
-  > : std::true_type{};
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits_and_same_scalar<
+  mpl::enable_if_t< all_have_traits<T1, T2, T3, rest...>::value >,
+  T1, T2, T3, rest...>
+{
+  static constexpr auto value =
+    all_have_traits_and_same_scalar<void, T1, T2>::value and
+    all_have_traits_and_same_scalar<void, T2, T3>::value and
+    all_have_traits_and_same_scalar<void, T3, rest...>::value;
+};
 
-template<typename T, typename enable = void>
-struct ImplicitJacobian : std::false_type{};
+} //end namespace impl
 
-template<typename T>
-struct ImplicitJacobian<
-  T, mpl::enable_if_t< std::is_copy_constructible<T>::value >
- > : std::true_type{};
+template <class ...Args>
+using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
 
-template<typename T, typename enable = void>
-struct ExplicitState : std::false_type{};
-
-template<typename T>
-struct ExplicitState<
-  T, mpl::enable_if_t<std::is_copy_constructible<T>::value>
-  > : std::true_type{};
-
-template<typename T>
-struct ExplicitRightHandSide : ExplicitState<T>{};
-
-}} // namespace pressio::ode
-#endif
+} // namespace
+#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_

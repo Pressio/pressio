@@ -156,4 +156,3 @@ TEST(ops_eigen, dense_matrix_T_self_prod)
 {
   OPS_EIGEN_DENSE_MAT_T_SELF_PROD;
 }
-

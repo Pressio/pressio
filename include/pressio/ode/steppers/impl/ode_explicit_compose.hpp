@@ -51,20 +51,32 @@
 
 #include "ode_explicit_stepper.hpp"
 #include "ode_explicit_stepper_with_mass_matrix.hpp"
+#include "ode_trivial_mass_matrix.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
 template<class SystemType, class = void>
-struct ExplicitStepperWithOrWithoutMassMatrix{
+struct ExplicitStepperImplClass{
   template<class ...Args> using type = ExplicitStepperNoMassMatrixImpl<Args...>;
 };
 
 template<class SystemType>
-struct ExplicitStepperWithOrWithoutMassMatrix<
-  SystemType, mpl::enable_if_t<system_has_complete_mass_matrix_api<SystemType>::value>
+struct ExplicitStepperImplClass<
+  SystemType, mpl::enable_if_t<system_has_constant_mass_matrix_api<SystemType>::value>
   >
 {
   template<class ...Args> using type = ExplicitStepperWithMassMatrixImpl<
+    true /*signal that we have mass matrix but it is constant */,
+    typename SystemType::mass_matrix_type, Args...>;
+};
+
+template<class SystemType>
+struct ExplicitStepperImplClass<
+  SystemType, mpl::enable_if_t<system_has_potentially_varying_mass_matrix_api<SystemType>::value>
+  >
+{
+  template<class ...Args> using type = ExplicitStepperWithMassMatrixImpl<
+    false /*signal that we have mass matrix but it is NOT const */,
     typename SystemType::mass_matrix_type, Args...>;
 };
 
@@ -80,24 +92,24 @@ struct ExplicitCompose
   // Ideally we should use concepts for better errors. We cannot do that yet.
 
   static_assert
-  (::pressio::ode::SemiDiscreteSystem<sys_type>::value,
-   "To create an explicit stepper your system class MUST meet at least the SemiDiscreteSystem concept");
+  (   ::pressio::ode::SemiDiscreteSystemWithRhs<sys_type>::value
+   || ::pressio::ode::SemiDiscreteSystemWithRhsAndMassMatrix<sys_type>::value
+   || ::pressio::ode::SemiDiscreteSystemWithRhsAndJacobian<sys_type>::value
+   || ::pressio::ode::SemiDiscreteSystemWithRhsAndConstantMassMatrix<sys_type>::value
+   || ::pressio::ode::CompleteSemiDiscreteSystem<sys_type>::value
+   || ::pressio::ode::CompleteSemiDiscreteSystemWithConstantMassMatrix<sys_type>::value,
+   "explicit stepper: your system class does not meet any valid concept");
 
   // if we get here, it means the above static assertion passed so
   // the system meets at least the right_hand_side API
   using state_type = typename sys_type::state_type;
-  static_assert(::pressio::ode::ExplicitState<state_type>::value,
-		"Invalid state type for explicit stepper");
-
   using right_hand_side_type = typename sys_type::right_hand_side_type;
-  static_assert(::pressio::ode::ExplicitRightHandSide<right_hand_side_type>::value,
-		"Invalid right_hand_side type for explicit time stepping");
 
   // it is very important to use "SystemType" as template arg
   // because that it the right type carrying how we store the system
   // since SystemType comes from the deduction below
   using ind_var_type = typename sys_type::independent_variable_type;
-  using type = typename ExplicitStepperWithOrWithoutMassMatrix<sys_type>::template type<
+  using type = typename ExplicitStepperImplClass<sys_type>::template type<
     state_type, ind_var_type, SystemType, right_hand_side_type>;
 };
 

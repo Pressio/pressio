@@ -64,20 +64,21 @@ op(A) = A or A^T
 
 namespace impl{
 
-template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
   ::pressio::is_vector_tpetra<y_type>::value
   >
-_product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
+_product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 				 const A_type & A,
 				 const x_type & x,
-				 const scalar_type beta,
+				 const beta_t & beta,
 				 y_type & y)
 {
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x,0)));
 
-  using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
+  using x_sc_t = typename ::pressio::Traits<x_type>::scalar_type;
+  using kokkos_view_t = Kokkos::View<const x_sc_t*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
   kokkos_view_t xview(x.data(), ::pressio::ops::extent(x,0));
 
@@ -92,15 +93,15 @@ _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 }
 
 // when the operand is a kokkos wrapper we use kokkos functionalities directly
-template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
   ::pressio::is_vector_tpetra<y_type>::value
   >
-_product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
+_product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
 					const A_type & A,
 					const x_type & x,
-					const scalar_type beta,
+					const beta_t & beta,
 					y_type & y)
 {
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
@@ -131,22 +132,20 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
 // A = tpetra::MultiVector
 // y = tpetra vector
 // -------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value
-  and ::pressio::is_vector_tpetra<y_type>::value
-  and ::pressio::is_dense_vector_teuchos<x_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<y_type>::value
+  && ::pressio::is_dense_vector_teuchos<x_type>::value
   >
 product(::pressio::nontranspose mode,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
 
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
@@ -158,22 +157,21 @@ product(::pressio::nontranspose mode,
 // A = tpetra::MultiVector
 // y = tpetra vector
 // -------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_vector_tpetra<y_type>::value and
-  ::pressio::is_vector_kokkos<x_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<y_type>::value
+  && ::pressio::is_vector_kokkos<x_type>::value
   >
 product(::pressio::nontranspose,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
+
   assert(x.span_is_contiguous());
 
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
@@ -187,22 +185,20 @@ product(::pressio::nontranspose,
 // y = tpetra vector
 // -------------------------------
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value
-  and ::pressio::is_vector_tpetra<y_type>::value
-  and ::pressio::is_vector_eigen<x_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<y_type>::value
+  && ::pressio::is_vector_eigen<x_type>::value
   >
 product(::pressio::nontranspose mode,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
 
   //makesure x is contiguous
   assert(x.innerSize() == x.outerStride());
@@ -216,17 +212,18 @@ product(::pressio::nontranspose mode,
 // A = tpetra::MultiVector
 // y = Eigen vector
 // -------------------------------
-template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value
-  and ::pressio::is_vector_tpetra<x_type>::value
-  and ::pressio::is_vector_eigen<y_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<x_type>::value
+  && ::pressio::is_vector_eigen<y_type>::value
   >
 product(::pressio::transpose mode,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
   // // dot product of each vector in A with vecB
@@ -236,13 +233,9 @@ product(::pressio::transpose mode,
   //    So we have to extract each column vector
   //    from A and do dot product one a time
 
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
-
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(y,0)));
 
-  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = ::pressio::utils::Constants<beta_t>::zero();
   const auto numVecs = ::pressio::ops::extent(A, 1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
     {
@@ -254,7 +247,6 @@ product(::pressio::transpose mode,
 }
 #endif
 
-
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
@@ -262,22 +254,20 @@ product(::pressio::transpose mode,
 // A = tpetra::MultiVector
 // y = Kokkos vector
 // -------------------------------
-template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_vector_tpetra<x_type>::value and
-  ::pressio::is_vector_kokkos<y_type>::value
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<x_type>::value
+  && ::pressio::is_vector_kokkos<y_type>::value
   >
 product(::pressio::transpose mode,
-	const scalar_type alpha,
+	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t & beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Tpetra MV dot V: operands do not have matching scalar type");
 
   static_assert
     (std::is_same<
@@ -327,9 +317,6 @@ product(::pressio::transpose mode,
 // 	y_type & y)
 // {
 //   static_assert
-//     (are_scalar_compatible<A_type, x_type, y_type>::value,
-//      "Types are not scalar compatible");
-//   static_assert
 //     (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
 //      "Scalar compatibility broken");
 
@@ -368,9 +355,6 @@ product(::pressio::transpose mode,
 // 	const scalar_type beta,
 // 	y_type & y)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-//      "Types are not scalar compatible");
 //   static_assert
 //     (mpl::is_same<
 //      scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,

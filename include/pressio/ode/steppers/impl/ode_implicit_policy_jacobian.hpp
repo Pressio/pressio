@@ -93,28 +93,25 @@ public:
     return JJ;
   }
 
-  template <
-    class StencilStatesContainerType,
-    class StepType
-    >
+  template <class StencilStatesContainerType>
   void operator()(StepScheme name,
 		  const StateType & odeCurrentState,
 		  const StencilStatesContainerType & stencilStates,
-		  const IndVarType & evalTime,
-		  const IndVarType & dt,
-		  const StepType &  step,
+		  const ::pressio::ode::StepEndAt<IndVarType> & evalTime,
+		  ::pressio::ode::StepCount step,
+		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  JacobianType & J) const
   {
-    systemObj_.get().jacobian(odeCurrentState, evalTime, J);
+    systemObj_.get().jacobian(odeCurrentState, evalTime.get(), J);
 
     if (name == StepScheme::BDF1){
-      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF1());
+      ::pressio::ode::impl::discrete_jacobian(ode::BDF1(), J, dt.get());
     }
     else if (name == StepScheme::BDF2){
-      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF2());
+      ::pressio::ode::impl::discrete_jacobian(ode::BDF2(), J, dt.get());
     }
     else if (name == StepScheme::CrankNicolson){
-      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::CrankNicolson());
+      ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), J, dt.get());
     }
   }
 

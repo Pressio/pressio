@@ -77,11 +77,11 @@ struct ImplicitResidualPolicy<
        (
 	std::declval<StepScheme const &>(),
 	std::declval<typename T::state_type const &>(),
-	std::declval<ImplicitStencilStatesContainerDyn<typename T::state_type> const & >(),
-	std::declval<ImplicitStencilVelocitiesContainerDyn<typename T::residual_type> & >(),
-	std::declval<typename T::independent_variable_type const &>(),
-	std::declval<typename T::independent_variable_type const &>(),
-	std::declval<int>(),
+	std::declval<ImplicitStencilStatesDynamicContainer<typename T::state_type> const & >(),
+	std::declval<ImplicitStencilRightHandSideDynamicContainer<typename T::residual_type> & >(),
+	std::declval< ::pressio::ode::StepEndAt<typename T::independent_variable_type> >(),
+	std::declval< ::pressio::ode::StepCount >(),
+	std::declval< ::pressio::ode::StepSize<typename T::independent_variable_type> >(),
 	std::declval<typename T::residual_type &>()
 	)
        )

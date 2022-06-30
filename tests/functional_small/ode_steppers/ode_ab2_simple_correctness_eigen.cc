@@ -90,7 +90,7 @@ TEST(ode_explicit_steppers, ab2_system_reference)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj);
+  auto stepperObj = ode::create_ab2_stepper(appObj);
 
   double dt = 2.;
   Collector C;
@@ -106,7 +106,7 @@ TEST(ode_explicit_steppers, ab2_custom_system_move)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(std::move(appObj));
+  auto stepperObj = ode::create_ab2_stepper(std::move(appObj));
   double dt = 2.;
   Collector C;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, pressio::ode::StepCount(3), C);

@@ -72,8 +72,6 @@ product(::pressio::nontranspose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
 
   assert(A.ndim() == 2);
   assert(B.ndim() == 2);
@@ -109,8 +107,6 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
 
   assert(A.ndim() == 2);
   assert(B.ndim() == 2);
@@ -149,9 +145,6 @@ product(::pressio::transpose modeA,
 
   assert(A.ndim() == 2);
   assert(C.ndim() == 2);
-
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know

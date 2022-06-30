@@ -46,117 +46,154 @@
 //@HEADER
 */
 
-
 #ifndef ODE_STEPPERS_CONSTRAINTS_ODE_SYSTEM_API_HPP_
 #define ODE_STEPPERS_CONSTRAINTS_ODE_SYSTEM_API_HPP_
 
 namespace pressio{ namespace ode{
 
+//
+// rhs only
+//
 template<class T, class enable = void>
-struct system_has_complete_mass_matrix_api : std::false_type{};
+struct SemiDiscreteSystemWithRhs : std::false_type{};
 
 template<class T>
-struct system_has_complete_mass_matrix_api<
+struct SemiDiscreteSystemWithRhs<
   T,
   mpl::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
-    and ::pressio::has_state_typedef<T>::value
-    and ::pressio::has_mass_matrix_typedef<T>::value
-    and ::pressio::ode::has_const_create_mass_matrix_method_return_result<
-      T, typename T::mass_matrix_type >::value
-    and ::pressio::ode::has_const_mass_matrix_method_accept_state_indvar_result_return_void<
-      T, typename T::state_type, typename T::independent_variable_type,typename T::mass_matrix_type>::value
-   >
-  > : std::true_type{};
-
-
-//
-// (1) rhs only
-//
-template<class T, class enable = void>
-struct SemiDiscreteSystem : std::false_type{};
-
-template<class T>
-struct SemiDiscreteSystem<
-  T,
-  mpl::enable_if_t<
-    ::pressio::has_independent_variable_typedef<T>::value
-    and ::pressio::has_state_typedef<T>::value
-    and ::pressio::has_right_hand_side_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_right_hand_side_typedef<T>::value
     //
-    and ::pressio::ode::has_const_create_state_method_return_result<
+    && std::is_copy_constructible<typename T::state_type>::value
+    && std::is_copy_constructible<typename T::right_hand_side_type>::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+      typename T::state_type, typename T::right_hand_side_type
+      >::value
+    && std::is_convertible<
+      typename T::independent_variable_type,
+      typename ::pressio::Traits<typename T::state_type>::scalar_type
+      >::value
+    //
+    && ::pressio::ode::has_const_create_state_method_return_result<
       T, typename T::state_type >::value
-    //
-    // rhs
-    and ::pressio::ode::has_const_create_rhs_method_return_result<
+    && ::pressio::ode::has_const_create_rhs_method_return_result<
       T, typename T::right_hand_side_type >::value
-    and ::pressio::ode::has_const_rhs_method_accept_state_indvar_result_return_void<
+    && ::pressio::ode::has_const_rhs_method_accept_state_indvar_result_return_void<
       T, typename T::state_type,typename T::independent_variable_type,typename T::right_hand_side_type>::value
    >
   > : std::true_type{};
 
 //
-// (2) rhs and mass matrix
+// rhs, jacobian
 //
 template<class T, class enable = void>
-struct SemiDiscreteSystemWithMassMatrix : std::false_type{};
+struct SemiDiscreteSystemWithRhsAndJacobian : std::false_type{};
 
 template<class T>
-struct SemiDiscreteSystemWithMassMatrix<
+struct SemiDiscreteSystemWithRhsAndJacobian<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystem<T>::value
-    and ::pressio::has_mass_matrix_typedef<T>::value
-    //
-    // mass matrix
-    and ::pressio::ode::has_const_create_mass_matrix_method_return_result<
-      T, typename T::mass_matrix_type >::value
-    and ::pressio::ode::has_const_mass_matrix_method_accept_state_indvar_result_return_void<
-      T, typename T::state_type, typename T::independent_variable_type,typename T::mass_matrix_type>::value
-   >
-  > : std::true_type{};
-
-
-//
-// (3) rhs, jacobian
-//
-template<class T, class enable = void>
-struct SemiDiscreteSystemWithJacobian : std::false_type{};
-
-template<class T>
-struct SemiDiscreteSystemWithJacobian<
-  T,
-  mpl::enable_if_t<
-    SemiDiscreteSystem<T>::value
-    and ::pressio::has_jacobian_typedef<T>::value
+    SemiDiscreteSystemWithRhs<T>::value
+    && ::pressio::has_jacobian_typedef<T>::value
+    && std::is_copy_constructible<typename T::jacobian_type>::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+      typename T::state_type, typename T::jacobian_type
+      >::value
     //
     // jacobian methods
-    and ::pressio::ode::has_const_create_jacobian_method_return_result<
+    && ::pressio::ode::has_const_create_jacobian_method_return_result<
       T, typename T::jacobian_type >::value
-    and ::pressio::ode::has_const_jacobian_method_accept_state_indvar_result_return_void<
+    && ::pressio::ode::has_const_jacobian_method_accept_state_indvar_result_return_void<
       T, typename T::state_type, typename T::independent_variable_type, typename T::jacobian_type
       >::value
     >
   > : std::true_type{};
 
 //
-// (4) complete means it has rhs, jac, mass matrix
+// rhs and varying mass matrix
 //
 template<class T, class enable = void>
-struct SemiDiscreteSystemComplete : std::false_type{};
+struct SemiDiscreteSystemWithRhsAndMassMatrix : std::false_type{};
 
 template<class T>
-struct SemiDiscreteSystemComplete<
+struct SemiDiscreteSystemWithRhsAndMassMatrix<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystemWithJacobian<T>::value
-    and SemiDiscreteSystemWithMassMatrix<T>::value
-    >
+    SemiDiscreteSystemWithRhs<T>::value
+    && ::pressio::has_mass_matrix_typedef<T>::value
+    && std::is_copy_constructible<typename T::mass_matrix_type>::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+      typename T::state_type, typename T::mass_matrix_type
+      >::value
+    //
+    // mass matrix
+    && ::pressio::ode::has_const_create_mass_matrix_method_return_result<
+      T, typename T::mass_matrix_type >::value
+    && ::pressio::ode::has_const_mass_matrix_method_accept_state_indvar_result_return_void<
+      T, typename T::state_type, typename T::independent_variable_type,typename T::mass_matrix_type>::value
+   >
   > : std::true_type{};
 
 
 //
-// discrete
+// rhs and CONSTANT mass matrix
+//
+template<class T, class enable = void>
+struct SemiDiscreteSystemWithRhsAndConstantMassMatrix : std::false_type{};
+
+template<class T>
+struct SemiDiscreteSystemWithRhsAndConstantMassMatrix<
+  T,
+  mpl::enable_if_t<
+    SemiDiscreteSystemWithRhs<T>::value
+    && ::pressio::has_mass_matrix_typedef<T>::value
+    && std::is_copy_constructible<typename T::mass_matrix_type>::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+      typename T::state_type, typename T::mass_matrix_type
+      >::value
+    //
+    // mass matrix
+    && ::pressio::ode::has_const_create_mass_matrix_method_return_result<
+      T, typename T::mass_matrix_type >::value
+    && ::pressio::ode::has_const_mass_matrix_method_accept_result_return_void<
+      T, typename T::mass_matrix_type>::value
+   >
+  > : std::true_type{};
+
+
+//
+// rhs, jac, mass matrix
+//
+template<class T, class enable = void>
+struct CompleteSemiDiscreteSystem : std::false_type{};
+
+template<class T>
+struct CompleteSemiDiscreteSystem<
+  T,
+  mpl::enable_if_t<
+    SemiDiscreteSystemWithRhsAndJacobian<T>::value
+    && SemiDiscreteSystemWithRhsAndMassMatrix<T>::value
+    >
+  > : std::true_type{};
+
+//
+// rhs, jac, CONSTANT mass matrix
+//
+template<class T, class enable = void>
+struct CompleteSemiDiscreteSystemWithConstantMassMatrix : std::false_type{};
+
+template<class T>
+struct CompleteSemiDiscreteSystemWithConstantMassMatrix<
+  T,
+  mpl::enable_if_t<
+    SemiDiscreteSystemWithRhsAndJacobian<T>::value
+    && SemiDiscreteSystemWithRhsAndConstantMassMatrix<T>::value
+    >
+  > : std::true_type{};
+
+//
+// fully discrete
 //
 template<class T, int NumStates, class enable = void>
 struct FullyDiscreteSystemWithJacobian : std::false_type{};
@@ -165,25 +202,36 @@ template<class T, int NumStates>
 struct FullyDiscreteSystemWithJacobian<
   T, NumStates,
   mpl::enable_if_t<
-    ::pressio::has_independent_variable_typedef<T>::value
-    and ::pressio::has_state_typedef<T>::value
-    and ::pressio::has_discrete_residual_typedef<T>::value
-    and ::pressio::has_discrete_jacobian_typedef<T>::value
+       ::pressio::has_independent_variable_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_discrete_residual_typedef<T>::value
+    && ::pressio::has_discrete_jacobian_typedef<T>::value
     //
-    and ::pressio::ode::has_const_create_state_method_return_result<
+    && std::is_copy_constructible<typename T::discrete_residual_type>::value
+    && std::is_copy_constructible<typename T::discrete_jacobian_type>::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+	 typename T::state_type, typename T::discrete_residual_type, typename T::discrete_jacobian_type
+	 >::value
+    && std::is_convertible<
+	 typename T::independent_variable_type,
+	 typename ::pressio::Traits<typename T::state_type>::scalar_type
+	 >::value
+    //
+    // creation methods
+    && ::pressio::ode::has_const_create_state_method_return_result<
       T, typename T::state_type >::value
-    //
-    // time-discrete residual
-    and ::pressio::ode::has_const_create_discrete_residual_method_return_result<
+    && ::pressio::ode::has_const_create_discrete_residual_method_return_result<
       T, typename T::discrete_residual_type>::value
-    and ::pressio::ode::has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
+    && ::pressio::ode::has_const_create_discrete_jacobian_method_return_result<
+      T, typename T::discrete_jacobian_type>::value
+    //
+    // discrete residual
+    && ::pressio::ode::has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
       T, NumStates, int, typename T::independent_variable_type, typename T::state_type,
       typename T::discrete_residual_type>::value
     //
-    // time-discrete jacobian
-    and ::pressio::ode::has_const_create_discrete_jacobian_method_return_result<
-      T, typename T::discrete_jacobian_type>::value
-    and ::pressio::ode::has_const_discrete_jacobian_method_accept_step_indvar_dt_result_n_states_return_void<
+    // discrete jacobian
+    && ::pressio::ode::has_const_discrete_jacobian_method_accept_step_indvar_dt_result_n_states_return_void<
       T, NumStates, int, typename T::independent_variable_type, typename T::state_type,
       typename T::discrete_jacobian_type>::value
     >

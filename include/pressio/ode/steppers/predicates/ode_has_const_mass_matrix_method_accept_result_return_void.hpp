@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// are_scalar_compatible.hpp
+// ode_has_const_mass_matrix_method_accept_state_time_result_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,29 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
-#define TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
+#ifndef ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_MASS_MATRIX_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#define ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_MASS_MATRIX_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
 
-namespace pressio{
+namespace pressio{ namespace ode{
 
-template <typename ... Args>
-struct are_scalar_compatible;
+template <class T, class MassMatType, class = void>
+struct has_const_mass_matrix_method_accept_result_return_void
+  : std::false_type{};
 
-template <typename T1>
-struct are_scalar_compatible<T1>
-{
-  static constexpr auto value = true;
-};
+template <class T, class MassMatType>
+struct has_const_mass_matrix_method_accept_result_return_void<
+  T, MassMatType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>().massMatrix
+	       (
+		std::declval<MassMatType &>()
+		)
+	   )
+      >::value
+    >
+  > : std::true_type{};
 
-template <typename T1, typename T2>
-struct are_scalar_compatible<T1, T2>
-{
-  static constexpr auto value = std::is_same<
-    typename ::pressio::Traits<T1>::scalar_type,
-    typename ::pressio::Traits<T2>::scalar_type
-    >::value;
-};
-
-template <typename T1, typename T2, typename ... rest>
-struct are_scalar_compatible<T1, T2, rest...>
-{
-  static constexpr auto value =
-    are_scalar_compatible<T1, T2>::value and
-    are_scalar_compatible<T2, rest...>::value;
-};
-
-} // namespace 
-#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
+}} // namespace pressio::ode::predicates
+#endif  // ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_MASS_MATRIX_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_

@@ -82,7 +82,8 @@ void advance_n_steps_with_dt_policy(StepperType & stepper,
   observer(::pressio::ode::impl::stepZero,
 	   start_val, odeState);
 
-  ::pressio::ode::StepSize<IndVarType> dt{0};
+  // default construct
+  ::pressio::ode::StepSize<IndVarType> dt;
   step_t step = 1;
   PRESSIOLOG_DEBUG("impl: advance_n_steps_with_dt_policy");
   for( ; step <= numSteps.get(); ++step)
@@ -139,64 +140,20 @@ void advance_n_steps_with_fixed_dt(StepperType & stepper,
 				   Args && ... args)
 {
 
-  /* note that this function could be implemented
-     in terms of the advance_with_dt_policy by simply
-     passing a lambda that sets the dt to be same all the time.
-     However, we don't do that because knowing we
-     have a fixed dt, we can compute the time
-     at each step by doing time = dt*step, whcih is
-     better than just incrementing time for error accumulation.
-  */
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("time loop");
-#endif
+  const auto dtSetter =
+    [sz = step_size](pressio::ode::StepCount currStep,
+		     pressio::ode::StepStartAt<IndVarType> currTime,
+		     pressio::ode::StepSize<IndVarType> & dt){
+      dt = sz;
+    };
 
-  using step_t = typename ::pressio::ode::StepCount::value_type;
-
-  IndVarType time = start_val;
-  observer(::pressio::ode::impl::stepZero, time, odeState);
-
-  // we define "step" as follows:
-  // step1 goes from start_val -> t1 = start_val + dt
-  // step2 goes from t1         -> t2 = t1 + dt
-  // step3 goes from t2         -> t3 = t2 + dt
-
-  step_t step = 1;
-  PRESSIOLOG_DEBUG("impl: advance_n_steps_with_fixed_dt");
-  for( ; step <= numSteps.get(); ++step)
-    {
-      const auto stepWrap = ::pressio::ode::StepCount(step);
-      // this print says that we are doing step # = step
-      // which starts from t = time with a step size = step_size
-      print_step_and_current_time(step, time, step_size);
-
-      // before we do a step, call the guesser
-      // which is the trivial case is a noop
-      guesser(stepWrap, ::pressio::ode::StepStartAt<IndVarType>(time), odeState);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->start("time step");
-#endif
-      stepper(odeState,
-	      ::pressio::ode::StepStartAt<IndVarType>(time),
-	      stepWrap,
-	      ::pressio::ode::StepSize<IndVarType>(step_size),
-	      std::forward<Args>(args)...);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->stop("time step");
-#endif
-
-      time = start_val + static_cast<IndVarType>(step) * step_size;
-      observer(::pressio::ode::StepCount(step), time, odeState);
-    }
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("time loop");
-#endif
+  advance_n_steps_with_dt_policy(stepper, numSteps,
+				 start_val, odeState, dtSetter,
+				 std::forward<ObserverType>(observer),
+				 std::forward<GuesserType>(guesser),
+				 std::forward<Args>(args)...);
 }
-
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_N_STEPS_HPP_

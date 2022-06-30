@@ -147,22 +147,24 @@ class nMinusFour{};
 
 namespace pressio{ namespace ode{
 
-// static one
+// containers that are used by the implicit steppers
+
+// static
 template<typename T, std::size_t N>
-using ImplicitStencilVelocitiesContainerStatic
+using ImplicitStencilRightHandSideStaticContainer
   = impl::StencilDataContainerStaticImpl<T, N, nPlusOne /*stencil ends with n+1*/>;
 
 template<typename T, std::size_t N>
-using ImplicitStencilStatesContainerStatic
+using ImplicitStencilStatesStaticContainer
   = impl::StencilDataContainerStaticImpl<T, N, n /*stencils ends at n*/>;
 
 // dynamic
 template<typename T>
-using ImplicitStencilVelocitiesContainerDyn
+using ImplicitStencilRightHandSideDynamicContainer
   = impl::StencilDataContainerDynImpl<T, nPlusOne /*stencil ends with n+1*/>;
 
 template<typename T>
-using ImplicitStencilStatesContainerDyn
+using ImplicitStencilStatesDynamicContainer
   = impl::StencilDataContainerDynImpl<T, n /*stencils end at n*/>;
 
 }}//end namespace pressio::ode
@@ -188,12 +190,12 @@ using ImplicitStencilStatesContainerDyn
 #include "predicates/ode_has_const_rhs_method_accept_state_indvar_result_return_void.hpp"
 #include "predicates/ode_has_const_jacobian_method_accept_state_indvar_result_return_void.hpp"
 #include "predicates/ode_has_const_mass_matrix_method_accept_state_indvar_result_return_void.hpp"
+#include "predicates/ode_has_const_mass_matrix_method_accept_result_return_void.hpp"
 
 #include "predicates/ode_has_const_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "predicates/ode_has_const_discrete_residual_method_accept_step_indvar_dt_result_states_return_void.hpp"
 
 #include "constraints/ode_system.hpp"
-#include "constraints/ode_various.hpp"
 #include "constraints/ode_implicit_residual_policy.hpp"
 #include "constraints/ode_implicit_jacobian_policy.hpp"
 

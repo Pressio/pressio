@@ -97,31 +97,33 @@ public:
 
   template <
     class StencilStatesContainerType,
-    class StencilVelocitiesContainerType,
-    class StepType>
+    class StencilVelocitiesContainerType>
   void operator()(StepScheme name,
 		  const StateType & predictedState,
 		  const StencilStatesContainerType & stencilStatesManager,
 		  StencilVelocitiesContainerType & stencilVelocities,
-		  const IndVarType & rhsEvaluationTime,
-		  const IndVarType & dt,
-		  const StepType & step,
+		  const ::pressio::ode::StepEndAt<IndVarType> & rhsEvaluationTime,
+		  ::pressio::ode::StepCount step,
+		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  ResidualType & R) const
   {
 
     if (name == StepScheme::BDF1){
-      (*this).template compute_impl_bdf_no_mm<ode::BDF1>(predictedState, stencilStatesManager,
-							 stencilVelocities, rhsEvaluationTime,
-							 dt, step, R);
+      (*this).template compute_impl_bdf
+	<ode::BDF1>(predictedState, stencilStatesManager,
+		    stencilVelocities, rhsEvaluationTime.get(),
+		    dt.get(), step.get(), R);
     }
     else if (name == StepScheme::BDF2){
-      (*this).template compute_impl_bdf_no_mm<ode::BDF2>(predictedState, stencilStatesManager,
-							 stencilVelocities, rhsEvaluationTime,
-							 dt, step, R);
+      (*this).template compute_impl_bdf
+	<ode::BDF2>(predictedState, stencilStatesManager,
+		    stencilVelocities, rhsEvaluationTime.get(),
+		    dt.get(), step.get(), R);
     }
     else if (name == StepScheme::CrankNicolson){
-      this->compute_impl_cn_no_mm(predictedState, stencilStatesManager,
-				  stencilVelocities, rhsEvaluationTime, dt, step, R);
+      this->compute_impl_cn(predictedState, stencilStatesManager,
+			    stencilVelocities, rhsEvaluationTime.get(),
+			    dt.get(), step.get(), R);
     }
   }
 
@@ -135,20 +137,19 @@ private:
   class StencilVelocitiesContainerType,
   class StepType
   >
-  void compute_impl_bdf_no_mm(const StateType & predictedState,
-			      const StencilStatesContainerType & stencilStatesManager,
-			      StencilVelocitiesContainerType & stencilVelocities,
-			      const IndVarType & rhsEvaluationTime,
-			      const IndVarType & dt,
-			      const StepType & step,
-			      ResidualType & R) const
+  void compute_impl_bdf(const StateType & predictedState,
+			const StencilStatesContainerType & stencilStatesManager,
+			StencilVelocitiesContainerType & stencilVelocities,
+			const IndVarType & rhsEvaluationTime,
+			const IndVarType & dt,
+			const StepType & step,
+			ResidualType & R) const
   {
 
     try{
       systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, R);
-      ::pressio::ode::impl::discrete_time_residual(predictedState,
-						   R, stencilStatesManager,
-						   dt, OdeTag());
+      ::pressio::ode::impl::discrete_residual(OdeTag(), predictedState,
+					      R, stencilStatesManager, dt);
       stepTracker_ = step;
     }
     catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
@@ -164,13 +165,13 @@ private:
     class StencilVelocitiesContainerType,
     class StepType
     >
-  void compute_impl_cn_no_mm(const StateType & predictedState,
-			     const StencilStatesContainerType & stencilStates,
-			     StencilVelocitiesContainerType & stencilVelocities,
-			     const IndVarType & t_np1,
-			     const IndVarType & dt,
-			     const StepType & step,
-			     ResidualType & R) const
+  void compute_impl_cn(const StateType & predictedState,
+		       const StencilStatesContainerType & stencilStates,
+		       StencilVelocitiesContainerType & stencilVelocities,
+		       const IndVarType & t_np1,
+		       const IndVarType & dt,
+		       const StepType & step,
+		       ResidualType & R) const
   {
 
     if (stepTracker_ != step){
@@ -182,9 +183,9 @@ private:
 
     auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
     systemObj_.get().rightHandSide(predictedState, t_np1, f_np1);
-    ::pressio::ode::impl::discrete_time_residual
-      (predictedState, R, stencilStates, stencilVelocities, dt,
-       ode::CrankNicolson());
+    ::pressio::ode::impl::discrete_residual
+	(ode::CrankNicolson(), predictedState, R, stencilStates,
+	 stencilVelocities, dt);
 
     stepTracker_ = step;
   }

@@ -19,7 +19,7 @@
 TEST(ode_explicit_steppers, euler_system_reference)
 {
   using namespace pressio;
-  using app_t = ode::testing::refAppEigen;
+  using app_t = ode::testing::AppEigenA;
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
@@ -30,7 +30,7 @@ TEST(ode_explicit_steppers, euler_system_reference)
 TEST(ode_explicit_steppers, euler_system_move)
 {
   using namespace pressio;
-  using app_t = ode::testing::refAppEigen;
+  using app_t = ode::testing::AppEigenA;
   using state_t = typename app_t::state_type;
   app_t appObj;
 

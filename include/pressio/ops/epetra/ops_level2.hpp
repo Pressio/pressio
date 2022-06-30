@@ -87,7 +87,7 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 // -------------------------------
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-   ::pressio::is_multi_vector_epetra<A_type>::value and 
+   ::pressio::is_multi_vector_epetra<A_type>::value and
    ::pressio::is_dense_vector_teuchos<x_type>::value
   >
 product(::pressio::nontranspose mode,
@@ -97,8 +97,7 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	Epetra_Vector & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type>::value,
-     "Types are not scalar compatible");
+
   static_assert
     (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
      "Scalar compatibility broken");
@@ -126,8 +125,6 @@ product(::pressio::transpose mode,
   const scalar_type beta,
   y_type & y)
 {
-  static_assert(::pressio::are_scalar_compatible<A_type, y_type>::value,
-     "Types are not scalar compatible");
 
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.length() == (std::size_t)numVecs );
@@ -152,7 +149,7 @@ product(::pressio::transpose mode,
 // -------------------------------
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-   ::pressio::is_multi_vector_epetra<A_type>::value and 
+   ::pressio::is_multi_vector_epetra<A_type>::value and
    ::pressio::is_vector_eigen<x_type>::value
   >
 product(::pressio::nontranspose mode,
@@ -162,8 +159,7 @@ product(::pressio::nontranspose mode,
   const scalar_type beta,
   Epetra_Vector & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type>::value,
-     "Types are not scalar compatible");
+
   static_assert
     (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
      "Scalar compatibility broken");
@@ -191,8 +187,6 @@ product(::pressio::transpose mode,
   const scalar_type beta,
   y_type & y)
 {
-  static_assert(::pressio::are_scalar_compatible<A_type, y_type>::value,
-     "Types are not scalar compatible");
 
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.size() == (std::size_t)numVecs );
@@ -231,9 +225,6 @@ product(::pressio::transpose mode,
 // 	::pressio::containers::Vector<Epetra_Vector> & y)
 // {
 //   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, x_type>::value,
-//      "Types are not scalar compatible");
-//   static_assert
 //     (mpl::is_same<
 //      scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
 //      "Scalar compatibility broken");
@@ -265,10 +256,6 @@ product(::pressio::transpose mode,
 // 	const scalar_type beta,
 // 	y_type & y)
 // {
-//   static_assert
-//     (::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
-//      "Types are not scalar compatible");
-
 //   using eig_mapping_t = const Eigen::Map< const Eigen::Matrix<scalar_type, -1, -1> >;
 //   eig_mapping_t xMapped(x.data()->Values(), x.extentLocal(0), 1);
 //   const auto & AE = *A.data();

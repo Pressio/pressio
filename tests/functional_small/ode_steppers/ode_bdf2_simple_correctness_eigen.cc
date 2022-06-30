@@ -3,12 +3,12 @@
 #include "pressio/solvers.hpp"
 #include "pressio/ode_steppers_implicit.hpp"
 #include "pressio/ode_advancers.hpp"
-#include "../testing_apps.hpp"
+#include "testing_apps.hpp"
 
 TEST(ode, implicit_bdf2_policy_default_created)
 {
   using namespace pressio;
-  using problem_t = ode::testing::refAppForImpEigen;
+  using problem_t = ode::testing::AppEigenB;
   using state_t = typename problem_t::state_type;
   problem_t problemObj;
   state_t y(3);
@@ -36,7 +36,7 @@ TEST(ode, implicit_bdf2_policy_default_created)
 TEST(ode, implicit_bdf2_custom_policy)
 {
   using namespace pressio;
-  using problem_t = ode::testing::refAppForImpEigen;
+  using problem_t = ode::testing::AppEigenB;
   using time_type = typename problem_t::independent_variable_type;
   using state_t = typename problem_t::state_type;
   problem_t problemObj;

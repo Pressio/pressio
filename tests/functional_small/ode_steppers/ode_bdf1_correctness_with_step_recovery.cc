@@ -4,16 +4,16 @@
 
 struct MyApp
 {
-  using time_type   = double;
+  using independent_variable_type   = double;
   using state_type    = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
   state_type createState() const{ return state_type(3); }
 
-  velocity_type createVelocity() const{
-    velocity_type f(3);
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type f(3);
     return f;
   }
 
@@ -22,9 +22,9 @@ public:
     return J;
   }
 
-  void velocity(const state_type & yn,
-		const time_type& evaltime,
-		velocity_type & f) const
+  void rightHandSide(const state_type & yn,
+		const independent_variable_type& evaltime,
+		right_hand_side_type & f) const
   {
     std::cout << "f: t=" << evaltime << "\n";
 
@@ -38,7 +38,9 @@ public:
     f[2] = 2.;
   }
 
-  void jacobian(const state_type&, const time_type&, jacobian_type&) const{
+  void jacobian(const state_type&,
+		const independent_variable_type&,
+		jacobian_type&) const{
     // not used by the test
   }
 };
@@ -134,27 +136,19 @@ int main(int argc, char *argv[])
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 
-
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
 
-  auto dtManager =
-    [](const typename ::pressio::ode::StepCount::value_type & step,
-       const typename app_t::time_type & time,
-       typename app_t::time_type & dt,
-       typename app_t::time_type & minDt,
-       typename app_t::time_type & dtRedFactor)
-    {
-      dt = 0.1;
-      minDt = 0.01;
-      dtRedFactor=2.;
-    };
-
-  auto collector =
-    [](const typename ::pressio::ode::StepCount::value_type & step,
-       const typename app_t::time_type & time,
-       const state_t & y)
-    {};
+  auto dtManager = [](pressio::ode::StepCount step,
+		      pressio::ode::StepStartAt<double> time,
+		      pressio::ode::StepSize<double> & dt,
+		      pressio::ode::StepSizeMin<double> & minDt,
+		      pressio::ode::StepSizeReduction<double> & dtRedFactor)
+  {
+    dt = 0.1;
+    minDt = 0.01;
+    dtRedFactor=2.;
+  };
 
   std::string checkStr= "PASSED";
   app_t appObj;
@@ -164,8 +158,8 @@ int main(int argc, char *argv[])
   pressio::ops::fill(y, 1);
 
   auto stepperObj = pressio::ode::create_bdf1_stepper(appObj);
-  pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
-    (stepperObj, y, 0., 0.4, dtManager, collector, solver);
+  pressio::ode::advance_to_target_point_with_step_recovery
+    (stepperObj, y, 0., 0.4, dtManager, solver);
 
   std::cout << checkStr << std::endl;
 

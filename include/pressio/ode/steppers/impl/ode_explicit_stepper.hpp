@@ -182,9 +182,7 @@ private:
   {
     PRESSIOLOG_DEBUG("adams-bashforth2 stepper: do step");
 
-    // y_n+1 = y_n + stepSize*[ (3/2)*f(y_n, t_n) - (1/2)*f(y_n-1, t_n-1) ]
-
-    // M_n (y_n+1 - y_n) = 3h/2*f_n - h/2*M_n*M_n-1^-1*f_n-1
+    // // y_n+1 = y_n + stepSize*[ (3/2)*f(y_n, t_n) - (1/2)*f(y_n-1, t_n-1) ]
 
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
     const auto cfn   = ::pressio::utils::Constants<scalar_type>::threeOvTwo()*stepSize;
@@ -237,6 +235,10 @@ private:
 
     // see e.g. https://gkeyll.readthedocs.io/en/latest/dev/ssp-rk.html
 
+    const scalar_type stepSize_half{stepSize/two};
+    const independent_variable_type t_phalf{stepStartTime + stepSize_half};
+    const independent_variable_type t_next{stepStartTime + stepSize};
+
     // rhs(u_n, t_n)
     systemObj_.get().rightHandSide(odeState, stepStartTime, rhs0);
     // u_1 = u_n + stepSize * rhs(u_n, t_n)
@@ -245,14 +247,14 @@ private:
                            rhs0,            stepSize);
 
     // rhs(u_1, t_n+stepSize)
-    systemObj_.get().rightHandSide(auxiliaryState_, stepStartTime+stepSize, rhs0);
+    systemObj_.get().rightHandSide(auxiliaryState_, t_next, rhs0);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*stepSize*rhs(u_1, t_n+stepSize)
     ::pressio::ops::update(auxiliaryState_, fourInv,
 			   odeState,        threeOvFour,
                            rhs0,            fourInv*stepSize);
 
     // rhs(u_2, t_n + 0.5*stepSize)
-    systemObj_.get().rightHandSide(auxiliaryState_, stepStartTime + oneOvTwo*stepSize, rhs0);
+    systemObj_.get().rightHandSide(auxiliaryState_, t_phalf, rhs0);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*stepSize*rhs(u_2, t_n+0.5*stepSize)
     ::pressio::ops::update(odeState,        oneOvThree,
 			   auxiliaryState_, twoOvThree,
@@ -278,10 +280,11 @@ private:
     constexpr auto three  = ::pressio::utils::Constants<scalar_type>::three();
     constexpr auto six  = two * three;
 
-    const independent_variable_type stepSize_half = stepSize / two;
-    const independent_variable_type t_phalf = stepStartTime + stepSize_half;
-    const independent_variable_type stepSize6 = stepSize / six;
-    const independent_variable_type stepSize3 = stepSize / three;
+    const scalar_type stepSize_half{stepSize/two};
+    const independent_variable_type t_phalf{stepStartTime + stepSize_half};
+    const independent_variable_type t_next{stepStartTime + stepSize};
+    const scalar_type stepSize6{stepSize/six};
+    const scalar_type stepSize3{stepSize/three};
 
     // stage 1:
     // rhs1 = rhs(y_n, t_n)
@@ -303,7 +306,7 @@ private:
     // ytmp = y + rhs3*stepSize;
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs3, stepSize);
     // rhs3 = rhs(y_tmp)
-    systemObj_.get().rightHandSide(auxiliaryState_, stepStartTime + stepSize, rhs4);
+    systemObj_.get().rightHandSide(auxiliaryState_, t_next, rhs4);
 
     // y_n += stepSize/6 * ( rhs1 + 2*rhs2 + 2*rhs3 + rhs4 )
     ::pressio::ops::update(odeState, one,
@@ -311,14 +314,14 @@ private:
 			   rhs3, stepSize3, rhs4, stepSize6);
   }
 
-  template<class rhs_t>
+  template<class rhs_t, class FactorType>
   void rk4_stage_update_impl(StateType & yIn,
 			     const StateType & stateIn,
 			     const rhs_t & rhsIn,
-			     independent_variable_type rhsFactor)
+			     const FactorType & rhsFactor)
   {
-    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
+    using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(yIn, zero, stateIn, one, rhsIn, rhsFactor);
   }

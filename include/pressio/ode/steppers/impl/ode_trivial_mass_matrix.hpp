@@ -51,6 +51,53 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
+template<class T, class enable = void>
+struct system_has_potentially_varying_mass_matrix_api : std::false_type{};
+
+template<class T>
+struct system_has_potentially_varying_mass_matrix_api<
+  T,
+  mpl::enable_if_t<
+    ::pressio::has_independent_variable_typedef<T>::value
+    and ::pressio::has_state_typedef<T>::value
+    and ::pressio::has_mass_matrix_typedef<T>::value
+    and ::pressio::ode::has_const_create_mass_matrix_method_return_result<
+      T, typename T::mass_matrix_type >::value
+    and ::pressio::ode::has_const_mass_matrix_method_accept_state_indvar_result_return_void<
+      T, typename T::state_type, typename T::independent_variable_type,typename T::mass_matrix_type>::value
+   >
+  > : std::true_type{};
+
+template<class T, class enable = void>
+struct system_has_constant_mass_matrix_api : std::false_type{};
+
+template<class T>
+struct system_has_constant_mass_matrix_api<
+  T,
+  mpl::enable_if_t<
+    ::pressio::has_independent_variable_typedef<T>::value
+    and ::pressio::has_state_typedef<T>::value
+    and ::pressio::has_mass_matrix_typedef<T>::value
+    and ::pressio::ode::has_const_create_mass_matrix_method_return_result<
+      T, typename T::mass_matrix_type >::value
+    and ::pressio::ode::has_const_mass_matrix_method_accept_result_return_void<
+      T, typename T::mass_matrix_type>::value
+   >
+  > : std::true_type{};
+
+
+template<class T, class = void>
+struct system_has_one_of_the_mass_matrix_api : std::false_type{};
+
+template<class T>
+struct system_has_one_of_the_mass_matrix_api<
+  T, mpl::enable_if_t<
+     system_has_potentially_varying_mass_matrix_api<T>::value
+     || system_has_constant_mass_matrix_api<T>::value
+     >
+  > : std::true_type{};
+
+
 struct NoOpMassMatrix{};
 
 template<class T> struct is_trivial_mass_matrix : std::false_type{};
@@ -79,7 +126,10 @@ struct find_mass_matrix_if_any_or_noop{
 
 template<class T>
 struct find_mass_matrix_if_any_or_noop<
-  T, mpl::enable_if_t<system_has_complete_mass_matrix_api<T>::value>
+  T, mpl::enable_if_t<
+     system_has_potentially_varying_mass_matrix_api<T>::value
+     || system_has_constant_mass_matrix_api<T>::value
+     >
   >{
   using type = typename T::mass_matrix_type;
 };

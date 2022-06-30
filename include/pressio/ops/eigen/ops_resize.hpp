@@ -69,8 +69,9 @@ template <typename T>
   ::pressio::is_dense_matrix_eigen<T>::value or
   ::pressio::is_sparse_matrix_eigen<T>::value
   >
-resize(T & o, const typename ::pressio::Traits<T>::size_type newRows, 
-  const typename ::pressio::Traits<T>::size_type newCols)
+resize(T & o,
+       const typename ::pressio::Traits<T>::size_type newRows,
+       const typename ::pressio::Traits<T>::size_type newCols)
 {
   static_assert(
     ::pressio::is_dynamic_dense_matrix_eigen<T>::value,

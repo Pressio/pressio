@@ -167,11 +167,11 @@ TEST(ode_explicit_steppers, forward_euler_with_mass_matrix_use_inverse){
 }
 
 TEST(ode_explicit_steppers, ab2_with_mass_matrix_use_inverse){
-  ODE_ALL_SCHEME_MASS_MATRIX_CHECK_TEST(adams_bashforth2)
+  ODE_ALL_SCHEME_MASS_MATRIX_CHECK_TEST(ab2)
 }
 
 TEST(ode_explicit_steppers, rk4_with_mass_matrix_use_inverse){
-  ODE_ALL_SCHEME_MASS_MATRIX_CHECK_TEST(runge_kutta4)
+  ODE_ALL_SCHEME_MASS_MATRIX_CHECK_TEST(rk4)
 }
 
 TEST(ode_explicit_steppers, spprk3_with_mass_matrix_use_inverse){

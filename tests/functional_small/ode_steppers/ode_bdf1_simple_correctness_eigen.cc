@@ -3,12 +3,12 @@
 #include "pressio/solvers.hpp"
 #include "pressio/ode_steppers_implicit.hpp"
 #include "pressio/ode_advancers.hpp"
-#include "../testing_apps.hpp"
+#include "testing_apps.hpp"
 
 TEST(ode, implicit_bdf1_policy_default_created)
 {
   using namespace pressio;
-  using problem_t   = ode::testing::refAppForImpEigen;
+  using problem_t   = ode::testing::AppEigenB;
   using state_t = typename problem_t::state_type;
   problem_t problemObj;
   std::cout << &problemObj << std::endl;
@@ -34,7 +34,7 @@ TEST(ode, implicit_bdf1_policy_default_created)
 TEST(ode, implicit_bdf1_custom_policy)
 {
   using namespace pressio;
-  using problem_t = ode::testing::refAppForImpEigen;
+  using problem_t = ode::testing::AppEigenB;
   using time_type = typename problem_t::independent_variable_type;
   using state_t = typename problem_t::state_type;
   using res_t = typename problem_t::right_hand_side_type;
@@ -69,7 +69,7 @@ TEST(ode, implicit_bdf1_custom_policy)
 // TEST(ode, implicit_bdf1_policy_default_created_guesserLambda)
 // {
 //   using namespace pressio;
-//   using problem_t = ode::testing::refAppForImpEigen;
+//   using problem_t = ode::testing::AppEigenB;
 //   using state_t = typename problem_t::state_type;
 //   problem_t problemObj;
 //   state_t y(3);
@@ -130,7 +130,7 @@ TEST(ode, implicit_bdf1_policy_default_created_custom_update)
   pressio::log::setVerbosity({pressio::log::level::trace});
 
   using namespace pressio;
-  using problem_t = ode::testing::refAppForImpEigen;
+  using problem_t = ode::testing::AppEigenB;
   using state_t = typename problem_t::state_type;
   problem_t problemObj;
 
@@ -161,7 +161,7 @@ TEST(ode, implicit_bdf1_policy_default_created_custom_update)
 // TEST(ode, implicit_bdf1_guesserLambdaCustomUpdate)
 // {
 //   using namespace pressio;
-//   using problem_t = ode::testing::refAppForImpEigen;
+//   using problem_t = ode::testing::AppEigenB;
 //   problem_t problemObj;
 
 //   using state_t = typename problem_t::state_type;

@@ -5,10 +5,10 @@
 struct MyApp
 {
   std::string & checkStr_;
-  using time_type   = double;
+  using independent_variable_type   = double;
   using state_type    = Eigen::VectorXd;
-  using discrete_time_residual_type = state_type;
-  using discrete_time_jacobian_type = Eigen::SparseMatrix<double>;
+  using discrete_residual_type = state_type;
+  using discrete_jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
   MyApp(std::string & strin) : checkStr_(strin){}
@@ -19,21 +19,21 @@ public:
     return ss;
   }
 
-  discrete_time_residual_type createDiscreteTimeResidual() const{
-    discrete_time_residual_type R(3);
+  discrete_residual_type createDiscreteResidual() const{
+    discrete_residual_type R(3);
     return R;
   }
 
-  discrete_time_jacobian_type createDiscreteTimeJacobian() const{
-    discrete_time_jacobian_type J(3,3);
+  discrete_jacobian_type createDiscreteJacobian() const{
+    discrete_jacobian_type J(3,3);
     return J;
   }
 
   template <typename step_t>
-  void discreteTimeJacobian(const step_t & step,
-                            const time_type & evaltime,
-                            const time_type & dt,
-                            discrete_time_jacobian_type & J,
+  void discreteJacobian(const step_t & step,
+                            const independent_variable_type & evaltime,
+                            const independent_variable_type & dt,
+                            discrete_jacobian_type & J,
         const state_type & yn,
         const state_type & ynm1,
         const state_type & ynm2,
@@ -43,10 +43,10 @@ public:
   }
 
   template <typename step_t, typename state_type>
-  void discreteTimeResidual(const step_t & step,
-				const time_type & evaltime,
-				const time_type & dt,
-				discrete_time_residual_type & R,
+  void discreteResidual(const step_t & step,
+				const independent_variable_type & evaltime,
+				const independent_variable_type & dt,
+				discrete_residual_type & R,
 				const state_type & yn,
 				const state_type & ynm1,
 				const state_type & ynm2,
@@ -182,22 +182,16 @@ int main(int argc, char *argv[])
   using app_t		= MyApp;
   using state_t = typename app_t::state_type;
 
-  auto dtManager =
-    [](const typename ::pressio::ode::StepCount::value_type & step,
-       const typename app_t::time_type & time,
-       typename app_t::time_type & dt,
-       typename app_t::time_type & minDt,
-       typename app_t::time_type & dtRedFactor)
-    {
-      dt = 0.1;
-      minDt = 0.01;
-      dtRedFactor=2.;
-    };
-
-  auto collector =
-    [](const typename ::pressio::ode::StepCount::value_type & step,
-       const typename app_t::time_type & time,
-       const state_t & y){};
+  auto dtManager = [](pressio::ode::StepCount step,
+		      pressio::ode::StepStartAt<double> time,
+		      pressio::ode::StepSize<double> & dt,
+		      pressio::ode::StepSizeMin<double> & minDt,
+		      pressio::ode::StepSizeReduction<double> & dtRedFactor)
+  {
+    dt = 0.1;
+    minDt = 0.01;
+    dtRedFactor=2.;
+  };
 
   std::string checkStr= "PASSED";
   app_t appObj(checkStr);
@@ -205,9 +199,9 @@ int main(int argc, char *argv[])
   pressio::ops::fill(y, 1);
   MyFakeSolver solver;
 
-  auto stepperObj = pressio::ode::create_arbitrary_stepper<4>(appObj);
-  pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
-    (stepperObj, y, 0., 0.4, dtManager, collector, solver);
+  auto stepperObj = pressio::ode::create_implicit_stepper<4>(appObj);
+  pressio::ode::advance_to_target_point_with_step_recovery
+    (stepperObj, y, 0., 0.4, dtManager, solver);
 
   std::cout << checkStr << std::endl;
   return 0;

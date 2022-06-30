@@ -72,8 +72,6 @@ elementwise_multiply(typename ::pressio::Traits<T>::scalar_type alpha,
 		     T2 & y)
 {
   static_assert
-    (are_scalar_compatible<T, T1, T2>::value, "types are not scalar compatible");
-  static_assert
     (have_matching_execution_space<T, T1, T2>::value, "types must have matching execution space");
 
   assert(x.extent(0) == z.extent(0));

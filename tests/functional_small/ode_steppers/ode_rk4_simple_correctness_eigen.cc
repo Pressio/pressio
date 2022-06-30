@@ -16,21 +16,21 @@
 TEST(ode_explicit_steppers, rk4_system_reference)
 {
   using namespace pressio;
-  using app_t = ode::testing::refAppForImpEigen;
+  using app_t = ode::testing::AppEigenB;
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_runge_kutta4_stepper(appObj);
+  auto stepperObj = ode::create_rk4_stepper(appObj);
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }
 
 TEST(ode_explicit_steppers, rk4_system_move)
 {
   using namespace pressio;
-  using app_t = ode::testing::refAppForImpEigen;
+  using app_t = ode::testing::AppEigenB;
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_runge_kutta4_stepper(app_t());
+  auto stepperObj = ode::create_rk4_stepper(app_t());
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }

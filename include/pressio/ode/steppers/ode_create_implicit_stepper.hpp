@@ -61,11 +61,17 @@ auto create_implicit_stepper(StepScheme name, const SystemType & system){
 template<class ResidualPolicyType, class JacobianPolicyType>
 auto create_implicit_stepper(StepScheme name,
 			     ResidualPolicyType && resPolicy,
-			     JacobianPolicyType && jacPolicy)
-{
+			     JacobianPolicyType && jacPolicy){
   return impl::create_implicit_stepper_impl(name,
 					    std::forward<ResidualPolicyType>(resPolicy),
 					    std::forward<JacobianPolicyType>(jacPolicy));
+}
+
+// num of states as template arg constructs the arbitrary stepper
+template<int num_states, class SystemType>
+auto create_implicit_stepper(SystemType && system){
+  return typename impl::ImplicitComposeArb<
+    num_states, SystemType>::type(std::forward<SystemType>(system));
 }
 
 template<class ...Args>
@@ -84,13 +90,6 @@ template<class ...Args>
 auto create_cranknicolson_stepper(Args && ... args){
   return create_implicit_stepper(StepScheme::CrankNicolson,
 				 std::forward<Args>(args)...);
-}
-
-// Arbitrary
-template<int num_states, class SystemType>
-auto create_arbitrary_stepper(SystemType && system){
-  using return_type = typename impl::ImplicitComposeArb<num_states, SystemType>::type;
-  return return_type(std::forward<SystemType>(system));
 }
 
 }} // end namespace pressio::ode

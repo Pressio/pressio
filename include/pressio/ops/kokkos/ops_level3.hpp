@@ -74,8 +74,6 @@ product(::pressio::nontranspose modeA,
   const scalar_type beta,
   C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-   "Types are not scalar compatible");
   static_assert(::pressio::have_matching_execution_space<A_type, B_type, C_type>::value,
      "operands need to have same execution space" );
 
@@ -101,8 +99,6 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-   "Types are not scalar compatible");
   static_assert(::pressio::have_matching_execution_space<A_type, B_type, C_type>::value,
      "operands need to have same execution space" );
 
