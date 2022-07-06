@@ -55,5 +55,6 @@
 #include "./expressions/fwd.hpp"
 #include "./expressions/public_functions.hpp"
 #include "./expressions/is_expression.hpp"
+#include "./expressions/package_identifier.hpp"
 
 #endif

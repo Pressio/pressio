@@ -54,8 +54,8 @@ namespace pressio{ namespace ops{
 // to = abs(from)
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  (::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind and
-   ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Pybind)
+  (::pressio::package_identifier<T1>::value == PackageIdentifier::Pybind and
+   ::pressio::package_identifier<T2>::value == PackageIdentifier::Pybind)
   >
 abs(T1 & to, const T2 & from)
 {

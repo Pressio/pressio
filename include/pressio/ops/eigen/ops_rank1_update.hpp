@@ -64,8 +64,8 @@ namespace pressio{ namespace ops{
 template<class T, class T1, class a_Type, class b_Type>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T, T1>::value
-  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
   && ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
   && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
@@ -89,9 +89,9 @@ template<
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
-  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
   && ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
@@ -120,10 +120,10 @@ template<
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
-  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T3>::value == PackageIdentifier::Eigen
   && ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
@@ -157,11 +157,11 @@ template<
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
-  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T3>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T4>::value == PackageIdentifier::Eigen
   && ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1

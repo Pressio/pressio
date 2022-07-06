@@ -64,8 +64,8 @@ namespace pressio{ namespace ops{
 template<typename T, typename T1, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T, T1>::value
-  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
   && ::pressio::Traits<T>::rank == 2
   && ::pressio::Traits<T1>::rank == 2
   >

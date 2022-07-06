@@ -81,7 +81,7 @@ extent(const T & objectIn, const IndexType i)
 template<class T, class IndexType>
 mpl::enable_if_t<
   ::pressio::is_expression<T>::value and
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen,
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen,
   decltype(std::declval<const T>().extent(0))
   >
 extent(const T & objectIn, const IndexType i)

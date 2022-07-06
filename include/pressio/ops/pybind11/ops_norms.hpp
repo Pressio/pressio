@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind,
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Pybind,
   typename ::pressio::Traits<T>::scalar_type
   >
 norm1(const T & o)
@@ -75,7 +75,7 @@ norm1(const T & o)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind,
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Pybind,
   typename ::pressio::Traits<T>::scalar_type
   >
 norm2(const T & o)

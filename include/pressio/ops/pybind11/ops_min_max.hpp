@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind,
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Pybind,
   typename ::pressio::Traits<T>::scalar_type
   >
 max(const T & obj)
@@ -75,7 +75,7 @@ max(const T & obj)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind,
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Pybind,
   typename ::pressio::Traits<T>::scalar_type
   >
 min(const T & obj)

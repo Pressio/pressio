@@ -174,7 +174,7 @@ struct is_expression_eigen<
   T,
   mpl::enable_if_t<
     (is_expression<T>::value and
-     ::pressio::Traits<T>::package_identifier
+     ::pressio::package_identifier<T>::value
      == ::pressio::PackageIdentifier::Eigen)
     >
   > : std::true_type{};
@@ -189,7 +189,7 @@ struct is_expression_pybind<
   T,
   mpl::enable_if_t<
     (is_expression<T>::value and
-     ::pressio::Traits<T>::package_identifier
+     ::pressio::package_identifier<T>::value
      == ::pressio::PackageIdentifier::Pybind)
     >
   > : std::true_type{};

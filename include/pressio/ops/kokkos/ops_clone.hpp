@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
   and ::pressio::Traits<T>::rank == 1,
   T
   >
@@ -66,7 +66,7 @@ clone(const T & clonable)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
   and ::pressio::Traits<T>::rank == 2,
   T
   >

@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T0>::package_identifier == PackageIdentifier::Pybind and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind
+  ::pressio::package_identifier<T0>::value == PackageIdentifier::Pybind and
+  ::pressio::package_identifier<T1>::value == PackageIdentifier::Pybind
   >
 dot(const T0 & a,
     const T1 & b,
@@ -78,8 +78,8 @@ dot(const T0 & a,
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T0>::package_identifier == PackageIdentifier::Pybind and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind,
+  ::pressio::package_identifier<T0>::value == PackageIdentifier::Pybind and
+  ::pressio::package_identifier<T1>::value == PackageIdentifier::Pybind,
   typename ::pressio::Traits<T0>::scalar_type
   >
 dot(const T0 & a, const T1 & b)

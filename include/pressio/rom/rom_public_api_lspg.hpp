@@ -407,9 +407,9 @@ auto create_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
   using fom_state_type = typename mpl::remove_cvref_t<FomSystemType>::state_type;
   using fom_velo_type = typename mpl::remove_cvref_t<FomSystemType>::velocity_type;
   static_assert
-    (pressio::Traits<fom_state_type>::package_identifier ==
+    (pressio::package_identifier<fom_state_type>::value ==
      pressio::PackageIdentifier::Trilinos and
-     pressio::Traits<fom_velo_type>::package_identifier ==
+     pressio::package_identifier<fom_velo_type>::value ==
      pressio::PackageIdentifier::Trilinos,
      "You are calling an overload of create_hyperreduced_unsteaady_problem that \
 is only valid for Trilinos type");
@@ -447,9 +447,9 @@ auto create_prec_hyperreduced_unsteady_problem(::pressio::ode::StepScheme name,
   using fom_state_type = typename mpl::remove_cvref_t<FomSystemType>::state_type;
   using fom_velo_type = typename mpl::remove_cvref_t<FomSystemType>::velocity_type;
   static_assert
-    (pressio::Traits<fom_state_type>::package_identifier ==
+    (pressio::package_identifier<fom_state_type>::value ==
      pressio::PackageIdentifier::Trilinos and
-     pressio::Traits<fom_velo_type>::package_identifier ==
+     pressio::package_identifier<fom_velo_type>::value ==
      pressio::PackageIdentifier::Trilinos,
      "You are calling an overload of create_hyperreduced_unsteaady_problem that \
 is only valid for Trilinos type");

@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
   >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
@@ -71,8 +71,8 @@ pow(T & x,
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
-  ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::package_identifier<T1>::value == ::pressio::PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<T2>::value == ::pressio::PackageIdentifier::Kokkos
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -100,8 +100,8 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
-  ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::package_identifier<T1>::value == ::pressio::PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<T2>::value == ::pressio::PackageIdentifier::Kokkos
   >
 abs_pow(T1 & y,
 	const T2 & x,

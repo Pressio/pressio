@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind and
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Pybind and
   (::pressio::Traits<T>::rank == 2 or ::pressio::Traits<T>::rank == -1)
   >
 add_to_diagonal(T & o,

@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-     ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+     ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  && ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
   && ::pressio::Traits<T1>::rank == ::pressio::Traits<T2>::rank
   && !::pressio::is_expression_eigen<T1>::value
   && !::pressio::is_expression_eigen<T2>::value

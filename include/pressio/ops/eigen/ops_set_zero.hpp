@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
   and !::pressio::is_sparse_matrix_eigen<T>::value
   >
 set_zero(T & o)

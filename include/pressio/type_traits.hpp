@@ -123,4 +123,7 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/traits_pybind_array.hpp"
 #endif
 
+//*** derived ****
+#include "type_traits/package_identifier.hpp"
+
 #endif

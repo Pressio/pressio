@@ -71,7 +71,7 @@ template <
 >
 void test_container_traits()
 {
-  static_assert(traits::package_identifier == pack_id, "");
+  static_assert(::pressio::package_identifier<T>::value == pack_id, "package identifier is different than expected");
   static_assert(traits::rank == rank, "rank is different than expected");
   testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
   testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();

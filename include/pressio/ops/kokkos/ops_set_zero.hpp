@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
   >
 set_zero(const T & v)
 {

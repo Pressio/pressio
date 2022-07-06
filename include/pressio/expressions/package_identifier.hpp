@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_scale.hpp
+// type_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,40 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_SCALE_HPP_
-#define OPS_KOKKOS_OPS_SCALE_HPP_
+#ifndef PRESSIO_EXPRESSIONS_PACKAGE_ID_HPP_
+#define PRESSIO_EXPRESSIONS_PACKAGE_ID_HPP_
 
-#include <KokkosBlas1_scal.hpp>
+#include "../type_traits/package_identifier.hpp"
 
-namespace pressio{ namespace ops{
+namespace pressio {
+//----------------------------------------------------------------------
+// expressions
 
 template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
-  >
-scale(const T & v, typename ::pressio::Traits<T>::scalar_type value)
-{
-  ::KokkosBlas::scal(impl::get_native(v), value, impl::get_native(v));
-}
+struct package_identifier<
+    ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
+>: public package_identifier<T>
+{};
 
-}}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_SCALE_HPP_
+template <typename T>
+struct package_identifier<
+    ::pressio::expressions::impl::DiagExpr<T>
+>: public package_identifier<T>
+{};
+
+template <typename T>
+struct package_identifier<
+    ::pressio::expressions::impl::SpanExpr<T>
+>: public package_identifier<T>
+{};
+
+template <typename T>
+struct package_identifier<
+    ::pressio::expressions::impl::SubspanExpr<T>
+>: public package_identifier<T>
+{};
+
+//----------------------------------------------------------------------
+} // namespace pressio
+
+#endif // PRESSIO_EXPRESSIONS_PACKAGE_ID_HPP_
