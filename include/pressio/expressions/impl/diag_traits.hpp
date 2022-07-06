@@ -62,8 +62,7 @@ struct DiagTraits<
   : public ::pressio::impl::EigenTraits<
       typename ::pressio::mpl::remove_cvref_t<MatrixType>,
       1
-    >,
-    public ::pressio::impl::StaticAllocTrait
+    >
 {
   // type of the native expression
   using _native_expr_type = decltype(std::declval<MatrixType>().diagonal());

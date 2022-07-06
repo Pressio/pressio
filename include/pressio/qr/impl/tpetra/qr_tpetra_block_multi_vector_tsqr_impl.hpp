@@ -63,9 +63,9 @@ public:
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
 
-  using lo_t	   = typename ::pressio::Traits<MatrixType>::local_ordinal_type;
-  using go_t	   = typename ::pressio::Traits<MatrixType>::global_ordinal_type;
-  using node_t   = typename ::pressio::Traits<MatrixType>::node_type;
+  using lo_t	   = typename MatrixType::local_ordinal_type;
+  using go_t	   = typename MatrixType::global_ordinal_type;
+  using node_t   = typename MatrixType::node_type;
 
   using Q_type	          = Tpetra::BlockMultiVector<sc_t, lo_t, go_t, node_t>;
   using tpetra_mv_t       = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;

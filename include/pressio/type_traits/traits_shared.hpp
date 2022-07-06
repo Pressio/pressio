@@ -60,72 +60,32 @@ template<
 struct ContainersSharedTraits
 {
   static constexpr PackageIdentifier package_identifier = PackId;
-  static constexpr bool is_shared_mem	= _is_shared_mem;
-  static constexpr bool is_distributed	= !is_shared_mem;
   static constexpr int rank = _rank;
 };
 
 template<
-  typename Ordinal,
-  typename Size = Ordinal
+  typename Ordinal
 >
 struct OrdinalTrait
 {
   using ordinal_type = Ordinal;
-  using size_type    = Size;
 };
 
 template<
-  typename Scalar,
-  typename ScalarRef = typename std::add_lvalue_reference<
-    Scalar
-  >::type,
-  typename ScalarConstRef = typename std::add_lvalue_reference<
-    typename std::add_const<Scalar>::type
-  >::type
+  typename Scalar
 >
 struct ScalarTrait
 {
   using scalar_type    = Scalar;
-  using reference_type = ScalarRef;
-  using const_reference_type = ScalarConstRef;
-};
-
-template<bool _is_static>
-struct AllocTrait
-{
-  static constexpr bool is_static = _is_static;
-  static constexpr bool is_dynamic  = !is_static;
-};
-
-using StaticAllocTrait = AllocTrait<true>;
-using DynamicAllocTrait = AllocTrait<false>;
-
-/// common traits of matrices
-template<bool sparse>
-struct MatrixDensityTrait
-{
-  static constexpr bool is_sparse = sparse;
-  static constexpr bool is_dense  = !is_sparse;
-};
-
-using DenseMatrixTrait = MatrixDensityTrait<false>;
-using SparseMatrixTrait = MatrixDensityTrait<true>;
-
-template<bool row_major>
-struct MatrixLayoutTrait
-{
-  static constexpr bool is_row_major = row_major;
-  static constexpr bool is_col_major = !is_row_major;
 };
 
 template<typename T>
 struct SizePair
 {
-  using size_type = typename ::pressio::Traits<
+  using ordinal_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<T>
-  >::size_type;
-  using pair_type = std::pair<size_type, size_type>;
+  >::ordinal_type;
+  using pair_type = std::pair<ordinal_type, ordinal_type>;
 };
 
 }

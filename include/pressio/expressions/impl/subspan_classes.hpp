@@ -63,12 +63,11 @@ struct SubspanExpr<
 
   using this_t = SubspanExpr<MatrixType>;
   using traits = SubSpanTraits<this_t>;
-  using sc_t = typename traits::scalar_type;
-  using ord_t = typename traits::ordinal_type;
-  using size_t = typename traits::size_type;
-  using ref_t = typename traits::reference_type;
-  using const_ref_t = typename traits::const_reference_type;
+  using ord_t = typename Traits<MatrixType>::ordinal_type;
   using native_expr_t = typename traits::native_expr_type;
+  using const_native_expr_t = typename traits::_const_native_expr_type;
+  using ref_t = decltype( std::declval<native_expr_t>()(0) );
+  using const_ref_t = decltype( std::declval<const_native_expr_t>()(0) );
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -154,12 +153,10 @@ struct SubspanExpr<
 
   using this_t = SubspanExpr<MatrixType>;
   using traits = SubSpanTraits<this_t>;
-  using sc_t = typename traits::scalar_type;
-  using ord_t = typename traits::ordinal_type;
-  using size_t = typename traits::size_type;
+  using size_t = typename Traits<MatrixType>::ordinal_type;
   using pair_t = typename traits::pair_type;
-  using ref_t = typename traits::reference_type;
   using native_expr_t = typename traits::native_expr_type;
+  using ref_t = decltype( std::declval<native_expr_t>()(size_t{}, size_t{}) );
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -232,7 +229,7 @@ public:
    */
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<
-    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename MatrixType::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(const size_t & i, const size_t & j) const

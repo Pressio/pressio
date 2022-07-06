@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace qr{ namespace meta {
 
+#if 0 // not used (`is_dense` and `is_shared_mem` traits are used only here...)
 template <typename T, typename Enable = void>
 struct is_legitimate_r_type : std::false_type {};
 
@@ -62,6 +63,7 @@ struct is_legitimate_r_type<T,
 	   ::pressio::Traits<T>::is_dense
 	   >
       > : std::true_type{};
+#endif
 
 template <typename T, typename Q_T, typename Enable = void>
 struct is_legitimate_vector_type_for_qr_project : std::false_type {};

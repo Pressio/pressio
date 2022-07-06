@@ -49,7 +49,7 @@
 #ifndef TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
 #define TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
 
-namespace pressio{ 
+namespace pressio{
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 
@@ -65,7 +65,6 @@ struct Traits<
   >
   : public ::pressio::impl::TpetraTraits<T, 2>
 {
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Tpetra;
 };
 
 
@@ -81,7 +80,6 @@ struct Traits<
   >
   : public ::pressio::impl::EpetraTraits<2>
 {
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
 };
 
 //*******************************
@@ -96,7 +94,6 @@ struct Traits<
   >
   : public ::pressio::impl::TpetraTraits<T, 2>
 {
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
 };
 #endif
 

@@ -62,7 +62,6 @@ struct DiagExpr<
 {
   using this_t = DiagExpr<MatrixType>;
   using traits = DiagTraits<this_t>;
-  using size_t = typename traits::size_type;
   using ref_t = typename traits::reference_type;
   using const_ref_t = typename traits::const_reference_type;
   using native_expr_t = typename traits::native_expr_type;
@@ -134,9 +133,9 @@ struct DiagExpr<
 {
   using this_t		= DiagExpr<MatrixType>;
   using traits	= DiagTraits<this_t>;
-  using size_t		= typename traits::size_type;
-  using ref_t		= typename traits::reference_type;
+  using size_t	= typename Traits<MatrixType>::ordinal_type;
   using native_expr_t	= typename traits::native_expr_type;
+  using ref_t		= decltype( std::declval<native_expr_t>()(size_t{}) );
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -183,7 +182,7 @@ public:
 
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<
-    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename MatrixType::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(size_t i) const

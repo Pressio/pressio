@@ -61,9 +61,7 @@ struct Traits<
   mpl::enable_if_t<
     is_vector_eigen<T>::value
   >
-> : public ::pressio::impl::EigenTraits<T, 1>,
-    public ::pressio::impl::EigenVectorIdentifier<T>,
-    public ::pressio::impl::EigenVectorAllocTrait<T>
+> : public ::pressio::impl::EigenTraits<T, 1>
 {
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
@@ -82,10 +80,6 @@ struct Traits<
   >
   : public ::pressio::impl::KokkosTraits<T, 1>
 {
-  static constexpr VectorIdentifier
-  vector_identifier =
-    T::traits::rank_dynamic == 0 ? VectorIdentifier::KokkosStatic :
-    VectorIdentifier::KokkosDynamic;
 };
 #endif
 
@@ -102,7 +96,6 @@ struct Traits<
   >
   : public ::pressio::impl::TpetraTraits<T, 1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Tpetra;
 };
 #endif
 
@@ -119,7 +112,6 @@ struct Traits<
   >
   : public ::pressio::impl::EpetraTraits<1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
 };
 #endif
 
@@ -136,7 +128,6 @@ struct Traits<
   >
   : public ::pressio::impl::TpetraTraits<T, 1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TpetraBlock;
 };
 #endif
 
@@ -153,7 +144,6 @@ struct Traits<
   >
   : public ::pressio::impl::TeuchosTraits<T, 1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;
 };
 #endif
 

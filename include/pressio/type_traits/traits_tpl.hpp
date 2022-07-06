@@ -72,14 +72,8 @@ struct TrilinosTraits
       Rank
     >,
     public ::pressio::impl::ScalarTrait<Scalar>,
-    public ::pressio::impl::OrdinalTrait<LocalOrdinal>,
-    public ::pressio::impl::DynamicAllocTrait
+    public ::pressio::impl::OrdinalTrait<LocalOrdinal>
 {
-  using local_ordinal_type = LocalOrdinal;
-  using global_ordinal_type = GlobalOrdinal;
-  using data_map_type = DataMap;
-  using size_type  = GlobalOrdinal;
-  using communicator_type = Comm;
 };
 
 //*******************************
@@ -106,22 +100,6 @@ struct TrilinosCommType
   );
 };
 
-template<typename T, typename enabled = void> struct TpetraExtraTraits {};
-
-template<typename T>
-struct TpetraExtraTraits<
-  T,
-  mpl::enable_if_t< // NOT Tpetra::BlockVector
-    is_vector_tpetra<T>::value or
-    is_multi_vector_tpetra<T>::value
-  >
->
-{
-  using dual_view_type = typename T::dual_view_type;
-  using dot_type = typename T::dot_type;
-  using mag_type = typename T::mag_type;
-};
-
 template<typename T, int Rank>
 struct TpetraTraits
   : public ::pressio::impl::TrilinosTraits<
@@ -131,28 +109,12 @@ struct TpetraTraits
       typename T::global_ordinal_type,
       typename T::map_type,
       typename TrilinosCommType<T>::type
-    >,
-    public ::pressio::impl::TpetraExtraTraits<T>
+    >
 {
-  // using const_data_return_t = T const *;
-  // using data_return_t = T *;
-
-  /* node is a Tpetra concept, defined as:
-   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-   * where memory space is taken from the execution_space
-   */
-  using node_type = typename T::node_type;
-
   // device_type is just an (execution space, memory space) pair.
   // defined as: Kokkos::Device<execution_space, memory_space>
   // so from the device we can get the device execution and memory space
   using device_type = typename T::device_type;
-  using device_mem_space_type = typename device_type::memory_space;
-  using device_exec_space_type = typename device_type::execution_space;
-
-  // store types for host
-  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
 };
 
 //*******************************
@@ -166,10 +128,8 @@ struct TeuchosTraits
       Rank
     >,
     public ::pressio::impl::ScalarTrait<typename T::scalarType>,
-    public ::pressio::impl::OrdinalTrait<typename T::ordinalType>,
-    public ::pressio::impl::DynamicAllocTrait
+    public ::pressio::impl::OrdinalTrait<typename T::ordinalType>
 {
-
 };
 
 #endif // PRESSIO_ENABLE_TPL_TRILINOS
@@ -193,28 +153,11 @@ struct KokkosTraits
       typename T::traits::size_type
     >,
     public ::pressio::impl::ScalarTrait<
-      typename T::traits::value_type,
-      typename T::reference_type
-    >,
-    public ::pressio::impl::AllocTrait<is_static>
+      typename T::traits::value_type
+    >
 {
-  using layout_type       = typename T::traits::array_layout;
   using execution_space   = typename T::traits::execution_space;
-  using memory_space      = typename T::traits::memory_space;
   using device_type       = typename T::traits::device_type;
-  using memory_traits     = typename T::traits::memory_traits;
-  using host_mirror_space = typename T::traits::host_mirror_space;
-  using host_mirror_t     = typename T::host_mirror_type;
-
-  static constexpr bool has_host_execution_space =
-    (false
-     #ifdef KOKKOS_ENABLE_SERIAL
-     || std::is_same<execution_space, Kokkos::Serial>::value
-     #endif
-     #ifdef KOKKOS_ENABLE_OPENMP
-     || std::is_same<execution_space, Kokkos::OpenMP>::value
-     #endif
-     );
 };
 #endif // PRESSIO_ENABLE_TPL_KOKKOS
 
@@ -222,33 +165,6 @@ struct KokkosTraits
 // Eigen vector helpers
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-
-template <typename T, typename enabled = void> struct EigenVectorIdentifier {};
-
-#define _IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_vector, id) \
-template <typename T> \
-struct EigenVectorIdentifier< \
-  T, \
-  mpl::enable_if_t<::pressio::is_vector<T>::value> \
-> { \
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::id; \
-};
-
-_IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_static_row_vector_eigen,     EigenRowStatic)
-_IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_static_column_vector_eigen,  EigenColStatic)
-_IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_dynamic_row_vector_eigen,    EigenRowDynamic)
-_IMPL_EIGEN_VECTOR_VECTOR_IDENTIFIER(is_dynamic_column_vector_eigen, EigenColDynamic)
-
-template <typename T>
-using EigenVectorAllocTrait = ::pressio::impl::AllocTrait<
-  is_static_vector_eigen<T>::value
->;
-
-template <typename T>
-using EigenMatrixAllocTrait = ::pressio::impl::AllocTrait<
-  T::RowsAtCompileTime != Eigen::Dynamic &&
-  T::ColsAtCompileTime != Eigen::Dynamic
->;
 
 template <typename T, int Rank>
 struct EigenTraits

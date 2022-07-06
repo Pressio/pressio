@@ -63,59 +63,5 @@ enum class PackageIdentifier{
    Arbitrary
 };
 
-/*--------------------------------------------
-Identifier for  vectors
-
-Within a given package, like trilinos, we can
-have multiple types of vectors, e.g. epetra, tpetra.
-Same can be true for other packages.
---------------------------------------------*/
-enum class VectorIdentifier{
-   Undefined,
-   EigenRowStatic,
-   EigenColStatic,
-   EigenRowDynamic,
-   EigenColDynamic,
-   KokkosDynamic,
-   KokkosStatic,
-   Epetra,
-   Tpetra,
-   TpetraBlock,
-   TeuchosSerialDense,
-   Arbitrary
-};
-
-/*--------------------------------------------
-Identifier for  matrix
---------------------------------------------*/
-enum class MatrixIdentifier{
-   Undefined,
-   DenseEigen,
-   SparseEigen,
-   DenseKokkos,
-   DenseTeuchosSerial,
-   DenseArbitrary
-};
-
-/*--------------------------------------------
-Identifier for  multivector
---------------------------------------------*/
-enum class MultiVectorIdentifier{
-   Undefined,
-   Epetra,
-   Tpetra,
-   TpetraBlock,
-   Arbitrary
-};
-
-/*--------------------------------------------
-Identifier for  tensor
---------------------------------------------*/
-enum class TensorIdentifier{
-   Undefined,
-   Pybind,
-   Arbitrary
-};
-
 }
 #endif  // TYPE_TRAITS_ENUMS_HPP_

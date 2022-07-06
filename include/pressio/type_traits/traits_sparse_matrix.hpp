@@ -60,14 +60,8 @@ struct Traits<
     is_sparse_matrix_eigen<T>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<T, 2>,
-    public ::pressio::impl::EigenMatrixAllocTrait<T>,
-    public ::pressio::impl::MatrixLayoutTrait<T::IsRowMajor>,
-    public ::pressio::impl::SparseMatrixTrait
+  : public ::pressio::impl::EigenTraits<T, 2>
 {
-public:
-  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::SparseEigen;
-
 private:
   using ordinal_type_ = typename T::StorageIndex;
 

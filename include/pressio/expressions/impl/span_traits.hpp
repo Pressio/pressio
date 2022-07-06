@@ -59,8 +59,7 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<VectorType, 1>,
-    public ::pressio::impl::StaticAllocTrait
+  : public ::pressio::impl::EigenTraits<VectorType, 1>
 {
   using ordinal_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<VectorType>
@@ -108,6 +107,10 @@ struct SpanTraits<
   using native_expr_type =
     decltype(
       Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
+     );
+  using const_native_expr_type =
+    decltype(
+      Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
      );
 
   // using _const_native_expr_type =
