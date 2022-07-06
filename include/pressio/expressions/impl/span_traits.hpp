@@ -59,8 +59,7 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<VectorType, 1>,
-    public ::pressio::impl::StaticAllocTrait
+  : public ::pressio::impl::EigenTraits<VectorType, 1>
 {
   using ordinal_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<VectorType>
@@ -109,6 +108,10 @@ struct SpanTraits<
     decltype(
       Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
      );
+  using const_native_expr_type =
+    decltype(
+      Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
+     );
 
   // using _const_native_expr_type =
   //   decltype(
@@ -134,12 +137,10 @@ struct SpanTraits<
   >
   : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
 
   using remove_cv_t = typename std::remove_cv<T>::type;
   using scalar_type  = typename ::pressio::Traits<remove_cv_t>::scalar_type;
-  using size_type    = typename ::pressio::Traits<remove_cv_t>::size_type;
+  using size_type    = typename ::pressio::Traits<remove_cv_t>::ordinal_type;
   using reference_type =  scalar_type &;
   using const_reference_type = scalar_type const &;
 };

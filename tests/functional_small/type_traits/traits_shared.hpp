@@ -71,42 +71,10 @@ template <
 >
 void test_container_traits()
 {
-  // ContainersSharedTraits
   static_assert(traits::package_identifier == pack_id, "");
-  static_assert(traits::is_shared_mem == is_shared_mem, "");
-  static_assert(traits::is_distributed == !is_shared_mem, "");
-  static_assert(traits::rank == rank, "");
-  // AllocTrait
-  static_assert(traits::is_static == !is_dynamic, "");
-  static_assert(traits::is_dynamic == is_dynamic, "");
-  // ScalarTrait
+  static_assert(traits::rank == rank, "rank is different than expected");
   testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
-  testing::StaticAssertTypeEq<typename traits::reference_type, Scalar &>();
-  testing::StaticAssertTypeEq<typename traits::const_reference_type, Scalar const &>();
-  // OrdinalTrait
   testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
-  testing::StaticAssertTypeEq<typename traits::size_type, SizeType>();
-}
-
-// -------------------------------------------------
-
-/*
-    Verifies traits common for all matrices
-*/
-template <
-  typename T,
-  pressio::MatrixIdentifier mtx_id,
-  bool is_row_major = true,
-  bool is_sparse = false,
-  typename traits = pressio::Traits<T>
->
-void test_matrix_traits()
-{
-  static_assert(traits::matrix_identifier == mtx_id, "");
-  static_assert(traits::is_sparse == is_sparse, "");
-  static_assert(traits::is_dense == !is_sparse, "");
-  static_assert(traits::is_row_major == is_row_major, "");
-  static_assert(traits::is_col_major == !is_row_major, "");
 }
 
 // -------------------------------------------------

@@ -61,7 +61,7 @@ abs(T1 & to, const T2 & from)
 {
   assert(to.ndim() == from.ndim());
 
-  using size_t = typename ::pressio::Traits<T1>::size_type;
+  using size_t = typename ::pressio::Traits<T1>::ordinal_type;
   assert(extent(to,0)==extent(from,0));
   if (to.ndim() == 1)
   {

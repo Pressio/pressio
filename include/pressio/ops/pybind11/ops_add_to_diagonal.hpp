@@ -64,7 +64,7 @@ add_to_diagonal(T & o,
   // must be square
   assert(extent(o,0) == extent(o,1));
 
-  using ord_t = typename ::pressio::Traits<T>::size_type;
+  using ord_t = typename ::pressio::Traits<T>::ordinal_type;
   for (ord_t i=0; i<extent(o,0); ++i){
     o(i,i) += value;
   }

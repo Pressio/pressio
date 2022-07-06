@@ -63,7 +63,7 @@ pow(T & x,
     throw std::runtime_error("pow: only allowed for rank-1");
   }
 
-  using ord_t = typename ::pressio::Traits<T>::size_type;
+  using ord_t = typename ::pressio::Traits<T>::ordinal_type;
   for (ord_t i=0; i<extent(x,0); ++i)
     x(i) = std::pow(x(i), exponent);
 }
@@ -83,7 +83,7 @@ pow(T1 & y,
   }
 
 
-  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
   assert(extent(x,0) == extent(y,0));
   for (ord_t i=0; i<extent(x,0); ++i)
     y(i) = std::pow(x(i), exponent);
@@ -105,7 +105,7 @@ abs_pow(T1 & y,
   }
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
 
   assert(extent(x,0) == extent(y,0));
   assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
@@ -135,7 +135,7 @@ abs_pow(T1 & y,
   }
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
 
   assert(extent(x,0) == extent(y,0));
   assert(exponent < ::pressio::utils::Constants<sc_t>::zero());

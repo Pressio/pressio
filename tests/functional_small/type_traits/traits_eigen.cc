@@ -35,10 +35,6 @@ void test_eigen_vector_type_traits()
 {
   // traits
   test_eigen_container_traits<T, 1, is_dynamic>();
-  static_assert(traits::vector_identifier == (is_dynamic ?
-    (is_row_vector ? pressio::VectorIdentifier::EigenRowDynamic : pressio::VectorIdentifier::EigenColDynamic) :
-    (is_row_vector ? pressio::VectorIdentifier::EigenRowStatic : pressio::VectorIdentifier::EigenColStatic)), "");
-
   // vector predicates
   static_assert(pressio::is_vector_eigen<T>::value, "");
   static_assert(pressio::is_dynamic_vector_eigen<T>::value == is_dynamic, "");
@@ -81,7 +77,6 @@ void test_eigen_matrix_type_traits()
 {
   // traits
   test_eigen_container_traits<T, 2, is_dynamic>();
-  test_matrix_traits<T, pressio::MatrixIdentifier::DenseEigen, T::IsRowMajor>();
 
   constexpr bool row_major = T::IsRowMajor == 1;
   // static_assert(traits::is_row_major == row_major);
@@ -122,7 +117,6 @@ void test_eigen_sparse_matrix_type_traits()
 {
   // traits
   test_eigen_container_traits<T, 2, true>();
-  test_matrix_traits<T, pressio::MatrixIdentifier::SparseEigen, T::IsRowMajor, true>();
 
   // sparse matrix predicates
   static_assert(pressio::is_sparse_matrix_eigen<T>::value, "");

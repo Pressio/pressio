@@ -59,20 +59,16 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<MatrixType, 2>,
-    public ::pressio::impl::StaticAllocTrait,
-    public ::pressio::impl::MatrixDensityTrait<
-      ::pressio::Traits<MatrixType>::is_sparse
-    >
+  : public ::pressio::impl::EigenTraits<MatrixType, 2>
 {
-  using size_type = typename ::pressio::impl::SizePair<MatrixType>::size_type;
+  using ordinal_type = typename ::pressio::impl::SizePair<MatrixType>::ordinal_type;
 
   // type of the native expression
   using _native_expr_type = decltype(
-    std::declval<MatrixType>().block(size_type{},size_type{},size_type{},size_type{} )
+    std::declval<MatrixType>().block(ordinal_type{},ordinal_type{},ordinal_type{},ordinal_type{} )
     );
   using _const_native_expr_type = decltype(
-    std::declval<const MatrixType>().block(size_type{},size_type{},size_type{},size_type{} )
+    std::declval<const MatrixType>().block(ordinal_type{},ordinal_type{},ordinal_type{},ordinal_type{} )
     );
   using native_expr_type = typename std::conditional<
     std::is_const<MatrixType>::value,
@@ -97,8 +93,7 @@ struct SubSpanTraits<
       ::pressio::mpl::remove_cvref_t<MatrixType>,
       2,
       true
-    >,
-    public ::pressio::impl::DenseMatrixTrait
+    >
 {
   using pair_type = typename ::pressio::impl::SizePair<MatrixType>::pair_type;
 
@@ -134,9 +129,6 @@ struct SubSpanTraits<
   : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
     public ::pressio::impl::DenseMatrixTrait
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
   using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
   using scalar_type  = typename Traits<mat_remove_cv_t>::scalar_type;
   using size_type    = typename Traits<mat_remove_cv_t>::size_type;

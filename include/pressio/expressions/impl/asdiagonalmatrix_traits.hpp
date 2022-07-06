@@ -62,9 +62,7 @@ struct AsdiagmatrixTraits<
   : public ::pressio::impl::EigenTraits<
       ::pressio::mpl::remove_cvref_t<VectorType>,
       2
-    >,
-    public ::pressio::impl::StaticAllocTrait,
-    public ::pressio::impl::DenseMatrixTrait
+    >
 {
   using scalar_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<VectorType>

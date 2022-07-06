@@ -79,7 +79,7 @@ protected:
 
     int syslog_level(level::level_enum l)
     {
-        return syslog_levels_.at(static_cast<levels_array::size_type>(l));
+        return syslog_levels_.at(static_cast<levels_array::ordinal_type>(l));
     }
 
     void flush_() override {}

@@ -198,7 +198,7 @@ struct Traits<
   using decoder_jac_type		= typename common_types::decoder_jac_type;
   using fom_state_reconstr_type	= typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type	= typename common_types::fom_states_manager_type;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   // default galerkin uses default projector, so decoderJac^T
   using projector_type = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_type>;
@@ -253,7 +253,7 @@ struct Traits<
   using galerkin_residual_type = GalerkinResidualType;
   using galerkin_jacobian_type = GalerkinJacobianType;
 
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   // default galerkin uses default projector, so decoderJac^T
   using projector_type = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_type>;
@@ -317,7 +317,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   // default galerkin uses default projector, so decoderJac^T
   using projector_type = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_type>;
@@ -383,7 +383,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   using masker_type = MaskerType;
   using projector_type = ProjectorType;
@@ -451,7 +451,7 @@ struct Traits<
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
   using galerkin_residual_type = GalerkinResidualType;
   using galerkin_jacobian_type = GalerkinJacobianType;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   using masker_type = MaskerType;
   using projector_type = ProjectorType;
@@ -533,7 +533,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   using masker_type = MaskerType;
   static_assert
@@ -612,7 +612,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   using projector_type = ProjectorType;
   static_assert
@@ -670,7 +670,7 @@ struct Traits<
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
   using galerkin_residual_type = GalerkinResidualType;
   using galerkin_jacobian_type = GalerkinJacobianType;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   using projector_type = ProjectorType;
   static_assert
@@ -737,7 +737,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::ordinal_type;
 
   using projector_type = ProjectorType;
   static_assert

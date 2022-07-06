@@ -63,7 +63,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
+  using ord_t = typename ::pressio::Traits<T1>::ordinal_type; // local_ordinal_type
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
@@ -95,7 +95,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
+  using ord_t = typename ::pressio::Traits<T1>::ordinal_type; // local_ordinal_type
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
@@ -124,7 +124,7 @@ template <typename T>
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
+  using ord_t = typename ::pressio::Traits<T>::ordinal_type; // local_ordinal_type
   auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i)

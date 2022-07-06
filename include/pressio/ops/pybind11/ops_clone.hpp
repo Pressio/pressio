@@ -60,7 +60,7 @@ clone(const T & src)
 
     const pybind11::ssize_t ext0 = ::pressio::ops::extent(src, 0);
     T result({ext0});
-    using ord_t = typename ::pressio::Traits<T>::size_type;
+    using ord_t = typename ::pressio::Traits<T>::ordinal_type;
     for (ord_t i=0; i<::pressio::ops::extent(src, 0); ++i){
       result(i) = src(i);
     }
@@ -73,7 +73,7 @@ clone(const T & src)
     const pybind11::ssize_t ext1 = ::pressio::ops::extent(src, 1);
 
     T result({ext0,  ext1});
-    using ord_t = typename ::pressio::Traits<T>::size_type;
+    using ord_t = typename ::pressio::Traits<T>::ordinal_type;
     for (ord_t i=0; i<::pressio::ops::extent(src, 0); ++i){
       for (ord_t j=0; j<::pressio::ops::extent(src, 1); ++j){
 	result(i,j) = src(i,j);

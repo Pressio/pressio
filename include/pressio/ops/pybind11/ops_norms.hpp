@@ -59,7 +59,7 @@ template <typename T>
 norm1(const T & o)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  using size_t = typename ::pressio::Traits<T>::size_type;
+  using size_t = typename ::pressio::Traits<T>::ordinal_type;
   sc_t result = ::pressio::utils::Constants<sc_t>::zero();
 
   if (o.ndim()==1){
@@ -82,7 +82,7 @@ norm2(const T & o)
 {
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  using size_t = typename ::pressio::Traits<T>::size_type;
+  using size_t = typename ::pressio::Traits<T>::ordinal_type;
   sc_t result = ::pressio::utils::Constants<sc_t>::zero();
 
   if (o.ndim()==1){

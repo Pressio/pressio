@@ -66,7 +66,7 @@ update(T & v, scalar_t a,
   assert(extent(v,0) == extent(v1,0));
   assert(v.ndim() == v1.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type i=0; i<extent(v,0); ++i){
     v(i) = a*v(i) + b*v1(i);
   }
@@ -84,7 +84,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v1.ndim());
   assert(extent(v,0) == extent(v1,0));
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type j=0; j<extent(v,1); ++j){
     for (size_type i=0; i<extent(v,0); ++i){
       v(i,j) = a*v(i,j) + b*v1(i,j);
@@ -103,7 +103,7 @@ update(T & v, scalar_t a,
 
   assert(v.ndim() == v1.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   if (v.ndim()==1){
     assert(extent(v,0) == extent(v1,0));
     for (size_type i=0; i<extent(v,0); ++i){
@@ -141,7 +141,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v1.ndim());
   assert(v.ndim() == v2.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type i=0; i<extent(v,0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i);
   }
@@ -164,7 +164,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v1.ndim());
   assert(v.ndim() == v2.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type j=0; j<extent(v,1); ++j){
     for (size_type i=0; i<extent(v,0); ++i){
       v(i,j) = a*v(i,j) + b*v1(i,j) + c*v2(i,j);
@@ -182,7 +182,7 @@ update(T & v, scalar_t a,
        const T2 & v2, scalar_t c)
 {
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   if (v.ndim()==1){
     assert(extent(v,0) == extent(v1,0));
     assert(extent(v,0) == extent(v2,0));
@@ -232,7 +232,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v2.ndim());
   assert(v.ndim() == v3.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type i=0; i<extent(v,0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
   }
@@ -259,7 +259,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v2.ndim());
   assert(v.ndim() == v3.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type j=0; j<extent(v,1); ++j){
     for (size_type i=0; i<extent(v,0); ++i){
       v(i,j) = a*v(i,j) + b*v1(i,j) + c*v2(i,j) + d*v3(i,j);
@@ -280,7 +280,7 @@ update(T & v, scalar_t a,
 
   assert(v.ndim() == v1.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   if (v.ndim()==1){
     assert(extent(v,0) == extent(v1,0));
     assert(extent(v,0) == extent(v2,0));
@@ -338,7 +338,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v3.ndim());
   assert(v.ndim() == v4.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type i=0; i<extent(v,0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
   }
@@ -369,7 +369,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v3.ndim());
   assert(v.ndim() == v4.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   for (size_type j=0; j<extent(v,1); ++j){
     for (size_type i=0; i<extent(v,0); ++i){
       v(i,j) = a*v(i,j) + b*v1(i,j) + c*v2(i,j) + d*v3(i,j) + e*v4(i,j);
@@ -394,7 +394,7 @@ update(T & v, scalar_t a,
   assert(v.ndim() == v3.ndim());
   assert(v.ndim() == v4.ndim());
 
-  using size_type = typename ::pressio::Traits<T>::size_type;
+  using size_type = typename ::pressio::Traits<T>::ordinal_type;
   if (v.ndim()==1){
     for (size_type i=0; i<extent(v,0); ++i){
       v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);

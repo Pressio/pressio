@@ -141,7 +141,7 @@ struct Traits<
   using lspg_state_type  = typename common_types::lspg_state_type;
   using lspg_residual_type = typename common_types::lspg_residual_type;
   using lspg_jacobian_type = typename common_types::lspg_jacobian_type;
-  using size_type = typename ::pressio::Traits<lspg_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<lspg_state_type>::ordinal_type;
 
   using residual_policy_type =
     ::pressio::rom::lspg::impl::SteadyResidualPolicy<
@@ -191,7 +191,7 @@ struct Traits<
   using lspg_state_type  = typename common_types::lspg_state_type;
   using lspg_residual_type = typename common_types::lspg_residual_type;
   using lspg_jacobian_type = typename common_types::lspg_jacobian_type;
-  using size_type = typename ::pressio::Traits<lspg_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<lspg_state_type>::ordinal_type;
 
   using preconditioner_type = PreconditionerType;
   static_assert
@@ -251,7 +251,7 @@ struct Traits<
   using lspg_state_type  = typename common_types::lspg_state_type;
   using lspg_residual_type = typename common_types::lspg_residual_type;
   using lspg_jacobian_type = typename common_types::lspg_jacobian_type;
-  using size_type = typename ::pressio::Traits<lspg_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<lspg_state_type>::ordinal_type;
 
   using masker_type = MaskerType;
   static_assert
@@ -311,7 +311,7 @@ struct Traits<
   using lspg_state_type  = typename common_types::lspg_state_type;
   using lspg_residual_type = typename common_types::lspg_residual_type;
   using lspg_jacobian_type = typename common_types::lspg_jacobian_type;
-  using size_type = typename ::pressio::Traits<lspg_state_type>::size_type;
+  using size_type = typename ::pressio::Traits<lspg_state_type>::ordinal_type;
 
   using masker_type = MaskerType;
   static_assert

@@ -45,8 +45,6 @@ TEST(type_traits, TeuchosVector)
 {
   using T = Teuchos::SerialDenseVector<int, double>;
   static_assert(pressio::is_dense_vector_teuchos<T>::value,"");
-  ASSERT_TRUE(pressio::Traits<T>::vector_identifier
-      == pressio::VectorIdentifier::TeuchosSerialDense);
   test_teuchos_container<T, 1>();
 }
 
@@ -54,7 +52,5 @@ TEST(type_traits, TeuchosMatrix)
 {
   using T = Teuchos::SerialDenseMatrix<long long, float>;
   static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
-  ASSERT_TRUE(pressio::Traits<T>::matrix_identifier
-      == pressio::MatrixIdentifier::DenseTeuchosSerial);
   test_teuchos_container<T, 2>();
 }

@@ -234,7 +234,7 @@ product(::pressio::transpose modeA,
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
 
-  using map_t      = typename ::pressio::Traits<A_type>::data_map_type;
+  using map_t      = typename A_type::map_type;
   // using tpetra_mv_t = typename ::pressio::Traits<A_type>::wrapped_type;
   const auto indexBase = A.getMap()->getIndexBase();
   const auto comm = A.getMap()->getComm();
@@ -309,7 +309,7 @@ product(::pressio::transpose modeA,
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
 
-  using map_t      = typename ::pressio::Traits<A_type>::data_map_type;
+  using map_t = typename A_type::map_type;
   const auto indexBase = A.getMap()->getIndexBase();
   const auto comm = A.getMap()->getComm();
 

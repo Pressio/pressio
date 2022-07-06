@@ -55,7 +55,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_array_pybind<T>::value
   >
-resize(T & o, typename ::pressio::Traits<T>::size_type newSize)
+resize(T & o, typename ::pressio::Traits<T>::ordinal_type newSize)
 {
   assert(o.ndim() == 1);
   // not sure we need false here
@@ -67,8 +67,8 @@ template <typename T>
   ::pressio::is_array_pybind<T>::value
   >
 resize(T & o,
-       const typename ::pressio::Traits<T>::size_type newRows,
-       const typename ::pressio::Traits<T>::size_type newCols)
+       const typename ::pressio::Traits<T>::ordinal_type newRows,
+       const typename ::pressio::Traits<T>::ordinal_type newCols)
 {
   assert(o.ndim() == 2);
   // not sure we need false here

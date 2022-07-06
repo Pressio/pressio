@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 template<class T, class IndexType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_array_pybind<T>::value,
-  typename ::pressio::Traits<T>::size_type
+  typename ::pressio::Traits<T>::ordinal_type
 >
 extent(const T & objectIn, const IndexType i)
 {
@@ -64,7 +64,7 @@ extent(const T & objectIn, const IndexType i)
 template<class T, class IndexType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_expression_pybind<T>::value,
-  typename ::pressio::Traits<T>::size_type
+  typename ::pressio::Traits<T>::ordinal_type
 >
 extent(const T & objectIn, const IndexType i)
 {
