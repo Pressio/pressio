@@ -73,8 +73,8 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 	 ::pressio::mpl::enable_if_t<
   	   ::pressio::Traits<T>::rank == 1 and
 	   // the vector type should be from same package as Q
-	   ::pressio::Traits<T>::package_identifier ==
-	   ::pressio::Traits<Q_t>::package_identifier
+	   ::pressio::package_identifier<T>::value ==
+	   ::pressio::package_identifier<Q_t>::value
 	 >
       > : std::true_type{};
 

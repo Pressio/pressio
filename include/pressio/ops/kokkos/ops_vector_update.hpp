@@ -77,8 +77,8 @@ struct _kokkosUpdateAdmissibleOperands
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   >
@@ -91,8 +91,8 @@ update(T1 & v,         const scalar_t & a,
 
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   >
@@ -108,9 +108,9 @@ update(T1 & v, const T2 & v1, const scalar_t & b)
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -126,17 +126,17 @@ update(T1 & v,	   const scalar_t &a,
   using v2_t = typename impl::NativeType<T3>::type;
 
   using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
-  fnctr_t F(impl::get_native(v), 
-            impl::get_native(v1), 
+  fnctr_t F(impl::get_native(v),
+            impl::get_native(v1),
             impl::get_native(v2), a, b, c);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -152,8 +152,8 @@ update(T1 & v,
   using v2_t = typename impl::NativeType<T3>::type;
 
   using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
-  fnctr_t F(impl::get_native(v), 
-            impl::get_native(v1), 
+  fnctr_t F(impl::get_native(v),
+            impl::get_native(v1),
             impl::get_native(v2), b, c);
   Kokkos::parallel_for(v.extent(0), F);
 }
@@ -164,10 +164,10 @@ update(T1 & v,
 // //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -186,26 +186,26 @@ update(T1 & v,  const scalar_t &a,
   using v3_t = typename impl::NativeType<T4>::type;
 
   using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
-  fnctr_t F(impl::get_native(v), 
-            impl::get_native(v1), 
-            impl::get_native(v2), 
-            impl::get_native(v3), 
+  fnctr_t F(impl::get_native(v),
+            impl::get_native(v1),
+            impl::get_native(v2),
+            impl::get_native(v3),
             a, b, c, d);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
   and ::pressio::Traits<T4>::rank == 1
   >
-update(T1 & v, 
+update(T1 & v,
     const T2 & v1, const scalar_t &b,
     const T3 & v2, const scalar_t &c,
     const T4 & v3, const scalar_t &d)
@@ -218,10 +218,10 @@ update(T1 & v,
   using v3_t = typename impl::NativeType<T4>::type;
 
   using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
-  fnctr_t F(impl::get_native(v), 
-            impl::get_native(v1), 
-            impl::get_native(v2), 
-            impl::get_native(v3), 
+  fnctr_t F(impl::get_native(v),
+            impl::get_native(v1),
+            impl::get_native(v2),
+            impl::get_native(v3),
             b, c, d);
   Kokkos::parallel_for(v.extent(0), F);
 }
@@ -235,11 +235,11 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T5>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T5>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -261,11 +261,11 @@ update(T1 & v,	const scalar_t &a,
   using v4_t = typename impl::NativeType<T5>::type;
 
   using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
-  fnctr_t F(impl::get_native(v), 
-            impl::get_native(v1), 
-            impl::get_native(v2), 
-            impl::get_native(v3), 
-            impl::get_native(v4), 
+  fnctr_t F(impl::get_native(v),
+            impl::get_native(v1),
+            impl::get_native(v2),
+            impl::get_native(v3),
+            impl::get_native(v4),
             a, b, c, d, e);
   Kokkos::parallel_for(v.extent(0), F);
 }
@@ -275,18 +275,18 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T5>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T5>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
   and ::pressio::Traits<T4>::rank == 1
   and ::pressio::Traits<T5>::rank == 1
   >
-update(T1 & v, 
+update(T1 & v,
     const T2 & v1, const scalar_t &b,
     const T3 & v2, const scalar_t &c,
     const T4 & v3, const scalar_t &d,
@@ -301,11 +301,11 @@ update(T1 & v,
   using v4_t = typename impl::NativeType<T5>::type;
 
   using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
-  fnctr_t F(impl::get_native(v), 
-            impl::get_native(v1), 
-            impl::get_native(v2), 
-            impl::get_native(v3), 
-            impl::get_native(v4), 
+  fnctr_t F(impl::get_native(v),
+            impl::get_native(v1),
+            impl::get_native(v2),
+            impl::get_native(v3),
+            impl::get_native(v4),
             b, c, d, e);
   Kokkos::parallel_for(v.extent(0), F);
 }

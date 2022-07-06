@@ -58,9 +58,9 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-      ::pressio::Traits<T>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+      ::pressio::package_identifier<T>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
   and ::pressio::Traits<T>::rank == 1
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
@@ -76,7 +76,7 @@ elementwise_multiply(typename ::pressio::Traits<T>::scalar_type alpha,
 
   assert(x.extent(0) == z.extent(0));
   assert(z.extent(0) == y.extent(0));
-  KokkosBlas::mult(beta, impl::get_native(y), 
+  KokkosBlas::mult(beta, impl::get_native(y),
     alpha, impl::get_native(x), impl::get_native(z) );
 }
 

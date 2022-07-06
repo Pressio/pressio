@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
 template <class T>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::rank==1 and
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
   >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
@@ -70,8 +70,8 @@ pow(T & x,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
   >
 pow(T1 & y,
     const T2 & x,
@@ -89,8 +89,8 @@ pow(T1 & y,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -115,8 +115,8 @@ abs_pow(T1 & y,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
   >
 abs_pow(T1 & y,
 	const T2 & x,

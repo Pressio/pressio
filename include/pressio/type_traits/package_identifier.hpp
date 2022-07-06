@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_scale.hpp
+// type_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,60 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_SCALE_HPP_
-#define OPS_KOKKOS_OPS_SCALE_HPP_
+#ifndef PRESSIO_TYPE_PACKAGE_ID_HPP_
+#define PRESSIO_TYPE_PACKAGE_ID_HPP_
 
-#include <KokkosBlas1_scal.hpp>
+namespace pressio {
 
-namespace pressio{ namespace ops{
+template <typename T, typename Enable = void> struct package_identifier;
 
+//----------------------------------------------------------------------
+// containers
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
+struct package_identifier<T, ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_eigen<T>::value
+    || ::pressio::is_dense_matrix_eigen<T>::value
+    || ::pressio::is_sparse_matrix_eigen<T>::value
   >
-scale(const T & v, typename ::pressio::Traits<T>::scalar_type value)
+>
 {
-  ::KokkosBlas::scal(impl::get_native(v), value, impl::get_native(v));
-}
+    static constexpr auto value = ::pressio::PackageIdentifier::Eigen;
+};
+#endif // PRESSIO_ENABLE_TPL_EIGEN
 
-}}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_SCALE_HPP_
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct package_identifier<T, ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_kokkos<T>::value
+    || ::pressio::is_dense_matrix_kokkos<T>::value
+  >
+>
+{
+    static constexpr auto value = ::pressio::PackageIdentifier::Kokkos;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+struct package_identifier<T, ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_tpetra<T>::value
+    || ::pressio::is_vector_tpetra_block<T>::value
+    || ::pressio::is_vector_epetra<T>::value
+    || ::pressio::is_multi_vector_tpetra<T>::value
+    || ::pressio::is_multi_vector_tpetra_block<T>::value
+    || ::pressio::is_multi_vector_epetra<T>::value
+    || ::pressio::is_dense_vector_teuchos<T>::value
+    || ::pressio::is_dense_matrix_teuchos<T>::value
+  >
+>
+{
+    static constexpr auto value = ::pressio::PackageIdentifier::Trilinos;
+};
+#endif
+
+//----------------------------------------------------------------------
+} // namespace pressio
+
+#endif // PRESSIO_TYPE_PACKAGE_ID_HPP_

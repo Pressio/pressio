@@ -115,4 +115,7 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/traits_multi_vector.hpp"
 #include "type_traits/traits_sparse_matrix.hpp"
 
+//*** derived ****
+#include "type_traits/package_identifier.hpp"
+
 #endif

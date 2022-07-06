@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen and
   ::pressio::Traits<T>::rank == 1,
   decltype( impl::get_native(std::declval<const T>()).template lpNorm<1>() )
   >
@@ -64,7 +64,7 @@ norm1(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen and
   ::pressio::Traits<T>::rank == 1,
   decltype( impl::get_native(std::declval<const T>()).template lpNorm<2>() )
   >

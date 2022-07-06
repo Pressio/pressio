@@ -59,7 +59,6 @@ template<
   >
 struct ContainersSharedTraits
 {
-  static constexpr PackageIdentifier package_identifier = PackId;
   static constexpr int rank = _rank;
 };
 

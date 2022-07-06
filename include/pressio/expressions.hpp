@@ -59,5 +59,6 @@
 #include "./expressions/as_diagonal_matrix.hpp"
 
 #include "./expressions/is_expression.hpp"
+#include "./expressions/package_identifier.hpp"
 
 #endif

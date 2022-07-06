@@ -65,9 +65,9 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<A_type>::value == PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<x_type>::value == PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<y_type>::value == PackageIdentifier::Kokkos and
   ::pressio::Traits<A_type>::rank == 2 and
   ::pressio::Traits<x_type>::rank == 1 and
   ::pressio::Traits<y_type>::rank == 1
@@ -98,9 +98,9 @@ product(::pressio::nontranspose /*unused*/,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<A_type>::value == PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<x_type>::value == PackageIdentifier::Kokkos and
+  ::pressio::package_identifier<y_type>::value == PackageIdentifier::Kokkos and
   ::pressio::Traits<A_type>::rank == 2 and
   ::pressio::Traits<x_type>::rank == 1 and
   ::pressio::Traits<y_type>::rank == 1

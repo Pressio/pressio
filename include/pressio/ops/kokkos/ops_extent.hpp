@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template<class T, class IndexType>
 mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Kokkos,
+  ::pressio::package_identifier<T>::value == PackageIdentifier::Kokkos,
   decltype(std::declval<const T>().extent(0))
   >
 extent(const T & objectIn, const IndexType i)
