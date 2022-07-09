@@ -105,8 +105,8 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
 					y_type & y)
 {
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
-  using tpetra_mv_dev_t = typename ::pressio::Traits<A_type>::device_type;
-  using kokkos_v_dev_t  = typename ::pressio::Traits<x_type>::device_type;
+  using tpetra_mv_dev_t = typename ::pressio::impl::device_type<A_type>::type;
+  using kokkos_v_dev_t  = typename ::pressio::impl::device_type<x_type>::type;
   static_assert
     ( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
       "product: tpetra MV and kokkos wrapper need to have same device type" );
@@ -298,15 +298,11 @@ product(::pressio::transpose /*unused*/,
 {
 
   static_assert
-    (std::is_same<
-     typename ::pressio::Traits<A_type>::device_type,
-     typename ::pressio::Traits<x_type>::device_type>::value,
+    (::pressio::have_matching_device_type<A_type, x_type>::value,
      "Tpetra MV dot V: operands do not have the same device type");
 
   static_assert
-    (std::is_same<
-     typename ::pressio::Traits<x_type>::device_type,
-     typename ::pressio::Traits<y_type>::device_type>::value,
+    (::pressio::have_matching_device_type<x_type, y_type>::value,
      "Tpetra MV dot V: V and result do not have the same device type");
 
   y_type ATx("ATx", y.extent(0));
