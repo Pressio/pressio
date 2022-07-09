@@ -59,7 +59,7 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<VectorType, 1>
+  : public ::pressio::Traits<VectorType>
 {
   using ordinal_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<VectorType>
@@ -96,11 +96,7 @@ struct SpanTraits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-            ::pressio::mpl::remove_cvref_t<VectorType>,
-      1,
-      true
-    >
+  : public ::pressio::Traits<VectorType>
 {
   using pair_type = typename ::pressio::impl::SizePair<VectorType>::pair_type;
 

@@ -59,7 +59,7 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<MatrixType, 2>
+  : public ::pressio::Traits<MatrixType>
 {
   using ordinal_type = typename ::pressio::impl::SizePair<MatrixType>::ordinal_type;
 
@@ -89,11 +89,7 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-      ::pressio::mpl::remove_cvref_t<MatrixType>,
-      2,
-      true
-    >
+  : public ::pressio::Traits<MatrixType>
 {
   using pair_type = typename ::pressio::impl::SizePair<MatrixType>::pair_type;
 

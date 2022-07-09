@@ -62,9 +62,12 @@ struct Traits<
     is_dense_matrix_eigen<T>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<T, 2>
-{
-};
+  : public ::pressio::impl::ContainerTraits<
+      2,
+      typename T::Scalar,
+      typename T::StorageIndex
+    >
+{};
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
 //*******************************
@@ -78,9 +81,12 @@ struct Traits<
       is_dense_matrix_kokkos<T>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<T, 2>
-{
-};
+  : public ::pressio::impl::ContainerTraits<
+      2,
+      typename T::traits::value_type,
+      typename T::traits::size_type
+    >
+{};
 #endif
 
 //**********************************
@@ -94,9 +100,12 @@ struct Traits<
     is_dense_matrix_teuchos<T>::value
     >
   >
-  : public ::pressio::impl::TeuchosTraits<T, 2>
-{
-};
+  : public ::pressio::impl::ContainerTraits<
+      2,
+      typename T::scalarType,
+      typename T::ordinalType
+    >
+{};
 #endif
 
 }

@@ -60,7 +60,11 @@ struct Traits<
     is_sparse_matrix_eigen<T>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<T, 2>
+  : public ::pressio::impl::ContainerTraits<
+      2,
+      typename T::Scalar,
+      typename T::StorageIndex
+    >
 {
 private:
   using ordinal_type_ = typename T::StorageIndex;

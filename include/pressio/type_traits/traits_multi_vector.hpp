@@ -55,17 +55,22 @@ namespace pressio{
 
 //*******************************
 // for tpetra multivector
+// and block tpetra multivector
 //*******************************
 template<typename T>
 struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_multi_vector_tpetra<T>::value
+    || is_multi_vector_tpetra_block<T>::value
     >
   >
-  : public ::pressio::impl::TpetraTraits<T, 2>
-{
-};
+  : public ::pressio::impl::ContainerTraits<
+      2,
+      typename T::impl_scalar_type,
+      typename T::local_ordinal_type
+   >
+{};
 
 
 //*******************************
@@ -78,23 +83,13 @@ struct Traits<
     is_multi_vector_epetra<T>::value
     >
   >
-  : public ::pressio::impl::EpetraTraits<2>
-{
-};
-
-//*******************************
-// for block tpetra multivector
-//*******************************
-template<typename T>
-struct Traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_multi_vector_tpetra_block<T>::value
+  : public ::pressio::impl::ContainerTraits<
+      2,
+      /* ScalarType */ double,
+      /* OrdinalType */ int
     >
-  >
-  : public ::pressio::impl::TpetraTraits<T, 2>
-{
-};
+{};
+
 #endif
 
 }
