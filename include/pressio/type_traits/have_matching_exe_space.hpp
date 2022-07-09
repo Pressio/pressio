@@ -64,8 +64,8 @@ template <typename T1, typename T2>
 struct have_matching_execution_space<T1, T2>
 {
   static constexpr auto value = std::is_same<
-    typename ::pressio::Traits<T1>::execution_space,
-    typename ::pressio::Traits<T2>::execution_space
+    typename ::pressio::impl::execution_space<T1>::type,
+    typename ::pressio::impl::execution_space<T2>::type
     >::value;
 };
 

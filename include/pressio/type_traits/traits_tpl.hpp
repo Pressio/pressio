@@ -179,6 +179,21 @@ struct EigenTraits
 
 #endif // PRESSIO_ENABLE_TPL_EIGEN
 
+template <typename T, typename Enabled=void> struct execution_space;
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct execution_space<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_vector_kokkos<T>::value
+    || ::pressio::is_dense_matrix_kokkos<T>::value
+    >
+  >
+{
+  using type = typename T::traits::execution_space;
+};
+#endif
 
 }} // namespace pressio::impl
 #endif // TPL_TRAITS_HPP_
