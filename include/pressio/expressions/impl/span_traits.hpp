@@ -59,7 +59,7 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<VectorType, 1>
+  : public ::pressio::Traits<VectorType>
 {
   using ordinal_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<VectorType>
@@ -96,11 +96,7 @@ struct SpanTraits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-            ::pressio::mpl::remove_cvref_t<VectorType>,
-      1,
-      true
-    >
+  : public ::pressio::Traits<VectorType>
 {
   using pair_type = typename ::pressio::impl::SizePair<VectorType>::pair_type;
 
@@ -135,12 +131,8 @@ struct SpanTraits<
     ::pressio::is_array_pybind<T>::value
     >
   >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+  : public ::pressio::Traits<T>
 {
-
-  using remove_cv_t = typename std::remove_cv<T>::type;
-  using scalar_type  = typename ::pressio::Traits<remove_cv_t>::scalar_type;
-  using size_type    = typename ::pressio::Traits<remove_cv_t>::ordinal_type;
   using reference_type =  scalar_type &;
   using const_reference_type = scalar_type const &;
 };

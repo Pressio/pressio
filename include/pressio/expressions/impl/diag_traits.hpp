@@ -59,11 +59,10 @@ struct DiagTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<
-      typename ::pressio::mpl::remove_cvref_t<MatrixType>,
-      1
-    >
+  : public ::pressio::Traits<MatrixType>
 {
+  static constexpr int rank = 1; // expression changes the rank
+
   // type of the native expression
   using _native_expr_type = decltype(std::declval<MatrixType>().diagonal());
   using _const_native_expr_type=decltype(std::declval<const MatrixType>().diagonal());
@@ -87,12 +86,10 @@ struct DiagTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-      typename ::pressio::mpl::remove_cvref_t<MatrixType>,
-      1,
-      true
-    >
+  : public ::pressio::Traits<MatrixType>
 {
+  static constexpr int rank = 1; // expression changes the rank
+
   using native_expr_type = Kokkos::View<
     typename ::pressio::mpl::remove_cvref_t<MatrixType>::traits::value_type*,
     Kokkos::LayoutStride
@@ -116,11 +113,10 @@ struct DiagTraits<
     ::pressio::is_array_pybind<MatrixType>::value
     >
   >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+  : public ::pressio::Traits<MatrixType>
 {
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type  = typename ::pressio::Traits<mat_remove_cv_t>::scalar_type;
-  using size_type    = typename ::pressio::Traits<mat_remove_cv_t>::ordinal_type;
+  static constexpr int rank = 1;
+
   using reference_type =  scalar_type &;
   using const_reference_type = scalar_type const &;
 };

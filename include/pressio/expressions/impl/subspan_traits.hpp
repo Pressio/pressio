@@ -59,7 +59,7 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<MatrixType, 2>
+  : public ::pressio::Traits<MatrixType>
 {
   using ordinal_type = typename ::pressio::impl::SizePair<MatrixType>::ordinal_type;
 
@@ -89,11 +89,7 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-      ::pressio::mpl::remove_cvref_t<MatrixType>,
-      2,
-      true
-    >
+  : public ::pressio::Traits<MatrixType>
 {
   using pair_type = typename ::pressio::impl::SizePair<MatrixType>::pair_type;
 
@@ -126,12 +122,8 @@ struct SubSpanTraits<
     ::pressio::is_array_pybind<MatrixType>::value
     >
   >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
-    public ::pressio::impl::DenseMatrixTrait
+  : public ::pressio::Traits<MatrixType>
 {
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type  = typename Traits<mat_remove_cv_t>::scalar_type;
-  using size_type    = typename Traits<mat_remove_cv_t>::size_type;
   using reference_type	  = scalar_type &;
   using const_reference_type = scalar_type const &;
 };

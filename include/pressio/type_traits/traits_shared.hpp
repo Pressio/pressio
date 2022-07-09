@@ -53,29 +53,17 @@ namespace pressio{
 namespace impl{
 
 template<
-  PackageIdentifier PackId,
-  bool _is_shared_mem,
-  int _rank
+  int Rank,
+  typename ScalarType,
+  typename OrdinalType
   >
-struct ContainersSharedTraits
+struct ContainerTraits
 {
-  static constexpr int rank = _rank;
-};
+  static constexpr int rank = Rank;
 
-template<
-  typename Ordinal
->
-struct OrdinalTrait
-{
-  using ordinal_type = Ordinal;
-};
+  using scalar_type = ScalarType;
 
-template<
-  typename Scalar
->
-struct ScalarTrait
-{
-  using scalar_type    = Scalar;
+  using ordinal_type = OrdinalType;
 };
 
 template<typename T>
