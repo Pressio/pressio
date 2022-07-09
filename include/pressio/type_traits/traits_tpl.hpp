@@ -110,12 +110,7 @@ struct TpetraTraits
       typename T::map_type,
       typename TrilinosCommType<T>::type
     >
-{
-  // device_type is just an (execution space, memory space) pair.
-  // defined as: Kokkos::Device<execution_space, memory_space>
-  // so from the device we can get the device execution and memory space
-  using device_type = typename T::device_type;
-};
+{};
 
 //*******************************
 // Teuchos traits
@@ -155,10 +150,7 @@ struct KokkosTraits
     public ::pressio::impl::ScalarTrait<
       typename T::traits::value_type
     >
-{
-  using execution_space   = typename T::traits::execution_space;
-  using device_type       = typename T::traits::device_type;
-};
+{};
 #endif // PRESSIO_ENABLE_TPL_KOKKOS
 
 //*******************************
@@ -179,9 +171,26 @@ struct EigenTraits
 
 #endif // PRESSIO_ENABLE_TPL_EIGEN
 
+// device_type is just an (execution space, memory space) pair.
+// defined as: Kokkos::Device<execution_space, memory_space>
+// so from the device we can get the device execution and memory space
+template <typename T, typename Enabled=void> struct device_type;
+
 template <typename T, typename Enabled=void> struct execution_space;
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct device_type<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_vector_kokkos<T>::value
+    || ::pressio::is_dense_matrix_kokkos<T>::value
+    >
+  >
+{
+  using type = typename T::traits::device_type;
+};
+
 template <typename T>
 struct execution_space<
   T,
@@ -192,6 +201,23 @@ struct execution_space<
   >
 {
   using type = typename T::traits::execution_space;
+};
+#endif
+
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+struct device_type<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_multi_vector_tpetra<T>::value
+    || is_multi_vector_tpetra_block<T>::value
+    || is_vector_tpetra<T>::value
+    || is_vector_tpetra_block<T>::value
+    >
+  >
+{
+  using type = typename T::device_type;
 };
 #endif
 

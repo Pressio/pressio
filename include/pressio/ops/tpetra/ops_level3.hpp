@@ -224,10 +224,7 @@ product(::pressio::transpose modeA,
 {
 
   static_assert
-    (std::is_same<
-     typename ::pressio::Traits<A_type>::device_type,
-     typename ::pressio::Traits<C_type>::device_type
-     >::value,
+    (::pressio::have_matching_device_type<A_type, C_type>::value,
      "Non-matching device types");
 
   static_assert
@@ -299,10 +296,7 @@ product(::pressio::transpose modeA,
 {
 
   static_assert
-    (std::is_same<
-     typename ::pressio::Traits<A_type>::device_type,
-     typename ::pressio::Traits<C_type>::device_type
-     >::value,
+    (have_matching_device_type<A_type, C_type>::value,
      "Non-matching device types");
 
   static_assert
