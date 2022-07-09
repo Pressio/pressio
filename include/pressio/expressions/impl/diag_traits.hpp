@@ -108,5 +108,17 @@ struct DiagTraits<
 };
 #endif
 
-}}}
+}} // expressions::impl
+
+namespace impl{
+
+template <typename T>
+struct execution_space<::pressio::expressions::impl::DiagExpr<T>>
+{
+  using type = typename T::traits::execution_space;
+};
+
+}
+
+}
 #endif  // EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_

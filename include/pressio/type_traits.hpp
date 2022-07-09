@@ -63,9 +63,6 @@ template<class T, class Enable = void> struct Traits;
 #endif
 
 #include "type_traits/scalar_trait_t.hpp"
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "type_traits/have_matching_exe_space.hpp"
-#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "type_traits/is_teuchos_rcp.hpp"
 #endif
@@ -117,5 +114,8 @@ template<class T, class Enable = void> struct Traits;
 
 //*** derived ****
 #include "type_traits/package_identifier.hpp"
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "type_traits/have_matching_exe_space.hpp"
+#endif
 
 #endif

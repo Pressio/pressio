@@ -127,5 +127,17 @@ struct SpanTraits<
 };
 #endif
 
-}}}
+}}
+
+namespace impl{
+
+template <typename T>
+struct execution_space<::pressio::expressions::impl::SpanExpr<T>>
+{
+  using type = typename T::traits::execution_space;
+};
+
+}
+
+}
 #endif  // EXPRESSIONS_IMPL_SPAN_TRAITS_HPP_
