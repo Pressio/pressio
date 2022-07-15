@@ -55,10 +55,10 @@ namespace pressio{ namespace ode{
 // rhs only
 //
 template<class T, class enable = void>
-struct SemiDiscreteSystemWithRhs : std::false_type{};
+struct OdeSystemWithRhs : std::false_type{};
 
 template<class T>
-struct SemiDiscreteSystemWithRhs<
+struct OdeSystemWithRhs<
   T,
   mpl::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
@@ -88,13 +88,13 @@ struct SemiDiscreteSystemWithRhs<
 // rhs, jacobian
 //
 template<class T, class enable = void>
-struct SemiDiscreteSystemWithRhsAndJacobian : std::false_type{};
+struct OdeSystemWithRhsAndJacobian : std::false_type{};
 
 template<class T>
-struct SemiDiscreteSystemWithRhsAndJacobian<
+struct OdeSystemWithRhsAndJacobian<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystemWithRhs<T>::value
+    OdeSystemWithRhs<T>::value
     && ::pressio::has_jacobian_typedef<T>::value
     && std::is_copy_constructible<typename T::jacobian_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -114,13 +114,13 @@ struct SemiDiscreteSystemWithRhsAndJacobian<
 // rhs and varying mass matrix
 //
 template<class T, class enable = void>
-struct SemiDiscreteSystemWithRhsAndMassMatrix : std::false_type{};
+struct OdeSystemWithRhsAndMassMatrix : std::false_type{};
 
 template<class T>
-struct SemiDiscreteSystemWithRhsAndMassMatrix<
+struct OdeSystemWithRhsAndMassMatrix<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystemWithRhs<T>::value
+    OdeSystemWithRhs<T>::value
     && ::pressio::has_mass_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::mass_matrix_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -140,13 +140,13 @@ struct SemiDiscreteSystemWithRhsAndMassMatrix<
 // rhs and CONSTANT mass matrix
 //
 template<class T, class enable = void>
-struct SemiDiscreteSystemWithRhsAndConstantMassMatrix : std::false_type{};
+struct OdeSystemWithRhsAndConstantMassMatrix : std::false_type{};
 
 template<class T>
-struct SemiDiscreteSystemWithRhsAndConstantMassMatrix<
+struct OdeSystemWithRhsAndConstantMassMatrix<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystemWithRhs<T>::value
+    OdeSystemWithRhs<T>::value
     && ::pressio::has_mass_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::mass_matrix_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -166,14 +166,14 @@ struct SemiDiscreteSystemWithRhsAndConstantMassMatrix<
 // rhs, jac, mass matrix
 //
 template<class T, class enable = void>
-struct CompleteSemiDiscreteSystem : std::false_type{};
+struct OdeSystemComplete : std::false_type{};
 
 template<class T>
-struct CompleteSemiDiscreteSystem<
+struct OdeSystemComplete<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystemWithRhsAndJacobian<T>::value
-    && SemiDiscreteSystemWithRhsAndMassMatrix<T>::value
+    OdeSystemWithRhsAndJacobian<T>::value
+    && OdeSystemWithRhsAndMassMatrix<T>::value
     >
   > : std::true_type{};
 
@@ -181,14 +181,14 @@ struct CompleteSemiDiscreteSystem<
 // rhs, jac, CONSTANT mass matrix
 //
 template<class T, class enable = void>
-struct CompleteSemiDiscreteSystemWithConstantMassMatrix : std::false_type{};
+struct OdeSystemCompleteWithConstantMassMatrix : std::false_type{};
 
 template<class T>
-struct CompleteSemiDiscreteSystemWithConstantMassMatrix<
+struct OdeSystemCompleteWithConstantMassMatrix<
   T,
   mpl::enable_if_t<
-    SemiDiscreteSystemWithRhsAndJacobian<T>::value
-    && SemiDiscreteSystemWithRhsAndConstantMassMatrix<T>::value
+    OdeSystemWithRhsAndJacobian<T>::value
+    && OdeSystemWithRhsAndConstantMassMatrix<T>::value
     >
   > : std::true_type{};
 

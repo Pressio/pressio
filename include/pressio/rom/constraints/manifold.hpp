@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_residual_method_accept_state_result_return_void.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,29 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_MANIFOLD_HPP_
+#define ROM_CONSTRAINTS_ROM_MANIFOLD_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
+namespace pressio{ namespace rom{ namespace experimental{
 
-template <
-  typename T,
-  typename StateType,
-  typename ResidualType,
-  typename = void
-  >
-struct has_const_residual_method_accept_state_result_return_void
-  : std::false_type{};
+template<class T, class enable = void>
+struct Manifold : std::false_type{};
 
-template <
-  typename T,
-  typename StateType,
-  typename ResidualType
-  >
-struct has_const_residual_method_accept_state_result_return_void<
-  T, StateType, ResidualType,  
+template<class T>
+struct Manifold<
+  T,
   mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>().residual
-            (
-              std::declval<StateType const &>(),
-              std::declval<ResidualType &>()
-            )
-         )
-      >::value
-    >
+       ::pressio::has_reduced_state_typedef<T>::value
+    && ::pressio::has_manifold_tangent_typedef<T>::value
+    && ::pressio::has_full_state_typedef<T>::value
+    && has_const_create_reduced_state_return_result<T>::value
+    && has_const_create_full_state_return_result<T>::value
+    && has_const_map_from_reduced_state_return_void<T>::value
+    && has_const_create_full_state_from_reduced_state<T>::value
+    && has_update_and_view_manifold_tangent_accept_state_return_ref<T>::value
+    && has_view_manifold_tangent_return_ref<T>::value
+   >
   > : std::true_type{};
 
-}} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+}}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

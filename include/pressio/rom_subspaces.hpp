@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_hessianandgradient_method_accept_state_result_norm_return_void.hpp
+// rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,48 +46,19 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+#ifndef PRESSIO_ROM_SUBSPACES_TOPLEVEL_INCLUDE_HPP_
+#define PRESSIO_ROM_SUBSPACES_TOPLEVEL_INCLUDE_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
-template <
-  typename T,
-  typename StateType,
-  typename HessianType,
-  typename GradientType,
-  typename NormType,
-  typename = void
-  >
-struct has_const_hessianandgradient_method_accept_state_result_norm_return_void
-  : std::false_type{};
+#include "rom_concepts.hpp"
+#include "rom/subspaces.hpp"
 
-template <
-  typename T,
-  typename StateType,
-  typename HessianType,
-  typename GradientType,
-  typename NormType
-  >
-struct has_const_hessianandgradient_method_accept_state_result_norm_return_void<
-  T, StateType, HessianType, GradientType, NormType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>().hessianAndGradient
-          (
-            std::declval<StateType const &>(),
-            std::declval<HessianType &>(),
-            std::declval<GradientType &>(),
-            /* does not matter here what we pass, just to test */
-            ::pressio::Norm::Undefined,
-            std::declval<NormType &>(),
-	    std::declval<bool>()
-          )
-         )
-      >::value
-    >
-  > : std::true_type{};
-
-}} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+#endif

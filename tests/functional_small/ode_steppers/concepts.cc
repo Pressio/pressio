@@ -273,71 +273,71 @@ TEST(ode, concepts)
 {
   using namespace pressio::ode;
 
-  static_assert( SemiDiscreteSystemWithRhs<System1>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System1>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System1>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System1>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System1>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System1>::value, "");
+  static_assert( OdeSystemWithRhs<System1>::value, "");
+  static_assert(!OdeSystemWithRhsAndJacobian<System1>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System1>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System1>::value, "");
+  static_assert(!OdeSystemComplete<System1>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System1>::value, "");
 
-  static_assert(!SemiDiscreteSystemWithRhs<System2>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System2>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System2>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System2>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System2>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System2>::value, "");
+  static_assert(!OdeSystemWithRhs<System2>::value, "");
+  static_assert(!OdeSystemWithRhsAndJacobian<System2>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System2>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System2>::value, "");
+  static_assert(!OdeSystemComplete<System2>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System2>::value, "");
 
-  static_assert(!SemiDiscreteSystemWithRhs<System3>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System3>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System3>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System3>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System3>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System3>::value, "");
+  static_assert(!OdeSystemWithRhs<System3>::value, "");
+  static_assert(!OdeSystemWithRhsAndJacobian<System3>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System3>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System3>::value, "");
+  static_assert(!OdeSystemComplete<System3>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System3>::value, "");
 
-  static_assert( SemiDiscreteSystemWithRhs<System4>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System4>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndMassMatrix<System4>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System4>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System4>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System4>::value, "");
+  static_assert( OdeSystemWithRhs<System4>::value, "");
+  static_assert(!OdeSystemWithRhsAndJacobian<System4>::value, "");
+  static_assert( OdeSystemWithRhsAndMassMatrix<System4>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System4>::value, "");
+  static_assert(!OdeSystemComplete<System4>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System4>::value, "");
 
-  static_assert( SemiDiscreteSystemWithRhs<System5>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System5>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System5>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndConstantMassMatrix<System5>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System5>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System5>::value, "");
+  static_assert( OdeSystemWithRhs<System5>::value, "");
+  static_assert(!OdeSystemWithRhsAndJacobian<System5>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System5>::value, "");
+  static_assert( OdeSystemWithRhsAndConstantMassMatrix<System5>::value, "");
+  static_assert(!OdeSystemComplete<System5>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System5>::value, "");
 
-  static_assert( SemiDiscreteSystemWithRhs<System6>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndJacobian<System6>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System6>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System6>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System6>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System6>::value, "");
+  static_assert( OdeSystemWithRhs<System6>::value, "");
+  static_assert( OdeSystemWithRhsAndJacobian<System6>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System6>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System6>::value, "");
+  static_assert(!OdeSystemComplete<System6>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System6>::value, "");
 
-  static_assert( SemiDiscreteSystemWithRhs<System7>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndJacobian<System7>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndMassMatrix<System7>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System7>::value, "");
-  static_assert( CompleteSemiDiscreteSystem<System7>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System7>::value, "");
+  static_assert( OdeSystemWithRhs<System7>::value, "");
+  static_assert( OdeSystemWithRhsAndJacobian<System7>::value, "");
+  static_assert( OdeSystemWithRhsAndMassMatrix<System7>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System7>::value, "");
+  static_assert( OdeSystemComplete<System7>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System7>::value, "");
 
-  static_assert( SemiDiscreteSystemWithRhs<System8>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndJacobian<System8>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System8>::value, "");
-  static_assert( SemiDiscreteSystemWithRhsAndConstantMassMatrix<System8>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System8>::value, "");
-  static_assert( CompleteSemiDiscreteSystemWithConstantMassMatrix<System8>::value, "");
+  static_assert( OdeSystemWithRhs<System8>::value, "");
+  static_assert( OdeSystemWithRhsAndJacobian<System8>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System8>::value, "");
+  static_assert( OdeSystemWithRhsAndConstantMassMatrix<System8>::value, "");
+  static_assert(!OdeSystemComplete<System8>::value, "");
+  static_assert( OdeSystemCompleteWithConstantMassMatrix<System8>::value, "");
 
   static_assert(FullyDiscreteSystemWithJacobian<System9,  1>::value, "");
   static_assert(FullyDiscreteSystemWithJacobian<System9,  2>::value, "");
   static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhs<System9>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndJacobian<System9>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndMassMatrix<System9>::value, "");
-  static_assert(!SemiDiscreteSystemWithRhsAndConstantMassMatrix<System9>::value, "");
-  static_assert(!CompleteSemiDiscreteSystem<System9>::value, "");
-  static_assert(!CompleteSemiDiscreteSystemWithConstantMassMatrix<System9>::value, "");
+  static_assert(!OdeSystemWithRhs<System9>::value, "");
+  static_assert(!OdeSystemWithRhsAndJacobian<System9>::value, "");
+  static_assert(!OdeSystemWithRhsAndMassMatrix<System9>::value, "");
+  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System9>::value, "");
+  static_assert(!OdeSystemComplete<System9>::value, "");
+  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System9>::value, "");
 
   {
     using state_t = FakeStateTypeForTesting;

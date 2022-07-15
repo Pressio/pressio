@@ -155,9 +155,9 @@ struct ImplicitCompose<SystemType>
   using sys_type = mpl::remove_cvref_t<SystemType>;
 
   static_assert
-  (   ::pressio::ode::SemiDiscreteSystemWithRhsAndJacobian<sys_type>::value
-   || ::pressio::ode::CompleteSemiDiscreteSystem<sys_type>::value
-   || ::pressio::ode::CompleteSemiDiscreteSystemWithConstantMassMatrix<sys_type>::value,
+  (   ::pressio::ode::OdeSystemWithRhsAndJacobian<sys_type>::value
+   || ::pressio::ode::OdeSystemComplete<sys_type>::value
+   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<sys_type>::value,
    "implicit stepper: your system class does not meet any valid concept");
 
   // if we get here, the system has AT LEAST rhs, jacobian

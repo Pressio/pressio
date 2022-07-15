@@ -206,6 +206,34 @@ product(::pressio::nontranspose mode,
 }
 
 // -------------------------------
+// y = alpha*A*x, construct y
+//
+// x is Eigen Vector
+// A = tpetra::MultiVector
+// y = tpetra vector
+// -------------------------------
+template <class y_type, class A_type, class x_type, class alpha_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<y_type>::value
+  && ::pressio::is_vector_eigen<x_type>::value,
+  y_type
+  >
+product(::pressio::nontranspose mode,
+	const alpha_t & alpha,
+	const A_type & A,
+	const x_type & x)
+{
+
+  auto rowMap = A.getMap();
+  y_type y(rowMap);
+  using y_sc_t = typename y_type::scalar_type;
+  product(mode, alpha, A, x, y_sc_t(0), y);
+  return y;
+}
+
+// -------------------------------
 // y = beta * y + alpha*A^T*x
 //
 // x = tpetra Vector

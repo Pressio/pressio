@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_gradient_method_accept_state_result_norm_return_void.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,43 +46,40 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_GRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_GRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_TRIAL_SUBSPACE_HPP_
+#define ROM_CONSTRAINTS_ROM_TRIAL_SUBSPACE_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
+namespace pressio{ namespace rom{
 
-template <
-  typename T,
-  typename StateType,
-  typename GradientType,
-  typename NormType,
-  typename = void
-  >
-struct has_const_gradient_method_accept_state_result_norm_return_void
-  : std::false_type{};
+template<class T, class enable = void>
+struct TrialSubspace : std::false_type{};
 
-template <
-  typename T,
-  typename StateType,
-  typename GradientType,
-  typename NormType
-  >
-struct has_const_gradient_method_accept_state_result_norm_return_void<
-  T, StateType, GradientType, NormType,
+template<class T>
+struct TrialSubspace<
+  T,
   mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>().gradient(
-            std::declval<StateType const &>(),
-            std::declval<GradientType &>(),
-            ::pressio::Norm::Undefined,
-            std::declval<NormType &>(),
-	    std::declval<bool>()
-            )
-         )
-      >::value
-    >
+       ::pressio::has_reduced_state_typedef<T>::value
+    && ::pressio::has_basis_typedef<T>::value
+    && ::pressio::has_full_state_typedef<T>::value
+    && has_const_create_reduced_state_return_result<T>::value
+    && has_const_create_full_state_return_result<T>::value
+    && has_const_map_from_reduced_state_return_void<T>::value
+    && has_const_create_full_state_from_reduced_state<T>::value
+    && has_const_view_basis<T>::value
+   >
   > : std::true_type{};
 
-}} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_GRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+template<class T, class enable = void>
+struct AffineTrialSubspace : std::false_type{};
+
+template<class T>
+struct AffineTrialSubspace<
+  T,
+  mpl::enable_if_t<
+       TrialSubspace<T>::value
+    && has_const_view_affine_offset<T>::value
+   >
+  > : std::true_type{};
+
+}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

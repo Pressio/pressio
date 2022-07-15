@@ -8,22 +8,6 @@
 
 TEST(rom_lspg, steady_preconditioned_default_correctness_eigen)
 {
-  /*
-    - phi in R^{10,3}:
-        phi[0,:]=0,1,2
-        phi[1,:]=3,4,5
-        phi[2,:]=6,7,8
-        phi[3,:]=9,10,11
-        phi[4,:]=12,13,14
-        phi[5,:]=15,16,17
-        phi[6,:]=18,19,20
-        phi[7,:]=21,22,23
-
-    - initial romState = [0,1,2]
-
-    - fom residual R(y) always computes R[:] = y[:]+1
-    - fom applyJac appJac(B) always returns B += 1
-  */
 
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});

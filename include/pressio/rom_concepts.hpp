@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_jacobian_method_accept_state_result_return_void.hpp
+// rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,20 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_JACOBIAN_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_JACOBIAN_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#ifndef PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
+#define PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
-  
-template <
-  typename T,
-  typename StateType,
-  typename JacobianType,
-  typename = void
-  >
-struct has_const_jacobian_method_accept_state_result_return_void
-  : std::false_type{};
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
-template <
-  typename T,
-  typename StateType,
-  typename JacobianType
-  >
-struct has_const_jacobian_method_accept_state_result_return_void<
-  T, StateType, JacobianType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>().jacobian
-            (
-              std::declval<StateType const &>(),
-              std::declval<JacobianType &>()
-            )
-         )
-      >::value
-    >
-  > : std::true_type{};
+#include "./rom/predicates.hpp"
+#include "./rom/constraints/rom_system.hpp"
+#include "./rom/constraints/trial_subspace.hpp"
 
-}} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_JACOBIAN_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#endif

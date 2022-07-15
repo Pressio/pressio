@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_create_gradient_method_return_result.hpp
+// rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,24 +46,19 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_CREATE_GRADIENT_METHOD_RETURN_RESULT_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_CREATE_GRADIENT_METHOD_RETURN_RESULT_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_STEADY_TOPLEVEL_INCLUDE_HPP_
+#define PRESSIO_ROM_GALERKIN_STEADY_TOPLEVEL_INCLUDE_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
-template<typename T, typename GradientType, typename enable = void>
-struct has_const_create_gradient_method_return_result : std::false_type{};
+#include "rom_concepts.hpp"
+#include "rom/galerkin_steady.hpp"
 
-template<typename T, typename GradientType>
-struct has_const_create_gradient_method_return_result
-<T, GradientType,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_same<
-     GradientType,
-     decltype( std::declval<T const>().createGradient() )
-     >::value
-   >
- > : std::true_type{};
-
-}} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_CREATE_GRADIENT_METHOD_RETURN_RESULT_HPP_
+#endif

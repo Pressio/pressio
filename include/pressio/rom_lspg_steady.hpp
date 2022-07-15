@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_residualandjacobian_method_accept_state_result_return_void.hpp
+// rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,43 +46,19 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUALANDJACOBIAN_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUALANDJACOBIAN_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#ifndef PRESSIO_ROM_LSPG_STEADY_TOPLEVEL_INCLUDE_HPP_
+#define PRESSIO_ROM_LSPG_STEADY_TOPLEVEL_INCLUDE_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
-template <
-  typename T,
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename = void
-  >
-struct has_const_residualandjacobian_method_accept_state_result_return_void
-  : std::false_type{};
+#include "rom_concepts.hpp"
+#include "rom/lspg_steady.hpp"
 
-template <
-  typename T,
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType
-  >
-struct has_const_residualandjacobian_method_accept_state_result_return_void<
-  T, StateType, ResidualType, JacobianType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>().residualAndJacobian
-            (
-              std::declval<StateType const &>(),
-              std::declval<ResidualType &>(),
-              std::declval<JacobianType &>(),
-      	      std::declval<bool>() //bool for updating or not jacobian
-            )
-         )
-      >::value
-    >
-  > : std::true_type{};
-
-}} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_PREDICATES_SOLVERS_HAS_CONST_RESIDUALANDJACOBIAN_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#endif
