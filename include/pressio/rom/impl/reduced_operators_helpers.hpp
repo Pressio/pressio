@@ -34,7 +34,6 @@ struct CreateReducedState<
 #endif
 // ------------------------------------------
 
-
 template<typename T, class = void>
 struct galerkin_mass_matrix_type_if_state_is;
 
@@ -47,7 +46,6 @@ struct galerkin_mass_matrix_type_if_state_is<
 };
 #endif
 // ------------------------------------------
-
 
 template<typename T, class = void>
 struct determine_galerkin_jacobian_type_from_state;

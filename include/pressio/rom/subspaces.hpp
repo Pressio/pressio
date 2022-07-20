@@ -32,10 +32,10 @@ template<
     && std::is_copy_constructible< FullStateType >::value,
     int > = 0
   >
-auto create_affine_trial_subspace(BasisType && basis, const FullStateType & shift)
+auto create_affine_trial_subspace(BasisType && basis, FullStateType && shift)
 {
-  // here we need to use BasisType because it carries the correct
-  // qualification to be used inside the class by instanceOrRefWrapper
+  // here we need to use BasisType and FullStateType because they carry
+  // the correct qualification to be used inside the class by instanceOrRefWrapper
 
   using ret_t = impl::AffineTrialSubspace<ReducedStateType, BasisType, FullStateType>;
   return ret_t(std::forward<BasisType>(basis), shift);

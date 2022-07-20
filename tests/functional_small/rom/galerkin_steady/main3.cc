@@ -5,8 +5,8 @@
 
 struct MyFom
 {
-  using state_type        = Eigen::VectorXd;
-  using residual_type     = state_type;
+  using state_type = Eigen::VectorXd;
+  using residual_type = state_type;
   int nSample_  = {};
   int nStencil_ = {};
   const std::vector<int> validStateIndices_{};

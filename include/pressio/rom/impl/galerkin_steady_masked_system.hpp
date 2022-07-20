@@ -5,9 +5,13 @@
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  class ReducedStateType, class ResidualType, class JacobianType,
-  class TrialSpaceType, class FomSystemType,
-  class MaskerType, class HypRedOpType
+  class ReducedStateType,
+  class ResidualType,
+  class JacobianType,
+  class TrialSpaceType,
+  class FomSystemType,
+  class MaskerType,
+  class HypRedOpType
   >
 class GalerkinSteadyMaskedSystem
 {
@@ -28,9 +32,11 @@ public:
 			     const FomSystemType & fomSystem,
 			     const MaskerType & masker,
 			     const HypRedOpType & hrOp)
-    : space_(space), fomSystem_(fomSystem),
+    : space_(space),
+      fomSystem_(fomSystem),
       fomState_(fomSystem.createState()),
-      masker_(masker), hrOp_(hrOp),
+      masker_(masker),
+      hrOp_(hrOp),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(space_.get().viewBasis())),
       maskedFomResidual_(masker.createApplyMaskResult(unMaskedFomResidual_)),
@@ -56,11 +62,10 @@ public:
     const auto & phi = space_.get().viewBasis();
     space_.get().mapFromReducedState(reducedState, fomState_);
 
-    // make it clear that the unmasked residual is held by the base
     fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
     // apply mask
     masker_(unMaskedFomResidual_, maskedFomResidual_);
-    // now apply hrop to masked one
+    // now apply hrop to the masked operator
     hrOp_(maskedFomResidual_, R);
 
     if (recomputeJacobian){

@@ -14,7 +14,7 @@ public:
   using basis_type = mpl::remove_cvref_t<BasisType>;
   using full_state_type = FullStateType;
 
-  TrialSubspace(BasisType && phi)
+  explicit TrialSubspace(BasisType && phi)
     : basis_(std::forward<BasisType>(phi)){}
 
   reduced_state_type createReducedState() const{
@@ -67,33 +67,27 @@ public:
 
 template <class ReducedStateType, class BasisType, class FullStateType>
 class AffineTrialSubspace
-  : public TrialSubspace<ReducedStateType, BasisType, FullStateType>
+  : public TrialSubspace<ReducedStateType, BasisType, mpl::remove_cvref_t<FullStateType>>
 {
-  using base_t =TrialSubspace<ReducedStateType, BasisType, FullStateType>;
-
-  const FullStateType shiftVector_;
+  using base_t = TrialSubspace<ReducedStateType, BasisType, mpl::remove_cvref_t<FullStateType>>;
+  ::pressio::utils::InstanceOrReferenceWrapper<FullStateType> shiftVector_;
 
 public:
   using typename base_t::reduced_state_type;
   using typename base_t::basis_type;
-  using typename base_t::full_state_type;
-
-  AffineTrialSubspace(BasisType && phi,
-		      const FullStateType & shiftVectorIn)
-    : base_t(std::forward<BasisType>(phi)),
-      shiftVector_(shiftVectorIn){}
+  using full_state_type = mpl::remove_cvref_t<FullStateType>;
 
   AffineTrialSubspace(BasisType && phi,
 		      FullStateType && shiftVectorIn)
     : base_t(std::forward<BasisType>(phi)),
-      shiftVector_(std::move(shiftVectorIn)){}
+      shiftVector_(std::forward<FullStateType>(shiftVectorIn)){}
 
   full_state_type createFullState() const
   {
     // we need to use clone here because full_state_type might
     // NOT have value semantics so we need to ensure a new object
     // is created every time
-    auto result = ::pressio::ops::clone(shiftVector_);
+    auto result = ::pressio::ops::clone(shiftVector_.get());
     using sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
     ::pressio::ops::fill(result, sc_t(0));
     return result;
@@ -110,13 +104,13 @@ public:
     using sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
     constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
     base_t::mapFromReducedState(latState, fullState);
-    ::pressio::ops::update(fullState, one, shiftVector_, one);
+    ::pressio::ops::update(fullState, one, shiftVector_.get(), one);
   }
 
   template<class ReducedStateToMap>
   full_state_type createFullStateFromReducedState(const ReducedStateToMap & latState) const
   {
-    auto fomState = base_t::createFullState();
+    auto fomState = this->createFullState();
     this->mapFromReducedState(latState, fomState);
     return fomState;
   }

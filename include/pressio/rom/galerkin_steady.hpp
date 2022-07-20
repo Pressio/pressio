@@ -15,10 +15,10 @@ template<
     && ImplicitTimeInvariantFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
-auto create_default_problem(const TrialSpaceType & trialSpace,
-          const FomSystemType & fomObj)
+auto create_default_problem(const TrialSpaceType & trialSpaceObject,
+			    const FomSystemType & fomObject)
 {
-  return impl::galerkin_create_default_problem(trialSpace, fomObj);
+  return impl::galerkin_create_default_problem(trialSpaceObject, fomObject);
 }
 
 template<
@@ -31,11 +31,11 @@ template<
     && ImplicitTimeInvariantFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
-auto create_hyperreduced_problem(const TrialSpaceType & trialSpace,
-         const FomSystemType & fomObj,
-         const HyperreductionOperator & hrOp)
+auto create_hyperreduced_problem(const TrialSpaceType & trialSpaceObject,
+				 const FomSystemType & fomObject,
+				 const HyperreductionOperator & hrOp)
 {
-  return impl::galerkin_create_hyperreduced_problem(trialSpace, fomObj, hrOp);
+  return impl::galerkin_create_hyperreduced_problem(trialSpaceObject, fomObject, hrOp);
 }
 
 template<
@@ -49,14 +49,13 @@ template<
     && ImplicitTimeInvariantFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
-auto create_masked_problem(const TrialSpaceType & trialSpace,
-         const FomSystemType & fomObj,
-         const MaskerType & masker,
-         const HyperreductionOperator & hrOp)
+auto create_masked_problem(const TrialSpaceType & trialSpaceObject,
+			   const FomSystemType & fomObject,
+			   const MaskerType & masker,
+			   const HyperreductionOperator & hrOp)
 {
-  return impl::galerkin_create_masked_problem(trialSpace, fomObj, masker, hrOp);
+  return impl::galerkin_create_masked_problem(trialSpaceObject, fomObject, masker, hrOp);
 }
-
 
 }}} // end pressio::rom::galerkin
 #endif

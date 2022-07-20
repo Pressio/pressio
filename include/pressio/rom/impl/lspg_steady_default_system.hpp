@@ -8,15 +8,18 @@ template <class LspgStateType, class TrialSpaceType, class FomSystemType>
 class LspgSteadyDefaultSystem
 {
 
+  // need to deduce the type of the action of the fom jacobian
+  // which becomes the jacobian_type of the problem
+  using fom_jac_action_result_type =
+    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+      (std::declval<typename TrialSpaceType::basis_type const &>())
+      );
+
 public:
   // required aliases
   using state_type    = LspgStateType;
   using residual_type = typename FomSystemType::residual_type;
-  // need to deduce the type of the action of the fom jacobian
-  using jacobian_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-      (std::declval<typename TrialSpaceType::basis_type const &>())
-      );
+  using jacobian_type = fom_jac_action_result_type;
 
   LspgSteadyDefaultSystem() = delete;
 
@@ -36,9 +39,9 @@ public:
   }
 
   void residualAndJacobian(const state_type & lspgState,
-        residual_type & R,
-        jacobian_type & J,
-        bool recomputeJacobian = true) const
+			   residual_type & R,
+			   jacobian_type & J,
+			   bool recomputeJacobian = true) const
   {
     space_.get().mapFromReducedState(lspgState, fomState_);
     fomSystem_.get().residual(fomState_, R);
