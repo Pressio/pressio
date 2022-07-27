@@ -19,19 +19,6 @@ auto create_default_problem(TrialSpaceType & trialSpaceObject,
 }
 
 template<
-  class TrialSpaceType, class FomSystemType, class PreconditionerType,
-  mpl::enable_if_t<
-    ImplicitTimeInvariantFomWithJacobianAction<
-      FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
-  >
-auto create_preconditioned_problem(TrialSpaceType & trialSpaceObject,
-				   const FomSystemType & fomObject,
-				   const PreconditionerType & preconditioner)
-{
-  return impl::lspg_steady_create_preconditioned_problem(trialSpaceObject, fomObject, preconditioner);
-}
-
-template<
   class TrialSpaceType, class FomSystemType,
   mpl::enable_if_t<
     ImplicitTimeInvariantFomWithJacobianAction<
@@ -56,6 +43,23 @@ auto create_masked_problem(TrialSpaceType & trialSpaceObject,
 {
   return impl::lspg_steady_create_masked_problem(trialSpaceObject,
 						 fomObject, masker);
+}
+
+//
+// overload set for preconditioned problems
+// (might not need these if the preconditioner is instead provided to solver)
+//
+template<
+  class TrialSpaceType, class FomSystemType, class PreconditionerType,
+  mpl::enable_if_t<
+    ImplicitTimeInvariantFomWithJacobianAction<
+      FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
+  >
+auto create_preconditioned_problem(TrialSpaceType & trialSpaceObject,
+           const FomSystemType & fomObject,
+           const PreconditionerType & preconditioner)
+{
+  return impl::lspg_steady_create_preconditioned_problem(trialSpaceObject, fomObject, preconditioner);
 }
 
 }}} // end pressio::rom::galerkin
