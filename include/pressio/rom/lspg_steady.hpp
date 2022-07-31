@@ -27,7 +27,7 @@ template<
 auto create_hyperreduced_problem(TrialSpaceType & trialSpaceObject,
 				 const FomSystemType & fomObject)
 {
-  // impl-wise, a steady hypred problem is equivalent to a default problem
+  // impl-wise, it is equivalent to a default problem
   return impl::lspg_steady_create_default_problem(trialSpaceObject, fomObject);
 }
 

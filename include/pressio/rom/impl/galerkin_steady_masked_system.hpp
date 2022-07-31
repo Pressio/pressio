@@ -10,7 +10,8 @@ template <
   class JacobianType,
   class TrialSpaceType,
   class FomSystemType,
-  class MaskerType,
+  class ResidualMaskerType,
+  class JacobianActionMaskerType,
   class HypRedOpType
   >
 class GalerkinSteadyMaskedSystem
@@ -30,17 +31,19 @@ public:
   GalerkinSteadyMaskedSystem() = delete;
   GalerkinSteadyMaskedSystem(const TrialSpaceType & space,
 			     const FomSystemType & fomSystem,
-			     const MaskerType & masker,
+			     const ResidualMaskerType & rMasker,
+			     const JacobianActionMaskerType & jaMasker,
 			     const HypRedOpType & hrOp)
     : space_(space),
       fomSystem_(fomSystem),
       fomState_(fomSystem.createState()),
-      masker_(masker),
+      rMasker_(rMasker),
+      jaMasker_(jaMasker),
       hrOp_(hrOp),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(space_.get().viewBasis())),
-      maskedFomResidual_(masker.createApplyMaskResult(unMaskedFomResidual_)),
-      maskedFomJacAction_(masker.createApplyMaskResult(unMaskedFomJacAction_))
+      maskedFomResidual_(rMasker.createApplyMaskResult(unMaskedFomResidual_)),
+      maskedFomJacAction_(jaMasker.createApplyMaskResult(unMaskedFomJacAction_))
   {}
 
 public:
@@ -63,14 +66,12 @@ public:
     space_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
-    // apply mask
-    masker_(unMaskedFomResidual_, maskedFomResidual_);
-    // now apply hrop to the masked operator
+    rMasker_(unMaskedFomResidual_, maskedFomResidual_);
     hrOp_(maskedFomResidual_, R);
 
     if (recomputeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
-      masker_(unMaskedFomJacAction_, maskedFomJacAction_);
+      jaMasker_(unMaskedFomJacAction_, maskedFomJacAction_);
       hrOp_(maskedFomJacAction_, J);
     }
   }
@@ -81,7 +82,8 @@ private:
   mutable typename FomSystemType::state_type fomState_;
 
   // masker and hyp-red operator
-  std::reference_wrapper<const MaskerType> masker_;
+  std::reference_wrapper<const ResidualMaskerType> rMasker_;
+  std::reference_wrapper<const JacobianActionMaskerType> jaMasker_;
   std::reference_wrapper<const HypRedOpType> hrOp_;
 
   // UNMASKED fom R,J instances

@@ -73,7 +73,7 @@ template <
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -144,7 +144,7 @@ template <
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,

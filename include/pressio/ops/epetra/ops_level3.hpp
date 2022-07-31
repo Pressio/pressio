@@ -71,8 +71,8 @@ template <
   ::pressio::is_multi_vector_epetra<B_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const B_type & B,
@@ -148,8 +148,8 @@ template <
   ::pressio::is_multi_vector_epetra<A_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const scalar_type beta,

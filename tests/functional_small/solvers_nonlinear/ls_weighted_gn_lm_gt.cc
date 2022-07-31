@@ -24,7 +24,7 @@ struct MyLinSolverNormalEq
   template<typename H_t, typename state_t>
   void solve(const H_t & H,
              const state_t & g,
-             state_t & correction)
+             state_t & /*correction*/)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;
@@ -85,10 +85,10 @@ struct MyLinSolverNormalEq
 
 struct WeightingOperator
 {
-  void operator()(const eig_vec & operand, eig_vec & result) const{
+  void operator()(const eig_vec & /*operand*/, eig_vec & result) const{
     result.setConstant(3.);
   }
-  void operator()(const eig_mat & operand, eig_mat & result) const{
+  void operator()(const eig_mat & /*operand*/, eig_mat & result) const{
     result.setConstant(2.2);
   }
 };
@@ -126,7 +126,7 @@ struct MySystem
     return a;
   }
 
-  void residual(const state_type& x,
+  void residual(const state_type& /*unused*/,
     residual_type & R) const
   {
     ++iterCountR_;
@@ -136,7 +136,7 @@ struct MySystem
     }
   }
 
-  void jacobian(const state_type& x, jacobian_type & jac) const
+  void jacobian(const state_type& /*unused*/, jacobian_type & jac) const
   {
     ++iterCountJ_;
 

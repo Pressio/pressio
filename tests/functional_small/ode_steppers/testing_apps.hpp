@@ -23,7 +23,7 @@ struct AppEigenA
   };
 
   void rightHandSide(const state_type & y,
-		     independent_variable_type evalt,
+		     independent_variable_type /*unused*/,
 		     right_hand_side_type & rhs) const
   {
     auto sz = y.size();
@@ -78,7 +78,7 @@ public:
   }
 
   void rightHandSide(const state_type & yIn,
-    independent_variable_type evalt, right_hand_side_type & R) const{
+    independent_variable_type /*unused*/, right_hand_side_type & R) const{
     assert(yIn.size()==3);
     R = -10. * yIn;
   };
@@ -95,8 +95,8 @@ public:
     return R;
   };
 
-  void jacobian(const state_type & yIn,
-                independent_variable_type evalt,
+  void jacobian(const state_type & /*unused*/,
+                independent_variable_type /*unused*/,
                 jacobian_type & JJ) const
   {
     assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
@@ -147,6 +147,7 @@ public:
   void analyticAdvanceRK4(double dt)
   {
     assert(dt==0.1);
+    (void) dt;
     right_hand_side_type k1(3), k2(3), k3(3), k4(3);
     //I did the math...
     k1 << -1., -2, -3.;

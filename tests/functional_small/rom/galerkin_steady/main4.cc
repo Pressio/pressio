@@ -36,13 +36,13 @@ struct MyFom
                      const Eigen::MatrixXd & B,
                      Eigen::MatrixXd & A) const{
     A = B;
-    for (auto i=0; i<A.rows(); ++i){
-      for (auto j=0; j<A.cols(); ++j){
+    for (int i=0; i<A.rows(); ++i){
+      for (int j=0; j<A.cols(); ++j){
         A(i,j) += state(i);
       }
     }
     for (auto & it : indices_to_corrupt_){
-      for (std::size_t j=0; j< A.cols(); ++j){
+      for (int j=0; j< A.cols(); ++j){
         A(it,j) = -4232;
       }
     }
@@ -124,31 +124,39 @@ struct MyProjector
   }
 };
 
-// for implicit, masker acts on FOM velicity and FOM apply jac result
-struct MyMasker
+struct MyMaskerResidual
 {
   const std::vector<int> sample_indices_ = {};
-  using vec_operand_type = Eigen::VectorXd;
-  using mat_operand_type = Eigen::MatrixXd;
+  using operand_type = Eigen::VectorXd;
+  using result_type = operand_type;
 
-  MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+  MyMaskerResidual(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  vec_operand_type createApplyMaskResult(const vec_operand_type & operand) const{
-    return vec_operand_type(sample_indices_.size());
+  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
+    return result_type(sample_indices_.size());
   }
 
-  mat_operand_type createApplyMaskResult(const mat_operand_type & operand) const{
-    return mat_operand_type(sample_indices_.size(), operand.cols());
-  }
-
-  void operator()(const vec_operand_type & operand, vec_operand_type & result) const
+  void operator()(const operand_type & operand, result_type & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
       result(i) = operand(sample_indices_[i]);
     }
   }
+};
 
-  void operator()(const mat_operand_type & operand, mat_operand_type & result) const
+struct MyMaskerJacAction
+{
+  const std::vector<int> sample_indices_ = {};
+  using operand_type = Eigen::MatrixXd;
+  using result_type = operand_type;
+
+  MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+  result_type createApplyMaskResult(const operand_type & operand) const{
+    return result_type(sample_indices_.size(), operand.cols());
+  }
+
+  void operator()(const operand_type & operand, result_type & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
       for (int j=0; j<operand.cols(); ++j){
@@ -197,9 +205,10 @@ TEST(rom_galerkin_steady, test4)
   matForProj.col(2).setConstant(2.);
   MyProjector proj(matForProj);
 
-  MyMasker masker(sample_indices);
+  MyMaskerResidual  masker1(sample_indices);
+  MyMaskerJacAction masker2(sample_indices);
 
-  auto problem = pressio::rom::galerkin::create_masked_problem(space,fomSystem,masker,proj);
+  auto problem = pressio::rom::galerkin::create_masked_problem(space,fomSystem, masker1, masker2, proj);
 
   FakeNonLinSolverSteady nonLinSolver(N);
   nonLinSolver.solve(problem, romState);

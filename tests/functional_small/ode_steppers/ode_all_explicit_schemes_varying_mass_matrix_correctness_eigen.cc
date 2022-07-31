@@ -34,7 +34,7 @@ struct MyApp2WithMM
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
+  void rightHandSide(const state_type & /*unused*/,
 		     independent_variable_type evaltime,
 		     right_hand_side_type & rhs) const
   {
@@ -46,7 +46,7 @@ struct MyApp2WithMM
     rhs_[++count1] = rhs;
   };
 
-  void massMatrix(const state_type & y,
+  void massMatrix(const state_type & /*unused*/,
 		  independent_variable_type evaltime,
 		  mass_matrix_type & M) const
   {
@@ -107,7 +107,7 @@ private:
     return ret;
   };
 
-  void massMatrix(const state_type & y,
+  void massMatrix(const state_type & /*unused*/,
 		  independent_variable_type evaltime,
 		  mass_matrix_type & M) const
   {

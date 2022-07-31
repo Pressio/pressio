@@ -139,7 +139,7 @@ private:
   >
   void compute_impl_bdf(const StateType & predictedState,
 			const StencilStatesContainerType & stencilStatesManager,
-			StencilVelocitiesContainerType & stencilVelocities,
+			StencilVelocitiesContainerType & /*unused*/,
 			const IndVarType & rhsEvaluationTime,
 			const IndVarType & dt,
 			const StepType & step,

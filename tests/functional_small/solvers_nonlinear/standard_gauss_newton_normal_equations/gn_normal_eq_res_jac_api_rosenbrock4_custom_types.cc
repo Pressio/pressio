@@ -62,7 +62,7 @@ struct MyCustomVector
   std::size_t extent(int k)const { return (k==0) ? d_.size() : 0; }
 
   void fill(double value){
-    std::for_each(d_.begin(), d_.end(), [](double & v){ v= 0.; });
+    std::for_each(d_.begin(), d_.end(), [=](double & v){ v= value; });
   }
 
 private:

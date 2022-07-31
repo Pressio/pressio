@@ -160,7 +160,7 @@ private:
 		  StateType & odeState,
 		  const independent_variable_type & stepStartTime,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type stepNumber)
+		  ::pressio::ode::StepCount::value_type /*stepNumber*/)
   {
     PRESSIOLOG_DEBUG("euler forward stepper: do step");
 
@@ -215,7 +215,7 @@ private:
 		  StateType & odeState,
 		  const independent_variable_type & stepStartTime,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type stepNumber)
+		  ::pressio::ode::StepCount::value_type /*stepNumber*/)
   {
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
@@ -225,7 +225,6 @@ private:
     constexpr auto two   = ::pressio::utils::Constants<scalar_type>::two();
     constexpr auto three = ::pressio::utils::Constants<scalar_type>::three();
     constexpr auto four  = ::pressio::utils::Constants<scalar_type>::four();
-    constexpr auto oneOvTwo = one/two;
     constexpr auto oneOvThree = one/three;
     constexpr auto twoOvThree = two/three;
     constexpr auto threeOvFour = three/four;
@@ -265,7 +264,7 @@ private:
 		  StateType & odeState,
 		  const independent_variable_type & stepStartTime,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type stepNumber)
+		  ::pressio::ode::StepCount::value_type /*stepNumber*/)
   {
     PRESSIOLOG_DEBUG("rk4 stepper: do step");
 

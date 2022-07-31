@@ -29,7 +29,7 @@ void product(::pressio::nontranspose,
 	     double beta,
 	     std::vector<double> & y)
 {
-  for (int i=0; i<y.size(); ++i){
+  for (std::size_t i=0; i<y.size(); ++i){
     double sum = 0;
     for (int j=0; j<A.cols(); ++j){
       sum += A(i,j) * x[j];
@@ -48,7 +48,7 @@ ResultType product(::pressio::nontranspose,
 		   const Eigen::VectorXd & x)
 {
   std::vector<double> y(A.rows());
-  for (int i=0; i<y.size(); ++i){
+  for (std::size_t i=0; i<y.size(); ++i){
     double sum = 0;
     for (int j=0; j<A.cols(); ++j){
       sum += A(i,j) * x[j];
@@ -63,7 +63,7 @@ void update(std::vector<double> & y,
 	    const std::vector<double> & x,
 	    double b)
 {
-  for (int i=0; i<y.size(); ++i){
+  for (std::size_t i=0; i<y.size(); ++i){
     y[i] = a*y[i] + b*x[i];
   }
 }
@@ -91,6 +91,7 @@ TEST(rom, trial_subspace_construct_2)
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = std::vector<double>;
   auto space = create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  (void) space;
 }
 
 TEST(rom, trial_subspace_create_reduced_state)
@@ -123,7 +124,7 @@ TEST(rom, trial_subspace_create_full_state)
   auto a = space.createFullState();
   EXPECT_TRUE(a.size() == 15);
 
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], 0.);
   }
 }
@@ -145,7 +146,7 @@ TEST(rom, trial_subspace_map_from_reduced_state)
 
   auto a = space.createFullState();
   space.mapFromReducedState(latState, a);
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], gold[i]);
   }
 }
@@ -166,7 +167,7 @@ TEST(rom, trial_subspace_create_full_from_reduced)
   Eigen::VectorXd gold = phi * latState;
 
   auto a = space.createFullStateFromReducedState(latState);
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], gold[i]);
   }
 }
@@ -192,6 +193,7 @@ TEST(rom, affine_trial_subspace_construct_2)
   using full_state_type = std::vector<double>;
   full_state_type shift(15);
   auto space = create_affine_trial_subspace<reduced_state_type>(phi, shift);
+  (void) space;
 }
 
 TEST(rom, affine_trial_subspace_create_reduced_state)
@@ -207,7 +209,7 @@ TEST(rom, affine_trial_subspace_create_reduced_state)
   auto space = create_affine_trial_subspace<reduced_state_type>(std::move(phi), shift);
   auto a = space.createReducedState();
   EXPECT_TRUE(a.size() == 3);
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], 0.);
   }
 }
@@ -227,7 +229,7 @@ TEST(rom, affine_trial_subspace_create_full_state)
   auto a = space.createFullState();
   EXPECT_TRUE(a.size() == 15);
 
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], 0.);
   }
 }
@@ -252,7 +254,7 @@ TEST(rom, affine_trial_subspace_map_from_reduced_state)
 
   auto a = space.createFullState();
   space.mapFromReducedState(latState, a);
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], gold[i] + 2.);
   }
 }
@@ -276,7 +278,7 @@ TEST(rom, affine_trial_subspace_create_full_from_reduced)
   Eigen::VectorXd gold = phi * latState;
 
   auto a = space.createFullStateFromReducedState(latState);
-  for (int i=0; i<a.size(); ++i){
+  for (decltype(a.size()) i=0; i<a.size(); ++i){
     EXPECT_DOUBLE_EQ(a[i], gold[i] + 2.);
   }
 }

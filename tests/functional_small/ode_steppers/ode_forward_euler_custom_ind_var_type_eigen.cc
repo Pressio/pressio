@@ -22,7 +22,7 @@ struct MyApp{
   };
 
   void rightHandSide(const state_type & y,
-		     independent_variable_type evalt,
+		     independent_variable_type /*unused*/,
 		     right_hand_side_type & f) const
   {
     f[0] = -10. * y[0];

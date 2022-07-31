@@ -11,8 +11,8 @@ struct Stepper1
   using independent_variable_type = ScalarType;
 
   void operator()(state_type & odeState,
-		  pressio::ode::StepStartAt<independent_variable_type> currTime,
-		  pressio::ode::StepCount step,
+		  pressio::ode::StepStartAt<independent_variable_type> /*unused*/,
+		  pressio::ode::StepCount /*unused*/,
 		  pressio::ode::StepSize<independent_variable_type> dt)
   {
     for (std::size_t i=0; i<odeState.size(); i++){
@@ -23,7 +23,7 @@ struct Stepper1
 
 struct DtSetter1{
   void operator()(pressio::ode::StepCount currStep,
-                  pressio::ode::StepStartAt<double> currTime,
+                  pressio::ode::StepStartAt<double> /*unused*/,
                   pressio::ode::StepSize<double> & dt) const
   {
    if(currStep.get()==1) dt = 2.;

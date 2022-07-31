@@ -106,7 +106,7 @@ struct CustomUpdate
   void reset(){}
 
   template<typename system_t, typename state_t, typename solver_t>
-  void operator()(const system_t & sys,
+  void operator()(const system_t & /*unused*/,
 		  state_t & state,
 		  solver_t & solver)
   {

@@ -63,7 +63,7 @@ TEST(rom, concepts_A)
 {
   using namespace pressio::rom;
 
-  static_assert( SemiDiscreteFomWithRhs<System0>::value, "");
-  static_assert( SemiDiscreteFomWithRhs<System1>::value, "");
-  static_assert(!SemiDiscreteFomWithRhs<System2>::value, "");
+  static_assert( SemiDiscreteFom<System0>::value, "");
+  static_assert( SemiDiscreteFom<System1>::value, "");
+  static_assert(!SemiDiscreteFom<System2>::value, "");
 }

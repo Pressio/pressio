@@ -88,7 +88,7 @@ TEST(rom, concepts_B)
 {
   using namespace pressio::rom;
 
-  static_assert( SemiDiscreteFomWithRhsAndJacobianAction<System0, FakeManifoldJacType>::value, "");
-  static_assert( SemiDiscreteFomWithRhsAndJacobianAction<System1, FakeManifoldJacType>::value, "");
-  static_assert(!SemiDiscreteFomWithRhsAndJacobianAction<System2, FakeManifoldJacType>::value, "");
+  static_assert( SemiDiscreteFomWithJacobianAction<System0, FakeManifoldJacType>::value, "");
+  static_assert( SemiDiscreteFomWithJacobianAction<System1, FakeManifoldJacType>::value, "");
+  static_assert(!SemiDiscreteFomWithJacobianAction<System2, FakeManifoldJacType>::value, "");
 }

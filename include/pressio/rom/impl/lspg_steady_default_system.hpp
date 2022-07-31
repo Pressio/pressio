@@ -24,7 +24,7 @@ public:
   LspgSteadyDefaultSystem() = delete;
 
   LspgSteadyDefaultSystem(TrialSpaceType & space,
-       const FomSystemType & fomSystem)
+			  const FomSystemType & fomSystem)
     : space_(space), fomSystem_(fomSystem),
       fomState_(fomSystem.createState())
   {}

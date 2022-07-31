@@ -9,7 +9,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_construct_1)
   auto phi = ::pressio::ops::clone(*myMv_);
 
   using namespace pressio::rom;
-  using basis_t = mvec_t;
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = vec_t;
   auto space = create_trial_subspace<reduced_state_type, full_state_type>(std::move(phi));
@@ -21,7 +20,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_construct_2)
   auto phi = ::pressio::ops::clone(*myMv_);
 
   using namespace pressio::rom;
-  using basis_t = mvec_t;
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = vec_t;
   auto space = create_trial_subspace<reduced_state_type, full_state_type>(phi);
@@ -31,7 +29,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_construct_2)
 TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_reduced_state)
 {
   using namespace pressio::rom;
-  using basis_t = mvec_t;
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = vec_t;
   auto space = create_trial_subspace<reduced_state_type, full_state_type>(*myMv_);
@@ -46,7 +43,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_reduced_state)
 TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_full_state)
 {
   using namespace pressio::rom;
-  using basis_t = mvec_t;
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = vec_t;
   auto space = create_trial_subspace<reduced_state_type, full_state_type>(*myMv_);
@@ -55,7 +51,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_full_state)
   EXPECT_TRUE( ::pressio::ops::extent(a,0) == 15 );
 
   auto a_h = a.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-  for (int i=0; i<a.getLocalLength(); ++i){
+  for (decltype(a.getLocalLength()) i=0; i<a.getLocalLength(); ++i){
     EXPECT_DOUBLE_EQ(a_h(i,0), 0.);
   }
 }
@@ -64,7 +60,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_map_from_reduced_state
 {
 
   using namespace pressio::rom;
-  using basis_t = mvec_t;
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = vec_t;
   auto phi = *myMv_;
@@ -75,9 +70,9 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_map_from_reduced_state
   latState = reduced_state_type::Random(latState.size());
   auto phi_h = myMv_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
   Eigen::VectorXd gold(phi_h.extent(0));
-  for (int i=0; i<phi_h.extent(0); ++i){
+  for (decltype(phi_h.extent(0)) i=0; i<phi_h.extent(0); ++i){
     gold[i] = 0.;
-    for (int j=0; j<phi_h.extent(1); ++j){
+    for (decltype(phi_h.extent(1)) j=0; j<phi_h.extent(1); ++j){
       gold[i] += phi_h(i,j) * latState(j);
     }
   }
@@ -85,7 +80,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_map_from_reduced_state
   auto a = space.createFullState();
   space.mapFromReducedState(latState, a);
   auto a_h = a.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-  for (int i=0; i<a.getLocalLength(); ++i){
+  for (decltype(a.getLocalLength()) i=0; i<a.getLocalLength(); ++i){
     EXPECT_NEAR(a_h(i,0), gold[i], 1e-12);
   }
 }
@@ -94,7 +89,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_full_from_reduc
 {
 
   using namespace pressio::rom;
-  using basis_t = mvec_t;
   using reduced_state_type = Eigen::VectorXd;
   using full_state_type = vec_t;
   auto phi = *myMv_;
@@ -105,16 +99,16 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_full_from_reduc
   latState = reduced_state_type::Random(latState.size());
   auto phi_h = myMv_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
   Eigen::VectorXd gold(phi_h.extent(0));
-  for (int i=0; i<phi_h.extent(0); ++i){
+  for (decltype(phi_h.extent(0)) i=0; i<phi_h.extent(0); ++i){
     gold[i] = 0.;
-    for (int j=0; j<phi_h.extent(1); ++j){
+    for (decltype(phi_h.extent(1)) j=0; j<phi_h.extent(1); ++j){
       gold[i] += phi_h(i,j) * latState(j);
     }
   }
 
   auto a = space.createFullStateFromReducedState(latState);
   auto a_h = a.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-  for (int i=0; i<a.getLocalLength(); ++i){
+  for (decltype(a.getLocalLength()) i=0; i<a.getLocalLength(); ++i){
     EXPECT_NEAR(a_h(i,0), gold[i], 1e-12);
   }
 }

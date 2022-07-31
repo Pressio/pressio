@@ -206,8 +206,6 @@ struct tpetraR9Fixture
 
   void fillMatrix()
   {
-    using mv_device_t = typename pressio::Traits<mymvec_t>::device_type;
-
     // get trilinos tpetra multivector object
     auto trilD = A_;
     // trilD->sync<Kokkos::HostSpace>();

@@ -55,10 +55,10 @@ namespace pressio{ namespace ode{
 // rhs only
 //
 template<class T, class enable = void>
-struct OdeSystemWithRhs : std::false_type{};
+struct OdeSystem : std::false_type{};
 
 template<class T>
-struct OdeSystemWithRhs<
+struct OdeSystem<
   T,
   mpl::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
@@ -88,13 +88,13 @@ struct OdeSystemWithRhs<
 // rhs, jacobian
 //
 template<class T, class enable = void>
-struct OdeSystemWithRhsAndJacobian : std::false_type{};
+struct OdeSystemWithJacobian : std::false_type{};
 
 template<class T>
-struct OdeSystemWithRhsAndJacobian<
+struct OdeSystemWithJacobian<
   T,
   mpl::enable_if_t<
-    OdeSystemWithRhs<T>::value
+    OdeSystem<T>::value
     && ::pressio::has_jacobian_typedef<T>::value
     && std::is_copy_constructible<typename T::jacobian_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -114,13 +114,13 @@ struct OdeSystemWithRhsAndJacobian<
 // rhs and varying mass matrix
 //
 template<class T, class enable = void>
-struct OdeSystemWithRhsAndMassMatrix : std::false_type{};
+struct OdeSystemWithMassMatrix : std::false_type{};
 
 template<class T>
-struct OdeSystemWithRhsAndMassMatrix<
+struct OdeSystemWithMassMatrix<
   T,
   mpl::enable_if_t<
-    OdeSystemWithRhs<T>::value
+    OdeSystem<T>::value
     && ::pressio::has_mass_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::mass_matrix_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -140,13 +140,13 @@ struct OdeSystemWithRhsAndMassMatrix<
 // rhs and CONSTANT mass matrix
 //
 template<class T, class enable = void>
-struct OdeSystemWithRhsAndConstantMassMatrix : std::false_type{};
+struct OdeSystemWithConstantMassMatrix : std::false_type{};
 
 template<class T>
-struct OdeSystemWithRhsAndConstantMassMatrix<
+struct OdeSystemWithConstantMassMatrix<
   T,
   mpl::enable_if_t<
-    OdeSystemWithRhs<T>::value
+    OdeSystem<T>::value
     && ::pressio::has_mass_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::mass_matrix_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -172,8 +172,8 @@ template<class T>
 struct OdeSystemComplete<
   T,
   mpl::enable_if_t<
-    OdeSystemWithRhsAndJacobian<T>::value
-    && OdeSystemWithRhsAndMassMatrix<T>::value
+    OdeSystemWithJacobian<T>::value
+    && OdeSystemWithMassMatrix<T>::value
     >
   > : std::true_type{};
 
@@ -187,8 +187,8 @@ template<class T>
 struct OdeSystemCompleteWithConstantMassMatrix<
   T,
   mpl::enable_if_t<
-    OdeSystemWithRhsAndJacobian<T>::value
-    && OdeSystemWithRhsAndConstantMassMatrix<T>::value
+    OdeSystemWithJacobian<T>::value
+    && OdeSystemWithConstantMassMatrix<T>::value
     >
   > : std::true_type{};
 

@@ -43,21 +43,21 @@ struct MyApp2WithMM
     return JJ;
   };
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type evaltime,
+  void rightHandSide(const state_type & /*unused*/,
+		     independent_variable_type /*unused*/,
 		     right_hand_side_type & rhs) const{
     rhs = rhs_.at(count1++);
   };
 
-  void massMatrix(const state_type & y,
-		  independent_variable_type evaltime,
+  void massMatrix(const state_type & /*unused*/,
+		  independent_variable_type /*unused*/,
 		  mass_matrix_type & M) const
   {
     M = massMatrices_.at(count2++);
   };
 
-  void jacobian(const state_type & y,
-                independent_variable_type evaltime,
+  void jacobian(const state_type & /*unused*/,
+                independent_variable_type /*unused*/,
                 jacobian_type & JJ) const
   {
     JJ = jacobians_.at(count3++);
@@ -127,8 +127,8 @@ private:
     return ret;
   };
 
-  void massMatrix(const state_type & y,
-		  independent_variable_type evaltime,
+  void massMatrix(const state_type & /*unused*/,
+		  independent_variable_type /*unused*/,
 		  mass_matrix_type & M,
 		  bool updateCounter) const
   {

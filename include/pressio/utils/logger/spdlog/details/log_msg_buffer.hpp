@@ -41,7 +41,7 @@ public:
     update_string_views();
   }
 
-  log_msg_buffer(log_msg_buffer &&other) SPDLOG_NOEXCEPT
+  log_msg_buffer(log_msg_buffer && /*other*/) SPDLOG_NOEXCEPT
   {
     update_string_views();
   }

@@ -10,7 +10,7 @@ struct Stepper
   using state_type = VectorType;
   using independent_variable_type = ScalarType;
 
-  void operator()(state_type & odeState,
+  void operator()(state_type & /*unused*/,
 		  pressio::ode::StepStartAt<independent_variable_type> currTime,
 		  pressio::ode::StepCount step,
 		  pressio::ode::StepSize<independent_variable_type> dt)

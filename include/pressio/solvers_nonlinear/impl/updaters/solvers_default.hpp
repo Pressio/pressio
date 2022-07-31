@@ -65,7 +65,7 @@ public:
   void reset(){}
 
   template<typename SystemType, typename StateType, typename SolverMixinType>
-  void operator()(const SystemType & sys,
+  void operator()(const SystemType & /*unused*/,
 		  StateType & state,
 		  SolverMixinType & solver)
   {

@@ -273,69 +273,69 @@ TEST(ode, concepts)
 {
   using namespace pressio::ode;
 
-  static_assert( OdeSystemWithRhs<System1>::value, "");
-  static_assert(!OdeSystemWithRhsAndJacobian<System1>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System1>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System1>::value, "");
+  static_assert( OdeSystem<System1>::value, "");
+  static_assert(!OdeSystemWithJacobian<System1>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System1>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System1>::value, "");
   static_assert(!OdeSystemComplete<System1>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System1>::value, "");
 
-  static_assert(!OdeSystemWithRhs<System2>::value, "");
-  static_assert(!OdeSystemWithRhsAndJacobian<System2>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System2>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System2>::value, "");
+  static_assert(!OdeSystem<System2>::value, "");
+  static_assert(!OdeSystemWithJacobian<System2>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System2>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System2>::value, "");
   static_assert(!OdeSystemComplete<System2>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System2>::value, "");
 
-  static_assert(!OdeSystemWithRhs<System3>::value, "");
-  static_assert(!OdeSystemWithRhsAndJacobian<System3>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System3>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System3>::value, "");
+  static_assert(!OdeSystem<System3>::value, "");
+  static_assert(!OdeSystemWithJacobian<System3>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System3>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System3>::value, "");
   static_assert(!OdeSystemComplete<System3>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System3>::value, "");
 
-  static_assert( OdeSystemWithRhs<System4>::value, "");
-  static_assert(!OdeSystemWithRhsAndJacobian<System4>::value, "");
-  static_assert( OdeSystemWithRhsAndMassMatrix<System4>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System4>::value, "");
+  static_assert( OdeSystem<System4>::value, "");
+  static_assert(!OdeSystemWithJacobian<System4>::value, "");
+  static_assert( OdeSystemWithMassMatrix<System4>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System4>::value, "");
   static_assert(!OdeSystemComplete<System4>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System4>::value, "");
 
-  static_assert( OdeSystemWithRhs<System5>::value, "");
-  static_assert(!OdeSystemWithRhsAndJacobian<System5>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System5>::value, "");
-  static_assert( OdeSystemWithRhsAndConstantMassMatrix<System5>::value, "");
+  static_assert( OdeSystem<System5>::value, "");
+  static_assert(!OdeSystemWithJacobian<System5>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System5>::value, "");
+  static_assert( OdeSystemWithConstantMassMatrix<System5>::value, "");
   static_assert(!OdeSystemComplete<System5>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System5>::value, "");
 
-  static_assert( OdeSystemWithRhs<System6>::value, "");
-  static_assert( OdeSystemWithRhsAndJacobian<System6>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System6>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System6>::value, "");
+  static_assert( OdeSystem<System6>::value, "");
+  static_assert( OdeSystemWithJacobian<System6>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System6>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System6>::value, "");
   static_assert(!OdeSystemComplete<System6>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System6>::value, "");
 
-  static_assert( OdeSystemWithRhs<System7>::value, "");
-  static_assert( OdeSystemWithRhsAndJacobian<System7>::value, "");
-  static_assert( OdeSystemWithRhsAndMassMatrix<System7>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System7>::value, "");
+  static_assert( OdeSystem<System7>::value, "");
+  static_assert( OdeSystemWithJacobian<System7>::value, "");
+  static_assert( OdeSystemWithMassMatrix<System7>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System7>::value, "");
   static_assert( OdeSystemComplete<System7>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System7>::value, "");
 
-  static_assert( OdeSystemWithRhs<System8>::value, "");
-  static_assert( OdeSystemWithRhsAndJacobian<System8>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System8>::value, "");
-  static_assert( OdeSystemWithRhsAndConstantMassMatrix<System8>::value, "");
+  static_assert( OdeSystem<System8>::value, "");
+  static_assert( OdeSystemWithJacobian<System8>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System8>::value, "");
+  static_assert( OdeSystemWithConstantMassMatrix<System8>::value, "");
   static_assert(!OdeSystemComplete<System8>::value, "");
   static_assert( OdeSystemCompleteWithConstantMassMatrix<System8>::value, "");
 
   static_assert(FullyDiscreteSystemWithJacobian<System9,  1>::value, "");
   static_assert(FullyDiscreteSystemWithJacobian<System9,  2>::value, "");
   static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
-  static_assert(!OdeSystemWithRhs<System9>::value, "");
-  static_assert(!OdeSystemWithRhsAndJacobian<System9>::value, "");
-  static_assert(!OdeSystemWithRhsAndMassMatrix<System9>::value, "");
-  static_assert(!OdeSystemWithRhsAndConstantMassMatrix<System9>::value, "");
+  static_assert(!OdeSystem<System9>::value, "");
+  static_assert(!OdeSystemWithJacobian<System9>::value, "");
+  static_assert(!OdeSystemWithMassMatrix<System9>::value, "");
+  static_assert(!OdeSystemWithConstantMassMatrix<System9>::value, "");
   static_assert(!OdeSystemComplete<System9>::value, "");
   static_assert(!OdeSystemCompleteWithConstantMassMatrix<System9>::value, "");
 

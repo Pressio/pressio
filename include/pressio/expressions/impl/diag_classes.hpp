@@ -96,6 +96,7 @@ public:
 
   size_t extent(size_t i) const{
     assert(i==0);
+    (void) i;
     return extent_;
   }
 
@@ -168,6 +169,7 @@ public:
 public:
   size_t extent(size_t i) const{
     assert(i==0);
+    (void) i;
     return extent_;
   }
 

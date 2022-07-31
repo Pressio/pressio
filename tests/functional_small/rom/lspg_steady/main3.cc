@@ -34,7 +34,7 @@ struct MyFom
     }
   }
 
-  void applyJacobian(const state_type & state,
+  void applyJacobian(const state_type & /*unused*/,
                      const Eigen::MatrixXd & B,
                      Eigen::MatrixXd & A) const
   {

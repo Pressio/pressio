@@ -90,7 +90,7 @@ template < typename A_type, typename x_type, typename scalar_type>
    ::pressio::is_multi_vector_epetra<A_type>::value and
    ::pressio::is_dense_vector_teuchos<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
@@ -118,7 +118,7 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   and ::pressio::is_vector_epetra<x_type>::value
   and ::pressio::is_dense_vector_teuchos<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const x_type & x,
@@ -152,7 +152,7 @@ template < typename A_type, typename x_type, typename scalar_type>
    ::pressio::is_multi_vector_epetra<A_type>::value and
    ::pressio::is_vector_eigen<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const x_type & x,
@@ -180,7 +180,7 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   and ::pressio::is_vector_epetra<x_type>::value
   and ::pressio::is_vector_eigen<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const x_type & x,

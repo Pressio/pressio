@@ -69,8 +69,8 @@ template <
   && ::pressio::is_multi_vector_tpetra<B_type>::value
   && ::pressio::is_dense_matrix_eigen<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
@@ -147,8 +147,8 @@ template <
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_dense_matrix_eigen<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const beta_t & beta,
@@ -215,8 +215,8 @@ template <class A_type, class C_type, class alpha_t, class beta_t>
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_dense_matrix_kokkos<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const beta_t & beta,
@@ -289,8 +289,8 @@ template <class A_type, class C_type, class alpha_t, class beta_t>
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_dense_matrix_kokkos<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const A_type & B,

@@ -42,7 +42,7 @@ public:
     return jacobian_type(numEquations, numVars);
   }
 
-  void residualAndJacobian(const state_type & y,
+  void residualAndJacobian(const state_type & /*y*/,
                            residual_type & R, 
                            jacobian_type & jac, 
                            bool updateJacobian) const

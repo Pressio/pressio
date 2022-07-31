@@ -5,8 +5,12 @@
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  class ReducedStateType, class ResidualType, class JacobianType,
-  class TrialSpaceType, class FomSystemType, class HypRedOpType
+  class ReducedStateType,
+  class ResidualType,
+  class JacobianType,
+  class TrialSpaceType,
+  class FomSystemType,
+  class HypRedOpType
   >
 class GalerkinSteadyHypRedSystem
 {

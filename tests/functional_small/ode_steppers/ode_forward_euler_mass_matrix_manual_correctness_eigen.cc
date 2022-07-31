@@ -34,7 +34,7 @@ struct MyApp1
     }
   };
 
-  void massMatrix(const state_type & y,
+  void massMatrix(const state_type & /*unused*/,
 		  independent_variable_type evaltime,
 		  mass_matrix_type & M) const
   {

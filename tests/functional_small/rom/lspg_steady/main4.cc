@@ -32,17 +32,17 @@ struct MyFom
     }
   }
 
-  void applyJacobian(const state_type & state,
+  void applyJacobian(const state_type & /*unused*/,
                      const Eigen::MatrixXd & B,
                      Eigen::MatrixXd & A) const{
     A = B;
-    for (auto i=0; i<A.rows(); ++i){
-      for (auto j=0; j<A.cols(); ++j){
+    for (int i=0; i<A.rows(); ++i){
+      for (int j=0; j<A.cols(); ++j){
         A(i,j) += 1.;
       }
     }
     for (auto & it : indices_to_corrupt_){
-      for (std::size_t j=0; j< A.cols(); ++j){
+      for (int j=0; j< A.cols(); ++j){
         A(it,j) = -4232;
       }
     }
@@ -131,7 +131,7 @@ struct MyMasker
 
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  vec_operand_type createApplyMaskResult(const vec_operand_type & operand) const{
+  vec_operand_type createApplyMaskResult(const vec_operand_type & /*unused*/) const{
     return vec_operand_type(sample_indices_.size());
   }
 

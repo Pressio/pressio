@@ -14,7 +14,7 @@ struct AB2MyApp
 
   state_type createState() const{ return state_type(3); }
 
-  void rightHandSide(const state_type & y,
+  void rightHandSide(const state_type & /*unused*/,
 		independent_variable_type evaltime,
 		right_hand_side_type & f) const
   {
@@ -31,7 +31,7 @@ struct AB2MyApp
 struct Collector
 {
   void operator()(const ::pressio::ode::StepCount & stepIn,
-		  double time,
+		  double /*unused*/,
 		  const Eigen::VectorXd & y)
   {
     const auto step = stepIn.get();

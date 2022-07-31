@@ -35,7 +35,7 @@ struct MySystem
     return jacobian_type(numEquations, numVars);
   }
 
-  void residual(const state_type& x,
+  void residual(const state_type& /*x*/,
     residual_type & R) const
   {
     ++iterCountR_;
@@ -45,7 +45,7 @@ struct MySystem
     }
   }
 
-  void jacobian(const state_type& x, jacobian_type & jac) const
+  void jacobian(const state_type& /*x*/, jacobian_type & jac) const
   {
     // std::cout << "updating Jacobian\n";
     ++iterCountJ_;

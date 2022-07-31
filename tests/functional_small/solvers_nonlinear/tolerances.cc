@@ -14,8 +14,8 @@ struct MySystem
   state_type createState() const { return state_type(2); }
   residual_type createResidual() const { return residual_type(2); }
   jacobian_type createJacobian() const { return jacobian_type(2, 2); }
-  void residual(const state_type& x, residual_type& res) const{}
-  void jacobian(const state_type& x, jacobian_type& jac) const{}
+  void residual(const state_type&, residual_type&) const{}
+  void jacobian(const state_type&, jacobian_type&) const{}
 };
 }
 

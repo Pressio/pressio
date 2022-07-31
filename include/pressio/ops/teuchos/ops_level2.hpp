@@ -67,7 +67,7 @@ template <
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_eigen<y_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -79,9 +79,9 @@ product(::pressio::nontranspose mode,
 
   using ord_t = typename A_type::ordinalType;
   for (ord_t i=0;i<A.numRows(); ++i){
-    y(i) = {};
+    y(i) *= beta;
     for (ord_t j=0; j<A.numCols(); ++j){
-      y(i) += A(i,j)*x(j);
+      y(i) += alpha*A(i,j)*x(j);
     }
   }
 }
@@ -98,7 +98,7 @@ template <
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_eigen<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -110,9 +110,9 @@ product(::pressio::transpose mode,
 
   using ord_t = typename A_type::ordinalType;
   for (ord_t j=0; j<A.numCols(); ++j){
-    y(j) = {};
+    y(j) *= beta;
     for (ord_t i=0;i<A.numRows(); ++i){
-      y(j) += A(i,j)*x(i);
+      y(j) += alpha*A(i,j)*x(i);
     }
   }
 }

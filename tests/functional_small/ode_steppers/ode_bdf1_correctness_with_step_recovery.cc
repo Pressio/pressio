@@ -22,7 +22,7 @@ public:
     return J;
   }
 
-  void rightHandSide(const state_type & yn,
+  void rightHandSide(const state_type & /*unused*/,
 		const independent_variable_type& evaltime,
 		right_hand_side_type & f) const
   {
@@ -131,7 +131,7 @@ struct MyFakeSolver
   }
 };
 
-int main(int argc, char *argv[])
+int main()
 {
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -139,8 +139,8 @@ int main(int argc, char *argv[])
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
 
-  auto dtManager = [](pressio::ode::StepCount step,
-		      pressio::ode::StepStartAt<double> time,
+  auto dtManager = [](pressio::ode::StepCount /*unused*/,
+		      pressio::ode::StepStartAt<double> /*unused*/,
 		      pressio::ode::StepSize<double> & dt,
 		      pressio::ode::StepSizeMin<double> & minDt,
 		      pressio::ode::StepSizeReduction<double> & dtRedFactor)

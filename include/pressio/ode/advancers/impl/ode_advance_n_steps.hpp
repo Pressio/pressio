@@ -142,8 +142,8 @@ void advance_n_steps_with_fixed_dt(StepperType & stepper,
 
 
   const auto dtSetter =
-    [sz = step_size](pressio::ode::StepCount currStep,
-		     pressio::ode::StepStartAt<IndVarType> currTime,
+    [sz = step_size](pressio::ode::StepCount /*currStep*/,
+		     pressio::ode::StepStartAt<IndVarType> /*currTime*/,
 		     pressio::ode::StepSize<IndVarType> & dt){
       dt = sz;
     };

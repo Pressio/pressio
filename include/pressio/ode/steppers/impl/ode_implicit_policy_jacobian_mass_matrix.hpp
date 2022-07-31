@@ -98,9 +98,9 @@ public:
   template <class StencilStatesContainerType>
   void operator()(StepScheme name,
 		  const StateType & odeCurrentState,
-		  const StencilStatesContainerType & stencilStates,
+		  const StencilStatesContainerType & /*unused*/,
 		  const ::pressio::ode::StepEndAt<IndVarType> & evalTime,
-		  ::pressio::ode::StepCount step,
+		  ::pressio::ode::StepCount /*unused*/,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  JacobianType & J) const
   {

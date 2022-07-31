@@ -28,7 +28,7 @@ public:
     return J;
   }
 
-  void rightHandSide(const state_type & yn,
+  void rightHandSide(const state_type & /*unused*/,
 		const independent_variable_type& evaltime,
 		right_hand_side_type & f) const
   {
@@ -87,7 +87,7 @@ public:
     return J;
   }
 
-  void rightHandSide(const state_type & yn,
+  void rightHandSide(const state_type & /*unused*/,
     const independent_variable_type& evaltime,
     right_hand_side_type & f) const
   {

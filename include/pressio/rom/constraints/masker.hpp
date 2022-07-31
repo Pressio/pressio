@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_extent.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,43 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_OPS_EXTENT_HPP_
-#define OPS_TPETRA_OPS_EXTENT_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_MASKER_HPP_
+#define ROM_CONSTRAINTS_ROM_MASKER_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace rom{
 
-template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T>::value, 
-  typename ::pressio::Traits<T>::global_ordinal_type
-  >
-extent(const T & oIn, const IndexType i)
-{
-  assert(i==0);
-  (void) i;
-  return oIn.getGlobalLength();
-}
+template<class T, class enable = void>
+struct TimeInvariantMasker : std::false_type{};
 
-template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<T>::value,
-  typename ::pressio::Traits<T>::global_ordinal_type
-  >
-extent(const T & oIn, const IndexType i)
-{
-  assert(i<=1);
-  return (i==0) ? oIn.getGlobalLength() : oIn.getNumVectors(); 
-}
+template<class T>
+struct TimeInvariantMasker<
+  T,
+  mpl::enable_if_t<
+       ::pressio::has_operand_typedef<T>::value
+    && ::pressio::has_result_typedef<T>::value
+    && std::is_same<
+	decltype
+	(
+	 std::declval<T const>().createApplyMaskResult
+	 (
+	  std::declval<typename T::operand_type const &>()
+	  )
+	 ),
+	typename T::result_type
+       >::value
+    //
+    && std::is_void<
+	decltype
+	(
+	 std::declval<T const>()
+	 (
+	  std::declval<typename T::operand_type const &>(),
+	  std::declval<typename T::result_type &>()
+	  )
+	 )
+	>::value
+   >
+  > : std::true_type{};
 
 }}
-#endif  // OPS_TPETRA_OPS_EXTENT_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

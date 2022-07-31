@@ -2,9 +2,13 @@
 #include <gtest/gtest.h>
 #include "pressio/rom_concepts.hpp"
 
-#define NT1() using reduced_state_type = Eigen::VectorXd;
-#define NT2() using basis_type         = Eigen::MatrixXd;
-#define NT3() using full_state_type    = Eigen::VectorXd;
+struct FakeType1{};
+struct FakeType2{};
+struct FakeType3{};
+
+#define NT1() using reduced_state_type = FakeType1;
+#define NT2() using basis_type         = FakeType2;
+#define NT3() using full_state_type    = FakeType3;
 
 #define M1() reduced_state_type createReducedState() const;
 #define M2() full_state_type createFullState() const;
@@ -14,19 +18,19 @@
 #define M6() const full_state_type & viewAffineOffset() const;
 
 struct S1{
-  NT1(); NT2(); NT3(); M1(); M2(); M3(); M4(); M5();
+  NT1() NT2() NT3() M1() M2() M3() M4() M5()
 };
 
 struct S2{
-  NT1(); NT2(); NT3(); M1(); M2(); M3(); M4(); M5(); M6();
+  NT1() NT2() NT3() M1() M2() M3() M4() M5() M6()
 };
 
 struct S3{
-  NT1(); NT2(); NT3(); M1(); M2(); M3();
+  NT1() NT2() NT3() M1() M2() M3()
 };
 
 struct S4{
-  NT1(); NT2(); NT3(); M1(); M4(); M5(); M6();
+  NT1() NT2() NT3() M1() M4() M5() M6()
 };
 
 TEST(rom, concepts_C)

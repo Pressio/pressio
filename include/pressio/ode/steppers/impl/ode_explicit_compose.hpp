@@ -92,10 +92,10 @@ struct ExplicitCompose
   // Ideally we should use concepts for better errors. We cannot do that yet.
 
   static_assert
-  (   ::pressio::ode::OdeSystemWithRhs<sys_type>::value
-   || ::pressio::ode::OdeSystemWithRhsAndMassMatrix<sys_type>::value
-   || ::pressio::ode::OdeSystemWithRhsAndJacobian<sys_type>::value
-   || ::pressio::ode::OdeSystemWithRhsAndConstantMassMatrix<sys_type>::value
+  (   ::pressio::ode::OdeSystem<sys_type>::value
+   || ::pressio::ode::OdeSystemWithMassMatrix<sys_type>::value
+   || ::pressio::ode::OdeSystemWithJacobian<sys_type>::value
+   || ::pressio::ode::OdeSystemWithConstantMassMatrix<sys_type>::value
    || ::pressio::ode::OdeSystemComplete<sys_type>::value
    || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<sys_type>::value,
    "explicit stepper: your system class does not meet any valid concept");

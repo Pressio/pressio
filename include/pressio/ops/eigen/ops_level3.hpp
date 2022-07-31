@@ -73,8 +73,8 @@ template <
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
@@ -111,8 +111,8 @@ template <
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
-product(::pressio::nontranspose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::nontranspose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
@@ -145,8 +145,8 @@ template <class A_type, class C_type, class alpha_t, class beta_t>
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const beta_t & beta,
@@ -196,8 +196,8 @@ template <
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
-product(::pressio::nontranspose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::nontranspose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,

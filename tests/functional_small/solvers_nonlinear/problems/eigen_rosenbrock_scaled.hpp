@@ -95,7 +95,7 @@ public:
 			  gradient_type & grad,
 			  pressio::Norm normType,
 			  residual_norm_type & residualNorm,
-        bool recomputeJacobian) const
+        bool /*recomputeJacobian*/) const
   {
     auto J = rosImpl.createJacobian();
     rosImpl.jacobian(x, J);

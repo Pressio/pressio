@@ -139,7 +139,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::is_vector_tpetra<y_type>::value
   && ::pressio::is_dense_vector_teuchos<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -164,7 +164,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::is_vector_tpetra<y_type>::value
   && ::pressio::is_vector_kokkos<x_type>::value
   >
-product(::pressio::nontranspose,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -192,7 +192,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::is_vector_tpetra<y_type>::value
   && ::pressio::is_vector_eigen<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -247,7 +247,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   && ::pressio::is_vector_tpetra<x_type>::value
   && ::pressio::is_vector_eigen<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -289,7 +289,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   && ::pressio::is_vector_tpetra<x_type>::value
   && ::pressio::is_vector_kokkos<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,

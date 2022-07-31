@@ -12,8 +12,8 @@ struct Stepper1
 
   void operator()(state_type & odeState,
 		  pressio::ode::StepStartAt<independent_variable_type> currTime,
-		  pressio::ode::StepCount step,
-		  pressio::ode::StepSize<independent_variable_type> dt)
+		  pressio::ode::StepCount /*unused*/,
+		  pressio::ode::StepSize<independent_variable_type> /*unused*/)
   {
     auto timeval = currTime.get();
     for (std::size_t i=0; i<odeState.size(); i++){
@@ -24,7 +24,7 @@ struct Stepper1
 
 struct Guesser{
   void operator()(pressio::ode::StepCount currStep,
-                  pressio::ode::StepStartAt<double> currTime,
+                  pressio::ode::StepStartAt<double> /*unused*/,
                   VectorType & state) const
   {
     if(currStep.get()==1) {
@@ -41,8 +41,8 @@ struct Guesser{
 };
 
 struct DtSetter1{
-  void operator()(pressio::ode::StepCount currStep,
-                  pressio::ode::StepStartAt<double> currTime,
+  void operator()(pressio::ode::StepCount /*unused*/,
+                  pressio::ode::StepStartAt<double> /*unused*/,
                   pressio::ode::StepSize<double> & dt) const
   {
     dt = 2.;
@@ -56,7 +56,7 @@ public:
 
   template<class TimeType>
   void operator()(pressio::ode::StepCount step,
-		  TimeType currtime,
+		  TimeType /*unused*/,
 		  const state_type & state) const
   {
 
@@ -93,7 +93,6 @@ TEST(ode, advance_n_steps_guesser_varying_dt_stepper)
 		[](ScalarType & val){val = 0.0; });
 
   Stepper1 stepper;
-  ScalarType dt = 2.0;
   ScalarType t0 = 1.2;
   pressio::ode::advance_n_steps_with_pre_step_guesser(stepper, odeState, t0,
 						      DtSetter1(),

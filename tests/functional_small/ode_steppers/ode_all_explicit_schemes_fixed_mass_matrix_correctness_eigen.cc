@@ -33,7 +33,7 @@ struct MyApp2WithMM
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
+  void rightHandSide(const state_type & /*unused*/,
 		     independent_variable_type evaltime,
 		     right_hand_side_type & rhs) const
   {
@@ -75,7 +75,7 @@ struct MyApp2NoMM
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
+  void rightHandSide(const state_type & /*unused*/,
 		     independent_variable_type evaltime,
 		     right_hand_side_type & rhs) const
   {

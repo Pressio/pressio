@@ -118,7 +118,7 @@ struct MySystem
     return a;
   }
 
-  void residual(const state_type& x,
+  void residual(const state_type& /*x*/,
     residual_type & R) const
   {
     ++iterCountR_;
@@ -127,7 +127,7 @@ struct MySystem
     if(iterCountR_==3) R.setConstant(16.);
   }
 
-  void jacobian(const state_type& x, jacobian_type & jac) const
+  void jacobian(const state_type& /*x*/, jacobian_type & jac) const
   {
     ++iterCountJ_;
 
@@ -151,7 +151,7 @@ struct MyLinSolverNormalEq
   template<typename H_t, typename state_t>
   void solve(const H_t & H,
              const state_t & g,
-             state_t & correction)
+             state_t & /*correction*/)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;

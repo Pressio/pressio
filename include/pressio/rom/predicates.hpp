@@ -283,6 +283,35 @@ struct has_const_apply_mass_matrix_method_accept_state_operand_time_result_retur
   >: std::true_type{};
 // ---------------------------------------------------------------
 
+template <
+  class T,
+  class OperandType,
+  class ResultType,
+  class = void
+  >
+struct has_const_apply_mass_matrix_method_accept_operand_result_return_void
+  : std::false_type{};
+
+template <
+  class T,
+  class OperandType,
+  class ResultType
+  >
+struct has_const_apply_mass_matrix_method_accept_operand_result_return_void<
+  T, OperandType, ResultType,
+  ::pressio::mpl::void_t<
+    decltype
+    (
+     std::declval<T const>().applyMassMatrix
+     (
+      std::declval<OperandType const&>(),
+      std::declval<ResultType &>()
+      )
+     )
+    >
+  >: std::true_type{};
+// ---------------------------------------------------------------
+
 template <class T, class OperandType, class = void>
 struct has_const_create_apply_jacobian_result_method_accept_operand_return_result
   : std::false_type{};

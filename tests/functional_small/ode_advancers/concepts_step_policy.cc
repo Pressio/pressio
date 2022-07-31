@@ -15,7 +15,7 @@ namespace{
     // wrong order
     void operator()(StepCount /*unused*/,
 		    StepSize<double> & /*unused*/,
-		    StepStartAt<double> current_time) const{}
+		    StepStartAt<double> /*unused*/) const{}
   };
 
   struct BasicPolicy3{

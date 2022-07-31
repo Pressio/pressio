@@ -1025,7 +1025,7 @@ inline pattern_formatter::pattern_formatter(pattern_time_type time_type, std::st
 }
 
 template<typename Padder>
-inline void pattern_formatter::handle_flag_(char flag, details::padding_info padding)
+inline void pattern_formatter::handle_flag_(char /*flag*/, details::padding_info /*padding*/)
 {
   // // process custom flags
   // auto it = custom_handlers_.find(flag);

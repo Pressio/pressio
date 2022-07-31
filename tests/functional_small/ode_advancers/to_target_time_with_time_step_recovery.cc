@@ -15,10 +15,10 @@ struct MyFakeStepper
   using independent_variable_type = double;
 
   void operator()(ode_state_type & odeState,
-		  pressio::ode::StepStartAt<double> time,
+		  pressio::ode::StepStartAt<double> /*unused*/,
 		  pressio::ode::StepCount stepIn,
 		  pressio::ode::StepSize<double> dtIn,
-		  MyFakeSolver & solver)
+		  MyFakeSolver & /*unused*/)
   {
     const auto step = stepIn.get();
     const auto dt = dtIn.get();
@@ -37,7 +37,7 @@ struct MyFakeStepper
 
 };
 
-int main(int argc, char *argv[])
+int main()
 {
   using ode_state_t = Eigen::VectorXd;
 
@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
   MyFakeSolver solver;
   std::string checkStr= "PASSED";
 
-  auto dtManager = [](pressio::ode::StepCount step,
-		      pressio::ode::StepStartAt<double> time,
+  auto dtManager = [](pressio::ode::StepCount /*unused*/,
+		      pressio::ode::StepStartAt<double> /*unused*/,
 		      pressio::ode::StepSize<double> & dt,
 		      pressio::ode::StepSizeMin<double> & minDt,
 		      pressio::ode::StepSizeReduction<double> & dtRedFactor)

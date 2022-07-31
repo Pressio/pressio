@@ -180,7 +180,7 @@ mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, NewtonRaphson>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const StateType & state,
+createUpdater(const StateType & /*state*/,
 	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;

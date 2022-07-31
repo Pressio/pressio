@@ -27,7 +27,7 @@ public:
 
   template <typename step_t, typename state_type>
   void discreteResidual(const step_t & step,
-				const independent_variable_type & evaltime,
+				const independent_variable_type & /*unused*/,
 				const independent_variable_type & dt,
 				discrete_residual_type & R,
 				const state_type & yn,
@@ -143,13 +143,13 @@ struct MyFakeSolver
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
   using app_t		= MyApp;
   using state_t = typename app_t::state_type;
 
-  auto dtManager = [](pressio::ode::StepCount step,
-		      pressio::ode::StepStartAt<double> time,
+  auto dtManager = [](pressio::ode::StepCount /*unused*/,
+		      pressio::ode::StepStartAt<double> /*unused*/,
 		      pressio::ode::StepSize<double> & dt,
 		      pressio::ode::StepSizeMin<double> & minDt,
 		      pressio::ode::StepSizeReduction<double> & dtRedFactor)

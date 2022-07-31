@@ -15,7 +15,7 @@ public:
     return state_type(3);
   }
 
-  void rightHandSide(const state_type & y,
+  void rightHandSide(const state_type & /*unused*/,
 		     independent_variable_type evaltime,
 		     right_hand_side_type & R) const
   {
@@ -34,7 +34,7 @@ public:
 struct CollectorTestAb2
 {
   void operator()(const ::pressio::ode::StepCount & stepIn,
-		  double time,
+		  double /*unused*/,
 		  const VectorType & y)
   {
     const auto step = stepIn.get();

@@ -42,7 +42,7 @@ struct FakeProblem
   residual_type createResidual() const{return residual_type(10);}
   jacobian_type createJacobian() const{return jacobian_type(10,4);}
 
-  void residual(const state_type& x, residual_type & res) const
+  void residual(const state_type&, residual_type & res) const
   {
     ++count_;
     std::cout << "RESIDUAL CALL " << count_ << std::endl;
@@ -52,7 +52,7 @@ struct FakeProblem
     }
   }
 
-  void jacobian(const state_type & x, jacobian_type & jac) const
+  void jacobian(const state_type &, jacobian_type & jac) const
   {
     jac.setConstant(1.);
   }
@@ -65,7 +65,7 @@ struct FakeLinS
   using matrix_type = T;
 
   template<typename A_t, typename b_t, typename x_t>
-  void solve(const A_t & A, const b_t & b, x_t & x)
+  void solve(const A_t &, const b_t &, x_t & x)
   {
     ++count_;
     std::cout << x << std::endl;

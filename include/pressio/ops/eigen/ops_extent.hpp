@@ -59,6 +59,7 @@ mpl::enable_if_t<
 extent(const T & objectIn, const IndexType i)
 {
   assert(i==0);
+  (void) i;
   return objectIn.size();
 }
 

@@ -42,8 +42,8 @@ struct MyApp2WithMM
     return JJ;
   };
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type evaltime,
+  void rightHandSide(const state_type & /*unused*/,
+		     independent_variable_type /*unused*/,
 		     right_hand_side_type & rhs) const{
     rhs = rhs_.at(count1++);
   };
@@ -52,8 +52,8 @@ struct MyApp2WithMM
     M = MM_;
   };
 
-  void jacobian(const state_type & y,
-                independent_variable_type evaltime,
+  void jacobian(const state_type & /*unused*/,
+                independent_variable_type /*unused*/,
                 jacobian_type & JJ) const{
     JJ = jacobians_.at(count3++);
   };
@@ -93,16 +93,16 @@ struct MyApp2NoMM
     return JJ;
   };
 
-  void jacobian(const state_type & y,
-                independent_variable_type evaltime,
+  void jacobian(const state_type & /*unused*/,
+                independent_variable_type /*unused*/,
                 jacobian_type & JJ) const
   {
     auto tmpJ = jacobians_.at(count3++);
     JJ = MM_.inverse()*tmpJ;
   }
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type evaltime,
+  void rightHandSide(const state_type & /*unused*/,
+		     independent_variable_type /*unused*/,
 		     right_hand_side_type & rhs) const
   {
     auto tmprhs = rhs_.at(count1++);

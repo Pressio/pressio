@@ -26,7 +26,7 @@ struct ConcreteSystemRJ
   state_type createState() const { return residual_type(5); }
   residual_type createResidual() const { return residual_type(5); }
   jacobian_type createJacobian() const { return jacobian_type(5, 5); }
-  void residual(const state_type& x, residual_type& res) const
+  void residual(const state_type& /*x*/, residual_type& res) const
   {
     res.setConstant(1);
   }
@@ -65,7 +65,7 @@ struct ConcreteSystemRJ
 
   template<bool _use_dense_jacobian = use_dense_jacobian>
   typename std::enable_if<_use_dense_jacobian>::type 
-  jacobian(const state_type& x, jacobian_type& jac) const
+  jacobian(const state_type& /*x*/, jacobian_type& jac) const
   {
     // (0  1 4  0  2)
     // (0  0 3 -2  2)
@@ -165,7 +165,7 @@ struct ConcreteSystemRJFused
   residual_type createResidual() const { return mySystem_.createResidual(); }
   jacobian_type createJacobian() const { return mySystem_.createJacobian(); }
   void residualAndJacobian(const state_type& x, residual_type& res, 
-    jacobian_type& jac, const bool recomputeJacobian) const
+    jacobian_type& jac, const bool /*recomputeJacobian*/) const
   {
     mySystem_.residual(x, res);
     mySystem_.jacobian(x, jac);
@@ -233,23 +233,23 @@ struct ConcreteSystemHessGrad
   state_type createState() const { return state_type(5); }
   gradient_type createGradient() const { return gradient_type(5); }
   hessian_type  createHessian() const  { return hessian_type(5,5); }
-  void gradient(const state_type& x, 
+  void gradient(const state_type& /*x*/, 
                 gradient_type& g, 
-                pressio::Norm whichNorm, 
-                residual_norm_type & residualNorm,
-                bool recomputeJacobian) const
+                pressio::Norm /*whichNorm*/, 
+                residual_norm_type & /*residualNorm*/,
+                bool /*recomputeJacobian*/) const
   {
     g.setConstant(3.4);
   }
 
-  void residualNorm(const state_type& x, 
-                pressio::Norm whichNorm, 
+  void residualNorm(const state_type& /*x*/, 
+                pressio::Norm /*whichNorm*/, 
                 residual_norm_type & residualNorm) const
   {
     residualNorm = 8.;
   }
 
-  void hessian(const state_type& x, hessian_type& H) const
+  void hessian(const state_type& /*x*/, hessian_type& H) const
   {
     H = goldHessian();
   }
@@ -340,8 +340,8 @@ struct ConcreteSystemHessGradFused
   void hessianAndGradient(const state_type& x, 
                 hessian_type & H,
                 gradient_type& g, 
-                pressio::Norm whichNorm, 
-                residual_norm_type & residualNorm,
+                pressio::Norm /*whichNorm*/, 
+                residual_norm_type & /*residualNorm*/,
                 bool recomputeJacobian) const
   {
     g.setConstant(3.4);
@@ -350,8 +350,8 @@ struct ConcreteSystemHessGradFused
     }
   }
 
-  void residualNorm(const state_type& x, 
-                pressio::Norm whichNorm, 
+  void residualNorm(const state_type& /*x*/, 
+                pressio::Norm /*whichNorm*/, 
                 residual_norm_type & residualNorm) const
   {
     residualNorm = 8.;
@@ -424,12 +424,12 @@ struct ConcreteWeightingOperator
   using rank1_operand_type = Eigen::VectorXd;
   using rank2_operand_type = Eigen::MatrixXd;
 
-  void operator()(const rank1_operand_type & operand, 
+  void operator()(const rank1_operand_type & /*operand*/, 
                   rank1_operand_type & result) const
   {
     result.setConstant(3.);
   }
-  void operator()(const rank2_operand_type & operand, 
+  void operator()(const rank2_operand_type & /*operand*/, 
                   rank2_operand_type & result) const
   {
     result.setConstant(2.2);

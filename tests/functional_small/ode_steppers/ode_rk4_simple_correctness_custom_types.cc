@@ -13,7 +13,7 @@ public:
   state_type createState() const{ return state_type(3); }
 
   void rightHandSide(const state_type & y,
-		independent_variable_type evalt,
+		independent_variable_type /*unused*/,
                 right_hand_side_type & R) const
   {
     R[0] = -10. * y[0];
