@@ -145,7 +145,9 @@ public:
 
 public:
 
-  galerkinEntropySteadyRomSystem(const fom_t & appObj, rom_state_t & romState,const basis_t & Phi, fom_state_t & fomState, fom_velocity_t & fomVelocity) : appObj_(appObj), romState_(romState), Phi_(Phi), JPhi_(Phi) , fomState_(fomState) , fomVelocity_(fomVelocity) {};
+  galerkinEntropySteadyRomSystem(const fom_t & appObj, rom_state_t & romState,const basis_t & Phi, fom_state_t & fomState, fom_velocity_t & fomVelocity) : appObj_(appObj), romState_(romState), Phi_(Phi), fomState_(fomState) , fomVelocity_(fomVelocity) {
+    JPhi_ = ::pressio::ops::clone(Phi);
+  };
     
 
   residual_type createResidual() const{
@@ -170,31 +172,45 @@ public:
   void jacobian(const state_type & romState, jacobian_type & romJacobian) const
   {
     auto K = romState.size();
-    /*
-    Kokkos::View<scalar_type**,Kokkos::LayoutLeft> romJacobian_Kokkos("reducedMass",K,K);
-    ::pressio::ops::product(::pressio::nontranspose(), 1., Phi_,romState,0.,fomState_);
-    appObj_.applyJacobian(fomState_, Phi_ ,0., JPhi_);
-    ::pressio::ops::product(::pressio::transpose(),::pressio::nontranspose(),1., Phi_,JPhi_, 0.,romJacobian_Kokkos);    
-    for (int n=0; n < K; n++){
-      for (int m=0; m< K ; m++){
-        romJacobian(m,n) = romJacobian_Kokkos(m,n);
-      }
-    }
-    */
-    double eps = 1.e-4;
+    //Kokkos::View<scalar_type**,Kokkos::LayoutLeft> romJacobian_Kokkos("reducedMass",K,K);
+    //Eigen::MatrixXd romJacobian2(K,K);
+    //auto romJacobian2 = ::pressio::ops::clone(romJacobian);
+
+
+    double eps = 1.e-9;
     auto base_residual = this->createResidual();
     auto pert_residual = this->createResidual();
+    auto pert_residual2 = this->createResidual();
     auto romStatePerturb = ::pressio::ops::clone(romState);
     this->residual(romState,base_residual);
     ::pressio::ops::set_zero(romJacobian);
     for (int i = 0; i < K; i++){
       romStatePerturb(i) += eps;
       this->residual(romStatePerturb,pert_residual);
-      romStatePerturb(i) -= eps;
+      romStatePerturb(i) -= 2*eps;
+      this->residual(romStatePerturb,pert_residual2);
+      romStatePerturb(i) += eps;
+      //std::cout << "ROM " << ::pressio::ops::norm2(romState) << std::endl;
+      //std::cout << "Resid " << ::pressio::ops::norm2(pert_residual2) << std::endl;
+
       for (int j = 0; j < K; j++){
-        romJacobian(j,i) = ( pert_residual(j) - base_residual(j)) / eps;
+        romJacobian(j,i) = 0.5*( pert_residual(j) - pert_residual2(j)) / eps;
       }
     } 
+
+
+
+  //::pressio::ops::set_zero(romJacobian2);
+//    ::pressio::ops::product(::pressio::nontranspose(), 1., Phi_,romState,0.,fomState_);
+//    appObj_.velocity(fomState_,0.,fomVelocity_);
+//    appObj_.applyJacobian(fomState_, Phi_ ,0., JPhi_);
+//    ::pressio::ops::product(::pressio::transpose(),::pressio::nontranspose(),1., Phi_,JPhi_, 0.,romJacobian);    
+    
+//    for (int i = 0; i< K ; i++){
+//      for (int j =0; j < K ; j++){
+//        std::cout << "test " << romJacobian(i,j) << " " << romJacobian2(i,j) << std::endl; }}
+
+    
   }
 };
 
@@ -214,16 +230,35 @@ public:
     auto fomVelocity = appObj_.createVelocity();
     auto myGalerkinEntropySteadyRomSystem = galerkinEntropySteadyRomSystem<fom_t, rom_state_t,basis_t, decltype(fomState),decltype(fomVelocity)>(appObj_,romState,Phi_,fomState,fomVelocity);
 
+    
     namespace pls  = pressio::linearsolvers;
     using tag      = pls::direct::HouseholderQR;
     using matrix_type = Eigen::MatrixXd;
     using solver_t = pls::Solver<tag, matrix_type>;
     solver_t linearSolver;
-
+    
     namespace pnls = pressio::nonlinearsolvers;
     auto NonLinSolver = pnls::create_newton_raphson(myGalerkinEntropySteadyRomSystem, romState, linearSolver);
-    NonLinSolver.setTolerance(1e-8);
+    NonLinSolver.setTolerance(1e-13);
+    /*
+    myGalerkinEntropySteadyRomSystem.residual(romState,reducedVelocity);
+    std::cout << romState << std::endl;
+    auto residualNorm = ::pressio::ops::norm2(reducedVelocity);
+    auto reducedJacobian = myGalerkinEntropySteadyRomSystem.createJacobian(); 
+    while (residualNorm >= 1e-6){
+      myGalerkinEntropySteadyRomSystem.jacobian(romState,reducedJacobian);
+      auto du = reducedJacobian.householderQr().solve(reducedVelocity);
+      romState -= 0.1*du;
+      std::cout << du << std::endl;
+      std::cout << romState << std::endl;
+      myGalerkinEntropySteadyRomSystem.residual(romState,reducedVelocity);
+      residualNorm = ::pressio::ops::norm2(reducedVelocity);
+      std::cout << "residual norm  = " << residualNorm << std::endl;
+    }
+    */ 
     NonLinSolver.solve(myGalerkinEntropySteadyRomSystem,romState);
+    
+
     Obs(1,0.,romState);
   }
 };
