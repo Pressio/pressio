@@ -12,7 +12,7 @@ namespace pressio{ namespace rom{ namespace impl{
 template<
   class TrialSpaceType, class FomSystemType,
   mpl::enable_if_t<
-    ImplicitTimeInvariantFomWithJacobianAction<
+    SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
 auto lspg_steady_create_default_problem(TrialSpaceType & trialSpace,
@@ -29,7 +29,7 @@ auto lspg_steady_create_default_problem(TrialSpaceType & trialSpace,
 template<
   class TrialSpaceType, class FomSystemType, class PreconditionerType,
   mpl::enable_if_t<
-    ImplicitTimeInvariantFomWithJacobianAction<
+    SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
 auto lspg_steady_create_preconditioned_problem(TrialSpaceType & trialSpace,
@@ -47,7 +47,7 @@ auto lspg_steady_create_preconditioned_problem(TrialSpaceType & trialSpace,
 template<
   class TrialSpaceType, class FomSystemType, class MaskerType,
   mpl::enable_if_t<
-    ImplicitTimeInvariantFomWithJacobianAction<
+    SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
 auto lspg_steady_create_masked_problem(TrialSpaceType & trialSpace,

@@ -15,7 +15,7 @@ template<
   mpl::enable_if_t<
     // check for trial concept since affine space subsumes trial concept
     TrialSubspace<TrialSpaceType>::value
-    && ImplicitTimeInvariantFomWithJacobianAction<
+    && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
 auto create_default_problem(const TrialSpaceType & trialSpace,
@@ -41,7 +41,7 @@ template<
   mpl::enable_if_t<
     // check for trial concept since affine space subsumes trial concept
     TrialSubspace<TrialSpaceType>::value
-    && ImplicitTimeInvariantFomWithJacobianAction<
+    && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
 auto create_hyperreduced_problem(const TrialSpaceType & trialSpace,
@@ -71,7 +71,7 @@ template<
   mpl::enable_if_t<
     // check for trial concept since affine space subsumes trial concept
     TrialSubspace<TrialSpaceType>::value
-    && ImplicitTimeInvariantFomWithJacobianAction<
+    && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
 auto create_masked_problem(const TrialSpaceType & trialSpace,

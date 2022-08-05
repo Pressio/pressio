@@ -60,27 +60,17 @@
 
 ## Default
 
-```cpp
-create_default_steady_lspg(odeScheme, fomSystem, trialSpace);
-```
+- arg min || r ||
 
 ## Hypred
 
 - arg min ||A r_sample||
 - A is used in the solver NOT in the actual LSPG class
 
-```cpp
-create_default_hypred_steady_lspg(fomSystem, trialSpace);
-```
-
 ## Masked
 
 - arg min ||A r_sample||
 - A is used in the solver NOT in the actual LSPG class
-
-```cpp
-create_default_masked_steady_lspg(fomSystem, trialSpace, masker);
-```
 
 
 <!-- ============================================================== -->
@@ -92,25 +82,12 @@ create_default_masked_steady_lspg(fomSystem, trialSpace, masker);
 
 - arg min ||r||
 
-
-```cpp
-create_default_unsteady_lspg(odeScheme, fomSystem, trialSpace);
-```
-
 ## Hypred
 
 - arg min ||A r_sample||
 - A is used in the solver NOT in the actual LSPG class
 
-```cpp
-create_default_hypred_unsteady_lspg(odeScheme, fomSystem, trialSpace);
-```
-
 ## Masked
 
 - arg min ||A r_sample||
 - A is used in the solver NOT in the actual LSPG class
-
-```cpp
-create_default_masked_unsteady_lspg(odeScheme, fomSystem, trialSpace, masker);
-```

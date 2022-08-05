@@ -229,13 +229,13 @@ struct SemiDiscreteFomComplete<
 
 
 //
-// implicit time-invarant fom
+// steady fom
 //
 template<class T, class ManifoldJacType, class enable = void>
-struct ImplicitTimeInvariantFomWithJacobianAction : std::false_type{};
+struct SteadyFomWithJacobianAction : std::false_type{};
 
 template<class T, class ManifoldJacType>
-struct ImplicitTimeInvariantFomWithJacobianAction<
+struct SteadyFomWithJacobianAction<
   T, ManifoldJacType,
   mpl::enable_if_t<
        ::pressio::has_state_typedef<T>::value
