@@ -17,7 +17,7 @@ template<
   >
 auto create_trial_subspace(BasisType && basis)
 {
-  // here we need to use BasisType because it carries the correct
+  // use BasisType as template arg below because it carries the correct
   // qualification to be used inside the class by instanceOrRefWrapper
 
   using ret_t = impl::TrialSubspace<ReducedStateType, BasisType, FullStateType>;
@@ -32,13 +32,13 @@ template<
     && std::is_copy_constructible< FullStateType >::value,
     int > = 0
   >
-auto create_affine_trial_subspace(BasisType && basis, FullStateType && shift)
+auto create_affine_trial_subspace(BasisType && basis, FullStateType && offset)
 {
-  // here we need to use BasisType and FullStateType because they carry
+  // use BasisType and FullStateType as template args below because they carry
   // the correct qualification to be used inside the class by instanceOrRefWrapper
 
   using ret_t = impl::AffineTrialSubspace<ReducedStateType, BasisType, FullStateType>;
-  return ret_t(std::forward<BasisType>(basis), shift);
+  return ret_t(std::forward<BasisType>(basis), offset;
 }
 
 }} // end pressio::rom

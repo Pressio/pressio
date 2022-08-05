@@ -8,7 +8,7 @@ template <class ReducedStateType, class BasisType, class FullStateType>
 class TrialSubspace
 {
   ::pressio::utils::InstanceOrReferenceWrapper<BasisType> basis_;
-
+  
 public:
   using reduced_state_type = ReducedStateType;
   using basis_type = mpl::remove_cvref_t<BasisType>;
