@@ -4,16 +4,22 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-//
-// phi^T fom_r(phi x) = 0
-// so:
-//   R = phi^T f_rom(phi x)
-//   J = phi^T df/dx(phi x) phi
-//
+/*
+default Galerkin problem represents:
+
+  phi^T fom_r(phi x) = 0
+
+- fom_r is the fom "residual"
+- phi is the basis
+
+From this we get a "reduced" residual/jacobian:
+R = phi^T fom_r(phi x)
+J = phi^T dfom_r/dx(phi x) phi
+*/
 template <
   class ReducedStateType,
-  class ResidualType,
-  class JacobianType,
+  class ReducedResidualType,
+  class ReducedJacobianType,
   class TrialSpaceType,
   class FomSystemType
   >
@@ -21,15 +27,18 @@ class GalerkinSteadyDefaultSystem
 {
 
   using basis_type = typename TrialSpaceType::basis_type;
+
+  // deduce from the fom object the type of result of
+  // applying the Jacobian to the basis
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
 	     (std::declval<basis_type const &>()) );
 
 public:
-  // required aliases
+  // aliases required by the pressio solvers
   using state_type    = ReducedStateType;
-  using residual_type = ResidualType;
-  using jacobian_type = JacobianType;
+  using residual_type = ReducedResidualType;
+  using jacobian_type = ReducedJacobianType;
 
   GalerkinSteadyDefaultSystem() = delete;
 
@@ -61,19 +70,22 @@ public:
     const auto & phi = space_.get().viewBasis();
     space_.get().mapFromReducedState(reducedState, fomState_);
 
-    using scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
-    using cnst = ::pressio::utils::Constants<scalar_t>;
-
+    using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
+    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
+    constexpr auto beta = ::pressio::utils::Constants<R_scalar_t>::zero();
     fomSystem_.get().residual(fomState_, fomResidual_);
     ::pressio::ops::product(::pressio::transpose(),
-			    cnst::one(), phi, fomResidual_,
-			    cnst::zero(), R);
+			    alpha, phi, fomResidual_, beta, R);
 
     if (recomputeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, fomJacAction_);
-      ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-			      cnst::one(), phi, fomJacAction_,
-			      cnst::zero(), J);
+
+      using J_scalar_t = typename ::pressio::Traits<jacobian_type>::scalar_type;
+      constexpr auto beta = ::pressio::utils::Constants<J_scalar_t>::zero();
+      ::pressio::ops::product(::pressio::transpose(),
+			      ::pressio::nontranspose(),
+			      alpha, phi, fomJacAction_, beta, J);
     }
   }
 

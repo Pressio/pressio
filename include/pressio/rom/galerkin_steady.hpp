@@ -13,7 +13,8 @@ template<
   class TrialSpaceType,
   class FomSystemType,
   mpl::enable_if_t<
-    // check for trial concept since affine space subsumes trial concept
+    // sufficient to satisfy the TrialSubspace concept since
+    // the AffineSpace concept subsumes the TrialSubspace one
     TrialSubspace<TrialSpaceType>::value
     && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
@@ -21,11 +22,14 @@ template<
 auto create_default_problem(const TrialSpaceType & trialSpace,
 			    const FomSystemType & fomObject)
 {
-  // reduced state and residual have same type
+  // for the reduced residual, use the type of the reduced state
   using reduced_state_type = typename TrialSpaceType::reduced_state_type;
   using reduced_residual_type = reduced_state_type;
 
   // figure out what is the reduced jacobian type from the state
+  // for example, if the reduced state is Eigen vector,
+  // it makes sense to use an Eigen dense matrix to store
+  // the Galerkin jacobian since all reduced operators are dense
   using reduced_jac_type = typename impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
   using return_type = impl::GalerkinSteadyDefaultSystem<

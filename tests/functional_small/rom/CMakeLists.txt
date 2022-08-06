@@ -14,5 +14,5 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
   add_utest_mpi(${TESTING_LEVEL}_rom_${SRC} "${SRC}.cc" gTestMain_tpetra 3)
 endif()
 
-# add_subdirectory(galerkin_steady)
+add_subdirectory(galerkin_steady)
 # add_subdirectory(lspg_steady)
