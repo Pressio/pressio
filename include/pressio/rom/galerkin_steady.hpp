@@ -19,7 +19,7 @@ template<
     && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
-auto create_default_problem(const TrialSpaceType & trialSpace,
+auto create_steady_problem(const TrialSpaceType & trialSpace,
 			    const FomSystemType & fomObject)
 {
   // for the reduced residual, use the type of the reduced state
@@ -48,9 +48,9 @@ template<
     && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
-auto create_hyperreduced_problem(const TrialSpaceType & trialSpace,
-				 const FomSystemType & fomObject,
-				 const HyperreductionOperator & hrOp)
+auto create_steady_problem(const TrialSpaceType & trialSpace,
+			   const FomSystemType & fomObject,
+			   const HyperreductionOperator & hrOp)
 {
 
   // reduced state and residual have same type
@@ -78,7 +78,7 @@ template<
     && SteadyFomWithJacobianAction<
       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
   >
-auto create_masked_problem(const TrialSpaceType & trialSpace,
+auto create_steady_problem(const TrialSpaceType & trialSpace,
 			   const FomSystemType & fomObject,
 			   const ResidualMaskerType & rMasker,
 			   const JacobianActionMaskerType & jaMasker,
