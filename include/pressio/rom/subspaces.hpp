@@ -38,7 +38,7 @@ auto create_affine_trial_subspace(BasisType && basis, FullStateType && offset)
   // the correct qualification to be used inside the class by instanceOrRefWrapper
 
   using ret_t = impl::AffineTrialSubspace<ReducedStateType, BasisType, FullStateType>;
-  return ret_t(std::forward<BasisType>(basis), offset;
+  return ret_t(std::forward<BasisType>(basis), offset);
 }
 
 }} // end pressio::rom
