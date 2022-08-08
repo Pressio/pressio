@@ -1,11 +1,12 @@
 
 #include <gtest/gtest.h>
-#include "pressio/rom_tmp.hpp"
+#include "pressio/rom_subspaces.hpp"
+#include "pressio/rom_galerkin_unsteady.hpp"
 
 struct Observer
 {
   void operator()(pressio::ode::StepCount stepIn,
-		  double time,
+		  double /*time*/,
 		  const Eigen::VectorXd & state) const
   {
     const auto step = stepIn.get();
@@ -52,8 +53,8 @@ struct MyFom
   }
 
   void rightHandSide(const state_type & u,
-         const time_type evalTime,
-         right_hand_side_type & f) const
+		     const time_type evalTime,
+		     right_hand_side_type & f) const
   {
     for (decltype(f.rows()) i=0; i<f.rows(); ++i){
       f(i) = u(i) + evalTime;
@@ -61,7 +62,7 @@ struct MyFom
   }
 };
 
-TEST(rom_galerkin, test1)
+TEST(rom_galerkin_unsteady, test1)
 {
   /*
     default Galerkin, Euler forward
@@ -103,18 +104,18 @@ TEST(rom_galerkin, test1)
   phi.col(1).setConstant(1.);
   phi.col(2).setConstant(2.);
 
-  using latent_state_type = Eigen::VectorXd;
+  using reduced_state_type = Eigen::VectorXd;
   using full_state_type = typename fom_t::state_type;
-  auto trialSpace = pressio::rom::create_linear_subspace<latent_state_type, full_state_type>(phi);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
 
-  auto romState = trialSpace.createLatentState();
+  auto romState = space.createReducedState();
   romState[0]=0.;
   romState[1]=1.;
   romState[2]=2.;
 
   const auto odeScheme = pressio::ode::StepScheme::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  auto problem = gal::create_default_explicit_problem(odeScheme, trialSpace, fomSystem);
+  auto problem = gal::create_unsteady_explicit_problem(odeScheme, space, fomSystem);
 
   using time_type = typename fom_t::time_type;
   const time_type dt = 1.;

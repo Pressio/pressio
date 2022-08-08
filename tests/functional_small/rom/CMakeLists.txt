@@ -15,4 +15,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
 endif()
 
 add_subdirectory(galerkin_steady)
-# add_subdirectory(lspg_steady)
+add_subdirectory(galerkin_unsteady)
+
+#add_subdirectory(lspg_steady)
