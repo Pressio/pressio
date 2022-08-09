@@ -158,29 +158,46 @@ public:
 		  ::pressio::ode::StepSize<independent_variable_type> stepSize,
 		  LinearSolverType & solver)
   {
+    auto dummyRhsObserver = [](::pressio::ode::StepCount /*unused*/,
+			       ::pressio::ode::IntermediateStepCount /*unused*/,
+			       const independent_variable_type & /*unused*/,
+			       const RightHandSideType & /*unused*/)
+    { /*no op*/ };
+
+    (*this)(odeState, stepStartVal, step, stepSize, solver, dummyRhsObserver);
+  }
+
+  template<class LinearSolverType, class RhsObserverType>
+  void operator()(StateType & odeState,
+		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
+		  ::pressio::ode::StepCount step,
+		  ::pressio::ode::StepSize<independent_variable_type> stepSize,
+		  LinearSolverType & solver,
+		  RhsObserverType & rhsObserver)
+  {
 
     if (name_ == ode::StepScheme::ForwardEuler){
       doStepImpl(ode::ForwardEuler(), odeState,
 		 stepStartVal.get(), stepSize.get(),
-		 step.get(), solver);
+		 step, solver, rhsObserver);
     }
 
     else if (name_ == ode::StepScheme::AdamsBashforth2){
       doStepImpl(ode::AdamsBashforth2(), odeState,
 		 stepStartVal.get(), stepSize.get(),
-		 step.get(), solver);
+		 step, solver, rhsObserver);
     }
 
     else if (name_ == ode::StepScheme::RungeKutta4){
       doStepImpl(ode::RungeKutta4(), odeState,
 		 stepStartVal.get(), stepSize.get(),
-		 step.get(), solver);
+		 step, solver, rhsObserver);
     }
 
     else if (name_ == ode::StepScheme::SSPRungeKutta3){
       doStepImpl(ode::SSPRungeKutta3(), odeState,
 		 stepStartVal.get(), stepSize.get(),
-		 step.get(), solver);
+		 step, solver, rhsObserver);
     }
   }
 
@@ -213,13 +230,14 @@ private:
     systemObj_.get().massMatrix(odeState, stepStartVal, massMatrix_);
   }
 
-  template<class LinearSolver>
+  template<class LinearSolver, class RhsObserverType>
   void doStepImpl(ode::ForwardEuler,
 		  StateType & odeState,
 		  const independent_variable_type & stepStartVal,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type /*unused*/,
-		  LinearSolver & solver)
+		  ::pressio::ode::StepCount stepNumber,
+		  LinearSolver & solver,
+		  RhsObserverType & rhsObserver)
   {
 
     // M(y_n, t_n, ...) (y_n+1 - y_n) = stepSize * rhs(t_n, ...)
@@ -232,6 +250,7 @@ private:
     auto & x  = xInstances_[0];
 
     systemObj_.get().rightHandSide(odeState, stepStartVal, fn);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
     computeMassMatrixIfNeeded(odeState, stepStartVal);
     solver.solve(massMatrix_, x, fn);
 
@@ -242,13 +261,14 @@ private:
     ::pressio::ops::update(odeState, one, x, stepSize);
   }
 
-  template<class LinearSolver>
+  template<class LinearSolver, class RhsObserverType>
   void doStepImpl(ode::AdamsBashforth2,
 		  StateType & odeState,
 		  const independent_variable_type & stepStartVal,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type stepNumber,
-		  LinearSolver & solver)
+		  ::pressio::ode::StepCount stepNumber,
+		  LinearSolver & solver,
+		  RhsObserverType & rhsObserver)
   {
 
     /*
@@ -260,11 +280,12 @@ private:
 
     auto & fn = rhsInstance_;
 
-    if (stepNumber==1){
+    if (stepNumber.get()==1){
       // start up with Euler forward
 
       auto & x  = xInstances_[0];
       systemObj_.get().rightHandSide(odeState, stepStartVal, fn);
+      rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
       computeMassMatrixIfNeeded(odeState, stepStartVal);
       solver.solve(massMatrix_, x, fn);
 
@@ -277,6 +298,7 @@ private:
       ::pressio::ops::deep_copy(xnm1, xn);
 
       systemObj_.get().rightHandSide(odeState, stepStartVal, fn);
+      rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
       computeMassMatrixIfNeeded(odeState, stepStartVal);
       solver.solve(massMatrix_, xn, fn);
 
@@ -287,13 +309,14 @@ private:
 
   }
 
-  template<class LinearSolver>
+  template<class LinearSolver, class RhsObserverType>
   void doStepImpl(ode::SSPRungeKutta3,
 		  StateType & odeState,
 		  const independent_variable_type & stepStartTime,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type /*unused*/,
-		  LinearSolver & solver)
+		  ::pressio::ode::StepCount stepNumber,
+		  LinearSolver & solver,
+		  RhsObserverType & rhsObserver)
   {
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
@@ -320,6 +343,7 @@ private:
 
     // rhs(u_n, t_n)
     systemObj_.get().rightHandSide(odeState, stepStartTime, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
     computeMassMatrixIfNeeded(odeState, stepStartTime);
     solver.solve(massMatrix_, x, rhs);
     // u_1 = u_n + stepSize * x
@@ -327,6 +351,7 @@ private:
 
     // rhs(u_1, t_n+stepSize)
     systemObj_.get().rightHandSide(auxState, t_next, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_next, rhs);
     computeMassMatrixIfNeeded(auxState, t_next);
     solver.solve(massMatrix_, x, rhs);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*stepSize*x
@@ -334,19 +359,21 @@ private:
 
     // rhs(u_2, t_n + 0.5*stepSize)
     systemObj_.get().rightHandSide(auxState, t_phalf, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs);
     computeMassMatrixIfNeeded(auxState, t_phalf);
     solver.solve(massMatrix_, x, rhs);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*stepSize*rhs(u_2, t_n+0.5*stepSize)
     ::pressio::ops::update(odeState, oneOvThree, auxState, twoOvThree, x, twoOvThree*stepSize);
   }
 
-  template<class LinearSolver>
+  template<class LinearSolver, class RhsObserverType>
   void doStepImpl(ode::RungeKutta4,
 		  StateType & odeState,
 		  const independent_variable_type & stepStartTime,
 		  const independent_variable_type & stepSize,
-		  ::pressio::ode::StepCount::value_type /*unused*/,
-		  LinearSolver & solver)
+		  ::pressio::ode::StepCount stepNumber,
+		  LinearSolver & solver,
+		  RhsObserverType & rhsObserver)
   {
 
     PRESSIOLOG_DEBUG("rk4 stepper: do step");
@@ -373,6 +400,7 @@ private:
     // stage 1:
     // rhs1 = rhs(y_n, t_n)
     systemObj_.get().rightHandSide(odeState, stepStartTime, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
     computeMassMatrixIfNeeded(odeState, stepStartTime);
     solver.solve(massMatrix_, x1, rhs);
 
@@ -381,6 +409,7 @@ private:
     this->rk4_stage_update_impl(auxState, odeState, x1, stepSize_half);
     // rhs2 = rhs(y_tmp, t_n+stepSize/2)
     systemObj_.get().rightHandSide(auxState, t_phalf, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_phalf, rhs);
     computeMassMatrixIfNeeded(auxState,      t_phalf);
     solver.solve(massMatrix_, x2, rhs);
 
@@ -389,6 +418,7 @@ private:
     this->rk4_stage_update_impl(auxState, odeState, x2, stepSize_half);
     // rhs3 = rhs(y_tmp)
     systemObj_.get().rightHandSide(auxState, t_phalf, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs);
     computeMassMatrixIfNeeded(auxState,      t_phalf);
     solver.solve(massMatrix_, x3, rhs);
 
@@ -397,6 +427,7 @@ private:
     this->rk4_stage_update_impl(auxState, odeState, x3, stepSize);
     // rhs3 = rhs(y_tmp)
     systemObj_.get().rightHandSide(auxState, t_next, rhs);
+    rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(3), t_next, rhs);
     computeMassMatrixIfNeeded(auxState,      t_next);
     solver.solve(massMatrix_, x4, rhs);
 

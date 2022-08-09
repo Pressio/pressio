@@ -173,6 +173,7 @@ mpl::enable_if_t<
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
   && std::is_same<StateType, typename StepperType::state_type>::value
+  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -202,6 +203,7 @@ mpl::enable_if_t<
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
   && std::is_same<StateType, typename StepperType::state_type>::value
+  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -230,6 +232,7 @@ mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
   && std::is_same<StateType, typename StepperType::state_type>::value
   >
@@ -261,6 +264,7 @@ mpl::enable_if_t<
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
   && std::is_same<StateType, typename StepperType::state_type>::value
   >

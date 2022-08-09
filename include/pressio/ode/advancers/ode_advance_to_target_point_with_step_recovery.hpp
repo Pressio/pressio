@@ -117,6 +117,7 @@ mpl::enable_if_t<
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
   && std::is_same<StateType, typename StepperType::state_type>::value
+  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
@@ -144,6 +145,7 @@ mpl::enable_if_t<
   StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
   && std::is_same<StateType, typename StepperType::state_type>::value
   >

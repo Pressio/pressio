@@ -123,6 +123,14 @@ namespace impl{
 constexpr StepCount stepZero(0);
 }// end namespace ode::impl
 
+struct IntermediateStepCount{
+  using value_type = int32_t;
+  value_type value_{};
+  IntermediateStepCount() = default;
+  constexpr explicit IntermediateStepCount(value_type valueIn) : value_(valueIn){}
+  constexpr value_type get() const { return value_; }
+};
+
 }}// end namespace ode
 
 #endif  // ODE_ADVANCERS_EXCEPTIONS_HPP_
