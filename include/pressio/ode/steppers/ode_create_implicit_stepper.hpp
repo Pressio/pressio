@@ -53,15 +53,58 @@
 
 namespace pressio{ namespace ode{
 
+/*
+  below we use static asserts even for constraints but this is
+  not fully correct because constraints should have an impact on the
+  overload resolution read this:
+    https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
+
+  Since we cannot yet use c++20 concepts, we should enforce these
+  constraints via e.g. SFINAE but that would yield bad error messages.
+  So for now we decide to use static asserts to have readable error messages.
+  Another point that kind of justifies this here, for now, is that
+  we have a simple enough overload set.
+*/
+
 template<class SystemType>
-auto create_implicit_stepper(StepScheme name, const SystemType & system){
+auto create_implicit_stepper(StepScheme name, const SystemType & system)
+{
+  // the following should be a constraint
+  static_assert
+  (   ::pressio::ode::OdeSystemWithJacobian<SystemType>::value
+   || ::pressio::ode::OdeSystemComplete<SystemType>::value
+   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<SystemType>::value,
+   "implicit stepper: your system class does not meet any valid concept");
+
   return impl::create_implicit_stepper_impl(name, system);
 }
 
 template<class ResidualPolicyType, class JacobianPolicyType>
 auto create_implicit_stepper(StepScheme name,
 			     ResidualPolicyType && resPolicy,
-			     JacobianPolicyType && jacPolicy){
+			     JacobianPolicyType && jacPolicy)
+{
+  using residual_policy_type = typename mpl::remove_cvref_t<ResidualPolicyType>;
+  using jacobian_policy_type = typename mpl::remove_cvref_t<JacobianPolicyType>;
+  // the following two should be constraints
+  static_assert(::pressio::ode::ImplicitResidualPolicy<
+		residual_policy_type >::value, "Invalid residual policy");
+  static_assert(::pressio::ode::ImplicitJacobianPolicy<
+		jacobian_policy_type >::value, "Invalid jacobian policy");
+
+  // the following two checks on nested typedefs are mandates
+  // so it is fine to use static_assert
+  static_assert(std::is_same<
+		typename residual_policy_type::independent_variable_type,
+		typename jacobian_policy_type::independent_variable_type
+		>::value,
+		"Residual and jacobian policies cannot have mismatching nested independent_variable_type");
+  static_assert( std::is_same<
+		 typename residual_policy_type::state_type,
+		 typename jacobian_policy_type::state_type
+		 >::value,
+		"Residual and jacobian policies cannot have mismatching nested state_type");
+
   return impl::create_implicit_stepper_impl(name,
 					    std::forward<ResidualPolicyType>(resPolicy),
 					    std::forward<JacobianPolicyType>(jacPolicy));
@@ -69,7 +112,14 @@ auto create_implicit_stepper(StepScheme name,
 
 // num of states as template arg constructs the arbitrary stepper
 template<int num_states, class SystemType>
-auto create_implicit_stepper(SystemType && system){
+auto create_implicit_stepper(SystemType && system)
+{
+  // the following should be a constraint
+  using sys_type = mpl::remove_cvref_t<SystemType>;
+  static_assert(::pressio::ode::FullyDiscreteSystemWithJacobian<
+		sys_type, num_states>::value,
+		"The system passed does not meet the FullyDiscrete API");
+
   return typename impl::ImplicitComposeArb<
     num_states, SystemType>::type(std::forward<SystemType>(system));
 }

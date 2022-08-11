@@ -150,6 +150,14 @@ struct FakeNonLinSolverSteady
 
 TEST(rom_galerkin_steady, test2)
 {
+  /*
+    this test does pretty much the same thing as main1
+    except that we do a lazy evaluation of the jacobian action,
+    so it is basically represented as an "expression-like" thing.
+    The goal is to test that our code does indeed support
+    a Jacobian action that is not strictly of the same type as the operand.
+   */
+
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 
@@ -165,15 +173,15 @@ TEST(rom_galerkin_steady, test2)
   std::cout << phi << "\n";
 
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = typename fom_t::state_type;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  typename fom_t::state_type shift(N);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;
   romState[1]=1.;
   romState[2]=2.;
 
-  auto problem = pressio::rom::galerkin::create_default_problem(space, fomSystem);
+  auto problem = pressio::rom::galerkin::create_steady_problem(space, fomSystem);
 
   FakeNonLinSolverSteady nonLinSolver(N);
   nonLinSolver.solve(problem, romState);

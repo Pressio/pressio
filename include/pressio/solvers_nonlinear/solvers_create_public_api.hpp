@@ -53,16 +53,23 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-/* until we can use c++20 concepts, constraints should be
-   enforced via e.g. SFINAE but that would yield bad error messages.
-   Below we use static asserts to give more readable error messages.
-   This is also ok for now because we don't really have many
-   overloads of a given function that would trigger overload resolution
-   via concepts or sfinae.
-   This changes later on if/when we decide to e.g. rename:
+/*
+  below we use static asserts to check constraints but this is
+  not fully correct because constraints should have an impact on the
+  overload resolution read this:
+    https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
+
+  Since we cannot yet use c++20 concepts, we should enforce these
+  constraints via e.g. SFINAE but that would yield bad error messages.
+  So for now we decide to use static asserts to have readable error messages.
+  Another point that kind of justifies this, for now, is that
+  we don't really have many overloads of a given function to enable/disable
+  via concepts or sfinae. So we could interpret the checks on the SystemType
+  as a "mandate" rather than a constraint, so the static assert is ok.
+  All this might change later if/when we decide to e.g. rename:
      create_gauss_newtonQR -> create_gauss_newton
-   in such case, we would really need sfinae/concepts for the args
-   to distinguish between linear solver vs qr solver
+  in such case, we would really need sfinae/concepts for the args
+  to distinguish between linear solver vs qr solver.
 */
 
 template<class SystemType, class LinearSolverType>
@@ -88,7 +95,7 @@ auto create_gauss_newton(const SystemType & system,
      or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value
      or SystemWithHessianAndGradient<SystemType>::value
      or SystemWithFusedHessianAndGradient<SystemType>::value,
-     "Gauss-Newton: system not satisfying any of the residual/jacobian or the hessian/gradient concepts.");
+     "Gauss-Newton: system does not satisfy the residual/jacobian, or hessian/gradient concepts.");
 
   return impl::ComposeGaussNewton_t<SystemType, LinearSolverType>
     (system, std::forward<LinearSolverType>(linSolver));

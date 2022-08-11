@@ -85,23 +85,7 @@ struct ExplicitCompose
 {
   using sys_type = mpl::remove_cvref_t<SystemType>;
 
-  // these static asserts are here because it allows to produce
-  // readable error messages to the user if something is wrong.
-  // If we were to us sfinae here, we would get a huge mess
-  // for errors, so it is better to leave these are static asserts.
-  // Ideally we should use concepts for better errors. We cannot do that yet.
-
-  static_assert
-  (   ::pressio::ode::OdeSystem<sys_type>::value
-   || ::pressio::ode::OdeSystemWithMassMatrix<sys_type>::value
-   || ::pressio::ode::OdeSystemWithJacobian<sys_type>::value
-   || ::pressio::ode::OdeSystemWithConstantMassMatrix<sys_type>::value
-   || ::pressio::ode::OdeSystemComplete<sys_type>::value
-   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<sys_type>::value,
-   "explicit stepper: your system class does not meet any valid concept");
-
-  // if we get here, it means the above static assertion passed so
-  // the system meets at least the right_hand_side API
+  // if we get here, the system has at least the right_hand_side API
   using state_type = typename sys_type::state_type;
   using right_hand_side_type = typename sys_type::right_hand_side_type;
 

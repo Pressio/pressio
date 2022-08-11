@@ -51,19 +51,18 @@
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
+#include "./impl/ode_mandates.hpp"
 
 namespace pressio{ namespace ode{
 
 // ---------------------------------
-// overload set for stepper
+// overload set for steppable
 // ---------------------------------
 
 template<class StepperType, class StateType, class StepSizePolicyType, class IndVarType>
 mpl::enable_if_t<
   StronglySteppable<StepperType>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
@@ -72,6 +71,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StepSizePolicyType && step_size_policy)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::to_target_time_with_step_size_policy
     <false>(stepper, start_val,
@@ -87,8 +87,6 @@ mpl::enable_if_t<
   StronglySteppable<StepperType>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
@@ -98,6 +96,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  ObserverType && observer)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   impl::to_target_time_with_step_size_policy<
     false>(stepper, start_val,
 	   final_val, state,
@@ -106,7 +105,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 }
 
 // ---------------------------------
-// overload set for variadic stepper
+// overload set for steppable with extra args
 // ---------------------------------
 
 template<
@@ -115,8 +114,6 @@ template<
 mpl::enable_if_t<
   StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
@@ -128,6 +125,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  Args && ... args)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::to_target_time_with_step_size_policy
     <true>(stepper, start_val,
@@ -146,8 +144,6 @@ mpl::enable_if_t<
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
@@ -159,6 +155,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  Args && ... args)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   impl::to_target_time_with_step_size_policy
     <true>(stepper, start_val,
 	   final_val, state,

@@ -44,7 +44,8 @@ public:
 
   GalerkinSteadyDefaultSystem(const TrialSpaceType & space,
 			      const FomSystemType & fomSystem)
-    : space_(space), fomSystem_(fomSystem),
+    : space_(space),
+      fomSystem_(fomSystem),
       fomState_(fomSystem.createState()),
       fomResidual_(fomSystem.createResidual()),
       fomJacAction_(fomSystem.createApplyJacobianResult(space_.get().viewBasis()))

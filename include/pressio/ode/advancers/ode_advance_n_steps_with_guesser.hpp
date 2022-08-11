@@ -51,11 +51,12 @@
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_n_steps.hpp"
+#include "./impl/ode_mandates.hpp"
 
 namespace pressio{ namespace ode{
 
 // ---------------------------------
-// overload set for stepper
+// overload set for steppable
 // ---------------------------------
 
 template<
@@ -64,8 +65,6 @@ template<
 mpl::enable_if_t<
   Steppable<StepperType>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -75,6 +74,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      GuesserType && guesser)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
 				      step_size, state,
@@ -90,8 +90,6 @@ mpl::enable_if_t<
   Steppable<StepperType>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -101,6 +99,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      GuesserType && guesser)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
 				       std::forward<StepSizePolicyType>(step_size_policy),
@@ -116,8 +115,6 @@ mpl::enable_if_t<
   Steppable<StepperType>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -128,6 +125,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      ObserverType && observer)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
 				      step_size, state,
 				      std::forward<ObserverType>(observer),
@@ -143,8 +141,6 @@ mpl::enable_if_t<
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -155,6 +151,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      ObserverType && observer)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
 				       std::forward<StepSizePolicyType>(step_size_policy),
 				       std::forward<ObserverType>(observer),
@@ -162,7 +159,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 }
 
 // ---------------------------------
-// overload set for variadic stepper
+// overload set for steppable with extra args
 // ---------------------------------
 
 template<
@@ -171,8 +168,6 @@ template<
 mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
@@ -185,6 +180,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      Args && ... args)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
 				      step_size, state,
@@ -201,8 +197,6 @@ mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
@@ -215,6 +209,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      Args && ... args)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
 				       std::forward<StepSizePolicyType>(step_size_policy),
@@ -233,8 +228,6 @@ mpl::enable_if_t<
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -247,6 +240,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      Args && ... args)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
 				      step_size, state,
 				      std::forward<ObserverType>(observer),
@@ -265,8 +259,6 @@ mpl::enable_if_t<
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  && std::is_same<IndVarType, typename StepperType::independent_variable_type>::value
-  && std::is_same<StateType, typename StepperType::state_type>::value
   >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
@@ -279,6 +271,7 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      Args && ... args)
 {
 
+  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
   impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
 				       std::forward<StepSizePolicyType>(step_size_policy),
 				       std::forward<ObserverType>(observer),

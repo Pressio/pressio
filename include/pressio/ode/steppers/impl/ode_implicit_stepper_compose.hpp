@@ -63,42 +63,13 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<class ResidualPolicyType, class JacobianPolicyType>
-struct ImplicitComposeAssertValidPolicies
-{
-  static_assert(::pressio::ode::ImplicitResidualPolicy<
-		ResidualPolicyType >::value, "Invalid residual policy");
-
-  static_assert(::pressio::ode::ImplicitJacobianPolicy<
-		JacobianPolicyType >::value, "Invalid jacobian policy");
-
-  static_assert(std::is_same<
-		typename ResidualPolicyType::independent_variable_type,
-		typename JacobianPolicyType::independent_variable_type
-		>::value,
-		"Residual and jacobian policies have mismatching independent_variable_type");
-
-  static_assert( std::is_same<
-		 typename ResidualPolicyType::state_type,
-		 typename JacobianPolicyType::state_type
-		 >::value,
-		 "Mismatching nested state_type alias in residual and jacobian policies");
-
-  static constexpr bool value = true;
-};
-
 ////////////////////////////////////////
 /// Arbitrary stepper
 ////////////////////////////////////////
 template<int num_states, class SystemType>
 struct ImplicitComposeArb
 {
-
   using sys_type = mpl::remove_cvref_t<SystemType>;
-  static_assert(::pressio::ode::FullyDiscreteSystemWithJacobian<
-		sys_type, num_states>::value,
-		"The system passed does not meet the required API");
-
   using state_type = typename sys_type::state_type;
   using residual_type = typename sys_type::discrete_residual_type;
   using jacobian_type = typename sys_type::discrete_jacobian_type;
@@ -154,12 +125,6 @@ struct ImplicitCompose<SystemType>
 {
   using sys_type = mpl::remove_cvref_t<SystemType>;
 
-  static_assert
-  (   ::pressio::ode::OdeSystemWithJacobian<sys_type>::value
-   || ::pressio::ode::OdeSystemComplete<sys_type>::value
-   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<sys_type>::value,
-   "implicit stepper: your system class does not meet any valid concept");
-
   // if we get here, the system has AT LEAST rhs, jacobian
   using independent_variable_type = typename sys_type::independent_variable_type;
   using state_type    = typename sys_type::state_type;
@@ -184,8 +149,6 @@ struct ImplicitCompose<ResidualPolicyType, JacobianPolicyType>
 {
   using residual_policy_type = typename mpl::remove_cvref_t<ResidualPolicyType>;
   using jacobian_policy_type = typename mpl::remove_cvref_t<JacobianPolicyType>;
-  static_assert(ImplicitComposeAssertValidPolicies<
-		residual_policy_type, jacobian_policy_type>::value, "");
   // ind_var and state types are same for residual and jacobian policies
   using independent_variable_type  = typename residual_policy_type::independent_variable_type;
   using state_type    = typename residual_policy_type::state_type;
@@ -215,7 +178,6 @@ auto create_implicit_stepper_impl(StepScheme name, SystemType && system)
   else{
     throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
   }
-
 }
 
 template<class ResidualPolicyType, class JacobianPolicyType>

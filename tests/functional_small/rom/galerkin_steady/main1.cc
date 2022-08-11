@@ -118,8 +118,8 @@ TEST(rom_galerkin_steady, test1)
   std::cout << phi << "\n";
 
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = typename fom_t::state_type;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  typename fom_t::state_type shift(N);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;

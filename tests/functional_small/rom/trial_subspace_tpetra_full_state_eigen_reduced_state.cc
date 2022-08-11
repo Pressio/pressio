@@ -10,8 +10,8 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_construct_1)
 
   using namespace pressio::rom;
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = vec_t;
-  auto space = create_trial_subspace<reduced_state_type, full_state_type>(std::move(phi));
+  vec_t shift(contigMap_);
+  auto space = create_trial_subspace<reduced_state_type>(std::move(phi), *shift, false);
   (void) space;
 }
 
@@ -21,8 +21,8 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_construct_2)
 
   using namespace pressio::rom;
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = vec_t;
-  auto space = create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  vec_t shift(contigMap_);
+  auto space = create_trial_subspace<reduced_state_type>(phi, *shift, false);
   (void) space;
 }
 
@@ -30,8 +30,8 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_reduced_state)
 {
   using namespace pressio::rom;
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = vec_t;
-  auto space = create_trial_subspace<reduced_state_type, full_state_type>(*myMv_);
+  vec_t shift(contigMap_);
+  auto space = create_trial_subspace<reduced_state_type>(*myMv_, *shift, false);
 
   auto a = space.createReducedState();
   EXPECT_TRUE(a.size() == 4);
@@ -44,8 +44,8 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_full_state)
 {
   using namespace pressio::rom;
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = vec_t;
-  auto space = create_trial_subspace<reduced_state_type, full_state_type>(*myMv_);
+  vec_t shift(contigMap_);
+  auto space = create_trial_subspace<reduced_state_type>(*myMv_, *shift, false);
 
   auto a = space.createFullState();
   EXPECT_TRUE( ::pressio::ops::extent(a,0) == 15 );
@@ -61,10 +61,10 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_map_from_reduced_state
 
   using namespace pressio::rom;
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = vec_t;
+  vec_t shift(contigMap_);
   auto phi = *myMv_;
   phi.randomize();
-  auto space = create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  auto space = create_trial_subspace<reduced_state_type>(phi, *shift, false);
 
   auto latState = space.createReducedState();
   latState = reduced_state_type::Random(latState.size());
@@ -90,10 +90,10 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_create_full_from_reduc
 
   using namespace pressio::rom;
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = vec_t;
+  vec_t shift(contigMap_);
   auto phi = *myMv_;
   phi.randomize();
-  auto space = create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  auto space = create_trial_subspace<reduced_state_type>(phi, *shift, false);
 
   auto latState = space.createReducedState();
   latState = reduced_state_type::Random(latState.size());

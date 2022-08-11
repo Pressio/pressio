@@ -102,25 +102,5 @@ template<class JacType, class = void>
 using CreateGalerkinJacobian = CreateGalerkinMassMatrix<JacType>;
 
 
-template<class T, class = void>
-struct valid_reduced_state_type
-  : std::false_type{};
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<class T>
-struct valid_reduced_state_type<
-  T, mpl::enable_if_t< ::pressio::is_vector_kokkos<T>::value >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<class T>
-struct valid_reduced_state_type<
-  T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value >
-  > : std::true_type{};
-#endif
-// ------------------------------------------
-
-
 }}} // end pressio::rom::impl
 #endif

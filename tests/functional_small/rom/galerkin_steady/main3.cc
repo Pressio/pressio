@@ -105,12 +105,12 @@ struct FakeNonLinSolverSteady
   }
 };
 
-struct MyProjector
+struct MyHypRedOperator
 {
   using operator_type = Eigen::MatrixXd;
   operator_type matrix_;
 
-  MyProjector(const operator_type & phiSampleMesh)
+  MyHypRedOperator(const operator_type & phiSampleMesh)
     : matrix_(phiSampleMesh){}
 
   template<class operand_type, class ResultType>
@@ -121,6 +121,10 @@ struct MyProjector
 
 TEST(rom_galerkin_steady, test3)
 {
+  /*
+    this test is numerically equivalent to main1
+    except that we pretend here to do a hyper-reduced problem
+   */
 
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -145,8 +149,8 @@ TEST(rom_galerkin_steady, test3)
   std::cout << phi << "\n";
 
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = typename fom_t::state_type;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  typename fom_t::state_type shift(nStencil);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;
@@ -157,8 +161,8 @@ TEST(rom_galerkin_steady, test3)
   matForProj.col(0).setConstant(0.);
   matForProj.col(1).setConstant(1.);
   matForProj.col(2).setConstant(2.);
-  MyProjector proj(matForProj);
-  auto problem = pressio::rom::galerkin::create_hyperreduced_problem(space, fomSystem, proj);
+  MyHypRedOperator hypRedOp(matForProj);
+  auto problem = pressio::rom::galerkin::create_steady_problem(space, fomSystem, hypRedOp);
 
   FakeNonLinSolverSteady nonLinSolver;
   nonLinSolver.solve(problem, romState);

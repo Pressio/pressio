@@ -53,8 +53,32 @@
 
 namespace pressio{ namespace ode{
 
+/*
+  below we use static asserts to check constraints but this is
+  not fully correct because constraints should have an impact on the
+  overload resolution read this:
+    https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
+
+  Since we cannot yet use c++20 concepts, we should enforce these
+  constraints via e.g. SFINAE but that would yield bad error messages.
+  So for now we decide to use static asserts to have readable error messages.
+  Another point that kind of justifies this here, for now, is that
+  we have a single function, not an overload set to manipulate via sfinae/concepts.
+*/
+
 template<class SystemType>
-auto create_explicit_stepper(StepScheme name, SystemType && system){
+auto create_explicit_stepper(StepScheme name, SystemType && system)
+{
+  using sys_type = mpl::remove_cvref_t<SystemType>;
+  static_assert
+  (   ::pressio::ode::OdeSystem<sys_type>::value
+   || ::pressio::ode::OdeSystemWithMassMatrix<sys_type>::value
+   || ::pressio::ode::OdeSystemWithJacobian<sys_type>::value
+   || ::pressio::ode::OdeSystemWithConstantMassMatrix<sys_type>::value
+   || ::pressio::ode::OdeSystemComplete<sys_type>::value
+   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<sys_type>::value,
+   "explicit stepper: your system class does not meet any valid concept");
+
   return impl::create_explicit_stepper(name, system);
 }
 
