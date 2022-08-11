@@ -19,29 +19,11 @@ namespace pressio{ namespace rom{
   Later on we can use C++20 concepts to enfore this.
 */
 
-// template<
-//   class ReducedStateType,
-//   class FullStateType,
-//   class BasisType>
-// auto create_trial_subspace(BasisType && basis)
-// {
-//   static_assert(ValidReducedState<ReducedStateType>::value,
-// 		"Invalid type for the reduced state");
-//   static_assert(std::is_copy_constructible< mpl::remove_cvref_t<BasisType> >::value,
-// 		"Basis type must be copy constructible");
-//   static_assert(std::is_copy_constructible< FullStateType >::value,
-// 		"Full state type must be copy constructible");
-
-//   // use BasisType as template arg below because it carries the correct
-//   // qualification to be used inside the class by instanceOrRefWrapper
-//   using ret_t = impl::TrialSubspace<ReducedStateType, BasisType, FullStateType>;
-//   return ret_t(std::forward<BasisType>(basis));
-// }
-
 template<
   class ReducedStateType,
-  class FullStateType,
-  class BasisType>
+  class BasisType,
+  class FullStateType
+>
 auto create_trial_subspace(BasisType && basis,
 			   FullStateType && offset,
 			   bool isAffine)
