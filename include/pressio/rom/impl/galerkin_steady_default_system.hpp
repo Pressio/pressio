@@ -42,34 +42,34 @@ public:
 
   GalerkinSteadyDefaultSystem() = delete;
 
-  GalerkinSteadyDefaultSystem(const TrialSpaceType & space,
+  GalerkinSteadyDefaultSystem(const TrialSpaceType & trialSpace,
 			      const FomSystemType & fomSystem)
-    : space_(space),
+    : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       fomState_(fomSystem.createState()),
       fomResidual_(fomSystem.createResidual()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(space_.get().viewBasis()))
+      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}
 
 public:
   residual_type createResidual() const{
-    const auto & phi = space_.get().viewBasis();
+    const auto & phi = trialSpace_.get().viewBasis();
     return impl::CreateGalerkinRhs<residual_type>()(phi);
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = space_.get().viewBasis();
+    const auto & phi = trialSpace_.get().viewBasis();
     return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
   }
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & R,
 			   jacobian_type & J,
-			   bool recomputeJacobian = true) const
+			   bool recomputeJacobian) const
   {
 
-    const auto & phi = space_.get().viewBasis();
-    space_.get().mapFromReducedState(reducedState, fomState_);
+    const auto & phi = trialSpace_.get().viewBasis();
+    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 
     using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
@@ -90,8 +90,8 @@ public:
     }
   }
 
-protected:
-  std::reference_wrapper<const TrialSpaceType> space_;
+private:
+  std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   mutable typename FomSystemType::residual_type fomResidual_;

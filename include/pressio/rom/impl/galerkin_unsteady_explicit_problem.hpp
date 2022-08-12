@@ -10,9 +10,10 @@ class GalerkinUnsteadyExplicitProblem
   // note: to deduce the stepper_type it does not really matter
   // what scheme enum value we use, as long as it is an explicit one
   using stepper_type =
-    decltype(::pressio::ode::create_explicit_stepper(::pressio::ode::StepScheme::ForwardEuler,
-						     std::declval<GalSystem &>()
-						     ));
+    decltype(::pressio::ode::create_explicit_stepper
+	     (::pressio::ode::StepScheme::ForwardEuler,
+	      std::declval<GalSystem &>()
+	      ));
 
 public:
   // required aliases to be steppable

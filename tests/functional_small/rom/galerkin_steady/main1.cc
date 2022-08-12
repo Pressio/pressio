@@ -62,7 +62,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // mimic solver iterator 1
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -81,7 +81,7 @@ struct FakeNonLinSolverSteady
 
     {
       // mimic solver iterator 2
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 

@@ -64,7 +64,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -88,7 +88,7 @@ struct FakeNonLinSolverSteady
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -152,8 +152,8 @@ TEST(rom_lspg_steady, test1)
   std::cout << phi << "\n";
 
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = typename fom_t::state_type;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  typename fom_t::state_type dummyFomState(N);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, dummyFomState, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;

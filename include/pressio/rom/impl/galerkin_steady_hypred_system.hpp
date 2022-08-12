@@ -43,15 +43,15 @@ public:
 
   GalerkinSteadyHypRedSystem() = delete;
 
-  GalerkinSteadyHypRedSystem(const TrialSpaceType & space,
+  GalerkinSteadyHypRedSystem(const TrialSpaceType & trialSpace,
 			     const FomSystemType & fomSystem,
 			     const HyperReductionOperator & hrOp)
-    : space_(space),
+    : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       hrOp_(hrOp),
       fomState_(fomSystem.createState()),
       fomResidual_(fomSystem.createResidual()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(space_.get().viewBasis()))
+      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}
 
 public:
@@ -59,7 +59,7 @@ public:
     // here we assume that the action of hyOp does not
     // produce a reduced residual different than the number of basis.
     // to be precise, we should compute: R = MJOP f(phi x)
-    const auto & phi = space_.get().viewBasis();
+    const auto & phi = trialSpace_.get().viewBasis();
     return impl::CreateGalerkinRhs<residual_type>()(phi);
   }
 
@@ -67,18 +67,18 @@ public:
     // here we assume that the reduced jacobian is square matrix
     // defined by num of modes in basis.
     // to be precise, we should compute: J = MJOP df/dx(phi x) phi
-    const auto & phi = space_.get().viewBasis();
+    const auto & phi = trialSpace_.get().viewBasis();
     return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
   }
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & R,
 			   jacobian_type & J,
-			   bool recomputeJacobian = true) const
+			   bool recomputeJacobian) const
   {
 
-    const auto & phi = space_.get().viewBasis();
-    space_.get().mapFromReducedState(reducedState, fomState_);
+    const auto & phi = trialSpace_.get().viewBasis();
+    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_,  fomResidual_);
     hrOp_(fomResidual_, R);
@@ -89,8 +89,8 @@ public:
     }
   }
 
-protected:
-  std::reference_wrapper<const TrialSpaceType> space_;
+private:
+  std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   std::reference_wrapper<const HyperReductionOperator> hrOp_;
   mutable typename FomSystemType::state_type fomState_;

@@ -60,7 +60,7 @@ public:
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & R,
 			   jacobian_type & J,
-			   bool recomputeJacobian = true) const
+			   bool recomputeJacobian) const
   {
     const auto & phi = space_.get().viewBasis();
     space_.get().mapFromReducedState(reducedState, fomState_);

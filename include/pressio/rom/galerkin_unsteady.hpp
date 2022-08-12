@@ -45,7 +45,7 @@ template<
   >
 auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 				      const TrialSpaceType & trialSpace,
-				      const FomSystemType & fomObject)
+				      const FomSystemType & fomSystem)
 {
   impl::explicit_scheme_else_throw(schemeName, "galerkin_default_explicit");
 
@@ -64,7 +64,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
   // the reason for this is that a problem can potentially expose
   // more methods than what the underlying stepper does.
   using return_type = impl::GalerkinUnsteadyExplicitProblem<false, galerkin_system>;
-  return return_type(schemeName, trialSpace, fomObject);
+  return return_type(schemeName, trialSpace, fomSystem);
 }
 
 }}} // end pressio::rom::galerkin
@@ -84,7 +84,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 //   >
 // auto create_default_explicit_problem(::pressio::ode::StepScheme schemeName,
 // 				     const TrialSpaceType & trialSpaceObject,
-// 				     const FomSystemType & fomObject)
+// 				     const FomSystemType & fomSystem)
 // {
 
 //   impl::explicit_scheme_else_throw(schemeName, "galerkin_default_explicit");
@@ -120,7 +120,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 //   >
 // auto create_hyperreduced_explicit_problem(::pressio::ode::StepScheme schemeName,
 // 					  const TrialSpaceType & trialSpaceObject,
-// 					  const FomSystemType & fomObject,
+// 					  const FomSystemType & fomSystem,
 // 					  const HyperreductionOperator & hrOp)
 // {
 
@@ -152,7 +152,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 //   >
 // auto create_hyperreduced_explicit_problem(::pressio::ode::StepScheme schemeName,
 // 					  const TrialSpaceType & trialSpaceObject,
-// 					  const FomSystemType & fomObject,
+// 					  const FomSystemType & fomSystem,
 // 					  const HyperreductionOperator & hrOp)
 // {
 
@@ -191,7 +191,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 //   >
 // auto create_masked_explicit_problem(::pressio::ode::StepScheme schemeName,
 // 				    const TrialSpaceType & trialSpaceObject,
-// 				    const FomSystemType & fomObject,
+// 				    const FomSystemType & fomSystem,
 // 				    const MaskerType & masker,
 // 				    const HyperreductionOperator & hrOp)
 // {
@@ -225,7 +225,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 //   >
 // auto create_masked_explicit_problem(::pressio::ode::StepScheme schemeName,
 // 				    const TrialSpaceType & trialSpaceObject,
-// 				    const FomSystemType & fomObject,
+// 				    const FomSystemType & fomSystem,
 // 				    const MaskerType & masker,
 // 				    const HyperreductionOperator & hrOp)
 // {

@@ -27,9 +27,9 @@ public:
 
   GalerkinDefaultOdeSystemOnlyRhs() = delete;
 
-  GalerkinDefaultOdeSystemOnlyRhs(const TrialSpaceType & space,
+  GalerkinDefaultOdeSystemOnlyRhs(const TrialSpaceType & trialSpace,
 				   const FomSystemType & fomSystem)
-    : space_(space),
+    : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       fomState_(fomSystem.createState()),
       fomRhs_(fomSystem.createRightHandSide())
@@ -37,11 +37,11 @@ public:
 
 public:
   state_type createState() const{
-    return space_.get().createReducedState();
+    return trialSpace_.get().createReducedState();
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = space_.get().viewBasis();
+    const auto & phi = trialSpace_.get().viewBasis();
     return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
   }
 
@@ -49,10 +49,10 @@ public:
 		     const IndVarType & timeForRhsEvaluation,
 		     right_hand_side_type & reducedRhs) const
   {
-    space_.get().mapFromReducedState(reducedState, fomState_);
+    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
     fomSystem_.get().rightHandSide(fomState_, timeForRhsEvaluation, fomRhs_);
 
-    const auto & phi = space_.get().viewBasis();
+    const auto & phi = trialSpace_.get().viewBasis();
 
     using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
@@ -64,7 +64,7 @@ public:
   }
 
 protected:
-  std::reference_wrapper<const TrialSpaceType> space_;
+  std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;
@@ -107,17 +107,17 @@ protected:
 
 //   GalerkinUnsteadyDefaultOdeSystemWithMassMatrix() = delete;
 
-//   GalerkinUnsteadyDefaultOdeSystemWithMassMatrix(const TrialSpaceType & space,
+//   GalerkinUnsteadyDefaultOdeSystemWithMassMatrix(const TrialSpaceType & trialSpace,
 // 						 const FomSystemType & fomSystem)
-//     : base_t(space, fomSystem),
+//     : base_t(trialSpace, fomSystem),
 //       fomMMAction_(fomSystem.createApplyMassMatrixResult
-// 		   (space_.get().viewBasis())
+// 		   (trialSpace_.get().viewBasis())
 // 		   )
 //   {}
 
 // public:
 //   mass_matrix_type createMassMatrix() const{
-//     const auto & phi = space_.get().viewBasis();
+//     const auto & phi = trialSpace_.get().viewBasis();
 //     return impl::CreateGalerkinMassMatrix<mass_matrix_type>()(phi);
 //   }
 
@@ -126,9 +126,9 @@ protected:
 // 		  mass_matrix_type & galerkinMM) const
 //   {
 
-//     space_.get().mapFromReducedState(reducedState, fomState_);
+//     trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 
-//     const auto & phi = space_.get().viewBasis();
+//     const auto & phi = trialSpace_.get().viewBasis();
 //     fomSystem_.get().applyMassMatrix(fomState_, phi, timeForEvaluation, fomMMAction_);
 
 //     using phi_type = typename TrialSpaceType::basis_type;
@@ -139,7 +139,7 @@ protected:
 //   }
 
 // private:
-//   using base_t::space_;
+//   using base_t::trialSpace_;
 //   using base_t::fomSystem_;
 //   using base_t::fomState_;
 //   mutable fom_mm_action_result_type fomMMAction_;
@@ -167,10 +167,10 @@ protected:
 
 //   GalerkinUnsteadyHypRedOdeSystem() = delete;
 
-//   GalerkinUnsteadyHypRedOdeSystem(const TrialSpaceType & space,
+//   GalerkinUnsteadyHypRedOdeSystem(const TrialSpaceType & trialSpace,
 // 				  const FomSystemType & fomSystem,
 // 				  const HypRedOpType & hrOp)
-//     : space_(space),
+//     : trialSpace_(trialSpace),
 //       fomSystem_(fomSystem),
 //       hrOp_(hrOp),
 //       fomState_(fomSystem.createState()),
@@ -179,14 +179,14 @@ protected:
 
 // public:
 //   state_type createState() const{
-//     return space_.get().createReducedState();
+//     return trialSpace_.get().createReducedState();
 //   }
 
 //   right_hand_side_type createRightHandSide() const{
 //     // here we assume that the action of hyOp does not
 //     // produce a reduced residual different than the number of basis.
 //     // to be precise, here we should do compute: R = MJOP f(phi x)
-//     const auto & phi = space_.get().viewBasis();
+//     const auto & phi = trialSpace_.get().viewBasis();
 //     return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
 //   }
 
@@ -194,13 +194,13 @@ protected:
 // 		     const IndVarType & timeForRhsEvaluation,
 // 		     right_hand_side_type & reducedRhs) const
 //   {
-//     space_.get().mapFromReducedState(reducedState, fomState_);
+//     trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 //     fomSystem_.get().rightHandSide(fomState_, timeForRhsEvaluation, fomRhs_);
 //     hrOp_(fomResidual_, reducedRhs);
 //   }
 
 // protected:
-//   std::reference_wrapper<const TrialSpaceType> space_;
+//   std::reference_wrapper<const TrialSpaceType> trialSpace_;
 //   std::reference_wrapper<const FomSystemType> fomSystem_;
 //   std::reference_wrapper<const HypRedOpType> hrOp_;
 //   mutable typename FomSystemType::state_type fomState_;
