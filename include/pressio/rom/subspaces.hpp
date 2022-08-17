@@ -8,14 +8,14 @@
 namespace pressio{ namespace rom{
 
 /*
-  below we use static asserts to check constraints but this is
-  not fully correct because constraints should have an impact on the
-  overload resolution read this:
+  below we kind of abuse notation a bit, since we use static asserts
+  also to check constraints. This is not fully correct because
+  constraints should have an impact on the overload resolution read this:
     https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
 
-  For now we decide to use static asserts to have readable error messages.
-  This is kind of justified here, for now, because we have a single function,
-  not an overload set to manipulate via sfinae/concepts.
+  For now we do this to have readable error messages.
+  Also, this is kind of justified here, for now, because we have
+  a single function, not an overload set to manipulate via sfinae/concepts.
   Later on we can use C++20 concepts to enfore this.
 */
 
@@ -28,17 +28,28 @@ auto create_trial_subspace(BasisType && basis,
 			   FullStateType && offset,
 			   bool isAffine)
 {
+  // we need to use decay here to get the type after removing
+  // reference and cv qualification
+  using basis_type = std::decay_t<BasisType>;
+  using full_state_type = std::decay_t<FullStateType>;
+
+  // constraints
   static_assert(ValidReducedState<ReducedStateType>::value,
 		"Invalid type for the reduced state");
-  static_assert(std::is_copy_constructible< mpl::remove_cvref_t<BasisType> >::value,
+  static_assert(std::is_copy_constructible< basis_type >::value,
 		"Basis type must be copy constructible");
-  static_assert(std::is_copy_constructible< FullStateType >::value,
+  static_assert(std::is_copy_constructible< full_state_type >::value,
 		"Full state type must be copy constructible");
 
-  // use BasisType and FullStateType as template args below because they carry
-  // the correct qualification to be used inside the class by instanceOrRefWrapper
-  using ret_t = impl::PossiblyAffineTrialSubspace<ReducedStateType, BasisType, FullStateType>;
-  return ret_t(std::forward<BasisType>(basis), offset, isAffine);
+  // mandates
+  static_assert(std::is_same< typename pressio::Traits<basis_type>::scalar_type,
+		typename pressio::Traits<full_state_type>::scalar_type >::value,
+		"Mismatching scalar_type");
+
+  using ret_t = impl::PossiblyAffineTrialSubspace<ReducedStateType, basis_type, full_state_type>;
+  return ret_t(std::forward<BasisType>(basis),
+	       std::forward<FullStateType>(offset),
+	       isAffine);
 }
 
 }} // end pressio::rom

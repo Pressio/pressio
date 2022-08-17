@@ -57,9 +57,11 @@ TEST(rom, trial_subspace_construct_1)
   using namespace pressio::rom;
 
   using basis_t = Eigen::MatrixXd;
+  basis_t phi;
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(basis_t(), shift, false);
+  auto space = create_trial_subspace<reduced_state_type>(phi, shift, false);
+  (void) space;
 }
 
 TEST(rom, trial_subspace_construct_2)
@@ -67,10 +69,31 @@ TEST(rom, trial_subspace_construct_2)
   using namespace pressio::rom;
 
   using basis_t = Eigen::MatrixXd;
+  using reduced_state_type = Eigen::VectorXd;
+  std::vector<double> shift(15);
+  auto space = create_trial_subspace<reduced_state_type>(basis_t(), shift, false);
+}
+
+TEST(rom, trial_subspace_construct_3)
+{
+  using namespace pressio::rom;
+
+  using basis_t = Eigen::MatrixXd;
   basis_t phi;
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, false);
+  auto space = create_trial_subspace<reduced_state_type>(phi, std::move(shift), false);
+  (void) space;
+}
+
+TEST(rom, trial_subspace_construct_4)
+{
+  using namespace pressio::rom;
+
+  using basis_t = Eigen::MatrixXd;
+  using reduced_state_type = Eigen::VectorXd;
+  std::vector<double> shift(15);
+  auto space = create_trial_subspace<reduced_state_type>(basis_t(), std::move(shift), false);
   (void) space;
 }
 

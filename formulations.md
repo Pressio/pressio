@@ -33,24 +33,21 @@
 - should always accept trialSpace/affineTrialSpace
 
 - "phi^T M phi dx/dt = phi^T f"
-  - M is time dependent
-  - or M constant
+  - M is time dependent OR M is constant
 - "dx/dt = phi^T f"
-
 - mass matrix or not is inferred from the system API
-
 
 # Hypred
 
 - should always accept trialSpace/affineTrialSpace
-- only for M constant or no M
 - "phi^T M phi dx/dt = MJOP f"
 - "dx/dt = MJOP f"
+- only for M constant or no M
 
 # Masked
 
 - should always accept trialSpace/affineTrialSpace
-- figure it out
+- only for M constant or no M
 
 
 <!-- ============================================================== -->
