@@ -63,23 +63,45 @@ namespace pressio{ namespace ode{
   constraints via e.g. SFINAE but that would yield bad error messages.
   So for now we decide to use static asserts to have readable error messages.
   Another point that kind of justifies this here, for now, is that
-  we have a single function, not an overload set to manipulate via sfinae/concepts.
+  we have a simple overload set.
 */
 
-template<class SystemType>
-auto create_explicit_stepper(StepScheme name, SystemType && system)
+template<class RhsEvaluatorType>
+auto create_explicit_stepper(StepScheme name,
+			     RhsEvaluatorType && rhsEvaluator)
 {
-  using sys_type = mpl::remove_cvref_t<SystemType>;
+  // constraints
+  using sys_type = std::decay_t<RhsEvaluatorType>;
   static_assert
-  (   ::pressio::ode::OdeSystem<sys_type>::value
-   || ::pressio::ode::OdeSystemWithMassMatrix<sys_type>::value
-   || ::pressio::ode::OdeSystemWithJacobian<sys_type>::value
-   || ::pressio::ode::OdeSystemWithConstantMassMatrix<sys_type>::value
-   || ::pressio::ode::OdeSystemComplete<sys_type>::value
-   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<sys_type>::value,
+  (   ::pressio::ode::OdeRhsEvaluator<sys_type>::value
+   || ::pressio::ode::OdeRhsAndJacobianEvaluator<sys_type>::value,
    "explicit stepper: your system class does not meet any valid concept");
 
-  return impl::create_explicit_stepper(name, system);
+  return impl::create_explicit_stepper(name,
+				       std::forward<RhsEvaluatorType>(rhsEvaluator));
+}
+
+template<class RhsEvaluatorType, class MassMatrixOperatorType>
+auto create_explicit_stepper(StepScheme name,
+			     RhsEvaluatorType && rhsEvaluator,
+			     MassMatrixOperatorType && mmOperator)
+{
+
+  // constraints
+  using sys_type = std::decay_t<RhsEvaluatorType>;
+  static_assert
+  (   ::pressio::ode::OdeRhsEvaluator<sys_type>::value
+   || ::pressio::ode::OdeRhsAndJacobianEvaluator<sys_type>::value,
+   "explicit stepper: your system class does not meet any valid concept");
+
+  using mmop_type = std::decay_t<MassMatrixOperatorType>;
+  static_assert
+    (::pressio::ode::MassMatrixOperator<mmop_type>::value
+     || ::pressio::ode::ConstantMassMatrixOperator<mmop_type>::value, "");
+
+  return impl::create_explicit_stepper(name,
+				       std::forward<RhsEvaluatorType>(rhsEvaluator),
+				       std::forward<MassMatrixOperatorType>(mmOperator));
 }
 
 template<class ...Args>

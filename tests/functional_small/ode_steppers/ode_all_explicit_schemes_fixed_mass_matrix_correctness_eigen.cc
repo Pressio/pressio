@@ -8,15 +8,12 @@ struct MyApp2WithMM
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
-  using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
   std::map<int, Eigen::VectorXd> & rhs_;
-  const Eigen::MatrixXd & uniqueMM_;
 
-  MyApp2WithMM(std::map<int, Eigen::VectorXd> & rhs,
-	       const Eigen::MatrixXd & MM)
-    : rhs_(rhs), uniqueMM_(MM){}
+  MyApp2WithMM(std::map<int, Eigen::VectorXd> & rhs)
+    : rhs_(rhs){}
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -25,11 +22,6 @@ struct MyApp2WithMM
 
   right_hand_side_type createRightHandSide() const{
     right_hand_side_type ret(3); ret.setZero();
-    return ret;
-  };
-
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
@@ -43,6 +35,21 @@ struct MyApp2WithMM
     }
 
     rhs_[++count1] = rhs;
+  };
+};
+
+struct MassMatrixOp
+{
+  using mass_matrix_type     = Eigen::MatrixXd;
+
+  const Eigen::MatrixXd & uniqueMM_;
+
+  MassMatrixOp(const Eigen::MatrixXd & MM)
+    : uniqueMM_(MM){}
+
+  mass_matrix_type createMassMatrix() const{
+    mass_matrix_type ret(3,3); ret.setZero();
+    return ret;
   };
 
   void massMatrix(mass_matrix_type & M) const
@@ -115,8 +122,9 @@ struct LinearSolver2
   /* first, solve problem using mass matrix API */			\
   Eigen::VectorXd y0(3);						\
   y0.setZero();{							\
-    MyApp2WithMM appObj(rhs, M);					\
-    auto stepperObj = ode::create_##NAME##_stepper(appObj);		\
+    MassMatrixOp mmOp(M);						\
+    MyApp2WithMM appObj(rhs);						\
+    auto stepperObj = ode::create_##NAME##_stepper(appObj, mmOp);	\
     LinearSolver2 solver;						\
     y0(0) = 1.; y0(1) = 2.; y0(2) = 3.;					\
     ode::advance_n_steps(stepperObj, y0, 0.0, dt, nsteps, solver);	\

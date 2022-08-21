@@ -8,16 +8,12 @@ struct MyApp2WithMM
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
-  using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
-  mutable int count2 = 0;
   std::map<int, Eigen::VectorXd> & rhs_;
-  std::map<int, Eigen::MatrixXd> & matrices_;
 
-  MyApp2WithMM(std::map<int, Eigen::VectorXd> & rhs,
-	       std::map<int, Eigen::MatrixXd> & matrices)
-    : rhs_(rhs), matrices_(matrices){}
+  MyApp2WithMM(std::map<int, Eigen::VectorXd> & rhs)
+    : rhs_(rhs){}
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -26,11 +22,6 @@ struct MyApp2WithMM
 
   right_hand_side_type createRightHandSide() const{
     right_hand_side_type ret(3); ret.setZero();
-    return ret;
-  };
-
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
@@ -45,6 +36,24 @@ struct MyApp2WithMM
 
     rhs_[++count1] = rhs;
   };
+};
+
+struct MassMatrixOp
+{
+  using independent_variable_type = double;
+  using state_type           = Eigen::VectorXd;
+  using mass_matrix_type     = Eigen::MatrixXd;
+
+  mutable int count2 = 0;
+  std::map<int, Eigen::MatrixXd> & matrices_;
+
+  MassMatrixOp(std::map<int, Eigen::MatrixXd> & matrices)
+    : matrices_(matrices){}
+
+  mass_matrix_type createMassMatrix() const{
+    mass_matrix_type ret(3,3); ret.setZero();
+    return ret;
+  };
 
   void massMatrix(const state_type & /*unused*/,
 		  independent_variable_type evaltime,
@@ -58,6 +67,7 @@ struct MyApp2WithMM
     matrices_[++count2] = M;
   };
 };
+
 
 struct MyApp2NoMM
 {
@@ -141,8 +151,9 @@ struct LinearSolver2
   /* first, solve problem using mass matrix API */ \
   Eigen::VectorXd y0(3); \
   y0.setZero();{\
-    MyApp2WithMM appObj(rhs, massMatrices);\
-    auto stepperObj = ode::create_##NAME##_stepper(appObj);\
+    MassMatrixOp mm(massMatrices); \
+    MyApp2WithMM appObj(rhs);\
+    auto stepperObj = ode::create_##NAME##_stepper(appObj, mm);	\
     LinearSolver2 solver;\
     y0(0) = 1.; y0(1) = 2.; y0(2) = 3.;\
     ode::advance_n_steps(stepperObj, y0, 0.0, dt, nsteps, solver);\

@@ -59,7 +59,7 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template<
   bool massMatrixIsFixed,
-  class MassMatrixType,
+  class MassMatrixOperatorType,
   class StateType,
   class IndVarType,
   class SystemType,
@@ -76,13 +76,14 @@ private:
   StepScheme name_;
   const stepper_order_type order_;
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::utils::InstanceOrReferenceWrapper<MassMatrixOperatorType> mmOpObj_;
   RightHandSideType rhsInstance_;
 
   // xInstances is a container of instances of states
   // that are used in the solve M x = b
   std::vector<StateType> xInstances_;
 
-  MassMatrixType massMatrix_;
+  typename std::decay_t<MassMatrixOperatorType>::mass_matrix_type massMatrix_;
 
 public:
   ExplicitStepperWithMassMatrixImpl() = delete;
@@ -93,55 +94,63 @@ public:
   ~ExplicitStepperWithMassMatrixImpl() = default;
 
   ExplicitStepperWithMassMatrixImpl(ode::ForwardEuler,
-				    SystemType && systemObj)
+				    SystemType && systemObj,
+				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::ForwardEuler),
       order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
+      mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
       xInstances_{systemObj.createState()},
-      massMatrix_(systemObj.createMassMatrix())
+      massMatrix_(mmOperator.createMassMatrix())
   {
     computeMassMatrixOnceIfInvariant();
   }
 
   ExplicitStepperWithMassMatrixImpl(ode::RungeKutta4,
-				    SystemType && systemObj)
+				    SystemType && systemObj,
+				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::RungeKutta4),
       order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
+      mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
       xInstances_{systemObj.createState(),
 		  systemObj.createState(),
 		  systemObj.createState(),
 		  systemObj.createState(),
 		  systemObj.createState()},
-      massMatrix_(systemObj.createMassMatrix())
+      massMatrix_(mmOperator.createMassMatrix())
   {
     computeMassMatrixOnceIfInvariant();
   }
 
   ExplicitStepperWithMassMatrixImpl(ode::AdamsBashforth2,
-				    SystemType && systemObj)
+				    SystemType && systemObj,
+				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::AdamsBashforth2),
       order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
+      mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
       xInstances_{systemObj.createState(),
                   systemObj.createState()},
-      massMatrix_(systemObj.createMassMatrix())
+      massMatrix_(mmOperator.createMassMatrix())
   {
     computeMassMatrixOnceIfInvariant();
   }
 
   ExplicitStepperWithMassMatrixImpl(ode::SSPRungeKutta3,
-				    SystemType && systemObj)
+				    SystemType && systemObj,
+				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::SSPRungeKutta3),
       order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),
+      mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
       xInstances_{systemObj.createState(),
                   systemObj.createState()},
-      massMatrix_(systemObj.createMassMatrix())
+      massMatrix_(mmOperator.createMassMatrix())
   {
     computeMassMatrixOnceIfInvariant();
   }
@@ -206,7 +215,7 @@ private:
   template<bool _massMatrixIsFixed = massMatrixIsFixed>
   ::pressio::mpl::enable_if_t<_massMatrixIsFixed>
   computeMassMatrixOnceIfInvariant(){
-    systemObj_.get().massMatrix(massMatrix_);
+    mmOpObj_.get().massMatrix(massMatrix_);
   }
 
   template<bool _massMatrixIsFixed = massMatrixIsFixed>
@@ -227,7 +236,7 @@ private:
   ::pressio::mpl::enable_if_t<!_massMatrixIsFixed>
   computeMassMatrixIfNeeded(const StateType & odeState,
 			    const independent_variable_type & stepStartVal){
-    systemObj_.get().massMatrix(odeState, stepStartVal, massMatrix_);
+    mmOpObj_.get().massMatrix(odeState, stepStartVal, massMatrix_);
   }
 
   template<class LinearSolver, class RhsObserverType>

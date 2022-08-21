@@ -51,82 +51,86 @@
 
 #include "ode_explicit_stepper.hpp"
 #include "ode_explicit_stepper_with_mass_matrix.hpp"
-#include "ode_trivial_mass_matrix.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<class SystemType, class = void>
-struct ExplicitStepperImplClass{
-  template<class ...Args> using type = ExplicitStepperNoMassMatrixImpl<Args...>;
-};
+template<class SystemType, class ... Args>
+struct ExplicitComposeReturnType;
 
 template<class SystemType>
-struct ExplicitStepperImplClass<
-  SystemType, mpl::enable_if_t<system_has_constant_mass_matrix_api<SystemType>::value>
-  >
+struct ExplicitComposeReturnType<void, SystemType>
 {
-  template<class ...Args> using type = ExplicitStepperWithMassMatrixImpl<
-    true /*signal that we have mass matrix but it is constant */,
-    typename SystemType::mass_matrix_type, Args...>;
-};
-
-template<class SystemType>
-struct ExplicitStepperImplClass<
-  SystemType, mpl::enable_if_t<system_has_potentially_varying_mass_matrix_api<SystemType>::value>
-  >
-{
-  template<class ...Args> using type = ExplicitStepperWithMassMatrixImpl<
-    false /*signal that we have mass matrix but it is NOT const */,
-    typename SystemType::mass_matrix_type, Args...>;
-};
-
-template<class SystemType>
-struct ExplicitCompose
-{
-  using sys_type = mpl::remove_cvref_t<SystemType>;
-
-  // if we get here, the system has at least the right_hand_side API
+  using sys_type = std::decay_t<SystemType>;
+  using ind_var_type = typename sys_type::independent_variable_type;
   using state_type = typename sys_type::state_type;
   using right_hand_side_type = typename sys_type::right_hand_side_type;
 
   // it is very important to use "SystemType" as template arg
   // because that it the right type carrying how we store the system
   // since SystemType comes from the deduction below
-  using ind_var_type = typename sys_type::independent_variable_type;
-  using type = typename ExplicitStepperImplClass<sys_type>::template type<
+  using type = ExplicitStepperNoMassMatrixImpl<
     state_type, ind_var_type, SystemType, right_hand_side_type>;
 };
 
-template<class SystemType>
-auto create_explicit_stepper(StepScheme name, SystemType && system)
+template<class SystemType, class MassMatrixOpType>
+struct ExplicitComposeReturnType<
+  void, SystemType, MassMatrixOpType
+  >
+{
+  using sys_type = std::decay_t<SystemType>;
+  using state_type = typename sys_type::state_type;
+  using right_hand_side_type = typename sys_type::right_hand_side_type;
+  using ind_var_type = typename sys_type::independent_variable_type;
+
+  // it is very important to use "SystemType" MassMatrixOpType as template arg
+  // because that it the right type carrying how we store the system
+  // since SystemType comes from the deduction below
+  using type = ExplicitStepperWithMassMatrixImpl<
+    ConstantMassMatrixOperator<std::decay_t<MassMatrixOpType>>::value,
+    MassMatrixOpType, state_type, ind_var_type, SystemType, right_hand_side_type>;
+};
+
+template<class SystemType, class ... Args>
+auto create_explicit_stepper(StepScheme name,
+			     SystemType && system,
+			     Args && ... args)
 {
 
-  // When user passes a non-temporary system object, SystemType is
+  // Use SystemType as template argument for ExplicitComposeReturnType
+  // and NOT SystemType && for the following reason:
+  // when user passes a non-temporary system object, SystemType is
   // deduced to be a reference, so the concrete stepper class
-  // composed inside the ExplicitCompose will be composed such
+  // composed inside the ExplicitComposeReturnType will be composed such
   // that it will hold a reference to the provided system arg.
   // When the user passes system to be a temporary object,
   // SystemType will be deduced so that the stepper will
   // hold an **instance** of the system that
   // is move-constructed (if applicable) from the system argument.
-  // So here it is important to use SystemType as template argument
-  // for ExplicitCompose and NOT SystemType &&.
-  using ReturnType = typename impl::ExplicitCompose<SystemType>::type;
+  using ReturnType = typename impl::ExplicitComposeReturnType<
+    void, SystemType, Args...>::type;
 
   if (name == StepScheme::ForwardEuler){
-    return ReturnType(ode::ForwardEuler(), std::forward<SystemType>(system));
+    return ReturnType(ode::ForwardEuler(),
+		      std::forward<SystemType>(system),
+		      std::forward<Args>(args)...);
   }
 
   else if (name == StepScheme::RungeKutta4){
-    return ReturnType(ode::RungeKutta4(), std::forward<SystemType>(system));
+    return ReturnType(ode::RungeKutta4(),
+		      std::forward<SystemType>(system),
+		      std::forward<Args>(args)...);
   }
 
   else if (name == StepScheme::AdamsBashforth2){
-    return ReturnType(ode::AdamsBashforth2(), std::forward<SystemType>(system));
+    return ReturnType(ode::AdamsBashforth2(),
+		      std::forward<SystemType>(system),
+		      std::forward<Args>(args)...);
   }
 
   else if (name == StepScheme::SSPRungeKutta3){
-    return ReturnType(ode::SSPRungeKutta3(), std::forward<SystemType>(system));
+    return ReturnType(ode::SSPRungeKutta3(),
+		      std::forward<SystemType>(system),
+		      std::forward<Args>(args)...);
   }
 
   else{

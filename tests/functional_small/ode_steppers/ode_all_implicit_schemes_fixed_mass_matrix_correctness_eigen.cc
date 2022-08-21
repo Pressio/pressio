@@ -14,13 +14,11 @@ struct MyApp2WithMM
   mutable int count1 = 0;
   mutable int count3 = 0;
   const std::map<int, right_hand_side_type> & rhs_;
-  const mass_matrix_type & MM_;
   const std::map<int, jacobian_type> & jacobians_;
 
   MyApp2WithMM(const std::map<int, right_hand_side_type> & rhs,
-	       const mass_matrix_type & MMIn,
 	       const std::map<int, jacobian_type> & jacobians)
-    : rhs_(rhs), MM_(MMIn), jacobians_(jacobians){}
+    : rhs_(rhs), jacobians_(jacobians){}
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -29,11 +27,6 @@ struct MyApp2WithMM
 
   right_hand_side_type createRightHandSide() const{
     right_hand_side_type ret(3); ret.setZero();
-    return ret;
-  };
-
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
@@ -48,16 +41,30 @@ struct MyApp2WithMM
     rhs = rhs_.at(count1++);
   };
 
-  void massMatrix(mass_matrix_type & M) const{
-    M = MM_;
-  };
-
   void jacobian(const state_type & /*unused*/,
                 independent_variable_type /*unused*/,
                 jacobian_type & JJ) const{
     JJ = jacobians_.at(count3++);
   };
 
+};
+
+struct MassMatrixOp
+{
+  using mass_matrix_type     = Eigen::MatrixXd;
+  const mass_matrix_type & MM_;
+
+  MassMatrixOp(const mass_matrix_type & MMIn)
+    : MM_(MMIn){}
+
+  mass_matrix_type createMassMatrix() const{
+    mass_matrix_type ret(3,3); ret.setZero();
+    return ret;
+  };
+
+  void massMatrix(mass_matrix_type & M) const{
+    M = MM_;
+  };
 };
 
 struct MyApp2NoMM
@@ -212,8 +219,9 @@ struct FakeNonLinearSolver2{
   Eigen::VectorXd y0(3);						\
   y0.setZero();								\
   {									\
-    MyApp2WithMM appObj(rhs, MM, rhsJacobians);				\
-    auto stepperObj = ode::create_##NAME##_stepper(appObj);		\
+    MassMatrixOp mmOp(MM);						\
+    MyApp2WithMM appObj(rhs, rhsJacobians);				\
+    auto stepperObj = ode::create_##NAME##_stepper(appObj, mmOp);	\
     y0(0) = 1.; y0(1) = 2.; y0(2) = 3.;					\
     FakeNonLinearSolver1 solver(numFakeSolverIterations, MM,		\
 				odeSchemeResidualsToCompare,		\

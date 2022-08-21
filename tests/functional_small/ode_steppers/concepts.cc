@@ -60,47 +60,47 @@ struct System3{
 		     right_hand_side_type &   /*unused*/) const{}
 };
 
-//
-// rhs and mass matrix
-//
-struct System4{
-  using independent_variable_type = FakeIndVarTypeForTesting;
-  using state_type = FakeStateTypeForTesting;
-  using right_hand_side_type = FakeRhsTypeForTesting;
-  using mass_matrix_type = FakeMassMatrixTypeForTesting;
+// //
+// // rhs and mass matrix
+// //
+// struct System4{
+//   using independent_variable_type = FakeIndVarTypeForTesting;
+//   using state_type = FakeStateTypeForTesting;
+//   using right_hand_side_type = FakeRhsTypeForTesting;
+//   using mass_matrix_type = FakeMassMatrixTypeForTesting;
 
-  state_type createState() const{ return state_type(); }
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
-  mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
+//   state_type createState() const{ return state_type(); }
+//   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
+//   mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
 
-  void rightHandSide(const state_type &        /*unused*/,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type &    /*unused*/) const{}
+//   void rightHandSide(const state_type &        /*unused*/,
+// 		     independent_variable_type /*unused*/,
+// 		     right_hand_side_type &    /*unused*/) const{}
 
-  void massMatrix(const state_type &        /*unused*/,
-		  independent_variable_type /*unused*/,
-		  mass_matrix_type &        /*unused*/) const{}
-};
+//   void massMatrix(const state_type &        /*unused*/,
+// 		  independent_variable_type /*unused*/,
+// 		  mass_matrix_type &        /*unused*/) const{}
+// };
 
-//
-// rhs and constant mass matrix
-//
-struct System5{
-  using independent_variable_type = FakeIndVarTypeForTesting;
-  using state_type = FakeStateTypeForTesting;
-  using right_hand_side_type = FakeRhsTypeForTesting;
-  using mass_matrix_type = FakeMassMatrixTypeForTesting;
+// //
+// // rhs and constant mass matrix
+// //
+// struct System5{
+//   using independent_variable_type = FakeIndVarTypeForTesting;
+//   using state_type = FakeStateTypeForTesting;
+//   using right_hand_side_type = FakeRhsTypeForTesting;
+//   using mass_matrix_type = FakeMassMatrixTypeForTesting;
 
-  state_type createState() const{ return state_type(); }
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
-  mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
+//   state_type createState() const{ return state_type(); }
+//   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
+//   mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
 
-  void rightHandSide(const state_type &        /*unused*/,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type &    /*unused*/) const{}
+//   void rightHandSide(const state_type &        /*unused*/,
+// 		     independent_variable_type /*unused*/,
+// 		     right_hand_side_type &    /*unused*/) const{}
 
-  void massMatrix(mass_matrix_type & /*unused*/) const{}
-};
+//   void massMatrix(mass_matrix_type & /*unused*/) const{}
+// };
 
 //
 // rhs and jacobian
@@ -124,59 +124,59 @@ struct System6{
 		jacobian_type &           /*unused*/) const{}
 };
 
-//
-// rhs and jacobian and mass matrix
-//
-struct System7{
-  using independent_variable_type = FakeIndVarTypeForTesting;
-  using state_type = FakeStateTypeForTesting;
-  using right_hand_side_type = FakeRhsTypeForTesting;
-  using jacobian_type = FakeJacTypeForTesting;
-  using mass_matrix_type = FakeMassMatrixTypeForTesting;
+// //
+// // rhs and jacobian and mass matrix
+// //
+// struct System7{
+//   using independent_variable_type = FakeIndVarTypeForTesting;
+//   using state_type = FakeStateTypeForTesting;
+//   using right_hand_side_type = FakeRhsTypeForTesting;
+//   using jacobian_type = FakeJacTypeForTesting;
+//   using mass_matrix_type = FakeMassMatrixTypeForTesting;
 
-  state_type createState() const{ return state_type(); }
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
-  jacobian_type createJacobian() const{ return jacobian_type(); }
-  mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
+//   state_type createState() const{ return state_type(); }
+//   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
+//   jacobian_type createJacobian() const{ return jacobian_type(); }
+//   mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
 
-  void rightHandSide(const state_type &        /*unused*/,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type &    /*unused*/) const{}
+//   void rightHandSide(const state_type &        /*unused*/,
+// 		     independent_variable_type /*unused*/,
+// 		     right_hand_side_type &    /*unused*/) const{}
 
-  void massMatrix(const state_type &        /*unused*/,
-		  independent_variable_type /*unused*/,
-		  mass_matrix_type &        /*unused*/) const{}
+//   void massMatrix(const state_type &        /*unused*/,
+// 		  independent_variable_type /*unused*/,
+// 		  mass_matrix_type &        /*unused*/) const{}
 
-  void jacobian(const state_type &        /*unused*/,
-		independent_variable_type /*unused*/,
-		jacobian_type &           /*unused*/) const{}
-};
+//   void jacobian(const state_type &        /*unused*/,
+// 		independent_variable_type /*unused*/,
+// 		jacobian_type &           /*unused*/) const{}
+// };
 
-//
-// rhs and jacobian and constant mass matrix
-//
-struct System8{
-  using independent_variable_type = FakeIndVarTypeForTesting;
-  using state_type = FakeStateTypeForTesting;
-  using right_hand_side_type = FakeRhsTypeForTesting;
-  using jacobian_type = FakeJacTypeForTesting;
-  using mass_matrix_type = FakeMassMatrixTypeForTesting;
+// //
+// // rhs and jacobian and constant mass matrix
+// //
+// struct System8{
+//   using independent_variable_type = FakeIndVarTypeForTesting;
+//   using state_type = FakeStateTypeForTesting;
+//   using right_hand_side_type = FakeRhsTypeForTesting;
+//   using jacobian_type = FakeJacTypeForTesting;
+//   using mass_matrix_type = FakeMassMatrixTypeForTesting;
 
-  state_type createState() const{ return state_type(); }
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
-  jacobian_type createJacobian() const{ return jacobian_type(); }
-  mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
+//   state_type createState() const{ return state_type(); }
+//   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
+//   jacobian_type createJacobian() const{ return jacobian_type(); }
+//   mass_matrix_type createMassMatrix() const{ return mass_matrix_type(); }
 
-  void rightHandSide(const state_type &        /*unused*/,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type &    /*unused*/) const{}
+//   void rightHandSide(const state_type &        /*unused*/,
+// 		     independent_variable_type /*unused*/,
+// 		     right_hand_side_type &    /*unused*/) const{}
 
-  void massMatrix(mass_matrix_type &        /*unused*/) const{}
+//   void massMatrix(mass_matrix_type &        /*unused*/) const{}
 
-  void jacobian(const state_type &        /*unused*/,
-		independent_variable_type /*unused*/,
-		jacobian_type &           /*unused*/) const{}
-};
+//   void jacobian(const state_type &        /*unused*/,
+// 		independent_variable_type /*unused*/,
+// 		jacobian_type &           /*unused*/) const{}
+// };
 
 
 struct System9{
@@ -273,71 +273,23 @@ TEST(ode, concepts)
 {
   using namespace pressio::ode;
 
-  static_assert( OdeSystem<System1>::value, "");
-  static_assert(!OdeSystemWithJacobian<System1>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System1>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System1>::value, "");
-  static_assert(!OdeSystemComplete<System1>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System1>::value, "");
+  static_assert( OdeRhsEvaluator<System1>::value, "");
+  static_assert(!OdeRhsAndJacobianEvaluator<System1>::value, "");
 
-  static_assert(!OdeSystem<System2>::value, "");
-  static_assert(!OdeSystemWithJacobian<System2>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System2>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System2>::value, "");
-  static_assert(!OdeSystemComplete<System2>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System2>::value, "");
+  static_assert(!OdeRhsEvaluator<System2>::value, "");
+  static_assert(!OdeRhsAndJacobianEvaluator<System2>::value, "");
 
-  static_assert(!OdeSystem<System3>::value, "");
-  static_assert(!OdeSystemWithJacobian<System3>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System3>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System3>::value, "");
-  static_assert(!OdeSystemComplete<System3>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System3>::value, "");
+  static_assert(!OdeRhsEvaluator<System3>::value, "");
+  static_assert(!OdeRhsAndJacobianEvaluator<System3>::value, "");
 
-  static_assert( OdeSystem<System4>::value, "");
-  static_assert(!OdeSystemWithJacobian<System4>::value, "");
-  static_assert( OdeSystemWithMassMatrix<System4>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System4>::value, "");
-  static_assert(!OdeSystemComplete<System4>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System4>::value, "");
-
-  static_assert( OdeSystem<System5>::value, "");
-  static_assert(!OdeSystemWithJacobian<System5>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System5>::value, "");
-  static_assert( OdeSystemWithConstantMassMatrix<System5>::value, "");
-  static_assert(!OdeSystemComplete<System5>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System5>::value, "");
-
-  static_assert( OdeSystem<System6>::value, "");
-  static_assert( OdeSystemWithJacobian<System6>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System6>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System6>::value, "");
-  static_assert(!OdeSystemComplete<System6>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System6>::value, "");
-
-  static_assert( OdeSystem<System7>::value, "");
-  static_assert( OdeSystemWithJacobian<System7>::value, "");
-  static_assert( OdeSystemWithMassMatrix<System7>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System7>::value, "");
-  static_assert( OdeSystemComplete<System7>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System7>::value, "");
-
-  static_assert( OdeSystem<System8>::value, "");
-  static_assert( OdeSystemWithJacobian<System8>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System8>::value, "");
-  static_assert( OdeSystemWithConstantMassMatrix<System8>::value, "");
-  static_assert(!OdeSystemComplete<System8>::value, "");
-  static_assert( OdeSystemCompleteWithConstantMassMatrix<System8>::value, "");
+  static_assert( OdeRhsEvaluator<System6>::value, "");
+  static_assert( OdeRhsAndJacobianEvaluator<System6>::value, "");
 
   static_assert(FullyDiscreteSystemWithJacobian<System9,  1>::value, "");
   static_assert(FullyDiscreteSystemWithJacobian<System9,  2>::value, "");
   static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
-  static_assert(!OdeSystem<System9>::value, "");
-  static_assert(!OdeSystemWithJacobian<System9>::value, "");
-  static_assert(!OdeSystemWithMassMatrix<System9>::value, "");
-  static_assert(!OdeSystemWithConstantMassMatrix<System9>::value, "");
-  static_assert(!OdeSystemComplete<System9>::value, "");
-  static_assert(!OdeSystemCompleteWithConstantMassMatrix<System9>::value, "");
+  static_assert(!OdeRhsEvaluator<System9>::value, "");
+  static_assert(!OdeRhsAndJacobianEvaluator<System9>::value, "");
 
   {
     using state_t = FakeStateTypeForTesting;

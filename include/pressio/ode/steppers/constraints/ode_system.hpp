@@ -55,10 +55,10 @@ namespace pressio{ namespace ode{
 // rhs only
 //
 template<class T, class enable = void>
-struct OdeSystem : std::false_type{};
+struct OdeRhsEvaluator : std::false_type{};
 
 template<class T>
-struct OdeSystem<
+struct OdeRhsEvaluator<
   T,
   mpl::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
@@ -88,13 +88,13 @@ struct OdeSystem<
 // rhs, jacobian
 //
 template<class T, class enable = void>
-struct OdeSystemWithJacobian : std::false_type{};
+struct OdeRhsAndJacobianEvaluator : std::false_type{};
 
 template<class T>
-struct OdeSystemWithJacobian<
+struct OdeRhsAndJacobianEvaluator<
   T,
   mpl::enable_if_t<
-    OdeSystem<T>::value
+    OdeRhsEvaluator<T>::value
     && ::pressio::has_jacobian_typedef<T>::value
     && std::is_copy_constructible<typename T::jacobian_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
@@ -111,21 +111,19 @@ struct OdeSystemWithJacobian<
   > : std::true_type{};
 
 //
-// rhs and varying mass matrix
+// mass matrix operator
 //
 template<class T, class enable = void>
-struct OdeSystemWithMassMatrix : std::false_type{};
+struct MassMatrixOperator : std::false_type{};
 
 template<class T>
-struct OdeSystemWithMassMatrix<
+struct MassMatrixOperator<
   T,
   mpl::enable_if_t<
-    OdeSystem<T>::value
+       ::pressio::has_independent_variable_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_mass_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::mass_matrix_type>::value
-    && ::pressio::VectorSpaceElementsWithSameField<
-      typename T::state_type, typename T::mass_matrix_type
-      >::value
     //
     // mass matrix
     && ::pressio::ode::has_const_create_mass_matrix_method_return_result<
@@ -135,61 +133,25 @@ struct OdeSystemWithMassMatrix<
    >
   > : std::true_type{};
 
-
 //
-// rhs and CONSTANT mass matrix
+// constant mass matrix operator
 //
 template<class T, class enable = void>
-struct OdeSystemWithConstantMassMatrix : std::false_type{};
+struct ConstantMassMatrixOperator : std::false_type{};
 
 template<class T>
-struct OdeSystemWithConstantMassMatrix<
+struct ConstantMassMatrixOperator<
   T,
   mpl::enable_if_t<
-    OdeSystem<T>::value
-    && ::pressio::has_mass_matrix_typedef<T>::value
+    ::pressio::has_mass_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::mass_matrix_type>::value
-    && ::pressio::VectorSpaceElementsWithSameField<
-      typename T::state_type, typename T::mass_matrix_type
-      >::value
     //
     // mass matrix
     && ::pressio::ode::has_const_create_mass_matrix_method_return_result<
-      T, typename T::mass_matrix_type >::value
-    && ::pressio::ode::has_const_mass_matrix_method_accept_result_return_void<
-      T, typename T::mass_matrix_type>::value
+	 T, typename T::mass_matrix_type >::value
+     && ::pressio::ode::has_const_mass_matrix_method_accept_result_return_void<
+	 T, typename T::mass_matrix_type>::value
    >
-  > : std::true_type{};
-
-
-//
-// rhs, jac, mass matrix
-//
-template<class T, class enable = void>
-struct OdeSystemComplete : std::false_type{};
-
-template<class T>
-struct OdeSystemComplete<
-  T,
-  mpl::enable_if_t<
-    OdeSystemWithJacobian<T>::value
-    && OdeSystemWithMassMatrix<T>::value
-    >
-  > : std::true_type{};
-
-//
-// rhs, jac, CONSTANT mass matrix
-//
-template<class T, class enable = void>
-struct OdeSystemCompleteWithConstantMassMatrix : std::false_type{};
-
-template<class T>
-struct OdeSystemCompleteWithConstantMassMatrix<
-  T,
-  mpl::enable_if_t<
-    OdeSystemWithJacobian<T>::value
-    && OdeSystemWithConstantMassMatrix<T>::value
-    >
   > : std::true_type{};
 
 //

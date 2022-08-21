@@ -8,7 +8,7 @@ struct MyApp
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
-  using mass_matrix_type     = Eigen::MatrixXd;
+  //using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
   const std::map<int, Eigen::VectorXd> & rhs_;
@@ -26,16 +26,37 @@ struct MyApp
     return ret;
   };
 
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
-    return ret;
-  };
+  // mass_matrix_type createMassMatrix() const{
+  //   mass_matrix_type ret(3,3); ret.setZero();
+  //   return ret;
+  // };
 
   void rightHandSide(const state_type & y,
 		     independent_variable_type evaltime,
 		     right_hand_side_type & rhs) const
   {
     rhs = rhs_.at(count1++);
+  };
+
+  // void massMatrix(const state_type & /*unused*/,
+  // 		  independent_variable_type evaltime,
+  // 		  mass_matrix_type & M) const
+  // {
+  //   M = Eigen::MatrixXd::Random(M.rows(), M.cols());
+  // };
+};
+
+struct MassMatrixOp
+{
+  using independent_variable_type = double;
+  using state_type           = Eigen::VectorXd;
+  using mass_matrix_type     = Eigen::MatrixXd;
+
+  MassMatrixOp(){}
+
+  mass_matrix_type createMassMatrix() const{
+    mass_matrix_type ret(3,3); ret.setZero();
+    return ret;
   };
 
   void massMatrix(const state_type & /*unused*/,
@@ -195,9 +216,10 @@ struct LinearSolver
     rhs[i] = Eigen::VectorXd::Random(3);				\
   }									\
   MyApp appObj(rhs);							\
+  MassMatrixOp mm;							\
   Eigen::VectorXd y(3);							\
   y.setZero();								\
-  auto stepper = ode::create_##NAME##_stepper(appObj);			\
+  auto stepper = ode::create_##NAME##_stepper(appObj, mm);		\
   StateObserver ob1;							\
   const double dt = 2.0;						\
   RhsObserver<METHOD_SWITCH> ob2(dt, rhs);				\

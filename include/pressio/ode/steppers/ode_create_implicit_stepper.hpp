@@ -67,30 +67,49 @@ namespace pressio{ namespace ode{
 */
 
 template<class SystemType>
-auto create_implicit_stepper(StepScheme name, const SystemType & system)
+auto create_implicit_stepper(StepScheme name, const
+			     SystemType & system)
 {
   // the following should be a constraint
   static_assert
-  (   ::pressio::ode::OdeSystemWithJacobian<SystemType>::value
-   || ::pressio::ode::OdeSystemComplete<SystemType>::value
-   || ::pressio::ode::OdeSystemCompleteWithConstantMassMatrix<SystemType>::value,
+  (::pressio::ode::OdeRhsAndJacobianEvaluator<SystemType>::value,
    "implicit stepper: your system class does not meet any valid concept");
 
-  return impl::create_implicit_stepper_impl(name, system);
+  return impl::create_implicit_stepper_implA(name, system);
 }
 
-template<class ResidualPolicyType, class JacobianPolicyType>
+template<
+  class SystemType,
+  class MassMatrixOperatorType,
+  mpl::enable_if_t<
+    ::pressio::ode::OdeRhsAndJacobianEvaluator<SystemType>::value
+    && (::pressio::ode::MassMatrixOperator<std::decay_t<MassMatrixOperatorType>>::value
+     || ::pressio::ode::ConstantMassMatrixOperator<std::decay_t<MassMatrixOperatorType>>::value),
+    int > = 0
+  >
+auto create_implicit_stepper(StepScheme name,
+			     const SystemType & system,
+			     MassMatrixOperatorType && mmOperator)
+{
+
+  return impl::create_implicit_stepper_implA(name, system,
+					    std::forward<MassMatrixOperatorType>(mmOperator));
+}
+
+template<
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  mpl::enable_if_t<
+    ::pressio::ode::ImplicitResidualPolicy<std::decay_t<ResidualPolicyType>>::value
+    && ::pressio::ode::ImplicitJacobianPolicy<std::decay_t<JacobianPolicyType>>::value, int
+    > = 0
+  >
 auto create_implicit_stepper(StepScheme name,
 			     ResidualPolicyType && resPolicy,
 			     JacobianPolicyType && jacPolicy)
 {
-  using residual_policy_type = typename mpl::remove_cvref_t<ResidualPolicyType>;
-  using jacobian_policy_type = typename mpl::remove_cvref_t<JacobianPolicyType>;
-  // the following two should be constraints
-  static_assert(::pressio::ode::ImplicitResidualPolicy<
-		residual_policy_type >::value, "Invalid residual policy");
-  static_assert(::pressio::ode::ImplicitJacobianPolicy<
-		jacobian_policy_type >::value, "Invalid jacobian policy");
+  using residual_policy_type = std::decay_t<ResidualPolicyType>;
+  using jacobian_policy_type = std::decay_t<JacobianPolicyType>;
 
   // the following two checks on nested typedefs are mandates
   // so it is fine to use static_assert
@@ -105,7 +124,7 @@ auto create_implicit_stepper(StepScheme name,
 		 >::value,
 		"Residual and jacobian policies cannot have mismatching nested state_type");
 
-  return impl::create_implicit_stepper_impl(name,
+  return impl::create_implicit_stepper_implB(name,
 					    std::forward<ResidualPolicyType>(resPolicy),
 					    std::forward<JacobianPolicyType>(jacPolicy));
 }

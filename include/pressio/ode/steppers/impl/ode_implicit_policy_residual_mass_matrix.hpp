@@ -57,7 +57,7 @@ template<
   class IndVarType,
   class StateType,
   class ResidualType,
-  class MassMatrixType
+  class MassMatrixOperatorType
   >
 class ResidualWithMassMatrixStandardPolicy
 {
@@ -70,9 +70,11 @@ public:
 public:
   ResidualWithMassMatrixStandardPolicy() = delete;
 
-  explicit ResidualWithMassMatrixStandardPolicy(SystemType && systemIn)
+  explicit ResidualWithMassMatrixStandardPolicy(SystemType && systemIn,
+						MassMatrixOperatorType && mmOperator)
     : systemObj_( std::forward<SystemType>(systemIn) ),
-      massMatrix_(systemIn.createMassMatrix()),
+      mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
+      massMatrix_(mmOperator.createMassMatrix()),
       rhs_(systemIn.createRightHandSide())
   {
     computeMassMatrixOnceIfInvariant();
@@ -85,7 +87,7 @@ public:
   ~ResidualWithMassMatrixStandardPolicy() = default;
 
 public:
-  const MassMatrixType & viewMassMatrix() const {
+  const auto & viewMassMatrix() const {
     return massMatrix_;
   }
 
@@ -101,8 +103,7 @@ public:
 
   template <
     class StencilStatesContainerType,
-    class StencilVelocitiesContainerType,
-    class _MassMatrixType = MassMatrixType
+    class StencilVelocitiesContainerType
     >
   void operator()(StepScheme name,
 		  const StateType & predictedState,
@@ -141,7 +142,7 @@ private:
   template<bool _massMatrixIsFixed = massMatrixIsFixed>
   ::pressio::mpl::enable_if_t<_massMatrixIsFixed>
   computeMassMatrixOnceIfInvariant(){
-    systemObj_.get().massMatrix(massMatrix_);
+    mmOpObj_.get().massMatrix(massMatrix_);
   }
 
   template<bool _massMatrixIsFixed = massMatrixIsFixed>
@@ -161,7 +162,7 @@ private:
   ::pressio::mpl::enable_if_t<!_massMatrixIsFixed>
   computeMassMatrixIfNeeded(const StateType & odeState,
 			    const IndVarType & eval) const{
-    systemObj_.get().massMatrix(odeState, eval, massMatrix_);
+    mmOpObj_.get().massMatrix(odeState, eval, massMatrix_);
   }
 
   // BDF
@@ -228,8 +229,9 @@ private:
 
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::utils::InstanceOrReferenceWrapper<MassMatrixOperatorType> mmOpObj_;
   mutable int32_t stepTracker_ = -1;
-  mutable MassMatrixType massMatrix_;
+  mutable typename std::decay_t<MassMatrixOperatorType>::mass_matrix_type massMatrix_;
   mutable ResidualType rhs_;
 };
 
