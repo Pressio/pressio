@@ -63,9 +63,9 @@ public:
   }
 
   void residualAndJacobian(const state_type & reducedState,
-			   residual_type & R,
-			   jacobian_type & J,
-			   bool recomputeJacobian) const
+			   residual_type & reducedResidual,
+			   jacobian_type & reducedJacobian,
+			   bool computeJacobian) const
   {
 
     const auto & phi = trialSpace_.get().viewBasis();
@@ -77,16 +77,16 @@ public:
     constexpr auto beta = ::pressio::utils::Constants<R_scalar_t>::zero();
     fomSystem_.get().residual(fomState_, fomResidual_);
     ::pressio::ops::product(::pressio::transpose(),
-			    alpha, phi, fomResidual_, beta, R);
+			    alpha, phi, fomResidual_, beta, reducedResidual);
 
-    if (recomputeJacobian){
+    if (computeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, fomJacAction_);
 
       using J_scalar_t = typename ::pressio::Traits<jacobian_type>::scalar_type;
       constexpr auto beta = ::pressio::utils::Constants<J_scalar_t>::zero();
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
-			      alpha, phi, fomJacAction_, beta, J);
+			      alpha, phi, fomJacAction_, beta, reducedJacobian);
     }
   }
 

@@ -29,24 +29,13 @@ public:
     return J;
   }
 
-  template <typename step_t>
-  void discreteJacobian(const step_t & /*unused*/,
-                            const independent_variable_type & /*unused*/,
-                            const independent_variable_type & /*unused*/,
-                            discrete_jacobian_type & /*unused*/,
-        const state_type & /*unused*/,
-        const state_type & /*unused*/,
-        const state_type & /*unused*/,
-        const state_type & /*unused*/) const
-  {
-    // dummy, not used for this test
-  }
-
   template <typename step_t, typename state_type>
-  void discreteResidual(const step_t & step,
+  void discreteResidualAndJacobian(const step_t & step,
 				const independent_variable_type & /*unused*/,
 				const independent_variable_type & dt,
 				discrete_residual_type & R,
+				   discrete_jacobian_type & J,
+				   bool computeJacobian,
 				const state_type & yn,
 				const state_type & ynm1,
 				const state_type & ynm2,
@@ -159,12 +148,13 @@ struct MyFakeSolver
     // steps happening inside the real pressio nonlin solver
     std::cout << "\n";
 
-    state_t R(3);
+    auto R = sys.createResidual();
+    auto J = sys.createJacobian();
     for (int i=0; i<2; ++i)
     {
       std::cout << "solver iter = " << i << "\n";
       try{
-	sys.residual(state, R);
+	sys.residualAndJacobian(state, R, J, true);
 	state(0) += 0.1;
 	state(1) += 0.2;
 	state(2) += 0.3;

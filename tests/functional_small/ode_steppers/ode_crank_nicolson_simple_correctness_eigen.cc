@@ -43,10 +43,11 @@ struct MyFakeSolver
     std::cout << "SOLVE count = "  << count_ << std::endl;
 
     state_t R(3);
+    auto J = sys.createJacobian();
     for (int i=0; i<2; ++i)
     {
       std::cout << "i = "  << i << std::endl;
-      sys.residual(state, R);
+      sys.residualAndJacobian(state, R, J, true);
       std::cout << "state = "  << *state.data() << std::endl;
       std::cout << "R = " << *R.data() << std::endl;
 
@@ -253,10 +254,10 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
   using res_t  = typename app_t::right_hand_side_type;
   using jac_t  = typename app_t::jacobian_type;
   using time_type = typename app_t::independent_variable_type;
-  using res_pol_t = pressio::ode::impl::ResidualStandardPolicy<app_t&, time_type, state_t, res_t>;
-  using jac_pol_t = pressio::ode::impl::JacobianStandardPolicy<app_t&, time_type, state_t, jac_t>;
+  using pol_t = pressio::ode::impl::ResidualJacobianStandardPolicy<app_t&, time_type,
+								   state_t, res_t, jac_t>;
 
-  auto stepperObj = pressio::ode::create_cranknicolson_stepper(res_pol_t(appObj), jac_pol_t(appObj));
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(pol_t(appObj));
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, pressio::ode::StepCount(3), solver);
 
   EXPECT_TRUE(y(0)==7.);

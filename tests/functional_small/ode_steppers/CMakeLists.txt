@@ -93,9 +93,9 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
    set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
    add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
-  set(FILENAME ode_arbitrary_stepper_check_app_called_with_correct_time)
-  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+   set(FILENAME ode_arbitrary_stepper_check_app_called_with_correct_time)
+   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
   # bdf1 with step recovery
   add_serial_exe_and_test(
@@ -120,6 +120,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     integrate_to_time_with_failure_arbitrary_stepper_3_aux_state
     ode_steppers_implicit
     arbitrary_stepper_3_aux_state_with_step_recovery.cc "PASSED")
+
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)

@@ -99,8 +99,7 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residual(romState, R);
-	system.jacobian(romState, J);
+	system.residualAndJacobian(romState, R, J, true);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -127,8 +126,7 @@ struct FakeNonLinSolver
       // do solver iterator 2
       //-----------------------
       {
-	system.residual(romState, R);
-	system.jacobian(romState, J);
+	system.residualAndJacobian(romState, R, J, true);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -170,8 +168,7 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residual(romState, R);
-	system.jacobian(romState, J);
+	system.residualAndJacobian(romState, R, J, true);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -198,8 +195,7 @@ struct FakeNonLinSolver
       // do solver iterator 2
       //-----------------------
       {
-	system.residual(romState, R);
-	system.jacobian(romState, J);
+	system.residualAndJacobian(romState, R, J, true);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 

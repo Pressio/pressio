@@ -59,8 +59,9 @@
 #include "./ode.hpp"
 
 #include "./rom/predicates.hpp"
+#include "./rom/impl/reduced_operators_helpers.hpp"
 #include "./rom/constraints/rom_system.hpp"
 #include "./rom/constraints/trial_subspace.hpp"
-#include "./rom/constraints/masker.hpp"
+#include "./rom/constraints/other.hpp"
 
 #endif

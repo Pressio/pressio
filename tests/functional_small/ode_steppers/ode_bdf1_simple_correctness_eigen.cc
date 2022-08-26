@@ -43,13 +43,10 @@ TEST(ode, implicit_bdf1_custom_policy)
   problem_t problemObj;
   state_t y = problemObj.getInitCond();
 
-  using res_pol_t = ode::impl::ResidualStandardPolicy<
-    problem_t&, time_type, state_t, res_t>;
-  using jac_pol_t = ode::impl::JacobianStandardPolicy<
-    problem_t&, time_type, state_t, jac_t>;
+  using rj_pol_t = ode::impl::ResidualJacobianStandardPolicy<
+    problem_t&, time_type, state_t, res_t, jac_t>;
   auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF1,
-						 res_pol_t(problemObj),
-						 jac_pol_t(problemObj));
+						 rj_pol_t(problemObj));
 
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
@@ -66,38 +63,6 @@ TEST(ode, implicit_bdf1_custom_policy)
   EXPECT_DOUBLE_EQ(y(2), problemObj.y(2));
 }
 
-// TEST(ode, implicit_bdf1_policy_default_created_guesserLambda)
-// {
-//   using namespace pressio;
-//   using problem_t = ode::testing::AppEigenB;
-//   using state_t = typename problem_t::state_type;
-//   problem_t problemObj;
-//   state_t y(3);
-//   y(0) = 1.; y(1) = 2.; y(2) = 3.;
-//   auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF1, problemObj);
-
-//   using jac_t = typename problem_t::jacobian_type;
-//   using lin_algo_t = linearsolvers::iterative::Bicgstab;
-//   using lin_solver_t = linearsolvers::Solver<lin_algo_t, jac_t>;
-//   lin_solver_t linSolverObj;
-
-//   auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,linSolverObj);
-//   NonLinSolver.setMaxIterations(0);
-
-//   const auto testLambda = [](const typename ode::StepCount::value_type & step,
-// 			     const double & time,
-// 			     state_t & yIn)
-//   {
-//     yIn(0) = -22.; yIn(1) = -26.; yIn(2) = -28.;
-//   };
-
-//   double dt = 0.01;
-//   ode::advance_n_steps(stepperObj, y, 0.0, dt, ode::StepCount(1), testLambda, NonLinSolver);
-//   std::cout << std::setprecision(14) << y << "\n";
-//   EXPECT_DOUBLE_EQ(y(0), -22.0);
-//   EXPECT_DOUBLE_EQ(y(1), -26.0);
-//   EXPECT_DOUBLE_EQ(y(2), -28.0);
-// }
 
 namespace
 {
@@ -157,41 +122,3 @@ TEST(ode, implicit_bdf1_policy_default_created_custom_update)
   EXPECT_DOUBLE_EQ(y(2), 4.);
   pressio::log::finalize();
 }
-
-// TEST(ode, implicit_bdf1_guesserLambdaCustomUpdate)
-// {
-//   using namespace pressio;
-//   using problem_t = ode::testing::AppEigenB;
-//   problem_t problemObj;
-
-//   using state_t = typename problem_t::state_type;
-//   state_t y(3);
-//   y(0) = 1.; y(1) = 2.; y(2) = 3.;
-
-//   auto stepperObj = ode::create_bdf1_stepper(problemObj);
-
-//   using jac_t = typename problem_t::jacobian_type;
-//   using lin_algo_t = linearsolvers::iterative::Bicgstab;
-//   using lin_solver_t = linearsolvers::Solver<lin_algo_t, jac_t>;
-//   lin_solver_t linSolverObj;
-
-//   auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,linSolverObj);
-//   NonLinSolver.setMaxIterations(0);
-
-//   // integrate in time
-//   const auto testLambda = [](const typename ode::StepCount::value_type & step,
-//              const double & time,
-//              state_t & yIn)
-//           {
-//             yIn(0) = -22.; yIn(1) = -26.; yIn(2) = -28.;
-//           };
-
-//   double dt = 0.01;
-//   ode::advance_n_steps(stepperObj, y, 0.0, dt,
-//       ode::StepCount(5), testLambda, NonLinSolver, CustomUpdate{});
-//   std::cout << std::setprecision(14) << y << "\n";
-
-//   EXPECT_DOUBLE_EQ(y(0), -22.0);
-//   EXPECT_DOUBLE_EQ(y(1), -26.0);
-//   EXPECT_DOUBLE_EQ(y(2), -28.0);
-// }

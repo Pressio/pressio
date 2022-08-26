@@ -52,10 +52,8 @@
 #include "ode_implicit_discrete_residual.hpp"
 #include "ode_implicit_discrete_jacobian.hpp"
 
-#include "ode_implicit_policy_residual.hpp"
-#include "ode_implicit_policy_jacobian.hpp"
-#include "ode_implicit_policy_residual_mass_matrix.hpp"
-#include "ode_implicit_policy_jacobian_mass_matrix.hpp"
+#include "ode_implicit_policy_residual_jacobian.hpp"
+#include "ode_implicit_policy_residual_jacobian_with_mass_matrix.hpp"
 
 #include "ode_implicit_stepper_arbitrary.hpp"
 #include "ode_implicit_stepper_standard.hpp"
@@ -63,64 +61,17 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 ////////////////////////////////////////
-/// Arbitrary stepper
-////////////////////////////////////////
-template<int num_states, class SystemType>
-struct ImplicitComposeArb
-{
-  using sys_type = mpl::remove_cvref_t<SystemType>;
-  using state_type = typename sys_type::state_type;
-  using residual_type = typename sys_type::discrete_residual_type;
-  using jacobian_type = typename sys_type::discrete_jacobian_type;
-
-  using independent_variable_type = typename sys_type::independent_variable_type;
-  using type = StepperArbitrary<
-    num_states, independent_variable_type, state_type, residual_type, jacobian_type, SystemType
-    >;
-};
-
-////////////////////////////////////////
 /// standard stepper
 // ////////////////////////////////////////
 
-// template<class T, class = void>
-// struct PoliciesTypes{
-//   template<class ...Args>
-//   using r_policy_type = ResidualStandardPolicy<T, Args ...>;
-
-//   template<class ...Args>
-//   using j_policy_type = JacobianStandardPolicy<T, Args...>;
-// };
-
-// template<class T>
-// struct PoliciesTypes<
-//   T, mpl::enable_if_t<system_has_constant_mass_matrix_api< mpl::remove_cvref_t<T> >::value>
-//   >{
-//   using mass_mat_type = typename mpl::remove_cvref_t<T>::mass_matrix_type;
-//   template<class ...Args> using r_policy_type = ResidualWithMassMatrixStandardPolicy<
-//     true /*const mass matrix */, T, Args ..., mass_mat_type>;
-//   template<class ...Args> using j_policy_type = JacobianWithMassMatrixStandardPolicy<
-//     T, Args..., mass_mat_type>;
-// };
-
-// template<class T>
-// struct PoliciesTypes<
-//   T, mpl::enable_if_t<system_has_potentially_varying_mass_matrix_api< mpl::remove_cvref_t<T> >::value>
-//   >{
-//   using mass_mat_type = typename mpl::remove_cvref_t<T>::mass_matrix_type;
-//   template<class ...Args> using r_policy_type = ResidualWithMassMatrixStandardPolicy<
-//     false /*mass matrix is not const */, T, Args ..., mass_mat_type>;
-//   template<class ...Args> using j_policy_type = JacobianWithMassMatrixStandardPolicy<
-//     T, Args..., mass_mat_type>;
-// };
-
-template<class ...Args>
-struct ImplicitComposeA{
+template<bool usingCustomPoliciy, class ...Args>
+struct ImplicitCompose{
   using type = void;
 };
 
+// partial specialize for NO custom policy, NO mass matrix
 template<class SystemType>
-struct ImplicitComposeA<SystemType>
+struct ImplicitCompose<false, SystemType>
 {
   using sys_type = std::decay_t<SystemType>;
 
@@ -132,20 +83,21 @@ struct ImplicitComposeA<SystemType>
 
   // we HAVE to pass SystemType here as template because it carries
   // the correct qualifiers or the policy instantiation won't work
-  using residual_policy_type = ResidualStandardPolicy<
-    SystemType, independent_variable_type, state_type, residual_type>;
-  using jacobian_policy_type = JacobianStandardPolicy<
-    SystemType, independent_variable_type, state_type, jacobian_type>;
+  using rj_policy_type = ResidualJacobianStandardPolicy<
+    SystemType, independent_variable_type, state_type, residual_type, jacobian_type>;
+  // using jacobian_policy_type = JacobianStandardPolicy<
+  //   SystemType, independent_variable_type, state_type, jacobian_type>;
 
   using type = ImplicitStepperStandardImpl<
     independent_variable_type, state_type, residual_type, jacobian_type,
-    residual_policy_type, jacobian_policy_type,
-    false,
+    rj_policy_type,
+    false, // false because there is no mass matrix
     true /*this is using default policies*/>;
 };
 
+// partial specialize for NO custom policy, WITH mass matrix
 template<class SystemType, class MassMatrixOpType>
-struct ImplicitComposeA<SystemType, MassMatrixOpType>
+struct ImplicitCompose<false, SystemType, MassMatrixOpType>
 {
   using sys_type = std::decay_t<SystemType>;
 
@@ -155,92 +107,55 @@ struct ImplicitComposeA<SystemType, MassMatrixOpType>
   using residual_type = typename sys_type::right_hand_side_type;
   using jacobian_type = typename sys_type::jacobian_type;
 
-  using residual_policy_type = ResidualWithMassMatrixStandardPolicy<
+  using rj_policy_type = ResidualJacobianWithMassMatrixStandardPolicy<
     ConstantMassMatrixOperator<std::decay_t<MassMatrixOpType>>::value,
-    SystemType, independent_variable_type, state_type, residual_type, MassMatrixOpType>;
-
-  using jacobian_policy_type = JacobianWithMassMatrixStandardPolicy<
-    SystemType, independent_variable_type, state_type, jacobian_type,
-    typename std::decay_t<MassMatrixOpType>::mass_matrix_type >;
+    SystemType, independent_variable_type,
+    state_type, residual_type, jacobian_type,
+    MassMatrixOpType>;
 
   using type = ImplicitStepperStandardImpl<
     independent_variable_type, state_type, residual_type, jacobian_type,
-    residual_policy_type, jacobian_policy_type,
+    rj_policy_type,
     true, /*with mass matrix*/
     true /*this is using default policies*/>;
 };
 
-template<class ResidualPolicyType, class JacobianPolicyType>
-struct ImplicitComposeB
+// partial specialize for custom policy, NO mass matrix
+template<class ResidualJacobianPolicyType>
+struct ImplicitCompose<true, ResidualJacobianPolicyType>
 {
-  using residual_policy_type = typename mpl::remove_cvref_t<ResidualPolicyType>;
-  using jacobian_policy_type = typename mpl::remove_cvref_t<JacobianPolicyType>;
-  // ind_var and state types are same for residual and jacobian policies
-  using independent_variable_type  = typename residual_policy_type::independent_variable_type;
-  using state_type    = typename residual_policy_type::state_type;
-  using residual_type = typename residual_policy_type::residual_type;
-  using jacobian_type = typename jacobian_policy_type::jacobian_type;
+  using rj_policy_type = std::decay_t<ResidualJacobianPolicyType>;
+
+  using independent_variable_type  = typename rj_policy_type::independent_variable_type;
+  using state_type    = typename rj_policy_type::state_type;
+  using residual_type = typename rj_policy_type::residual_type;
+  using jacobian_type = typename rj_policy_type::jacobian_type;
 
   using type = ImplicitStepperStandardImpl<
     independent_variable_type, state_type, residual_type, jacobian_type,
-    ResidualPolicyType, jacobian_policy_type,
+    ResidualJacobianPolicyType,
     false, /*no mass matrix*/
     false /*this is using custom policies*/>;
 };
 
-template<class SystemType, class ... Args>
-auto create_implicit_stepper_implA(StepScheme name,
-				   SystemType && system,
-				   Args && ... args)
+template<bool customPolicy, class ... Args>
+auto create_implicit_stepper_impl(StepScheme name,
+				  Args && ... args)
 {
 
-  using return_t = typename ImplicitComposeA<SystemType, Args...>::type;
+  using return_t = typename ImplicitCompose<customPolicy, Args...>::type;
   if (name == StepScheme::BDF1){
-    return return_t(::pressio::ode::BDF1(),
-		    std::forward<SystemType>(system),
-		    std::forward<Args>(args)...);
+    return return_t(::pressio::ode::BDF1(), std::forward<Args>(args)...);
   }
   else if (name == StepScheme::BDF2){
-    return return_t(::pressio::ode::BDF2(),
-		    std::forward<SystemType>(system),
-		    std::forward<Args>(args)...);
+    return return_t(::pressio::ode::BDF2(), std::forward<Args>(args)...);
   }
   else if (name == StepScheme::CrankNicolson){
-    return return_t(::pressio::ode::CrankNicolson(),
-		    std::forward<SystemType>(system),
-		    std::forward<Args>(args)...);
+    return return_t(::pressio::ode::CrankNicolson(), std::forward<Args>(args)...);
   }
   else{
     throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
   }
-}
-
-template<class ResidualPolicyType, class JacobianPolicyType>
-auto create_implicit_stepper_implB(StepScheme name,
-				   ResidualPolicyType && rPol,
-				   JacobianPolicyType && jPol)
-{
-  using return_t = typename ImplicitComposeB<ResidualPolicyType, JacobianPolicyType>::type;
-
-  if (name == StepScheme::BDF1){
-    return return_t(::pressio::ode::BDF1(),
-		      std::forward<ResidualPolicyType>(rPol),
-		      std::forward<JacobianPolicyType>(jPol));
-  }
-  else if (name == StepScheme::BDF2){
-    return return_t(::pressio::ode::BDF2(),
-		      std::forward<ResidualPolicyType>(rPol),
-		      std::forward<JacobianPolicyType>(jPol));
-  }
-  else if (name == StepScheme::CrankNicolson){
-    return return_t(::pressio::ode::CrankNicolson(),
-		      std::forward<ResidualPolicyType>(rPol),
-		      std::forward<JacobianPolicyType>(jPol));
-  }
-  else{
-    throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
-  }
-
 }
 
 }}}

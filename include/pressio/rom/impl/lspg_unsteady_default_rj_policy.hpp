@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_DEFAULT_POLICY_RESIDUAL_HPP_
-#define ROM_IMPL_ROM_LSPG_UNSTEADY_DEFAULT_POLICY_RESIDUAL_HPP_
+#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_DEFAULT_RJ_POLICY_HPP_
+#define ROM_IMPL_ROM_LSPG_UNSTEADY_DEFAULT_RJ_POLICY_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -55,22 +55,24 @@ template <
   class IndVarType,
   class ReducedStateType,
   class LspgResidualType,
+  class LspgJacobianType,
   class TrialSpaceType,
   class FomSystemType
   >
-class LspgUnsteadyResidualPolicy
+class LspgUnsteadyResidualJacobianPolicy
 {
 public:
   // required
   using independent_variable_type = IndVarType;
   using state_type    = ReducedStateType;
   using residual_type = LspgResidualType;
+  using jacobian_type = LspgJacobianType;
 
 public:
-  LspgUnsteadyResidualPolicy() = delete;
-  LspgUnsteadyResidualPolicy(const TrialSpaceType & trialSpace,
-			     const FomSystemType & fomSystem,
-			     LspgFomStatesManager<TrialSpaceType> & fomStatesManager)
+  LspgUnsteadyResidualJacobianPolicy() = delete;
+  LspgUnsteadyResidualJacobianPolicy(const TrialSpaceType & trialSpace,
+				     const FomSystemType & fomSystem,
+				     LspgFomStatesManager<TrialSpaceType> & fomStatesManager)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       fomStatesManager_(fomStatesManager)
@@ -89,6 +91,13 @@ public:
     return R;
   }
 
+  jacobian_type createJacobian() const{
+    // lspg jacobian is of the same shape as the basis
+    auto J = ::pressio::ops::clone(trialSpace_.get().viewBasis());
+    ::pressio::ops::set_zero(J);
+    return J;
+  }
+
   template <class StencilStatesContainerType, class StencilRhsContainerType>
   void operator()(::pressio::ode::StepScheme odeSchemeName,
 		  const state_type & predictedReducedState,
@@ -97,14 +106,16 @@ public:
 		  const ::pressio::ode::StepEndAt<IndVarType> & rhsEvaluationTime,
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
-		  residual_type & R) const
+		  residual_type & R,
+		  jacobian_type & J,
+		  bool computeJacobian) const
   {
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
       (*this).template compute_impl_bdf
 	<ode::BDF1>(predictedReducedState, reducedStatesStencilManager,
 		    fomRhsStencilManger, rhsEvaluationTime.get(),
-		    dt.get(), step.get(), R);
+		    dt.get(), step.get(), R, J, computeJacobian);
     }
     else{
       throw std::runtime_error("Only BDF1 currently impl for default unstedy LSPG");
@@ -119,21 +130,24 @@ private:
 			const IndVarType & rhsEvaluationTime,
 			const IndVarType & dt,
 			const typename ::pressio::ode::StepCount::value_type & step,
-			residual_type & R) const
+			residual_type & R,
+			jacobian_type & J,
+			bool computeJacobian) const
   {
-    /* the FOM state for the prediction has to be recomputed every time
+
+    /* the FOM state for the prediction has to be always recomputed
        regardless of whether the currentStepNumber changes since
        we might be inside a subiteration of the non-linear solve
-       where the time step does not change but this residual method
-       is called multiple times.
+       where the time step does not change but the predicted state does
      */
     fomStatesManager_.get().reconstructAtWithoutStencilUpdate(predictedReducedState,
 							      ::pressio::ode::nPlusOne());
+    const auto & fomStateAt_np1 = fomStatesManager_(::pressio::ode::nPlusOne());
 
     /* previous FOM states should only be recomputed when the time step changes.
-     * The method below does not recompute all previous states, but only
-     * recomputes the n-th state and updates/shifts back all the other
-     * FOM states stored. */
+       The method below does not recompute all previous states, but only
+       recomputes the n-th state and updates/shifts back all the other
+       FOM states stored. */
     if (stepTracker_ != step){
       const auto & lspgStateAt_n = reducedStatesStencilManager(::pressio::ode::n());
       fomStatesManager_.get().reconstructAtWithStencilUpdate(lspgStateAt_n,
@@ -141,13 +155,36 @@ private:
       stepTracker_ = step;
     }
 
-    const auto & fomStateAt_np1 = fomStatesManager_(::pressio::ode::nPlusOne());
+    //
+    // always compute residual
+    //
     fomSystem_.get().rightHandSide(fomStateAt_np1, rhsEvaluationTime, R);
-
     // default lspg does not do anything special, so I can use the
     // ode functions for computing the discrete residual
     ::pressio::ode::impl::discrete_residual(OdeTag(), fomStateAt_np1,
 					    R, fomStatesManager_.get(), dt);
+
+    //
+    // deal with jacobian if needed
+    //
+    if (computeJacobian){
+      // lspg Jac looks something like: lspgJac = decoderJac + dt*coeff*d(fomrhs)/dy*phi
+      // where J is the d(fomrhs)/dy and coeff depends on the scheme.
+
+      // first, store J*phi into J
+      const auto & phi = trialSpace_.get().viewBasis();
+      fomSystem_.get().applyJacobian(fomStateAt_np1, phi, rhsEvaluationTime, J);
+
+      // second, we just need to update J properly
+      using basis_sc_t = typename ::pressio::Traits<typename TrialSpaceType::basis_type>::scalar_type;
+      const auto one = ::pressio::utils::Constants<basis_sc_t>::one();
+      IndVarType factor = {};
+      if (std::is_same<OdeTag, ode::BDF1>::value){
+	factor = dt*::pressio::ode::constants::bdf1<IndVarType>::c_f_;
+      }
+      ::pressio::ops::update(J, factor, phi, one);
+    }
+
   }
 
 private:
@@ -198,47 +235,6 @@ private:
   //   }
   // }
 
-// private:
-//   template <
-//     class StepperTag,
-//     class LspgStateType,
-//     class LspgStencilStatesContainerType,
-//     class LspgStencilVelocitiesContainerType,
-//     class ScalarType
-//     >
-//   void compute_impl_bdf(const LspgStateType & lspgState,
-// 			const LspgStencilStatesContainerType & lspgStencilStates,
-// 			LspgStencilVelocitiesContainerType & lspgStencilVelocities,
-// 			const ScalarType & t_np1,
-// 			const ScalarType & dt,
-// 			const ::pressio::ode::step_count_type & currentStepNumber,
-// 			residual_type & lspgResidual) const
-//   {
-//     /* the currrent FOM has to be recomputed every time regardless of
-//      * whether the currentStepNumber changes since we might be inside a non-linear solve
-//      * where the time step does not change but this residual method
-//      * is called multiple times.
-//      */
-//     fomStatesMngr_.get().reconstructAt(lspgState, ::pressio::ode::nPlusOne());
-
-//     /* previous FOM states should only be recomputed when the time step changes.
-//      * The method below does not recompute all previous states, but only
-//      * recomputes the n-th state and updates/shifts back all the other
-//      * FOM states stored. */
-//     if (storedStep_ != currentStepNumber){
-//       const auto & lspgStateAt_n = lspgStencilStates(::pressio::ode::n());
-//       fomStatesMngr_.get().reconstructAtAndUpdatePrevious(lspgStateAt_n,
-// 							  ::pressio::ode::n());
-//       storedStep_ = currentStepNumber;
-//     }
-
-//     const auto & fomStateAt_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-//     fomSystem_.get().velocity(fomStateAt_np1, t_np1, lspgResidual);
-
-//     ::pressio::ode::impl::discrete_time_residual
-// 	(fomStateAt_np1, lspgResidual, fomStatesMngr_.get(), dt, StepperTag());
-//   }
-
 //   template <
 //     class LspgStateType,
 //     class LspgStencilStatesContainerType,
@@ -280,13 +276,3 @@ private:
 // 	(fomState_np1, lspgResidual, fomStatesMngr_.get(),
 // 	 lspgStencilVelocities, dt, ::pressio::ode::CrankNicolson());
 //   }
-
-// protected:
-//   // storedStep is used to keep track of which step we are at.
-//   // used to decide if we need to update/recompute the previous FOM states or not.
-//   // To avoid recomputing previous FOM states if we are not in a new time step.
-//   mutable int32_t storedStep_ = -1;
-
-//   std::reference_wrapper<FomStatesManagerType> fomStatesMngr_;
-//   std::reference_wrapper<const FomSystemType> fomSystem_;
-// };

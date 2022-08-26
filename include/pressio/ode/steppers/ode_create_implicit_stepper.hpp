@@ -54,95 +54,83 @@
 namespace pressio{ namespace ode{
 
 /*
-  below we use static asserts even for constraints but this is
-  not fully correct because constraints should have an impact on the
-  overload resolution read this:
-    https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
-
-  Since we cannot yet use c++20 concepts, we should enforce these
-  constraints via e.g. SFINAE but that would yield bad error messages.
-  So for now we decide to use static asserts to have readable error messages.
-  Another point that kind of justifies this here, for now, is that
-  we have a simple enough overload set.
+  Since we cannot yet use c++20 concepts, constraints should be enforced
+  via e.g. SFINAE but that would yield bad error messages sometimes.
+  So for now we decide to use, where possible, static asserts to have readable error messages.
 */
 
-template<class SystemType>
-auto create_implicit_stepper(StepScheme name, const
-			     SystemType & system)
+template<
+  class SystemType,
+  mpl::enable_if_t<
+    ::pressio::ode::SystemWithRhsAndJacobian<SystemType>::value, int > = 0
+  >
+auto create_implicit_stepper(StepScheme name,
+			     const SystemType & system)
 {
-  // the following should be a constraint
-  static_assert
-  (::pressio::ode::OdeRhsAndJacobianEvaluator<SystemType>::value,
-   "implicit stepper: your system class does not meet any valid concept");
-
-  return impl::create_implicit_stepper_implA(name, system);
+  constexpr bool customPolicyCase = false;
+  return impl::create_implicit_stepper_impl<customPolicyCase>(name, system);
 }
 
 template<
   class SystemType,
   class MassMatrixOperatorType,
   mpl::enable_if_t<
-    ::pressio::ode::OdeRhsAndJacobianEvaluator<SystemType>::value
+        ::pressio::ode::SystemWithRhsAndJacobian<SystemType>::value
     && (::pressio::ode::MassMatrixOperator<std::decay_t<MassMatrixOperatorType>>::value
      || ::pressio::ode::ConstantMassMatrixOperator<std::decay_t<MassMatrixOperatorType>>::value),
     int > = 0
   >
 auto create_implicit_stepper(StepScheme name,
 			     const SystemType & system,
-			     MassMatrixOperatorType && mmOperator)
+			     MassMatrixOperatorType && massMatrixOperator)
 {
-
-  return impl::create_implicit_stepper_implA(name, system,
-					    std::forward<MassMatrixOperatorType>(mmOperator));
+  constexpr bool customPolicyCase = false;
+  return impl::create_implicit_stepper_impl<
+    customPolicyCase>(name, system, std::forward<MassMatrixOperatorType>(massMatrixOperator));
 }
 
 template<
-  class ResidualPolicyType,
-  class JacobianPolicyType,
+  class ResidualJacobianPolicyType,
   mpl::enable_if_t<
-    ::pressio::ode::ImplicitResidualPolicy<std::decay_t<ResidualPolicyType>>::value
-    && ::pressio::ode::ImplicitJacobianPolicy<std::decay_t<JacobianPolicyType>>::value, int
+    ::pressio::ode::ImplicitResidualJacobianPolicy<
+      std::decay_t<ResidualJacobianPolicyType>>::value, int
     > = 0
   >
 auto create_implicit_stepper(StepScheme name,
-			     ResidualPolicyType && resPolicy,
-			     JacobianPolicyType && jacPolicy)
+			     ResidualJacobianPolicyType && rjPolicy)
 {
-  using residual_policy_type = std::decay_t<ResidualPolicyType>;
-  using jacobian_policy_type = std::decay_t<JacobianPolicyType>;
-
-  // the following two checks on nested typedefs are mandates
-  // so it is fine to use static_assert
-  static_assert(std::is_same<
-		typename residual_policy_type::independent_variable_type,
-		typename jacobian_policy_type::independent_variable_type
-		>::value,
-		"Residual and jacobian policies cannot have mismatching nested independent_variable_type");
-  static_assert( std::is_same<
-		 typename residual_policy_type::state_type,
-		 typename jacobian_policy_type::state_type
-		 >::value,
-		"Residual and jacobian policies cannot have mismatching nested state_type");
-
-  return impl::create_implicit_stepper_implB(name,
-					    std::forward<ResidualPolicyType>(resPolicy),
-					    std::forward<JacobianPolicyType>(jacPolicy));
+  constexpr bool customPolicyCase = true;
+  return impl::create_implicit_stepper_impl<customPolicyCase>
+    (name, std::forward<ResidualJacobianPolicyType>(rjPolicy));
 }
 
 // num of states as template arg constructs the arbitrary stepper
-template<int num_states, class SystemType>
+template<int NumStates, class SystemType>
 auto create_implicit_stepper(SystemType && system)
 {
   // the following should be a constraint
-  using sys_type = mpl::remove_cvref_t<SystemType>;
+  using sys_type = std::decay_t<SystemType>;
   static_assert(::pressio::ode::FullyDiscreteSystemWithJacobian<
-		sys_type, num_states>::value,
+		sys_type, NumStates>::value,
 		"The system passed does not meet the FullyDiscrete API");
 
-  return typename impl::ImplicitComposeArb<
-    num_states, SystemType>::type(std::forward<SystemType>(system));
+  using sys_type = std::decay_t<SystemType>;
+  using independent_variable_type = typename sys_type::independent_variable_type;
+  using state_type = typename sys_type::state_type;
+  using residual_type = typename sys_type::discrete_residual_type;
+  using jacobian_type = typename sys_type::discrete_jacobian_type;
+
+  using stepper_type = impl::StepperArbitrary<
+    NumStates, SystemType, independent_variable_type,
+    state_type, residual_type, jacobian_type
+    >;
+
+  return stepper_type(std::forward<SystemType>(system));
 }
 
+//
+// auxiliary API
+//
 template<class ...Args>
 auto create_bdf1_stepper(Args && ... args){
   return create_implicit_stepper(StepScheme::BDF1,

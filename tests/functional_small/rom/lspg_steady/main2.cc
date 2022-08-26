@@ -132,6 +132,8 @@ struct MyPreconditioner
 
 TEST(rom_lspg_steady, test2)
 {
+  /* preconditioned default lspg steady */
+
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 

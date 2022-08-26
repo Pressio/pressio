@@ -48,8 +48,9 @@ struct MyFakeSolver1
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
-    state_t R(3);
-    sys.residual(state, R);
+    auto R = sys.createResidual();
+    auto J = sys.createJacobian();
+    sys.residualAndJacobian(state, R, J, true);
 
     // here we should have:
     // R = y_n - y_n-1 - dt*f()
@@ -111,8 +112,9 @@ struct MyFakeSolver2
   {
     ++count_;
 
-    state_t R(3);
-    sys.residual(state, R);
+    auto R = sys.createResidual();
+    auto J = sys.createJacobian();
+    sys.residualAndJacobian(state, R, J, true);
 
     if (count_==1){
       // this is called from auxiliary stepper which is bdf1

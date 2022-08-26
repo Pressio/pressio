@@ -58,7 +58,9 @@ struct MyFakeSolver
     ++count_;
     std::cout << "SOLVE count = "  << count_ << std::endl;
 
-    state_t R(3);
+
+    auto R = sys.createResidual();
+    auto J = sys.createJacobian();
     for (int i=0; i<2; ++i)
     {
       std::cout << i << "\n";
@@ -68,7 +70,7 @@ struct MyFakeSolver
 		  << state(1) << " "
 		  << state(2) << std::endl;
 
-	sys.residual(state, R);
+	sys.residualAndJacobian(state, R, J, true);
 
 	std::cout << "s: res" << " "
 		  << R(0) << " "

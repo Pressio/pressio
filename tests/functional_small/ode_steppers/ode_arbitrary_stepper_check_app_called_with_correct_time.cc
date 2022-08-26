@@ -28,12 +28,14 @@ public:
   }
 
   template <typename step_t>
-  void discreteResidual(const step_t & step,
-			const independent_variable_type & time,
-			const independent_variable_type & dt,
-			discrete_residual_type & /*unused*/,
-			const state_type & /*unused*/,
-			const state_type & /*unused*/) const
+  void discreteResidualAndJacobian(const step_t & step,
+				   const independent_variable_type & time,
+				   const independent_variable_type & dt,
+				   discrete_residual_type & /*unused*/,
+				   discrete_jacobian_type & /*unused*/,
+				   bool computeJacobian,
+				   const state_type & /*unused*/,
+				   const state_type & /*unused*/) const
   {
     ++count_;
     std::cout << count_ << " " << time << " " << dt << std::endl;
@@ -53,25 +55,6 @@ public:
       EXPECT_DOUBLE_EQ(time, 2.*dt);
     }
   }
-
-  template <typename step_t>
-  void discreteJacobian(const step_t & step,
-                            const independent_variable_type & time,
-                            const independent_variable_type & dt,
-                            discrete_jacobian_type & /*unused*/,
-                            const state_type & /*unused*/,
-                            const state_type & /*unused*/) const
-  {
-    EXPECT_DOUBLE_EQ(dt, 2.5);
-    if(count_==1){
-      EXPECT_EQ(step, 1);
-      EXPECT_DOUBLE_EQ(time, dt);
-    }
-    if(count_==2){
-      EXPECT_EQ(step, 2);
-      EXPECT_DOUBLE_EQ(time, 2.*dt);
-    }
-  }
 };
 
 template<typename R_t, typename J_t>
@@ -82,8 +65,7 @@ struct MyFakeSolver3
   {
     R_t R(3);
     J_t J(3,3);
-    sys.residual(state, R);
-    sys.jacobian(state, J);
+    sys.residualAndJacobian(state, R, J, true);
   }
 };
 }

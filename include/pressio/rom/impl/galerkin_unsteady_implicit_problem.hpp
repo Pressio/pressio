@@ -1,17 +1,17 @@
 
-#ifndef PRESSIO_ROM_IMPL_GALERKIN_PROBLEM_HPP_
-#define PRESSIO_ROM_IMPL_GALERKIN_PROBLEM_HPP_
+#ifndef PRESSIO_ROM_IMPL_GALERKIN_IMPLICIT_PROBLEM_HPP_
+#define PRESSIO_ROM_IMPL_GALERKIN_IMPLICIT_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
 template <class GalSystem>
-class GalerkinUnsteadyExplicitProblem
+class GalerkinUnsteadyImplicitProblem
 {
   // note: to deduce the stepper_type it does not really matter
   // what scheme enum value we use, as long as it is an explicit one
   using stepper_type =
-    decltype(::pressio::ode::create_explicit_stepper
-	     (::pressio::ode::StepScheme::ForwardEuler,
+    decltype(::pressio::ode::create_implicit_stepper
+	     (::pressio::ode::StepScheme::BDF1,
 	      std::declval<GalSystem &>()
 	      ));
 
@@ -20,21 +20,24 @@ public:
   using state_type = typename GalSystem::state_type;
   using independent_variable_type  = typename GalSystem::independent_variable_type;
 
-  GalerkinUnsteadyExplicitProblem() = delete;
+  GalerkinUnsteadyImplicitProblem() = delete;
 
   template<class ...Args>
-  GalerkinUnsteadyExplicitProblem(::pressio::ode::StepScheme schemeName,
+  GalerkinUnsteadyImplicitProblem(::pressio::ode::StepScheme schemeName,
 				  Args && ... args)
     : galSystem_(std::forward<Args>(args)...),
-      stepper_( ::pressio::ode::create_explicit_stepper(schemeName, galSystem_) )
+      stepper_( ::pressio::ode::create_implicit_stepper(schemeName, galSystem_) )
   {}
 
+  template<class ExtraArg>
   void operator()(state_type & state,
 		  pressio::ode::StepStartAt<independent_variable_type> sStart,
 		  pressio::ode::StepCount sCount,
-		  pressio::ode::StepSize<independent_variable_type> sSize)
+		  pressio::ode::StepSize<independent_variable_type> sSize,
+		  ExtraArg && extra)
   {
-    stepper_(state, sStart, sCount, sSize);
+    stepper_(state, sStart, sCount, sSize,
+	     std::forward<ExtraArg>(extra));
   }
 
 private:

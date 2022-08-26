@@ -54,7 +54,8 @@
 namespace pressio{ namespace ode{
 
 /*
-  below we use static asserts to check constraints but this is
+  below we abuse things a bit and in some cases we use static asserts
+  to check constraints but this is
   not fully correct because constraints should have an impact on the
   overload resolution read this:
     https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
@@ -66,32 +67,32 @@ namespace pressio{ namespace ode{
   we have a simple overload set.
 */
 
-template<class RhsEvaluatorType>
+template<class SystemType>
 auto create_explicit_stepper(StepScheme name,
-			     RhsEvaluatorType && rhsEvaluator)
+			     SystemType && odeSystem)
 {
   // constraints
-  using sys_type = std::decay_t<RhsEvaluatorType>;
+  using sys_type = std::decay_t<SystemType>;
   static_assert
-  (   ::pressio::ode::OdeRhsEvaluator<sys_type>::value
-   || ::pressio::ode::OdeRhsAndJacobianEvaluator<sys_type>::value,
+  (   ::pressio::ode::SystemWithRhs<sys_type>::value
+   || ::pressio::ode::SystemWithRhsAndJacobian<sys_type>::value,
    "explicit stepper: your system class does not meet any valid concept");
 
   return impl::create_explicit_stepper(name,
-				       std::forward<RhsEvaluatorType>(rhsEvaluator));
+				       std::forward<SystemType>(odeSystem));
 }
 
-template<class RhsEvaluatorType, class MassMatrixOperatorType>
+template<class SystemType, class MassMatrixOperatorType>
 auto create_explicit_stepper(StepScheme name,
-			     RhsEvaluatorType && rhsEvaluator,
-			     MassMatrixOperatorType && mmOperator)
+			     SystemType && odeSystem,
+			     MassMatrixOperatorType && massMatrixOperator)
 {
 
   // constraints
-  using sys_type = std::decay_t<RhsEvaluatorType>;
+  using sys_type = std::decay_t<SystemType>;
   static_assert
-  (   ::pressio::ode::OdeRhsEvaluator<sys_type>::value
-   || ::pressio::ode::OdeRhsAndJacobianEvaluator<sys_type>::value,
+  (   ::pressio::ode::SystemWithRhs<sys_type>::value
+   || ::pressio::ode::SystemWithRhsAndJacobian<sys_type>::value,
    "explicit stepper: your system class does not meet any valid concept");
 
   using mmop_type = std::decay_t<MassMatrixOperatorType>;
@@ -100,10 +101,13 @@ auto create_explicit_stepper(StepScheme name,
      || ::pressio::ode::ConstantMassMatrixOperator<mmop_type>::value, "");
 
   return impl::create_explicit_stepper(name,
-				       std::forward<RhsEvaluatorType>(rhsEvaluator),
-				       std::forward<MassMatrixOperatorType>(mmOperator));
+				       std::forward<SystemType>(odeSystem),
+				       std::forward<MassMatrixOperatorType>(massMatrixOperator));
 }
 
+//
+// auxiliary
+//
 template<class ...Args>
 auto create_forward_euler_stepper(Args && ...args){
   return create_explicit_stepper(StepScheme::ForwardEuler,

@@ -89,15 +89,6 @@ struct BDF2{};
 struct CrankNicolson{};
 struct ImplicitArbitrary{};
 
-//! Default type for the order of a stepper
-using stepper_order_type = int32_t;
-
-// to set implicit stepper order for arbitrary stepper
-template <stepper_order_type valueIn>
-struct StepperOrder{
-  static constexpr stepper_order_type value = valueIn;
-};
-
 // this is used to set the TOTAL number of states
 // when the user chooses the arbitrary one
 template <std::size_t valueIn>
@@ -191,12 +182,8 @@ using ImplicitStencilStatesDynamicContainer
 #include "predicates/ode_has_const_jacobian_method_accept_state_indvar_result_return_void.hpp"
 #include "predicates/ode_has_const_mass_matrix_method_accept_state_indvar_result_return_void.hpp"
 #include "predicates/ode_has_const_mass_matrix_method_accept_result_return_void.hpp"
+#include "predicates/ode_has_const_discrete_residual_jacobian_method.hpp"
 
-#include "predicates/ode_has_const_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
-#include "predicates/ode_has_const_discrete_residual_method_accept_step_indvar_dt_result_states_return_void.hpp"
-
-#include "constraints/ode_system.hpp"
-#include "constraints/ode_implicit_residual_policy.hpp"
-#include "constraints/ode_implicit_jacobian_policy.hpp"
+#include "./constraints.hpp"
 
 #endif  // ODE_STEPPERS_PRESSIO_ODE_COMMON_HPP_

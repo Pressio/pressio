@@ -72,7 +72,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -96,7 +96,7 @@ struct FakeNonLinSolverSteady
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -123,30 +123,39 @@ struct FakeNonLinSolverSteady
   }// end solve
 };
 
-struct MyMasker
+struct MyMaskerResidual
 {
   const std::vector<int> sample_indices_ = {};
-  using vec_operand_type = Eigen::VectorXd;
-  using mat_operand_type = Eigen::MatrixXd;
+  using operand_type = Eigen::VectorXd;
+  using result_type = operand_type;
 
-  MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+  MyMaskerResidual(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  vec_operand_type createApplyMaskResult(const vec_operand_type & /*unused*/) const{
-    return vec_operand_type(sample_indices_.size());
+  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
+    return result_type(sample_indices_.size());
   }
 
-  mat_operand_type createApplyMaskResult(const mat_operand_type & operand) const{
-    return mat_operand_type(sample_indices_.size(), operand.cols());
-  }
-
-  void operator()(const vec_operand_type & operand, vec_operand_type & result) const
+  void operator()(const operand_type & operand, result_type & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
       result(i) = operand(sample_indices_[i]);
     }
   }
+};
 
-  void operator()(const mat_operand_type & operand, mat_operand_type & result) const
+struct MyMaskerJacAction
+{
+  const std::vector<int> sample_indices_ = {};
+  using operand_type = Eigen::MatrixXd;
+  using result_type = operand_type;
+
+  MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+  result_type createApplyMaskResult(const operand_type & operand) const{
+    return result_type(sample_indices_.size(), operand.cols());
+  }
+
+  void operator()(const operand_type & operand, result_type & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
       for (int j=0; j<operand.cols(); ++j){
@@ -156,9 +165,9 @@ struct MyMasker
   }
 };
 
-
 TEST(rom_lspg_steady, test4)
 {
+  /* steady masked LSPG */
 
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -184,8 +193,8 @@ TEST(rom_lspg_steady, test4)
   std::cout << phi << "\n";
 
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = typename fom_t::state_type;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  typename fom_t::state_type shift(N);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;
@@ -193,9 +202,11 @@ TEST(rom_lspg_steady, test4)
   romState[2]=2.;
 
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14};
-  MyMasker masker(sample_indices);
+  MyMaskerResidual  masker1(sample_indices);
+  MyMaskerJacAction masker2(sample_indices);
 
-  auto problem = pressio::rom::lspg::create_masked_problem(space, fomSystem, masker);
+  auto problem = pressio::rom::lspg::create_steady_problem(space, fomSystem,
+							   masker1, masker2);
 
   FakeNonLinSolverSteady nonLinSolver(sample_indices.size());
   nonLinSolver.solve(problem, romState);

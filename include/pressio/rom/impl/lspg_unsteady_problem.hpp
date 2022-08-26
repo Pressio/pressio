@@ -6,8 +6,7 @@ namespace pressio{ namespace rom{ namespace impl{
 
 template <
   class TrialSpaceType,
-  class ResidualPolicyType,
-  class JacobianPolicyType
+  class ResidualJacobianPolicyType
   >
 class LspgUnsteadyProblem
 {
@@ -16,17 +15,16 @@ class LspgUnsteadyProblem
   using stepper_type =
     decltype(::pressio::ode::create_implicit_stepper
 	     (::pressio::ode::StepScheme::BDF1,
-	      std::declval<ResidualPolicyType &>(),
-	      std::declval<JacobianPolicyType &>()
+	      std::declval<ResidualJacobianPolicyType &>()
 	      ));
 
   using fom_states_manager_type = LspgFomStatesManager<TrialSpaceType>;
 
 public:
-  using independent_variable_type  = typename ResidualPolicyType::independent_variable_type;
+  using independent_variable_type  = typename ResidualJacobianPolicyType::independent_variable_type;
   using state_type    = typename TrialSpaceType::reduced_state_type;
-  using residual_type = typename ResidualPolicyType::residual_type;
-  using jacobian_type = typename JacobianPolicyType::jacobian_type;
+  using residual_type = typename ResidualJacobianPolicyType::residual_type;
+  using jacobian_type = typename ResidualJacobianPolicyType::jacobian_type;
 
   LspgUnsteadyProblem() = delete;
 
@@ -37,9 +35,8 @@ public:
 		      Args && ... args)
     : trialSpace_(trialSpace),
       fomStatesManager_(create_lspg_fom_states_manager(odeSchemeName, trialSpace)),
-      resPolicy_(trialSpace, fomSystem, fomStatesManager_, std::forward<Args>(args)...),
-      jacPolicy_(trialSpace, fomSystem, fomStatesManager_, std::forward<Args>(args)...),
-      stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, resPolicy_, jacPolicy_))
+      rjPolicy_(trialSpace, fomSystem, fomStatesManager_, std::forward<Args>(args)...),
+      stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, rjPolicy_))
   {}
 
   template<class SolverType, class ...ArgsOp>
@@ -66,19 +63,17 @@ public:
     return stepper_.createJacobian();
   }
 
-  void residual(const state_type & odeState, residual_type & R) const{
-    stepper_.residual(odeState, R);
-  }
-
-  void jacobian(const state_type & odeState, jacobian_type & J) const{
-    stepper_.jacobian(odeState, J);
+  void residualAndJacobian(const state_type & odeState,
+			   residual_type & R,
+			   jacobian_type & J,
+			   bool computeJacobian) const{
+    stepper_.residualAndJacobian(odeState, R, J, computeJacobian);
   }
 
 private:
   std::reference_wrapper<const TrialSpaceType> trialSpace_;
   LspgFomStatesManager<TrialSpaceType> fomStatesManager_;
-  ResidualPolicyType resPolicy_;
-  JacobianPolicyType jacPolicy_;
+  ResidualJacobianPolicyType rjPolicy_;
   stepper_type stepper_;
 };
 

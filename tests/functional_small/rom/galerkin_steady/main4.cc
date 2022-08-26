@@ -72,7 +72,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // mimic solver iterator 1
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -91,7 +91,7 @@ struct FakeNonLinSolverSteady
 
     {
       // mimic solver iterator 2
-      system.residualAndJacobian(state, R, J);
+      system.residualAndJacobian(state, R, J, true);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -110,16 +110,25 @@ struct FakeNonLinSolverSteady
   }
 };
 
-struct MyProjector
+struct MyHypRedOperator
 {
   using operator_type = Eigen::MatrixXd;
   operator_type matrix_;
 
-  MyProjector(const operator_type & phiSampleMesh)
+public:
+  using residual_operand_type = Eigen::VectorXd;
+  using jacobian_action_operand_type = Eigen::MatrixXd;
+
+  MyHypRedOperator(const operator_type & phiSampleMesh)
     : matrix_(phiSampleMesh){}
 
-  template<class operand_type, class ResultType>
-  void operator()(const operand_type & operand, ResultType & result) const{
+  template<class ResultType>
+  void operator()(const residual_operand_type & operand, ResultType & result) const{
+    result = matrix_.transpose() * operand;
+  }
+
+  template<class ResultType>
+  void operator()(const jacobian_action_operand_type & operand, ResultType & result) const{
     result = matrix_.transpose() * operand;
   }
 };
@@ -168,6 +177,7 @@ struct MyMaskerJacAction
 
 TEST(rom_galerkin_steady, test4)
 {
+  /* steady galerkin masked */
 
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -189,8 +199,8 @@ TEST(rom_galerkin_steady, test4)
   std::cout << phi << "\n";
 
   using reduced_state_type = Eigen::VectorXd;
-  using full_state_type = typename fom_t::state_type;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type, full_state_type>(phi);
+  typename fom_t::state_type shift(N);
+  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;
@@ -203,12 +213,14 @@ TEST(rom_galerkin_steady, test4)
   matForProj.col(0).setConstant(0.);
   matForProj.col(1).setConstant(1.);
   matForProj.col(2).setConstant(2.);
-  MyProjector proj(matForProj);
+  MyHypRedOperator proj(matForProj);
 
   MyMaskerResidual  masker1(sample_indices);
   MyMaskerJacAction masker2(sample_indices);
 
-  auto problem = pressio::rom::galerkin::create_masked_problem(space,fomSystem, masker1, masker2, proj);
+  auto problem = pressio::rom::galerkin::create_steady_problem(space, fomSystem,
+							       masker1, masker2,
+							       proj);
 
   FakeNonLinSolverSteady nonLinSolver(N);
   nonLinSolver.solve(problem, romState);

@@ -72,20 +72,20 @@ public:
   }
 
   void residualAndJacobian(const state_type & reducedState,
-			   residual_type & R,
-			   jacobian_type & J,
-			   bool recomputeJacobian) const
+			   residual_type & reducedResidual,
+			   jacobian_type & reducedJacobian,
+			   bool computeJacobian) const
   {
 
     const auto & phi = trialSpace_.get().viewBasis();
     trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_,  fomResidual_);
-    hrOp_(fomResidual_, R);
+    hrOp_(fomResidual_, reducedResidual);
 
-    if (recomputeJacobian){
+    if (computeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, fomJacAction_);
-      hrOp_(fomJacAction_, J);
+      hrOp_(fomJacAction_, reducedJacobian);
     }
   }
 

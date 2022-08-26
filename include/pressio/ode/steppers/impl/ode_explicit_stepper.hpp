@@ -71,7 +71,6 @@ public:
 
 private:
   StepScheme name_;
-  const stepper_order_type order_;
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::vector<RightHandSideType> rhsInstances_;
   StateType auxiliaryState_;
@@ -87,7 +86,6 @@ public:
   ExplicitStepperNoMassMatrixImpl(ode::ForwardEuler,
 				  SystemType && systemObj)
     : name_(StepScheme::ForwardEuler),
-      order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
       rhsInstances_{systemObj.createRightHandSide()},
       auxiliaryState_{systemObj.createState()}
@@ -96,39 +94,32 @@ public:
   ExplicitStepperNoMassMatrixImpl(ode::RungeKutta4,
 				  SystemType && systemObj)
     : name_(StepScheme::RungeKutta4),
-      order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
       rhsInstances_{systemObj.createRightHandSide(),
-    systemObj.createRightHandSide(),
-    systemObj.createRightHandSide(),
-    systemObj.createRightHandSide()},
+		    systemObj.createRightHandSide(),
+		    systemObj.createRightHandSide(),
+		    systemObj.createRightHandSide()},
       auxiliaryState_{systemObj.createState()}
   {}
 
   ExplicitStepperNoMassMatrixImpl(ode::AdamsBashforth2,
 				  SystemType && systemObj)
     : name_(StepScheme::AdamsBashforth2),
-      order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
       rhsInstances_{systemObj.createRightHandSide(),
-    systemObj.createRightHandSide()},
+		    systemObj.createRightHandSide()},
       auxiliaryState_{systemObj.createState()}
   {}
 
   ExplicitStepperNoMassMatrixImpl(ode::SSPRungeKutta3,
 				  SystemType && systemObj)
     : name_(StepScheme::SSPRungeKutta3),
-      order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),
       rhsInstances_{systemObj.createRightHandSide()},
       auxiliaryState_{systemObj.createState()}
   {}
 
 public:
-  stepper_order_type order() const{
-    return order_;
-  }
-
   void operator()(StateType & odeState,
 		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
 		  ::pressio::ode::StepCount step,

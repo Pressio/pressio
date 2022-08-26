@@ -193,109 +193,98 @@ struct System9{
     return discrete_jacobian_type(); }
 
   template<class StepCountType>
-  void discreteResidual(StepCountType,
-			independent_variable_type /*unused*/,
-			independent_variable_type /*unused*/,
-			discrete_residual_type &  /*unused*/,
-			const state_type &        /*unused*/) const{}
+  void discreteResidualAndJacobian(StepCountType,
+				   independent_variable_type /*unused*/,
+				   independent_variable_type /*unused*/,
+				   discrete_residual_type &  /*unused*/,
+				   discrete_jacobian_type &  /*unused*/,
+				   bool computeJacobian,
+				   const state_type &        /*unused*/) const{}
 
   template<class StepCountType>
-  void discreteResidual(StepCountType,
-			independent_variable_type /*unused*/,
-			independent_variable_type /*unused*/,
-			discrete_residual_type &  /*unused*/,
-			const state_type &        /*unused*/,
-			const state_type &        /*unused*/) const{}
-
-  template<class StepCountType>
-  void discreteJacobian(StepCountType,
-			independent_variable_type /*unused*/,
-			independent_variable_type /*unused*/,
-			discrete_jacobian_type &  /*unused*/,
-			const state_type &        /*unused*/) const{}
-
-  template<class StepCountType>
-  void discreteJacobian(StepCountType,
-			independent_variable_type /*unused*/,
-			independent_variable_type /*unused*/,
-			discrete_jacobian_type &  /*unused*/,
-			const state_type &        /*unused*/,
-			const state_type &        /*unused*/) const{}
+  void discreteResidualAndJacobian(StepCountType,
+				   independent_variable_type /*unused*/,
+				   independent_variable_type /*unused*/,
+				   discrete_residual_type &  /*unused*/,
+				   discrete_jacobian_type &  /*unused*/,
+				   bool computeJacobian,
+				   const state_type &        /*unused*/,
+				   const state_type &        /*unused*/) const{}
 };
 
-template<typename StateType, typename ResidualType>
-class ResidualPolicy1
-{
-public:
-  using independent_variable_type = double;
-  using state_type = StateType;
-  using residual_type = ResidualType;
+// template<typename StateType, typename ResidualType>
+// class ResidualPolicy1
+// {
+// public:
+//   using independent_variable_type = double;
+//   using state_type = StateType;
+//   using residual_type = ResidualType;
 
-  state_type createState() const{ return state_type(); }
-  residual_type createResidual() const{ return residual_type(); }
+//   state_type createState() const{ return state_type(); }
+//   residual_type createResidual() const{ return residual_type(); }
 
-  template <typename prev_states_type, class rhs_container>
-  void operator()(pressio::ode::StepScheme          /*unused*/,
-		  const StateType &		    /*unused*/,
-		  const prev_states_type &	    /*unused*/,
-		  rhs_container &		    /*unused*/,
-		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
-		  ::pressio::ode::StepCount /*unused*/,
-		  const ::pressio::ode::StepSize<double> & /*unused*/,
-		  residual_type &		    /*unused*/) const
-  {}
-};
+//   template <typename prev_states_type, class rhs_container>
+//   void operator()(pressio::ode::StepScheme          /*unused*/,
+// 		  const StateType &		    /*unused*/,
+// 		  const prev_states_type &	    /*unused*/,
+// 		  rhs_container &		    /*unused*/,
+// 		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
+// 		  ::pressio::ode::StepCount /*unused*/,
+// 		  const ::pressio::ode::StepSize<double> & /*unused*/,
+// 		  residual_type &		    /*unused*/) const
+//   {}
+// };
 
-template<typename StateType, typename JacobianType>
-class JacobianPolicy1
-{
-public:
-  using independent_variable_type = double;
-  using state_type = StateType;
-  using jacobian_type = JacobianType;
+// template<typename StateType, typename JacobianType>
+// class JacobianPolicy1
+// {
+// public:
+//   using independent_variable_type = double;
+//   using state_type = StateType;
+//   using jacobian_type = JacobianType;
 
-  state_type createState() const{ return state_type(); }
-  jacobian_type createJacobian()   const{ return jacobian_type(); }
+//   state_type createState() const{ return state_type(); }
+//   jacobian_type createJacobian()   const{ return jacobian_type(); }
 
-  template <typename prev_states_type>
-  void operator()(pressio::ode::StepScheme          /*unused*/,
-		  const StateType &		    /*unused*/,
-		  const prev_states_type &	    /*unused*/,
-		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
-		  ::pressio::ode::StepCount /*unused*/,
-		  const ::pressio::ode::StepSize<double> & /*unused*/,
-		  jacobian_type &		    /*unused*/) const
-  {}
-};
+//   template <typename prev_states_type>
+//   void operator()(pressio::ode::StepScheme          /*unused*/,
+// 		  const StateType &		    /*unused*/,
+// 		  const prev_states_type &	    /*unused*/,
+// 		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
+// 		  ::pressio::ode::StepCount /*unused*/,
+// 		  const ::pressio::ode::StepSize<double> & /*unused*/,
+// 		  jacobian_type &		    /*unused*/) const
+//   {}
+// };
 
 
 TEST(ode, concepts)
 {
   using namespace pressio::ode;
 
-  static_assert( OdeRhsEvaluator<System1>::value, "");
-  static_assert(!OdeRhsAndJacobianEvaluator<System1>::value, "");
+  static_assert( SystemWithRhs<System1>::value, "");
+  static_assert(!SystemWithRhsAndJacobian<System1>::value, "");
 
-  static_assert(!OdeRhsEvaluator<System2>::value, "");
-  static_assert(!OdeRhsAndJacobianEvaluator<System2>::value, "");
+  static_assert(!SystemWithRhs<System2>::value, "");
+  static_assert(!SystemWithRhsAndJacobian<System2>::value, "");
 
-  static_assert(!OdeRhsEvaluator<System3>::value, "");
-  static_assert(!OdeRhsAndJacobianEvaluator<System3>::value, "");
+  static_assert(!SystemWithRhs<System3>::value, "");
+  static_assert(!SystemWithRhsAndJacobian<System3>::value, "");
 
-  static_assert( OdeRhsEvaluator<System6>::value, "");
-  static_assert( OdeRhsAndJacobianEvaluator<System6>::value, "");
+  static_assert( SystemWithRhs<System6>::value, "");
+  static_assert( SystemWithRhsAndJacobian<System6>::value, "");
 
   static_assert(FullyDiscreteSystemWithJacobian<System9,  1>::value, "");
   static_assert(FullyDiscreteSystemWithJacobian<System9,  2>::value, "");
   static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
-  static_assert(!OdeRhsEvaluator<System9>::value, "");
-  static_assert(!OdeRhsAndJacobianEvaluator<System9>::value, "");
+  static_assert(!SystemWithRhs<System9>::value, "");
+  static_assert(!SystemWithRhsAndJacobian<System9>::value, "");
 
-  {
-    using state_t = FakeStateTypeForTesting;
-    using res_t   = FakeStateTypeForTesting;
-    using jac_t   = FakeJacTypeForTesting;
-    static_assert(ImplicitEulerResidualPolicy<ResidualPolicy1<state_t, res_t>>::value, "");
-    static_assert(ImplicitEulerJacobianPolicy<JacobianPolicy1<state_t, jac_t>>::value, "");
-  }
+  // {
+  //   using state_t = FakeStateTypeForTesting;
+  //   using res_t   = FakeStateTypeForTesting;
+  //   using jac_t   = FakeJacTypeForTesting;
+  //   // static_assert(ImplicitEulerResidualPolicy<ResidualPolicy1<state_t, res_t>>::value, "");
+  //   // static_assert(ImplicitEulerJacobianPolicy<JacobianPolicy1<state_t, jac_t>>::value, "");
+  // }
 }

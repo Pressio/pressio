@@ -84,5 +84,72 @@ struct TimeInvariantMasker<
    >
   > : std::true_type{};
 
+template<
+  class T,
+  class ReducedResidualType,
+  class ReducedJacActionType,
+  class enable = void>
+struct SteadyGalerkinHyperReductionOperator : std::false_type{};
+
+template<
+  class T,
+  class ReducedResidualType,
+  class ReducedJacActionType>
+struct SteadyGalerkinHyperReductionOperator<
+  T, ReducedResidualType, ReducedJacActionType,
+  mpl::enable_if_t<
+       ::pressio::has_residual_operand_typedef<T>::value
+    && ::pressio::has_jacobian_action_operand_typedef<T>::value
+    && std::is_void<
+	decltype
+	(
+	 std::declval<T const>()
+	 (
+	  std::declval<typename T::residual_operand_type const &>(),
+	  std::declval<ReducedResidualType &>()
+	  )
+	 )
+	>::value
+    && std::is_void<
+	decltype
+	(
+	 std::declval<T const>()
+	 (
+	  std::declval<typename T::jacobian_action_operand_type const &>(),
+	  std::declval<ReducedJacActionType &>()
+	  )
+	 )
+	>::value
+   >
+  > : std::true_type{};
+
+template<
+  class T,
+  class ReducedResidualType,
+  class enable = void>
+struct UnsteadyExplicitGalerkinHyperReductionOperator : std::false_type{};
+
+template<
+  class T,
+  class ReducedResidualType>
+struct UnsteadyExplicitGalerkinHyperReductionOperator<
+  T, ReducedResidualType,
+  mpl::enable_if_t<
+       ::pressio::has_time_typedef<T>::value
+    && ::pressio::has_operand_typedef<T>::value
+    && std::is_void<
+	decltype
+	(
+	 std::declval<T const>()
+	 (
+	  std::declval<typename T::operand_type const &>(),
+	  std::declval<typename T::time_type>(),
+	  std::declval<ReducedResidualType &>()
+	  )
+	 )
+	>::value
+   >
+  > : std::true_type{};
+
 }}
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

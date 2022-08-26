@@ -53,11 +53,11 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template<
   int n_states,
+  class SystemType,
   class IndVarType,
   class StateType,
   class ResidualType,
-  class JacobianType,
-  class SystemType
+  class JacobianType
   >
 class StepperArbitrary
 {
@@ -109,82 +109,64 @@ public:
   // 1 aux states, 2 total states
   template< std::size_t _numAuxStates = numAuxStates>
   mpl::enable_if_t< _numAuxStates==1 >
-  residual(const state_type & odeState, residual_type & R) const
+  residualAndJacobian(const state_type & odeState,
+		      residual_type & R,
+		      jacobian_type & J,
+		      bool computeJacobian) const
   {
     const auto & yn = stencilStates_(ode::n());
 
     try{
-    systemObj_.get().template discreteResidual(stepNumber_, rhsEvaluationTime_,
-      dt_, R, odeState, yn);
+      systemObj_.get().template discreteResidualAndJacobian
+	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
+	 odeState, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
-  }
-
-  template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==1 >
-  jacobian(const state_type & odeState, jacobian_type & J) const
-  {
-    const auto & yn = stencilStates_(ode::n());
-    systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
-      dt_, J, odeState, yn);
   }
 
   // 2 aux states, 3 total states
   template< std::size_t _numAuxStates = numAuxStates>
   mpl::enable_if_t< _numAuxStates==2 >
-  residual(const state_type & odeState, residual_type & R) const
+  residualAndJacobian(const state_type & odeState,
+		      residual_type & R,
+		      jacobian_type & J,
+		      bool computeJacobian) const
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
 
     try{
-    systemObj_.get().template discreteResidual(stepNumber_, rhsEvaluationTime_,
-      dt_, R, odeState, yn, ynm1);
+      systemObj_.get().template discreteResidualAndJacobian
+	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
+	 odeState, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
-  }
-
-  template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==2 >
-  jacobian(const state_type & odeState, jacobian_type & J) const
-  {
-    const auto & yn = stencilStates_(ode::n());
-    const auto & ynm1 = stencilStates_(ode::nMinusOne());
-    systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
-      dt_, J, odeState, yn, ynm1);
   }
 
   // 3 aux states, 4 total states
   template< std::size_t _numAuxStates = numAuxStates>
   mpl::enable_if_t< _numAuxStates==3 >
-  residual(const state_type & odeState, residual_type & R) const
+  residualAndJacobian(const state_type & odeState,
+		      residual_type & R,
+		      jacobian_type & J,
+		      bool computeJacobian) const
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
     const auto & ynm2 = stencilStates_(ode::nMinusTwo());
 
     try{
-      systemObj_.get().template discreteResidual(stepNumber_, rhsEvaluationTime_,
-						 dt_, R, odeState, yn, ynm1, ynm2);
+      systemObj_.get().template discreteResidualAndJacobian
+	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
+	 odeState, yn, ynm1, ynm2);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
-  }
-
-  template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==3 >
-  jacobian(const state_type & odeState, jacobian_type & J) const
-  {
-    const auto & yn = stencilStates_(ode::n());
-    const auto & ynm1 = stencilStates_(ode::nMinusOne());
-    const auto & ynm2 = stencilStates_(ode::nMinusTwo());
-    systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
-      dt_, J, odeState, yn, ynm1, ynm2);
   }
 
   template<class SolverType, class ...Args>
@@ -285,3 +267,34 @@ private:
 
 }}}
 #endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+
+
+  // template< std::size_t _numAuxStates = numAuxStates>
+  // mpl::enable_if_t< _numAuxStates==1 >
+  // jacobian(const state_type & odeState, jacobian_type & J) const
+  // {
+  //   const auto & yn = stencilStates_(ode::n());
+  //   systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
+  //     dt_, J, odeState, yn);
+  // }
+
+  // template< std::size_t _numAuxStates = numAuxStates>
+  // mpl::enable_if_t< _numAuxStates==2 >
+  // jacobian(const state_type & odeState, jacobian_type & J) const
+  // {
+  //   const auto & yn = stencilStates_(ode::n());
+  //   const auto & ynm1 = stencilStates_(ode::nMinusOne());
+  //   systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
+  //     dt_, J, odeState, yn, ynm1);
+  // }
+
+  // template< std::size_t _numAuxStates = numAuxStates>
+  // mpl::enable_if_t< _numAuxStates==3 >
+  // jacobian(const state_type & odeState, jacobian_type & J) const
+  // {
+  //   const auto & yn = stencilStates_(ode::n());
+  //   const auto & ynm1 = stencilStates_(ode::nMinusOne());
+  //   const auto & ynm2 = stencilStates_(ode::nMinusTwo());
+  //   systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
+  //     dt_, J, odeState, yn, ynm1, ynm2);
+  // }

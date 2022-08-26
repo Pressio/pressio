@@ -110,11 +110,20 @@ struct MyHypRedOperator
   using operator_type = Eigen::MatrixXd;
   operator_type matrix_;
 
+public:
+  using residual_operand_type = Eigen::VectorXd;
+  using jacobian_action_operand_type = Eigen::MatrixXd;
+
   MyHypRedOperator(const operator_type & phiSampleMesh)
     : matrix_(phiSampleMesh){}
 
-  template<class operand_type, class ResultType>
-  void operator()(const operand_type & operand, ResultType & result) const{
+  template<class ResultType>
+  void operator()(const residual_operand_type & operand, ResultType & result) const{
+    result = matrix_.transpose() * operand;
+  }
+
+  template<class ResultType>
+  void operator()(const jacobian_action_operand_type & operand, ResultType & result) const{
     result = matrix_.transpose() * operand;
   }
 };

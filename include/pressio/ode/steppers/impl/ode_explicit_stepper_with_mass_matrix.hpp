@@ -74,7 +74,6 @@ public:
 
 private:
   StepScheme name_;
-  const stepper_order_type order_;
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   ::pressio::utils::InstanceOrReferenceWrapper<MassMatrixOperatorType> mmOpObj_;
   RightHandSideType rhsInstance_;
@@ -97,7 +96,6 @@ public:
 				    SystemType && systemObj,
 				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::ForwardEuler),
-      order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
       mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
@@ -111,7 +109,6 @@ public:
 				    SystemType && systemObj,
 				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::RungeKutta4),
-      order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
       mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
@@ -129,7 +126,6 @@ public:
 				    SystemType && systemObj,
 				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::AdamsBashforth2),
-      order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
       mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
@@ -144,7 +140,6 @@ public:
 				    SystemType && systemObj,
 				    MassMatrixOperatorType && mmOperator)
     : name_(StepScheme::SSPRungeKutta3),
-      order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),
       mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
       rhsInstance_{systemObj.createRightHandSide()},
@@ -156,10 +151,6 @@ public:
   }
 
 public:
-  stepper_order_type order() const{
-    return order_;
-  }
-
   template<class LinearSolverType>
   void operator()(StateType & odeState,
 		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,

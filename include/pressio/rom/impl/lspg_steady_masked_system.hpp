@@ -4,46 +4,51 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
+/*
+LSPG steady masked represents:
+
+  min_x || mask[fom_r(phi x)]||
+
+- fom_r is the fom "residual"
+- phi is the basis
+*/
 template <
-  class LspgStateType,
+  class ReducedStateType,
   class TrialSpaceType,
   class FomSystemType,
-  class MaskerType
+  class ResidualMaskerType,
+  class JacobianActionMaskerType
   >
 class LspgSteadyMaskedSystem
 {
 
-  using unmasked_residual_type = typename FomSystemType::residual_type;
-  using unmasked_jac_action_result_type =
+  using unmasked_fom_residual_type = typename FomSystemType::residual_type;
+  using unmasked_fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
       (std::declval<typename TrialSpaceType::basis_type const &>())
       );
 
-  using masked_residual_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
-	     (std::declval<unmasked_residual_type const &>() )
-	     );
-
-  using masked_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-      (std::declval<typename TrialSpaceType::basis_type const &>())
-      );
+  // deduce the masked types
+  using masked_fom_residual_type = typename ResidualMaskerType::result_type;
+  using masked_fom_jac_action_result_type = typename JacobianActionMaskerType::result_type;
 
 public:
   // required aliases
-  using state_type    = LspgStateType;
-  using residual_type = masked_residual_type;
-  using jacobian_type = masked_jac_action_result_type;
+  using state_type    = ReducedStateType;
+  using residual_type = masked_fom_residual_type;
+  using jacobian_type = masked_fom_jac_action_result_type;
 
   LspgSteadyMaskedSystem() = delete;
 
   LspgSteadyMaskedSystem(TrialSpaceType & space,
 			 const FomSystemType & fomSystem,
-			 const MaskerType & masker)
+			 const ResidualMaskerType & rMasker,
+			 const JacobianActionMaskerType & jaMasker)
     : space_(space),
       fomSystem_(fomSystem),
       fomState_(fomSystem.createState()),
-      masker_(masker),
+      rMasker_(rMasker),
+      jaMasker_(jaMasker),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(space_.get().viewBasis()))
   {}
@@ -51,28 +56,28 @@ public:
 public:
   residual_type createResidual() const{
     auto tmp = fomSystem_.get().createResidual();
-    return masker_.get().createApplyMaskResult(tmp);
+    return rMasker_.get().createApplyMaskResult(tmp);
   }
 
   jacobian_type createJacobian() const{
     auto tmp = fomSystem_.get().createApplyJacobianResult(space_.get().viewBasis());
-    return masker_.get().createApplyMaskResult(tmp);
+    return jaMasker_.get().createApplyMaskResult(tmp);
   }
 
-  void residualAndJacobian(const state_type & lspgState,
-			   residual_type & R,
-			   jacobian_type & J,
-			   bool recomputeJacobian = true) const
+  void residualAndJacobian(const state_type & reducedState,
+			   residual_type & lsgpResidual,
+			   jacobian_type & lspgJacobian,
+			   bool computeJacobian) const
   {
-    space_.get().mapFromReducedState(lspgState, fomState_);
+    space_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
-    masker_(unMaskedFomResidual_, R);
+    rMasker_(unMaskedFomResidual_, lsgpResidual);
 
-    if (recomputeJacobian){
+    if (computeJacobian){
       const auto & phi = space_.get().viewBasis();
       fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
-      masker_(unMaskedFomJacAction_, J);
+      jaMasker_(unMaskedFomJacAction_, lspgJacobian);
     }
   }
 
@@ -81,11 +86,13 @@ protected:
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
 
-  std::reference_wrapper<const MaskerType> masker_;
+  // masker
+  std::reference_wrapper<const ResidualMaskerType> rMasker_;
+  std::reference_wrapper<const JacobianActionMaskerType> jaMasker_;
 
   // UNMASKED fom R,J instances
-  mutable unmasked_residual_type unMaskedFomResidual_;
-  mutable unmasked_jac_action_result_type unMaskedFomJacAction_;
+  mutable unmasked_fom_residual_type unMaskedFomResidual_;
+  mutable unmasked_fom_jac_action_result_type unMaskedFomJacAction_;
 };
 
 }}} // end pressio::rom::impl

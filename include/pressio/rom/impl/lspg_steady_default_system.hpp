@@ -42,25 +42,25 @@ public:
   {}
 
 public:
-  jacobian_type createJacobian() const{
-    return fomSystem_.get().createApplyJacobianResult(trialSpace_.get().viewBasis());
-  }
-
   residual_type createResidual() const{
     return fomSystem_.get().createResidual();
   }
 
+  jacobian_type createJacobian() const{
+    return fomSystem_.get().createApplyJacobianResult(trialSpace_.get().viewBasis());
+  }
+
   void residualAndJacobian(const state_type & lspgState,
-			   residual_type & R,
-			   jacobian_type & J,
-			   bool recomputeJacobian) const
+			   residual_type & lsgpResidual,
+			   jacobian_type & lspgJacobian,
+			   bool computeJacobian) const
   {
     trialSpace_.get().mapFromReducedState(lspgState, fomState_);
-    fomSystem_.get().residual(fomState_, R);
+    fomSystem_.get().residual(fomState_, lsgpResidual);
 
-    if (recomputeJacobian){
+    if (computeJacobian){
       const auto & phi = trialSpace_.get().viewBasis();
-      fomSystem_.get().applyJacobian(fomState_, phi, J);
+      fomSystem_.get().applyJacobian(fomState_, phi, lspgJacobian);
     }
   }
 

@@ -160,7 +160,7 @@ TEST(rom_lspg_steady, test1)
   romState[1]=1.;
   romState[2]=2.;
 
-  auto problem = pressio::rom::lspg::create_default_problem(space, fomSystem);
+  auto problem = pressio::rom::lspg::create_steady_problem(space, fomSystem);
 
   FakeNonLinSolverSteady nonLinSolver(N);
   nonLinSolver.solve(problem, romState);

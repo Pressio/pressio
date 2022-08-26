@@ -174,8 +174,7 @@ struct FakeNonLinearSolver1{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
-      S.residual(y, R);
-      S.jacobian(y, J);
+      S.residualAndJacobian(y, R, J, true);
 
       auto MMinv = massMatrices_.at(count_++).inverse();
       Eigen::VectorXd tmp = MMinv*R;
@@ -209,9 +208,8 @@ struct FakeNonLinearSolver2{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
-      S.residual(y, R);
+      S.residualAndJacobian(y, R, J, true);
       EXPECT_TRUE( R.isApprox(residuals_[count_]) );
-      S.jacobian(y, J);
       EXPECT_TRUE( J.isApprox(jacobians_[count_++]) );
 
       for (int j=0; j<y.size(); ++j) y[j] += 1.;

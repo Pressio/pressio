@@ -52,25 +52,32 @@
 namespace pressio{ namespace ode{
 
 template <
-  class T, int n, class StepType, class IndVarType, class state_t, class ResultType,
+  class T, int n,
+  class StepType, class IndVarType, class state_t,
+  class ResidualType,
+  class JacobianType,
   class = void
   >
-struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void
+struct has_const_discrete_residual_jacobian_method
   : std::false_type{};
 
-template <class T, class StepType, class IndVarType, class state_t, class ResultType>
-struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
-  T, 1, StepType, IndVarType, state_t, ResultType,
+template <
+  class T, class StepType, class IndVarType, class state_t,
+  class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_method<
+  T, 1, StepType, IndVarType, state_t, ResidualType, JacobianType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().discreteResidual
+       std::declval<T const>().discreteResidualAndJacobian
        (
 	std::declval<StepType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
-	std::declval<ResultType &>(),
+	std::declval<ResidualType &>(),
+	std::declval<JacobianType &>(),
+	std::declval<bool>(),
 	std::declval<state_t const&>()
 	)
        )
@@ -79,19 +86,49 @@ struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_
   > : std::true_type{};
 
 
-template <class T, class StepType, class IndVarType, class state_t, class ResultType>
-struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
-  T, 2, StepType, IndVarType, state_t, ResultType,
+template <
+  class T, class StepType, class IndVarType, class state_t,
+  class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_method<
+  T, 2, StepType, IndVarType, state_t, ResidualType, JacobianType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().discreteResidual
+       std::declval<T const>().discreteResidualAndJacobian
+       (
+         std::declval<StepType const &>(),
+	 std::declval<IndVarType const &>(),
+	 std::declval<IndVarType const &>(),
+	 std::declval<ResidualType &>(),
+	 std::declval<JacobianType &>(),
+         std::declval<bool>(),
+	 std::declval<state_t const&>(),
+	 std::declval<state_t const&>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+template <
+  class T, class StepType, class IndVarType, class state_t,
+  class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_method<
+  T, 3, StepType, IndVarType, state_t, ResidualType, JacobianType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().discreteResidualAndJacobian
        (
 	std::declval<StepType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
-	std::declval<ResultType &>(),
+	std::declval<ResidualType &>(),
+        std::declval<JacobianType &>(),
+	  std::declval<bool>(),
+	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>()
 	)
@@ -100,42 +137,24 @@ struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_
     >
   > : std::true_type{};
 
-template <class T, class StepType, class IndVarType, class state_t, class ResultType>
-struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
-  T, 3, StepType, IndVarType, state_t, ResultType,
+
+template <
+  class T, class StepType, class IndVarType, class state_t,
+    class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_method<
+  T, 4, StepType, IndVarType, state_t, ResidualType, JacobianType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().discreteResidual
+       std::declval<T const>().discreteResidualAndJacobian
        (
 	std::declval<StepType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
-	std::declval<ResultType &>(),
-	std::declval<state_t const&>(),
-	std::declval<state_t const&>(),
-	std::declval<state_t const&>()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
-
-
-template <class T, class StepType, class IndVarType, class state_t, class ResultType>
-struct has_const_discrete_residual_method_accept_step_indvar_dt_result_n_states_return_void<
-  T, 4, StepType, IndVarType, state_t, ResultType,
-  ::pressio::mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T const>().discreteResidual
-       (
-	std::declval<StepType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<ResultType &>(),
+	std::declval<ResidualType &>(),
+        std::declval<JacobianType &>(),
+	  std::declval<bool>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
