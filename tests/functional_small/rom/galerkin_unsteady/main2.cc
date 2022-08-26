@@ -38,20 +38,22 @@ struct MyFom
   using right_hand_side_type     = state_type;
 
   std::vector<int> sampleMeshIndices_;
-  int N_ = {};
+  int nstencil_ = {};
+  int nsample_ = {};
 
-  MyFom(const std::vector<int> & sampleMeshIndices)
+  MyFom(int nstencil, const std::vector<int> & sampleMeshIndices)
     : sampleMeshIndices_(sampleMeshIndices),
-      N_(sampleMeshIndices.size()){}
+      nstencil_(nstencil),
+      nsample_(sampleMeshIndices.size()){}
 
   state_type createState() const{
-    state_type s(N_);
+    state_type s(nstencil_);
     s.setConstant(0);
     return s;
   }
 
   right_hand_side_type createRightHandSide() const{
-    return right_hand_side_type(N_);
+    return right_hand_side_type(nsample_);
   }
 
   void rightHandSide(const state_type & u,
@@ -59,7 +61,7 @@ struct MyFom
 		     right_hand_side_type & f) const
   {
     EXPECT_TRUE((std::size_t)u.size()!=(std::size_t)f.size());
-    EXPECT_TRUE((std::size_t)f.size()==(std::size_t)N_);
+    EXPECT_TRUE((std::size_t)f.size()==(std::size_t) nsample_);
 
     for (std::size_t i=0; i<sampleMeshIndices_.size(); ++i){
      f(i) = u(sampleMeshIndices_[i]) + timeIn;
@@ -98,11 +100,10 @@ TEST(rom_galerkin_unsteady, test2)
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   const std::vector<int> sampleMeshIndices = {1,3,5,7,9,11,13,15,17,19};
-
-  MyFom fomSystem(sampleMeshIndices);
-
-  // create trial space
   const int nstencil = 20;
+
+  MyFom fomSystem(nstencil, sampleMeshIndices);
+
   using basis_t = Eigen::MatrixXd;
   basis_t phi(nstencil, 3);
   phi.col(0).setConstant(0.);
