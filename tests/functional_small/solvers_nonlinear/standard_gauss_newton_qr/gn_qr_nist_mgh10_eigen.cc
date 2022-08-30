@@ -52,7 +52,7 @@ int main()
   using qr_solver_type = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_type qrSolver;
 
-  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newtonQR(problem,x,qrSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newtonQR(problem,qrSolver);
 
   x(0) = 0.02; x(1) = 4000.0; x(2) = 250.0;
   testC1(sentinel, problem, x, GNSolver);

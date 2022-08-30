@@ -24,7 +24,7 @@ struct MyLinSolverNormalEq
   template<typename H_t, typename state_t>
   void solve(const H_t & H,
              const state_t & g,
-             state_t & correction)
+             state_t & /*correction*/)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;
@@ -85,17 +85,16 @@ struct MyLinSolverNormalEq
 
 struct WeightingOperator
 {
-  void operator()(const eig_vec & operand, eig_vec & result) const{
+  void operator()(const eig_vec & /*operand*/, eig_vec & result) const{
     result.setConstant(3.);
   }
-  void operator()(const eig_mat & operand, eig_mat & result) const{
+  void operator()(const eig_mat & /*operand*/, eig_mat & result) const{
     result.setConstant(2.2);
   }
 };
 
 struct MySystem
 {
-  using scalar_type = double;
   using state_type = eig_vec;
   using residual_type = state_type;
   using jacobian_type = eig_mat;
@@ -109,6 +108,12 @@ struct MySystem
 
   ~MySystem(){}
 
+  state_type createState() const {
+    auto a = state_type(numVars);
+    a.setConstant(0);
+    return a;
+  }
+
   residual_type createResidual() const {
     auto a = residual_type(numEquations);
     a.setConstant(0);
@@ -121,7 +126,7 @@ struct MySystem
     return a;
   }
 
-  void residual(const state_type& x,
+  void residual(const state_type& /*unused*/,
     residual_type & R) const
   {
     ++iterCountR_;
@@ -131,7 +136,7 @@ struct MySystem
     }
   }
 
-  void jacobian(const state_type& x, jacobian_type & jac) const
+  void jacobian(const state_type& /*unused*/, jacobian_type & jac) const
   {
     ++iterCountJ_;
 
@@ -154,7 +159,7 @@ TEST(solvers_nonlinear, weighted_least_squares_gauss_newton)
   state_t x(numVars);
 
   auto solver = pressio::nonlinearsolvers::create_gauss_newton
-    (sysObj,x,linSolverObj, WeightingOperator());
+    (sysObj, linSolverObj, WeightingOperator());
   solver.setMaxIterations(2);
   solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);
@@ -173,7 +178,7 @@ TEST(solvers_nonlinear, weighted_least_squares_lm)
   state_t x(numVars);
 
   auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt
-    (sysObj,x,linSolverObj, WeightingOperator());
+    (sysObj, linSolverObj, WeightingOperator());
   solver.setMaxIterations(2);
   solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);

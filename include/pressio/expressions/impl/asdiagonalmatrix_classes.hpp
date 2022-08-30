@@ -106,6 +106,7 @@ public:
 public:
   size_t extent(size_t i) const{
     assert(i==0 or i==1);
+    (void) i;
     return extent_;
   }
 
@@ -122,12 +123,14 @@ public:
   ref_t operator()(size_t i, size_t j)
   {
     assert(i==j and j < extent_);
+    (void) j;
     return vecObj_(i);
   }
 
   const_ref_t operator()(size_t i, size_t j) const
   {
     assert(i==j and j < extent_);
+    (void) j;
     return vecObj_(i);
   }
 };

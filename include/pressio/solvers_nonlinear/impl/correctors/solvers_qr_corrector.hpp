@@ -55,8 +55,11 @@ template<class T, class StateType, class QRSolverType>
 class QRCorrector : public T
 {
 public:
-  using typename T::scalar_type;
+  // required aliases
   using state_type = StateType;
+  using residual_norm_type = typename T::residual_norm_type;
+  using correction_norm_type = typename ::pressio::Traits<state_type>::scalar_type;
+  using gradient_norm_type = correction_norm_type;
 
 private:
   state_type correction_ = {};
@@ -64,23 +67,23 @@ private:
   state_type g_ = {};
 
   ::pressio::utils::InstanceOrReferenceWrapper<QRSolverType> solverObj_;
-  scalar_type residNormCurrCorrStep_ = {};
-  scalar_type gradientNormCurrCorrStep_ = {};
-  scalar_type correctionNormCurrCorrStep_ = {};
+  residual_norm_type   residNormCurrCorrStep_ = {};
+  gradient_norm_type   gradientNormCurrCorrStep_ = {};
+  correction_norm_type correctionNormCurrCorrStep_ = {};
 
 public:
   QRCorrector() = delete;
 
   template <typename SystemType, typename qrsT>
   QRCorrector(const SystemType & system,
-	      const state_type & state,
 	      qrsT && solverObj)
-    : T(system, state),
-      correction_(::pressio::ops::clone(state)),
-      QTResid_(::pressio::ops::clone(state)),
-      g_(::pressio::ops::clone(state)),
+    : T(system),
+      correction_(system.createState()),
+      QTResid_(system.createState()),
+      g_(system.createState()),
       solverObj_(std::forward<qrsT>(solverObj))
   {
+    using scalar_type = typename ::pressio::Traits<state_type>::scalar_type;
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
     ::pressio::ops::fill(QTResid_, zero);
@@ -116,7 +119,8 @@ public:
     // solve: R correction = Q^T Residual
     solverObj_.get().solve(QTResid_, correction_);
     // scale by -1 for sign convention
-    pressio::ops::scale(correction_, utils::Constants<scalar_type>::negOne() );
+    pressio::ops::scale(correction_, utils::Constants<
+      typename ::pressio::Traits<state_type>::scalar_type>::negOne() );
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g_);
@@ -136,15 +140,15 @@ public:
     return g_;
   }
 
-  const scalar_type & correctionNormCurrentCorrectionStep() const{
+  const correction_norm_type & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;
   }
 
-  const scalar_type & gradientNormCurrentCorrectionStep() const{
+  const gradient_norm_type & gradientNormCurrentCorrectionStep() const{
     return gradientNormCurrCorrStep_;
   }
 
-  const scalar_type & residualNormCurrentCorrectionStep() const{
+  const residual_norm_type & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
 

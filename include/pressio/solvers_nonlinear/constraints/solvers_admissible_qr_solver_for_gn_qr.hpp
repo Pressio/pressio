@@ -51,27 +51,16 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template <
-	typename T, 
-	typename StateType,
-	typename MatrixType, 
-	typename RType,
-	typename enable = void
-	>
-struct admissible_qr_solver_for_gn_qr
+template <class T, class StateType, class MatrixType, class RType, class enable = void>
+struct QRSolverForGnQr
   : std::false_type{};
 
-template <
-	typename T, 
-	typename StateType,
-	typename MatrixType, 
-	typename RType
-	>
-struct admissible_qr_solver_for_gn_qr<
+template <class T, class StateType, class MatrixType, class RType>
+struct QRSolverForGnQr<
   T, StateType, MatrixType, RType,
   ::pressio::mpl::enable_if_t<
   	// 1.
-  	// must have computeThin 
+  	// must have computeThin
 	std::is_void<
 	  decltype
 	  (
@@ -82,7 +71,7 @@ struct admissible_qr_solver_for_gn_qr<
 	   )
 	  >::value and
   	// 2.
-  	// must have applyQTranspose 
+  	// must have applyQTranspose
 	std::is_void<
 	  decltype
 	  (
@@ -94,7 +83,7 @@ struct admissible_qr_solver_for_gn_qr<
 	   )
 	  >::value and
   	// 3.
-  	// must have applyRTranspose 
+  	// must have applyRTranspose
 	std::is_void<
 	  decltype
 	  (
@@ -106,7 +95,7 @@ struct admissible_qr_solver_for_gn_qr<
 	   )
 	  >::value and
   	// 4.
-  	// must have solve 
+  	// must have solve
 	std::is_void<
 	  decltype
 	  (

@@ -6,7 +6,7 @@ struct CustomUpdate
   void reset(){}
 
   template<typename system_t, typename state_t, typename solver_mixin_t>
-  void operator()(const system_t & sys,
+  void operator()(const system_t & /*sys*/,
 		  state_t & state,
 		  solver_mixin_t & solver)
   {
@@ -19,20 +19,20 @@ struct CustomUpdate
 
 struct FakeProblem
 {
-  using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
+  state_type createState() const{return state_type(2);}
   residual_type createResidual() const{return residual_type(10);}
   jacobian_type createJacobian() const{return jacobian_type(10,2);}
 
-  void residual(const state_type& x, residual_type & res) const
+  void residual(const state_type& /*x*/, residual_type & res) const
   {
     res.setConstant(1.);
   }
 
-  void jacobian(const state_type & x, jacobian_type & jac) const
+  void jacobian(const state_type & /*x*/, jacobian_type & jac) const
   {
     jac.setConstant(1.);
   }
@@ -45,7 +45,7 @@ struct FakeLinS
   using matrix_type = T;
 
   template<typename A_t, typename b_t, typename x_t>
-  void solve(const A_t & A, const b_t & b, x_t & x)
+  void solve(const A_t & /*A*/, const b_t & /*b*/, x_t & x)
   {
     ++count_;
     std::cout << x << std::endl;
@@ -71,7 +71,7 @@ int main()
 
   FakeLinS<hessian_t> linSolver;
 
-  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
+  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem, linSolver);
   auto criterion = nonlinearsolvers::Stop::AfterMaxIters;
   GNSolver.setStoppingCriterion(criterion);
   GNSolver.setMaxIterations(2);

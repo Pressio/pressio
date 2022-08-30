@@ -222,7 +222,7 @@ TEST(ops_eigen, diag_dot_diag)
    }
   }
 
-  Eigen::VectorXd gold(5); 
+  Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
   auto exp = pressio::diag(a);
@@ -241,7 +241,7 @@ TEST(ops_eigen, diag_pow)
    }
   }
 
-  Eigen::VectorXd gold(5); 
+  Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
   auto exp = pressio::diag(a);
@@ -280,71 +280,71 @@ TEST(ops_eigen, diag_update1)
   EXPECT_DOUBLE_EQ( d1(2), 3.0);
 }
 
-TEST(ops_eigen, diag_update2)
-{
-  auto M1 = createMatrixForUpdate();
-  auto v = pressio::diag(M1);
-  auto M2 = createMatrixForUpdate();
-  auto a = pressio::diag(M2);
-  auto M3 = createMatrixForUpdate();
-  auto b = pressio::diag(M3);
+// TEST(ops_eigen, diag_update2)
+// {
+//   auto M1 = createMatrixForUpdate();
+//   auto v = pressio::diag(M1);
+//   auto M2 = createMatrixForUpdate();
+//   auto a = pressio::diag(M2);
+//   auto M3 = createMatrixForUpdate();
+//   auto b = pressio::diag(M3);
 
-  pressio::ops::update(v, 1., a, 1., b, 1.);
-  EXPECT_DOUBLE_EQ( v(0), 3.0);
-  EXPECT_DOUBLE_EQ( v(1), 6.0);
-  EXPECT_DOUBLE_EQ( v(2), 9.0);
+//   pressio::ops::update(v, 1., a, 1., b, 1.);
+//   EXPECT_DOUBLE_EQ( v(0), 3.0);
+//   EXPECT_DOUBLE_EQ( v(1), 6.0);
+//   EXPECT_DOUBLE_EQ( v(2), 9.0);
 
-  pressio::ops::update(v, 0., a, 1., b, 1.);
-  EXPECT_DOUBLE_EQ( v(0), 2.0);
-  EXPECT_DOUBLE_EQ( v(1), 4.0);
-  EXPECT_DOUBLE_EQ( v(2), 6.0);
-}
+//   pressio::ops::update(v, 0., a, 1., b, 1.);
+//   EXPECT_DOUBLE_EQ( v(0), 2.0);
+//   EXPECT_DOUBLE_EQ( v(1), 4.0);
+//   EXPECT_DOUBLE_EQ( v(2), 6.0);
+// }
 
-TEST(ops_eigen, diag_update3)
-{
-  auto M1 = createMatrixForUpdate();
-  auto v = pressio::diag(M1);
-  auto M2 = createMatrixForUpdate();
-  auto a = pressio::diag(M2);
-  auto M3 = createMatrixForUpdate();
-  auto b = pressio::diag(M3);
-  auto M4 = createMatrixForUpdate();
-  auto c = pressio::diag(M4);
+// TEST(ops_eigen, diag_update3)
+// {
+//   auto M1 = createMatrixForUpdate();
+//   auto v = pressio::diag(M1);
+//   auto M2 = createMatrixForUpdate();
+//   auto a = pressio::diag(M2);
+//   auto M3 = createMatrixForUpdate();
+//   auto b = pressio::diag(M3);
+//   auto M4 = createMatrixForUpdate();
+//   auto c = pressio::diag(M4);
 
-  pressio::ops::update(v, 1., a, 1., b, 1., c, 1.);
-  EXPECT_DOUBLE_EQ( v(0), 4.0);
-  EXPECT_DOUBLE_EQ( v(1), 8.0);
-  EXPECT_DOUBLE_EQ( v(2), 12.0);
+//   pressio::ops::update(v, 1., a, 1., b, 1., c, 1.);
+//   EXPECT_DOUBLE_EQ( v(0), 4.0);
+//   EXPECT_DOUBLE_EQ( v(1), 8.0);
+//   EXPECT_DOUBLE_EQ( v(2), 12.0);
 
-  pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
-  EXPECT_DOUBLE_EQ( v(0), 3.0);
-  EXPECT_DOUBLE_EQ( v(1), 6.0);
-  EXPECT_DOUBLE_EQ( v(2), 9.0);
-}
+//   pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
+//   EXPECT_DOUBLE_EQ( v(0), 3.0);
+//   EXPECT_DOUBLE_EQ( v(1), 6.0);
+//   EXPECT_DOUBLE_EQ( v(2), 9.0);
+// }
 
-TEST(ops_eigen, diag_update4)
-{
-  auto M1 = createMatrixForUpdate();
-  auto v = pressio::diag(M1);
-  auto M2 = createMatrixForUpdate();
-  auto a = pressio::diag(M2);
-  auto M3 = createMatrixForUpdate();
-  auto b = pressio::diag(M3);
-  auto M4 = createMatrixForUpdate();
-  auto c = pressio::diag(M4);
-  auto M5 = createMatrixForUpdate();
-  auto d = pressio::diag(M5);
+// TEST(ops_eigen, diag_update4)
+// {
+//   auto M1 = createMatrixForUpdate();
+//   auto v = pressio::diag(M1);
+//   auto M2 = createMatrixForUpdate();
+//   auto a = pressio::diag(M2);
+//   auto M3 = createMatrixForUpdate();
+//   auto b = pressio::diag(M3);
+//   auto M4 = createMatrixForUpdate();
+//   auto c = pressio::diag(M4);
+//   auto M5 = createMatrixForUpdate();
+//   auto d = pressio::diag(M5);
 
-  pressio::ops::update(v, 1., a, 1., b, 1., c, 1., d, 1.);
-  EXPECT_DOUBLE_EQ( v(0), 5.0);
-  EXPECT_DOUBLE_EQ( v(1), 10.0);
-  EXPECT_DOUBLE_EQ( v(2), 15.0);
+//   pressio::ops::update(v, 1., a, 1., b, 1., c, 1., d, 1.);
+//   EXPECT_DOUBLE_EQ( v(0), 5.0);
+//   EXPECT_DOUBLE_EQ( v(1), 10.0);
+//   EXPECT_DOUBLE_EQ( v(2), 15.0);
 
-  pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
-  EXPECT_DOUBLE_EQ( v(0), 4.0);
-  EXPECT_DOUBLE_EQ( v(1), 8.0);
-  EXPECT_DOUBLE_EQ( v(2), 12.0);
-}
+//   pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
+//   EXPECT_DOUBLE_EQ( v(0), 4.0);
+//   EXPECT_DOUBLE_EQ( v(1), 8.0);
+//   EXPECT_DOUBLE_EQ( v(2), 12.0);
+// }
 
 TEST(ops_eigen, diag_elementwiseMultiply)
 {
@@ -365,4 +365,3 @@ TEST(ops_eigen, diag_elementwiseMultiply)
   EXPECT_DOUBLE_EQ( y(1), 14.0);
   EXPECT_DOUBLE_EQ( y(2), 23.0);
 }
-

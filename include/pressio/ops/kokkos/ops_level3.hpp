@@ -66,8 +66,8 @@ template <typename A_type, typename B_type, typename scalar_type, typename C_typ
   ::pressio::is_dense_matrix_kokkos<B_type>::value and
   ::pressio::is_dense_matrix_kokkos<C_type>::value
   >
-product(::pressio::nontranspose modeA,
-  ::pressio::nontranspose modeB,
+product(::pressio::nontranspose /*unused*/,
+  ::pressio::nontranspose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const B_type & B,
@@ -91,8 +91,8 @@ template <typename A_type, typename B_type, typename scalar_type, typename C_typ
   ::pressio::is_dense_matrix_kokkos<B_type>::value and
   ::pressio::is_dense_matrix_kokkos<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const B_type & B,

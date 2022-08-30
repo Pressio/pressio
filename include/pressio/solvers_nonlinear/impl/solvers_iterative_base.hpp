@@ -56,21 +56,14 @@ struct IterativeBase
 {
   using iteration_type = unsigned int;
 
-  /** Get the number of iterations performed. */
   iteration_type numIterationsExecuted() const {
     return static_cast<const DerivedType &>(*this).numIterationsExecuted();
   }
 
-  /** Get the maximum number of iterations. */
   iteration_type maxIterations() const {
     return maxIters_;
   }
 
-  /**
-   * Set the maximum number of iterations
-   *
-   * @param maxIters maximum number of iterations.
-   */
   void setMaxIterations(iteration_type maxIters) {
     maxIters_ = maxIters;
   }

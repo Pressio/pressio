@@ -51,11 +51,11 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <class ResidualType, class JacobType, class ScalarType>
+template <class ResidualType, class JacobType>
 class IrwWeightingOperator
 {
 public:
-  using scalar_type = ScalarType;
+  using scalar_type = typename ::pressio::Traits<ResidualType>::scalar_type;
 
 private:
   mutable ResidualType w_;

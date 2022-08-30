@@ -1,0 +1,41 @@
+.. role:: raw-html-m2r(raw)
+   :format: html
+
+.. include:: ../../mydefs.rst
+
+
+``LinearSolver``
+================
+
+Syntax only
+-----------
+
+.. code-block:: cpp
+
+     template<class MatrixType>
+     class LinearSolver
+     {
+       public:
+         using matrix_type = MatrixType;
+
+         template<class StateType, class RhsType>
+         void solve(const MatrixType & A, const RhsType & b, StateType & x);
+     };
+
+
+|
+
+``WeightingOperator``
+=====================
+
+Syntax only
+-----------
+
+.. code-block:: cpp
+
+     class WeightingOperator
+     {
+       public:
+       void operator()(const residual_type & operand, residual_type & result);
+       void operator()(const jacobian_type & operand, jacobian_type & result);
+     };

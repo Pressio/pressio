@@ -4,48 +4,38 @@
 
 namespace pressio{ namespace ode{ namespace testing{
 
-// //************************************************
-// struct fakeAppForTraitsForExp
-// {
-//   using scalar_type = double;
-//   using state_type = std::vector<double>;
-//   using velocity_type = std::vector<double>;
-
-//   void velocity(const state_type & y,
-//     scalar_type t, velocity_type & R) const{
-//   };
-//   velocity_type createVelocity()const{
-//     velocity_type R;
-//     return R;
-//   };
-// };
-// //************************************************
-// //************************************************
-
-struct refAppEigen
+struct AppEigenA
 {
-  using scalar_type = double;
+  using independent_variable_type = double;
   using state_type = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
 
-  void velocity(const state_type & y,
-		            scalar_type t,
-                velocity_type & rhs) const
+  state_type createState() const{
+    state_type ret(3);
+    ret.setZero();
+    return ret;
+  }
+
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type ret(3);
+    ret.setZero();
+    return ret;
+  };
+
+  void rightHandSide(const state_type & y,
+		     independent_variable_type /*unused*/,
+		     right_hand_side_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){
       rhs[i] = y[i];
     }
   };
-
-  velocity_type createVelocity() const{
-    return velocity_type(3);
-  };
 };
 //************************************************
-//************************************************
 
-struct refAppForImpEigen
+template<class IndVarType>
+struct AppEigenBImpl
 {
 
   /*
@@ -66,9 +56,9 @@ struct refAppForImpEigen
 	  den = 1 + (20/3) * dt
           y_n = num/den
    */
-  using scalar_type = double;
+  using independent_variable_type = IndVarType;
   using state_type    = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using right_hand_side_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
   state_type y0_;
@@ -77,7 +67,7 @@ struct refAppForImpEigen
   state_type y_nm2;
 
 public:
-  refAppForImpEigen(){
+  AppEigenBImpl(){
     y.resize(3);
     y << 1., 2., 3.;
     y0_ = y;
@@ -87,39 +77,42 @@ public:
     return y0_;
   }
 
-  void velocity(const state_type & yIn,
-    scalar_type t, velocity_type & R) const{
+  void rightHandSide(const state_type & yIn,
+    independent_variable_type /*unused*/, right_hand_side_type & R) const{
     assert(yIn.size()==3);
     R = -10. * yIn;
   };
-  //--------------------------------------------
 
-  velocity_type createVelocity() const
-  {
-    velocity_type R(3);
+  state_type createState() const{
+    state_type ret(3);
+    ret.setZero();
+    return ret;
+  }
+
+  right_hand_side_type createRightHandSide() const{
+    right_hand_side_type R(3);
+    R.setZero();
     return R;
   };
-  //--------------------------------------------
 
-  void jacobian(const state_type & yIn,
-  		scalar_type t, jacobian_type & JJ) const{
+  void jacobian(const state_type & /*unused*/,
+                independent_variable_type /*unused*/,
+                jacobian_type & JJ) const
+  {
     assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
 
-    typedef Eigen::Triplet<scalar_type> Tr;
+    typedef Eigen::Triplet<double> Tr;
     std::vector<Tr> tripletList;
     tripletList.push_back( Tr( 0, 0, -10.) );
     tripletList.push_back( Tr( 1, 1, -10.) );
     tripletList.push_back( Tr( 2, 2, -10.) );
     JJ.setFromTriplets(tripletList.begin(), tripletList.end());
   };
-  //--------------------------------------------
 
-  jacobian_type createJacobian() const
-  {
+  jacobian_type createJacobian() const{
     jacobian_type JJ(3,3);
     return JJ;
   };
-  //--------------------------------------------
 
   void analyticAdvanceBackEulerNSteps(double dt, int n){
     double den = 1.0 + 10.*dt;
@@ -131,7 +124,6 @@ public:
       y[2] = y_nm1[2]/den;
     }
   };
-  //--------------------------------------------
 
   void analyticAdvanceBDF2NSteps(double dt, int n){
     // here we assume that y_nm1 and y_nm2 are valid,
@@ -155,7 +147,8 @@ public:
   void analyticAdvanceRK4(double dt)
   {
     assert(dt==0.1);
-    velocity_type k1(3), k2(3), k3(3), k4(3);
+    (void) dt;
+    right_hand_side_type k1(3), k2(3), k3(3), k4(3);
     //I did the math...
     k1 << -1., -2, -3.;
     k2 << -0.5, -1, -1.5;
@@ -163,15 +156,14 @@ public:
     k4 << -0.25, -0.5, -0.75;
     y += (1./6.) * (k1 + 2.*k2 + 2.*k3 + k4);
   };
-  //--------------------------------------------
+};
 
-};//end app refAppForImpEigen
+using AppEigenB = AppEigenBImpl<double>;
+
 //************************************************
 //************************************************
 
-
-
-struct refAppForArbitraryImpl
+struct AppEigenC
 {
   using scalar_type   = double;
   using state_type    = Eigen::VectorXd;
@@ -179,6 +171,12 @@ struct refAppForArbitraryImpl
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
+
+  state_type createState() const{
+    state_type ret(3);
+    ret.setZero();
+    return ret;
+  }
 
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,

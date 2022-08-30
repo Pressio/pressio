@@ -87,7 +87,6 @@ using mat_type = eig_mat;
 
 struct MySystem
 {
-  using scalar_type = double;
   using state_type = vec_type;
   using residual_type = state_type;
   using jacobian_type = mat_type;
@@ -101,6 +100,12 @@ struct MySystem
 
   ~MySystem(){}
 
+  state_type createState() const {
+    auto a = state_type(numVars);
+    a.setConstant(0);
+    return a;
+  }
+
   residual_type createResidual() const {
     auto a = residual_type(numEquations);
     a.setConstant(0);
@@ -113,7 +118,7 @@ struct MySystem
     return a;
   }
 
-  void residual(const state_type& x,
+  void residual(const state_type& /*x*/,
     residual_type & R) const
   {
     ++iterCountR_;
@@ -122,7 +127,7 @@ struct MySystem
     if(iterCountR_==3) R.setConstant(16.);
   }
 
-  void jacobian(const state_type& x, jacobian_type & jac) const
+  void jacobian(const state_type& /*x*/, jacobian_type & jac) const
   {
     ++iterCountJ_;
 
@@ -146,7 +151,7 @@ struct MyLinSolverNormalEq
   template<typename H_t, typename state_t>
   void solve(const H_t & H,
              const state_t & g,
-             state_t & correction)
+             state_t & /*correction*/)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;
@@ -210,7 +215,7 @@ TEST(solvers_nonlinear, irwls_gauss_newton)
   state_t x(numVars);
 
   using pressio::nonlinearsolvers::experimental::create_irls_gauss_newton;
-  auto solver = create_irls_gauss_newton(sysObj, x, linSolverObj);
+  auto solver = create_irls_gauss_newton(sysObj, linSolverObj);
   solver.setMaxIterations(3);
   solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);

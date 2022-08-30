@@ -7,8 +7,8 @@ TEST(type_traits, method_detect)
 {
   struct A {
     int size()          const { return 0; };
-    int size(int dim)   const { return 0; };
-    int extent(int dim) const { return 0; };
+    int size(int /*dim*/)   const { return 0; };
+    int extent(int /*dim*/) const { return 0; };
   };
 
   static_assert(pressio::has_method_extent<A>::value,"");

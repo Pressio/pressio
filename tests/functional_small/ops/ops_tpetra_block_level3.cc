@@ -125,7 +125,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 {
   auto A = pressio::ops::clone(*myMv_);
   std::array<double, 4> ac{1.,2.,3.,4.};
-  for (std::size_t i=0; i<A.getNumVectors(); ++i) {
+  for (decltype(A.getNumVectors()) i=0; i<A.getNumVectors(); ++i) {
     A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
   }
 
@@ -156,7 +156,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 {
   auto A = pressio::ops::clone(*myMv_);
   std::array<double, 4> ac{1.,2.,3.,4.};
-  for (std::size_t i=0; i<A.getNumVectors(); ++i) {
+  for (decltype(A.getNumVectors()) i=0; i<A.getNumVectors(); ++i) {
     A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
   }
 
@@ -188,7 +188,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 {
   auto A = pressio::ops::clone(*myMv_);
   std::array<double, 4> ac{1.,2.,3.,4.};
-  for (std::size_t i=0; i<A.getNumVectors(); ++i) {
+  for (decltype(A.getNumVectors()) i=0; i<A.getNumVectors(); ++i) {
     A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
   }
 
@@ -219,7 +219,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 {
   auto A = pressio::ops::clone(*myMv_);
   std::array<double, 4> ac{1.,2.,3.,4.};
-  for (std::size_t i=0; i<A.getNumVectors(); ++i) {
+  for (decltype(A.getNumVectors()) i=0; i<A.getNumVectors(); ++i) {
     A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
   }
 

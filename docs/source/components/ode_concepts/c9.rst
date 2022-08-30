@@ -1,0 +1,52 @@
+
+``StepSizePolicyWithReductionScheme``
+=====================================
+
+This concept specifies that a type ``T`` represents a policy
+to set the step size
+to use at a given step as well as the logic on how to
+potentially "reduce" the step size if needed.
+
+Syntax only
+-----------
+
+.. literalinclude:: ./syntax_only_for_all_concepts.cc
+   :language: cpp
+   :lines: 233-242
+
+..
+   Full concept
+   ------------
+
+   .. code-block:: cpp
+
+       template <class T>
+       concept StepSizePolicyWithReductionScheme =
+	 //
+	 // purely syntactic requirements
+	 //
+	 requires(const T & A,
+		  pressio::ode::StepCount stepNumber,
+		  const pressio::ode::StepStartAt<typename T::time_type> & sst,
+		  pressio::ode::StepSize<IndepVarType> & dt,
+		  pressio::ode::StepSizeMin<IndepVarType> & dtMin,
+		  pressio::ode::StepSizeReduction<IndepVarType> & factor)
+	 {
+	   A(stepNumber, sst, dt, dtMin, factor);
+	 } &&
+
+	 //
+	 // execution/language axioms
+	 //
+	 axiom BlockingOperation(){
+	   // callable method is blocking (completes before returning)
+	 } &&
+	 axiom ConsistentUnits(){
+	   // step units are consistent with time
+	 } &&
+	 axiom SOMETHINGELSE(){
+
+	 } &&
+	 axiom ConstCorrectness(){
+	   // const qualification is preserved, methods do NOT modify const arguments
+	 };

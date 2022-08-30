@@ -51,16 +51,11 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template <
-  typename T,
-  typename RType,
-  typename JType,
-  typename enable = void
->
-struct admissible_least_squares_weighting_operator : std::false_type{};
+template <class T, class RType, class JType, class enable = void>
+struct LeastSquaresWeightingOperator : std::false_type{};
 
-template <typename T, typename RType, typename JType>
-struct admissible_least_squares_weighting_operator<
+template <class T, class RType, class JType>
+struct LeastSquaresWeightingOperator<
   T, RType, JType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
@@ -68,9 +63,9 @@ struct admissible_least_squares_weighting_operator<
       (
        std::declval<T const>()
        (
-  std::declval<RType const &>(),
-  std::declval<RType &>()
-  )
+	std::declval<RType const &>(),
+	std::declval<RType &>()
+	)
        )
       >::value
     and
@@ -79,14 +74,13 @@ struct admissible_least_squares_weighting_operator<
       (
        std::declval<T const>()
        (
-  std::declval<JType const &>(),
-  std::declval<JType &>()
-  )
+	std::declval<JType const &>(),
+	std::declval<JType &>()
+	)
        )
       >::value
     >
   > : std::true_type{};
-
 
 }}
 #endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_

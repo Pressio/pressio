@@ -72,7 +72,7 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   ::pressio::Traits<x_type>::rank == 1 and
   ::pressio::Traits<y_type>::rank == 1
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
@@ -105,7 +105,7 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   ::pressio::Traits<x_type>::rank == 1 and
   ::pressio::Traits<y_type>::rank == 1
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,

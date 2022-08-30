@@ -23,7 +23,7 @@ struct MyLinSolverNormalEq
   template<typename H_t, typename state_t>
   void solve(const H_t & H, 
              const state_t & g, 
-             state_t & correction)
+             state_t & /*correction*/)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;
@@ -113,15 +113,15 @@ struct MySolverQR
   : checkStr_(checkStr){}
 
   template<typename r_t, typename result_t>
-  void applyQTranspose(const r_t & r, result_t & QTr) const
+  void applyQTranspose(const r_t &, result_t &) const
   {}
 
   template<typename result_t, typename g_t>
-  void applyRTranspose(result_t & QTr, g_t & g) const
+  void applyRTranspose(result_t &, g_t &) const
   {}
 
   template<typename qt_t, typename c_t>
-  void solve(const qt_t & QTr, c_t & correction) const
+  void solve(const qt_t &, c_t &) const
   {}
 
   template<typename J_t>

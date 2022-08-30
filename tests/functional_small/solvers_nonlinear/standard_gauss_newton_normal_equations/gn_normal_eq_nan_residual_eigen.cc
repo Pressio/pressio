@@ -32,17 +32,17 @@ struct Observer
 
 struct FakeProblem
 {
-  using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
   mutable int count_ = 0;
 
+  state_type createState() const{return state_type(4);}
   residual_type createResidual() const{return residual_type(10);}
   jacobian_type createJacobian() const{return jacobian_type(10,4);}
 
-  void residual(const state_type& x, residual_type & res) const
+  void residual(const state_type&, residual_type & res) const
   {
     ++count_;
     std::cout << "RESIDUAL CALL " << count_ << std::endl;
@@ -52,7 +52,7 @@ struct FakeProblem
     }
   }
 
-  void jacobian(const state_type & x, jacobian_type & jac) const
+  void jacobian(const state_type &, jacobian_type & jac) const
   {
     jac.setConstant(1.);
   }
@@ -65,7 +65,7 @@ struct FakeLinS
   using matrix_type = T;
 
   template<typename A_t, typename b_t, typename x_t>
-  void solve(const A_t & A, const b_t & b, x_t & x)
+  void solve(const A_t &, const b_t &, x_t & x)
   {
     ++count_;
     std::cout << x << std::endl;
@@ -97,7 +97,7 @@ int main()
   state_t x(4);
   x(0)=1.0; x(1)=2.; x(2)=3.; x(3)=4.;
 
-  auto solver = pressio::nonlinearsolvers::create_gauss_newton(problem, x, FakeLinS<hessian_t>{});
+  auto solver = pressio::nonlinearsolvers::create_gauss_newton(problem, FakeLinS<hessian_t>{});
   auto criterion = pressio::nonlinearsolvers::Stop::AfterMaxIters;
   solver.setStoppingCriterion(criterion);
   solver.setMaxIterations(3);

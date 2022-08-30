@@ -59,6 +59,7 @@ template <typename T, class IndexType>
 extent(const T & oIn, const IndexType i)
 {
   assert(i==0);
+  (void) i;
   return oIn.getGlobalLength();
 }
 

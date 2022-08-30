@@ -51,10 +51,9 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename StateType, class ScalarType>
+template<typename StateType>
 class LMGainFactor
 {
-  using scalar_type = ScalarType;
   StateType cDiagH_; // = h * diag(J^T J)
   StateType trialState_;
 
@@ -66,30 +65,30 @@ public:
   ~LMGainFactor() = default;
 
   LMGainFactor(const StateType & state)
-    : cDiagH_(::pressio::ops::clone(state)), 
+    : cDiagH_(::pressio::ops::clone(state)),
       trialState_(::pressio::ops::clone(state))
   {
-    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
-    ::pressio::ops::fill(cDiagH_, zero);
-    ::pressio::ops::fill(trialState_, zero);
+    resetForNewCall();
   }
 
 public:
   void resetForNewCall(){
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     ::pressio::ops::fill(cDiagH_, zero);
     ::pressio::ops::fill(trialState_, zero);
   }
 
-  template<typename SystemType, typename SolverMixinType>
-  scalar_type compute(const SystemType & system,
-		   StateType & state,
-		   const scalar_type & mu,
-		   SolverMixinType & solverObj)
+  template<class SystemType, class ScalarType, class SolverMixinType>
+  auto compute(const SystemType & system,
+	       StateType & state,
+	       const ScalarType & mu,
+	       SolverMixinType & solverObj)
   {
-    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-    constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
+    using state_scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero = ::pressio::utils::Constants<state_scalar_type>::zero();
+    constexpr auto one  = ::pressio::utils::Constants<state_scalar_type>::one();
+    constexpr auto two  = ::pressio::utils::Constants<state_scalar_type>::two();
 
     const auto & correction = solverObj.correctionCRef();
     const auto & g	    = solverObj.gradientCRef();

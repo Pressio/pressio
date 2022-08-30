@@ -139,7 +139,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::is_vector_tpetra<y_type>::value
   && ::pressio::is_dense_vector_teuchos<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -164,7 +164,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::is_vector_tpetra<y_type>::value
   && ::pressio::is_vector_kokkos<x_type>::value
   >
-product(::pressio::nontranspose,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -192,7 +192,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::is_vector_tpetra<y_type>::value
   && ::pressio::is_vector_eigen<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -203,6 +203,34 @@ product(::pressio::nontranspose mode,
   //makesure x is contiguous
   assert(x.innerSize() == x.outerStride());
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
+}
+
+// -------------------------------
+// y = alpha*A*x, construct y
+//
+// x is Eigen Vector
+// A = tpetra::MultiVector
+// y = tpetra vector
+// -------------------------------
+template <class y_type, class A_type, class x_type, class alpha_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<y_type>::value
+  && ::pressio::is_vector_eigen<x_type>::value,
+  y_type
+  >
+product(::pressio::nontranspose mode,
+	const alpha_t & alpha,
+	const A_type & A,
+	const x_type & x)
+{
+
+  auto rowMap = A.getMap();
+  y_type y(rowMap);
+  using y_sc_t = typename y_type::scalar_type;
+  product(mode, alpha, A, x, y_sc_t(0), y);
+  return y;
 }
 
 // -------------------------------
@@ -219,7 +247,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   && ::pressio::is_vector_tpetra<x_type>::value
   && ::pressio::is_vector_eigen<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,
@@ -261,7 +289,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   && ::pressio::is_vector_tpetra<x_type>::value
   && ::pressio::is_vector_kokkos<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
 	const x_type & x,

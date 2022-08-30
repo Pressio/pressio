@@ -3,7 +3,7 @@
 // ************************************************************************
 //
 // nested_typedef_detection.hpp
-//                     		  Pressio
+//                          Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
@@ -51,225 +51,47 @@
 
 namespace pressio{
 
-template <typename T, typename enable = void>
-struct has_state_typedef : std::false_type{};
+#define PRESSIO_IMPL_HAS_NESTED_TYPEDEF(NAME) \
+  template <typename T, typename enable = void>\
+  struct has_##NAME##_typedef : std::false_type{};\
+  template <typename T>\
+  struct has_##NAME##_typedef<T,\
+  std::enable_if_t< !std::is_void<typename T::NAME##_type>::value > \
+  > : std::true_type{};\
 
-template <typename T>
-struct has_state_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::state_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_time_typedef : std::false_type{};
-
-template <typename T>
-struct has_time_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::time_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_velocity_typedef : std::false_type{};
-
-template <typename T>
-struct has_velocity_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::velocity_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_right_hand_side_typedef : std::false_type{};
-
-template <typename T>
-struct has_right_hand_side_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::right_hand_side_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_mass_matrix_typedef : std::false_type{};
-
-template <typename T>
-struct has_mass_matrix_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::mass_matrix_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_residual_typedef : std::false_type{};
-
-template <typename T>
-struct has_residual_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::residual_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_independent_variable_typedef : std::false_type{};
-
-template <typename T>
-struct has_independent_variable_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::independent_variable_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_scalar_typedef : std::false_type{};
-
-template <typename T>
-struct has_scalar_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::scalar_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_communicator_typedef : std::false_type{};
-
-template <typename T>
-struct has_communicator_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::communicator_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_ordinal_typedef : std::false_type{};
-
-template <typename T>
-struct has_ordinal_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::ordinal_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_matrix_typedef : std::false_type{};
-
-template <typename T>
-struct has_matrix_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::matrix_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_local_ordinal_typedef : std::false_type{};
-
-template <typename T>
-struct has_local_ordinal_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::local_ordinal_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_jacobian_typedef : std::false_type{};
-
-template <typename T>
-struct has_jacobian_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::jacobian_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_hessian_typedef : std::false_type{};
-
-template <typename T>
-struct has_hessian_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::hessian_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_gradient_typedef : std::false_type{};
-
-template <typename T>
-struct has_gradient_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::gradient_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_residual_norm_typedef : std::false_type{};
-
-template <typename T>
-struct has_residual_norm_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::residual_norm_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_global_ordinal_typedef : std::false_type{};
-
-template <typename T>
-struct has_global_ordinal_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::global_ordinal_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_data_map_typedef : std::false_type{};
-
-template <typename T>
-struct has_data_map_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::data_map_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_discrete_residual_typedef : std::false_type{};
-
-template <typename T>
-struct has_discrete_residual_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::discrete_residual_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_discrete_time_residual_typedef : std::false_type{};
-
-template <typename T>
-struct has_discrete_time_residual_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::discrete_time_residual_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_discrete_time_jacobian_typedef : std::false_type{};
-
-template <typename T>
-struct has_discrete_time_jacobian_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::discrete_time_jacobian_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_discrete_jacobian_typedef : std::false_type{};
-
-template <typename T>
-struct has_discrete_jacobian_typedef<
-  T,
-  mpl::enable_if_t< !std::is_void<typename T::discrete_jacobian_type>::value >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_dense_matrix_typedef : std::false_type{};
-
-template <typename T>
-struct has_dense_matrix_typedef<
-  T,
-  ::pressio::mpl::enable_if_t<
-    !std::is_void<typename T::dense_matrix_type>::value
-    >
-  > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct has_fom_state_typedef : std::false_type{};
-
-template <typename T>
-struct has_fom_state_typedef<
-  T,
-  ::pressio::mpl::enable_if_t<
-    !std::is_void<typename T::fom_state_type>::value
-    >
-  > : std::true_type{};
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(scalar)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(fom_state)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(full_state)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(reduced_state)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(state)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(time)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(velocity)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(right_hand_side)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(mass_matrix)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(residual)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(independent_variable)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(communicator)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(ordinal)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(local_ordinal)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(global_ordinal)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(matrix)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(jacobian)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(hessian)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(gradient)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(residual_norm)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(data_map)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(discrete_residual)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(discrete_time_residual)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(discrete_time_jacobian)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(discrete_jacobian)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(dense_matrix)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(manifold_tangent)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(basis)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(operand)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(result)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(residual_operand)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(jacobian_action_operand)
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(right_hand_side_operand)
 
 }//end namespace
 #endif  // TYPE_TRAITS_NESTED_TYPEDEF_DETECTION_HPP_

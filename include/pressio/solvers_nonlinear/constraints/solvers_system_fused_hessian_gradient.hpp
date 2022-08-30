@@ -53,30 +53,29 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename enable = void>
-struct compliant_with_fused_hessian_gradient_api : std::false_type{};
+struct SystemWithFusedHessianAndGradient : std::false_type{};
 
 template<typename T>
-struct compliant_with_fused_hessian_gradient_api<
+struct SystemWithFusedHessianAndGradient<
  T,
  ::pressio::mpl::enable_if_t<
-   ::pressio::has_scalar_typedef<T>::value   and
-   ::pressio::has_state_typedef<T>::value    and
-   ::pressio::has_hessian_typedef<T>::value and
-   ::pressio::has_gradient_typedef<T>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_create_hessian_method_return_result<
-      T, typename T::hessian_type>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_create_gradient_method_return_result<
-      T, typename T::gradient_type>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_hessianandgradient_method_accept_state_result_norm_return_void<
-      T, typename T::state_type, 
-      typename T::hessian_type, typename T::gradient_type, 
-      typename T::scalar_type>::value and
-
-   ::pressio::nonlinearsolvers::predicates::has_const_residualnorm_method_accept_state_norm_return_void<
-      T, typename T::state_type, typename T::scalar_type>::value 
+   ::pressio::has_state_typedef<T>::value
+   and ::pressio::has_hessian_typedef<T>::value
+   and ::pressio::has_gradient_typedef<T>::value
+   and ::pressio::has_residual_norm_typedef<T>::value
+   //
+   and ::pressio::nonlinearsolvers::has_const_create_state_method_return_result<
+     T, typename T::state_type>::value
+   and ::pressio::nonlinearsolvers::has_const_create_hessian_method_return_result<
+     T, typename T::hessian_type>::value
+   and ::pressio::nonlinearsolvers::has_const_create_gradient_method_return_result<
+     T, typename T::gradient_type>::value
+   //
+   and ::pressio::nonlinearsolvers::has_const_hessianandgradient_method_accept_state_result_norm_return_void<
+     T, typename T::state_type, typename T::hessian_type,
+     typename T::gradient_type, typename T::residual_norm_type>::value
+   and ::pressio::nonlinearsolvers::has_const_residualnorm_method_accept_state_norm_return_void<
+     T, typename T::state_type, typename T::residual_norm_type>::value
    >
  > : std::true_type{};
 
