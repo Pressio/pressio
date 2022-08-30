@@ -131,7 +131,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
 
    overview
    installation
-   concept_driven
 
 .. toctree::
    :caption: API
