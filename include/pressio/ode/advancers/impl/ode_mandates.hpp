@@ -3,7 +3,7 @@
 // ************************************************************************
 //
 // ode_advance_n_steps.hpp
-//                     		  Pressio
+//                          Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
@@ -55,15 +55,15 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template<class StepperType, class StateType, class IndVarType>
 constexpr void mandate_on_ind_var_and_state_types(const StepperType & /*unused*/,
-							const StateType & /*unused*/,
-							const IndVarType & /*unused*/)
+              const StateType & /*unused*/,
+              const IndVarType & /*unused*/)
 {
   static_assert(std::is_same<IndVarType,
-		typename StepperType::independent_variable_type>::value,
-		"IndVarType must be the same as StepperType::independent_variable_type");
+    typename StepperType::independent_variable_type>::value,
+    "IndVarType must be the same as StepperType::independent_variable_type");
   static_assert(std::is_same<StateType,
-		typename StepperType::state_type>::value,
-		"StateType must be the same as StepperType::state_type");
+    typename StepperType::state_type>::value,
+    "StateType must be the same as StepperType::state_type");
 }
 
 }}} //end namespace pressio::ode::impl
