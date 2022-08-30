@@ -1,0 +1,10 @@
+
+``TimeInvariantMasker``
+=======================
+
+Syntax only
+-----------
+
+.. literalinclude:: ./syntax_only_masker_concepts.cc
+   :language: cpp
+   :lines: 6-13

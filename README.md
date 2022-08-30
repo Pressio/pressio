@@ -18,7 +18,7 @@ you might find useful some of the components of the library.
 Click below to checkout the documentation:
 
 <a href="https://pressio.github.io/pressio/html/index.html" target="_blank">
-    <img src='logo-readme.svg' width='95%'>
+    <img src='./logos/logo-readme.svg' width='95%'>
 </a>
 
 ## Questions?

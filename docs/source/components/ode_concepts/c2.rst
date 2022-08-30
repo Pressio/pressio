@@ -1,0 +1,26 @@
+
+``SystemWithRhsAndJacobian``
+============================
+
+Syntax only
+-----------
+
+.. literalinclude:: ./syntax_only_for_all_concepts.cc
+   :language: cpp
+   :lines: 20-38
+
+..
+   Full concept
+   ------------
+
+   .. code-block:: cpp
+
+       template <class T>
+       concept OdeSystemWithJacobian =
+	 OdeSystem<T> &&
+	 //
+	 something else
+	 std::copy_constructible<typename T::jacobian_type>;
+	 // same field as state and rhs
+	 // NonSingularJacobian
+	 };

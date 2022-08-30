@@ -1,0 +1,7 @@
+Sphinx==5.0.1
+furo==2022.6.4.1
+myst-parser==0.18.0
+sphinx-copybutton==0.5.0
+m2r2==0.3.2
+sphinx-design
+attrs

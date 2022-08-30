@@ -1,0 +1,73 @@
+
+``SystemWithRhsOnly``
+=====================
+
+Syntax only
+-----------
+
+.. literalinclude:: ./syntax_only_for_all_concepts.cc
+   :language: cpp
+   :lines: 6-19
+
+
+..
+   Full concept
+   ------------
+
+   .. code-block:: cpp
+
+       template <class T>
+       concept OdeSystem =
+	 //
+	 has typedefs
+	 has all methods
+	 std::copy_constructible<typename T::state_type>;
+	 std::copy_constructible<typename T::right_hand_side_type>;
+	 VectorSpaceElementsWithSameField<state_type, rhs_type>
+	 std::convertible_to<independent_variable_type, scalar_type>
+	 //
+	 Determined
+	 NonAliasingOperators
+	 EqualityPreserving
+	 BlockingOperations
+	 const_correctness (possibly also for value semantics structures)
+
+.. //
+   // purely syntactic requirements
+   //
+   requires{
+     requires std::regular<typename T::independent_variable_type>;
+     requires std::copy_constructible<typename T::state_type>;
+     requires std::copy_constructible<typename T::right_hand_side_type>;
+   } &&
+   requires(const T & A){
+     { A.createState()         } -> std::same_as<typename T::state_type>;
+     { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
+   } &&
+   requires(const T & A,
+      const typename T::independent_variable_type & indVarVal,
+      const typename T::state_type & s,
+      typename T::right_hand_side_type & v)
+   {
+     A.rightHandSide(s, indVarVal, v);
+   } &&
+
+   //
+   // execution/language axioms
+   //
+   axiom NonAliasingOperators(const T & A){} &&
+   axiom Deterministic() &&
+   axiom BlockingOperations(){} &&
+   axiom ConstCorrectness(){} &&
+
+   //
+   // mathematical axioms
+   //
+   requires(){
+     requires RealVectorSpaceElement<typename T::state_type>;
+     requires RealVectorSpaceElement<typename T::right_hand_side_type>;
+   } &&
+   axiom Determined(){
+     // dimension of the rightHandSide vector space == dimension of the state vector space
+     // i.e. # of equations is same as # of unknowns
+   };
