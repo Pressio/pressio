@@ -44,6 +44,11 @@
 - "dx/dt = MJOP f"
 - only for M constant or no M
 
+## no mass matrix
+- R = dx/dt - MJOP f(phi x)
+- J = something - MJOP fom_J(phi x) phi
+
+
 # Masked
 
 - should always accept trialSpace/affineTrialSpace
@@ -86,5 +91,5 @@
 
 ## Masked
 
-- arg min ||A r_sample||
+- arg min ||A masked(r_sample)||
 - A is used in the solver NOT in the actual LSPG class

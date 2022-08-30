@@ -257,6 +257,8 @@ struct Observer
 
 TEST(rom_lspg_unsteady, test1)
 {
+  /* default lspg eigen */
+
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 
@@ -284,8 +286,8 @@ TEST(rom_lspg_unsteady, test1)
   romState[1]=1.;
   romState[2]=2.;
 
-  auto problem = pressio::rom::lspg::create_default_problem(pressio::ode::StepScheme::BDF1,
-							    space, fomSystem);
+  auto problem = pressio::rom::lspg::create_unsteady_problem(pressio::ode::StepScheme::BDF1,
+							     space, fomSystem);
 
   const double dt = 2.;
   FakeNonLinSolver<phi_t> nonLinSolver(N, phi, dt);

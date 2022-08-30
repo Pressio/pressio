@@ -68,10 +68,10 @@ struct MyMasker
 struct MyHypRedOperator
 {
   using time_type = double;
-  using operand_type = MaskedRhs;
+  using right_hand_side_operand_type = MaskedRhs;
 
   template<class ResultType>
-  void operator()(const operand_type & operand,
+  void operator()(const right_hand_side_operand_type & operand,
 		  time_type,
 		  ResultType & result) const{}
 };

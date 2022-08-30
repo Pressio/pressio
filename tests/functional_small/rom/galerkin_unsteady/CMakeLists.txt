@@ -14,6 +14,12 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   add_serial_utest(${TESTING_LEVEL}_rom_galerkin_unsteady_exe5
     ${CMAKE_CURRENT_SOURCE_DIR}/main5.cc)
+
+  add_serial_utest(${TESTING_LEVEL}_rom_galerkin_unsteady_exe6
+    ${CMAKE_CURRENT_SOURCE_DIR}/main6.cc)
+
+  add_serial_utest(${TESTING_LEVEL}_rom_galerkin_unsteady_exe7
+    ${CMAKE_CURRENT_SOURCE_DIR}/main7.cc)
 endif()
 
 

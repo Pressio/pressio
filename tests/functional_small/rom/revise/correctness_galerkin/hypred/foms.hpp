@@ -2,7 +2,7 @@
 #ifndef PRESSIO_TEST_ROM_GALERKIN_HYRED_CORRECT_FOMS_COMMON_HPP_
 #define PRESSIO_TEST_ROM_GALERKIN_HYRED_CORRECT_FOMS_COMMON_HPP_
 
-const std::vector<int> indices = {1,3,5,7,9,11,13,15,17,19};
+
 
 struct TrivialFomOnlyVelocityEigen
 {

@@ -73,11 +73,11 @@ class HypRedOperator
 
 public:
   using time_type = double;
-  using operand_type = Eigen::VectorXd;
+  using right_hand_side_operand_type = Eigen::VectorXd;
 
   HypRedOperator(const operator_type & phi) : matrix_(phi){}
 
-  void operator()(const operand_type & operand,
+  void operator()(const right_hand_side_operand_type & operand,
 		  time_type timein,
 		  Eigen::VectorXd & result) const
   {

@@ -12,7 +12,8 @@ template<class ReducedStateType>
 struct CreateReducedState<
   ReducedStateType,
   mpl::enable_if_t< ::pressio::is_vector_eigen<ReducedStateType>::value >
-  > {
+  >
+{
   template<class BasisType>
   ReducedStateType operator()(const BasisType & basis){
     return ReducedStateType(::pressio::ops::extent(basis, 1));
@@ -25,7 +26,8 @@ template<class ReducedStateType>
 struct CreateReducedState<
   ReducedStateType,
   mpl::enable_if_t< ::pressio::is_vector_kokkos<ReducedStateType>::value >
-  > {
+  >
+{
   template<class BasisType>
   ReducedStateType operator()(const BasisType & basis){
     return ReducedStateType("tmp", ::pressio::ops::extent(basis, 1));
@@ -100,7 +102,6 @@ using CreateGalerkinRhs = CreateReducedState<RhsType>;
 
 template<class JacType, class = void>
 using CreateGalerkinJacobian = CreateGalerkinMassMatrix<JacType>;
-
 
 }}} // end pressio::rom::impl
 #endif

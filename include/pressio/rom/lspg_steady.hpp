@@ -79,7 +79,7 @@ auto create_steady_problem(TrialSpaceType & trialSpace,
   static_assert(std::is_same<
 		typename JacobianActionMaskerType::operand_type,
 		fom_jac_action_result_type>::value == true,
-		"mismatching types of jacobian action masker and fom residual");
+		"mismatching types of jacobian action masker and fom");
 
   using reduced_state_type = typename TrialSpaceType::reduced_state_type;
   using system_type = impl::LspgSteadyMaskedSystem<
@@ -108,5 +108,5 @@ auto create_steady_problem(TrialSpaceType & trialSpace,
 // return system_type(trialSpace, fomSystem, preconditioner);
 // }
 
-}}} // end pressio::rom::galerkin
+}}} // end pressio::rom::lspg
 #endif

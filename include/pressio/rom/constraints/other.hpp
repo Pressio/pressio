@@ -87,16 +87,16 @@ struct TimeInvariantMasker<
 template<
   class T,
   class ReducedResidualType,
-  class ReducedJacActionType,
+  class ReducedJacobianType,
   class enable = void>
 struct SteadyGalerkinHyperReductionOperator : std::false_type{};
 
 template<
   class T,
   class ReducedResidualType,
-  class ReducedJacActionType>
+  class ReducedJacobianType>
 struct SteadyGalerkinHyperReductionOperator<
-  T, ReducedResidualType, ReducedJacActionType,
+  T, ReducedResidualType, ReducedJacobianType,
   mpl::enable_if_t<
        ::pressio::has_residual_operand_typedef<T>::value
     && ::pressio::has_jacobian_action_operand_typedef<T>::value
@@ -116,7 +116,7 @@ struct SteadyGalerkinHyperReductionOperator<
 	 std::declval<T const>()
 	 (
 	  std::declval<typename T::jacobian_action_operand_type const &>(),
-	  std::declval<ReducedJacActionType &>()
+	  std::declval<ReducedJacobianType &>()
 	  )
 	 )
 	>::value
@@ -125,26 +125,56 @@ struct SteadyGalerkinHyperReductionOperator<
 
 template<
   class T,
-  class ReducedResidualType,
+  class ReducedRhsType,
   class enable = void>
-struct UnsteadyExplicitGalerkinHyperReductionOperator : std::false_type{};
+struct UnsteadyGalerkinRhsHyperReductionOperator : std::false_type{};
 
 template<
   class T,
-  class ReducedResidualType>
-struct UnsteadyExplicitGalerkinHyperReductionOperator<
-  T, ReducedResidualType,
+  class ReducedRhsType>
+struct UnsteadyGalerkinRhsHyperReductionOperator<
+  T, ReducedRhsType,
   mpl::enable_if_t<
        ::pressio::has_time_typedef<T>::value
-    && ::pressio::has_operand_typedef<T>::value
+    && ::pressio::has_right_hand_side_operand_typedef<T>::value
     && std::is_void<
 	decltype
 	(
 	 std::declval<T const>()
 	 (
-	  std::declval<typename T::operand_type const &>(),
+	  std::declval<typename T::right_hand_side_operand_type const &>(),
 	  std::declval<typename T::time_type>(),
-	  std::declval<ReducedResidualType &>()
+	  std::declval<ReducedRhsType &>()
+	  )
+	 )
+	>::value
+   >
+  > : std::true_type{};
+
+template<
+  class T,
+  class ReducedRhsType,
+  class ReducedJacobianType,
+  class enable = void>
+struct UnsteadyGalerkinRhsAndJacobianHyperReductionOperator : std::false_type{};
+
+template<
+  class T,
+  class ReducedRhsType,
+  class ReducedJacobianType>
+struct UnsteadyGalerkinRhsAndJacobianHyperReductionOperator<
+  T, ReducedRhsType, ReducedJacobianType,
+  mpl::enable_if_t<
+       UnsteadyGalerkinRhsHyperReductionOperator<T, ReducedRhsType>::value
+    && ::pressio::has_jacobian_action_operand_typedef<T>::value
+    && std::is_void<
+	decltype
+	(
+	 std::declval<T const>()
+	 (
+	  std::declval<typename T::jacobian_action_operand_type const &>(),
+	  std::declval<typename T::time_type>(),
+	  std::declval<ReducedJacobianType &>()
 	  )
 	 )
 	>::value

@@ -33,8 +33,7 @@ public:
 		      const TrialSpaceType & trialSpace,
 		      const FomSystemType & fomSystem,
 		      Args && ... args)
-    : trialSpace_(trialSpace),
-      fomStatesManager_(create_lspg_fom_states_manager(odeSchemeName, trialSpace)),
+    : fomStatesManager_(create_lspg_fom_states_manager(odeSchemeName, trialSpace)),
       rjPolicy_(trialSpace, fomSystem, fomStatesManager_, std::forward<Args>(args)...),
       stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, rjPolicy_))
   {}
@@ -71,7 +70,6 @@ public:
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
   LspgFomStatesManager<TrialSpaceType> fomStatesManager_;
   ResidualJacobianPolicyType rjPolicy_;
   stepper_type stepper_;
