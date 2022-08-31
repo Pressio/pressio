@@ -143,28 +143,28 @@ template <class T, class IndVarType>
 struct step_size_policy_with_reduc_taking_dt_by_ref<
   STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType>, \
 						    StepSizeMin<IndVarType>, \
-						    StepSizeReduction<IndVarType>)
+						    StepSizeScalingFactor<IndVarType>)
   > : std::false_type{};
 
 template <class T, class IndVarType>
 struct step_size_policy_with_reduc_taking_dt_by_ref<
   STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType>, \
 						    StepSizeMin<IndVarType> &, \
-						    StepSizeReduction<IndVarType> &)
+						    StepSizeScalingFactor<IndVarType> &)
   > : std::false_type{};
 
 template <class T, class IndVarType>
 struct step_size_policy_with_reduc_taking_dt_by_ref<
   STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType> &, \
 						    StepSizeMin<IndVarType> &, \
-						    StepSizeReduction<IndVarType>)
+						    StepSizeScalingFactor<IndVarType>)
   > : std::false_type{};
 
 template <class T, class IndVarType>
 struct step_size_policy_with_reduc_taking_dt_by_ref<
   STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType> &, \
 						    StepSizeMin<IndVarType> , \
-						    StepSizeReduction<IndVarType> &)
+						    StepSizeScalingFactor<IndVarType> &)
   > : std::false_type{};
 
 
@@ -190,7 +190,7 @@ struct StepSizePolicyWithReductionScheme<
 	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
 	std::declval< ::pressio::ode::StepSize<IndVarType> & >(),
 	std::declval< ::pressio::ode::StepSizeMin<IndVarType> & >(),
-	std::declval< ::pressio::ode::StepSizeReduction<IndVarType> & >()
+	std::declval< ::pressio::ode::StepSizeScalingFactor<IndVarType> & >()
 	)
        )
       >::value

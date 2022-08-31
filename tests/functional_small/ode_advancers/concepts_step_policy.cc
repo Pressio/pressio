@@ -37,7 +37,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> & /*unused*/,
 		    StepSizeMin<double> & /*unused*/,
-		    StepSizeReduction<double> & /*unused*/) const{}
+		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
   struct Policy2{
@@ -46,7 +46,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSizeMin<double> & /*unused*/,
 		    StepSize<double> & /*unused*/,
-		    StepSizeReduction<double> & /*unused*/) const{}
+		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
   struct Policy3{
@@ -54,7 +54,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSizeMin<double> & /*unused*/,
-		    StepSizeReduction<double> & /*unused*/,
+		    StepSizeScalingFactor<double> & /*unused*/,
 		    StepSize<double> & /*unused*/) const {}
   };
 
@@ -64,7 +64,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> /*unused*/,
 		    StepSizeMin<double> & /*unused*/,
-		    StepSizeReduction<double> & /*unused*/) const{}
+		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
   struct Policy5{
@@ -73,7 +73,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> & /*unused*/,
 		    StepSizeMin<double> /*unused*/,
-		    StepSizeReduction<double> & /*unused*/) const{}
+		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
   struct Policy6{
@@ -82,7 +82,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> & /*unused*/,
 		    StepSizeMin<double> & /*unused*/,
-		    StepSizeReduction<double> /*unused*/) const{}
+		    StepSizeScalingFactor<double> /*unused*/) const{}
   };
 
   struct Policy7{
@@ -91,7 +91,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> /*unused*/,
 		    StepSizeMin<double> /*unused*/,
-		    StepSizeReduction<double> & /*unused*/) const{}
+		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
   struct Policy8{
@@ -100,7 +100,7 @@ namespace{
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> /*unused*/,
 		    StepSizeMin<double> & /*unused*/,
-		    StepSizeReduction<double> /*unused*/) const{}
+		    StepSizeScalingFactor<double> /*unused*/) const{}
   };
 
 } //end anonym namespace

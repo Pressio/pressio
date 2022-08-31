@@ -1,11 +1,11 @@
 
-``StepSizePolicyWithReductionScheme``
-=====================================
+``StepSizePolicyWithScalingFactor``
+===================================
 
 This concept specifies that a type ``T`` represents a policy
 to set the step size
 to use at a given step as well as the logic on how to
-potentially "reduce" the step size if needed.
+potentially "reduce/scale" the step size for a given step.
 
 Syntax only
 -----------
@@ -30,7 +30,7 @@ Syntax only
 		  const pressio::ode::StepStartAt<typename T::time_type> & sst,
 		  pressio::ode::StepSize<IndepVarType> & dt,
 		  pressio::ode::StepSizeMin<IndepVarType> & dtMin,
-		  pressio::ode::StepSizeReduction<IndepVarType> & factor)
+		  pressio::ode::StepSizeScalingFactor<IndepVarType> & factor)
 	 {
 	   A(stepNumber, sst, dt, dtMin, factor);
 	 } &&

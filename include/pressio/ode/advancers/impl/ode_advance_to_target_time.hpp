@@ -117,7 +117,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 
   ::pressio::ode::StepSize<IndVarType> dt{0};
   ::pressio::ode::StepSizeMin<IndVarType> minDt{0};
-  ::pressio::ode::StepSizeReduction<IndVarType> dtReducFactor{1};
+  ::pressio::ode::StepSizeScalingFactor<IndVarType> dtScalingFactor{1};
 
   // observe initial condition
   observer(::pressio::ode::impl::stepZero, time, odeState);
@@ -133,14 +133,14 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
       PRESSIOLOG_DEBUG("callback dt policy");
       impl::call_dt_policy<enableTimeStepRecovery>(dtPolicy, stepWrap,
 						    ::pressio::ode::StepStartAt<IndVarType>(time),
-						    dt, minDt, dtReducFactor);
+						    dt, minDt, dtScalingFactor);
 
       if (dt.get() < minDt.get()){
 	throw std::runtime_error("The time step size cannot be smaller than the minimum value.");
       }
 
       if (enableTimeStepRecovery){
-	if (dtReducFactor.get() <= ::pressio::utils::Constants<IndVarType>::one()){
+	if (dtScalingFactor.get() <= ::pressio::utils::Constants<IndVarType>::one()){
 	  // need to change this to use some notion of identity
 	  throw std::runtime_error("The time step size reduction factor must be > 1.");
 	}
@@ -166,7 +166,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 	  }
 	  catch (::pressio::eh::TimeStepFailure const & e)
 	  {
-	    dt = dt.get()/dtReducFactor.get();
+	    dt = dt.get()/dtScalingFactor.get();
 	    if (dt.get() < minDt.get()){
 	      throw std::runtime_error("Violation of minimum time step while trying to recover time step");
 	    }

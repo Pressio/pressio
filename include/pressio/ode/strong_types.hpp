@@ -98,14 +98,14 @@ struct StepSizeMin{
 };
 
 template<class T>
-struct StepSizeReduction{
+struct StepSizeScalingFactor{
   using value_type = T;
   value_type value_{};
-  StepSizeReduction() = default;
-  constexpr explicit StepSizeReduction(value_type valueIn) : value_(std::move(valueIn)){}
+  StepSizeScalingFactor() = default;
+  constexpr explicit StepSizeScalingFactor(value_type valueIn) : value_(std::move(valueIn)){}
   constexpr value_type get() const { return value_; }
 
-  StepSizeReduction& operator= (const value_type& newVal){
+  StepSizeScalingFactor& operator= (const value_type& newVal){
     value_ = newVal;
     return *this;
   }

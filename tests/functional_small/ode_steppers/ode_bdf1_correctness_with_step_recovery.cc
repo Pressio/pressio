@@ -145,7 +145,7 @@ int main()
 		      pressio::ode::StepStartAt<double> /*unused*/,
 		      pressio::ode::StepSize<double> & dt,
 		      pressio::ode::StepSizeMin<double> & minDt,
-		      pressio::ode::StepSizeReduction<double> & dtRedFactor)
+		      pressio::ode::StepSizeScalingFactor<double> & dtRedFactor)
   {
     dt = 0.1;
     minDt = 0.01;
