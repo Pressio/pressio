@@ -1,7 +1,0 @@
-
-add_subdirectory(lspg_normal_eq_reproducing)
-add_subdirectory(lspg_optimization_reproducing)
-
-add_subdirectory(lspg_normal_eq_predictive)
-add_subdirectory(lspg_precond_normal_eq_reproducing)
-
