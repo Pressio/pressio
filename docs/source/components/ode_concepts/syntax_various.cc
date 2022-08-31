@@ -50,7 +50,7 @@ class SyntaxOnly
     void operator()(pressio::ode::StepCount /**/,
                     pressio::ode::StepStartAt<IndepVarType> /**/,
                     pressio::ode::StepSize<IndepVarType> & /**/,
-                    pressio::ode::StepSizeMin<IndepVarType> & /**/,
+                    pressio::ode::StepSizeMinAllowedValue<IndepVarType> & /**/,
                     pressio::ode::StepSizeScalingFactor<IndepVarType> & /**/) const;
 };
 

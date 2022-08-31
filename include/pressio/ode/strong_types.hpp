@@ -84,14 +84,14 @@ struct StepSize{
 };
 
 template<class T>
-struct StepSizeMin{
+struct StepSizeMinAllowedValue{
   using value_type = T;
   value_type value_{};
-  StepSizeMin() = default;
-  constexpr explicit StepSizeMin(value_type valueIn) : value_(std::move(valueIn)){}
+  StepSizeMinAllowedValue() = default;
+  constexpr explicit StepSizeMinAllowedValue(value_type valueIn) : value_(std::move(valueIn)){}
   constexpr value_type get() const { return value_; }
 
-  StepSizeMin& operator= (const value_type& newVal){
+  StepSizeMinAllowedValue& operator= (const value_type& newVal){
     value_ = newVal;
     return *this;
   }

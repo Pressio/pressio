@@ -36,7 +36,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> & /*unused*/,
-		    StepSizeMin<double> & /*unused*/,
+		    StepSizeMinAllowedValue<double> & /*unused*/,
 		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
@@ -44,7 +44,7 @@ namespace{
     // wrong order
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
-		    StepSizeMin<double> & /*unused*/,
+		    StepSizeMinAllowedValue<double> & /*unused*/,
 		    StepSize<double> & /*unused*/,
 		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
@@ -53,7 +53,7 @@ namespace{
     // wrong order
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
-		    StepSizeMin<double> & /*unused*/,
+		    StepSizeMinAllowedValue<double> & /*unused*/,
 		    StepSizeScalingFactor<double> & /*unused*/,
 		    StepSize<double> & /*unused*/) const {}
   };
@@ -63,7 +63,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> /*unused*/,
-		    StepSizeMin<double> & /*unused*/,
+		    StepSizeMinAllowedValue<double> & /*unused*/,
 		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
@@ -72,7 +72,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> & /*unused*/,
-		    StepSizeMin<double> /*unused*/,
+		    StepSizeMinAllowedValue<double> /*unused*/,
 		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
@@ -81,7 +81,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> & /*unused*/,
-		    StepSizeMin<double> & /*unused*/,
+		    StepSizeMinAllowedValue<double> & /*unused*/,
 		    StepSizeScalingFactor<double> /*unused*/) const{}
   };
 
@@ -90,7 +90,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> /*unused*/,
-		    StepSizeMin<double> /*unused*/,
+		    StepSizeMinAllowedValue<double> /*unused*/,
 		    StepSizeScalingFactor<double> & /*unused*/) const{}
   };
 
@@ -99,7 +99,7 @@ namespace{
     void operator()(StepCount /*unused*/,
 		    StepStartAt<double> /*unused*/,
 		    StepSize<double> /*unused*/,
-		    StepSizeMin<double> & /*unused*/,
+		    StepSizeMinAllowedValue<double> & /*unused*/,
 		    StepSizeScalingFactor<double> /*unused*/) const{}
   };
 

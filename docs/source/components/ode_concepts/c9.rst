@@ -29,7 +29,7 @@ Syntax only
 		  pressio::ode::StepCount stepNumber,
 		  const pressio::ode::StepStartAt<typename T::time_type> & sst,
 		  pressio::ode::StepSize<IndepVarType> & dt,
-		  pressio::ode::StepSizeMin<IndepVarType> & dtMin,
+		  pressio::ode::StepSizeMinAllowedValue<IndepVarType> & dtMin,
 		  pressio::ode::StepSizeScalingFactor<IndepVarType> & factor)
 	 {
 	   A(stepNumber, sst, dt, dtMin, factor);

@@ -116,7 +116,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
   IndVarType time  = start_time;
 
   ::pressio::ode::StepSize<IndVarType> dt{0};
-  ::pressio::ode::StepSizeMin<IndVarType> minDt{0};
+  ::pressio::ode::StepSizeMinAllowedValue<IndVarType> minDt{0};
   ::pressio::ode::StepSizeScalingFactor<IndVarType> dtScalingFactor{1};
 
   // observe initial condition
