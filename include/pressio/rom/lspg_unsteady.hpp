@@ -3,6 +3,7 @@
 #define PRESSIO_ROM_LSPG_UNSTEADY_HPP_
 
 #include "./impl/lspg_unsteady_fom_states_manager.hpp"
+#include "./impl/lspg_unsteady_fully_discrete_system.hpp"
 #include "./impl/lspg_unsteady_rj_policy_default.hpp"
 #include "./impl/lspg_unsteady_rj_policy_hypred.hpp"
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
@@ -21,6 +22,47 @@ void valid_scheme_for_lspg_else_throw(::pressio::ode::StepScheme name){
 }//end impl
 
 namespace lspg{
+
+template<
+  std::size_t num_states,
+  class TrialSpaceType,
+  class FomSystemType
+>
+auto create_unsteady_problem(const TrialSpaceType & trialSpace,
+			     const FomSystemType & fomSystem)
+{
+
+  // sufficient to satisfy the TrialSubspace concept since
+  // the AffineSpace concept subsumes the TrialSubspace one
+  static_assert(TrialSubspace<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialSubspace concept");
+
+  static_assert(FullyDiscreteSystemWithJacobianAction<
+		FomSystemType, num_states, typename TrialSpaceType::basis_type>::value,
+		"FomSystemType does not meet the FullyDiscreteSystemWithJacobianAction concept");
+
+  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+		typename FomSystemType::state_type>::value == true,
+		"Mismatching fom states");
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using lspg_residual_type = typename FomSystemType::discrete_residual_type;
+  using lspg_jacobian_type = typename TrialSpaceType::basis_type;
+
+  using system_type = impl::LspgFullyDiscreteSystem<
+    num_states, independent_variable_type, reduced_state_type,
+    lspg_residual_type, lspg_jacobian_type,
+    TrialSpaceType, FomSystemType>;
+
+  using return_type = impl::LspgUnsteadyProblem<TrialSpaceType, system_type, num_states>;
+  return return_type(trialSpace, fomSystem);
+}
+
+
+
+
+
 
 template<
   class TrialSpaceType,

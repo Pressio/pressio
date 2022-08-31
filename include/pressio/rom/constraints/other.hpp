@@ -127,12 +127,12 @@ template<
   class T,
   class ReducedRhsType,
   class enable = void>
-struct UnsteadyExplicitGalerkinHyperReducer : std::false_type{};
+struct ExplicitGalerkinHyperReducer : std::false_type{};
 
 template<
   class T,
   class ReducedRhsType>
-struct UnsteadyExplicitGalerkinHyperReducer<
+struct ExplicitGalerkinHyperReducer<
   T, ReducedRhsType,
   mpl::enable_if_t<
        ::pressio::has_time_typedef<T>::value
@@ -156,16 +156,16 @@ template<
   class ReducedRhsType,
   class ReducedJacobianType,
   class enable = void>
-struct UnsteadyImplicitGalerkinHyperReducer : std::false_type{};
+struct ImplicitGalerkinHyperReducer : std::false_type{};
 
 template<
   class T,
   class ReducedRhsType,
   class ReducedJacobianType>
-struct UnsteadyImplicitGalerkinHyperReducer<
+struct ImplicitGalerkinHyperReducer<
   T, ReducedRhsType, ReducedJacobianType,
   mpl::enable_if_t<
-       UnsteadyExplicitGalerkinHyperReducer<T, ReducedRhsType>::value
+       ExplicitGalerkinHyperReducer<T, ReducedRhsType>::value
     && ::pressio::has_jacobian_action_operand_typedef<T>::value
     && std::is_void<
 	decltype

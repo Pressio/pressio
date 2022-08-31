@@ -354,5 +354,96 @@ struct has_const_create_apply_mass_matrix_result_method_accept_operand_return_re
   > : std::true_type{};
 // ---------------------------------------------------------------
 
+
+template <
+  class T, int n,
+  class StepType, class IndVarType, class state_t,
+  class ManifoldJacobian,
+  class ResidualType,
+  class JacobianType,
+  class = void
+  >
+struct has_const_discrete_residual_jacobian_action_method
+  : std::false_type{};
+
+template <
+  class T, class StepType, class IndVarType, class state_t,
+  class ManifoldJacobian, class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_action_method<
+  T, 1, StepType, IndVarType, state_t, ManifoldJacobian, ResidualType, JacobianType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().discreteResidualAndJacobian
+       (
+	std::declval<StepType const &>(),
+	std::declval<IndVarType const &>(),
+	std::declval<IndVarType const &>(),
+	std::declval<ResidualType &>(),
+	std::declval<ManifoldJacobian const &>(),
+	std::declval<bool>(),
+	std::declval<JacobianType &>(),
+	std::declval<state_t const&>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+template <
+  class T, class StepType, class IndVarType, class state_t,
+  class ManifoldJacobian, class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_action_method<
+  T, 2, StepType, IndVarType, state_t, ManifoldJacobian, ResidualType, JacobianType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().discreteResidualAndJacobian
+       (
+	std::declval<StepType const &>(),
+	std::declval<IndVarType const &>(),
+	std::declval<IndVarType const &>(),
+	std::declval<ResidualType &>(),
+	std::declval<ManifoldJacobian const &>(),
+	std::declval<bool>(),
+	std::declval<JacobianType &>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+template <
+  class T, class StepType, class IndVarType, class state_t,
+  class ManifoldJacobian, class ResidualType, class JacobianType>
+struct has_const_discrete_residual_jacobian_action_method<
+  T, 3, StepType, IndVarType, state_t, ManifoldJacobian, ResidualType, JacobianType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().discreteResidualAndJacobian
+       (
+	std::declval<StepType const &>(),
+	std::declval<IndVarType const &>(),
+	std::declval<IndVarType const &>(),
+	std::declval<ResidualType &>(),
+	std::declval<ManifoldJacobian const &>(),
+	std::declval<bool>(),
+	std::declval<JacobianType &>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+
 }} // end pressio::rom
 #endif

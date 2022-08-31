@@ -204,6 +204,29 @@ auto create_lspg_fom_states_manager(::pressio::ode::StepScheme name,
   }
 }
 
+template <std::size_t N, class ManifoldType>
+auto create_lspg_fom_states_manager(const ManifoldType & manifold)
+{
+  using return_type = LspgFomStatesManager<ManifoldType>;
+
+  auto fomStateTmp = manifold.createFullState();
+
+  if (N == 2){
+    return return_type(manifold,
+		       {::pressio::ops::clone(fomStateTmp),
+			::pressio::ops::clone(fomStateTmp)});
+  }
+  else if (N==3){
+    return return_type(manifold,
+		       {::pressio::ops::clone(fomStateTmp),
+			::pressio::ops::clone(fomStateTmp),
+			::pressio::ops::clone(fomStateTmp)});
+  }
+  else{
+    throw std::runtime_error("Unsteady LSPG prob members: Invalid case");
+  }
+}
+
 }}}//end namespace pressio::rom::impl
 
 #endif  // ROM_ROM_MANAGER_FOM_STATES_HPP_

@@ -101,28 +101,138 @@ struct SemiDiscreteFomWithJacobianAction<
 	 T, typename T::state_type, ManifoldJacType, typename T::time_type,
 	 // use decltype to deduce the return type of the jac action method
 	 decltype(
-		  std::declval<T const>().createApplyJacobianResult(
-								    std::declval<ManifoldJacType const &>()
-								    )
+		  std::declval<T const>().createApplyJacobianResult
+		  (
+		   std::declval<ManifoldJacType const &>()
+		   )
 		  )
 	 >::value
     && std::is_copy_constructible<
 	 decltype(
-		  std::declval<T const>().createApplyJacobianResult(
-								    std::declval<ManifoldJacType const &>()
-								    )
+		  std::declval<T const>().createApplyJacobianResult
+		  (
+		   std::declval<ManifoldJacType const &>()
+		   )
 		  )
 	 >::value
     && ::pressio::VectorSpaceElementsWithSameField<
 	 typename T::state_type,
          decltype(
-		  std::declval<T const>().createApplyJacobianResult(
-								    std::declval<ManifoldJacType const &>()
-								    )
+		  std::declval<T const>().createApplyJacobianResult
+		  (
+		   std::declval<ManifoldJacType const &>()
+		   )
 		  )
 	 >::value
     >
   > : std::true_type{};
+
+
+//
+// steady fom
+//
+template<class T, class ManifoldJacType, class enable = void>
+struct SteadyFomWithJacobianAction : std::false_type{};
+
+template<class T, class ManifoldJacType>
+struct SteadyFomWithJacobianAction<
+  T, ManifoldJacType,
+  mpl::enable_if_t<
+       ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_residual_typedef<T>::value
+    //
+    && std::is_copy_constructible<typename T::state_type>::value
+    && std::is_copy_constructible<typename T::residual_type>::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+      typename T::state_type, typename T::residual_type
+      >::value
+    //
+    && ::pressio::rom::has_const_create_residual_method_return_result<
+      T, typename T::residual_type >::value
+    && ::pressio::rom::has_const_residual_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::residual_type>::value
+    && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+	 T, ManifoldJacType>::value
+    && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
+	 T, typename T::state_type, ManifoldJacType,
+	 // use decltype to deduce the return type of the jac action method
+	 decltype(
+		  std::declval<T const>().createApplyJacobianResult
+		  (
+		   std::declval<ManifoldJacType const &>()
+		   )
+		  )
+	 >::value
+    && std::is_copy_constructible<
+	 decltype(
+		  std::declval<T const>().createApplyJacobianResult
+		  (
+		   std::declval<ManifoldJacType const &>()
+		   )
+		  )
+	 >::value
+    && ::pressio::VectorSpaceElementsWithSameField<
+	 typename T::state_type,
+         decltype(
+		  std::declval<T const>().createApplyJacobianResult
+		  (
+		   std::declval<ManifoldJacType const &>()
+		   )
+		  )
+	 >::value
+   >
+  > : std::true_type{};
+
+//
+// fully discrete
+//
+template<class T, int NumStates, class ManifoldJacType, class enable = void>
+struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
+
+template<class T, int NumStates, class ManifoldJacType>
+struct FullyDiscreteSystemWithJacobianAction<
+  T, NumStates, ManifoldJacType,
+  mpl::enable_if_t<
+       ::pressio::has_time_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_discrete_residual_typedef<T>::value
+    //
+    && mpl::is_same<
+	 typename T::discrete_residual_type,
+	 decltype(std::declval<T const>().createDiscreteTimeResidual())
+	 >::value
+    //
+    // && std::is_void<
+    // 	decltype
+    // 	(
+    // 	 std::declval<T const>().createResultOfDiscreteTimeJacobianAction
+    // 	 (
+    // 	  std::declval<ManifoldJacType const &>()
+    // 	  )
+    // 	 )
+    // 	>::value
+    // //
+    // && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+    // 	 T, NumStates, int,
+    // 	 typename T::independent_variable_type,
+    // 	 typename T::state_type,
+    // 	 typename T::discrete_residual_type,
+    // 	 ManifoldJacType,
+    // 	 decltype
+    // 	 (
+    // 	  std::declval<T const>().createResultOfDiscreteTimeJacobianAction
+    // 	  (
+    // 	   std::declval<ManifoldJacType const &>()
+    // 	   )
+    // 	 )
+    // 	 >::value
+    >
+  > : std::true_type{};
+
+}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
+
+
 
 // //
 // // rhs, mass matrix action
@@ -224,59 +334,3 @@ struct SemiDiscreteFomWithJacobianAction<
 //     && SemiDiscreteFomWithJacobianAction<T, ManifoldJacType>::value
 //     >
 //   > : std::true_type{};
-
-
-//
-// steady fom
-//
-template<class T, class ManifoldJacType, class enable = void>
-struct SteadyFomWithJacobianAction : std::false_type{};
-
-template<class T, class ManifoldJacType>
-struct SteadyFomWithJacobianAction<
-  T, ManifoldJacType,
-  mpl::enable_if_t<
-       ::pressio::has_state_typedef<T>::value
-    && ::pressio::has_residual_typedef<T>::value
-    //
-    && std::is_copy_constructible<typename T::state_type>::value
-    && std::is_copy_constructible<typename T::residual_type>::value
-    && ::pressio::VectorSpaceElementsWithSameField<
-      typename T::state_type, typename T::residual_type
-      >::value
-    //
-    && ::pressio::rom::has_const_create_residual_method_return_result<
-      T, typename T::residual_type >::value
-    && ::pressio::rom::has_const_residual_method_accept_state_result_return_void<
-      T, typename T::state_type, typename T::residual_type>::value
-    && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-	 T, ManifoldJacType>::value
-    && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-	 T, typename T::state_type, ManifoldJacType,
-	 // use decltype to deduce the return type of the jac action method
-	 decltype(
-		  std::declval<T const>().createApplyJacobianResult(
-								    std::declval<ManifoldJacType const &>()
-								    )
-		  )
-	 >::value
-    && std::is_copy_constructible<
-	 decltype(
-		  std::declval<T const>().createApplyJacobianResult(
-								    std::declval<ManifoldJacType const &>()
-								    )
-		  )
-	 >::value
-    && ::pressio::VectorSpaceElementsWithSameField<
-	 typename T::state_type,
-         decltype(
-		  std::declval<T const>().createApplyJacobianResult(
-								    std::declval<ManifoldJacType const &>()
-								    )
-		  )
-	 >::value
-   >
-  > : std::true_type{};
-
-}}
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
