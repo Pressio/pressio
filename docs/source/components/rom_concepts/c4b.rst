@@ -1,5 +1,5 @@
 
-``UnsteadyExplicitGalerkinHyperReducer``
+``ExplicitGalerkinHyperReducer``
 ========================================
 
 Syntax only

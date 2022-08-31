@@ -105,13 +105,13 @@ auto create_implicit_stepper(StepScheme name,
 }
 
 // num of states as template arg constructs the arbitrary stepper
-template<int NumStates, class SystemType>
+template<int TotalNumberOfDesiredStates, class SystemType>
 auto create_implicit_stepper(SystemType && system)
 {
   // the following should be a constraint
   using sys_type = std::decay_t<SystemType>;
   static_assert(::pressio::ode::FullyDiscreteSystemWithJacobian<
-		sys_type, NumStates>::value,
+		sys_type, TotalNumberOfDesiredStates>::value,
 		"The system passed does not meet the FullyDiscrete API");
 
   using sys_type = std::decay_t<SystemType>;
@@ -121,7 +121,7 @@ auto create_implicit_stepper(SystemType && system)
   using jacobian_type = typename sys_type::discrete_jacobian_type;
 
   using stepper_type = impl::StepperArbitrary<
-    NumStates, SystemType, independent_variable_type,
+    TotalNumberOfDesiredStates, SystemType, independent_variable_type,
     state_type, residual_type, jacobian_type
     >;
 

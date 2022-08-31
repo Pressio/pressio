@@ -1,6 +1,6 @@
 
-``UnsteadyImplicitGalerkinHyperReducer``
-========================================
+``ImplicitGalerkinHyperReducer``
+================================
 
 Syntax only
 -----------

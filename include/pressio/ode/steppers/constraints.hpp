@@ -172,7 +172,8 @@ struct FullyDiscreteSystemWithJacobian<
     && std::is_copy_constructible<typename T::discrete_residual_type>::value
     && std::is_copy_constructible<typename T::discrete_jacobian_type>::value
     && ::pressio::VectorSpaceElementsWithSameField<
-	 typename T::state_type, typename T::discrete_residual_type, typename T::discrete_jacobian_type
+	 typename T::state_type,
+	 typename T::discrete_residual_type, typename T::discrete_jacobian_type
 	 >::value
     && std::is_convertible<
 	 typename T::independent_variable_type,
@@ -188,7 +189,9 @@ struct FullyDiscreteSystemWithJacobian<
       T, typename T::discrete_jacobian_type>::value
     //
     && ::pressio::ode::has_const_discrete_residual_jacobian_method<
-      T, NumStates, int, typename T::independent_variable_type, typename T::state_type,
+      T, NumStates,
+      typename ::pressio::ode::StepCount::value_type,
+      typename T::independent_variable_type, typename T::state_type,
       typename T::discrete_residual_type, typename T::discrete_jacobian_type>::value
     >
   > : std::true_type{};

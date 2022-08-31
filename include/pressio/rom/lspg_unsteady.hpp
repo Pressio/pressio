@@ -24,7 +24,7 @@ void valid_scheme_for_lspg_else_throw(::pressio::ode::StepScheme name){
 namespace lspg{
 
 template<
-  std::size_t num_states,
+  std::size_t TotalNumberOfDesiredStates,
   class TrialSpaceType,
   class FomSystemType
 >
@@ -32,13 +32,17 @@ auto create_unsteady_problem(const TrialSpaceType & trialSpace,
 			     const FomSystemType & fomSystem)
 {
 
+  static_assert(TotalNumberOfDesiredStates == 2 ||
+		TotalNumberOfDesiredStates == 3,
+		"TotalNumberOfDesiredState must be 2, 3");
+
   // sufficient to satisfy the TrialSubspace concept since
   // the AffineSpace concept subsumes the TrialSubspace one
   static_assert(TrialSubspace<TrialSpaceType>::value,
 		"TrialSpaceType does not meet the TrialSubspace concept");
 
   static_assert(FullyDiscreteSystemWithJacobianAction<
-		FomSystemType, num_states, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, TotalNumberOfDesiredStates, typename TrialSpaceType::basis_type>::value,
 		"FomSystemType does not meet the FullyDiscreteSystemWithJacobianAction concept");
 
   static_assert(std::is_same<typename TrialSpaceType::full_state_type,
@@ -51,17 +55,14 @@ auto create_unsteady_problem(const TrialSpaceType & trialSpace,
   using lspg_jacobian_type = typename TrialSpaceType::basis_type;
 
   using system_type = impl::LspgFullyDiscreteSystem<
-    num_states, independent_variable_type, reduced_state_type,
+    TotalNumberOfDesiredStates, independent_variable_type, reduced_state_type,
     lspg_residual_type, lspg_jacobian_type,
     TrialSpaceType, FomSystemType>;
 
-  using return_type = impl::LspgUnsteadyProblem<TrialSpaceType, system_type, num_states>;
+  using return_type = impl::LspgUnsteadyProblemFullyDiscreteAPI<
+    TotalNumberOfDesiredStates, TrialSpaceType, system_type>;
   return return_type(trialSpace, fomSystem);
 }
-
-
-
-
 
 
 template<
@@ -104,7 +105,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
     lspg_residual_type, lspg_jacobian_type,
     TrialSpaceType, FomSystemType>;
 
-  using return_type = impl::LspgUnsteadyProblem<TrialSpaceType, rj_policy_type>;
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSpaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem);
 }
 
@@ -149,7 +150,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
     lspg_residual_type, lspg_jacobian_type,
     TrialSpaceType, FomSystemType, HypRedUpdaterType>;
 
-  using return_type = impl::LspgUnsteadyProblem<TrialSpaceType, rj_policy_type>;
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSpaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem, hypRedUpdater);
 }
 
@@ -222,7 +223,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
       >
     >;
 
-  using return_type = impl::LspgUnsteadyProblem<TrialSpaceType, rj_policy_type>;
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSpaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem, rMasker, jaMasker);
 }
 

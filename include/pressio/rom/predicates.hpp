@@ -356,26 +356,28 @@ struct has_const_create_apply_mass_matrix_result_method_accept_operand_return_re
 
 
 template <
-  class T, int n,
-  class StepType, class IndVarType, class state_t,
-  class ManifoldJacobian,
+  class T,
+  int n,
+  class StepType,
+  class IndVarType,
+  class StateType,
   class ResidualType,
+  class ManifoldJacobian,
   class JacobianType,
   class = void
   >
-struct has_const_discrete_residual_jacobian_action_method
-  : std::false_type{};
+struct has_const_discrete_residual_jacobian_action_method : std::false_type{};
 
 template <
-  class T, class StepType, class IndVarType, class state_t,
-  class ManifoldJacobian, class ResidualType, class JacobianType>
+  class T, class StepType, class IndVarType, class StateType,
+  class ResidualType, class ManifoldJacobian, class JacobianType>
 struct has_const_discrete_residual_jacobian_action_method<
-  T, 1, StepType, IndVarType, state_t, ManifoldJacobian, ResidualType, JacobianType,
+  T, 1, StepType, IndVarType, StateType, ResidualType, ManifoldJacobian, JacobianType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().discreteResidualAndJacobian
+       std::declval<T const>().discreteTimeResidualAndJacobianAction
        (
 	std::declval<StepType const &>(),
 	std::declval<IndVarType const &>(),
@@ -384,7 +386,7 @@ struct has_const_discrete_residual_jacobian_action_method<
 	std::declval<ManifoldJacobian const &>(),
 	std::declval<bool>(),
 	std::declval<JacobianType &>(),
-	std::declval<state_t const&>()
+	std::declval<StateType const&>()
 	)
        )
       >::value
@@ -392,56 +394,56 @@ struct has_const_discrete_residual_jacobian_action_method<
   > : std::true_type{};
 
 template <
-  class T, class StepType, class IndVarType, class state_t,
-  class ManifoldJacobian, class ResidualType, class JacobianType>
+  class T, class StepType, class IndVarType, class StateType,
+  class ResidualType, class ManifoldJacobian, class JacobianType>
 struct has_const_discrete_residual_jacobian_action_method<
-  T, 2, StepType, IndVarType, state_t, ManifoldJacobian, ResidualType, JacobianType,
+  T, 2, StepType, IndVarType, StateType, ResidualType, ManifoldJacobian, JacobianType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().discreteResidualAndJacobian
-       (
-	std::declval<StepType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<ResidualType &>(),
-	std::declval<ManifoldJacobian const &>(),
-	std::declval<bool>(),
-	std::declval<JacobianType &>(),
-	std::declval<state_t const&>(),
-	std::declval<state_t const&>()
-	)
+      std::declval<T const>().discreteTimeResidualAndJacobianAction
+      (
+       std::declval<StepType const &>(),
+       std::declval<IndVarType const &>(),
+       std::declval<IndVarType const &>(),
+       std::declval<ResidualType &>(),
+       std::declval<ManifoldJacobian const &>(),
+       std::declval<bool>(),
+       std::declval<JacobianType &>(),
+       std::declval<StateType const&>(),
+       std::declval<StateType const&>()
+       )
        )
       >::value
-    >
+  >
   > : std::true_type{};
 
 template <
-  class T, class StepType, class IndVarType, class state_t,
-  class ManifoldJacobian, class ResidualType, class JacobianType>
+  class T, class StepType, class IndVarType, class StateType,
+  class ResidualType, class ManifoldJacobian, class JacobianType>
 struct has_const_discrete_residual_jacobian_action_method<
-  T, 3, StepType, IndVarType, state_t, ManifoldJacobian, ResidualType, JacobianType,
+  T, 3, StepType, IndVarType, StateType, ResidualType, ManifoldJacobian, JacobianType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().discreteResidualAndJacobian
-       (
-	std::declval<StepType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<ResidualType &>(),
-	std::declval<ManifoldJacobian const &>(),
-	std::declval<bool>(),
-	std::declval<JacobianType &>(),
-	std::declval<state_t const&>(),
-	std::declval<state_t const&>(),
-	std::declval<state_t const&>()
-	)
+      std::declval<T const>().discreteTimeResidualAndJacobianAction
+      (
+       std::declval<StepType const &>(),
+       std::declval<IndVarType const &>(),
+       std::declval<IndVarType const &>(),
+       std::declval<ResidualType &>(),
+       std::declval<ManifoldJacobian const &>(),
+       std::declval<bool>(),
+       std::declval<JacobianType &>(),
+       std::declval<StateType const&>(),
+       std::declval<StateType const&>(),
+       std::declval<StateType const&>()
        )
-      >::value
-    >
+       )
+  >::value
+  >
   > : std::true_type{};
 
 

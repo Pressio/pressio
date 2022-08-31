@@ -104,12 +104,12 @@ public:
 
   discrete_jacobian_type createDiscreteJacobian() const{
     const auto phi = trialSpace_.get().viewBasis();
-    discrete_jacobian_type J(fomSystem_.get().createResultOfDiscreteTimeJacobianAction(phi));
+    discrete_jacobian_type J(fomSystem_.get().createResultOfDiscreteTimeJacobianActionOn(phi));
     return J;
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< _n==2 >
+  mpl::enable_if_t< (_n==2) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
@@ -136,7 +136,7 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< _n==3 >
+  mpl::enable_if_t< (_n==3) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
@@ -164,7 +164,6 @@ public:
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
-
 
 private:
   void doFomStatesReconstruction(const int32_t & step_number,

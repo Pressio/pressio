@@ -5,6 +5,6 @@
 Syntax only
 -----------
 
-.. literalinclude:: ./syntax_only_for_all_concepts.cc
+.. literalinclude:: ./syntax_various.cc
    :language: cpp
-   :lines: 262-283
+   :lines: 77-98

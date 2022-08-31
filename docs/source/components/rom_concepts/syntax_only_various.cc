@@ -3,7 +3,7 @@
 // we put the syntax and use it easily in other places
 // without duplicating things
 
-struct SteadyGalerkinHyperReductionOperator
+struct SyntaxOnly
 {
   using residual_operand_type = /* ... */;
   using jacobian_action_operand_type  = /* ... */;
@@ -15,7 +15,7 @@ struct SteadyGalerkinHyperReductionOperator
   void operator()(const jacobian_action_operand_type &, ResultType &) const;
 }
 
-struct UnsteadyGalerkinRhsHyperReductionOperator
+struct SyntaxOnly
 {
   using time_type = /* ... */;
   using right_hand_side_operand_type = /* ... */;
@@ -24,7 +24,7 @@ struct UnsteadyGalerkinRhsHyperReductionOperator
   void operator()(const right_hand_side_operand_type &, const time_type &, ResultType &) const;
 }
 
-struct UnsteadyGalerkinRhsAndJacobianHyperReductionOperator
+struct SyntaxOnly
 {
   using time_type = /* ... */;
   using right_hand_side_operand_type = /* ... */;

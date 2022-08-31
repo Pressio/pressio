@@ -8,9 +8,9 @@ a policy to set the step size to use to take a step.
 Syntax only
 -----------
 
-.. literalinclude:: ./syntax_only_for_all_concepts.cc
+.. literalinclude:: ./syntax_various.cc
    :language: cpp
-   :lines: 224-231
+   :lines: 36-43
 
 ..
    Full concept

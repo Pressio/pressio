@@ -62,31 +62,39 @@ class SyntaxOnly
 };
 
 
-// struct SyntaxOnly
-// {
-//   using time_type = /* ... */;
-//   using state_type                = /* ... */;
-//   using discrete_residual_type    = /* ... */;
+struct SyntaxOnly
+{
+  using time_type              = /* ... */;
+  using state_type             = /* ... */;
+  using discrete_residual_type = /* ... */;
 
-//   state_type createState() const;
-//   discrete_residual_type createDiscreteResidual() const;
+  discrete_residual_type createDiscreteTimeResidual() const;
 
-//   template<class BasisType>
-//   operand_t createResultOfDiscreteTimeJacobianActionOn(const BasisType &) const;
+  template<class BasisType>
+  /* return type */ createResultOfDiscreteTimeJacobianActionOn(const BasisType &) const;
 
-//   // accepting 2 states
-//   template<class StepCountType>
-//   void discreteResidual(StepCountType,
-//                         const time_type & /**/,
-//                         const time_type & /**/,
-//                         discrete_residual_type & /**/,
-//                         const state_type & /**/,
-// 			const state_type & /**/) const;
+  // accepting 2 states
+  template<class StepCountType>
+  void discreteTimeResidualAndJacobianAction(StepCountType /*stepCount*/,
+					     const time_type & /*t_n+1*/,
+					     const time_type & /*dt*/,
+					     discrete_residual_type & /*R*/,
+					     const /* basis type */ &,
+					     bool computeJacobianAction,
+					     /* jacobian action result's type */ &,
+					     const state_type & /*y_n+1*/,
+					     const state_type & /*y_n*/) const;
 
-//   template<class StepCountType, class BasisType>
-//   void applyDiscreteJacobian(...)
-
-//   // accepting 3 states
-
-//   // accepting 4 states
-// };
+  // accepting 3 states
+  template<class StepCountType>
+  void discreteTimeResidualAndJacobianAction(StepCountType /*stepCount*/,
+					     const time_type & /*t_n+1*/,
+					     const time_type & /*dt*/,
+					     discrete_residual_type & /*R*/,
+					     const /* basis type */ &,
+					     bool computeJacobianAction,
+					     /* jacobian action result's type */ &,
+					     const state_type & /*y_n+1*/,
+					     const state_type & /*y_n*/,
+					     const state_type & /*y_n-1*/) const;
+};

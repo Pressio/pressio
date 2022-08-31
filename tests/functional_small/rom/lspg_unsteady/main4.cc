@@ -230,7 +230,7 @@ public:
     return discrete_residual_type(N_);
   }
 
-  phi_type createResultOfDiscreteTimeJacobianAction(const phi_type & B) const{
+  phi_type createResultOfDiscreteTimeJacobianActionOn(const phi_type & B) const{
     return phi_type(N_, B.cols());
   }
 
@@ -243,7 +243,7 @@ public:
                               bool computeJac, 
                               phi_type & JA,
                               const state_type & y_np1,
-                              const state_type & y_n) const
+                              const state_type & y_n ) const
   {
     discrete_residual_type f(R.size());
     f.setZero();

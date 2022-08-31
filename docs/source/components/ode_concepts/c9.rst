@@ -10,9 +10,9 @@ potentially "reduce" the step size if needed.
 Syntax only
 -----------
 
-.. literalinclude:: ./syntax_only_for_all_concepts.cc
+.. literalinclude:: ./syntax_various.cc
    :language: cpp
-   :lines: 233-242
+   :lines: 46-55
 
 ..
    Full concept

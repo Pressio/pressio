@@ -2,12 +2,6 @@
 ``ConstantMassMatrixOperator``
 ==============================
 
-.. code-block:: cpp
-
-   struct SyntaxOnly
-   {
-     using mass_matrix_type = /* your type */;
-
-     mass_matrix_type createMassMatrix() const;
-     void massMatrix(mass_matrix_type &) const;
-   };
+.. literalinclude:: ./syntax_mass_matrix_operator_concepts.cc
+   :language: cpp
+   :lines: 19-25

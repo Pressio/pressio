@@ -201,136 +201,33 @@ struct FullyDiscreteSystemWithJacobianAction<
 	 typename T::discrete_residual_type,
 	 decltype(std::declval<T const>().createDiscreteTimeResidual())
 	 >::value
-    //
-    // && std::is_void<
-    // 	decltype
-    // 	(
-    // 	 std::declval<T const>().createResultOfDiscreteTimeJacobianAction
-    // 	 (
-    // 	  std::declval<ManifoldJacType const &>()
-    // 	  )
-    // 	 )
-    // 	>::value
-    // //
-    // && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
-    // 	 T, NumStates, int,
-    // 	 typename T::independent_variable_type,
-    // 	 typename T::state_type,
-    // 	 typename T::discrete_residual_type,
-    // 	 ManifoldJacType,
-    // 	 decltype
-    // 	 (
-    // 	  std::declval<T const>().createResultOfDiscreteTimeJacobianAction
-    // 	  (
-    // 	   std::declval<ManifoldJacType const &>()
-    // 	   )
-    // 	 )
-    // 	 >::value
+    && !std::is_void<
+	decltype
+	(
+	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+	 (
+	  std::declval<ManifoldJacType const &>()
+	  )
+	 )
+	>::value
+
+    && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+	 T, NumStates,
+         typename ::pressio::ode::StepCount::value_type,
+	 typename T::time_type,
+	 typename T::state_type,
+	 typename T::discrete_residual_type,
+	 ManifoldJacType,
+	 decltype
+	 (
+	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+	 (
+	 std::declval<ManifoldJacType const &>()
+	 )
+	 )
+	 >::value
     >
   > : std::true_type{};
 
 }}
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
-
-
-
-// //
-// // rhs, mass matrix action
-// // need to detect what is the type of the MM action
-// //
-// template<class T, class ManifoldJacType, class enable = void>
-// struct SemiDiscreteFomWithMassMatrixAction : std::false_type{};
-
-// template<class T, class ManifoldJacType>
-// struct SemiDiscreteFomWithMassMatrixAction<
-//   T, ManifoldJacType,
-//   mpl::enable_if_t<
-//        SemiDiscreteFom<T>::value
-//     //
-//     && ::pressio::rom::has_const_create_apply_mass_matrix_result_method_accept_operand_return_result<
-// 	 T, ManifoldJacType>::value
-//     && ::pressio::rom::has_const_apply_mass_matrix_method_accept_state_operand_time_result_return_void<
-// 	 T, typename T::state_type, ManifoldJacType, typename T::time_type,
-// 	 // use decltype to deduce the return type of the jac action method
-// 	 decltype(
-// 		  std::declval<T const>().createApplyMassMatrixResult(
-// 								      std::declval<ManifoldJacType const &>()
-// 								      )
-// 		  )
-// 	 >::value
-//     && std::is_copy_constructible<
-// 	 decltype(
-// 		  std::declval<T const>().createApplyMassMatrixResult(
-// 								      std::declval<ManifoldJacType const &>()
-// 								      )
-// 		  )
-// 	 >::value
-//     && ::pressio::VectorSpaceElementsWithSameField<
-// 	 typename T::state_type,
-//          decltype(
-// 		  std::declval<T const>().createApplyMassMatrixResult(
-// 								      std::declval<ManifoldJacType const &>()
-// 								      )
-// 		  )
-// 	 >::value
-//     >
-//   > : std::true_type{};
-
-// //
-// // rhs, constant mass matrix action
-// // need to detect what is the type of the MM action
-// //
-// template<class T, class ManifoldJacType, class enable = void>
-// struct SemiDiscreteFomWithConstantMassMatrixAction : std::false_type{};
-
-// template<class T, class ManifoldJacType>
-// struct SemiDiscreteFomWithConstantMassMatrixAction<
-//   T, ManifoldJacType,
-//   mpl::enable_if_t<
-//        SemiDiscreteFom<T>::value
-//     //
-//     && ::pressio::rom::has_const_create_apply_mass_matrix_result_method_accept_operand_return_result<
-// 	 T, ManifoldJacType>::value
-//     && ::pressio::rom::has_const_apply_mass_matrix_method_accept_operand_result_return_void<
-// 	 T, ManifoldJacType,
-// 	 // use decltype to deduce the return type of the jac action method
-// 	 decltype(
-// 		  std::declval<T const>().createApplyMassMatrixResult(
-// 								      std::declval<ManifoldJacType const &>()
-// 								      )
-// 		  )
-// 	 >::value
-//     && std::is_copy_constructible<
-// 	 decltype(
-// 		  std::declval<T const>().createApplyMassMatrixResult(
-// 								      std::declval<ManifoldJacType const &>()
-// 								      )
-// 		  )
-// 	 >::value
-//     && ::pressio::VectorSpaceElementsWithSameField<
-// 	 typename T::state_type,
-//          decltype(
-// 		  std::declval<T const>().createApplyMassMatrixResult(
-// 								      std::declval<ManifoldJacType const &>()
-// 								      )
-// 		  )
-// 	 >::value
-//     >
-//   > : std::true_type{};
-
-
-// //
-// // rhs, mass matrix action
-// // need to detect what is the type of the MM action
-// //
-// template<class T, class ManifoldJacType, class enable = void>
-// struct SemiDiscreteFomComplete : std::false_type{};
-
-// template<class T, class ManifoldJacType>
-// struct SemiDiscreteFomComplete<
-//   T, ManifoldJacType,
-//   mpl::enable_if_t<
-//        SemiDiscreteFomWithMassMatrixAction<T, ManifoldJacType>::value
-//     && SemiDiscreteFomWithJacobianAction<T, ManifoldJacType>::value
-//     >
-//   > : std::true_type{};

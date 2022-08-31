@@ -5,7 +5,7 @@
 Syntax only
 -----------
 
-.. literalinclude:: ./syntax_only_for_all_concepts.cc
+.. literalinclude:: ./syntax_system_concepts.cc
    :language: cpp
    :lines: 20-38
 

@@ -76,7 +76,7 @@ public:
 private:
   IndVarType rhsEvaluationTime_  = {};
   IndVarType dt_ = {};
-  int32_t stepNumber_  = {};
+  typename StepCount::value_type stepNumber_  = {};
 
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   stencil_states_t stencilStates_;
@@ -104,6 +104,31 @@ public:
 
   jacobian_type createJacobian() const{
     return systemObj_.get().createDiscreteJacobian();
+  }
+
+  template<class SolverType, class ...Args>
+  void operator()(StateType & odeState,
+		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
+		  ::pressio::ode::StepCount stepNumber,
+		  const ::pressio::ode::StepSize<independent_variable_type> & stepSize,
+		  SolverType & solver,
+		  Args && ...args)
+  {
+    PRESSIOLOG_DEBUG("arbitrary stepper: do step");
+    dt_ = stepSize.get();
+    rhsEvaluationTime_ = stepStartVal.get() + dt_;
+    stepNumber_ = stepNumber.get();
+
+    updateAuxiliaryStorage<numAuxStates>(odeState);
+
+    try{
+      solver.solve(*this, odeState, std::forward<Args>(args)...);
+    }
+    catch (::pressio::eh::NonlinearSolveFailure const & e)
+    {
+      rollBackStates<numAuxStates>(odeState);
+      throw ::pressio::eh::TimeStepFailure();
+    }
   }
 
   // 1 aux states, 2 total states
@@ -166,31 +191,6 @@ public:
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
-    }
-  }
-
-  template<class SolverType, class ...Args>
-  void operator()(StateType & odeState,
-		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
-		  ::pressio::ode::StepCount stepNumber,
-		  const ::pressio::ode::StepSize<independent_variable_type> & stepSize,
-		  SolverType & solver,
-		  Args && ...args)
-  {
-    PRESSIOLOG_DEBUG("arbitrary stepper: do step");
-    dt_ = stepSize.get();
-    rhsEvaluationTime_ = stepStartVal.get() + dt_;
-    stepNumber_ = stepNumber.get();
-
-    updateAuxiliaryStorage<numAuxStates>(odeState);
-
-    try{
-      solver.solve(*this, odeState, std::forward<Args>(args)...);
-    }
-    catch (::pressio::eh::NonlinearSolveFailure const & e)
-    {
-      rollBackStates<numAuxStates>(odeState);
-      throw ::pressio::eh::TimeStepFailure();
     }
   }
 
@@ -267,34 +267,3 @@ private:
 
 }}}
 #endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
-
-
-  // template< std::size_t _numAuxStates = numAuxStates>
-  // mpl::enable_if_t< _numAuxStates==1 >
-  // jacobian(const state_type & odeState, jacobian_type & J) const
-  // {
-  //   const auto & yn = stencilStates_(ode::n());
-  //   systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
-  //     dt_, J, odeState, yn);
-  // }
-
-  // template< std::size_t _numAuxStates = numAuxStates>
-  // mpl::enable_if_t< _numAuxStates==2 >
-  // jacobian(const state_type & odeState, jacobian_type & J) const
-  // {
-  //   const auto & yn = stencilStates_(ode::n());
-  //   const auto & ynm1 = stencilStates_(ode::nMinusOne());
-  //   systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
-  //     dt_, J, odeState, yn, ynm1);
-  // }
-
-  // template< std::size_t _numAuxStates = numAuxStates>
-  // mpl::enable_if_t< _numAuxStates==3 >
-  // jacobian(const state_type & odeState, jacobian_type & J) const
-  // {
-  //   const auto & yn = stencilStates_(ode::n());
-  //   const auto & ynm1 = stencilStates_(ode::nMinusOne());
-  //   const auto & ynm2 = stencilStates_(ode::nMinusTwo());
-  //   systemObj_.get().template discreteJacobian(stepNumber_, rhsEvaluationTime_,
-  //     dt_, J, odeState, yn, ynm1, ynm2);
-  // }

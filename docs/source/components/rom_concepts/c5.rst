@@ -7,4 +7,4 @@ Syntax only
 
 .. literalinclude:: ./syntax_only_fom_system_concepts.cc
    :language: cpp
-   :lines: 1-3
+   :lines: 65-100

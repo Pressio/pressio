@@ -9,9 +9,9 @@ a step is performed.
 Syntax only
 -----------
 
-.. literalinclude:: ./syntax_only_for_all_concepts.cc
+.. literalinclude:: ./syntax_various.cc
    :language: cpp
-   :lines: 253-260
+   :lines: 68-75
 
 ..
    Full concept
