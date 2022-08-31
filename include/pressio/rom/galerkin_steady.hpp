@@ -80,9 +80,9 @@ auto create_steady_problem(const TrialSpaceType & trialSpace,
   using reduced_jac_type = typename
     impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
-  static_assert(SteadyGalerkinHyperReductionOperator<
+  static_assert(SteadyGalerkinHyperReducer<
 		HyperReductionOperatorType, reduced_residual_type, reduced_jac_type>::value,
-		"HyperReductionOperatorType does not meet the SteadyGalerkinHyperReductionOperator");
+		"HyperReductionOperatorType does not meet the SteadyGalerkinHyperReducer");
 
   using return_type = impl::GalerkinSteadyHypRedSystem<
     reduced_state_type, reduced_residual_type, reduced_jac_type,
@@ -143,9 +143,9 @@ auto create_steady_problem(const TrialSpaceType & trialSpace,
     impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
   // the hr operator must meet the concept
-  static_assert(SteadyGalerkinHyperReductionOperator<
+  static_assert(SteadyGalerkinHyperReducer<
 		HyperReductionOperatorType, reduced_residual_type, reduced_jac_type>::value,
-		"HyperReductionOperatorType does not meet the SteadyGalerkinHyperReductionOperator");
+		"HyperReductionOperatorType does not meet the SteadyGalerkinHyperReducer");
   // the hr operator must operate on types that are consistent with
   // those deducible from the masker
   static_assert(std::is_same<

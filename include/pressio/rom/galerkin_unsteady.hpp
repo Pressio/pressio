@@ -158,9 +158,9 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
   using reduced_state_type = typename TrialSpaceType::reduced_state_type;
   using reduced_rhs_type = reduced_state_type;
 
-  static_assert(UnsteadyGalerkinRhsHyperReductionOperator<
+  static_assert(UnsteadyExplicitGalerkinHyperReducer<
 		HyperReductionOperatorType, reduced_rhs_type>::value,
-		"HyperReductionOperatorType does not meet the UnsteadyGalerkinRhsHyperReductionOperator");
+		"HyperReductionOperatorType does not meet the UnsteadyExplicitGalerkinHyperReducer");
 
   // the "system" implements the math
   using galerkin_system = impl::GalerkinHyperReducedOdeSystemOnlyRhs<
@@ -204,9 +204,9 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
   using reduced_jac_type = typename
     impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
-  static_assert(UnsteadyGalerkinRhsAndJacobianHyperReductionOperator<
+  static_assert(UnsteadyImplicitGalerkinHyperReducer<
 		HyperReductionOperatorType, reduced_residual_type, reduced_jac_type>::value,
-		"HyperReductionOperatorType does not meet the UnsteadyGalerkinRhsAndJacobianHyperReductionOperator");
+		"HyperReductionOperatorType does not meet the UnsteadyImplicitGalerkinHyperReducer");
 
   // the "system" implements the math
   using galerkin_system = impl::GalerkinHypRedOdeSystemRhsAndJacobian<
@@ -265,9 +265,9 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
   using reduced_state_type = typename TrialSpaceType::reduced_state_type;
   using reduced_rhs_type = reduced_state_type;
 
-  static_assert(UnsteadyGalerkinRhsHyperReductionOperator<
+  static_assert(UnsteadyExplicitGalerkinHyperReducer<
 		HyperReductionOperatorType, reduced_rhs_type>::value,
-		"HyperReductionOperatorType does not meet the UnsteadyGalerkinRhsHyperReductionOperator");
+		"HyperReductionOperatorType does not meet the UnsteadyExplicitGalerkinHyperReducer");
 
   // the "system" implements the math
   using galerkin_system = impl::GalerkinMaskedOdeSystemOnlyRhs<
@@ -336,9 +336,9 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
   using reduced_jac_type = typename
     impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
-  static_assert(UnsteadyGalerkinRhsAndJacobianHyperReductionOperator<
+  static_assert(UnsteadyImplicitGalerkinHyperReducer<
 		HyperReductionOperatorType, reduced_residual_type, reduced_jac_type>::value,
-		"HyperReductionOperatorType does not meet the UnsteadyGalerkinRhsAndJacobianHyperReductionOperator");
+		"HyperReductionOperatorType does not meet the UnsteadyImplicitGalerkinHyperReducer");
 
   // the hr operator must operate on types that are consistent with
   // those deducible from the masker
