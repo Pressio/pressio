@@ -12,7 +12,6 @@ struct MyFom
 
   MyFom(int N,  std::vector<int> ind): N_(N), indices_to_corrupt_(ind){}
 
-  state_type createState() const{ return state_type(N_); }
   residual_type createResidual() const{ return residual_type(N_); }
 
   Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{

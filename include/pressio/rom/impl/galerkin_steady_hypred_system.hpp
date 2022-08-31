@@ -49,7 +49,7 @@ public:
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       hrOp_(hrOp),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       fomResidual_(fomSystem.createResidual()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}

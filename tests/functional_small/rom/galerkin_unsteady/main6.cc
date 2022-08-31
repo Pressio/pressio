@@ -17,12 +17,6 @@ struct MyFom
     EXPECT_TRUE((std::size_t)N==(std::size_t)indices.size());
   }
 
-  state_type createState() const{
-    state_type s(nStencil_);
-    s.setConstant(0);
-    return s;
-  }
-
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>

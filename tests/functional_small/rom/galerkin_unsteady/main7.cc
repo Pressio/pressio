@@ -14,12 +14,6 @@ struct MyFom
   MyFom(int N, std::vector<int> ind)
     : N_(N), indices_to_corrupt_(ind){}
 
-  state_type createState() const{
-    state_type s(N_);
-    s.setConstant(0);
-    return s;
-  }
-
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>

@@ -28,7 +28,6 @@ struct System0{
   using state_type = FakeStateType;
   using right_hand_side_type = FakeRhsType;
 
-  state_type createState() const{ return state_type(); }
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
 
   void rightHandSide(const state_type & /*unused*/,
@@ -48,7 +47,6 @@ struct System1{
   using state_type = FakeStateType;
   using right_hand_side_type = FakeRhsType;
 
-  state_type createState() const{ return state_type(); }
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
 
   void rightHandSide(const state_type & /*unused*/,
@@ -68,7 +66,6 @@ struct System2{
   using state_type = FakeStateType;
   using right_hand_side_type = FakeRhsType;
 
-  state_type createState() const{ return state_type(); }
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(); }
 
   void rightHandSide(const state_type & /*unused*/,

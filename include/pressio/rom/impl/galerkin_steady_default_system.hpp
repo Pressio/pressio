@@ -46,7 +46,7 @@ public:
 			      const FomSystemType & fomSystem)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       fomResidual_(fomSystem.createResidual()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}

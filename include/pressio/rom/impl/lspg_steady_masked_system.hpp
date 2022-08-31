@@ -46,7 +46,7 @@ public:
 			 const JacobianActionMaskerType & jaMasker)
     : space_(space),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(space.createFullState()),
       rMasker_(rMasker),
       jaMasker_(jaMasker),
       unMaskedFomResidual_(fomSystem.createResidual()),

@@ -40,12 +40,6 @@ struct MyFom
 
   MyFom(){}
 
-  state_type createState() const{
-    state_type s(N);
-    s.setConstant(0);
-    return s;
-  }
-
   right_hand_side_type createRightHandSide() const{
     right_hand_side_type r(N);
     r.setConstant(0);

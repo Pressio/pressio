@@ -11,7 +11,6 @@ struct MyFom
 
   MyFom(int N): N_(N){}
 
-  state_type createState() const{ return state_type(N_); }
   residual_type createResidual() const{ return residual_type(N_); }
 
   Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{

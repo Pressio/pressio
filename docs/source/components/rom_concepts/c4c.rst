@@ -1,6 +1,6 @@
 
-``UnsteadyGalerkinRhsAndJacobianHyperReductionOperator``
-========================================================
+``UnsteadyImplicitGalerkinHyperReducer``
+========================================
 
 Syntax only
 -----------

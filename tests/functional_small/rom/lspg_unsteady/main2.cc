@@ -15,8 +15,6 @@ struct MyFom
   MyFom(std::vector<int> ind, int nstencil)
   : N_(ind.size()), indices_(ind), nstencil_(nstencil){}
 
-  state_type createState() const{ return state_type(N_); }
-
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>

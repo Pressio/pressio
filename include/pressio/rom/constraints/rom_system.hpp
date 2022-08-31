@@ -75,8 +75,6 @@ struct SemiDiscreteFom<
       typename ::pressio::Traits<typename T::state_type>::scalar_type
       >::value
     //
-    && ::pressio::ode::has_const_create_state_method_return_result<
-      T, typename T::state_type >::value
     && ::pressio::ode::has_const_create_rhs_method_return_result<
       T, typename T::right_hand_side_type >::value
     && ::pressio::ode::has_const_rhs_method_accept_state_indvar_result_return_void<
@@ -246,9 +244,6 @@ struct SteadyFomWithJacobianAction<
     && ::pressio::VectorSpaceElementsWithSameField<
       typename T::state_type, typename T::residual_type
       >::value
-    //
-    && ::pressio::ode::has_const_create_state_method_return_result<
-      T, typename T::state_type >::value
     //
     && ::pressio::rom::has_const_create_residual_method_return_result<
       T, typename T::residual_type >::value

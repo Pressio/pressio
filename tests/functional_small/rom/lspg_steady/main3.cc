@@ -15,7 +15,6 @@ struct MyFom
     : nSample_(nSample),
       nStencil_(nStencil){}
 
-  state_type createState() const{ return state_type(nStencil_); }
   residual_type createResidual() const{ return residual_type(nSample_); }
 
   Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{

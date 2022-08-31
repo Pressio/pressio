@@ -14,7 +14,6 @@ struct MyFom
   using state_type = FomStateType;
   using right_hand_side_type = FomRhsType;
 
-  state_type createState() const { return state_type{}; }
   right_hand_side_type createRightHandSide() const { return right_hand_side_type{}; }
   void rightHandSide(const state_type & u, time_type, right_hand_side_type & r) const{}
 };

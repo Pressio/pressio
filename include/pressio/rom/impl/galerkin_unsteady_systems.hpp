@@ -37,7 +37,7 @@ public:
 				  const FomSystemType & fomSystem)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide())
   {}
 
@@ -116,7 +116,7 @@ public:
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       hrOp_(hrOp),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide())
   {}
 
@@ -193,7 +193,7 @@ public:
 				 const HyperReductionOperator & hrOp)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       hrOp_(hrOp),
       rhsMasker_(rhsMasker),
       unMaskedFomRhs_(fomSystem.createRightHandSide()),
@@ -283,7 +283,7 @@ public:
 					 const FomSystemType & fomSystem)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}
@@ -407,7 +407,7 @@ public:
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
       hrOp_(hrOp),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}
@@ -525,7 +525,7 @@ public:
 					const HyperReductionOperator & hrOp)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       hrOp_(hrOp),
       rhsMasker_(rhsMasker),
       jaMasker_(jaMasker),

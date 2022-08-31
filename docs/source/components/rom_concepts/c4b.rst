@@ -1,6 +1,6 @@
 
-``UnsteadyGalerkinRhsHyperReductionOperator``
-=============================================
+``UnsteadyExplicitGalerkinHyperReducer``
+========================================
 
 Syntax only
 -----------

@@ -14,7 +14,6 @@ struct MyFom
   using state_type = FomStateType;
   using residual_type = FomResidualType;
 
-  state_type createState() const{ return state_type{}; }
   residual_type createResidual() const { return residual_type{}; }
 
   FomJacobianActionResultType createApplyJacobianResult(const MatrixType & B) const{

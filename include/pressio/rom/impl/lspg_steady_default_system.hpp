@@ -37,8 +37,9 @@ public:
 
   LspgSteadyDefaultSystem(const TrialSpaceType & trialSpace,
 			  const FomSystemType & fomSystem)
-    : trialSpace_(trialSpace), fomSystem_(fomSystem),
-      fomState_(fomSystem.createState())
+    : trialSpace_(trialSpace),
+      fomSystem_(fomSystem),
+      fomState_(trialSpace.createFullState())
   {}
 
 public:

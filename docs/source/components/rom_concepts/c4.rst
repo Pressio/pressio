@@ -1,6 +1,6 @@
 
-``SteadyGalerkinHyperReductionOperator``
-========================================
+``SteadyGalerkinHyperReducer``
+==============================
 
 Syntax only
 -----------

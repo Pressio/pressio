@@ -56,7 +56,7 @@ public:
 			     const HypRedOpType & hrOp)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      fomState_(fomSystem.createState()),
+      fomState_(trialSpace.createFullState()),
       hrOp_(hrOp),
       rMasker_(rMasker),
       jaMasker_(jaMasker),

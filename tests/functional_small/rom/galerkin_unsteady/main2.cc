@@ -46,12 +46,6 @@ struct MyFom
       nstencil_(nstencil),
       nsample_(sampleMeshIndices.size()){}
 
-  state_type createState() const{
-    state_type s(nstencil_);
-    s.setConstant(0);
-    return s;
-  }
-
   right_hand_side_type createRightHandSide() const{
     return right_hand_side_type(nsample_);
   }

@@ -16,7 +16,6 @@ struct MyFom
       nStencil_(nStencil),
       validStateIndices_(rowInd){}
 
-  state_type createState() const{ return state_type(nStencil_); }
   residual_type createResidual() const{ return residual_type(nSample_); }
 
   Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{
