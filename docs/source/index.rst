@@ -16,9 +16,9 @@ pressio C++ library
 .. This is the documentation of the `C++ library <https://github.com/Pressio/pressio>`__, one component of the `Pressio ecosystem <https://pressio.github.io/>`_.
 
 
-The following table represents the *software stack* of the functionalities included in pressio:
-each component (level) in the stack depends on all the ones below. This structure is mirrored
-in the API documentation (see the left sidebar).
+The following table represents the *software stack* of the functionalities in pressio:
+each component (level) in the stack depends on all the ones below it.
+This structure is mirrored in the API documentation (see the left sidebar).
 
 .. list-table::
    :widths: 10 48 42
@@ -87,26 +87,28 @@ Get Started
 Generic programming and concepts
 --------------------------------
 
-Arguably the main building block of pressio is the use of generic programming.
+Arguably the main foundation of pressio is the use
+of generic programming--*or, more humbly, we can
+at least say that it is what we strive for*.
 Since the early development stages, we have tried to rely on
-concept-driven design (where by concept we mean C++ concepts).
-C++ concepts have formally entered the standard with C++20.
-In pressio, however, we cannot yet upgrade to C++20, and thus
+concept-driven design. Here, the term concept does not necessarily
+refer to the C++ concepts feature introduced in C++20.
+Rather, you can think of it more loosely as "what properties/syntax a type meets,
+what you can do with it and, also, what a type should definitely satisfy".
+So, at least for now, think of the term concept a bit loosely.
+In pressio, in fact, we cannot yet upgrade to C++20, and thus
 we cannot use and *stricto sensu* enforce concepts.
-For now, concepts are present but enforced via SFINAE.
-Later on, when feasible, we will refactor to enforce/use
-them as the standard dictates.
+For now, concepts are present but enforced via, e.g., SFINAE,
+or in some cases (abusing the syntax) with static asserts.
+Later on, when feasible, we will enforce them as the standard dictates.
 
 The message we want to convey is that *"concepts" are a fundamental
-design part of pressio and are present everywhere*.
-This is highlighted in this documentation website by dedicating
-to each component of the library a full section (see the sidebar menu on the left)
+design part of pressio and are present everywhere*---note, that, if you have
+used C++ templates, you *have* used concepts knowingly or not.
+In our documentation, we make the effort to highlight the use of concepts
+by dedicating to each component of the library a full section
+(see the sidebar menu on the left)
 to discuss and formalize how concepts are used in that component.
-
-..
-   and are
-   such a new, deep feature that it will require time before we
-   see a widespread use in the C++ community.
 
 
 
