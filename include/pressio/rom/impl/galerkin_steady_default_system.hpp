@@ -52,6 +52,10 @@ public:
   {}
 
 public:
+  state_type createState() const{
+    return trialSpace_.get().createReducedState();
+  }
+
   residual_type createResidual() const{
     const auto & phi = trialSpace_.get().viewBasis();
     return impl::CreateGalerkinRhs<residual_type>()(phi);

@@ -55,6 +55,10 @@ public:
   {}
 
 public:
+  state_type createState() const{
+    return trialSpace_.get().createReducedState();
+  }
+
   residual_type createResidual() const{
     // here we assume that the action of hyOp does not
     // produce a reduced residual different than the number of basis.

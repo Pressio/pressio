@@ -19,29 +19,29 @@ API
   template<
     class TrialSpaceType,
     class FomSystemType>
-  auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,    (1)
-					const TrialSpaceType & trialSpace,
-					const FomSystemType & fomSystem);
+  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,       (1)
+						    const TrialSpaceType & trialSpace,
+						    const FomSystemType & fomSystem);
 
   template<
     class TrialSpaceType,
     class FomSystemType,
     class HyperReductionOperatorType>
-  auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,    (2)
-					const TrialSpaceType & trialSpace,
-					const FomSystemType & fomSystem,
-					const HyperReductionOperatorType & hrOp);
+  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,       (2)
+						    const TrialSpaceType & trialSpace,
+						    const FomSystemType & fomSystem,
+						    const HyperReductionOperatorType & hrOp);
 
   template<
     class TrialSpaceType,
     class FomSystemType,
     class RhsMaskerType,
     class HyperReductionOperatorType>
-  auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,    (3)
-					const TrialSpaceType & trialSpace,
-					const FomSystemType & fomSystem,
-					const RhsMaskerType & rhsMasker,
-					const HyperReductionOperatorType & hrOp);
+  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,       (3)
+						    const TrialSpaceType & trialSpace,
+						    const FomSystemType & fomSystem,
+						    const RhsMaskerType & rhsMasker,
+						    const HyperReductionOperatorType & hrOp);
 
   //
   // overload set for implicit in time
@@ -49,37 +49,52 @@ API
   template<
     class TrialSpaceType,
     class FomSystemType>
-  auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,    (4)
-					const TrialSpaceType & trialSpace,
-					const FomSystemType & fomSystem);
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,       (4)
+						    const TrialSpaceType & trialSpace,
+						    const FomSystemType & fomSystem);
 
   template<
     class TrialSpaceType,
     class FomSystemType,
     class HyperReductionOperatorType>
-  auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,    (5)
-					const TrialSpaceType & trialSpace,
-					const FomSystemType & fomSystem,
-					const HyperReductionOperatorType & hrOp);
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,       (5)
+						    const TrialSpaceType & trialSpace,
+						    const FomSystemType & fomSystem,
+						    const HyperReductionOperatorType & hrOp);
+
+  template<
+    class TrialSpaceType,
+    class FomSystemType,
+    class RhsMaskerType,
+    class JacobianActionMaskerType,
+    class HyperReductionOperatorType>
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,       (6)
+						    const TrialSpaceType & trialSpace,
+						    const FomSystemType & fomSystem,
+						    const RhsMaskerType & rhsMasker,
+						    const JacobianActionMaskerType & jaMasker,
+						    const HyperReductionOperatorType & hrOp);
 
   }}} // end namespace pressio::rom::galerkin
 
-- 1,2,3: overload for (1) default, (2) hyper-reduced and (3) masked problem with *explicit* time integration
+- 1,2,3: overloads for (1) default, (2) hyper-reduced and (3) masked problem with *explicit* time integration
 
-- 4,5,6: overload for (4) default, (5) hyper-reduced and (6) masked problem with *implicit* time integration
+- 4,5,6: overloads for (4) default, (5) hyper-reduced and (6) masked problem with *implicit* time integration
 
 Parameters
 ----------
 
-* ``schemeName``: enum value to set the desired time integration scheme to use
+* ``schemeName``: enum value to choose the desired time integration scheme
 
-* ``trialSpace``: the linear trial subspace to approximate the full space
+* ``trialSpace``: linear trial subspace approximating the FOM state space
 
-* ``fomSystem``: your full-order problem
+* ``fomSystem``: full-order model instance
 
-* ``hrOp``: operator to left-multiply the hyper-reduced FOM rhs
+* ``hrOp``: hyper-reduction operator
 
-* ``rhsMasker``: operator for masking the FOM right hand side
+* ``rhsMasker``: masking operator to apply to the FOM right hand side
+
+* ``jaMasker``: masking operator to apply to the result of the FOM jacobian action
 
 Constraints
 ~~~~~~~~~~~
@@ -89,47 +104,69 @@ Constraints
 
 - ``FomSystemType``:
 
-  - for 1,2,3, it must meet the ``SemiDiscreteFom`` `concept <rom_concepts/c1.html>`__.
+  - for 1,2,3: it must meet the ``SemiDiscreteFom`` `concept <rom_concepts/c1.html>`__.
 
-  - for 4,5,6, it must meet the ``SemiDiscreteFomWithJacobianAction`` `concept <rom_concepts/c2.html>`__.
+  - for 4,5,6: it must meet the ``SemiDiscreteFomWithJacobianAction`` `concept <rom_concepts/c2.html>`__.
 
 - ``HyperReductionOperatorType``:
 
-  - for 2,3, it must meet the ``UnsteadyGalerkinRhsHyperReductionOperator`` `concept <rom_concepts/c4b.html>`__
+  - for 2,3: it must meet the ``ExplicitGalerkinHyperReducer`` `concept <rom_concepts/c4b.html>`__
 
-  - for 5,6, it must meet the ``UnsteadyGalerkinRhsAndJacobianHyperReductionOperator`` `concept <rom_concepts/c4b.html>`__
+  - for 5,6: it must meet the ``ImplicitGalerkinHyperReducer`` `concept <rom_concepts/c4c.html>`__
 
-- ``RhsMaskerType`` must meet the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__
+- ``RhsMaskerType`` and ``JacobianActionMaskerType`` must both meet
+  the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__
 
 Preconditions
 ~~~~~~~~~~~~~
 
-- for 1,2,3: ``schemeName`` must be an explicit scheme,
+- 1,2,3: ``schemeName`` must be an explicit scheme,
   see `this page <ode_steppers_explicit.html>`__ for the choices
 
-- for 4,5,6: ``schemeName`` must be an implicit scheme,
+- 4,5,6: ``schemeName`` must be an implicit scheme,
   see `this page <ode_steppers_implicit.html>`__ for the choices
 
-- the trial space, system, masker, and hyper-reduction operator arguments passed
-  to the function must be lvalues with a lifetime *longer* that that of
-  the instantiated problem, i.e., they are destructed *after* the problem goes out of scope
-
-- the ``trialSpace`` must represent a space compatible with the ``fomSystem``
+- all arguments passed to the function must be lvalues with a lifetime
+  *longer* that that of the instantiated problem, i.e., they must be
+  destructed *after* the problem goes out of scope
 
 Mandates
 ~~~~~~~~
 
-:red:`finish`
+- the type representing the FOM state declared inside the ``TrialSpaceType``
+  must be equal to that declared inside the ``FomSystemType`` class,
+  i.e.: ``std::is_same<typename TrialSpaceType::full_state_type,
+  typename FomSystemType::state_type >::value == true``
 
-Return value
-~~~~~~~~~~~~
+- the masking operators must "be compatible" with the FOM types,
+  so we must have:
 
-An instance of a implementation-defined class that represents a Galerkin unsteady explicit problem.
+  - for 3,6: ``std::is_same<
+    typename RhsMaskerType::operand_type,
+    typename FomSystemType::right_hand_side_type>::value == true``
 
-Postconditions and side effects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - for 6: let ``fom_jac_action_result_type`` the type of the
+    result of applying the FOM Jacobian to the basis, then the following must hold:
+    ``std::is_same<typename JacobianActionMaskerType::operand_type,
+    fom_jac_action_result_type>::value == true``
 
-If you choose an explicit problem, the returned problem object is guaranteed to expose this API:
+- the hyper-reduction operato must "be compatible" with
+  the masker, so we must have:
+
+  - for 3,6: ``std::is_same<
+    typename HyperReductionOperatorType::right_hand_side_operand_type,
+    typename RhsMaskerType::result_type>::value == true``
+
+  - for 6: the following must hold: ``std::is_same<
+    typename HyperReductionOperatorType::jacobian_action_operand_type,
+    typename JacobianActionMaskerType::result_type>::value == true``
+
+
+Return value, Postconditions and Side Effects
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- *explicit* overload set 1,2,3 return an instance of
+  a class guaranteed to expose this API:
 
 .. code-block:: cpp
 
@@ -137,33 +174,53 @@ If you choose an explicit problem, the returned problem object is guaranteed to 
     class UnsteadyExplicitGalerkinProblemExpositionOnly
     {
       public:
-	using state_type                = /* same as the reduced_state_type */;
-	using independent_variable_type = /* same as your FOM time_type */;
+	using state_type                = /*same as the reduced_state_type in TrialSpaceType*/;
+	using independent_variable_type = /*same as declared inside your FomSystemType*/;
 
 	void operator()(StateType & /**/,
 			const pressio::ode::StepStartAt<independent_variable_type> & /**/,
 			pressio::ode::StepCount /**/,
-			const pressio::ode::StepSize<IndVarType> & /**/);
+			const pressio::ode::StepSize<independent_variable_type> & /**/);
     };
 
-If you choose an implicit problem, the returned problem object is guaranteed to expose this API:
+.. important::
+
+   Any unsteady *explicit* Galerkin problem satisfies the ``Steppable``
+   concept discussed `here <ode_concepts/c6.html>`__.
+
+
+- *implicit* overload set 4,5,6 return an instance of
+  a class guaranteed to expose this API:
 
 .. code-block:: cpp
 
     // This is not the actual class, it just describes the API
-    class UnsteadyExplicitGalerkinProblemExpositionOnly
+    class UnsteadyImplicitGalerkinProblemExpositionOnly
     {
       public:
-	using state_type                = /* same as the reduced_state_type */;
-	using independent_variable_type = /* same as your FOM time_type */;
+	using state_type                = /*same as the reduced_state_type in TrialSpaceType*/;
+	using independent_variable_type = /*same as declared inside your FomSystemType*/;
 
 	template<SolverType>
 	void operator()(StateType & /**/,
 			const pressio::ode::StepStartAt<independent_variable_type> & /**/,
 			pressio::ode::StepCount /**/,
-			const pressio::ode::StepSize<IndVarType> & /**/,
+			const pressio::ode::StepSize<independent_variable_type> & /**/,
 			SolverType & /**/);
     };
+
+
+.. important::
+
+   Any unsteady *implicit* Galerkin problem satisfies the ``SteppableWithAuxiliaryArgs``
+   concept discussed `here <ode_concepts/c7.html>`__.
+
+- for all overloads, the problem object will hold const-qualified references
+  to the arguments ``trialSpace``, ``fomSystem``, ``hrOp``, ``rhsMasker``, ``jaMasker``,
+  therefore NO copy of these objects occurs.
+
+- All internal memory allocation needed for the implementation is
+  performed inside the constructor of problem.
 
 
 Using/solving the problem
@@ -177,7 +234,7 @@ Two key things to notice here are:
 - an unsteady implicit Galerkin problem satisfies the "steppable with args" concept
   discussed `here <ode_concepts/c7.html>`__
 
-so one can use the "advancers" in pressio/ode to step forward the problem.
-Example below:
+Solving these problems can thus be done via the "advancers"
+in pressio/ode to step forward the problem.
 
 :red:`finish`

@@ -16,17 +16,17 @@ API
   template<
     class TrialSpaceType,
     class FomSystemType>
-  auto create_steady_problem(const TrialSpaceType & trialSpace,         (1)
-                              const FomSystemType & fomSystem);
+  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (1)
+                                         const FomSystemType & fomSystem);
 
   template<
     class TrialSpaceType,
     class FomSystemType,
     class HyperReductionOperatorType
     >
-  auto create_steady_problem(const TrialSpaceType & trialSpace,         (2)
-			     const FomSystemType & fomSystem,
-			     const HyperReductionOperatorType & hrOp);
+  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (2)
+					 const FomSystemType & fomSystem,
+					 const HyperReductionOperatorType & hrOp);
 
   template<
     class TrialSpaceType,
@@ -35,32 +35,32 @@ API
     class JacobianActionMaskerType,
     class HyperReductionOperatorType
     >
-  auto create_steady_problem(const TrialSpaceType & trialSpace,         (3)
-			     const FomSystemType & fomSystem,
-			     const ResidualMaskerType & rMasker,
-			     const JacobianActionMaskerType & jaMasker,
-			     const HyperReductionOperatorType & hrOp);
+  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (3)
+					 const FomSystemType & fomSystem,
+					 const ResidualMaskerType & rMasker,
+					 const JacobianActionMaskerType & jaMasker,
+					 const HyperReductionOperatorType & hrOp);
 
   }}} // end namespace pressio::rom::galerkin
 
-- (1): overload for default problem
+- 1: overload for default problem
 
-- (2): overload for hyper-reduced problem
+- 2: overload for hyper-reduced problem
 
-- (3): overload for masked problem
+- 3: overload for masked problem
 
 Parameters
 ----------
 
-* ``trialSpace``: the linear trial subspace to approximate the full space
+* ``trialSpace``: linear trial subspace approximating the FOM state space
 
-* ``fomSystem``: your full-order problem
+* ``fomSystem``: full-order model instance
 
-* ``hrOp``: operator to left-multiply the hyper-reduced residual and jacobian action
+* ``hrOp``: hyper-reduction operator to apply to residual and jacobian action
 
-* ``rMasker``: operator for masking the FOM residual
+* ``rMasker``: masking operator to apply to the FOM residual
 
-* ``jaMasker``: operator for masking the result of the FOM jacobian action
+* ``jaMasker``: masking operator to apply to the result of the FOM jacobian action
 
 Constraints
 ~~~~~~~~~~~
@@ -80,26 +80,22 @@ Preconditions
 ~~~~~~~~~~~~~
 
 - all arguments passed to the function must be lvalues with a lifetime
-  that is *longer* that that of the instantiated problem, i.e., they are
+  *longer* that that of the instantiated problem, i.e., they must be
   destructed *after* the problem goes out of scope
-
-- the ``trialSpace`` must represent a space compatible with the ``fomSystem``
 
 Mandates
 ~~~~~~~~
 
-:red:`finish`
+- the type representing the FOM state declared inside the ``TrialSpaceType``
+  must be equal to that declared inside the ``FomSystemType`` class,
+  i.e.: ``std::is_same<typename TrialSpaceType::full_state_type,
+  typename FomSystemType::state_type >::value == true``
 
+Return value, Postconditions and Side Effects
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Return value
-~~~~~~~~~~~~
-
-An instance of a implementation-defined class that represents a Galerkin steady problem.
-
-Postconditions and side effects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The returned problem object exposes this API:
+- The functions construct and return an instance of an implementation-defined class
+  representing a Galerkin steady problem. This problem class is guaranteed to expose this API:
 
 .. code-block:: cpp
 
@@ -107,12 +103,11 @@ The returned problem object exposes this API:
     class SteadyGalerkinProblemExpositionOnly
     {
       public:
-        using state_type                = /* same as reduced_state in trialSpace*/;
-        using residual_type             = /* impl defined*/;
-        using jacobian_type	        = /* impl defined*/;
+        using state_type                = /*same as reduced_state in TrialSpaceType*/;
+        using residual_type             = /*impl defined*/;
+        using jacobian_type	        = /*impl defined*/;
 
-        !!!!!!!!!! missing create state !!!!!!!!!!!!
-
+	state_type    createState() const;
         residual_type createResidual() const;
         jacobian_type createJacobian() const;
         void residualAndJacobian(const state_type & odeState,
@@ -121,8 +116,21 @@ The returned problem object exposes this API:
 				 bool computeJacobian) const;
     };
 
-Use the problem
----------------
+.. important::
+
+   Any steady Galerkin problem satisfies the ``SystemWithFusedResidualAndJacobian``
+   concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
+
+- the problem object will hold const-qualified references to the arguments
+  ``trialSpace``, ``fomSystem``, ``hrOp``, ``rMasker``, ``jaMasker``, therefore
+  NO copy of these objects occurs.
+
+- All internal memory allocation needed for the implementation is
+  performed inside the constructor of problem.
+
+
+Using the problem
+-----------------
 
 The problem class satisfies the ``SystemWithFusedResidualAndJacobian`` concept
 discussed `here <nonlinearsolvers_concepts/c2.html>`__.
