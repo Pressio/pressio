@@ -52,8 +52,8 @@ public:
 					const HyperReductionOperator & hrOp)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      hrOp_(hrOp),
       fomState_(trialSpace.createFullState()),
+      hrOp_(hrOp),
       fomRhs_(fomSystem.createRightHandSide()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
   {}
@@ -105,11 +105,11 @@ public:
     hrOp_(fomJacAction_, rhsEvaluationTime, reducedJacobian);
   }
 
-protected:
+private:
   std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
-  std::reference_wrapper<const HyperReductionOperator> hrOp_;
   mutable typename FomSystemType::state_type fomState_;
+  std::reference_wrapper<const HyperReductionOperator> hrOp_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;
   mutable fom_jac_action_result_type fomJacAction_;
 };

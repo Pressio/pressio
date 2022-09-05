@@ -38,8 +38,8 @@ public:
 				       const HyperReductionOperator & hrOp)
     : trialSpace_(trialSpace),
       fomSystem_(fomSystem),
-      hrOp_(hrOp),
       fomState_(trialSpace.createFullState()),
+      hrOp_(hrOp),
       fomRhs_(fomSystem.createRightHandSide())
   {}
 
@@ -68,11 +68,11 @@ public:
     hrOp_(fomRhs_, rhsEvaluationTime, reducedRhs);
   }
 
-protected:
+private:
   std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
-  std::reference_wrapper<const HyperReductionOperator> hrOp_;
   mutable typename FomSystemType::state_type fomState_;
+  std::reference_wrapper<const HyperReductionOperator> hrOp_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;
 };
 

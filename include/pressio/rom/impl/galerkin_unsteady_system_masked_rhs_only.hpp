@@ -76,12 +76,11 @@ public:
     hrOp_(maskedFomRhs_, rhsEvaluationTime, reducedRhs);
   }
 
-protected:
+private:
   std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   std::reference_wrapper<const HyperReductionOperator> hrOp_;
-
   std::reference_wrapper<const RhsMaskerType> rhsMasker_;
   mutable unmasked_fom_rhs_type unMaskedFomRhs_;
   mutable masked_fom_rhs_type maskedFomRhs_;

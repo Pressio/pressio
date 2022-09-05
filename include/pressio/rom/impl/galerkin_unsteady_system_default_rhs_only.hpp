@@ -73,7 +73,7 @@ public:
 			    beta, reducedRhs);
   }
 
-protected:
+private:
   std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
@@ -82,3 +82,4 @@ protected:
 
 }}} // end pressio::rom::impl
 #endif
+

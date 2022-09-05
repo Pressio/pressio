@@ -102,6 +102,5 @@ private:
   mutable fom_jac_action_result_type fomJacAction_;
 };
 
-
 }}} // end pressio::rom::impl
 #endif

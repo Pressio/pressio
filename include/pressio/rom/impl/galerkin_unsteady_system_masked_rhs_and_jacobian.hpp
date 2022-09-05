@@ -109,7 +109,7 @@ public:
     hrOp_(maskedFomJacAction_, rhsEvaluationTime, reducedJacobian);
   }
 
-protected:
+private:
   std::reference_wrapper<const TrialSpaceType> trialSpace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
