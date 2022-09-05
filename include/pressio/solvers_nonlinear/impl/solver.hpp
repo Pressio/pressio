@@ -225,7 +225,6 @@ public:
     this->solveImpl(system, state, *updater_);
   }
 
-#if not defined PRESSIO_ENABLE_TPL_PYBIND11
   template<class SystemType, class custom_updater_t>
   void solve(const SystemType & system,
 	     state_type & state,
@@ -248,22 +247,6 @@ public:
     updater_->resetFnc_ = resetUpdater<u_t>;
     this->solveImpl(system, state, *updater_);
   }
-
-#else
-  template<typename SystemType>
-  void solveForPy(pybind11::object pySystem, state_type state)
-  {
-    SystemType system(pySystem);
-
-    // before we solve, we check if we need to recreate the updater
-    // for example, this is the case if the system object changes
-    if (recreateUpdater(system)){
-      PRESSIOLOG_INFO("nonlinsolver: create updater");
-      updater_ = createUpdater<this_type, SystemType>(state, updatingE_);
-    }
-    this->solveImpl(system, state, *updater_);
-  }
-#endif
 
 private:
   template<typename SystemType>

@@ -109,26 +109,5 @@ struct DiagTraits<
 };
 #endif
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename MatrixType>
-struct DiagTraits<
-  DiagExpr<MatrixType>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_array_pybind<MatrixType>::value
-    >
-  >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
-{
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type  = typename ::pressio::Traits<mat_remove_cv_t>::scalar_type;
-  using size_type    = typename ::pressio::Traits<mat_remove_cv_t>::size_type;
-  using reference_type =  scalar_type &;
-  using const_reference_type = scalar_type const &;
-};
-#endif
-
 }}}
 #endif  // EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_

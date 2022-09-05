@@ -60,9 +60,6 @@ Enabling/disabling specific dependencies can be done via the following cmake var
    * - ``PRESSIO_ENABLE_TPL_LAPACK``
      - self-explanatory
      - ``OFF``\ ; automatically ``ON`` if ``PRESSIO_ENABLE_TPL_BLAS=ON`` or ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-   * - ``PRESSIO_ENABLE_TPL_PYBIND11``
-     - self-explanatory
-     - ``OFF``
    * - ``PRESSIO_ENABLE_DEBUG_PRINT``
      - to enable debugging print statements
      - ``OFF``
@@ -99,9 +96,6 @@ and solving the (dense) ROM problem.
    * - LAPACK
      - Optional
      - --
-   * - Pybind11
-     - Optional
-     - v2.6
    * - GoogleTest
      - Optional
      - 1.10.0

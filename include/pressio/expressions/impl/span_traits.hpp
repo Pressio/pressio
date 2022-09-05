@@ -124,26 +124,5 @@ struct SpanTraits<
 };
 #endif
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T>
-struct SpanTraits<
-  SpanExpr<T>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_array_pybind<T>::value
-    >
-  >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
-{
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using remove_cv_t = typename std::remove_cv<T>::type;
-  using scalar_type  = typename ::pressio::Traits<remove_cv_t>::scalar_type;
-  using size_type    = typename ::pressio::Traits<remove_cv_t>::size_type;
-  using reference_type =  scalar_type &;
-  using const_reference_type = scalar_type const &;
-};
-#endif
-
 }}}
 #endif  // EXPRESSIONS_IMPL_SPAN_TRAITS_HPP_
