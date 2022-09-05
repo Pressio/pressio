@@ -2,9 +2,9 @@
 #ifndef PRESSIO_ROM_GALERKIN_STEADY_HPP_
 #define PRESSIO_ROM_GALERKIN_STEADY_HPP_
 
-#include "impl/galerkin_steady_default_system.hpp"
-#include "impl/galerkin_steady_hypred_system.hpp"
-#include "impl/galerkin_steady_masked_system.hpp"
+#include "./impl/galerkin_steady_system_default.hpp"
+#include "./impl/galerkin_steady_system_hypred.hpp"
+#include "./impl/galerkin_steady_system_masked.hpp"
 
 /*
   below we abuse things by using in some cases static asserts

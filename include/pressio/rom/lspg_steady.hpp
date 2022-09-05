@@ -2,8 +2,8 @@
 #ifndef PRESSIO_ROM_LSPG_STEADY_HPP_
 #define PRESSIO_ROM_LSPG_STEADY_HPP_
 
-#include "./impl/lspg_steady_default_system.hpp"
-#include "./impl/lspg_steady_masked_system.hpp"
+#include "./impl/lspg_steady_system_default.hpp"
+#include "./impl/lspg_steady_system_masked.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
