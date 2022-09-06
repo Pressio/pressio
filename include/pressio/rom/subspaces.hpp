@@ -3,7 +3,7 @@
 #define PRESSIO_ROM_SUBSPACES_HPP_
 
 #include "./impl/reduced_operators_helpers.hpp"
-#include "./impl/trial_subspace.hpp"
+#include "./trial_subspace.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -28,10 +28,8 @@ auto create_trial_subspace(BasisType && basis,
 			   FullStateType && offset,
 			   bool isAffine)
 {
-  // we need to use decay here to get the type after removing
-  // reference and cv qualification
-  using basis_type = std::decay_t<BasisType>;
-  using full_state_type = std::decay_t<FullStateType>;
+  using basis_type         = mpl::remove_cvref_t<BasisType>;
+  using full_state_type    = mpl::remove_cvref_t<FullStateType>;
 
   // constraints
   static_assert(ValidReducedState<ReducedStateType>::value,
@@ -46,7 +44,7 @@ auto create_trial_subspace(BasisType && basis,
 		typename pressio::Traits<full_state_type>::scalar_type >::value,
 		"Mismatching scalar_type");
 
-  using ret_t = impl::PossiblyAffineTrialSubspace<ReducedStateType, basis_type, full_state_type>;
+  using ret_t = LinearSubspace<ReducedStateType, basis_type, full_state_type>;
   return ret_t(std::forward<BasisType>(basis),
 	       std::forward<FullStateType>(offset),
 	       isAffine);

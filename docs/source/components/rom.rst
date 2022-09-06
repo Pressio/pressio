@@ -4,6 +4,7 @@
 .. toctree::
    :maxdepth: 1
 
+   rom_linear_subspace
    rom_subspaces
    rom_galerkin_steady
    rom_galerkin_unsteady

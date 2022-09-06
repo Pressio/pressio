@@ -2,43 +2,58 @@
 #ifndef PRESSIO_ROM_TRIAL_SUBSPACES_IMPL_HPP_
 #define PRESSIO_ROM_TRIAL_SUBSPACES_IMPL_HPP_
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{
 
 template <class ReducedStateType, class BasisType, class FullStateType>
-class PossiblyAffineTrialSubspace
+class LinearSubspace
 {
-
 public:
   using reduced_state_type = ReducedStateType;
-  using basis_type = BasisType;
-  using full_state_type = FullStateType;
+  using basis_type         = mpl::remove_cvref_t<BasisType>;
+  using full_state_type    = mpl::remove_cvref_t<FullStateType>;
 
-  PossiblyAffineTrialSubspace() = delete;
+private:
+  // constraints
+  static_assert(ValidReducedState<ReducedStateType>::value,
+		"Invalid type for the reduced state");
+  static_assert(std::is_copy_constructible< basis_type >::value,
+		"Basis type must be copy constructible");
+  static_assert(std::is_copy_constructible< full_state_type >::value,
+		"Full state type must be copy constructible");
 
-  PossiblyAffineTrialSubspace(const BasisType & phi,
-			      const FullStateType & shiftVectorIn,
-			      bool isAffine)
+  // mandates
+  static_assert(std::is_same<
+		typename pressio::Traits< basis_type>::scalar_type,
+		typename pressio::Traits< full_state_type >::scalar_type >::value,
+		"Mismatching scalar_type");
+
+public:
+  LinearSubspace() = delete;
+
+  LinearSubspace(const basis_type & phi,
+		 const full_state_type & shiftVectorIn,
+		 bool isAffine)
     : basis_(::pressio::ops::clone(phi)),
       shiftVector_(::pressio::ops::clone(shiftVectorIn)),
       isAffine_(isAffine){}
 
-  PossiblyAffineTrialSubspace(BasisType && phi,
-			      FullStateType && shiftVectorIn,
-			      bool isAffine)
+  LinearSubspace(basis_type && phi,
+		 full_state_type && shiftVectorIn,
+		 bool isAffine)
     : basis_(std::move(phi)),
       shiftVector_(std::move(shiftVectorIn)),
       isAffine_(isAffine){}
 
-  PossiblyAffineTrialSubspace(const BasisType & phi,
-			      FullStateType && shiftVectorIn,
-			      bool isAffine)
+  LinearSubspace(const basis_type & phi,
+		 full_state_type && shiftVectorIn,
+		 bool isAffine)
     : basis_(::pressio::ops::clone(phi)),
       shiftVector_(std::move(shiftVectorIn)),
       isAffine_(isAffine){}
 
-  PossiblyAffineTrialSubspace(BasisType && phi,
-			      const FullStateType & shiftVectorIn,
-			      bool isAffine)
+  LinearSubspace(basis_type && phi,
+		 const full_state_type & shiftVectorIn,
+		 bool isAffine)
     : basis_(std::move(phi)),
       shiftVector_(::pressio::ops::clone(shiftVectorIn)),
       isAffine_(isAffine){}
@@ -86,9 +101,7 @@ public:
     return fomState;
   }
 
-  const basis_type & viewBasis() const{
-    return basis_;
-  }
+  const basis_type & viewBasis() const{ return basis_; }
 
 private:
   template<class ReducedStateToMap>
@@ -105,10 +118,10 @@ private:
   }
 
 private:
-  const BasisType basis_;
-  const FullStateType shiftVector_;
+  const basis_type basis_;
+  const full_state_type shiftVector_;
   bool isAffine_ = {};
 };
 
-}}}
+}}
 #endif

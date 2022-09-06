@@ -3,8 +3,8 @@
 .. role:: cpp(code)
    :language: cpp
 
-(Affine) Trial Subspace
-=======================
+``create_trial_subspace``
+=========================
 
 Header: ``<pressio/rom_subspaces.hpp>``
 
@@ -102,55 +102,54 @@ Postconditions and Side Effects
   meet the ``AffineTrialSubspace`` `concept <rom_concepts/c8.html>`__.
 
 
-|
+..
+   Required kernels
+   ----------------
 
-Required kernels
-----------------
+   If you are using one of the data types already supported
+   internally by pressio then you have nothing to do since the
+   following kernels are already available and visibile to the compiler.
+   If you use arbitrary data type, then you have to specialize these kernels
+   for your types, and ensure you include them so that the compiler can find them.
 
-If you are using one of the data types already supported
-internally by pressio then you have nothing to do since the
-following kernels are already available and visibile to the compiler.
-If you use arbitrary data type, then you have to specialize these kernels
-for your types, and ensure you include them so that the compiler can find them.
+   .. code-block:: cpp
 
-.. code-block:: cpp
+     namespace pressio { namespace ops{
 
-  namespace pressio { namespace ops{
+     /*FullStateType*/ clone(const /*FullStateType*/ & fomStateIn)
+     {
+       // create and return a clone of fomStateIn
+     }
 
-  /*FullStateType*/ clone(const /*FullStateType*/ & fomStateIn)
-  {
-    // create and return a clone of fomStateIn
-  }
+     /*BasisType*/ clone(const /*BasisType*/ & objIn)
+     {
+       // create and return a clone of objIn
+     }
 
-  /*BasisType*/ clone(const /*BasisType*/ & objIn)
-  {
-    // create and return a clone of objIn
-  }
+     template<class ScalarType>
+     void fill(/*FullStateType*/ & fullState, ScalarType value)
+     {
+       // fill the full state with value
+     }
 
-  template<class ScalarType>
-  void fill(/*FullStateType*/ & fullState, ScalarType value)
-  {
-    // fill the full state with value
-  }
+     template<class ScalarType>
+     void update(/*FullStateType*/ & y, const ScalarType & alpha,
+		 const /*FullStateType*/ & x, const ScalarType & beta)
+     {
+       // compute:
+       //   y = alpha*y + beta*x
+     }
 
-  template<class ScalarType>
-  void update(/*FullStateType*/ & y, const ScalarType & alpha,
-	      const /*FullStateType*/ & x, const ScalarType & beta)
-  {
-    // compute:
-    //   y = alpha*y + beta*x
-  }
+     template<class AlphaType, class BetaType>
+     void product(::pressio::nontranspose /*tag*/,
+		  const AlphaType & alpha,
+		  const /*BasisType*/ & basis,
+		  const /*ReducedStateType*/ & operand,
+		  const BetaType & beta,
+		   /*FullStateType*/ & fullState)
+     {
+       // compute:
+       //   fullState = beta*fullState + alpha * basis * operand
+     }
 
-  template<class AlphaType, class BetaType>
-  void product(::pressio::nontranspose /*tag*/,
-	       const AlphaType & alpha,
-	       const /*BasisType*/ & basis,
-	       const /*ReducedStateType*/ & operand,
-	       const BetaType & beta,
-		/*FullStateType*/ & fullState)
-  {
-    // compute:
-    //   fullState = beta*fullState + alpha * basis * operand
-  }
-
-  }} // end namespace pressio::ops
+     }} // end namespace pressio::ops
