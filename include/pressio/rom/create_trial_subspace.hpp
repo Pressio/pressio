@@ -3,7 +3,7 @@
 #define PRESSIO_ROM_SUBSPACES_HPP_
 
 #include "./impl/reduced_operators_helpers.hpp"
-#include "./trial_subspace.hpp"
+#include "./linear_subspace.hpp"
 
 namespace pressio{ namespace rom{
 

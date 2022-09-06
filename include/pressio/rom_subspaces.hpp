@@ -59,6 +59,7 @@
 #include "./ode.hpp"
 
 #include "rom_concepts.hpp"
-#include "rom/subspaces.hpp"
+#include "rom/linear_subspace.hpp"
+#include "rom/create_trial_subspace.hpp"
 
 #endif
