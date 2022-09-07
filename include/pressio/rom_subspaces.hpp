@@ -60,6 +60,7 @@
 
 #include "rom_concepts.hpp"
 #include "rom/linear_subspace.hpp"
-#include "rom/create_trial_subspace.hpp"
+#include "rom/linear_trial_column_subspace.hpp"
+#include "rom/create_subspace.hpp"
 
 #endif

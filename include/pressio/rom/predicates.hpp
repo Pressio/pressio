@@ -96,7 +96,7 @@ struct has_const_view_affine_offset<
       decltype(
 	       std::declval<T const>().viewAffineOffset()
 	       ),
-      const typename T::full_state_type &
+      const typename T::offset_type &
     >::value
     >
   > : std::true_type{};

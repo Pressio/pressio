@@ -36,10 +36,10 @@ auto create_unsteady_problem(const TrialSpaceType & trialSpace,
 		TotalNumberOfDesiredStates == 3,
 		"TotalNumberOfDesiredState must be 2, 3");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(FullyDiscreteSystemWithJacobianAction<
 		FomSystemType, TotalNumberOfDesiredStates, typename TrialSpaceType::basis_type>::value,
@@ -76,10 +76,10 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(SemiDiscreteFomWithJacobianAction<
 		FomSystemType, typename TrialSpaceType::basis_type>::value,
@@ -122,10 +122,10 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(SemiDiscreteFomWithJacobianAction<
 		FomSystemType, typename TrialSpaceType::basis_type>::value,
@@ -169,10 +169,10 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(SemiDiscreteFomWithJacobianAction<
 		FomSystemType, typename TrialSpaceType::basis_type>::value,

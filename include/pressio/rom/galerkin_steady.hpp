@@ -26,10 +26,10 @@ template<
 auto create_steady_problem(const TrialSpaceType & trialSpace,
 			   const FomSystemType & fomSystem)
 {
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(SteadyFomWithJacobianAction<
 		FomSystemType, typename TrialSpaceType::basis_type>::value,
@@ -64,8 +64,8 @@ auto create_steady_problem(const TrialSpaceType & trialSpace,
 			   const FomSystemType & fomSystem,
 			   const HyperReductionOperatorType & hrOp)
 {
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(SteadyFomWithJacobianAction<
 		FomSystemType, typename TrialSpaceType::basis_type>::value,
@@ -104,8 +104,8 @@ auto create_steady_problem(const TrialSpaceType & trialSpace,
 			   const JacobianActionMaskerType & jaMasker,
 			   const HyperReductionOperatorType & hrOp)
 {
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   static_assert(SteadyFomWithJacobianAction<
 		FomSystemType, typename TrialSpaceType::basis_type>::value,

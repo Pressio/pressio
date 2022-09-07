@@ -76,6 +76,8 @@
 #include "./mpl/is_default_constructible.hpp"
 #include "./mpl/is_std_complex.hpp"
 #include "./mpl/is_std_shared_ptr.hpp"
+#include "./mpl/is_std_unique_ptr.hpp"
+#include "./mpl/is_std_shared_ptr.hpp"
 #include "./mpl/publicly_inherits_from.hpp"
 
 #endif

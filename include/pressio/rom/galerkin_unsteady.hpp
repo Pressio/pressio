@@ -56,10 +56,10 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 {
   impl::explicit_scheme_else_throw(schemeName, "galerkin_default_explicit");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   // sufficient to satisfy the SemiDiscreteFom concept since
   // the SemiDiscreteFomWithJacobianAction concept subsumes it
@@ -96,10 +96,10 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
 {
   impl::implicit_scheme_else_throw(schemeName, "galerkin_default_explicit");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   // sufficient to satisfy the SemiDiscreteFom concept since
   // the SemiDiscreteFomWithJacobianAction concept subsumes it
@@ -145,10 +145,10 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 {
   impl::explicit_scheme_else_throw(schemeName, "galerkin_default_implicit");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   // sufficient to satisfy the SemiDiscreteFom concept since
   // the SemiDiscreteFomWithJacobianAction concept subsumes it
@@ -188,10 +188,10 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
 {
   impl::implicit_scheme_else_throw(schemeName, "galerkin_hypred_implicit");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   // sufficient to satisfy the SemiDiscreteFom concept since
   // the SemiDiscreteFomWithJacobianAction concept subsumes it
@@ -242,10 +242,10 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 {
   impl::explicit_scheme_else_throw(schemeName, "galerkin_default_explicit");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   // sufficient to satisfy the SemiDiscreteFom concept since
   // the SemiDiscreteFomWithJacobianAction concept subsumes it
@@ -299,10 +299,10 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
 {
   impl::implicit_scheme_else_throw(schemeName, "galerkin_hypred_implicit");
 
-  // sufficient to satisfy the TrialSubspace concept since
-  // the AffineSpace concept subsumes the TrialSubspace one
-  static_assert(TrialSubspace<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialSubspace concept");
+  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
+  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
+  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
+		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
 
   // sufficient to satisfy the SemiDiscreteFom concept since
   // the SemiDiscreteFomWithJacobianAction concept subsumes it

@@ -1,9 +1,10 @@
 
-#ifndef PRESSIO_ROM_SUBSPACES_HPP_
-#define PRESSIO_ROM_SUBSPACES_HPP_
+#ifndef PRESSIO_ROM_CREATE_SUBSPACE_HPP_
+#define PRESSIO_ROM_CREATE_SUBSPACE_HPP_
 
 #include "./impl/reduced_operators_helpers.hpp"
 #include "./linear_subspace.hpp"
+#include "./linear_trial_column_subspace.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -24,27 +25,13 @@ template<
   class BasisType,
   class FullStateType
 >
-auto create_trial_subspace(BasisType && basis,
-			   FullStateType && offset,
-			   bool isAffine)
+auto create_trial_column_subspace(BasisType && basis,
+				  FullStateType && offset,
+				  bool isAffine)
 {
   using basis_type         = mpl::remove_cvref_t<BasisType>;
   using full_state_type    = mpl::remove_cvref_t<FullStateType>;
-
-  // constraints
-  static_assert(ValidReducedState<ReducedStateType>::value,
-		"Invalid type for the reduced state");
-  static_assert(std::is_copy_constructible< basis_type >::value,
-		"Basis type must be copy constructible");
-  static_assert(std::is_copy_constructible< full_state_type >::value,
-		"Full state type must be copy constructible");
-
-  // mandates
-  static_assert(std::is_same< typename pressio::Traits<basis_type>::scalar_type,
-		typename pressio::Traits<full_state_type>::scalar_type >::value,
-		"Mismatching scalar_type");
-
-  using ret_t = LinearSubspace<ReducedStateType, basis_type, full_state_type>;
+  using ret_t = TrialColumnSubspace<ReducedStateType, basis_type, full_state_type>;
   return ret_t(std::forward<BasisType>(basis),
 	       std::forward<FullStateType>(offset),
 	       isAffine);

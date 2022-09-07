@@ -52,34 +52,60 @@
 namespace pressio{ namespace rom{
 
 template<class T, class enable = void>
-struct TrialSubspace : std::false_type{};
+struct LinearSubspaceConcept : std::false_type{};
 
 template<class T>
-struct TrialSubspace<
+struct LinearSubspaceConcept<
   T,
   mpl::enable_if_t<
-       ::pressio::has_reduced_state_typedef<T>::value
-    && ::pressio::has_basis_typedef<T>::value
-    && ::pressio::has_full_state_typedef<T>::value
-    && has_const_create_reduced_state_return_result<T>::value
-    && has_const_create_full_state_return_result<T>::value
-    && has_const_map_from_reduced_state_return_void<T>::value
-    && has_const_create_full_state_from_reduced_state<T>::value
+    ::pressio::has_basis_typedef<T>::value
     && has_const_view_basis<T>::value
    >
   > : std::true_type{};
 
 template<class T, class enable = void>
-struct AffineTrialSubspace : std::false_type{};
+struct AffineLinearSubspaceConcept : std::false_type{};
 
 template<class T>
-struct AffineTrialSubspace<
+struct AffineLinearSubspaceConcept<
   T,
   mpl::enable_if_t<
-       TrialSubspace<T>::value
+       LinearSubspaceConcept<T>::value
+    && ::pressio::has_offset_typedef<T>::value
     && has_const_view_affine_offset<T>::value
    >
   > : std::true_type{};
+
+template<class T, class enable = void>
+struct TrialColumnSubspaceConcept : std::false_type{};
+
+template<class T>
+struct TrialColumnSubspaceConcept<
+  T,
+  mpl::enable_if_t<
+       LinearSubspaceConcept<T>::value
+    && ::pressio::has_reduced_state_typedef<T>::value
+    && ::pressio::has_full_state_typedef<T>::value
+    && has_const_create_reduced_state_return_result<T>::value
+    && has_const_create_full_state_return_result<T>::value
+    && has_const_map_from_reduced_state_return_void<T>::value
+    && has_const_create_full_state_from_reduced_state<T>::value
+   >
+  > : std::true_type{};
+
+template<class T, class enable = void>
+struct AffineTrialColumnSubspaceConcept : std::false_type{};
+
+template<class T>
+struct AffineTrialColumnSubspaceConcept<
+  T,
+  mpl::enable_if_t<
+       TrialColumnSubspaceConcept<T>::value
+    && AffineLinearSubspaceConcept<T>::value
+   >
+  > : std::true_type{};
+
+
 
 template<class T, class = void>
 struct ValidReducedState
