@@ -130,7 +130,7 @@ TEST(rom_galerkin_unsteady, test3)
 
   using reduced_state_type = Eigen::VectorXd;
   typename MyFom::state_type shift(nFull);
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phiFull, shift, false);
+  auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phiFull, shift, false);
 
   auto romState = space.createReducedState();
   romState[0]=0.;

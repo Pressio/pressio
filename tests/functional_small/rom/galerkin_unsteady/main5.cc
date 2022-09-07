@@ -130,7 +130,7 @@ TEST(rom_galerkin, test5)
   phi.col(2).setConstant(2.);
 
   typename MyFom::state_type shift(N);
-  auto space = pressio::rom::create_trial_subspace<RomStateType>(phi,
+  auto space = pressio::rom::create_trial_column_subspace<RomStateType>(phi,
 								 shift,
 								 false);
 

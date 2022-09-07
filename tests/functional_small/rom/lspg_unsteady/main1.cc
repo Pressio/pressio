@@ -278,7 +278,7 @@ TEST(rom_lspg_unsteady, test1)
   using reduced_state_type = Eigen::VectorXd;
   typename fom_t::state_type dummyFomState(N);
   constexpr bool isAffine = false;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, dummyFomState, isAffine);
+  auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi, dummyFomState, isAffine);
 
   auto romState = space.createReducedState();
   romState[0]=0.;

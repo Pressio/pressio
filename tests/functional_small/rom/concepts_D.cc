@@ -28,5 +28,5 @@ TEST(rom, concepts_D)
   using namespace pressio::rom;
   static_assert( TimeInvariantMasker<S1>::value, "");
   static_assert( !TimeInvariantMasker<S2>::value, "");
-  static_assert( !TrialSubspace<S3>::value, "");
+  static_assert( !TrialColumnSubspaceConcept<S3>::value, "");
 }

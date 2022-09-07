@@ -60,7 +60,7 @@ TEST(rom, trial_subspace_construct_1)
   basis_t phi;
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, false);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, false);
   (void) space;
 }
 
@@ -71,7 +71,7 @@ TEST(rom, trial_subspace_construct_2)
   using basis_t = Eigen::MatrixXd;
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(basis_t(), shift, false);
+  auto space = create_trial_column_subspace<reduced_state_type>(basis_t(), shift, false);
 }
 
 TEST(rom, trial_subspace_construct_3)
@@ -82,7 +82,7 @@ TEST(rom, trial_subspace_construct_3)
   basis_t phi;
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(phi, std::move(shift), false);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, std::move(shift), false);
   (void) space;
 }
 
@@ -93,7 +93,7 @@ TEST(rom, trial_subspace_construct_4)
   using basis_t = Eigen::MatrixXd;
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(basis_t(), std::move(shift), false);
+  auto space = create_trial_column_subspace<reduced_state_type>(basis_t(), std::move(shift), false);
   (void) space;
 }
 
@@ -106,7 +106,7 @@ TEST(rom, trial_subspace_create_reduced_state)
 
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(std::move(phi), shift, false);
+  auto space = create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, false);
   auto a = space.createReducedState();
   EXPECT_TRUE(a.size() == 3);
   for (int i=0; i<a.size(); ++i){
@@ -123,7 +123,7 @@ TEST(rom, trial_subspace_create_full_state)
 
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(std::move(phi), shift, false);
+  auto space = create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, false);
   auto a = space.createFullState();
   EXPECT_TRUE(a.size() == 15);
 
@@ -141,7 +141,7 @@ TEST(rom, trial_subspace_map_from_reduced_state)
 
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, false);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, false);
 
   auto latState = space.createReducedState();
   latState = reduced_state_type::Random(latState.size());
@@ -163,7 +163,7 @@ TEST(rom, trial_subspace_create_full_from_reduced)
 
   using reduced_state_type = Eigen::VectorXd;
   std::vector<double> shift(15);
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, false);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, false);
 
   auto latState = space.createReducedState();
   latState = reduced_state_type::Random(latState.size());
@@ -184,7 +184,7 @@ TEST(rom, affine_trial_subspace_construct_1)
   using full_state_type = std::vector<double>;
   full_state_type shift(15);
   pressio::ops::fill(shift, 0.);
-  auto space = create_trial_subspace<reduced_state_type>(basis_t(), shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(basis_t(), shift, true);
 }
 
 TEST(rom, affine_trial_subspace_construct_2)
@@ -197,7 +197,7 @@ TEST(rom, affine_trial_subspace_construct_2)
   using full_state_type = std::vector<double>;
   full_state_type shift(15);
   pressio::ops::fill(shift, 0.);
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, true);
   (void) space;
 }
 
@@ -212,7 +212,7 @@ TEST(rom, affine_trial_subspace_create_reduced_state)
   using full_state_type = std::vector<double>;
   full_state_type shift(15);
   pressio::ops::fill(shift, 0.);
-  auto space = create_trial_subspace<reduced_state_type>(std::move(phi), shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, true);
   auto a = space.createReducedState();
   EXPECT_TRUE(a.size() == 3);
   for (decltype(a.size()) i=0; i<a.size(); ++i){
@@ -232,7 +232,7 @@ TEST(rom, affine_trial_subspace_create_full_state)
   full_state_type shift(15);
   pressio::ops::fill(shift, 0.);
 
-  auto space = create_trial_subspace<reduced_state_type>(std::move(phi), shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, true);
   auto a = space.createFullState();
   EXPECT_TRUE(a.size() == 15);
 
@@ -253,7 +253,7 @@ TEST(rom, affine_trial_subspace_map_from_reduced_state)
   full_state_type shift(15);
   pressio::ops::fill(shift, 2.);
 
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, true);
 
   auto latState = space.createReducedState();
   latState = reduced_state_type::Random(latState.size());
@@ -278,7 +278,7 @@ TEST(rom, affine_trial_subspace_create_full_from_reduced)
   full_state_type shift(15);
   pressio::ops::fill(shift, 2.);
 
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, true);
 
   auto latState = space.createReducedState();
   latState = reduced_state_type::Random(latState.size());
@@ -301,7 +301,7 @@ TEST(rom, affine_trial_subspace_view_basis)
   using full_state_type = std::vector<double>;
   full_state_type shift(15);
 
-  auto space = create_trial_subspace<reduced_state_type>(phi, shift, true);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, true);
 
   reduced_state_type latState1 = reduced_state_type::Random(3);
   auto & J = space.viewBasis();

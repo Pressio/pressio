@@ -135,7 +135,7 @@ TEST(rom_galerkin_steady, test5)
 
   using reduced_state_type = Eigen::VectorXd;
   typename MyFom::state_type shift;
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi, shift, false);
+  auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
   MyMaskerResidual  m1;

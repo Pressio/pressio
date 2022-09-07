@@ -211,7 +211,7 @@ TEST(rom_galerkin, test6)
 
   using reduced_state_type = Eigen::VectorXd;
   typename MyFom::state_type shift(nStencil);
-  auto space = pressio::rom::create_trial_subspace<reduced_state_type>(phi,
+  auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi,
 								       shift,
 								       false);
 
