@@ -3,8 +3,8 @@
 .. role:: cpp(code)
    :language: cpp
 
-``create_trial_subspace``
-=========================
+``create_trial_column_subspace``
+================================
 
 Header: ``<pressio/rom_subspaces.hpp>``
 
@@ -16,9 +16,9 @@ API
   namespace pressio { namespace rom{
 
   template<class ReducedStateType, class BasisType, class FullStateType>
-  /*impl defined*/ create_trial_subspace(BasisType && basis,
-                                         FullStateType && offset,
-					 bool isAffine);
+  /*impl defined*/ create_trial_column_subspace(BasisType && basis,
+						FullStateType && offset,
+						bool isAffine);
 
   }} // end namespace pressio::rom
 
@@ -62,6 +62,8 @@ Mandates
 Preconditions
 ~~~~~~~~~~~~~
 
+- ``basis`` MUST represent a column space
+
 - ``basis`` and ``offset`` must be compatible in shape: for example, if ``basis`` is an
   instance of a matrix class representing a column space and ``offset`` is an instance of a vector class,
   then the extent of ``offset`` must be equal to the number of rows of ``basis``
@@ -77,8 +79,8 @@ Preconditions
 Return value
 ~~~~~~~~~~~~
 
-An instance of an implementation-defined class that represents an abtraction of a trial subspace.
-Use ``auto space = create_trial_subspace(/*args*/)`` to let the compiler deduce the type.
+An instance of an implementation-defined class that represents an abtraction of a trial column subspace.
+Use ``auto space = create_trial_column_subspace(/*args*/)`` to let the compiler deduce the type.
 
 Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,11 +97,8 @@ Postconditions and Side Effects
   of both ``basis`` and ``offset`` that are either the arguments originally
   passed, or identical deep-copies of them
 
-- if ``isAffine == false``, the returned object is guaranteed to
-  meet the ``TrialSubspace`` `concept <rom_concepts/c7.html>`__
-
-- if ``isAffine == true``, the returned object is guaranteed to
-  meet the ``AffineTrialSubspace`` `concept <rom_concepts/c8.html>`__.
+- the returned object is guaranteed to meet the ``AffineTrialColumnSubspace`` `concept <rom_concepts/c8.html>`__.
+  Semantically, if ``isAffine == true``, the offset will be nontrivial.
 
 
 ..

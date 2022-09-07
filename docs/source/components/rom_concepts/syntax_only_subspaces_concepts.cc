@@ -5,15 +5,17 @@
 
 struct SyntaxOnly
 {
-  using reduced_state_type = ;
-  using basis_type         = ;
-  using full_state_type    = ;
-
-  reduced_state_type createReducedState() const;
-  full_state_type    createFullState() const;
-  void               mapFromReducedState(const redStateType &, full_state_type &) const;
-  full_state_type    createFullStateFromReducedState(const redStateType &) const;
+  using basis_type  = ;
   const basis_type & viewBasis() const;
+}
+
+struct SyntaxOnly
+{
+  using basis_type  = ;
+  using offset_type = ;
+
+  const basis_type & viewBasis() const;
+  const offset_type & viewAffineOffset() const;
 }
 
 struct SyntaxOnly
@@ -22,10 +24,26 @@ struct SyntaxOnly
   using basis_type         = ;
   using full_state_type    = ;
 
-  reduced_state_type      createReducedState() const;
-  full_state_type         createFullState() const;
-  void                    mapFromReducedState(const redStateType &, full_state_type &) const;
-  full_state_type         createFullStateFromReducedState(const redStateType &) const;
-  const basis_type &      viewBasis() const;
-  const full_state_type & viewAffineOffset() const;
+  reduced_state_type createReducedState() const;
+  full_state_type    createFullState() const;
+  void               mapFromReducedState(const reduced_state_type &, full_state_type &) const;
+  full_state_type    createFullStateFromReducedState(const reduced_state_type &) const;
+
+  const basis_type & viewBasis() const;
+}
+
+struct SyntaxOnly
+{
+  using reduced_state_type = ;
+  using basis_type         = ;
+  using full_state_type    = ;
+  using offset_type        = ;
+
+  reduced_state_type createReducedState() const;
+  full_state_type    createFullState() const;
+  void               mapFromReducedState(const reduced_state_type &, full_state_type &) const;
+  full_state_type    createFullStateFromReducedState(const reduced_state_type &) const;
+
+  const basis_type & viewBasis() const;
+  const offset_type & viewAffineOffset() const;
 }

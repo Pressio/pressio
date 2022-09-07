@@ -1,10 +1,10 @@
 
-``AffineTrialSubspace``
-=======================
+``AffineTrialColumnSubspace``
+=============================
 
 Syntax only
 -----------
 
 .. literalinclude:: ./syntax_only_subspaces_concepts.cc
    :language: cpp
-   :lines: 19-31
+   :lines: 35-49

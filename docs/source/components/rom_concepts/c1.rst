@@ -2,6 +2,60 @@
 ``SemiDiscreteFom``
 ===================
 
+Header: ``<pressio/rom_concepts.hpp>``
+
+Public namespace: ``pressio::rom``
+
+
+.. code-block:: cpp
+
+   template <class T>
+   concept SemiDiscreteFom =
+         std::regular<typename T::time_type>
+      && std::copy_constructible<typename T::state_type>
+      && std::copy_constructible<typename T::right_hand_side_type>
+      && std::same_as<
+          typename pressio::Traits<typename T::state_type>::scalar_type,
+          typename pressio::Traits<typename T::right_hand_side_type>::scalar_type>
+      && std::convertible_to<
+          typename T::time_type,
+          typename ::pressio::Traits<typename T::state_type>::scalar_type>
+      && requires(const T & A,
+		  const typename T::state_type & s,
+		  const typename T::time_type & t,
+		  typename T::right_hand_side_type & r)
+      {
+       { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
+       { A.rightHandSide(s, t, r) } -> std::same_as<void>;
+     };
+
+Specifies that a type is a representation of a semi-discrete full-order model.
+
+Semantic requirements
+---------------------
+
+The concept is modeled only if all of the following hold:
+
+- *non aliasing operators*: given the following:
+
+  .. code-block:: cpp
+
+     auto r1 = A.createRightHandSide()
+     auto r2 = A.createRightHandSide()
+
+  ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
+  and such that any modification to ``r1`` does not affect ``r2``
+
+- *blocking operations*: all methods are blocking, meaning that all temporary
+  allocations and operations are complete before the methods return and not outstanding work remains
+
+- *equality preserving*: given ``A`` an object of type `T`, calling ``A.rightHandSide(...)``
+  with equal inputs yields equal outputs.
+
+- *const correctness*: methods may modify only the non-constant operands.
+  Operands that are constant must not be modified.
+
+
 Syntax only
 -----------
 

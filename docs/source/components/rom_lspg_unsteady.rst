@@ -65,8 +65,8 @@ Parameters
 Constraints
 ~~~~~~~~~~~
 
-- ``TrialSpaceType`` must meet the ``TrialSubspace`` `concept <rom_concepts/c7.html>`__
-  or ``AffineTrialSubspace`` `concept <rom_concepts/c8.html>`__
+- ``TrialSpaceType`` must meet the ``TrialColumnSubspace`` `concept <rom_concepts/c7.html>`__
+  or ``AffineTrialColumnSubspace`` `concept <rom_concepts/c8.html>`__
 
 - ``FomSystemType`` must meet the ``SemiDiscreteFomWithJacobianAction`` `concept <rom_concepts/c2.html>`__.
 

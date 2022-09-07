@@ -3,8 +3,8 @@
 .. role:: cpp(code)
    :language: cpp
 
-``LinearSubspace``
-==================
+``TrialColumnSubspace``
+=======================
 
 Header: ``<pressio/rom_subspaces.hpp>``
 
@@ -12,9 +12,9 @@ Namespace: ``namespace pressio::rom``
 
 |
 
-.. cpp:class:: template <class ReducedStateType, class BasisType, class FullStateType> LinearSubspace
+.. cpp:class:: template <class ReducedStateType, class BasisType, class FullStateType> TrialColumnSubspace
 
-Class template abstracting a linear (optionally affine) subspace.
+Class template abstracting a linear (optionally affine) column subspace.
 
 :tparam ReducedStateType: reduced state's type.
 			  Must be either an Eigen vector or a Kokkos rank-1 view.
@@ -24,13 +24,14 @@ Class template abstracting a linear (optionally affine) subspace.
 
 :tparam BasisType: basis type
 
-		   *Requires:* :cpp:`std::is_copy_constructible<BasisType>::value == true`
+		   *Requires:* :cpp:`std::is_copy_constructible<BasisType>::value == true`,
+		   must not be a pointer, an std::unique_ptr, or std::shared_ptr
 
 
 :tparam FullStateType: full state type.
 
 		       *Requires:* :cpp:`std::is_copy_constructible<FullStateType>::value == true`
-
+		       must not be a pointer, an std::unique_ptr, or std::shared_ptr
 
 *Mandates*
 
@@ -48,26 +49,31 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
 
 .. cpp:type:: basis_type
 
-   The ``BasisType`` stripped of any const/reference qualification,
-   i.e. ``basis_type = pressio::mpl::remove_cvref_t<BasisType>``
+   The ``BasisType`` stripped of any const/volatile qualification,
+   i.e. ``basis_type = std::remove_cv_t<BasisType>``
 
 .. cpp:type:: full_state_type
 
-   The ``FullStateType`` stripped of any const/reference qualification,
-   i.e. ``full_state_type = pressio::mpl::remove_cvref_t<FullStateType>``
+   The ``FullStateType`` stripped of any const/volatile qualification,
+   i.e. ``full_state_type = std::remove_cv_t<FullStateType>``
+
+.. cpp:type:: offset_type
+
+   Same as ``full_state_type``
+
 
 ..
    .. rubric:: Private Data Members
 
-   .. cpp:member:: const basis_type LinearSubspace::basis_
+   .. cpp:member:: const basis_type TrialColumnSubspace::basis_
 
       The basis object.
 
-   .. cpp:member:: const full_state_type LinearSubspace::offset_
+   .. cpp:member:: const full_state_type TrialColumnSubspace::offset_
 
       The offset object.
 
-   .. cpp:member:: const bool LinearSubspace::isAffine_
+   .. cpp:member:: const bool TrialColumnSubspace::isAffine_
 
       The flag to signal if the subspace is affine or not.
 
@@ -76,7 +82,7 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
 
 .. rubric:: Constructors
 
-.. cpp:function:: LinearSubspace(const basis_type & basis, \
+.. cpp:function:: TrialColumnSubspace(const basis_type & basis, \
 		  const full_state_type & offset, \
 		  bool isAffine)
 
@@ -87,6 +93,8 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
   :param isAffine: boolean to signal an affine space
 
   *Preconditions*:
+
+  - ``basis`` MUST represent a column space
 
   - ``auto basisClone = pressio::ops::clone(basis)`` must *not* have view semantics,
     i.e., the return value ``basisClone`` must be a new, independent object such that
@@ -101,13 +109,13 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
   performs new allocations to hold identical deep-copies of the
   arguments ``basis`` and ``offset`` by calling ``pressio::ops::clone()`` for both.
 
-  *Post-conditions*:
+  *Postconditions*:
 
   the constructed object owns *immutable* data members which are clones of the arguments
   passed to the constructor
 
 
-.. cpp:function:: LinearSubspace(basis_type && basis, \
+.. cpp:function:: TrialColumnSubspace(basis_type && basis, \
 		  full_state_type && offset, \
 		  bool isAffine)
 
@@ -117,6 +125,10 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
   :param offset: affine offset
   :param isAffine: boolean to signal an affine space
 
+  *Preconditions*:
+
+  - ``basis`` MUST represent a column space
+
   *Semantics and Side Effects*:
 
   The constructor will try to use move semantics. If ``basis_type`` and ``full_state_type``
@@ -124,23 +136,26 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
   If those types do not implement move semantics, then the move operation falls back to a copy,
   and a new allocation occurs.
 
-  *Post-conditions*:
+  *Postconditions*:
 
   the constructed object owns *immutable* data members that are identical to the arguments
   passed to the constructor
 
 
-.. cpp:function:: LinearSubspace(const basis_type & basis, \
+.. cpp:function:: TrialColumnSubspace(const basis_type & basis, \
 		  full_state_type && offset, \
 		  bool isAffine)
 
   Constructor accepting an lvalue and rvalue arguments for basis and offset, and a boolean.
+  See above for pre and postconditions and semantics.
 
-.. cpp:function:: LinearSubspace(basis_type && basis, \
+
+.. cpp:function:: TrialColumnSubspace(basis_type && basis, \
 		  const full_state_type & offset, \
 		  bool isAffine)
 
   Constructor accepting an rvalue and lvalue arguments for basis and offset, and a boolean.
+  See above for pre and postconditions and semantics.
 
 |
 
@@ -172,3 +187,22 @@ typename pressio::Traits<full_state_type>::scalar_type>::value == true``
 .. cpp:function:: const basis_type & viewBasis() const
 
    Vew the basis.
+
+.. cpp:function:: const offset_type & viewAffineOffset() const
+
+   Vew the offset.
+
+.. cpp:function:: bool isAffine() const
+
+   If this an affine space, so the offset is not trivial
+
+
+|
+
+.. rubric:: Non-member functions
+
+
+.. cpp:function:: template<class ReducedStateType, class BasisType, class FullStateType> \
+		  auto create_trial_column_subspace(BasisType && basis, \
+		                                    FullStateType && offset, \
+					            bool isAffine)

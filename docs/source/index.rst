@@ -87,29 +87,30 @@ Get Started
 Generic programming and concepts
 --------------------------------
 
-Arguably the main foundation of pressio is the use
-of generic programming--*or, more humbly, we can
-at least say that it is what we strive for*.
+Arguably the main foundation of pressio is the use of
+generic programming--*or, more humbly, we can at least say that it is what we strive for*.
 Since the early development stages, we have tried to rely on
 concept-driven design. Here, the term concept does not necessarily
 refer to the C++ concepts feature introduced in C++20.
 Rather, you can think of it more loosely as "what properties/syntax a type meets,
 what you can do with it and, also, what a type should definitely satisfy".
-So, at least for now, think of the term concept a bit loosely.
 In pressio, in fact, we cannot yet upgrade to C++20, and thus
 we cannot use and *stricto sensu* enforce concepts.
 For now, concepts are present but enforced via, e.g., SFINAE,
 or in some cases (abusing the syntax) with static asserts.
 Later on, when feasible, we will enforce them as the standard dictates.
 
+Note, that, if you have used or use C++ templates, you *have* used
+concepts knowingly or not. This is becuase when you write a function or class
+template, you have some expectations of what a template is going to do.
+Concepts are basically a way to *explicitly* formalize those expectations into the code.
+
 The message we want to convey is that *"concepts" are a fundamental
-design part of pressio and are present everywhere*---note, that, if you have
-used C++ templates, you *have* used concepts knowingly or not.
+design part of pressio and are present everywhere in a fairly explicit manner*.
 In our documentation, we make the effort to highlight the use of concepts
 by dedicating to each component of the library a full section
 (see the sidebar menu on the left)
 to discuss and formalize how concepts are used in that component.
-
 
 
 
