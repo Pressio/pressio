@@ -86,7 +86,7 @@ Parameters
 
 * ``schemeName``: enum value to choose the desired time integration scheme
 
-* ``trialSpace``: linear trial subspace approximating the FOM state space
+* ``trialSpace``: trial subspace approximating the FOM state space
 
 * ``fomSystem``: full-order model instance
 
@@ -138,7 +138,7 @@ Mandates
   i.e.: ``std::is_same<typename TrialSpaceType::full_state_type,
   typename FomSystemType::state_type >::value == true``
 
-- the masking operators must "be compatible" with the FOM types,
+- the masking operators must be compatible with the FOM types,
   so we must have:
 
   - for 3,6: ``std::is_same<

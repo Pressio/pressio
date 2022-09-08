@@ -52,7 +52,7 @@ API
 Parameters
 ----------
 
-* ``trialSpace``: linear trial subspace approximating the FOM state space
+* ``trialSpace``: trial subspace approximating the FOM state space
 
 * ``fomSystem``: full-order model instance
 
@@ -94,8 +94,9 @@ Mandates
 Return value, Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- The functions construct and return an instance of an implementation-defined class
-  representing a Galerkin steady problem. This problem class is guaranteed to expose this API:
+- The return value is an instance of an implementation-defined class
+  representing a Galerkin steady problem.
+  This problem class is guaranteed to expose this API:
 
 .. code-block:: cpp
 
