@@ -99,20 +99,20 @@ Parameters
 Constraints
 ~~~~~~~~~~~
 
-- ``TrialSpaceType`` must meet the ``TrialColumnSubspace`` `concept <rom_concepts/c7.html>`__
+- ``TrialSpaceType`` must model the ``TrialColumnSubspace`` `concept <rom_concepts/c7.html>`__
   or ``AffineTrialColumnSubspace`` `concept <rom_concepts/c8.html>`__
 
 - ``FomSystemType``:
 
-  - for 1,2,3: it must meet the ``SemiDiscreteFom`` `concept <rom_concepts/c1.html>`__.
+  - for 1,2,3: it must model the ``SemiDiscreteFom`` `concept <rom_concepts/c1.html>`__.
 
-  - for 4,5,6: it must meet the ``SemiDiscreteFomWithJacobianAction`` `concept <rom_concepts/c2.html>`__.
+  - for 4,5,6: it must model the ``SemiDiscreteFomWithJacobianAction`` `concept <rom_concepts/c2.html>`__.
 
 - ``HyperReductionOperatorType``:
 
-  - for 2,3: it must meet the ``ExplicitGalerkinHyperReducer`` `concept <rom_concepts/c4b.html>`__
+  - for 2,3: it must model the ``ExplicitGalerkinHyperReducer`` `concept <rom_concepts/c4b.html>`__
 
-  - for 5,6: it must meet the ``ImplicitGalerkinHyperReducer`` `concept <rom_concepts/c4c.html>`__
+  - for 5,6: it must model the ``ImplicitGalerkinHyperReducer`` `concept <rom_concepts/c4c.html>`__
 
 - ``RhsMaskerType`` and ``JacobianActionMaskerType`` must both meet
   the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__

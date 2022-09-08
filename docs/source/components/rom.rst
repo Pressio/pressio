@@ -2,7 +2,7 @@
 =======
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    rom_trial_col_subspace
    rom_galerkin_steady

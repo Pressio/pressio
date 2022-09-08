@@ -62,8 +62,7 @@ Constraints
 
 * ``TotalNumberOfDesiredStates``: currently must be set to one of `{2, 3, 4}`
 
-- ``SystemType``: must satisfy the ``FullyDiscreteSystemWithJacobian`` `concept <ode_concepts/c5.html>`__.
-
+- ``SystemType`` must model the ``FullyDiscreteSystemWithJacobian`` `concept <ode_concepts/c5.html>`__.
 
 
 Preconditions
