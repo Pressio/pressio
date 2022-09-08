@@ -73,7 +73,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
-  impl::to_target_time_with_stepSizePolicy
+  impl::to_target_time_with_step_size_policy
     <false>(stepper, startVal,
 	    final_val, state,
 	    std::forward<StepSizePolicyType>(stepSizePolicy),
@@ -97,7 +97,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
-  impl::to_target_time_with_stepSizePolicy<
+  impl::to_target_time_with_step_size_policy<
     false>(stepper, startVal,
 	   final_val, state,
 	   std::forward<StepSizePolicyType>(stepSizePolicy),
@@ -127,7 +127,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
-  impl::to_target_time_with_stepSizePolicy
+  impl::to_target_time_with_step_size_policy
     <true>(stepper, startVal,
 	   final_val, state,
 	   std::forward<StepSizePolicyType>(stepSizePolicy),
@@ -156,7 +156,7 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
-  impl::to_target_time_with_stepSizePolicy
+  impl::to_target_time_with_step_size_policy
     <true>(stepper, startVal,
 	   final_val, state,
 	   std::forward<StepSizePolicyType>(stepSizePolicy),
