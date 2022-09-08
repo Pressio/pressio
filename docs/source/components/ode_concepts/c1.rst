@@ -2,6 +2,66 @@
 ``SystemWithRhsOnly``
 =====================
 
+.. code-block:: cpp
+
+   namespace pressio{ namespace ode{
+
+   template <class T>
+   concept SystemWithRhsOnly =
+         std::regular<typename T::independent_variable_type>
+      && std::copy_constructible<typename T::state_type>
+      && std::copy_constructible<typename T::right_hand_side_type>
+      && std::same_as<
+          typename pressio::Traits<typename T::state_type>::scalar_type,
+          typename pressio::Traits<typename T::right_hand_side_type>::scalar_type>
+      && std::convertible_to<
+          typename T::independent_variable_type,
+          typename ::pressio::Traits<typename T::state_type>::scalar_type>
+      && requires(const T & A,
+		  const typename T::state_type & s,
+		  const typename T::independent_variable_type & t,
+		  typename T::right_hand_side_type & r)
+      {
+       { A.createState()          } -> std::same_as<typename T::state_type>;
+       { A.createRightHandSide()  } -> std::same_as<typename T::right_hand_side_type>;
+       { A.rightHandSide(s, t, r) } -> std::same_as<void>;
+     };
+
+   }} // end namespace
+
+Specifies that a type is a representation of an ODE system with right hand side.
+
+Semantic requirements
+---------------------
+
+The concept is modeled only if all of the following hold:
+
+- *determined*: the "dimension" of the right hand side must be equal to the
+  dimension of the state, i.e. # of equations is same as # of unknowns
+
+- *non aliasing operators*: given the following:
+
+  .. code-block:: cpp
+
+     auto s1 = A.createState();
+     auto s2 = A.createState();
+     auto r1 = A.createRightHandSide();
+     auto r2 = A.createRightHandSide();
+
+  ``r1``, ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
+  and such that any modification to ``r1`` does not affect ``r2``, and similarly
+  for ``s1`` and ``s2``
+
+- *blocking operations*: all methods are blocking, meaning that all temporary
+  allocations and operations are complete before the methods return and not outstanding work remains
+
+- *equality preserving*: given ``A`` an object of type `T`, calling ``A.rightHandSide(...)``
+  with equal inputs yields equal outputs
+
+- *const correctness*: methods may modify only the non-constant operands.
+  Operands that are constant must not be modified.
+
+
 Syntax only
 -----------
 
@@ -11,55 +71,6 @@ Syntax only
 
 
 ..
-   Full concept
-   ------------
-
-   .. code-block:: cpp
-
-       template <class T>
-       concept OdeSystem =
-	 //
-	 has typedefs
-	 has all methods
-	 std::copy_constructible<typename T::state_type>;
-	 std::copy_constructible<typename T::right_hand_side_type>;
-	 VectorSpaceElementsWithSameField<state_type, rhs_type>
-	 std::convertible_to<independent_variable_type, scalar_type>
-	 //
-	 Determined
-	 NonAliasingOperators
-	 EqualityPreserving
-	 BlockingOperations
-	 const_correctness (possibly also for value semantics structures)
-
-.. //
-   // purely syntactic requirements
-   //
-   requires{
-     requires std::regular<typename T::independent_variable_type>;
-     requires std::copy_constructible<typename T::state_type>;
-     requires std::copy_constructible<typename T::right_hand_side_type>;
-   } &&
-   requires(const T & A){
-     { A.createState()         } -> std::same_as<typename T::state_type>;
-     { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
-   } &&
-   requires(const T & A,
-      const typename T::independent_variable_type & indVarVal,
-      const typename T::state_type & s,
-      typename T::right_hand_side_type & v)
-   {
-     A.rightHandSide(s, indVarVal, v);
-   } &&
-
-   //
-   // execution/language axioms
-   //
-   axiom NonAliasingOperators(const T & A){} &&
-   axiom Deterministic() &&
-   axiom BlockingOperations(){} &&
-   axiom ConstCorrectness(){} &&
-
    //
    // mathematical axioms
    //
@@ -67,7 +78,3 @@ Syntax only
      requires RealVectorSpaceElement<typename T::state_type>;
      requires RealVectorSpaceElement<typename T::right_hand_side_type>;
    } &&
-   axiom Determined(){
-     // dimension of the rightHandSide vector space == dimension of the state vector space
-     // i.e. # of equations is same as # of unknowns
-   };

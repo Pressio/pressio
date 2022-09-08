@@ -4,10 +4,9 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-Public namespace: ``pressio::rom``
-
-
 .. code-block:: cpp
+
+   namespace pressio{ namespace ode{
 
    template <class T>
    concept SemiDiscreteFom =
@@ -29,6 +28,8 @@ Public namespace: ``pressio::rom``
        { A.rightHandSide(s, t, r) } -> std::same_as<void>;
      };
 
+   }} // end namespace
+
 Specifies that a type is a representation of a semi-discrete full-order model.
 
 Semantic requirements
@@ -40,8 +41,8 @@ The concept is modeled only if all of the following hold:
 
   .. code-block:: cpp
 
-     auto r1 = A.createRightHandSide()
-     auto r2 = A.createRightHandSide()
+     auto r1 = A.createRightHandSide();
+     auto r2 = A.createRightHandSide();
 
   ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
   and such that any modification to ``r1`` does not affect ``r2``
