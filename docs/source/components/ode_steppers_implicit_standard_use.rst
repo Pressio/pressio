@@ -77,7 +77,7 @@ Constraints
 - ``SystemType``: must model the `SystemWithRhsAndJacobian concept <ode_concepts/c2.html>`__
   or one subsuming it
 
-- ``std::decay_t<MassMatrixOperatorType>``: must model either the `MassMatrixOperator concept <ode_concepts/c3a.html>`__
+- ``mpl::remove_cvref_t<MassMatrixOperatorType>``: must model either the `MassMatrixOperator concept <ode_concepts/c3a.html>`__
   or the `ConstantMassMatrixOperator concept <ode_concepts/c3b.html>`__
 
 
@@ -98,10 +98,10 @@ Mandates
   then the following must hold:
 
   - ``std::is_same< typename SystemType::independent_variable_type,
-    typename std::decay_t<MassMatrixOperatorType>::independent_variable_type >::value == true``
+    typename mpl::remove_cvref_t<MassMatrixOperatorType>::independent_variable_type >::value == true``
 
   - ``std::is_same< typename SystemType::state_type,
-    typename std::decay_t<MassMatrixOperatorType>::state_type >::value == true``
+    typename mpl::remove_cvref_t<MassMatrixOperatorType>::state_type >::value == true``
 
 Return value
 ~~~~~~~~~~~~
