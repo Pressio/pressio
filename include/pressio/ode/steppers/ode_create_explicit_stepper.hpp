@@ -72,7 +72,7 @@ auto create_explicit_stepper(StepScheme name,
 			     SystemType && odeSystem)
 {
   // constraints
-  using sys_type = std::decay_t<SystemType>;
+  using sys_type = mpl::remove_cvref_t<SystemType>;
   static_assert
   (   ::pressio::ode::SystemWithRhs<sys_type>::value
    || ::pressio::ode::SystemWithRhsAndJacobian<sys_type>::value,
@@ -89,13 +89,13 @@ auto create_explicit_stepper(StepScheme name,
 {
 
   // constraints
-  using sys_type = std::decay_t<SystemType>;
+  using sys_type = mpl::remove_cvref_t<SystemType>;
   static_assert
   (   ::pressio::ode::SystemWithRhs<sys_type>::value
    || ::pressio::ode::SystemWithRhsAndJacobian<sys_type>::value,
    "explicit stepper: your system class does not meet any valid concept");
 
-  using mmop_type = std::decay_t<MassMatrixOperatorType>;
+  using mmop_type = mpl::remove_cvref_t<MassMatrixOperatorType>;
   static_assert
     (::pressio::ode::MassMatrixOperator<mmop_type>::value
      || ::pressio::ode::ConstantMassMatrixOperator<mmop_type>::value, "");

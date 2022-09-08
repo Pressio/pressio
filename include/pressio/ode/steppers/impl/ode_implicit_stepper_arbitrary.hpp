@@ -98,6 +98,10 @@ public:
     {}
 
 public:
+  auto createState() const{
+    return systemObj_.get().createState();
+  }
+
   residual_type createResidual() const{
     return systemObj_.get().createDiscreteResidual();
   }

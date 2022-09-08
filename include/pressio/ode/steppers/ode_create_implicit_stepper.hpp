@@ -76,8 +76,8 @@ template<
   class MassMatrixOperatorType,
   mpl::enable_if_t<
         ::pressio::ode::SystemWithRhsAndJacobian<SystemType>::value
-    && (::pressio::ode::MassMatrixOperator<std::decay_t<MassMatrixOperatorType>>::value
-     || ::pressio::ode::ConstantMassMatrixOperator<std::decay_t<MassMatrixOperatorType>>::value),
+    && (::pressio::ode::MassMatrixOperator<mpl::remove_cvref_t<MassMatrixOperatorType>>::value
+     || ::pressio::ode::ConstantMassMatrixOperator<mpl::remove_cvref_t<MassMatrixOperatorType>>::value),
     int > = 0
   >
 auto create_implicit_stepper(StepScheme name,
@@ -93,7 +93,7 @@ template<
   class ResidualJacobianPolicyType,
   mpl::enable_if_t<
     ::pressio::ode::ImplicitResidualJacobianPolicy<
-      std::decay_t<ResidualJacobianPolicyType>>::value, int
+      mpl::remove_cvref_t<ResidualJacobianPolicyType>>::value, int
     > = 0
   >
 auto create_implicit_stepper(StepScheme name,
@@ -109,12 +109,12 @@ template<int TotalNumberOfDesiredStates, class SystemType>
 auto create_implicit_stepper(SystemType && system)
 {
   // the following should be a constraint
-  using sys_type = std::decay_t<SystemType>;
+  using sys_type = mpl::remove_cvref_t<SystemType>;
   static_assert(::pressio::ode::FullyDiscreteSystemWithJacobian<
 		sys_type, TotalNumberOfDesiredStates>::value,
 		"The system passed does not meet the FullyDiscrete API");
 
-  using sys_type = std::decay_t<SystemType>;
+  using sys_type = mpl::remove_cvref_t<SystemType>;
   using independent_variable_type = typename sys_type::independent_variable_type;
   using state_type = typename sys_type::state_type;
   using residual_type = typename sys_type::discrete_residual_type;
