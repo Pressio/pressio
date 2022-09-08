@@ -68,16 +68,16 @@ mpl::enable_if_t<
   >
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
-		       const IndVarType & start_val,
+		       const IndVarType & startVal,
 		       const IndVarType & final_val,
-		       StepSizePolicyType && step_size_policy)
+		       StepSizePolicyType && stepSizePolicy)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
-  impl::to_target_time_with_step_size_policy<false>(stepper, start_val,
+  impl::to_target_time_with_stepSizePolicy<false>(stepper, startVal,
 						    final_val, state,
-						    std::forward<StepSizePolicyType>(step_size_policy),
+						    std::forward<StepSizePolicyType>(stepSizePolicy),
 						    observer_t());
 }
 
@@ -91,16 +91,16 @@ mpl::enable_if_t<
   >
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
-		       const IndVarType & start_val,
+		       const IndVarType & startVal,
 		       const IndVarType & final_val,
-		       StepSizePolicyType && step_size_policy,
+		       StepSizePolicyType && stepSizePolicy,
 		       ObserverType && observer)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
-  impl::to_target_time_with_step_size_policy<false>(stepper, start_val,
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
+  impl::to_target_time_with_stepSizePolicy<false>(stepper, startVal,
 						    final_val, state,
-						    std::forward<StepSizePolicyType>(step_size_policy),
+						    std::forward<StepSizePolicyType>(stepSizePolicy),
 						    std::forward<ObserverType>(observer));
 }
 
@@ -118,18 +118,18 @@ mpl::enable_if_t<
   >
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
-		       const IndVarType & start_val,
+		       const IndVarType & startVal,
 		       const IndVarType & final_val,
-		       StepSizePolicyType && step_size_policy,
+		       StepSizePolicyType && stepSizePolicy,
 		       AuxT && auxArg,
 		       Args && ... args)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
-  impl::to_target_time_with_step_size_policy<false>(stepper, start_val,
+  impl::to_target_time_with_stepSizePolicy<false>(stepper, startVal,
 						    final_val, state,
-						    std::forward<StepSizePolicyType>(step_size_policy),
+						    std::forward<StepSizePolicyType>(stepSizePolicy),
 						    observer_t(),
 						    std::forward<AuxT>(auxArg),
 						    std::forward<Args>(args)...);
@@ -146,18 +146,18 @@ mpl::enable_if_t<
   >
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
-		       const IndVarType & start_val,
+		       const IndVarType & startVal,
 		       const IndVarType & final_val,
-		       StepSizePolicyType && step_size_policy,
+		       StepSizePolicyType && stepSizePolicy,
 		       ObserverType && observer,
 		       AuxT && auxArg,
 		       Args && ... args)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
-  impl::to_target_time_with_step_size_policy<false>(stepper, start_val,
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
+  impl::to_target_time_with_stepSizePolicy<false>(stepper, startVal,
 						    final_val, state,
-						    std::forward<StepSizePolicyType>(step_size_policy),
+						    std::forward<StepSizePolicyType>(stepSizePolicy),
 						    std::forward<ObserverType>(observer),
 						    std::forward<AuxT>(auxArg),
 						    std::forward<Args>(args)...);

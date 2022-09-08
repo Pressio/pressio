@@ -24,9 +24,9 @@ API
     >
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (1)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     const IndVarType & step_size,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     const IndVarType & stepSize,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType && guesser);
 
   template<
@@ -35,9 +35,9 @@ API
     >
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (2)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     StepSizePolicyType && step_size_policy,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     StepSizePolicyType && stepSizePolicy,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType && guesser);
 
   template<
@@ -46,9 +46,9 @@ API
     >
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (3)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     const IndVarType & step_size,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     const IndVarType & stepSize,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType && guesser,
 					     ObserverType && observer);
 
@@ -58,9 +58,9 @@ API
     >
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (4)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     StepSizePolicyType && step_size_policy,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     StepSizePolicyType && stepSizePolicy,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType && guesser,
 					     ObserverType && observer);
 
@@ -70,9 +70,9 @@ API
     >
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (5)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     const IndVarType & step_size,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     const IndVarType & stepSize,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType & guesser,
 					     AuxT && auxArg,
 					     Args && ... args);
@@ -82,9 +82,9 @@ API
     class GuesserType, class IndVarType, class AuxT, class ...Args>
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (6)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     StepSizePolicyType && step_size_policy,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     StepSizePolicyType && stepSizePolicy,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType && guesser,
 					     AuxT && auxArg,
 					     Args && ... args);
@@ -95,9 +95,9 @@ API
     >
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (7)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     const IndVarType & step_size,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     const IndVarType & stepSize,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType & guesser,
 					     ObserverType && observer,
 					     AuxT && auxArg,
@@ -109,9 +109,9 @@ API
     class AuxT, class ...Args>
   void advance_n_steps_with_pre_step_guesser(StepperType & stepper,         (8)
 					     StateType & state,
-					     const IndVarType & start_val,
-					     StepSizePolicyType && step_size_policy,
-					     ::pressio::ode::StepCount num_steps,
+					     const IndVarType & startVal,
+					     StepSizePolicyType && stepSizePolicy,
+					     ::pressio::ode::StepCount numSteps,
 					     GuesserType && guesser,
 					     ObserverType && observer,
 					     AuxT && auxArg,
@@ -119,41 +119,62 @@ API
 
   }} // end namespace pressio::ode
 
+Parameters
+----------
 
-Parameters and Requirements
----------------------------
+* ``stepper``: object that knows *how to* perform a single step.
 
-* ``stepper``: an object that knows *how to* perform a single step.
+* ``state``: object that represents the "state" to update
 
-  - for overloads 1,2,3,4, ``StepperType`` must satisfy the `Steppable concept <ode_concepts/c6.html>`_
+* ``startVal``: the independent variable starting value
 
-  - for overloads 5,6,7,8, ``StepperType`` must satisfy the `SteppableWithAuxiliaryArgs concept <ode_concepts/c7.html>`_
+* ``numSteps``: how many steps to take
 
-* ``state``: self-explanatory
+* ``stepSizePolicy``: functor to set the step size
 
-  - constraint: ``std::is_same<StateType, typename StepperType::state_type>``
+* ``stepSize``: *constant* step size to use for each step
 
-* ``start_val``: self-explanatory
+* ``guesser``: functor to overwrite the state with a guess **before** doing a step
 
-  - constraint: ``std::is_same<IndVarType, typename StepperType::independent_variable_type>``
-
-* ``num_steps``: self-explanatory
-
-* ``step_size_policy``: functor to set the step size
-
-  - must conform to the `StepSizePolicy concept <ode_concepts/c8.html>`_
-
-* ``step_size``: the *constant* step size to use for each step
-
-* ``observer``: functor to "observe" the state's evolution
-
-  - must conform to the `StateObserver concept <ode_concepts/c10.html>`_
-
-  - scope: to potentially collect necessary data/metrics/statistics or
-    do other things from the state.
-
-* ``guesser``: functor to overwrite the state with a guess **before** doing a step.
-
-  - must conform to the `StateGuesser concept <ode_concepts/c11.html>`_
+* ``observer``: object to "observe" the state's evolution, which can be used
+  to potentially collect necessary data/metrics/statistics or do other things from the state.
 
 * ``auxArg``, ``args``: arbitrary objects that are perfectly forwarded to the stepper's operator().
+
+
+Constraints
+-----------
+
+* ``StepperType``:
+
+  - for 1,2,3,5: must satisfy the `Steppable concept <ode_concepts/c6.html>`_
+
+  - for 5,6,7,8, must satisfy the `SteppableWithAuxiliaryArgs concept <ode_concepts/c7.html>`_
+
+* ``StepSizePolicyType`` must model the `StepSizePolicy concept <ode_concepts/c8.html>`_
+
+* ``GuesserType`` must model the `StateGuesser concept <ode_concepts/c11.html>`_
+
+* ``ObserverType`` must model he `StateObserver concept <ode_concepts/c10.html>`_
+
+Preconditions
+-------------
+
+:red:`finish`
+
+Mandates
+--------
+
+* ``std::is_same<IndVarType, typename StepperType::independent_variable_type>``
+
+* ``std::is_same<StateType, typename StepperType::state_type>``
+
+Return value
+------------
+
+None
+
+Postconditions and Side Effects
+-------------------------------
+
+:red:`finish`

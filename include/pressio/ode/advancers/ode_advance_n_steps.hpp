@@ -69,16 +69,16 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		const IndVarType & step_size,
-		StepCount num_steps)
+		const IndVarType & startVal,
+		const IndVarType & stepSize,
+		StepCount numSteps)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
-				      step_size, state,
+  impl::advance_n_steps_with_fixed_dt(stepper, numSteps, startVal,
+				      stepSize, state,
 				      observer_t(), guesser_t());
 }
 
@@ -93,16 +93,16 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		StepSizePolicyType && step_size_policy,
-		StepCount num_steps)
+		const IndVarType & startVal,
+		StepSizePolicyType && stepSizePolicy,
+		StepCount numSteps)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
-				       std::forward<StepSizePolicyType>(step_size_policy),
+  impl::advance_n_steps_with_dt_policy(stepper, numSteps, startVal, state,
+				       std::forward<StepSizePolicyType>(stepSizePolicy),
 				       observer_t(), guesser_t());
 }
 
@@ -116,16 +116,16 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		const IndVarType & step_size,
-		StepCount num_steps,
+		const IndVarType & startVal,
+		const IndVarType & stepSize,
+		StepCount numSteps,
 		ObserverType && observer)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
-				      step_size, state,
+  impl::advance_n_steps_with_fixed_dt(stepper, numSteps, startVal,
+				      stepSize, state,
 				      std::forward<ObserverType>(observer),
 				      guesser_t());
 }
@@ -142,16 +142,16 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		StepSizePolicyType && step_size_policy,
-		StepCount num_steps,
+		const IndVarType & startVal,
+		StepSizePolicyType && stepSizePolicy,
+		StepCount numSteps,
 		ObserverType && observer)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
-				       std::forward<StepSizePolicyType>(step_size_policy),
+  impl::advance_n_steps_with_dt_policy(stepper, numSteps, startVal, state,
+				       std::forward<StepSizePolicyType>(stepSizePolicy),
 				       std::forward<ObserverType>(observer),
 				       guesser_t());
 }
@@ -171,19 +171,19 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		const IndVarType & step_size,
-		StepCount num_steps,
+		const IndVarType & startVal,
+		const IndVarType & stepSize,
+		StepCount numSteps,
 		AuxT && auxArg,
 		Args && ... args)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
   observer_t observer;
-  impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
-				      step_size, state, observer,
+  impl::advance_n_steps_with_fixed_dt(stepper, numSteps, startVal,
+				      stepSize, state, observer,
 				      guesser_t(),
 				      std::forward<AuxT>(auxArg),
 				      std::forward<Args>(args)...);
@@ -200,18 +200,18 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		StepSizePolicyType && step_size_policy,
-		StepCount num_steps,
+		const IndVarType & startVal,
+		StepSizePolicyType && stepSizePolicy,
+		StepCount numSteps,
 		AuxT && auxArg,
 		Args && ... args)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
-				       std::forward<StepSizePolicyType>(step_size_policy),
+  impl::advance_n_steps_with_dt_policy(stepper, numSteps, startVal, state,
+				       std::forward<StepSizePolicyType>(stepSizePolicy),
 				       observer_t(), guesser_t(),
 				       std::forward<AuxT>(auxArg),
 				       std::forward<Args>(args)...);
@@ -228,18 +228,18 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		const IndVarType & step_size,
-		StepCount num_steps,
+		const IndVarType & startVal,
+		const IndVarType & stepSize,
+		StepCount numSteps,
 		ObserverType && observer,
 		AuxT && auxArg,
 		Args && ... args)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_val,
-				      step_size, state,
+  impl::advance_n_steps_with_fixed_dt(stepper, numSteps, startVal,
+				      stepSize, state,
 				      std::forward<ObserverType>(observer),
 				      guesser_t(),
 				      std::forward<AuxT>(auxArg),
@@ -259,18 +259,18 @@ mpl::enable_if_t<
   >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
-		const IndVarType & start_val,
-		StepSizePolicyType && step_size_policy,
-		StepCount num_steps,
+		const IndVarType & startVal,
+		StepSizePolicyType && stepSizePolicy,
+		StepCount numSteps,
 		ObserverType && observer,
 		AuxT && auxArg,
 		Args && ... args)
 {
 
-  impl::mandate_on_ind_var_and_state_types(stepper, state, start_val);
+  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using guesser_t  = impl::NoOpStateGuesser<IndVarType, StateType>;
-  impl::advance_n_steps_with_dt_policy(stepper, num_steps, start_val, state,
-				       std::forward<StepSizePolicyType>(step_size_policy),
+  impl::advance_n_steps_with_dt_policy(stepper, numSteps, startVal, state,
+				       std::forward<StepSizePolicyType>(stepSizePolicy),
 				       std::forward<ObserverType>(observer),
 				       guesser_t(),
 				       std::forward<AuxT>(auxArg),

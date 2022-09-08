@@ -21,18 +21,18 @@ API
    template<class StepperType, class StateType, class StepSizePolicyType, class IndVarType>
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (1)
 						  StateType & state,
-						  const IndVarType & start_val,
+						  const IndVarType & startVal,
 						  const IndVarType & final_val,
-						  StepSizePolicyType && step_size_policy);
+						  StepSizePolicyType && stepSizePolicy);
 
    template<
      class StepperType, class StateType, class StepSizePolicyType,
      class ObserverType, class IndVarType>
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (2)
 						  StateType & state,
-						  const IndVarType & start_val,
+						  const IndVarType & startVal,
 						  const IndVarType & final_val,
-						  StepSizePolicyType && step_size_policy,
+						  StepSizePolicyType && stepSizePolicy,
 						  ObserverType && observer);
 
    template<
@@ -40,9 +40,9 @@ API
      class IndVarType, class AuxT, class ...Args>
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (3)
 						  StateType & state,
-						  const IndVarType & start_val,
+						  const IndVarType & startVal,
 						  const IndVarType & final_val,
-						  StepSizePolicyType && step_size_policy,
+						  StepSizePolicyType && stepSizePolicy,
 						  AuxT && auxArg,
 						  Args && ... args);
 
@@ -51,40 +51,63 @@ API
      class ObserverType, class IndVarType, class AuxT, class ...Args>
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (4)
 						  StateType & state,
-						  const IndVarType & start_val,
+						  const IndVarType & startVal,
 						  const IndVarType & final_val,
-						  StepSizePolicyType && step_size_policy,
+						  StepSizePolicyType && stepSizePolicy,
 						  ObserverType && observer,
 						  AuxT && auxArg,
 						  Args && ... args);
 
+Parameters
+----------
 
-Parameters and Requirements
----------------------------
+* ``stepper``: object that knows *how to* perform a single step.
 
-* ``stepper``: an object that knows *how to* perform a single step.
+* ``state``: object that represents the "state" to update
 
-  - for overloads 1,2 ``StrongStepperType`` must satisfy the `StronglySteppable concept <ode_concepts/c6.html#stronglysteppable>`_
+* ``startVal``, ``final_val``: the independent variable starting value and target final value
 
-  - for overloads 3,4 ``StrongStepperType`` must satisfy the `StronglySteppableWithAuxiliaryArgs concept <ode_concepts/c7.html#stronglysteppablewithauxiliaryargs>`_
+* ``stepSizePolicy``: functor to set the step size
 
-* ``state``: self-explanatory
+* ``step_size``: *constant* step size to use for each step
 
-  - constraint: ``std::is_same<StateType, typename StepperType::state_type>``
-
-* ``start_val``, ``final_val``: self-explanatory
-
-  - constraint: ``std::is_same<IndVarType, typename StepperType::independent_variable_type>``
-
-* ``step_size_policy``: functor to set the step size
-
-  - must conform to the `StepSizePolicyWithReductionScheme concept <ode_concepts/c9.html>`_
-
-* ``observer``: functor to "observe" the state's evolution
-
-  - must conform to the `StateObserver concept <ode_concepts/c10.html>`_
-
-  - scope: to potentially collect necessary data/metrics/statistics or
-    do other things from the state.
+* ``observer``: object to "observe" the state's evolution, which can be used
+  to potentially collect necessary data/metrics/statistics or do other things from the state.
 
 * ``auxArg``, ``args``: arbitrary objects that are perfectly forwarded to the stepper's operator().
+
+
+Constraints
+-----------
+
+* ``StepperType``:
+
+  - for 1,2 must satisfy the `StronglySteppable concept <ode_concepts/c6.html#stronglysteppable>`_
+
+  - for 3,4 must satisfy the `StronglySteppableWithAuxiliaryArgs concept <ode_concepts/c7.html#stronglysteppablewithauxiliaryargs>`_
+
+* ``StepSizePolicyType`` must model the `StepSizePolicy concept <ode_concepts/c8.html>`_
+
+* ``ObserverType`` must model he `StateObserver concept <ode_concepts/c10.html>`_
+
+Preconditions
+-------------
+
+:red:`finish`
+
+Mandates
+--------
+
+* ``std::is_same<IndVarType, typename StepperType::independent_variable_type>``
+
+* ``std::is_same<StateType, typename StepperType::state_type>``
+
+Return value
+------------
+
+None
+
+Postconditions and Side Effects
+-------------------------------
+
+:red:`finish`

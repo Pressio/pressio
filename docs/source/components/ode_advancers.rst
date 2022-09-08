@@ -3,7 +3,7 @@
 =======================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     ode_advance_n_steps
     ode_advance_n_steps_with_pre_step_guesser
