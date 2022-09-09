@@ -54,6 +54,10 @@ public:
   {}
 
 public:
+  state_type createState() const{
+    return trialSpace_.get().createReducedState();
+  }
+
   residual_type createResidual() const{
     auto tmp = fomSystem_.get().createResidual();
     return rMasker_.get().createApplyMaskResult(tmp);

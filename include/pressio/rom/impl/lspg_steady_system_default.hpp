@@ -43,6 +43,10 @@ public:
   {}
 
 public:
+  state_type createState() const{
+    return trialSpace_.get().createReducedState();
+  }
+
   residual_type createResidual() const{
     return fomSystem_.get().createResidual();
   }
