@@ -58,14 +58,14 @@ API
 - 4: overload for an "arbitrary" problem
 
 Non-type Template Parameters
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``TotalNumberOfStencilStates``: total number of desired states needed
   to define your scheme. Applicable only to overload 4.
 
 
 Parameters
-----------
+~~~~~~~~~~
 
 * ``schemeName``: enum value to set the desired *implicit* scheme to use
 

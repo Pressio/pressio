@@ -37,7 +37,7 @@ API
 - 2: overload for masked problem
 
 Parameters
-----------
+~~~~~~~~~~
 
 * ``trialSpace``: trial subspace approximating the full space
 

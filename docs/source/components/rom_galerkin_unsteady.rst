@@ -82,7 +82,7 @@ API
 - 4,5,6: overloads for (4) default, (5) hyper-reduced and (6) masked problem with *implicit* time integration
 
 Parameters
-----------
+~~~~~~~~~~
 
 * ``schemeName``: enum value to choose the desired time integration scheme
 

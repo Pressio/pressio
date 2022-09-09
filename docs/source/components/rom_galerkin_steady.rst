@@ -50,7 +50,7 @@ API
 - 3: overload for masked problem
 
 Parameters
-----------
+~~~~~~~~~~
 
 * ``trialSpace``: trial subspace approximating the FOM state space
 
@@ -64,6 +64,7 @@ Parameters
 
 Constraints
 ~~~~~~~~~~~
+
 
 - ``TrialSpaceType`` must model the ``TrialColumnSubspace`` `concept <rom_concepts/c7.html>`__
   or ``AffineTrialColumnSubspace`` `concept <rom_concepts/c8.html>`__
