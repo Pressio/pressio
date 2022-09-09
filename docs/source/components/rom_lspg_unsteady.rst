@@ -41,7 +41,7 @@ API
 					   const JacobianMaskerType & jMasker);
 
   template<
-    std::size_t TotalNumberOfDesiredStates,
+    std::size_t TotalNumberOfStencilStates,
     class TrialSpaceType,
     class FomSystemType>
   /*impl defined*/ create_unsteady_problem(const TrialSpaceType & trialSpace, (4)
@@ -57,8 +57,15 @@ API
 
 - 4: overload for an "arbitrary" problem
 
-Templates and Parameters
-------------------------
+Non-type Template Parameters
+----------------------------
+
+* ``TotalNumberOfStencilStates``: total number of desired states needed
+  to define your scheme. Applicable only to overload 4.
+
+
+Parameters
+----------
 
 * ``schemeName``: enum value to set the desired *implicit* scheme to use
 
@@ -70,7 +77,6 @@ Templates and Parameters
 
 * ``jMasker``: operator for masking the LSPG jacobian
 
-* ``TotalNumberOfDesiredStates``: total number of desired states needed to define your scheme
 
 Constraints
 ~~~~~~~~~~~
@@ -120,31 +126,30 @@ Mandates
 Return value, Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- An instance of a implementation-defined class representing a LSPG unsteady problem.
-  This problem class is guaranteed to expose this API:
+- all overloads return an instance of class representing an unsteady LSPG problem.
 
-.. code-block:: cpp
+    The return type is implementation defined, but guaranteed to
+    model the ``SteppableWithAuxiliaryArgs`` concept
+    discussed `here <ode_concepts/c7.html>`__.
 
-    // This is not the actual class, it just describes the API
-    class UnsteadyLspgProblemExpositionOnly
-    {
-      public:
-        // these nested type aliases must be here
-        using independent_variable_type = /* same as in your system class */;
-        using state_type                = /* same as your reduced_state type  */;
+  This means that the purely syntactical API of the problem class is:
 
-        template<class SolverType>
-        void operator()(StateType & /**/,
-			const pressio::ode::StepStartAt<independent_variable_type> & /**/,
-			pressio::ode::StepCount /**/,
-			pressio::ode::StepSize<independent_variable_type> /**/,
-			SolverType & /**/)
-    };
+  .. code-block:: cpp
 
-.. important::
+      // This is not the actual class, it just describes the API
+      class UnsteadyLspgProblemExpositionOnly
+      {
+	public:
+	  using independent_variable_type = /* same as in your system class */;
+	  using state_type                = /* same as your reduced_state type  */;
 
-   Any unsteady LSPG problem satisfies the ``SteppableWithAuxiliaryArgs``
-   concept discussed `here <ode_concepts/c7.html>`__.
+	  template<class SolverType>
+	  void operator()(state_type & /**/,
+			  const pressio::ode::StepStartAt<independent_variable_type> & /**/,
+			  pressio::ode::StepCount /**/,
+			  pressio::ode::StepSize<independent_variable_type> /**/,
+			  SolverType & /**/)
+      };
 
 - for all overloads, the problem object will hold const-qualified references
   to the arguments ``trialSpace``, ``fomSystem``, ``hrOp``, ``rhsMasker``, ``jaMasker``,
@@ -159,6 +164,6 @@ Using/solving the problem
 To solve the problem, you need a non-linear least squares solver
 from the nonlinear_solvers and the "advance" functions to step forward.
 Or you can use/implement your own loop.
-An example is below:
+A representative snippet is below:
 
 :red:`finish`

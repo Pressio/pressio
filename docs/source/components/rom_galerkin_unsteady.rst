@@ -165,55 +165,55 @@ Mandates
 Return value, Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- *explicit* overload set 1,2,3 return an instance of
-  a class guaranteed to expose this API:
+- the overload set 1,2,3 returns an instance of
+  a class representing an *explicit* Galerkin problem.
 
-.. code-block:: cpp
+    The return type is implementation defined, but guaranteed to
+    model the ``Steppable`` concept discussed `here <ode_concepts/c6.html>`__.
 
-    // This is not the actual class, it just describes the API
-    class UnsteadyExplicitGalerkinProblemExpositionOnly
-    {
-      public:
-	using state_type                = /*same as the reduced_state_type in TrialSpaceType*/;
-	using independent_variable_type = /*same as declared inside your FomSystemType*/;
+  This means that the purely syntactical API of the problem class is:
 
-	void operator()(StateType & /**/,
-			const pressio::ode::StepStartAt<independent_variable_type> & /**/,
-			pressio::ode::StepCount /**/,
-			const pressio::ode::StepSize<independent_variable_type> & /**/);
-    };
+  .. code-block:: cpp
 
-.. important::
+      // This is not the actual class, it just describes the API
+      class UnsteadyExplicitGalerkinProblemExpositionOnly
+      {
+	public:
+	  using state_type                = /*same as the reduced_state_type in TrialSpaceType*/;
+	  using independent_variable_type = /*same as declared inside your FomSystemType*/;
 
-   Any unsteady *explicit* Galerkin problem satisfies the ``Steppable``
-   concept discussed `here <ode_concepts/c6.html>`__.
-
-
-- *implicit* overload set 4,5,6 return an instance of
-  a class guaranteed to expose this API:
-
-.. code-block:: cpp
-
-    // This is not the actual class, it just describes the API
-    class UnsteadyImplicitGalerkinProblemExpositionOnly
-    {
-      public:
-	using state_type                = /*same as the reduced_state_type in TrialSpaceType*/;
-	using independent_variable_type = /*same as declared inside your FomSystemType*/;
-
-	template<SolverType>
-	void operator()(StateType & /**/,
-			const pressio::ode::StepStartAt<independent_variable_type> & /**/,
-			pressio::ode::StepCount /**/,
-			const pressio::ode::StepSize<independent_variable_type> & /**/,
-			SolverType & /**/);
-    };
+	  void operator()(state_type & /**/,
+			  const pressio::ode::StepStartAt<independent_variable_type> & /**/,
+			  pressio::ode::StepCount /**/,
+			  const pressio::ode::StepSize<independent_variable_type> & /**/);
+      };
 
 
-.. important::
+- the overload set 4,5,6 returns an instance of
+  a class representing an *implicit* Galerkin problem.
 
-   Any unsteady *implicit* Galerkin problem satisfies the ``SteppableWithAuxiliaryArgs``
-   concept discussed `here <ode_concepts/c7.html>`__.
+    The return type is implementation defined, but guaranteed to
+    model the ``SteppableWithAuxiliaryArgs`` concept discussed `here <ode_concepts/c7.html>`__.
+
+  This means that the purely syntactical API of the problem class is:
+
+  .. code-block:: cpp
+
+      // This is not the actual class, it just describes the API
+      class UnsteadyImplicitGalerkinProblemExpositionOnly
+      {
+	public:
+	  using state_type                = /*same as the reduced_state_type in TrialSpaceType*/;
+	  using independent_variable_type = /*same as declared inside your FomSystemType*/;
+
+	  template<SolverType>
+	  void operator()(state_type & /**/,
+			  const pressio::ode::StepStartAt<independent_variable_type> & /**/,
+			  pressio::ode::StepCount /**/,
+			  const pressio::ode::StepSize<independent_variable_type> & /**/,
+			  SolverType & /**/);
+      };
+
 
 - for all overloads, the problem object will hold const-qualified references
   to the arguments ``trialSpace``, ``fomSystem``, ``hrOp``, ``rhsMasker``, ``jaMasker``,

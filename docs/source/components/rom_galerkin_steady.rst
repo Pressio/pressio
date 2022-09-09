@@ -94,33 +94,34 @@ Mandates
 Return value, Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- The return value is an instance of an implementation-defined class
-  representing a Galerkin steady problem.
-  This problem class is guaranteed to expose this API:
+- 1,2,3 all return an instance of class representing a Galerkin steady problem.
 
-.. code-block:: cpp
+    The return type is implementation defined, but guaranteed to
+    model the ``SystemWithFusedResidualAndJacobian``
+    concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
 
-    // This is not the actual class, it just describes the API
-    class SteadyGalerkinProblemExpositionOnly
-    {
-      public:
-        using state_type                = /*same as reduced_state in TrialSpaceType*/;
-        using residual_type             = /*impl defined*/;
-        using jacobian_type	        = /*impl defined*/;
 
-	state_type    createState() const;
-        residual_type createResidual() const;
-        jacobian_type createJacobian() const;
-        void residualAndJacobian(const state_type & odeState,
-	                         residual_type & R,
-				 jacobian_type & J,
-				 bool computeJacobian) const;
-    };
+  This means that the purely syntactical API of the problem class is:
 
-.. important::
+  .. code-block:: cpp
 
-   Any steady Galerkin problem satisfies the ``SystemWithFusedResidualAndJacobian``
-   concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
+      // This is not the actual class, it just describes the API
+      class SteadyGalerkinProblemExpositionOnly
+      {
+	public:
+	  using state_type    = /*same as reduced_state in TrialSpaceType*/;
+	  using residual_type = /*impl defined*/;
+	  using jacobian_type = /*impl defined*/;
+
+	  state_type    createState() const;
+	  residual_type createResidual() const;
+	  jacobian_type createJacobian() const;
+	  void residualAndJacobian(const state_type & reducedState,
+				   residual_type & R,
+				   jacobian_type & J,
+				   bool computeJacobian) const;
+      };
+
 
 - the problem object will hold const-qualified references to the arguments
   ``trialSpace``, ``fomSystem``, ``hrOp``, ``rMasker``, ``jaMasker``, therefore
@@ -130,13 +131,27 @@ Return value, Postconditions and Side Effects
   performed inside the constructor of problem.
 
 
-Using the problem
------------------
+Using/solving the problem
+-------------------------
 
-The problem class satisfies the ``SystemWithFusedResidualAndJacobian`` concept
-discussed `here <nonlinearsolvers_concepts/c2.html>`__.
+To solve the problem, you can use the Newton-Raphson
+solver from the pressio/nonlinear_solvers. Or you can use/implement your own.
+A representative snippet is:
 
-To solve the problem, you can use the Newton-Raphson solver from the pressio/nonlinear_solvers.
-Or you can use/implement your own.
+.. code-block:: cpp
 
-:red:`finish`
+   namespace pls  = pressio::linearsolvers;
+   namespace pnls = pressio::nonlinearsolvers;
+   namespace pgal = pressio::rom::galerkin;
+
+   // assuming trialSpace and fomSystem already exist
+   auto problem = pgal::create_steady_problem(trialSpace, fomSystem);
+
+   using jacobian_type = typename decltype(problem)::jacobian_type;
+   using linear_solver_t = pls::Solver<pls::iterative::LSCG, jacobian_type>;
+   auto nonLinearSolver = pnls::create_newton_raphson(problem, linear_solver_t{});
+
+   auto reducedState = trialSpace.createReducedState();
+   // set initial condition for reducedState somehow
+
+   nonLinearSolver.solve(problem, reducedState);
