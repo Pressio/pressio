@@ -13,16 +13,10 @@ public:
   using offset_type = std::remove_cv_t<OffsetType>;
 
 private:
-  static_assert(   !std::is_pointer< basis_type >::value
-		&& !std::is_pointer< offset_type >::value,
-		"pointers are not valid template parameters");
-  static_assert(   !mpl::is_std_unique_ptr<basis_type>::value
-		&& !mpl::is_std_unique_ptr<offset_type>::value,
+  static_assert( !::pressio::mpl::all_of_t<std::is_pointer, basis_type, offset_type>::value,
+		"template parameters cannot be pointers");
+  static_assert( !::pressio::mpl::all_of_t<mpl::is_std_shared_ptr, basis_type, offset_type>::value,
 		"std::unique_ptr are not valid template parameters");
-  static_assert(   !mpl::is_std_shared_ptr<basis_type>::value
-		&& !mpl::is_std_shared_ptr<offset_type>::value,
-		"std::shared_ptr are not valid template parameters");
-
   static_assert(std::is_copy_constructible< basis_type >::value,
 		"BasisType must be copy constructible");
   static_assert(std::is_copy_constructible< offset_type >::value,

@@ -28,9 +28,9 @@ struct SyntaxOnly
   full_state_type    createFullState() const;
   void               mapFromReducedState(const reduced_state_type &, full_state_type &) const;
   full_state_type    createFullStateFromReducedState(const reduced_state_type &) const;
-
   const basis_type & viewBasis() const;
 }
+
 
 struct SyntaxOnly
 {
@@ -43,7 +43,6 @@ struct SyntaxOnly
   full_state_type    createFullState() const;
   void               mapFromReducedState(const reduced_state_type &, full_state_type &) const;
   full_state_type    createFullStateFromReducedState(const reduced_state_type &) const;
-
   const basis_type & viewBasis() const;
   const offset_type & viewAffineOffset() const;
 }
