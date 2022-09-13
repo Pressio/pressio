@@ -61,12 +61,11 @@ struct Traits<
   mpl::enable_if_t<
     is_vector_eigen<T>::value
   >
-> : public ::pressio::impl::ContainerTraits<
-      1,
-      typename T::Scalar,
-      typename T::StorageIndex
-    >
-{};
+>
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::Scalar;
+};
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
 
@@ -81,12 +80,10 @@ struct Traits<
     is_vector_kokkos<T>::value
     >
   >
-  : public ::pressio::impl::ContainerTraits<
-      1,
-      typename T::traits::value_type,
-      typename T::traits::size_type
-    >
-{};
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::traits::value_type;
+};
 #endif
 
 //*******************************
@@ -101,12 +98,10 @@ struct Traits<
     || is_vector_tpetra_block<T>::value
     >
   >
-  : public ::pressio::impl::ContainerTraits<
-      1,
-      typename T::impl_scalar_type,
-      typename T::local_ordinal_type
-    >
-{};
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::impl_scalar_type;
+};
 #endif
 
 // *******************************
@@ -120,12 +115,10 @@ struct Traits<
     is_vector_epetra<T>::value
     >
   >
-  : public ::pressio::impl::ContainerTraits<
-      1,
-      /* ScalarType */ double,
-      /* OrdinalType */ int
-    >
-{};
+{
+  static constexpr int rank = 1;
+  using scalar_type = double;
+};
 #endif
 
 //*******************************
@@ -139,12 +132,10 @@ struct Traits<
     is_dense_vector_teuchos<T>::value
     >
   >
-  : public ::pressio::impl::ContainerTraits<
-      1,
-      typename T::scalarType,
-      typename T::ordinalType
-    >
-{};
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::scalarType;
+};
 #endif
 
 }

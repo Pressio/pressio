@@ -52,20 +52,6 @@
 namespace pressio{
 namespace impl{
 
-template<
-  int Rank,
-  typename ScalarType,
-  typename OrdinalType
-  >
-struct ContainerTraits
-{
-  static constexpr int rank = Rank;
-
-  using scalar_type = ScalarType;
-
-  using ordinal_type = OrdinalType;
-};
-
 template<typename T>
 struct SizePair
 {

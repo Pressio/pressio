@@ -65,12 +65,10 @@ struct Traits<
     || is_multi_vector_tpetra_block<T>::value
     >
   >
-  : public ::pressio::impl::ContainerTraits<
-      2,
-      typename T::impl_scalar_type,
-      typename T::local_ordinal_type
-   >
-{};
+{
+  static constexpr int rank = 2;
+  using scalar_type = typename T::impl_scalar_type;
+};
 
 
 //*******************************
@@ -83,12 +81,10 @@ struct Traits<
     is_multi_vector_epetra<T>::value
     >
   >
-  : public ::pressio::impl::ContainerTraits<
-      2,
-      /* ScalarType */ double,
-      /* OrdinalType */ int
-    >
-{};
+{
+  static constexpr int rank = 2;
+  using scalar_type = double;
+};
 
 #endif
 
