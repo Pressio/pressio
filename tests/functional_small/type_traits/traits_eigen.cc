@@ -11,10 +11,7 @@ void test_eigen_container_traits()
     T,
     pressio::PackageIdentifier::Eigen,
     rank,
-    true,
-    is_dynamic,
-    typename T::Scalar,
-    typename T::StorageIndex
+    typename T::Scalar
   >();
 }
 

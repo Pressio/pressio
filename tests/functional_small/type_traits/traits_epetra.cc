@@ -13,10 +13,7 @@ void test_epetra_container()
     T,
     pressio::PackageIdentifier::Trilinos,
     rank,
-    false, /* shared mem */
-    true, /* dynamic */
-    double, /* scalar */
-    int /* ordinal */
+    double /* scalar */
   >();
 }
 

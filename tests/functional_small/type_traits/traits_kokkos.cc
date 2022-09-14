@@ -63,12 +63,7 @@ void test_kokkos_container_traits()
     T,
     pressio::PackageIdentifier::Kokkos,
     T::traits::rank,
-    true,
-    is_dynamic,
-    typename T::traits::value_type,
-    typename T::traits::size_type, /* ordinal */
-    typename T::traits::size_type, /* size */
-    typename T::reference_type
+    typename T::traits::value_type
   >();
 }
 

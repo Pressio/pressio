@@ -59,14 +59,7 @@ template <
   typename T,
   pressio::PackageIdentifier pack_id,
   int rank,
-  bool is_shared_mem,
-  bool is_dynamic,
   typename Scalar,
-  typename Ordinal,
-  typename SizeType = Ordinal,
-  typename ScalarRef = typename std::add_lvalue_reference<
-    Scalar
-  >::type,
   typename traits = pressio::Traits<T>
 >
 void test_container_traits()
@@ -74,7 +67,6 @@ void test_container_traits()
   static_assert(::pressio::package_identifier<T>::value == pack_id, "package identifier is different than expected");
   static_assert(traits::rank == rank, "rank is different than expected");
   testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
-  testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
 }
 
 // -------------------------------------------------

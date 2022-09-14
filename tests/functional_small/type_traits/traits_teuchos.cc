@@ -9,10 +9,7 @@ void test_teuchos_container()
     T,
     pressio::PackageIdentifier::Trilinos,
     rank,
-    true, /* shared mem */
-    true, /* dynamic */
-    typename T::scalarType,
-    typename T::ordinalType
+    typename T::scalarType
   >();
 }
 

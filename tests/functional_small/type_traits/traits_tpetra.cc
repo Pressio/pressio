@@ -18,11 +18,7 @@ void test_tpetra_container()
     T,
     pressio::PackageIdentifier::Trilinos,
     rank,
-    false, /* shared mem */
-    true, /* dynamic */
-    typename T::impl_scalar_type,
-    typename T::local_ordinal_type,
-    typename T::global_ordinal_type
+    typename T::impl_scalar_type
   >();
 }
 
