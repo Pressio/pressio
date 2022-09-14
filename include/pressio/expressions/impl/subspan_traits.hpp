@@ -61,7 +61,7 @@ struct SubSpanTraits<
   >
   : public ::pressio::Traits<MatrixType>
 {
-  using ordinal_type = typename ::pressio::impl::SizePair<MatrixType>::ordinal_type;
+  using ordinal_type = typename MatrixType::StorageIndex;
 
   // type of the native expression
   using _native_expr_type = decltype(
@@ -91,7 +91,8 @@ struct SubSpanTraits<
   >
   : public ::pressio::Traits<MatrixType>
 {
-  using pair_type = typename ::pressio::impl::SizePair<MatrixType>::pair_type;
+  using ordinal_type = typename MatrixType::traits::size_type;
+  using pair_type = std::pair<ordinal_type, ordinal_type>;
 
   using _native_expr_type = decltype
     (

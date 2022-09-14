@@ -98,7 +98,8 @@ struct SpanTraits<
   >
   : public ::pressio::Traits<VectorType>
 {
-  using pair_type = typename ::pressio::impl::SizePair<VectorType>::pair_type;
+  using ordinal_type = typename VectorType::traits::size_type;
+  using pair_type = std::pair<ordinal_type, ordinal_type>;
 
   using native_expr_type =
     decltype(
