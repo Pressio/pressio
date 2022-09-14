@@ -55,7 +55,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_kokkos<T>::value
   >
-resize(T & o, typename ::pressio::Traits<T>::ordinal_type newSize)
+resize(T & o, ::pressio::ops::impl::ordinal_type<T> newSize)
 {
   static_assert(
     ::pressio::is_dynamic_vector_kokkos<T>::value,
@@ -68,9 +68,9 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_kokkos<T>::value
   >
-resize(T & o, 
-  typename ::pressio::Traits<T>::ordinal_type newExt0,
-  typename ::pressio::Traits<T>::ordinal_type newExt1)
+resize(T & o,
+  typename ::pressio::ops::impl::ordinal_type<T> newExt0,
+  typename ::pressio::ops::impl::ordinal_type<T> newExt1)
 {
   static_assert(
     ::pressio::is_dynamic_dense_matrix_kokkos<T>::value,

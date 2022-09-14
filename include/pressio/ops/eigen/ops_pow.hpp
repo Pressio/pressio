@@ -60,7 +60,7 @@ template <class T>
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_type<T>;
   for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
     x(i) = std::pow(x(i), exponent);
   }
@@ -77,7 +77,7 @@ pow(T1 & y,
     const T2 & x,
     const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_type<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
@@ -98,7 +98,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_type<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
@@ -125,7 +125,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_type<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent < ::pressio::utils::Constants<sc_t>::zero());

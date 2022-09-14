@@ -61,9 +61,7 @@ struct SpanTraits<
   >
   : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename ::pressio::Traits<
-    ::pressio::mpl::remove_cvref_t<VectorType>
-  >::ordinal_type;
+  using ordinal_type = typename VectorType::StorageIndex;
 
   // type of the native expression
   using _native_expr_type =

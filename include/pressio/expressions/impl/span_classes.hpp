@@ -136,7 +136,7 @@ struct SpanExpr<
 {
   using this_t = SpanExpr<VectorType>;
   using traits = SpanTraits<this_t>;
-  using size_t = typename Traits<VectorType>::ordinal_type;
+  using size_t = typename VectorType::traits::size_type;
   using pair_t = typename traits::pair_type;
   using native_expr_t = typename traits::native_expr_type;
   using ref_t = decltype( std::declval<native_expr_t>()(0) );

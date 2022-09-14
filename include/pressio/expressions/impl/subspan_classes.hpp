@@ -63,7 +63,7 @@ struct SubspanExpr<
 
   using this_t = SubspanExpr<MatrixType>;
   using traits = SubSpanTraits<this_t>;
-  using ord_t = typename Traits<MatrixType>::ordinal_type;
+  using ord_t = typename traits::ordinal_type;
   using native_expr_t = typename traits::native_expr_type;
   using const_native_expr_t = typename traits::_const_native_expr_type;
   using ref_t = decltype( std::declval<native_expr_t>()(0) );
@@ -153,7 +153,7 @@ struct SubspanExpr<
 
   using this_t = SubspanExpr<MatrixType>;
   using traits = SubSpanTraits<this_t>;
-  using size_t = typename Traits<MatrixType>::ordinal_type;
+  using size_t = typename MatrixType::traits::size_type;
   using pair_t = typename traits::pair_type;
   using native_expr_t = typename traits::native_expr_type;
   using ref_t = decltype( std::declval<native_expr_t>()(size_t{}, size_t{}) );

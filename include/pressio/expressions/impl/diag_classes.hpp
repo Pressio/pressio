@@ -133,7 +133,7 @@ struct DiagExpr<
 {
   using this_t		= DiagExpr<MatrixType>;
   using traits	= DiagTraits<this_t>;
-  using size_t	= typename Traits<MatrixType>::ordinal_type;
+  using size_t	= typename MatrixType::traits::size_type;
   using native_expr_t	= typename traits::native_expr_type;
   using ref_t		= decltype( std::declval<native_expr_t>()(size_t{}) );
 
