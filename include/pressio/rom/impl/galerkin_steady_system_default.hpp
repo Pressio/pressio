@@ -20,19 +20,19 @@ template <
   class ReducedStateType,
   class ReducedResidualType,
   class ReducedJacobianType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
 class GalerkinSteadyDefaultSystem
 {
 
-  using basis_type = typename TrialSpaceType::basis_type;
+  using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type;
 
   // deduce from the fom object the type of result of
   // applying the Jacobian to the basis
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<basis_type const &>()) );
+	     (std::declval<basis_matrix_type const &>()) );
 
 public:
   // aliases required by the pressio solvers
@@ -42,27 +42,27 @@ public:
 
   GalerkinSteadyDefaultSystem() = delete;
 
-  GalerkinSteadyDefaultSystem(const TrialSpaceType & trialSpace,
+  GalerkinSteadyDefaultSystem(const TrialSubspaceType & trialSpace,
 			      const FomSystemType & fomSystem)
-    : trialSpace_(trialSpace),
+    : trialSubspace_(trialSpace),
       fomSystem_(fomSystem),
       fomState_(trialSpace.createFullState()),
       fomResidual_(fomSystem.createResidual()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
+      fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   residual_type createResidual() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinRhs<residual_type>()(phi);
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
   }
 
@@ -72,10 +72,10 @@ public:
 			   bool computeJacobian) const
   {
 
-    const auto & phi = trialSpace_.get().viewBasis();
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
+    using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
     constexpr auto beta = ::pressio::utils::Constants<R_scalar_t>::zero();
@@ -95,7 +95,7 @@ public:
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   mutable typename FomSystemType::residual_type fomResidual_;

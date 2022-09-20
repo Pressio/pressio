@@ -32,13 +32,13 @@ template <
   >
 class GalerkinMaskedOdeSystemRhsAndJacobian
 {
-  using basis_type = typename TrialSpaceType::basis_type;
+  using basis_matrix_type = typename TrialSpaceType::basis_matrix_type;
 
   // deduce the unmasked types
   using unmasked_fom_rhs_type = typename FomSystemType::right_hand_side_type;
   using unmasked_fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<basis_type const &>()));
+	     (std::declval<basis_matrix_type const &>()));
 
   // deduce the masked types
   using masked_fom_rhs_type = typename RhsMaskerType::result_type;
@@ -65,7 +65,7 @@ public:
       rhsMasker_(rhsMasker),
       jaMasker_(jaMasker),
       unMaskedFomRhs_(fomSystem.createRightHandSide()),
-      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis())),
+      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace())),
       maskedFomRhs_(rhsMasker.createApplyMaskResult(unMaskedFomRhs_)),
       maskedFomJacAction_(jaMasker.createApplyMaskResult(unMaskedFomJacAction_))
   {}
@@ -76,12 +76,12 @@ public:
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
   }
 
@@ -103,7 +103,7 @@ public:
   {
     trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, unMaskedFomJacAction_);
     jaMasker_(unMaskedFomJacAction_, maskedFomJacAction_);
     hrOp_(maskedFomJacAction_, rhsEvaluationTime, reducedJacobian);

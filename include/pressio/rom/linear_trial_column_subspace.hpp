@@ -4,46 +4,97 @@
 
 namespace pressio{ namespace rom{
 
-template <class ReducedStateType, class BasisType, class FullStateType>
+template <class ReducedStateType, class BasisMatrixType, class FullStateType>
 class TrialColumnSubspace
-  : public LinearAffineSubspace<BasisType, FullStateType>
 {
-  // constraints
+public:
+  using reduced_state_type = ReducedStateType;
+  using basis_matrix_type  = std::remove_cv_t<BasisMatrixType>;
+  using full_state_type    = std::remove_cv_t<FullStateType>;
+
+private:
   static_assert(ValidReducedState<ReducedStateType>::value,
 		"Invalid type for the reduced state");
+  static_assert( ::pressio::mpl::all_of_t<
+		 std::is_copy_constructible, full_state_type, basis_matrix_type>::value,
+		"template arguments must be copy constructible");
+  static_assert( !::pressio::mpl::all_of_t<
+		 std::is_pointer, full_state_type, basis_matrix_type>::value,
+		"template arguments cannot be pointers");
+  static_assert( !::pressio::mpl::all_of_t<
+		 mpl::is_std_shared_ptr, full_state_type, basis_matrix_type>::value,
+		"std::unique_ptr are not valid template arguments");
 
-  using base_t = LinearAffineSubspace<BasisType, FullStateType>;
+  using linear_subspace_t = LinearSubspace<basis_matrix_type>;
+  const linear_subspace_t linSpace_;
+  const full_state_type translation_;
+  bool isAffine_;
+  basis_matrix_type * dummy_ = nullptr;
 
 public:
-  using typename base_t::basis_type;
-  using typename base_t::offset_type;
-  using reduced_state_type = ReducedStateType;
-  using full_state_type = std::remove_cv_t<FullStateType>;
-
-  TrialColumnSubspace() = delete;
-
-  TrialColumnSubspace(const basis_type & basis,
-		      const full_state_type & offset,
+  TrialColumnSubspace(const basis_matrix_type & basisMatrix,
+		      const full_state_type & translation,
 		      bool isAffine)
-    : base_t(basis, offset, isAffine){}
+    : linSpace_(basisMatrix,
+		linear_subspace_t::SpanningSet::Columns),
+      translation_(translation),
+      isAffine_(isAffine){}
 
-  TrialColumnSubspace(basis_type && basis,
-		      full_state_type && offset,
+  TrialColumnSubspace(basis_matrix_type && basisMatrix,
+		      full_state_type && translation,
 		      bool isAffine)
-    : base_t(std::move(basis), std::move(offset), isAffine){}
+    : linSpace_(std::move(basisMatrix),
+		linear_subspace_t::SpanningSet::Columns),
+      translation_(std::move(translation)),
+      isAffine_(isAffine){}
 
-  TrialColumnSubspace(const basis_type & basis,
-		      full_state_type && offset,
+  TrialColumnSubspace(const basis_matrix_type & basisMatrix,
+		      full_state_type && translation,
 		      bool isAffine)
-    : base_t(basis, std::move(offset), isAffine){}
+    : linSpace_(basisMatrix,
+		linear_subspace_t::SpanningSet::Columns),
+      translation_(std::move(translation)),
+      isAffine_(isAffine){}
 
-  TrialColumnSubspace(basis_type && basis,
-		      const full_state_type & offset,
+  TrialColumnSubspace(basis_matrix_type && basisMatrix,
+		      const full_state_type & translation,
 		      bool isAffine)
-    : base_t(std::move(basis), offset, isAffine){}
+    : linSpace_(std::move(basisMatrix),
+		linear_subspace_t::SpanningSet::Columns),
+      translation_(translation),
+      isAffine_(isAffine){}
 
+  TrialColumnSubspace(const TrialColumnSubspace & other)
+    : linSpace_(other.linSpace_),
+      translation_(::pressio::ops::clone(other.translation_)),
+      isAffine_(other.isAffine_){}
+
+  TrialColumnSubspace& operator=(const TrialColumnSubspace & /*other*/) = delete;
+
+
+  /* For this class to be really immutable, we should not have a move constr
+     or move assign operator. One way would be to declare them as deleted,
+     but we do NOT want to do that.
+     If we did that, the move cnstr/assign would still participate in OR,
+     which would cause a compiler error in some cases, like when trying
+     to move construct and object. So is there a better way? There is.
+     We exploit the fact that this class has a user-declared copy constructor
+     and copy assignment, so the compiler does not generate automatically
+     a move constructor/move assignment, which means that only the copy
+     constr/copy assign participate in overload resolution, which means we
+     can achieve what we want by simply not declaring move cnstr/assign.
+
+     See this for a full detailed explanation:
+     https://blog.knatten.org/2021/10/15/the-difference-between-no-move-constructor-and-a-deleted-move-constructor/
+  */
+
+  ~TrialColumnSubspace() = default;
+
+  //
+  // methods
+  //
   reduced_state_type createReducedState() const{
-    const auto & basis = base_t::viewBasis();
+    const auto & basis = linSpace_.basis();
     auto result = impl::CreateReducedState<ReducedStateType>()(basis);
     using sc_t = typename ::pressio::Traits<ReducedStateType>::scalar_type;
     ::pressio::ops::fill(result, sc_t(0));
@@ -55,47 +106,57 @@ public:
     // we need to use clone here because full_state_type might
     // NOT have value semantics so we need to ensure a new object
     // is created every time
-    const auto & offset = base_t::viewOffset();
-    auto result = ::pressio::ops::clone(offset);
+    auto result = ::pressio::ops::clone(translation_);
     using sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
     ::pressio::ops::fill(result, sc_t(0));
     return result;
   }
 
-  // here we template on reduced state type because it could be an
-  // expression not necessarily the reduced state object
-  template<class ReducedStateToMap>
-  void mapFromReducedState(const ReducedStateToMap & latState,
-                          full_state_type & fullState) const
+  void mapFromReducedState(const reduced_state_type & latState,
+			   full_state_type & fullState) const
   {
     // always do y = phi*latState
-    mapFromReducedStateWithoutOffset(latState, fullState);
+    mapFromReducedStateWithoutTranslation(latState, fullState);
 
-    if (base_t::isAffine()){
-      // update full state to account for offset
+    if (isAffine_){
+      // update full state to account for translation
       using sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
       constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
-      const auto & offset = base_t::viewOffset();
-      ::pressio::ops::update(fullState, one, offset, one);
+      ::pressio::ops::update(fullState, one, translation_, one);
     }
   }
 
-  template<class ReducedStateToMap>
-  full_state_type createFullStateFromReducedState(const ReducedStateToMap & latState) const
+  full_state_type createFullStateFromReducedState(const reduced_state_type & latState) const
   {
     auto fomState = this->createFullState();
     this->mapFromReducedState(latState, fomState);
     return fomState;
   }
 
+  bool isColumnSpace() const{ return true; }
+  bool isRowSpace() const{ return false; }
+  const full_state_type & translationVector() const{ return translation_; }
+  const std::size_t dimension() const{ return linSpace_.dimension(); }
+
+  const basis_matrix_type & basisOfTranslatedSpace() const{
+    return linSpace_.basis();
+  }
+
+  const basis_matrix_type & basis() const{
+    if (isAffine_){
+      return linSpace_.basis();
+    } else{
+      return *dummy_;
+    }
+  }
+
 private:
-  template<class ReducedStateToMap>
-  void mapFromReducedStateWithoutOffset(const ReducedStateToMap & latState,
-					full_state_type & fullState) const
+  void mapFromReducedStateWithoutTranslation(const reduced_state_type & latState,
+					     full_state_type & fullState) const
   {
 
-    const auto & basis = base_t::viewBasis();
-    using basis_sc_t = typename ::pressio::Traits<basis_type>::scalar_type;
+    const auto & basis = linSpace_.basis();
+    using basis_sc_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     using full_state_sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<basis_sc_t>::one();
     constexpr auto beta  = ::pressio::utils::Constants<full_state_sc_t>::zero();

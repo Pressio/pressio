@@ -20,26 +20,24 @@
 namespace pressio{ namespace rom{ namespace galerkin{
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
-auto create_steady_problem(const TrialSpaceType & trialSpace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem)
 {
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SteadyFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SteadyFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using reduced_residual_type = reduced_state_type;
 
   // figure out what is the reduced jacobian type from the state
@@ -51,67 +49,67 @@ auto create_steady_problem(const TrialSpaceType & trialSpace,
 
   using return_type = impl::GalerkinSteadyDefaultSystem<
     reduced_state_type, reduced_residual_type,
-    reduced_jac_type, TrialSpaceType, FomSystemType>;
+    reduced_jac_type, TrialSubspaceType, FomSystemType>;
   return return_type(trialSpace, fomSystem);
 }
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
-  class HyperReductionOperatorType
+  class HyperReducerType
   >
-auto create_steady_problem(const TrialSpaceType & trialSpace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem,
-			   const HyperReductionOperatorType & hrOp)
+			   const HyperReducerType & hypReducer)
 {
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SteadyFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SteadyFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type >::value == true,
 		"Mismatching fom states");
 
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using reduced_residual_type = reduced_state_type;
   using reduced_jac_type = typename
     impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
   static_assert(SteadyGalerkinHyperReducer<
-		HyperReductionOperatorType, reduced_residual_type, reduced_jac_type>::value,
-		"HyperReductionOperatorType does not meet the SteadyGalerkinHyperReducer");
+		HyperReducerType, reduced_residual_type, reduced_jac_type>::value,
+		"HyperReducerType does not meet the SteadyGalerkinHyperReducer");
 
   using return_type = impl::GalerkinSteadyHypRedSystem<
     reduced_state_type, reduced_residual_type, reduced_jac_type,
-    TrialSpaceType, FomSystemType, HyperReductionOperatorType>;
-  return return_type(trialSpace, fomSystem, hrOp);
+    TrialSubspaceType, FomSystemType, HyperReducerType>;
+  return return_type(trialSpace, fomSystem, hypReducer);
 }
 
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
   class ResidualMaskerType,
   class JacobianActionMaskerType,
-  class HyperReductionOperatorType
+  class HyperReducerType
   >
-auto create_steady_problem(const TrialSpaceType & trialSpace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem,
 			   const ResidualMaskerType & rMasker,
 			   const JacobianActionMaskerType & jaMasker,
-			   const HyperReductionOperatorType & hrOp)
+			   const HyperReducerType & hypReducer)
 {
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SteadyFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SteadyFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
@@ -130,38 +128,38 @@ auto create_steady_problem(const TrialSpaceType & trialSpace,
   // ensure the jacobian action masker acts on the FOM jacobian action type
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<typename TrialSpaceType::basis_type const &>()) );
+	     (std::declval<typename TrialSubspaceType::basis_matrix_type const &>()) );
   static_assert(std::is_same<
 		typename JacobianActionMaskerType::operand_type,
 		fom_jac_action_result_type>::value == true,
 		"mismatching types of jacobian action masker and fom residual");
 
   // figure out what are the reduced types
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using reduced_residual_type = reduced_state_type;
   using reduced_jac_type = typename
     impl::determine_galerkin_jacobian_type_from_state<reduced_state_type>::type;
 
   // the hr operator must meet the concept
   static_assert(SteadyGalerkinHyperReducer<
-		HyperReductionOperatorType, reduced_residual_type, reduced_jac_type>::value,
-		"HyperReductionOperatorType does not meet the SteadyGalerkinHyperReducer");
+		HyperReducerType, reduced_residual_type, reduced_jac_type>::value,
+		"HyperReducerType does not meet the SteadyGalerkinHyperReducer");
   // the hr operator must operate on types that are consistent with
   // those deducible from the masker
   static_assert(std::is_same<
-		typename HyperReductionOperatorType::residual_operand_type,
+		typename HyperReducerType::residual_operand_type,
 		typename ResidualMaskerType::result_type>::value == true,
 		"mismatching types");
   static_assert(std::is_same<
-		typename HyperReductionOperatorType::jacobian_action_operand_type,
+		typename HyperReducerType::jacobian_action_operand_type,
 		typename JacobianActionMaskerType::result_type>::value == true,
 		"mismatching types");
 
   using return_type = impl::GalerkinSteadyMaskedSystem<
     reduced_state_type, reduced_residual_type, reduced_jac_type,
-    TrialSpaceType, FomSystemType, ResidualMaskerType,
-    JacobianActionMaskerType, HyperReductionOperatorType>;
-  return return_type(trialSpace, fomSystem, rMasker, jaMasker, hrOp);
+    TrialSubspaceType, FomSystemType, ResidualMaskerType,
+    JacobianActionMaskerType, HyperReducerType>;
+  return return_type(trialSpace, fomSystem, rMasker, jaMasker, hypReducer);
 }
 
 }}} // end pressio::rom::galerkin

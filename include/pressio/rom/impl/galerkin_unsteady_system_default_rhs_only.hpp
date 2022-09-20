@@ -23,7 +23,7 @@ template <
   >
 class GalerkinDefaultOdeSystemOnlyRhs
 {
-  using basis_type = typename TrialSpaceType::basis_type;
+  using basis_matrix_type = typename TrialSpaceType::basis_matrix_type;
 
 public:
   // required aliases
@@ -47,7 +47,7 @@ public:
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
   }
 
@@ -63,8 +63,8 @@ public:
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
 
     // compute the reduced rhs
-    const auto & phi = trialSpace_.get().viewBasis();
-    using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+    using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using rhs_scalar_t = typename ::pressio::Traits<right_hand_side_type>::scalar_type;
     constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
@@ -82,4 +82,3 @@ private:
 
 }}} // end pressio::rom::impl
 #endif
-

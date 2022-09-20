@@ -7,4 +7,4 @@ Syntax only
 
 .. literalinclude:: ./syntax_only_subspaces_concepts.cc
    :language: cpp
-   :lines: 35-49
+   :lines: 39-53

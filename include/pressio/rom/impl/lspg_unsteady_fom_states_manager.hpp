@@ -51,10 +51,10 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <class ManifoldType>
+template <class TrialSubspaceType>
 class LspgFomStatesManager
 {
-  using fom_state_type = typename ManifoldType::full_state_type;
+  using fom_state_type = typename TrialSubspaceType::full_state_type;
 
 public:
   using data_type  = std::vector<fom_state_type>;
@@ -67,9 +67,9 @@ public:
   LspgFomStatesManager & operator=(LspgFomStatesManager &&) = delete;
   ~LspgFomStatesManager() = default;
 
-  LspgFomStatesManager(const ManifoldType & manifold,
+  LspgFomStatesManager(const TrialSubspaceType & trialSubspace,
 		       std::initializer_list<fom_state_type> il)
-    : manifold_(manifold), data_(il)
+    : trialSubspace_(trialSubspace), data_(il)
   {
     this->setZero();
   }
@@ -102,7 +102,7 @@ public:
   void reconstructAtWithoutStencilUpdate(const RomStateType & romStateIn,
 				    ::pressio::ode::nPlusOne /*tag*/){
     assert(data_.size() >=1);
-    manifold_.get().mapFromReducedState(romStateIn, data_[0]);
+    trialSubspace_.get().mapFromReducedState(romStateIn, data_[0]);
   }
 
   // n
@@ -110,7 +110,7 @@ public:
   void reconstructAtWithoutStencilUpdate(const RomStateType & romStateIn,
 				    ::pressio::ode::n /*tag*/){
     assert(data_.size() >=2);
-    manifold_.get().mapFromReducedState(romStateIn, data_[1]);
+    trialSubspace_.get().mapFromReducedState(romStateIn, data_[1]);
   }
 
   // n-1
@@ -118,7 +118,7 @@ public:
   void reconstructAtWithoutStencilUpdate(const RomStateType & romStateIn,
 				    ::pressio::ode::nMinusOne /*tag*/){
     assert(data_.size() >=3);
-    manifold_.get().mapFromReducedState(romStateIn, data_[2]);
+    trialSubspace_.get().mapFromReducedState(romStateIn, data_[2]);
   }
 
   // n-2
@@ -126,7 +126,7 @@ public:
   void reconstructAtWithoutStencilUpdate(const RomStateType & romStateIn,
 				    ::pressio::ode::nMinusTwo /*tag*/){
     assert(data_.size() >=4);
-    manifold_.get().mapFromReducedState(romStateIn, data_[4]);
+    trialSubspace_.get().mapFromReducedState(romStateIn, data_[4]);
   }
 
   template <class RomStateType>
@@ -139,14 +139,14 @@ public:
     if (data_.size() == 2){
       /* when n == 2, it means I only have n+1 and n
        * so reconstructing at n, we just overwrite data_[1] */
-      manifold_.get().mapFromReducedState(romStateIn, data_[1]);
+      trialSubspace_.get().mapFromReducedState(romStateIn, data_[1]);
     }
     else if (data_.size() == 3){
       /* when n == 3, we have y_n+1, y_n, y_n-1 */
       // y_n becomes  y_n-1
       ::pressio::ops::deep_copy(data_[2], data_[1]);
       // reconstruct y_n
-      manifold_.get().mapFromReducedState(romStateIn, data_[1]);
+      trialSubspace_.get().mapFromReducedState(romStateIn, data_[1]);
     }
     else if (data_.size() == 4){
       /* when n == 4, we have y_n+1, y_n, y_n-1, y_n-2 */
@@ -158,7 +158,7 @@ public:
       ::pressio::ops::deep_copy(data_[2], data_[1]);
 
       // reconstruct y_n
-      manifold_.get().mapFromReducedState(romStateIn, data_[1]);
+      trialSubspace_.get().mapFromReducedState(romStateIn, data_[1]);
     }
   }
 
@@ -169,32 +169,32 @@ private:
   }
 
 private:
-  std::reference_wrapper<const ManifoldType> manifold_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   data_type data_;
 };
 
-template <class ManifoldType>
+template <class TrialSubspaceType>
 auto create_lspg_fom_states_manager(::pressio::ode::StepScheme name,
-				    const ManifoldType & manifold)
+				    const TrialSubspaceType & trialSubspace)
 {
-  using return_type = LspgFomStatesManager<ManifoldType>;
+  using return_type = LspgFomStatesManager<TrialSubspaceType>;
 
-  auto fomStateTmp = manifold.createFullState();
+  auto fomStateTmp = trialSubspace.createFullState();
 
   if (name == ::pressio::ode::StepScheme::BDF1){
-    return return_type(manifold,
+    return return_type(trialSubspace,
 		       {::pressio::ops::clone(fomStateTmp),
 			::pressio::ops::clone(fomStateTmp)});
   }
   else if (name == ::pressio::ode::StepScheme::BDF2)
     {
-      return return_type(manifold,
+      return return_type(trialSubspace,
 			 {::pressio::ops::clone(fomStateTmp),
 			  ::pressio::ops::clone(fomStateTmp),
 			  ::pressio::ops::clone(fomStateTmp)});
     }
   else if (name == ::pressio::ode::StepScheme::CrankNicolson){
-    return return_type(manifold,
+    return return_type(trialSubspace,
 		       {::pressio::ops::clone(fomStateTmp),
 			::pressio::ops::clone(fomStateTmp)}
 		       );
@@ -204,20 +204,20 @@ auto create_lspg_fom_states_manager(::pressio::ode::StepScheme name,
   }
 }
 
-template <std::size_t N, class ManifoldType>
-auto create_lspg_fom_states_manager(const ManifoldType & manifold)
+template <std::size_t N, class TrialSubspaceType>
+auto create_lspg_fom_states_manager(const TrialSubspaceType & trialSubspace)
 {
-  using return_type = LspgFomStatesManager<ManifoldType>;
+  using return_type = LspgFomStatesManager<TrialSubspaceType>;
 
-  auto fomStateTmp = manifold.createFullState();
+  auto fomStateTmp = trialSubspace.createFullState();
 
   if (N == 2){
-    return return_type(manifold,
+    return return_type(trialSubspace,
 		       {::pressio::ops::clone(fomStateTmp),
 			::pressio::ops::clone(fomStateTmp)});
   }
   else if (N==3){
-    return return_type(manifold,
+    return return_type(trialSubspace,
 		       {::pressio::ops::clone(fomStateTmp),
 			::pressio::ops::clone(fomStateTmp),
 			::pressio::ops::clone(fomStateTmp)});

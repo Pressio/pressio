@@ -8,4 +8,5 @@ Public namespace: ``pressio::ops``
 .. toctree::
    :maxdepth: 1
 
+   ops/clone
    ops/fill

@@ -5,8 +5,8 @@ concepts
 .. toctree::
     :maxdepth: 1
 
-    rom_concepts/c7
-    rom_concepts/c8
+    rom_concepts/c9
+    rom_concepts/c10
     rom_concepts/c1
     rom_concepts/c2
     rom_concepts/c6

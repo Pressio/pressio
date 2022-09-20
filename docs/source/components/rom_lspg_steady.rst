@@ -50,8 +50,7 @@ Parameters
 Constraints
 ~~~~~~~~~~~
 
-- ``TrialSpaceType`` must model the ``TrialColumnSubspace`` `concept <rom_concepts/c7.html>`__
-  or ``AffineTrialColumnSubspace`` `concept <rom_concepts/c8.html>`__
+- ``TrialSpaceType`` must model the `PossiblyAffineTrialColumnSubspace concept <rom_concepts/c10.html>`__
 
 - ``FomSystemType`` must model the ``SteadyFomWithJacobianAction`` `concept <rom_concepts/c6.html>`__
 

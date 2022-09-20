@@ -44,4 +44,7 @@
 .. role:: left
 .. role:: right
 
+.. role:: memberfunction
+
+
 .. Adapted from (c) Lilian Besson, 2011-2016, https://bitbucket.org/lbesson/web-sphinx/

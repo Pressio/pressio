@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_TRIAL_SUBSPACE_HPP_
-#define ROM_CONSTRAINTS_ROM_TRIAL_SUBSPACE_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_SUBSPACES_HPP_
+#define ROM_CONSTRAINTS_ROM_SUBSPACES_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -58,29 +58,33 @@ template<class T>
 struct LinearSubspaceConcept<
   T,
   mpl::enable_if_t<
-    ::pressio::has_basis_typedef<T>::value
-    && has_const_view_basis<T>::value
+    ::pressio::has_basis_matrix_typedef<T>::value
+    && std::is_copy_constructible<typename T::basis_matrix_type>::value
+    && std::is_same<
+      decltype(
+      std::declval<T const>().basis()
+      ),
+      const typename T::basis_matrix_type &
+      >::value
+    && std::is_integral<
+      decltype( std::declval<T const>().dimension() )
+      >::value
+    && std::is_same<
+      decltype( std::declval<T const>().isColumnSpace() ),
+      bool
+      >::value
+    && std::is_same<
+      decltype( std::declval<T const>().isRowSpace() ),
+      bool
+      >::value
    >
   > : std::true_type{};
 
 template<class T, class enable = void>
-struct AffineLinearSubspaceConcept : std::false_type{};
+struct PossiblyAffineTrialColumnSubspace : std::false_type{};
 
 template<class T>
-struct AffineLinearSubspaceConcept<
-  T,
-  mpl::enable_if_t<
-       LinearSubspaceConcept<T>::value
-    && ::pressio::has_offset_typedef<T>::value
-    && has_const_view_affine_offset<T>::value
-   >
-  > : std::true_type{};
-
-template<class T, class enable = void>
-struct TrialColumnSubspaceConcept : std::false_type{};
-
-template<class T>
-struct TrialColumnSubspaceConcept<
+struct PossiblyAffineTrialColumnSubspace<
   T,
   mpl::enable_if_t<
        LinearSubspaceConcept<T>::value
@@ -90,21 +94,16 @@ struct TrialColumnSubspaceConcept<
     && has_const_create_full_state_return_result<T>::value
     && has_const_map_from_reduced_state_return_void<T>::value
     && has_const_create_full_state_from_reduced_state<T>::value
-   >
+    && std::is_same<
+      decltype(std::declval<T const>().translationVector()),
+      const typename T::full_state_type &
+      >::value
+    && std::is_same<
+      decltype( std::declval<T const>().basisOfTranslatedSpace() ),
+      typename T::basis_matrix_type const &
+      >::value
+    >
   > : std::true_type{};
-
-template<class T, class enable = void>
-struct AffineTrialColumnSubspaceConcept : std::false_type{};
-
-template<class T>
-struct AffineTrialColumnSubspaceConcept<
-  T,
-  mpl::enable_if_t<
-       TrialColumnSubspaceConcept<T>::value
-    && AffineLinearSubspaceConcept<T>::value
-   >
-  > : std::true_type{};
-
 
 
 template<class T, class = void>

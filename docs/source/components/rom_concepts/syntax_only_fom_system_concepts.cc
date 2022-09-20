@@ -30,13 +30,13 @@ struct SyntaxOnly
                      right_hand_side_type &) const;
 
   template<class BasisType>
-  /*return type*/ createApplyJacobianResult(const BasisType & ) const;
+  /*return_type_A*/ createApplyJacobianResult(const BasisType & ) const;
 
-  template<class BasisType, class ResultType>
+  template<class BasisType>
   void applyJacobian(const state_type &,
 		     const BasisType &,
 		     const time_type &,
-		     ResultType &) const;
+		     /* jacobian action result's type */ &) const;
 };
 
 
@@ -50,7 +50,7 @@ class SyntaxOnly
     residual_type createResidual() const;
 
     template<class BasisType>
-    /*return type*/ createApplyJacobianResult(const BasisType & B) const;
+    /*return_type_A*/ createApplyJacobianResult(const BasisType & B) const;
 
     void residual(const state_type &,
 		  residual_type &) const;
@@ -58,7 +58,7 @@ class SyntaxOnly
     template<class BasisType, class ResultType>
     void applyJacobian(const state_type & state,
 		       const BasisType &,
-		       ResultType &) const;
+		       /* jacobian action result's type */ &) const;
 };
 
 
@@ -71,7 +71,7 @@ struct SyntaxOnly
   discrete_residual_type createDiscreteTimeResidual() const;
 
   template<class BasisType>
-  /* return type */ createResultOfDiscreteTimeJacobianActionOn(const BasisType &) const;
+  /*return type*/ createResultOfDiscreteTimeJacobianActionOn(const BasisType &) const;
 
   // accepting 2 states
   template<class StepCountType>

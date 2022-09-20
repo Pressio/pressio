@@ -43,16 +43,15 @@ Constraints
 
 - ``ScalarType`` must be convertible to ``pressio::Traits<T>::scalar_type``
 
-Preconditions
-~~~~~~~~~~~~~
-
-:red:`finish`
-
 Mandates
 ~~~~~~~~
 
 :red:`finish`
 
+Preconditions
+~~~~~~~~~~~~~
+
+:red:`finish`
 
 Return value
 ~~~~~~~~~~~~

@@ -103,7 +103,7 @@ public:
   }
 
   discrete_jacobian_type createDiscreteJacobian() const{
-    const auto phi = trialSpace_.get().viewBasis();
+    const auto phi = trialSpace_.get().basisOfTranslatedSpace();
     discrete_jacobian_type J(fomSystem_.get().createResultOfDiscreteTimeJacobianActionOn(phi));
     return J;
   }
@@ -125,7 +125,7 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     try
     {
-      const auto phi = trialSpace_.get().viewBasis();
+      const auto phi = trialSpace_.get().basisOfTranslatedSpace();
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
 							     R, phi, computeJacobian, J,
 							     ynp1, yn);
@@ -155,7 +155,7 @@ public:
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
 
     try{
-      const auto phi = trialSpace_.get().viewBasis();
+      const auto phi = trialSpace_.get().basisOfTranslatedSpace();
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
 							     R, phi, computeJacobian, J,
 							     ynp1, yn, ynm1);

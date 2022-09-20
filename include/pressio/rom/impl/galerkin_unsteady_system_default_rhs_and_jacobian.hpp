@@ -31,10 +31,10 @@ class GalerkinDefaultOdeSystemRhsAndJacobian
 
   // deduce from the fom object the type of result of
   // applying the Jacobian to the basis
-  using basis_type = typename TrialSpaceType::basis_type;
+  using basis_matrix_type = typename TrialSpaceType::basis_matrix_type;
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<basis_type const &>()) );
+	     (std::declval<basis_matrix_type const &>()) );
 
 public:
   // required aliases
@@ -51,7 +51,7 @@ public:
       fomSystem_(fomSystem),
       fomState_(trialSpace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
+      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
@@ -60,12 +60,12 @@ public:
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
   }
 
@@ -81,8 +81,8 @@ public:
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
 
     // compute the reduced rhs
-    const auto & phi = trialSpace_.get().viewBasis();
-    using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+    using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using rhs_scalar_t = typename ::pressio::Traits<right_hand_side_type>::scalar_type;
     constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
@@ -99,13 +99,13 @@ public:
     // reconstruct fom state fomState = phi*reducedState
     trialSpace_.get().mapFromReducedState(reducedState, fomState_);
 
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
 
     // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
     fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
 
     // compute the reduced jacobian
-    using phi_scalar_t = typename ::pressio::Traits<basis_type>::scalar_type;
+    using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using rhs_scalar_t = typename ::pressio::Traits<right_hand_side_type>::scalar_type;
     constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();

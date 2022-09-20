@@ -9,54 +9,48 @@ namespace pressio{ namespace rom{ namespace lspg{
 
 // impl-wise, default and hyp-red LSPG are the same
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
-auto create_steady_problem(const TrialSpaceType & trialSpace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem)
 {
-
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SteadyFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SteadyFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using system_type = impl::LspgSteadyDefaultSystem<
-    reduced_state_type, TrialSpaceType, FomSystemType>;
+    reduced_state_type, TrialSubspaceType, FomSystemType>;
   return system_type(trialSpace, fomSystem);
 }
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
   class ResidualMaskerType,
   class JacobianActionMaskerType
   >
-auto create_steady_problem(TrialSpaceType & trialSpace,
+auto create_steady_problem(TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem,
 			   const ResidualMaskerType & rMasker,
 			   const JacobianActionMaskerType & jaMasker)
 {
-
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SteadyFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SteadyFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
@@ -75,38 +69,18 @@ auto create_steady_problem(TrialSpaceType & trialSpace,
   // ensure the jacobian action masker acts on the FOM jacobian action type
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<typename TrialSpaceType::basis_type const &>()) );
+	     (std::declval<typename TrialSubspaceType::basis_matrix_type const &>()) );
   static_assert(std::is_same<
 		typename JacobianActionMaskerType::operand_type,
 		fom_jac_action_result_type>::value == true,
 		"mismatching types of jacobian action masker and fom");
 
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using system_type = impl::LspgSteadyMaskedSystem<
-    reduced_state_type, TrialSpaceType, FomSystemType,
+    reduced_state_type, TrialSubspaceType, FomSystemType,
     ResidualMaskerType, JacobianActionMaskerType>;
   return system_type(trialSpace, fomSystem, rMasker, jaMasker);
 }
-
-// //
-// // overload set for preconditioned problems
-// // (might not need these if the preconditioner is instead provided to solver)
-// //
-// template<
-//   class TrialSpaceType, class FomSystemType, class PreconditionerType,
-//   mpl::enable_if_t<
-//     SteadyFomWithJacobianAction<
-//       FomSystemType, typename TrialSpaceType::basis_type>::value, int > = 0
-//   >
-// auto create_preconditioned_problem(TrialSpaceType & trialSpace,
-//            const FomSystemType & fomSystem,
-//            const PreconditionerType & preconditioner)
-// {
-// using reduced_state_type = typename TrialSpaceType::reduced_state_type;
-// using system_type = impl::LspgSteadyPreconditionedSystem<
-//   reduced_state_type, TrialSpaceType, FomSystemType, PreconditionerType>;
-// return system_type(trialSpace, fomSystem, preconditioner);
-// }
 
 }}} // end pressio::rom::lspg
 #endif

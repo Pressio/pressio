@@ -96,7 +96,7 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    const auto phi = trialSpace_.get().viewBasis();
+    const auto phi = trialSpace_.get().basisOfTranslatedSpace();
     // lspg jacobian is of the same shape as createApplyJacobian
     auto J = fomSystem_.get().createApplyJacobianResult(phi);
     ::pressio::ops::set_zero(J);
@@ -244,10 +244,11 @@ private:
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
       // first, store J*phi into J
-      const auto & phi = trialSpace_.get().viewBasis();
+      const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomStateAt_np1, phi, rhsEvaluationTime, J);
 
-      using sc_t = typename ::pressio::Traits<typename TrialSpaceType::basis_type>::scalar_type;
+      using sc_t = typename ::pressio::Traits<
+	typename TrialSpaceType::basis_matrix_type>::scalar_type;
       const auto one = ::pressio::utils::Constants<sc_t>::one();
       IndVarType cf = dt;
       if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){

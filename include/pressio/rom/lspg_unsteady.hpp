@@ -25,10 +25,10 @@ namespace lspg{
 
 template<
   std::size_t TotalNumberOfDesiredStates,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
 >
-auto create_unsteady_problem(const TrialSpaceType & trialSpace,
+auto create_unsteady_problem(const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem)
 {
 
@@ -36,66 +36,62 @@ auto create_unsteady_problem(const TrialSpaceType & trialSpace,
 		TotalNumberOfDesiredStates == 3,
 		"TotalNumberOfDesiredState must be 2, 3");
 
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(FullyDiscreteSystemWithJacobianAction<
-		FomSystemType, TotalNumberOfDesiredStates, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, TotalNumberOfDesiredStates, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the FullyDiscreteSystemWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
   using independent_variable_type = typename FomSystemType::time_type;
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using lspg_residual_type = typename FomSystemType::discrete_residual_type;
-  using lspg_jacobian_type = typename TrialSpaceType::basis_type;
+  using lspg_jacobian_type = typename TrialSubspaceType::basis_matrix_type;
 
   using system_type = impl::LspgFullyDiscreteSystem<
     TotalNumberOfDesiredStates, independent_variable_type, reduced_state_type,
     lspg_residual_type, lspg_jacobian_type,
-    TrialSpaceType, FomSystemType>;
+    TrialSubspaceType, FomSystemType>;
 
   using return_type = impl::LspgUnsteadyProblemFullyDiscreteAPI<
-    TotalNumberOfDesiredStates, TrialSpaceType, system_type>;
+    TotalNumberOfDesiredStates, TrialSubspaceType, system_type>;
   return return_type(trialSpace, fomSystem);
 }
 
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
 >
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
-			     const TrialSpaceType & trialSpace,
+			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem)
 {
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SemiDiscreteFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SemiDiscreteFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
   using independent_variable_type = typename FomSystemType::time_type;
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
 
   /* use the FOM rhs to represent the lspg residual
      and the fom jacobian action on basis as the lspg jacobian */
   using lspg_residual_type = typename FomSystemType::right_hand_side_type;
-  using lspg_jacobian_type = typename TrialSpaceType::basis_type;
+  using lspg_jacobian_type = typename TrialSubspaceType::basis_matrix_type;
 
   // defining an unsteady lspg problem boils down to
   // defining a "custom" residual and jacobian policy
@@ -103,44 +99,42 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   using rj_policy_type = impl::LspgUnsteadyResidualJacobianPolicy<
     independent_variable_type, reduced_state_type,
     lspg_residual_type, lspg_jacobian_type,
-    TrialSpaceType, FomSystemType>;
+    TrialSubspaceType, FomSystemType>;
 
-  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSpaceType, rj_policy_type>;
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem);
 }
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
   class HypRedUpdaterType
 >
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
-			     const TrialSpaceType & trialSpace,
+			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem,
 			     const HypRedUpdaterType & hypRedUpdater)
 {
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SemiDiscreteFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SemiDiscreteFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
   using independent_variable_type = typename FomSystemType::time_type;
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   /* use the FOM rhs to represent the lspg residual
      and the fom jacobian action on basis as the lspg jacobian */
   using lspg_residual_type = typename FomSystemType::right_hand_side_type;
-  using lspg_jacobian_type = typename TrialSpaceType::basis_type;
+  using lspg_jacobian_type = typename TrialSubspaceType::basis_matrix_type;
 
   // defining an unsteady lspg problem boils down to
   // defining a "custom" residual and jacobian policy
@@ -148,20 +142,20 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   using rj_policy_type = impl::LspgUnsteadyResidualJacobianPolicyHypRed<
     independent_variable_type, reduced_state_type,
     lspg_residual_type, lspg_jacobian_type,
-    TrialSpaceType, FomSystemType, HypRedUpdaterType>;
+    TrialSubspaceType, FomSystemType, HypRedUpdaterType>;
 
-  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSpaceType, rj_policy_type>;
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem, hypRedUpdater);
 }
 
 template<
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
   class ResidualMaskerType,
   class JacobianActionMaskerType
 >
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
-			     const TrialSpaceType & trialSpace,
+			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem,
 			     const ResidualMaskerType & rMasker,
 			     const JacobianActionMaskerType & jaMasker)
@@ -169,16 +163,14 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
-  // sufficient to satisfy the TrialColumnSubspaceConcept concept since
-  // the AffineSpace concept subsumes the TrialColumnSubspaceConcept one
-  static_assert(TrialColumnSubspaceConcept<TrialSpaceType>::value,
-		"TrialSpaceType does not meet the TrialColumnSubspaceConcept concept");
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value,
+		"TrialSubspaceType does not meet the correct concept");
 
   static_assert(SemiDiscreteFomWithJacobianAction<
-		FomSystemType, typename TrialSpaceType::basis_type>::value,
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value,
 		"FomSystemType does not meet the SemiDiscreteFomWithJacobianAction concept");
 
-  static_assert(std::is_same<typename TrialSpaceType::full_state_type,
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,
 		"Mismatching fom states");
 
@@ -195,17 +187,17 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 		"mismatching types of rhs masker and fom right_hand_side_type");
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<typename TrialSpaceType::basis_type const &>()) );
+	     (std::declval<typename TrialSubspaceType::basis_matrix_type const &>()) );
   static_assert(std::is_same<
 		typename JacobianActionMaskerType::operand_type,
 		fom_jac_action_result_type>::value == true,
 		"mismatching types of jacobian action masker and fom");
 
   using independent_variable_type = typename FomSystemType::time_type;
-  using reduced_state_type = typename TrialSpaceType::reduced_state_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
 
   using lspg_unmasked_residual_type = typename FomSystemType::right_hand_side_type;
-  using lspg_unmasked_jacobian_type = typename TrialSpaceType::basis_type;
+  using lspg_unmasked_jacobian_type = typename TrialSubspaceType::basis_matrix_type;
 
   using lspg_residual_type = typename ResidualMaskerType::result_type;
   using lspg_jacobian_type = typename JacobianActionMaskerType::result_type;
@@ -219,11 +211,11 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
     impl::LspgUnsteadyResidualJacobianPolicy<
       independent_variable_type, reduced_state_type,
       lspg_unmasked_residual_type, lspg_unmasked_jacobian_type,
-      TrialSpaceType, FomSystemType
+      TrialSubspaceType, FomSystemType
       >
     >;
 
-  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSpaceType, rj_policy_type>;
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem, rMasker, jaMasker);
 }
 

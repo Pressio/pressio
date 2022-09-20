@@ -25,7 +25,7 @@ class LspgSteadyMaskedSystem
   using unmasked_fom_residual_type = typename FomSystemType::residual_type;
   using unmasked_fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-      (std::declval<typename TrialSpaceType::basis_type const &>())
+      (std::declval<typename TrialSpaceType::basis_matrix_type const &>())
       );
 
   // deduce the masked types
@@ -50,7 +50,7 @@ public:
       rMasker_(rMasker),
       jaMasker_(jaMasker),
       unMaskedFomResidual_(fomSystem.createResidual()),
-      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().viewBasis()))
+      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
@@ -64,7 +64,7 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    auto tmp = fomSystem_.get().createApplyJacobianResult(trialSpace_.get().viewBasis());
+    auto tmp = fomSystem_.get().createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace());
     return jaMasker_.get().createApplyMaskResult(tmp);
   }
 
@@ -79,7 +79,7 @@ public:
     rMasker_(unMaskedFomResidual_, lsgpResidual);
 
     if (computeJacobian){
-      const auto & phi = trialSpace_.get().viewBasis();
+      const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
       jaMasker_(unMaskedFomJacAction_, lspgJacobian);
     }

@@ -49,7 +49,7 @@ public:
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().viewBasis();
+    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
   }
 

@@ -14,68 +14,99 @@ API
   namespace pressio { namespace rom{ namespace galerkin{
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType>
-  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (1)
+  /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSpace,         (1)
                                          const FomSystemType & fomSystem);
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType,
-    class HyperReductionOperatorType
-    >
-  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (2)
+    class HyperReducerType>
+  /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSpace,         (2)
 					 const FomSystemType & fomSystem,
-					 const HyperReductionOperatorType & hrOp);
+					 const HyperReducerType & hypReducer);
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType,
     class ResidualMaskerType,
     class JacobianActionMaskerType,
-    class HyperReductionOperatorType
-    >
-  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (3)
+    class HyperReducerType>
+  /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSpace,         (3)
 					 const FomSystemType & fomSystem,
 					 const ResidualMaskerType & rMasker,
 					 const JacobianActionMaskerType & jaMasker,
-					 const HyperReductionOperatorType & hrOp);
+					 const HyperReducerType & hypReducer);
 
   }}} // end namespace pressio::rom::galerkin
 
-- 1: overload for default problem
+Description
+~~~~~~~~~~~
 
-- 2: overload for hyper-reduced problem
+- 1: instantiates a default problem
 
-- 3: overload for masked problem
+- 2: instantiates a hyper-reduced problem
+
+- 3: instantiates a masked problem
 
 Parameters
 ~~~~~~~~~~
 
-* ``trialSpace``: trial subspace approximating the FOM state space
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-* ``fomSystem``: full-order model instance
+   * -
+     -
 
-* ``hrOp``: hyper-reduction operator to apply to residual and jacobian action
+   * - ``trialSpace``
+     - trial subspace approximating the FOM state space
 
-* ``rMasker``: masking operator to apply to the FOM residual
+   * - ``fomSystem``
+     - full-order model instance
 
-* ``jaMasker``: masking operator to apply to the result of the FOM jacobian action
+   * - ``hypReducer``
+     - hyper-reduction operator to apply to FOM residual and jacobian action
+
+   * - ``rMasker``
+     - masking operator to apply to the FOM residual
+
+   * - ``jaMasker``
+     - masking operator to apply to the result of the FOM jacobian action
 
 Constraints
 ~~~~~~~~~~~
 
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-- ``TrialSpaceType`` must model the ``TrialColumnSubspace`` `concept <rom_concepts/c7.html>`__
-  or ``AffineTrialColumnSubspace`` `concept <rom_concepts/c8.html>`__
+   * -
+     -
 
-- ``FomSystemType`` must model the ``SteadyFomWithJacobianAction`` `concept <rom_concepts/c6.html>`__
+   * - ``TrialSubspaceType``
+     - must model the `PossiblyAffineTrialColumnSubspace concept <rom_concepts/c10.html>`__
 
-- ``HyperReductionOperatorType`` must model the ``SteadyGalerkinHyperReductionOperator`` `concept <rom_concepts/c4.html>`__
+   * - ``FomSystemType``
+     - must model the `SteadyFomWithJacobianAction concept <rom_concepts/c6.html>`__
 
-- ``ResidualMaskerType`` must model the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__
+   * - ``HyperReducerType``
+     - must model the `SteadyGalerkinHyperReducer concept <rom_concepts/c4.html>`__
 
-- ``JacobianActionMaskerType`` must model the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__
+   * - ``ResidualMaskerType``
+     - must model the `TimeInvariantMasker concept <rom_concepts/c3.html>`__
+
+   * - ``JacobianActionMaskerType``
+     - must model the `TimeInvariantMasker concept <rom_concepts/c3.html>`__
+
+Mandates
+~~~~~~~~
+
+- ``std::is_same<typename TrialSubspaceType::full_state_type,
+  typename FomSystemType::state_type >::value == true``
 
 Preconditions
 ~~~~~~~~~~~~~
@@ -84,35 +115,27 @@ Preconditions
   *longer* that that of the instantiated problem, i.e., they must be
   destructed *after* the problem goes out of scope
 
-Mandates
-~~~~~~~~
-
-- the type representing the FOM state declared inside the ``TrialSpaceType``
-  must be equal to that declared inside the ``FomSystemType`` class,
-  i.e.: ``std::is_same<typename TrialSpaceType::full_state_type,
-  typename FomSystemType::state_type >::value == true``
-
 Return value, Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- 1,2,3 all return an instance of class representing a Galerkin steady problem.
+- the overload set returns an instance of class representing a Galerkin steady problem
 
-    The return type is implementation defined, but guaranteed to
-    model the ``SystemWithFusedResidualAndJacobian``
+    The return type is implementation defined, but guaranteed
+    to model the ``SystemWithFusedResidualAndJacobian``
     concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
 
 
-  This means that the purely syntactical API of the problem class is:
+- Purely syntactically, the problem class API is:
 
   .. code-block:: cpp
 
       // This is not the actual class, it just describes the API
-      class SteadyGalerkinProblemExpositionOnly
+      class SteadyGalerkinProblemSyntaxOnly
       {
 	public:
-	  using state_type    = /*same as reduced_state in TrialSpaceType*/;
-	  using residual_type = /*impl defined*/;
-	  using jacobian_type = /*impl defined*/;
+	  using state_type    = /**/;
+	  using residual_type = /**/;
+	  using jacobian_type = /**/;
 
 	  state_type    createState() const;
 	  residual_type createResidual() const;
@@ -123,36 +146,100 @@ Return value, Postconditions and Side Effects
 				   bool computeJacobian) const;
       };
 
+  where:
 
-- the problem object will hold const-qualified references to the arguments
-  ``trialSpace``, ``fomSystem``, ``hrOp``, ``rMasker``, ``jaMasker``, therefore
-  NO copy of these objects occurs.
+  - the ``state_type`` typedef is same as ``typename TrialSubspaceType::reduced_state_type``,
+    so it is either an Eigen vector or a Kokkos view (see `here <rom_concepts/c10.html>`__)
+
+  - ``residual_type``, ``jacobian_type`` are the types of
+    the *reduced* residual and jacobian:
+
+    - if ``state_type`` is an Eigen vector, then ``residual_type``
+      is an Eigen vector and ``jacobian_type`` is an Eigen dense matrix
+
+    - if ``state_type`` is a Kokkos rank-1 view, then ``residual_type``
+      is a Kokkos rank-1 view and ``jacobian_type`` is a Kokkos rank-2 view
+
+
+- the instantiated problem object will only reference the arguments passed
+  to ``trialSpace``, ``fomSystem``, ``hypReducer``, ``rMasker``, ``jaMasker``,
+  therefore NO copy of these objects occurs.
 
 - All internal memory allocation needed for the implementation is
   performed inside the constructor of problem.
 
 
-Using/solving the problem
--------------------------
+Solve the problem
+-----------------
 
-To solve the problem, you can use the Newton-Raphson
-solver from the pressio/nonlinear_solvers. Or you can use/implement your own.
-A representative snippet is:
+Solving a steady Galerkin problem boils down to solving
+a reduced dense system of (nonlinear) equations.
+A Galerkin problem object exposes the operators
+defining this reduced system. To solve it, one can use the
+Newton-Raphson solver from the pressio/nonlinear_solvers,
+or use/implement their own.
+
+Using pressio nonlinear solvers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: cpp
 
-   namespace pls  = pressio::linearsolvers;
-   namespace pnls = pressio::nonlinearsolvers;
-   namespace pgal = pressio::rom::galerkin;
+   int main()
+   {
+     namespace pls  = pressio::linearsolvers;
+     namespace pnls = pressio::nonlinearsolvers;
+     namespace pgal = pressio::rom::galerkin;
 
-   // assuming trialSpace and fomSystem already exist
-   auto problem = pgal::create_steady_problem(trialSpace, fomSystem);
+     // assuming trialSpace and fomSystem already exist
+     auto problem = pgal::create_steady_problem(trialSpace, fomSystem);
 
-   using jacobian_type = typename decltype(problem)::jacobian_type;
-   using linear_solver_t = pls::Solver<pls::iterative::LSCG, jacobian_type>;
-   auto nonLinearSolver = pnls::create_newton_raphson(problem, linear_solver_t{});
+     using jacobian_type   = typename decltype(problem)::jacobian_type;
+     using linear_solver_t = pls::Solver<pls::iterative::LSCG, jacobian_type>;
+     auto nonLinearSolver  = pnls::create_newton_raphson(problem, linear_solver_t{});
 
-   auto reducedState = trialSpace.createReducedState();
-   // set initial condition for reducedState somehow
+     auto reducedState = trialSpace.createReducedState();
+     // set initial condition for reducedState somehow
 
-   nonLinearSolver.solve(problem, reducedState);
+     nonLinearSolver.solve(problem, reducedState);
+   }
+
+Use your own solver
+~~~~~~~~~~~~~~~~~~~
+
+If you don't want to use the pressio solvers,
+you can easily set up your own because the problem object
+fully identify the system to solve.
+
+.. code-block:: cpp
+
+   class CustomSolver{
+     // constructor as needed
+
+     template<class T>
+     void doSolve(const T & problem,
+                  typename T::state_type & state)
+     {
+       auto R = problem.createResidual();
+       auto J = problem.createJacobian();
+
+       for (...){
+         system.residualAndJacobian(state, R, J, true);
+         // do something, update state, etc.
+       }
+     }
+   };
+
+   int main()
+   {
+     namespace pls  = pressio::linearsolvers;
+     namespace pnls = pressio::nonlinearsolvers;
+     namespace pgal = pressio::rom::galerkin;
+
+     // assuming trialSpace and fomSystem already exist
+     auto problem = pgal::create_steady_problem(trialSpace, fomSystem);
+
+     CustomSolver mySolver;
+     auto reducedState = trialSpace.createReducedState();
+     // set initial condition for reducedState somehow
+     mySolver.doSolve(problem, reducedState);
+   }

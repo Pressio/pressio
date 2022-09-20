@@ -24,7 +24,7 @@ class LspgSteadyDefaultSystem
   // which becomes the jacobian_type of the problem
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<typename TrialSpaceType::basis_type const &>())
+	     (std::declval<typename TrialSpaceType::basis_matrix_type const &>())
 	     );
 
 public:
@@ -52,7 +52,7 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    return fomSystem_.get().createApplyJacobianResult(trialSpace_.get().viewBasis());
+    return fomSystem_.get().createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace());
   }
 
   void residualAndJacobian(const state_type & lspgState,
@@ -64,7 +64,7 @@ public:
     fomSystem_.get().residual(fomState_, lsgpResidual);
 
     if (computeJacobian){
-      const auto & phi = trialSpace_.get().viewBasis();
+      const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomState_, phi, lspgJacobian);
     }
   }

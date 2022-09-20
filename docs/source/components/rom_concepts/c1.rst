@@ -6,11 +6,12 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. code-block:: cpp
 
-   namespace pressio{ namespace ode{
+   namespace pressio{ namespace rom{
 
    template <class T>
    concept SemiDiscreteFom =
          std::regular<typename T::time_type>
+      && std::totally_ordered<typename T::time_type>
       && std::copy_constructible<typename T::state_type>
       && std::copy_constructible<typename T::right_hand_side_type>
       && std::same_as<
@@ -18,13 +19,13 @@ Header: ``<pressio/rom_concepts.hpp>``
           typename pressio::Traits<typename T::right_hand_side_type>::scalar_type>
       && std::convertible_to<
           typename T::time_type,
-          typename ::pressio::Traits<typename T::state_type>::scalar_type>
+          typename pressio::Traits<typename T::state_type>::scalar_type>
       && requires(const T & A,
 		  const typename T::state_type & s,
 		  const typename T::time_type & t,
 		  typename T::right_hand_side_type & r)
       {
-       { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
+       { A.createRightHandSide()  } -> std::same_as<typename T::right_hand_side_type>;
        { A.rightHandSide(s, t, r) } -> std::same_as<void>;
      };
 

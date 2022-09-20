@@ -30,7 +30,7 @@ This structure is mirrored in the API documentation (see the left sidebar).
      - Header(s)
 
    * - ``rom``
-     - linear subspaces :raw-html-m2r:`<br/>` Galerkin: steady :raw-html-m2r:`<br/>` Galerkin: unsteady :raw-html-m2r:`<br/>` LSPG: steady :raw-html-m2r:`<br/>` LSPG: unsteady :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
+     - (linear) subspaces :raw-html-m2r:`<br/>` Galerkin: steady :raw-html-m2r:`<br/>` Galerkin: unsteady :raw-html-m2r:`<br/>` LSPG: steady :raw-html-m2r:`<br/>` LSPG: unsteady :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
      - ``<pressio/rom_subspaces.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom.hpp>`` :small:`includes all above`
 
    * - ``ode``
@@ -56,10 +56,6 @@ This structure is mirrored in the API documentation (see the left sidebar).
    * - ``expressions``
      - expressions templates, e.g.: span, diagonal, subspan
      - ``<pressio/expressions.hpp>``
-
-   * - ``concepts``
-     - common concepts
-     - ``<pressio/concepts.hpp>``
 
    * - ``type_traits``
      - type traits and detection
@@ -103,11 +99,11 @@ Later on, when feasible, we will enforce them as the standard dictates.
 Note, that, if you have used or use C++ templates, you *have* used
 concepts knowingly or not. This is becuase when you write a function or class
 template, you have some expectations of what a template is going to do.
-Concepts are basically a way to *explicitly* formalize those expectations into the code.
+Concepts are basically a way to *explicitly* formalize those expectations.
 
 The message we want to convey is that *"concepts" are a fundamental
-design part of pressio and are present everywhere in a fairly explicit manner*.
-In our documentation, we make the effort to highlight the use of concepts
+design part of pressio*. In our documentation, we make the effort to
+highlight the use of concepts
 by dedicating to each component of the library a full section
 (see the sidebar menu on the left)
 to discuss and formalize how concepts are used in that component.
@@ -147,7 +143,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    ./components/qr
    ./components/ops
    ./components/expressions
-   ./components/concepts
    ./components/type_traits
    ./components/utils
    ./components/mpl

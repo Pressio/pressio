@@ -304,6 +304,6 @@ TEST(rom, affine_trial_subspace_view_basis)
   auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, true);
 
   reduced_state_type latState1 = reduced_state_type::Random(3);
-  auto & J = space.viewBasis();
+  auto & J = space.basis();
   EXPECT_TRUE( J.isApprox(phi) );
 }
