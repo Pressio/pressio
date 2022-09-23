@@ -104,25 +104,19 @@ struct FakeNonLinSolverSteady
   }
 };
 
-struct MyHypRedOperator
+class MyHypRedOperator
 {
   using operator_type = Eigen::MatrixXd;
   operator_type matrix_;
 
 public:
-  using residual_operand_type = Eigen::VectorXd;
-  using jacobian_action_operand_type = Eigen::MatrixXd;
-
   MyHypRedOperator(const operator_type & phiSampleMesh)
     : matrix_(phiSampleMesh){}
 
-  template<class ResultType>
-  void operator()(const residual_operand_type & operand, ResultType & result) const{
-    result = matrix_.transpose() * operand;
-  }
-
-  template<class ResultType>
-  void operator()(const jacobian_action_operand_type & operand, ResultType & result) const{
+  template<class T1, class T2>
+  void operator()(const Eigen::MatrixBase<T1> & operand,
+		  Eigen::MatrixBase<T2> & result) const
+  {
     result = matrix_.transpose() * operand;
   }
 };

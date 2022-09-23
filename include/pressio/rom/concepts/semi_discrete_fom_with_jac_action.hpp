@@ -46,82 +46,51 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_SUBSPACES_HPP_
-#define ROM_CONSTRAINTS_ROM_SUBSPACES_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_SEMI_DISCRETE_FOM_WITH_JAC_ACTION_CONCEPT_HPP_
+#define ROM_CONSTRAINTS_ROM_SEMI_DISCRETE_FOM_WITH_JAC_ACTION_CONCEPT_HPP_
+
+#include "helpers.hpp"
 
 namespace pressio{ namespace rom{
 
-template<class T, class enable = void>
-struct LinearSubspaceConcept : std::false_type{};
+#ifdef PRESSIO_ENABLE_CXX20
 
-template<class T>
-struct LinearSubspaceConcept<
-  T,
+template<class T, class TrialSubspaceType>
+concept SemiDiscreteFomWithJacobianAction =
+  SemiDiscreteFom<T>
+  && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>;
+
+#else
+
+template<class T, class TrialSubspaceType, class enable = void>
+struct SemiDiscreteFomWithJacobianAction : std::false_type{};
+
+template<class T, class TrialSubspaceType>
+struct SemiDiscreteFomWithJacobianAction<
+  T, TrialSubspaceType,
   mpl::enable_if_t<
-    ::pressio::has_basis_matrix_typedef<T>::value
-    && std::is_copy_constructible<typename T::basis_matrix_type>::value
-    && std::is_same<
-      decltype(
-      std::declval<T const>().basis()
-      ),
-      const typename T::basis_matrix_type &
-      >::value
-    && std::is_integral<
-      decltype( std::declval<T const>().dimension() )
-      >::value
-    && std::is_same<
-      decltype( std::declval<T const>().isColumnSpace() ),
-      bool
-      >::value
-    && std::is_same<
-      decltype( std::declval<T const>().isRowSpace() ),
-      bool
-      >::value
-   >
-  > : std::true_type{};
-
-template<class T, class enable = void>
-struct PossiblyAffineTrialColumnSubspace : std::false_type{};
-
-template<class T>
-struct PossiblyAffineTrialColumnSubspace<
-  T,
-  mpl::enable_if_t<
-       LinearSubspaceConcept<T>::value
-    && ::pressio::has_reduced_state_typedef<T>::value
-    && ::pressio::has_full_state_typedef<T>::value
-    && has_const_create_reduced_state_return_result<T>::value
-    && has_const_create_full_state_return_result<T>::value
-    && has_const_map_from_reduced_state_return_void<T>::value
-    && has_const_create_full_state_from_reduced_state<T>::value
-    && std::is_same<
-      decltype(std::declval<T const>().translationVector()),
-      const typename T::full_state_type &
-      >::value
-    && std::is_same<
-      decltype( std::declval<T const>().basisOfTranslatedSpace() ),
-      typename T::basis_matrix_type const &
-      >::value
+       SemiDiscreteFom<T>::value
+    && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    //
+    && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+	 T, typename TrialSubspaceType::basis_matrix_type>::value
+    //
+    && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
+	 T, typename T::state_type, typename TrialSubspaceType::basis_matrix_type, typename T::time_type,
+	 concepts::impl::FomJacActionResult_t<T, TrialSubspaceType>
+	 >::value
+    //
+    && std::is_copy_constructible<
+	 concepts::impl::FomJacActionResult_t<T, TrialSubspaceType>
+	 >::value
+    //
+    && ::pressio::VectorSpaceElementsWithSameField<
+	 typename T::state_type,
+	 concepts::impl::FomJacActionResult_t<T, TrialSubspaceType>
+	 >::value
     >
   > : std::true_type{};
 
-
-template<class T, class = void>
-struct ValidReducedState
-  : std::false_type{};
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<class T>
-struct ValidReducedState<
-  T, mpl::enable_if_t< ::pressio::is_vector_kokkos<T>::value >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<class T>
-struct ValidReducedState<
-  T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value >
-  > : std::true_type{};
 #endif
 
 }}

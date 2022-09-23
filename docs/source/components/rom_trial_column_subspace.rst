@@ -52,9 +52,9 @@ then all of the following must hold:
 Mandates
 --------
 
-- :cpp:`std::is_same<typename pressio::Traits<basis_matrix_type>::scalar_type,
-  typename pressio::Traits<full_state_type>::scalar_type>::value == true`
-
+- :cpp:`pressio::mpl::all_of_t<
+  all_have_traits_and_same_scalar,
+  reduced_state_type, full_state_type, basis_matrix_type>::value == true`
 
 Preconditions
 -------------
@@ -88,7 +88,7 @@ Postconditions
 --------------
 
 The return type is guaranteed to model
-the `PossiblyAffineTrialColumnSubspace concept <rom_concepts/c10.html>`__.
+the `PossiblyAffineTrialColumnSubspace concept <rom_concepts/possibly_affine_trial_column_subspace.html>`__.
 
 :red:`finish`
 

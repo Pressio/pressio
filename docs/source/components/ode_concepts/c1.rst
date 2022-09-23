@@ -29,7 +29,6 @@
 
    }} // end namespace
 
-Specifies that a type is a representation of an ODE system with right hand side.
 
 Semantic requirements
 ---------------------

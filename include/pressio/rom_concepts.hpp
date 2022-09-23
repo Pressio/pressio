@@ -58,10 +58,22 @@
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"
 
+#ifdef PRESSIO_ENABLE_CXX20
+#include <concepts>
+#endif
+
 #include "./rom/predicates.hpp"
-#include "./rom/impl/reduced_operators_helpers.hpp"
-#include "./rom/constraints/rom_system.hpp"
-#include "./rom/constraints/subspaces.hpp"
-#include "./rom/constraints/other.hpp"
+#include "./rom/reduced_operators_traits.hpp"
+#include "./rom/concepts/valid_reduced_state.hpp"
+#include "./rom/concepts/linear_subspace.hpp"
+#include "./rom/concepts/possibly_affine_trial_column_subspace.hpp"
+#include "./rom/concepts/steady_fom_with_jac_action.hpp"
+#include "./rom/concepts/steady_galerkin_projectable_on_affine_subspace.hpp"
+#include "./rom/concepts/steady_galerkin_hyperreduceable_with.hpp"
+#include "./rom/concepts/steady_galerkin_hyperreduceable_maskable_with.hpp"
+#include "./rom/concepts/steady_lspg_maskable_with.hpp"
+// #include "./rom/concepts/semi_discrete_fom.hpp"
+// #include "./rom/constraints/semi_discrete_fom_with_jac_action.hpp"
+// #include "./rom/constraints/fully_discrete_with_jac_action.hpp"
 
 #endif

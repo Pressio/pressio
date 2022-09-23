@@ -16,83 +16,103 @@ API
   template<
     class TrialSpaceType,
     class FomSystemType>
+  /*
+    requires SteadyFomWithJacobianAction<FomSystemType, SubspaceType>
+  */
   /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (1)
                                          const FomSystemType & fomSystem);
 
   template<
     class TrialSpaceType,
     class FomSystemType,
-    class ResidualMaskerType,
-    class JacobianActionMaskerType
-    >
+    class MaskerType>
+  /*
+    requires steady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>
+  */
   /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (2)
 					 const FomSystemType & fomSystem,
-					 const ResidualMaskerType & rMasker,
-					 const JacobianActionMaskerType & jaMasker);
+					 const maskerType & masker);
 
   }}} // end namespace pressio::rom::lspg
 
-- 1: overload for default OR hyper-reduced problem
+Description
+~~~~~~~~~~~
 
-- 2: overload for masked problem
+Overload set to instantiate a default or hyper-reduced problem problem (1), or masked problem (2).
 
 Parameters
 ~~~~~~~~~~
 
-* ``trialSpace``: trial subspace approximating the full space
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-* ``fomSystem``: full-order model instance
+   * -
+     -
 
-* ``rMasker``: masking operator to apply to the FOM residual
+   * - ``trialSubspace``
+     - trial subspace approximating the FOM state space
 
-* ``jaMasker``: masking operator to apply to the result of the FOM jacobian action
+   * - ``fomSystem``
+     - full-order model instance
+
+   * - ``masker``
+     - masking operator
 
 Constraints
 ~~~~~~~~~~~
 
-- ``TrialSpaceType`` must model the `PossiblyAffineTrialColumnSubspace concept <rom_concepts/c10.html>`__
+Each overload is associated with a set of constraints.
+If we could use C++20, these would be enforced via concepts using
+the *requires-clause* shown in the API synopsis above.
+Since we cannot yet use C++20, the constraints are
+currently enforced via static asserts (to provide a decent error message)
+and/or SFINAE. The concepts used are:
 
-- ``FomSystemType`` must model the ``SteadyFomWithJacobianAction`` `concept <rom_concepts/c6.html>`__
+- `rom::SteadyFomWithJacobianAction <rom_concepts_foms/steady_fom_with_jac_action.html>`__
 
-- ``ResidualMaskerType`` must model the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__
-
-- ``JacobianActionMaskerType`` must model the ``TimeInvariantMasker`` `concept <rom_concepts/c3.html>`__
-
-Preconditions
-~~~~~~~~~~~~~
-
-- all arguments passed to the function must be lvalues with a lifetime
-  *longer* that that of the instantiated problem, i.e., they must be
-  destructed *after* the problem goes out of scope
+- `rom::lspg::steady::MaskableWith <rom_concepts_steady_lspg/steady_lspg_mask.html>`__
 
 Mandates
 ~~~~~~~~
 
-- the type representing the FOM state declared inside the ``TrialSpaceType``
-  must be equal to that declared inside the ``FomSystemType`` class,
-  i.e.: ``std::is_same<typename TrialSpaceType::full_state_type,
+- ``std::is_same<typename TrialSubspaceType::full_state_type,
   typename FomSystemType::state_type >::value == true``
+
+Preconditions
+~~~~~~~~~~~~~
+
+.. _steadyLspgPreconditions:
+
+1. all arguments passed to ``create_steady_problem`` must have a
+   lifetime *longer* that that of the instantiated problem, i.e., they must be
+   destructed *after* the problem instantiated goes out of scope
+
+2. the trial subspace must be an admissible approximation
+   of the specific full state/problem represented by the ``fomSystem`` instance
 
 Return value, Postconditions and Side Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- overloads 1,2 return an instance of class representing a steady LSPG problem.
+- the return value is an instance of class representing a steady LSPG problem.
 
     The return type is implementation defined, but guaranteed to
     model the ``SystemWithFusedResidualAndJacobian``
     concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
 
-  This means that the purely syntactical API of the problem class is:
+- Purely syntactically, the problem class API is:
 
   .. code-block:: cpp
 
       // This is not the actual class, it just describes the API
+      template<class TrialSubspaceType, ...> // exposition only
       class SteadyLspgProblemExpositionOnly
       {
 	public:
-	  using state_type     = /*same as reduced_state in trialSpace*/;
-	  using residual_type  = /*impl defined*/;
-	  using jacobian_type  = /*impl defined*/;
+	  using state_type    = typename TrialSubspaceType::reduced_state_type;
+	  using residual_type  = /*see description below*/;
+	  using jacobian_type  = /*see description below*/;
 
 	  state_type    createState() const;
 	  residual_type createResidual() const;
@@ -103,19 +123,109 @@ Return value, Postconditions and Side Effects
 				   bool computeJacobian) const;
       };
 
+  where:
 
-- the problem object will hold const-qualified references to the arguments
-  ``trialSpace``, ``fomSystem``, ``rMasker``, ``jaMasker``, therefore
-  NO copy of these objects occurs.
+  - ``state_type`` aliases the reduced state type of your trial subspace class
 
-- All internal memory allocation needed for the implementation is
-  performed inside the constructor of problem.
+  - ``residual_type``, ``jacobian_type`` are as follows:
 
+    - ``std::is_same<residual_type, typename FomSystemType::residual_type>::value == true``
 
-Using the problem
+    - ``std::is_same<jacobian_type,
+      decltype(std::declval<FomSystemType const &>().createApplyJacobianResult(trialSubspace.basis()))>::value == true``
+
+- any necessary memory allocation needed for the implementation
+  occurs when the constructor of the class is called. However, we
+  guarantee (for now) that the implementation only uses via *const references*
+  (as opposed to copying) the arguments passed to the ``create_steady_problem``.
+  This is why it is critical to ensure :ref:`precondition 1 <steadyGalerkinPreconditions>`
+  is satisfied.
+
+Solve the problem
 -----------------
 
-To solve the problem, you use a nonlinear least squares solver
-from the pressio/nonlinear_solvers. Or you can use/implement your own.
+Solving a steady LSPG problem boils down to solving
+a (nonlinear) least-squares problem.
+The problem class exposes the operators defining the system to solve.
 
-:red:`finish`
+Using pressio nonlinear solvers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:red:`complete by saying more`
+
+.. important::
+
+   The code below only shows what is needed when using data types
+   for which pressio already has specializations inside pressio/ops.
+   In this case, the pressio nonlinear solvers will compile and work
+   without any additional information.
+   If you use data types that are "custom", you also need to specialize
+   any ops needed by the solver you choose, so the following code won't compile.
+
+.. code-block:: cpp
+
+   int main()
+   {
+     namespace pls   = pressio::linearsolvers;
+     namespace pnls  = pressio::nonlinearsolvers;
+     namespace plspg = pressio::rom::lspg;
+
+     // assuming trialSubspace and fomSystem already exist
+     auto problem = pgal::create_steady_problem(trialSubspace, fomSystem);
+
+     // let's say we want to use Gauss-newton, then we can do this
+     using reduced_state_type = typename decltype(problem)::state_type;
+     using suggested_types = pressio::rom::SteadyLspgDefaultOperatorsTraits<reduced_state_type>;
+     using gradient_type = typename suggested_types::gradient_type;
+     using hessian_type  = typename suggested_types::hessian_type;
+
+     using solver_tag = pls::direct::HouseholderQR;
+     using linear_solver_t = pls::Solver<solver_tag, hessian_type>;
+     auto nonLinearSolver  = pnls::create_gauss_newton(problem, linear_solver_t{});
+
+     auto reducedState = problem.createState();
+     // set initial condition for reducedState somehow
+     // set other parameters for the solver if needed
+     nonLinearSolver.solve(problem, reducedState);
+   }
+
+
+Use your own solver
+~~~~~~~~~~~~~~~~~~~
+
+:red:`complete by saying more`
+
+If you don't want to use the pressio solvers,
+you can set up your own because the problem object
+fully identify the system to solve.
+
+.. code-block:: cpp
+
+   class CustomSolver{
+     // constructor as needed
+
+     template<class T>
+     void doSolve(const T & problem,
+                  typename T::state_type & state)
+     {
+       auto R = problem.createResidual();
+       auto J = problem.createJacobian();
+
+       // note: R and J represent the operators of
+       // a (possibly nonlinear) least-squares problem
+       // so that you have to solve accordingly
+     }
+   };
+
+   int main()
+   {
+     namespace plspg = pressio::rom::lspg;
+
+     // assuming trialSubspace and fomSystem already exist
+     auto problem = pgal::create_steady_problem(trialSubspace, fomSystem);
+
+     CustomSolver mySolver;
+     auto reducedState = problem.createState();
+     // set initial condition for reducedState somehow
+     mySolver.doSolve(problem, reducedState);
+   }

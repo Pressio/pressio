@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,59 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_TOPLEVEL_INCLUDE_ROM_ALL_HPP_
-#define PRESSIO_ROM_TOPLEVEL_INCLUDE_ROM_ALL_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_LINEAR_SUBSPACE_CONCEPT_HPP_
+#define ROM_CONSTRAINTS_ROM_LINEAR_SUBSPACE_CONCEPT_HPP_
 
-#include "rom_concepts.hpp"
-#include "rom_subspaces.hpp"
-#include "rom_galerkin_steady.hpp"
-#include "rom_galerkin_unsteady.hpp"
-#include "rom_lspg_steady.hpp"
-#include "rom_lspg_unsteady.hpp"
+namespace pressio{ namespace rom{
+
+#ifdef PRESSIO_ENABLE_CXX20
+
+template <class T>
+concept VectorSubspace =
+       std::copy_constructible<T>
+    && !std::assignable_from<T&, T>
+    && std::copy_constructible<typename T::basis_matrix_type>
+    && requires(const T & A)
+    {
+      { A.basis()         } -> std::same_as<const typename T::basis_matrix_type &>;
+      { A.dimension()     } -> std::integral;
+      { A.isColumnSpace() } -> std::convertible_to<bool>;
+      { A.isRowSpace()    } -> std::convertible_to<bool>;
+    };
+
+#else
+
+template<class T, class enable = void>
+struct LinearSubspaceConcept : std::false_type{};
+
+template<class T>
+struct LinearSubspaceConcept<
+  T,
+  mpl::enable_if_t<
+    ::pressio::has_basis_matrix_typedef<T>::value
+    && std::is_copy_constructible<typename T::basis_matrix_type>::value
+    && std::is_same<
+      decltype(
+      std::declval<T const>().basis()
+      ),
+      const typename T::basis_matrix_type &
+      >::value
+    && std::is_integral<
+      decltype( std::declval<T const>().dimension() )
+      >::value
+    //
+    && std::is_same<
+      decltype( std::declval<T const>().isColumnSpace() ),
+      bool
+      >::value
+    && std::is_same<
+      decltype( std::declval<T const>().isRowSpace() ),
+      bool
+      >::value
+   >
+  > : std::true_type{};
 
 #endif
+
+}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

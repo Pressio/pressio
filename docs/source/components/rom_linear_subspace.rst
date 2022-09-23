@@ -8,8 +8,8 @@ Linear Subspace
 
 Header: ``<pressio/rom_subspaces.hpp>``
 
-API
----
+Synopsis
+--------
 
 .. code-block:: cpp
 
@@ -20,7 +20,7 @@ API
    {
      public:
        enum class SpanningSet{Columns, Rows};
-       using basis_matrix_type = /**/;
+       using basis_matrix_type = /*see description*/;
 
        // constructors
        LinearSubspace(const basis_matrix_type & basisMatrix,            (1)
@@ -38,6 +38,9 @@ API
        std::size_t dimension() const;                                   (6)
        bool isColumnSpace() const;                                      (7)
        bool isRowSpace() const;                                         (8)
+
+     private:
+       const basis_matrix_type basis_; // exposition-only
    };
 
    }} //end namespace
@@ -87,15 +90,14 @@ Constructors
 
   *Effects*:
 
-  - calls ``auto result = pressio::ops::clone(basisMatrix)``,
-    and invokes the copy-constructor on ``result`` to initialize
-    data members, therefore making a new allocation
+  - makes a new allocation to construct ``basis_`` by invoking the
+    copy-constructor as ``basis_(pressio::ops::clone(basisMatrix))``
 
   *Postconditions*:
 
-  - the constructed object is immutable and owns a basis that is a
-    clone (according to ``ops::clone()``)
-    of the object originally passed to the constructor. Therefore, this class
+  - the constructed object is immutable and ``basis_`` is an
+    identical (but distinct) copy of the object ``basisMatrix`` originally
+    passed to the constructor. Therefore, this class
     has a clear invariant that is established upon construction.
 
 
@@ -118,16 +120,17 @@ Constructors
 
   *Effects*:
 
-  - tries to use move semantics
-    by move-constructing ``basisMatrix``. If the type ``basis_matrix_type`` implements move semantics,
-    the temporary object is moved-constructed and no new memory allocation should occur.
+  - tries to initialize ``basis_`` via move semantics by moving ``basisMatrix``.
+    If the type ``basis_matrix_type`` implements move semantics,
+    the temporary object is moved-constructed into ``basis_`` and no new
+    memory allocation should occur.
     If move semantics are not implemented and the move operation
     falls back to a copy, a new allocation (potentially) occurs.
 
   *Postconditions*:
 
-  - the constructed object is immutable and owns a basis
-    that was either move constructed from the
+  - the constructed object is immutable and ``basis_`` is either
+    move constructed from the
     original argument, or is just a copy. As in (1), this class
     has a clear invariant that is established upon construction.
 
@@ -139,8 +142,8 @@ Constructors
 
   *Effects*:
 
-  - constructs the object with a "clone" of the contents in ``other``,
-    with semantics similarly to constructor (1)
+  - initializes ``basis_`` by calling ``pressio::ops::clone(other.basis_)``,
+    therefore the semantics are similar to constructor (1)
 
   *Postconditions*:
 

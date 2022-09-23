@@ -2,7 +2,7 @@
 #ifndef PRESSIO_ROM_GALERKIN_UNSTEADY_HPP_
 #define PRESSIO_ROM_GALERKIN_UNSTEADY_HPP_
 
-#include "impl/reduced_operators_helpers.hpp"
+#include "impl/galerkin_helpers.hpp"
 #include "impl/galerkin_unsteady_explicit_problem.hpp"
 #include "impl/galerkin_unsteady_implicit_problem.hpp"
 #include "impl/galerkin_unsteady_system_default_rhs_and_jacobian.hpp"

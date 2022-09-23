@@ -23,8 +23,7 @@ template <
   class ReducedJacobianType,
   class TrialSubspaceType,
   class FomSystemType,
-  class ResidualMaskerType,
-  class JacobianActionMaskerType,
+  class MaskerType,
   class HypRedOpType
   >
 class GalerkinSteadyMaskedSystem
@@ -39,8 +38,13 @@ class GalerkinSteadyMaskedSystem
 	     (std::declval<basis_matrix_type const &>()));
 
   // deduce the masked types
-  using masked_fom_residual_type = typename ResidualMaskerType::result_type;
-  using masked_fom_jac_action_result_type = typename JacobianActionMaskerType::result_type;
+  using masked_fom_residual_type =
+    decltype(std::declval<MaskerType const>().createApplyMaskResult
+	     (std::declval<unmasked_fom_residual_type const &>()));
+
+  using masked_fom_jac_action_result_type =
+    decltype(std::declval<MaskerType const>().createApplyMaskResult
+	     (std::declval<unmasked_fom_jac_action_result_type const &>()));
 
 public:
   // required aliases
@@ -49,21 +53,19 @@ public:
   using jacobian_type = ReducedJacobianType;
 
   GalerkinSteadyMaskedSystem() = delete;
-  GalerkinSteadyMaskedSystem(const TrialSubspaceType & trialSpace,
+  GalerkinSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
 			     const FomSystemType & fomSystem,
-			     const ResidualMaskerType & rMasker,
-			     const JacobianActionMaskerType & jaMasker,
+			     const MaskerType & masker,
 			     const HypRedOpType & hrOp)
-    : trialSubspace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
+      fomState_(trialSubspace.createFullState()),
       hrOp_(hrOp),
-      rMasker_(rMasker),
-      jaMasker_(jaMasker),
+      masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace())),
-      maskedFomResidual_(rMasker.createApplyMaskResult(unMaskedFomResidual_)),
-      maskedFomJacAction_(jaMasker.createApplyMaskResult(unMaskedFomJacAction_))
+      maskedFomResidual_(masker.createApplyMaskResult(unMaskedFomResidual_)),
+      maskedFomJacAction_(masker.createApplyMaskResult(unMaskedFomJacAction_))
   {}
 
 public:
@@ -72,13 +74,11 @@ public:
   }
 
   residual_type createResidual() const{
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<residual_type>()(phi);
+    return impl::CreateGalerkinRhs<residual_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
+    return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
   void residualAndJacobian(const state_type & reducedState,
@@ -90,12 +90,12 @@ public:
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
-    rMasker_(unMaskedFomResidual_, maskedFomResidual_);
+    masker_(unMaskedFomResidual_, maskedFomResidual_);
     hrOp_(maskedFomResidual_, reducedResidual);
 
     if (computeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
-      jaMasker_(unMaskedFomJacAction_, maskedFomJacAction_);
+      masker_(unMaskedFomJacAction_, maskedFomJacAction_);
       hrOp_(maskedFomJacAction_, reducedJacobian);
     }
   }
@@ -107,8 +107,7 @@ private:
   std::reference_wrapper<const HypRedOpType> hrOp_;
 
   // masker
-  std::reference_wrapper<const ResidualMaskerType> rMasker_;
-  std::reference_wrapper<const JacobianActionMaskerType> jaMasker_;
+  std::reference_wrapper<const MaskerType> masker_;
 
   // UNMASKED fom R,J instances
   mutable unmasked_fom_residual_type unMaskedFomResidual_;

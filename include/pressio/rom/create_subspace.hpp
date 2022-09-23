@@ -2,37 +2,41 @@
 #ifndef PRESSIO_ROM_CREATE_SUBSPACE_HPP_
 #define PRESSIO_ROM_CREATE_SUBSPACE_HPP_
 
-#include "./impl/reduced_operators_helpers.hpp"
 #include "./linear_subspace.hpp"
-#include "./linear_trial_column_subspace.hpp"
+#include "./impl/linear_trial_column_subspace.hpp"
 
 namespace pressio{ namespace rom{
 
-/*
-  below we kind of abuse notation a bit, since we use static asserts
-  also to check constraints. This is not fully correct because
-  constraints should have an impact on the overload resolution read this:
-    https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
-
-  For now we do this to have readable error messages.
-  Also, this is kind of justified here, for now, because we have
-  a single function, not an overload set to manipulate via sfinae/concepts.
-  Later on we can use C++20 concepts to enfore this.
-*/
-
 template<
   class ReducedStateType,
-  class BasisType,
+  class BasisMatrixType,
   class FullStateType
 >
-auto create_trial_column_subspace(BasisType && basis,
+auto create_trial_column_subspace(BasisMatrixType && basisMatrix,
 				  FullStateType && offset,
 				  bool isAffine)
 {
-  using basis_type         = mpl::remove_cvref_t<BasisType>;
-  using full_state_type    = mpl::remove_cvref_t<FullStateType>;
-  using ret_t = TrialColumnSubspace<ReducedStateType, basis_type, full_state_type>;
-  return ret_t(std::forward<BasisType>(basis),
+  using basis_matrix_type = mpl::remove_cvref_t<BasisMatrixType>;
+  using full_state_type = mpl::remove_cvref_t<FullStateType>;
+
+  static_assert(ValidReducedState<ReducedStateType>::value,
+		"Invalid type for the reduced state");
+  static_assert( ::pressio::mpl::all_of_t<
+		 std::is_copy_constructible, full_state_type, basis_matrix_type>::value,
+		"template arguments must be copy constructible");
+  static_assert( !::pressio::mpl::all_of_t<
+		 std::is_pointer, full_state_type, basis_matrix_type>::value,
+		"template arguments cannot be pointers");
+  static_assert( !::pressio::mpl::all_of_t<
+		 mpl::is_std_shared_ptr, full_state_type, basis_matrix_type>::value,
+		"std::unique_ptr are not valid template arguments");
+  static_assert(::pressio::mpl::all_of_t<
+		all_have_traits_and_same_scalar,
+		ReducedStateType, full_state_type, basis_matrix_type>::value,
+		"std::unique_ptr are not valid template arguments");
+
+  using ret_t = impl::TrialColumnSubspace<basis_matrix_type, full_state_type, ReducedStateType>;
+  return ret_t(std::forward<BasisMatrixType>(basisMatrix),
 	       std::forward<FullStateType>(offset),
 	       isAffine);
 }

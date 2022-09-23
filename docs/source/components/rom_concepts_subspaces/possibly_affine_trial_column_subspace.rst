@@ -7,39 +7,11 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-.. code-block:: cpp
+Namespace: ``pressio::rom``
 
-   namespace pressio{ namespace rom{
-
-   template <class T>
-   concept PossiblyAffineTrialColumnSubspace =
-          std::copy_constructible<T>
-       && !std::assignable_from<T&, T>
-       && (pressio::is_vector_eigen< typename T::reduced_state_type>::value
-       ||  pressio::is_vector_kokkos<typename T::reduced_state_type>::value)
-       && std::copy_constructible<typename T::full_state_type>
-       && std::copy_constructible<typename T::basis_matrix_type>
-       && requires(const T & A)
-       {
-	 {A.createReducedState() } -> std::same_as<typename T::reduced_state_type>;
-	 {A.createFullState() }    -> std::same_as<typename T::full_state_type>;
-
-	 {A.mapFromReducedState(std::declval<const typename T::reduced_state_type &>(),
-				std::declval< typename T::full_state_type& >() ) }
-			     -> std::same_as<void>;
-
-	 {A.createFullStateFromReducedState(std::declval<const typename T::reduced_state_type &>()) }
-			     -> std::same_as<typename T::full_state_type>;
-
-	 {A.basisOfTranslatedSpace()} -> std::same_as<const typename T::basis_matrix_type &>;
-	 {A.translationVector()} -> std::same_as<const typename T::full_state_type &>;
-	 {A.basis()      } -> std::same_as<const typename T::basis_matrix_type &>;
-	 {A.dimension()      } -> std::integral;
-	 {A.isColumnSpace()  } -> std::convertible_to<bool>;
-	 {A.isRowSpace()     } -> std::convertible_to<bool>;
-       };
-
-   }} // end namespace
+.. literalinclude:: ../../../../include/pressio/rom/concepts/possibly_affine_trial_column_subspace.hpp
+   :language: cpp
+   :lines: 56-95
 
 
 Semantic requirements
@@ -90,13 +62,13 @@ an instance ``s``, of type ``T``, all of the following hold:
     are equivalent
 
 
-Syntax only
------------
+..
+   Syntax only
+   -----------
 
-.. literalinclude:: ./syntax_only_subspaces_concepts.cc
-   :language: cpp
-   :lines: 18-35
-
+   .. literalinclude:: ./syntax_only_subspaces_concepts.cc
+      :language: cpp
+      :lines: 18-35
 
 
 

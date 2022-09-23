@@ -1,10 +1,10 @@
 
-``SteadyFomWithJacobianAction``
-===============================
+``FullyDiscreteFomWithJacobianAction``
+======================================
 
 Syntax only
 -----------
 
 .. literalinclude:: ./syntax_only_fom_system_concepts.cc
    :language: cpp
-   :lines: 43-64
+   :lines: 65-99

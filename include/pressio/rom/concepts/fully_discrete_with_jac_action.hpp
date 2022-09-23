@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,53 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_TOPLEVEL_INCLUDE_ROM_ALL_HPP_
-#define PRESSIO_ROM_TOPLEVEL_INCLUDE_ROM_ALL_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_ALL_CONCEPTS_HPP_
+#define ROM_CONSTRAINTS_ROM_ALL_CONCEPTS_HPP_
 
-#include "rom_concepts.hpp"
-#include "rom_subspaces.hpp"
-#include "rom_galerkin_steady.hpp"
-#include "rom_galerkin_unsteady.hpp"
-#include "rom_lspg_steady.hpp"
-#include "rom_lspg_unsteady.hpp"
+namespace pressio{ namespace rom{
 
-#endif
+// template<class T, int NumStates, class ManifoldJacType, class enable = void>
+// struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
+
+// template<class T, int NumStates, class ManifoldJacType>
+// struct FullyDiscreteSystemWithJacobianAction<
+//   T, NumStates, ManifoldJacType,
+//   mpl::enable_if_t<
+//        ::pressio::has_time_typedef<T>::value
+//     && ::pressio::has_state_typedef<T>::value
+//     && ::pressio::has_discrete_residual_typedef<T>::value
+//     //
+//     && mpl::is_same<
+// 	 typename T::discrete_residual_type,
+// 	 decltype(std::declval<T const>().createDiscreteTimeResidual())
+// 	 >::value
+//     && !std::is_void<
+// 	decltype
+// 	(
+// 	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+// 	 (
+// 	  std::declval<ManifoldJacType const &>()
+// 	  )
+// 	 )
+// 	>::value
+
+//     && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+// 	 T, NumStates,
+//          typename ::pressio::ode::StepCount::value_type,
+// 	 typename T::time_type,
+// 	 typename T::state_type,
+// 	 typename T::discrete_residual_type,
+// 	 ManifoldJacType,
+// 	 decltype
+// 	 (
+// 	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+// 	 (
+// 	 std::declval<ManifoldJacType const &>()
+// 	 )
+// 	 )
+// 	 >::value
+//     >
+//   > : std::true_type{};
+
+}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

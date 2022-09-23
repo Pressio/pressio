@@ -2,9 +2,41 @@
 #ifndef PRESSIO_ROM_TRIAL_COLUMN_SUBSPACE_HPP_
 #define PRESSIO_ROM_TRIAL_COLUMN_SUBSPACE_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
-template <class ReducedStateType, class BasisMatrixType, class FullStateType>
+template<class ReducedStateType, class = void>
+struct CreateReducedState;
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<class ReducedStateType>
+struct CreateReducedState<
+  ReducedStateType,
+  mpl::enable_if_t< ::pressio::is_vector_eigen<ReducedStateType>::value >
+  >
+{
+  template<class BasisType>
+  ReducedStateType operator()(const BasisType & basis){
+    return ReducedStateType(::pressio::ops::extent(basis, 1));
+  }
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template<class ReducedStateType>
+struct CreateReducedState<
+  ReducedStateType,
+  mpl::enable_if_t< ::pressio::is_vector_kokkos<ReducedStateType>::value >
+  >
+{
+  template<class BasisType>
+  ReducedStateType operator()(const BasisType & basis){
+    return ReducedStateType("tmp", ::pressio::ops::extent(basis, 1));
+  }
+};
+#endif
+
+
+template <class BasisMatrixType, class FullStateType, class ReducedStateType>
 class TrialColumnSubspace
 {
 public:
@@ -13,18 +45,6 @@ public:
   using full_state_type    = std::remove_cv_t<FullStateType>;
 
 private:
-  static_assert(ValidReducedState<ReducedStateType>::value,
-		"Invalid type for the reduced state");
-  static_assert( ::pressio::mpl::all_of_t<
-		 std::is_copy_constructible, full_state_type, basis_matrix_type>::value,
-		"template arguments must be copy constructible");
-  static_assert( !::pressio::mpl::all_of_t<
-		 std::is_pointer, full_state_type, basis_matrix_type>::value,
-		"template arguments cannot be pointers");
-  static_assert( !::pressio::mpl::all_of_t<
-		 mpl::is_std_shared_ptr, full_state_type, basis_matrix_type>::value,
-		"std::unique_ptr are not valid template arguments");
-
   using linear_subspace_t = LinearSubspace<basis_matrix_type>;
   const linear_subspace_t linSpace_;
   const full_state_type translation_;
@@ -165,5 +185,5 @@ private:
   }
 };
 
-}}
+}}}
 #endif

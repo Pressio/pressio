@@ -66,41 +66,27 @@ void product(::pressio::nontranspose /*mode*/,
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_steady.hpp"
 
-struct MyMaskerResidual
+struct MyMasker
 {
-  using operand_type = FomResidualType;
-  using result_type = MaskedResidual;
-
-  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
-    return result_type{};
+  auto createApplyMaskResult(const FomResidualType & /*operand*/) const{
+    return MaskedResidual{};
   }
-
-  void operator()(const operand_type & operand, result_type & result) const{}
-};
-
-struct MyMaskerJacAction
-{
-  using operand_type = FomJacobianActionResultType;
-  using result_type = MaskedJacobianAction;
-
-  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
-    return result_type{};
+  auto createApplyMaskResult(const FomJacobianActionResultType & /*operand*/) const{
+    return MaskedJacobianAction{};
   }
-
-  void operator()(const operand_type & operand, result_type & result) const{}
+  void operator()(const FomResidualType & operand,
+		  MaskedResidual & result) const{}
+  void operator()(const FomJacobianActionResultType & operand,
+		  MaskedJacobianAction & result) const{}
 };
 
 struct MyHypRedOperator
 {
-  using residual_operand_type = MaskedResidual;
-  using jacobian_action_operand_type = MaskedJacobianAction;
-
   template<class ResultType>
-  void operator()(const residual_operand_type & operand,
+  void operator()(const MaskedResidual & operand,
 		  ResultType & result) const{}
-
   template<class ResultType>
-  void operator()(const jacobian_action_operand_type & operand,
+  void operator()(const MaskedJacobianAction & operand,
 		  ResultType & result) const{}
 };
 
@@ -138,11 +124,10 @@ TEST(rom_galerkin_steady, test5)
   auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi, shift, false);
 
   auto romState = space.createReducedState();
-  MyMaskerResidual  m1;
-  MyMaskerJacAction m2;
+  MyMasker  mask;
   MyHypRedOperator hrOp;
   namespace pg = pressio::rom::galerkin;
-  auto problem = pg::create_steady_problem(space, fomSystem, m1, m2, hrOp);
+  auto problem = pg::create_steady_problem(space, fomSystem, mask, hrOp);
 
   FakeNonLinSolver nonLinSolver;
   nonLinSolver.solve(problem, romState);

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,39 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_TOPLEVEL_INCLUDE_ROM_ALL_HPP_
-#define PRESSIO_ROM_TOPLEVEL_INCLUDE_ROM_ALL_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_CONCEPTS_HELPERS_HPP_
+#define ROM_CONSTRAINTS_ROM_CONCEPTS_HELPERS_HPP_
 
-#include "rom_concepts.hpp"
-#include "rom_subspaces.hpp"
-#include "rom_galerkin_steady.hpp"
-#include "rom_galerkin_unsteady.hpp"
-#include "rom_lspg_steady.hpp"
-#include "rom_lspg_unsteady.hpp"
+namespace pressio{ namespace rom{
+namespace concepts{ namespace impl{
 
-#endif
+template<class FomSystemType, class TrialSubspaceType>
+struct FomJacActionResult
+{
+  using type =
+    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+	     (
+	      std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
+	      )
+	     );
+};
+
+template<class ...Args>
+using FomJacActionResult_t = typename FomJacActionResult<Args...>::type;
+
+template<class Masker, class Operand>
+struct CreateApplyMaskResult
+{
+  using type =
+    decltype(std::declval<Masker const>().createApplyMaskResult
+	     (
+	      std::declval<Operand const &>()
+	      )
+	     );
+};
+
+template<class ...Args>
+using CreateApplyMaskResult_t = typename CreateApplyMaskResult<Args...>::type;
+
+}}}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

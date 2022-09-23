@@ -109,62 +109,41 @@ struct FakeNonLinSolverSteady
   }
 };
 
-struct MyHypRedOperator
+class MyHypRedOperator
 {
   using operator_type = Eigen::MatrixXd;
   operator_type matrix_;
 
 public:
-  using residual_operand_type = Eigen::VectorXd;
-  using jacobian_action_operand_type = Eigen::MatrixXd;
-
   MyHypRedOperator(const operator_type & phiSampleMesh)
     : matrix_(phiSampleMesh){}
 
-  template<class ResultType>
-  void operator()(const residual_operand_type & operand, ResultType & result) const{
-    result = matrix_.transpose() * operand;
-  }
-
-  template<class ResultType>
-  void operator()(const jacobian_action_operand_type & operand, ResultType & result) const{
-    result = matrix_.transpose() * operand;
-  }
-};
-
-struct MyMaskerResidual
-{
-  const std::vector<int> sample_indices_ = {};
-  using operand_type = Eigen::VectorXd;
-  using result_type = operand_type;
-
-  MyMaskerResidual(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
-    return result_type(sample_indices_.size());
-  }
-
-  void operator()(const operand_type & operand, result_type & result) const
+  template<class T1, class T2>
+  void operator()(const Eigen::MatrixBase<T1> & operand,
+		  Eigen::MatrixBase<T2> & result) const
   {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      result(i) = operand(sample_indices_[i]);
-    }
+    result = matrix_.transpose() * operand;
   }
 };
 
-struct MyMaskerJacAction
+class MyMasker
 {
   const std::vector<int> sample_indices_ = {};
-  using operand_type = Eigen::MatrixXd;
-  using result_type = operand_type;
 
-  MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+public:
+  MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  result_type createApplyMaskResult(const operand_type & operand) const{
-    return result_type(sample_indices_.size(), operand.cols());
+  auto createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+    return Eigen::VectorXd(sample_indices_.size());
   }
 
-  void operator()(const operand_type & operand, result_type & result) const
+  auto createApplyMaskResult(const Eigen::MatrixXd & operand) const{
+    return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
+  }
+
+  template<class T1, class T2>
+  void operator()(const Eigen::MatrixBase<T1> & operand,
+		  Eigen::MatrixBase<T2> & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
       for (int j=0; j<operand.cols(); ++j){
@@ -214,12 +193,9 @@ TEST(rom_galerkin_steady, test4)
   matForProj.col(2).setConstant(2.);
   MyHypRedOperator proj(matForProj);
 
-  MyMaskerResidual  masker1(sample_indices);
-  MyMaskerJacAction masker2(sample_indices);
-
+  MyMasker  masker(sample_indices);
   auto problem = pressio::rom::galerkin::create_steady_problem(space, fomSystem,
-							       masker1, masker2,
-							       proj);
+							       masker, proj);
 
   FakeNonLinSolverSteady nonLinSolver(N);
   nonLinSolver.solve(problem, romState);

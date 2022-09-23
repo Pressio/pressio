@@ -42,11 +42,11 @@ public:
 
   GalerkinSteadyDefaultSystem() = delete;
 
-  GalerkinSteadyDefaultSystem(const TrialSubspaceType & trialSpace,
+  GalerkinSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
 			      const FomSystemType & fomSystem)
-    : trialSubspace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
+      fomState_(trialSubspace.createFullState()),
       fomResidual_(fomSystem.createResidual()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
@@ -57,13 +57,11 @@ public:
   }
 
   residual_type createResidual() const{
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<residual_type>()(phi);
+    return impl::CreateGalerkinRhs<residual_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
+    return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
   void residualAndJacobian(const state_type & reducedState,

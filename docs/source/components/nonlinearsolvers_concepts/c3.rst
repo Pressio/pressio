@@ -7,10 +7,6 @@
 ``SystemWithHessianAndGradient``
 ================================
 
-The ``SystemWithHessianAndGradient`` concept specifies that
-a type ``T`` represents a **valid** problem exposing
-the residual and jacobian operators.
-
 Syntax only
 -----------
 

@@ -43,12 +43,12 @@ public:
 
   GalerkinSteadyHypRedSystem() = delete;
 
-  GalerkinSteadyHypRedSystem(const TrialSubspaceType & trialSpace,
+  GalerkinSteadyHypRedSystem(const TrialSubspaceType & trialSubspace,
 			     const FomSystemType & fomSystem,
 			     const HyperReductionOperator & hrOp)
-    : trialSubspace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
+      fomState_(trialSubspace.createFullState()),
       hrOp_(hrOp),
       fomResidual_(fomSystem.createResidual()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
@@ -63,16 +63,14 @@ public:
     // here we assume that the action of hyOp does not
     // produce a reduced residual different than the number of basis.
     // to be precise, we should compute: R = MJOP f(phi x)
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<residual_type>()(phi);
+    return impl::CreateGalerkinRhs<residual_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
     // here we assume that the reduced jacobian is square matrix
     // defined by num of modes in basis.
     // to be precise, we should compute: J = MJOP df/dx(phi x) phi
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
+    return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
   void residualAndJacobian(const state_type & reducedState,
