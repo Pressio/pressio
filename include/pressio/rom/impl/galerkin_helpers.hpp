@@ -25,41 +25,35 @@ struct CreateGalerkinRhs<
   T, mpl::enable_if_t< ::pressio::is_vector_kokkos<T>::value >
   >
 {
-  ReducedStateType operator()(std::size_t ext){
-    return ReducedStateType("tmp", ext);
-  }
+  T operator()(std::size_t ext){ return T("tmp", ext); }
 };
 #endif
 
 // --------------------------------------------------------------
 // CreateGalerkinMassMatrix
 // --------------------------------------------------------------
-template<class MassMatrixType, class = void>
+template<class T, class = void>
 struct CreateGalerkinMassMatrix;
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<class MassMatrixType>
+template<class T>
 struct CreateGalerkinMassMatrix<
-  MassMatrixType,
-  mpl::enable_if_t< ::pressio::is_dense_matrix_eigen<MassMatrixType>::value >
+  T,
+  mpl::enable_if_t< ::pressio::is_dense_matrix_eigen<T>::value >
   >
 {
-  MassMatrixType operator()(std::size_t ext){
-    return MassMatrixType(ext, ext);
-  }
+  T operator()(std::size_t ext){ return T(ext, ext); }
 };
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<class MassMatrixType>
+template<class T>
 struct CreateGalerkinMassMatrix<
-  MassMatrixType,
-  mpl::enable_if_t< ::pressio::is_dense_matrix_kokkos<MassMatrixType>::value >
+  T,
+  mpl::enable_if_t< ::pressio::is_dense_matrix_kokkos<T>::value >
   >
 {
-  MassMatrixType operator()(std::size_t ext){
-    return MassMatrixType("tmpMM", ext, ext);
-  }
+  T operator()(std::size_t ext){ return T("tmpMM", ext, ext); }
 };
 #endif
 // ------------------------------------------
