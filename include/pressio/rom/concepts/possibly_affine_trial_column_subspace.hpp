@@ -101,7 +101,7 @@ struct PossiblyAffineTrialColumnSubspace<
   T,
   mpl::enable_if_t<
        LinearSubspaceConcept<T>::value
-    && !std::is_assignable<T&, T>
+    && !std::is_assignable<T&, T>::value
     && ::pressio::has_reduced_state_typedef<T>::value
     && ::pressio::has_full_state_typedef<T>::value
     && std::is_same<
