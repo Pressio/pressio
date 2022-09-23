@@ -88,7 +88,7 @@ Postconditions
 --------------
 
 The return type is guaranteed to model
-the `PossiblyAffineTrialColumnSubspace concept <rom_concepts/possibly_affine_trial_column_subspace.html>`__.
+the `PossiblyAffineTrialColumnSubspace concept <rom_concepts_subspaces/possibly_affine_trial_column_subspace.html>`__.
 
 :red:`finish`
 
