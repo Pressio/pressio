@@ -12,12 +12,17 @@ struct MyFom
 
   MyFom(int N): N_(N){}
 
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
+  right_hand_side_type createRightHandSide() const{
+    auto R = right_hand_side_type(N_);
+    R.setConstant(0.);
+    return R;
+  }
 
   template<class OperandType>
   OperandType createApplyJacobianResult(const OperandType & B) const
   {
     OperandType A(N_, B.cols());
+    A.setConstant(0.);
     return A;
   }
 
