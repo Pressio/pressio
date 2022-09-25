@@ -37,3 +37,14 @@ concepts: steady lspg
     :maxdepth: 1
 
     rom_concepts_steady_lspg/steady_lspg_mask
+
+
+concepts: unsteady lspg
+=======================
+
+.. toctree::
+    :maxdepth: 1
+
+    rom_concepts_unsteady_lspg/unsteady_lspg_default
+    rom_concepts_unsteady_lspg/unsteady_lspg_hyperreduceable
+    rom_concepts_unsteady_lspg/unsteady_lspg_maskable

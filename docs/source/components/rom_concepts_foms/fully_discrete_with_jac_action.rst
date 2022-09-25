@@ -1,10 +1,17 @@
+.. include:: ../../mydefs.rst
 
 ``FullyDiscreteFomWithJacobianAction``
 ======================================
 
-Syntax only
------------
+Header: ``<pressio/rom_concepts.hpp>``
 
-.. literalinclude:: ./syntax_only_fom_system_concepts.cc
+Namespace: ``pressio::rom``
+
+.. literalinclude:: ../../../../include/pressio/rom/concepts/fully_discrete_with_jac_action.hpp
    :language: cpp
-   :lines: 65-99
+   :lines: 56-92
+
+Semantic requirements
+---------------------
+
+:red:`finish`

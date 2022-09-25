@@ -1,3 +1,4 @@
+.. include:: ../../mydefs.rst
 
 ``SteadyFomWithJacobianAction``
 ===============================
@@ -13,38 +14,28 @@ Namespace: ``pressio::rom``
 Semantic requirements
 ---------------------
 
-The concept is modeled only if it is satisfied,
-all subsumed concepts are modeled and all of the following hold:
-
-- *non aliasing instantiation*: given the following:
-
-  .. code-block:: cpp
-
-     auto r1 = A.createResidual();
-     auto r2 = A.createResidual();
-
-  ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
-  and such that any modification to ``r1`` does not affect ``r2``
-
-- *blocking operations*: all methods are blocking
-
-- *equality preserving*
-
-- *const correctness*: methods may modify only the non-constant operands.
-  Operands that are constant must not be modified.
-
-- a residual instance and the result of the Jaobian action
-  must be dimensionally consistent
+:red:`finish`
 
 ..
-   Syntax only
-   -----------
+   The concept is modeled only if it is satisfied,
+   all subsumed concepts are modeled and all of the following hold:
 
-   Let ``TrialSubspaceType`` the type of a subspace class
-   modeling the `PossiblyAffineTrialColumnSubspace concept <c10.html>`__
-   and ``using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type``,
-   then we have:
+   - *non aliasing instantiation*: given the following:
 
-   .. literalinclude:: ./syntax_only_fom_system_concepts.cc
-      :language: cpp
-      :lines: 43-64
+     .. code-block:: cpp
+
+	auto r1 = A.createResidual();
+	auto r2 = A.createResidual();
+
+     ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
+     and such that any modification to ``r1`` does not affect ``r2``
+
+   - *blocking operations*: all methods are blocking
+
+   - *equality preserving*
+
+   - *const correctness*: methods may modify only the non-constant operands.
+     Operands that are constant must not be modified.
+
+   - a residual instance and the result of the Jaobian action
+     must be dimensionally consistent

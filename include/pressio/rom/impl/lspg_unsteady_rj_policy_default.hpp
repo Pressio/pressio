@@ -85,18 +85,13 @@ public:
   }
 
   residual_type createResidual() const{
-    // for lspg, a residual instance can be contructed from the fom rhs
     residual_type R(fomSystem_.get().createRightHandSide());
-    ::pressio::ops::set_zero(R);
     return R;
   }
 
   jacobian_type createJacobian() const{
     const auto phi = trialSpace_.get().basisOfTranslatedSpace();
-    // lspg jacobian is of the same shape as createApplyJacobian
-    auto J = fomSystem_.get().createApplyJacobianResult(phi);
-    ::pressio::ops::set_zero(J);
-    return J;
+    return fomSystem_.get().createApplyJacobianResult(phi);
   }
 
   template <class StencilStatesContainerType, class StencilRhsContainerType>

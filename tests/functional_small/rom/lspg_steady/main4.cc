@@ -149,49 +149,6 @@ public:
   }
 };
 
-
-// struct MyMaskerResidual
-// {
-//   const std::vector<int> sample_indices_ = {};
-//   using operand_type = Eigen::VectorXd;
-//   using result_type = operand_type;
-
-//   MyMaskerResidual(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-//   result_type createApplyMaskResult(const operand_type & /*operand*/) const{
-//     return result_type(sample_indices_.size());
-//   }
-
-//   void operator()(const operand_type & operand, result_type & result) const
-//   {
-//     for (std::size_t i=0; i<sample_indices_.size(); ++i){
-//       result(i) = operand(sample_indices_[i]);
-//     }
-//   }
-// };
-
-// struct MyMaskerJacAction
-// {
-//   const std::vector<int> sample_indices_ = {};
-//   using operand_type = Eigen::MatrixXd;
-//   using result_type = operand_type;
-
-//   MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-//   result_type createApplyMaskResult(const operand_type & operand) const{
-//     return result_type(sample_indices_.size(), operand.cols());
-//   }
-
-//   void operator()(const operand_type & operand, result_type & result) const
-//   {
-//     for (std::size_t i=0; i<sample_indices_.size(); ++i){
-//       for (int j=0; j<operand.cols(); ++j){
-//         result(i,j) = operand(sample_indices_[i],j);
-//       }
-//     }
-//   }
-// };
-
 TEST(rom_lspg_steady, test4)
 {
   /* steady masked LSPG */

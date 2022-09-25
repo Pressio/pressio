@@ -89,18 +89,13 @@ public:
   }
 
   residual_type createResidual() const{
-    // for lspg, a residual instance can be contructed from the fom rhs
     residual_type R(fomSystem_.get().createRightHandSide());
-    ::pressio::ops::set_zero(R);
     return R;
   }
 
   jacobian_type createJacobian() const{
     const auto phi = trialSpace_.get().basisOfTranslatedSpace();
-    // lspg jacobian is of the same shape as createApplyJacobian
-    auto J = fomSystem_.get().createApplyJacobianResult(phi);
-    ::pressio::ops::set_zero(J);
-    return J;
+    return fomSystem_.get().createApplyJacobianResult(phi);
   }
 
   template <class StencilStatesContainerType, class StencilRhsContainerType>
@@ -116,15 +111,13 @@ public:
 		  bool computeJacobian) const
   {
 
-    if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
+    if (odeSchemeName == ::pressio::ode::StepScheme::BDF1
+	|| odeSchemeName == ::pressio::ode::StepScheme::BDF2)
+    {
       (*this).template compute_impl_bdf
 	(odeSchemeName, predictedReducedState, reducedStatesStencilManager,
 	 fomRhsStencilManger, rhsEvaluationTime.get(),
 	 dt.get(), step.get(), R, J, computeJacobian);
-    }
-
-    else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2){
-
     }
 
     else{

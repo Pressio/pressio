@@ -3,7 +3,6 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_unsteady.hpp"
 
-
 template<class phi_t>
 struct FakeNonLinSolver
 {
@@ -240,7 +239,7 @@ public:
                               double dt,
                               discrete_residual_type & R,
                               const phi_type & B,
-                              bool computeJac, 
+                              bool computeJac,
                               phi_type & JA,
                               const state_type & y_np1,
                               const state_type & y_n ) const

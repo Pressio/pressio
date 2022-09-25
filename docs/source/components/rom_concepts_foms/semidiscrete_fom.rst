@@ -1,3 +1,4 @@
+.. include:: ../../mydefs.rst
 
 ``SemiDiscreteFom``
 ===================
@@ -13,24 +14,27 @@ Namespace: ``pressio::rom``
 Semantic requirements
 ---------------------
 
-- *non aliasing instantiation*: given the following:
+:red:`finish`
 
-  .. code-block:: cpp
+..
+   - *non aliasing instantiation*: given the following:
 
-     auto r1 = A.createRightHandSide();
-     auto r2 = A.createRightHandSide();
+     .. code-block:: cpp
 
-  ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
-  and such that any modification to ``r1`` does not affect ``r2``
+	auto r1 = A.createRightHandSide();
+	auto r2 = A.createRightHandSide();
 
-- *blocking operations*: all methods are blocking, meaning that all temporary
-  allocations and operations are complete before the methods return and not outstanding work remains
+     ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
+     and such that any modification to ``r1`` does not affect ``r2``
 
-- *equality preserving*: given ``A`` an object of type `T`, calling ``A.rightHandSide(...)``
-  with equal inputs yields equal outputs.
+   - *blocking operations*: all methods are blocking, meaning that all temporary
+     allocations and operations are complete before the methods return and not outstanding work remains
 
-- *const correctness*: methods may modify only the non-constant operands.
-  Operands that are constant must not be modified.
+   - *equality preserving*: given ``A`` an object of type `T`, calling ``A.rightHandSide(...)``
+     with equal inputs yields equal outputs.
+
+   - *const correctness*: methods may modify only the non-constant operands.
+     Operands that are constant must not be modified.
 
 
 .. Syntax only

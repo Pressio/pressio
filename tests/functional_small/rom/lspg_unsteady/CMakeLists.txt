@@ -11,4 +11,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   add_serial_utest(${TESTING_LEVEL}_rom_lspg_unsteady_exe4
     ${CMAKE_CURRENT_SOURCE_DIR}/main4.cc)
+
+  add_serial_utest(${TESTING_LEVEL}_rom_lspg_unsteady_exe5
+    ${CMAKE_CURRENT_SOURCE_DIR}/main5.cc)
 endif()

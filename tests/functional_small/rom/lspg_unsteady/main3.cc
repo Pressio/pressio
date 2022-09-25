@@ -333,39 +333,25 @@ void fill_phi(T & phi)
   }
 }
 
-struct MyMaskerResidual
+
+class MyMasker
 {
   const std::vector<int> sample_indices_ = {};
-  using operand_type = Eigen::VectorXd;
-  using result_type = operand_type;
 
-  MyMaskerResidual(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+public:
+  MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
-    return result_type(sample_indices_.size());
+  auto createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+    return Eigen::VectorXd(sample_indices_.size());
   }
 
-  void operator()(const operand_type & operand, result_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      result(i) = operand(sample_indices_[i]);
-    }
-  }
-};
-
-struct MyMaskerJacAction
-{
-  const std::vector<int> sample_indices_ = {};
-  using operand_type = Eigen::MatrixXd;
-  using result_type = operand_type;
-
-  MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-  result_type createApplyMaskResult(const operand_type & operand) const{
-    return result_type(sample_indices_.size(), operand.cols());
+  auto createApplyMaskResult(const Eigen::MatrixXd & operand) const{
+    return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
   }
 
-  void operator()(const operand_type & operand, result_type & result) const
+  template<class T1, class T2>
+  void operator()(const Eigen::MatrixBase<T1> & operand,
+		  Eigen::MatrixBase<T2> & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
       for (int j=0; j<operand.cols(); ++j){
@@ -374,6 +360,49 @@ struct MyMaskerJacAction
     }
   }
 };
+
+
+// struct MyMasker
+// {
+//   const std::vector<int> sample_indices_ = {};
+//   using operand_type = Eigen::VectorXd;
+//   using result_type = operand_type;
+
+//   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+//   Eigen::VectorXd createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+//     return Eigen::VectorXd(sample_indices_.size());
+//   }
+
+//   void operator()(const operand_type & operand, Eigen::VectorXd & result) const
+//   {
+//     for (std::size_t i=0; i<sample_indices_.size(); ++i){
+//       result(i) = operand(sample_indices_[i]);
+//     }
+//   }
+// };
+
+// struct MyMaskerJacAction
+// {
+//   const std::vector<int> sample_indices_ = {};
+//   using operand_type = Eigen::MatrixXd;
+//   using result_type = operand_type;
+
+//   MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+//   Eigen::MatrixXd createApplyMaskResult(const Eigen::MatriXd & operand) const{
+//     return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
+//   }
+
+//   void operator()(const Eigen::MatriXd & operand, Eigen::MatrixXd & result) const
+//   {
+//     for (std::size_t i=0; i<sample_indices_.size(); ++i){
+//       for (int j=0; j<operand.cols(); ++j){
+//         result(i,j) = operand(sample_indices_[i],j);
+//       }
+//     }
+//   }
+// };
 
 TEST(rom_lspg_unsteady, test3)
 {
@@ -403,10 +432,9 @@ TEST(rom_lspg_unsteady, test3)
   romState[1]=1.;
   romState[2]=2.;
 
-  MyMaskerResidual rM(sample_indices);
-  MyMaskerJacAction jM(sample_indices);
+  MyMasker masker(sample_indices);
   auto problem = pressio::rom::lspg::create_unsteady_problem
-    (pressio::ode::StepScheme::BDF1, space, fomSystem, rM, jM);
+    (pressio::ode::StepScheme::BDF1, space, fomSystem, masker);
 
   const double dt = 2.;
   FakeNonLinSolver nonLinSolver(nMasked);

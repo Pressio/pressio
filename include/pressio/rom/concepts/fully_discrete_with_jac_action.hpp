@@ -46,53 +46,98 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_ALL_CONCEPTS_HPP_
-#define ROM_CONSTRAINTS_ROM_ALL_CONCEPTS_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_FULLY_DISCRETE_WITH_JAC_ACTION_CONCEPT_HPP_
+#define ROM_CONSTRAINTS_ROM_FULLY_DISCRETE_WITH_JAC_ACTION_CONCEPT_HPP_
 
 namespace pressio{ namespace rom{
 
-// template<class T, int NumStates, class ManifoldJacType, class enable = void>
-// struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
+#ifdef PRESSIO_ENABLE_CXX20
 
-// template<class T, int NumStates, class ManifoldJacType>
-// struct FullyDiscreteSystemWithJacobianAction<
-//   T, NumStates, ManifoldJacType,
-//   mpl::enable_if_t<
-//        ::pressio::has_time_typedef<T>::value
-//     && ::pressio::has_state_typedef<T>::value
-//     && ::pressio::has_discrete_residual_typedef<T>::value
-//     //
-//     && mpl::is_same<
-// 	 typename T::discrete_residual_type,
-// 	 decltype(std::declval<T const>().createDiscreteTimeResidual())
-// 	 >::value
-//     && !std::is_void<
-// 	decltype
-// 	(
-// 	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
-// 	 (
-// 	  std::declval<ManifoldJacType const &>()
-// 	  )
-// 	 )
-// 	>::value
+template<class T, int NumStates, class TrialSubspaceType>
+concept FullyDiscreteSystemWithJacobianAction =
+      PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
+   && (NumStates == 2 || NumStates == 3)
+   && std::regular<typename T::time_type>
+   && std::totally_ordered<typename T::time_type>
+   && std::copy_constructible<typename T::state_type>
+   && std::copy_constructible<typename T::discrete_residual_type>
+   && std::same_as<
+       typename pressio::Traits<typename T::state_type>::scalar_type,
+       typename pressio::Traits<typename T::discrete_residual_type>::scalar_type>
+   && std::convertible_to<
+       typename T::time_type,
+       typename pressio::Traits<typename T::state_type>::scalar_type>
+  && requires(const T & A,
+	      const typename T::state_type & state,
+	      const typename TrialSubspaceType::basis_matrix_type & basisMatrix)
+   {
+     { A.createDiscreteTimeResidual() } -> std::same_as<typename T::discrete_residual_type>;
 
-//     && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
-// 	 T, NumStates,
-//          typename ::pressio::ode::StepCount::value_type,
-// 	 typename T::time_type,
-// 	 typename T::state_type,
-// 	 typename T::discrete_residual_type,
-// 	 ManifoldJacType,
-// 	 decltype
-// 	 (
-// 	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
-// 	 (
-// 	 std::declval<ManifoldJacType const &>()
-// 	 )
-// 	 )
-// 	 >::value
-//     >
-//   > : std::true_type{};
+     { A.createResultOfDiscreteTimeJacobianActionOn(basisMatrix) } -> std::copy_constructible;
+   }
+   && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+	T, NumStates,
+	typename ::pressio::ode::StepCount::value_type,
+	typename T::time_type,
+	typename T::state_type,
+	typename T::discrete_residual_type,
+	typename TrialSubspaceType::basis_matrix_type,
+	decltype
+	(
+	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+	  (
+	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
+	  )
+	 )
+     >::value;
+
+#else
+
+template<class T, int NumStates, class TrialSubspaceType, class enable = void>
+struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
+
+template<class T, int NumStates, class TrialSubspaceType>
+struct FullyDiscreteSystemWithJacobianAction<
+  T, NumStates, TrialSubspaceType,
+  mpl::enable_if_t<
+       ::pressio::has_time_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_discrete_residual_typedef<T>::value
+    //
+    && mpl::is_same<
+	 typename T::discrete_residual_type,
+	 decltype(std::declval<T const>().createDiscreteTimeResidual())
+	 >::value
+    //
+    && std::is_copy_constructible<
+	decltype
+	(
+	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+	  (
+	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
+	  )
+	 )
+	>::value
+
+    && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+	 T, NumStates,
+         typename ::pressio::ode::StepCount::value_type,
+	 typename T::time_type,
+	 typename T::state_type,
+	 typename T::discrete_residual_type,
+	 typename TrialSubspaceType::basis_matrix_type,
+	 decltype
+	 (
+	  std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+	   (
+	    std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
+	   )
+	  )
+	 >::value
+    >
+  > : std::true_type{};
+
+#endif
 
 }}
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

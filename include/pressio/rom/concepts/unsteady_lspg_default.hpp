@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,61 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
-#define PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_UNSTEADY_LSPG_DEFAULT_HPP_
+#define ROM_CONSTRAINTS_ROM_UNSTEADY_LSPG_DEFAULT_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
-#include "./solvers_linear.hpp"
-#include "./solvers_nonlinear.hpp"
-#include "./ode.hpp"
+namespace pressio{ namespace rom{ namespace lspg{
 
 #ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
+
+template <class T, class SubspaceType>
+concept DefaultDiscreteTimeAssemblyWith =
+      SemiDiscreteFomWithJacobianAction<T, SubspaceType>
+   && PossiblyAffineTrialColumnSubspace<SubspaceType>
+   && requires(const SubspaceType & subspace,
+	       const T & A,
+	       const typename Traits<typename T::state_type>::scalar_type & scalarCoeff,
+               const typename SubspaceType::basis_matrix_type & basisMatrix)
+  {
+
+    ::pressio::ops::deep_copy(std::declval<typename T::state_type &>(),
+			      std::declval<typename T::state_type const &>());
+    ::pressio::ops::set_zero(std::declval<typename T::state_type &>());
+
+    // needed by ode rhs manager
+    ::pressio::ops::set_zero(std::declval<typename T::state_type &>());
+
+    // needed by lspg impl
+    ::pressio::ops::update(std::declval<decltype(A.createApplyJacobianResult(basisMatrix)) &>(),
+			   scalarCoeff, basisMatrix, scalarCoeff);
+
+    ::pressio::ops::update(std::declval<typename T::right_hand_side_type &>(), scalarCoeff,
+			   std::declval<typename T::state_type const &>(), scalarCoeff,
+			   std::declval<typename T::state_type const &>(), scalarCoeff);
+
+    ::pressio::ops::update(std::declval<typename T::right_hand_side_type &>(), scalarCoeff,
+			   std::declval<typename T::state_type const &>(), scalarCoeff,
+			   std::declval<typename T::state_type const &>(), scalarCoeff,
+			   std::declval<typename T::state_type const &>(), scalarCoeff);
+  };
+
+
+
+#else
+
+template<class T, class SubspaceType, class enable = void>
+struct DefaultDiscreteTimeAssemblyWith : std::false_type{};
+
+template<class T, class SubspaceType>
+struct DefaultDiscreteTimeAssemblyWith<
+  T, SubspaceType,
+  mpl::enable_if_t<
+       SemiDiscreteFomWithJacobianAction<T, SubspaceType>::value
+    && PossiblyAffineTrialColumnSubspace<SubspaceType>::value
+   >
+  > : std::true_type{};
+
 #endif
 
-#include "./rom/predicates.hpp"
-#include "./rom/reduced_operators_traits.hpp"
-#include "./rom/concepts/valid_reduced_state.hpp"
-#include "./rom/concepts/linear_subspace.hpp"
-#include "./rom/concepts/possibly_affine_trial_column_subspace.hpp"
-#include "./rom/concepts/steady_fom_with_jac_action.hpp"
-#include "./rom/concepts/steady_galerkin_projectable_on_affine_subspace.hpp"
-#include "./rom/concepts/steady_galerkin_hyperreduceable_with.hpp"
-#include "./rom/concepts/steady_galerkin_hyperreduceable_maskable_with.hpp"
-#include "./rom/concepts/steady_lspg_maskable_with.hpp"
-#include "./rom/concepts/semi_discrete_fom.hpp"
-#include "./rom/concepts/semi_discrete_fom_with_jac_action.hpp"
-
-#include "./rom/concepts/unsteady_lspg_default.hpp"
-#include "./rom/concepts/unsteady_lspg_hypred.hpp"
-#include "./rom/concepts/unsteady_lspg_masked.hpp"
-#include "./rom/concepts/fully_discrete_with_jac_action.hpp"
-
-#endif
+}}}
+#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

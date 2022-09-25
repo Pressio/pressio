@@ -110,7 +110,7 @@ Return value, Postconditions and Side Effects
       class SteadyLspgProblemExpositionOnly
       {
 	public:
-	  using state_type    = typename TrialSubspaceType::reduced_state_type;
+	  using state_type     = typename TrialSubspaceType::reduced_state_type;
 	  using residual_type  = /*see description below*/;
 	  using jacobian_type  = /*see description below*/;
 
@@ -211,9 +211,10 @@ fully identify the system to solve.
        auto R = problem.createResidual();
        auto J = problem.createJacobian();
 
-       // note: R and J represent the operators of
-       // a (possibly nonlinear) least-squares problem
-       // so that you have to solve accordingly
+       // note: R and J represent the operators of a (possibly nonlinear)
+       // least-squares problem so that you have to solve accordingly
+       // To evaluate the operators for the given "state":
+       problem.residualAndJacobian(state, R, J, true);
      }
    };
 

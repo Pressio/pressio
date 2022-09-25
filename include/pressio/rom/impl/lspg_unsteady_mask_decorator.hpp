@@ -52,22 +52,23 @@
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  class ResidualMaskerType,
-  class JacobianMaskerType,
+  class MaskerType,
+  class ResidualType,
+  class JacobianType,
   class Maskable
   >
 class LspgMaskDecorator : public Maskable
 {
+  using ind_var_type = typename Maskable::independent_variable_type;
   using unmasked_residual_type = typename Maskable::residual_type;
   using unmasked_jacobian_type = typename Maskable::jacobian_type;
-  using ind_var_type = typename Maskable::independent_variable_type;
 
 public:
   // required
   using independent_variable_type = typename Maskable::independent_variable_type;
   using state_type    = typename Maskable::state_type;
-  using residual_type = typename ResidualMaskerType::result_type;
-  using jacobian_type = typename JacobianMaskerType::result_type;
+  using residual_type = ResidualType;
+  using jacobian_type = JacobianType;
 
   LspgMaskDecorator() = delete;
 
@@ -79,11 +80,9 @@ public:
   LspgMaskDecorator(const TrialSpaceType & trialSpace,
 		    const FomSystemType & fomSystem,
 		    LspgFomStatesManager<TrialSpaceType> & fomStatesManager,
-		    const ResidualMaskerType & rMasker,
-		    const JacobianMaskerType & jaMasker)
+		    const MaskerType & masker)
     : Maskable(trialSpace, fomSystem, fomStatesManager),
-      rMasker_(rMasker),
-      jMasker_(jaMasker),
+      masker_(masker),
       unMaskedResidual_(Maskable::createResidual()),
       unMaskedJacobian_(Maskable::createJacobian())
   {}
@@ -95,14 +94,12 @@ public:
 
   residual_type createResidual() const{
     auto tmp = Maskable::createResidual();
-    ::pressio::ops::set_zero(tmp);
-    return rMasker_.get().createApplyMaskResult(tmp);
+    return masker_.get().createApplyMaskResult(tmp);
   }
 
   jacobian_type createJacobian() const{
     auto tmp = Maskable::createJacobian();
-    ::pressio::ops::set_zero(tmp);
-    return jMasker_.get().createApplyMaskResult(tmp);
+    return masker_.get().createApplyMaskResult(tmp);
   }
 
   template <class StencilStatesContainerType, class StencilRhsContainerType>
@@ -122,15 +119,14 @@ public:
 			 rhsEvaluationTime, step, dt,
 			 unMaskedResidual_, unMaskedJacobian_,
 			 computeJacobian);
-    rMasker_(unMaskedResidual_, R);
-    jMasker_(unMaskedJacobian_, J);
+    masker_(unMaskedResidual_, R);
+    masker_(unMaskedJacobian_, J);
   }
 
 private:
   mutable unmasked_residual_type unMaskedResidual_;
   mutable unmasked_jacobian_type unMaskedJacobian_;
-  std::reference_wrapper<const ResidualMaskerType> rMasker_;
-  std::reference_wrapper<const JacobianMaskerType> jMasker_;
+  std::reference_wrapper<const MaskerType> masker_;
 };
 
 }}}

@@ -57,8 +57,28 @@ namespace pressio{ namespace rom{
 
 template<class T, class TrialSubspaceType>
 concept SemiDiscreteFomWithJacobianAction =
-  SemiDiscreteFom<T>
-  && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>;
+     SemiDiscreteFom<T>
+  && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
+   && std::same_as<
+       typename pressio::Traits<typename T::state_type>::scalar_type,
+       typename pressio::Traits<
+	 decltype
+	 (
+	  std::declval<T const &>().createApplyJacobianResult
+	  (std::declval<typename TrialSubspaceType::basis_matrix_type const &>())
+	 )
+       >::scalar_type>
+  && requires(const T & A,
+	      const typename T::state_type & state,
+	      const typename TrialSubspaceType::basis_matrix_type & basisMatrix)
+   {
+     { A.createApplyJacobianResult(basisMatrix) } -> std::copy_constructible;
+
+     { A.applyJacobian(state, basisMatrix,
+                       std::declval<typename T::time_type>(),
+                       std::declval<decltype(A.createApplyJacobianResult(basisMatrix)) &>()
+                       )} -> std::same_as<void>;
+   };
 
 #else
 
