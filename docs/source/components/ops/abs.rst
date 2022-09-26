@@ -20,24 +20,26 @@ API
 Parameters
 ----------
 
-* ``destination``: the object to store absolute value
+* ``destination``: the object to write to
 
-* ``source``: the object to calculate abs
+* ``source``: the object whose elements are used to compute the absolute value of
 
 Constraints
 ~~~~~~~~~~~
 
 - ``T1`` and ``T2`` must be:
 
+  - a Pressio expression, e.g., span, operating on an Eigen object or Kokkos rank-1 object or
+
   - an Eigen vector, i.e. ``pressio::is_vector_eigen<T>::value`` or
 
-  - a epetra vector, i.e. ``pressio::is_vector_epetra<T>::value`` or
+  - an Epetra vector, i.e. ``pressio::is_vector_epetra<T>::value`` or
 
   - a Kokkos rank-1 view, i.e. ``pressio::is_vector_kokkos<T>::value`` or
 
-  - a tpetra vector, i.e. ``pressio::is_vector_tpetra<T>::value`` or
+  - a Tpetra vector, i.e. ``pressio::is_vector_tpetra<T>::value`` or
 
-  - a tpetra block vector, i.e. ``pressio::is_vector_tpetra_block<T>::value``
+  - a Tpetra block vector, i.e. ``pressio::is_vector_tpetra_block<T>::value``
 
 
 Mandates
@@ -58,7 +60,9 @@ None
 Effects
 ~~~~~~~
 
-:red:`finish`
+- Overwrite each element of ``destination`` with abs value of ``source``.
+
+- This is a blocking operation, i.e. the kernel completes before returning.
 
 Postconditions
 ~~~~~~~~~~~~~~
