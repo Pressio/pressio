@@ -10,3 +10,4 @@ Public namespace: ``pressio::ops``
 
    ops/clone
    ops/fill
+   ops/max
