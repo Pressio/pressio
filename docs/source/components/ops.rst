@@ -9,5 +9,4 @@ Public namespace: ``pressio::ops``
    :maxdepth: 1
 
    ops/clone
-   ops/extent
    ops/fill
