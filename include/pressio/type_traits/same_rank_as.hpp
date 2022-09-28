@@ -2,8 +2,8 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_system_continuous_time.hpp
-//                     		  Pressio
+// are_scalar_compatible.hpp
+//                          Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
@@ -46,40 +46,13 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
-#define ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
+#ifndef TYPE_TRAITS_SAME_RANK_AS_CONCEPT_HPP_
+#define TYPE_TRAITS_SAME_RANK_AS_CONCEPT_HPP_
 
-#include "helpers.hpp"
+namespace pressio{
 
-#ifdef PRESSIO_ENABLE_CXX20
+template<class T, class U>
+concept SameRankAs = all_have_same_rank<T,U>::value;
 
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
-
-template <class TrialSubspaceType, class FomSystemType>
-concept ComposableIntoDefaultOrHyperReducedProblem =
-     PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
-  && SteadyFomWithJacobianAction<
-       FomSystemType,
-       typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<
-       typename TrialSubspaceType::full_state_type,
-       typename FomSystemType::state_type>;
-
-}}}} //end namespace pressio::rom::lspg::steady
-
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-
-
+} // namespace pressio
 #endif
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

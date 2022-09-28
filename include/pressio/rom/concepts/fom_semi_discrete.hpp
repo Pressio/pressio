@@ -59,56 +59,85 @@ namespace pressio{ namespace rom{
 
 template <class T>
 concept SemiDiscreteFom =
-      std::regular<typename T::time_type>
-   && std::totally_ordered<typename T::time_type>
-   && std::copy_constructible<typename T::state_type>
-   && std::copy_constructible<typename T::right_hand_side_type>
-   && all_have_traits_and_same_scalar<
-       typename T::state_type, typename T::right_hand_side_type>::value
-   && std::convertible_to<
-       typename T::time_type, scalar_trait_t<typename T::state_type>>
-   && requires(const T & A,
-               const typename T::state_type     & state,
-               const typename T::time_type      & evalTime,
-               typename T::right_hand_side_type & rhs)
-   {
-    { A.createRightHandSide()  } -> std::same_as<typename T::right_hand_side_type>;
+  /* must have nested aliases */
+  requires(){
+    typename T::time_type;
+    typename T::state_type;
+    typename T::right_hand_side_type;
+  }
+  /*
+    requirements on the nested aliases
+  */
+  && std::regular<typename T::time_type>
+  && std::totally_ordered<typename T::time_type>
+  && std::copy_constructible<typename T::state_type>
+  && std::copy_constructible<typename T::right_hand_side_type>
+  && all_have_traits_and_same_scalar<
+    typename T::state_type, typename T::right_hand_side_type>::value
+  && Traits<typename T::state_type>::rank == 1
+  && Traits<typename T::right_hand_side_type>::rank == 1
+  && std::convertible_to<
+    typename T::time_type, scalar_trait_t<typename T::state_type>>
+  /*
+    compound and nested requirements last
+  */
+  && requires(const T & A,
+	      const typename T::state_type     & state,
+	      const typename T::time_type      & evalTime,
+	      typename T::right_hand_side_type & rhs)
+  {
+    { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
     { A.rightHandSide(state, evalTime, rhs) } -> std::same_as<void>;
   };
 
 }} // end namespace pressio::rom
 
-// #else
 
-// namespace pressio{ namespace rom{
 
-// template<class T, class enable = void>
-// struct SemiDiscreteFom : std::false_type{};
 
-// template<class T>
-// struct SemiDiscreteFom<
-//   T,
-//   mpl::enable_if_t<
-//        ::pressio::has_time_typedef<T>::value
-//     && ::pressio::has_state_typedef<T>::value
-//     && ::pressio::has_right_hand_side_typedef<T>::value
-//     //
-//     && std::is_copy_constructible<typename T::state_type>::value
-//     && std::is_copy_constructible<typename T::right_hand_side_type>::value
-//     && all_have_traits_and_same_scalar<
-//        typename T::state_type, typename T::right_hand_side_type>::value
-//     && std::is_convertible<
-//       typename T::time_type,
-//       typename ::pressio::Traits<typename T::state_type>::scalar_type
-//       >::value
-//     //
-//     && ::pressio::ode::has_const_create_rhs_method_return_result<
-//       T, typename T::right_hand_side_type >::value
-//     && ::pressio::ode::has_const_rhs_method_accept_state_indvar_result_return_void<
-//       T, typename T::state_type, typename T::time_type, typename T::right_hand_side_type>::value
-//    >
-//   > : std::true_type{};
-// }}
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace rom{
+
+template<class T, class enable = void>
+struct SemiDiscreteFom : std::false_type{};
+
+template<class T>
+struct SemiDiscreteFom<
+  T,
+  mpl::enable_if_t<
+       ::pressio::has_time_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_right_hand_side_typedef<T>::value
+    //
+    // regular and totally ordered are in C++20
+    // && std::regular<typename T::time_type>
+    // && std::totally_ordered<typename T::time_type>
+    && std::is_copy_constructible<typename T::state_type>::value
+    && std::is_copy_constructible<typename T::right_hand_side_type>::value
+    && all_have_traits_and_same_scalar<
+       typename T::state_type, typename T::right_hand_side_type>::value
+    && Traits<typename T::state_type>::rank == 1
+    && Traits<typename T::right_hand_side_type>::rank == 1
+    && std::is_convertible<
+	 typename T::time_type, scalar_trait_t<typename T::state_type>
+       >::value
+    //
+    && ::pressio::ode::has_const_create_rhs_method_return_result<
+      T, typename T::right_hand_side_type >::value
+    && ::pressio::ode::has_const_rhs_method_accept_state_indvar_result_return_void<
+      T, typename T::state_type, typename T::time_type, typename T::right_hand_side_type>::value
+   >
+  > : std::true_type{};
+
+}} // end namespace pressio::rom
 
 #endif
 

@@ -34,18 +34,19 @@ Parameters
 Constraints
 -----------
 
-Let ``basis_matrix_type = std::remove_cvref_t<BasisMatrixType>`` and
-``full_state_type = std::remove_cvref_t<FullStateType>``,
+Let ``basis_matrix_type = std::remove_cv_t<BasisMatrixType>`` and
+``full_state_type = std::remove_cv_t<FullStateType>``,
 then all of the following must hold:
 
-- :cpp:`pressio::is_vector_eigen<ReducedStateType>::value == true ||
-  pressio::is_vector_kokkos<ReducedStateType>::value == true`
+- :cpp:`pressio::is_vector_eigen<ReducedStateType>::value == true`
 
-- :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true &&` \
-  :cpp:`std::is_pointer<basis_matrix_type>::value == false &&
+- :cpp:`std::is_class<BasisMatrixType>::value == true &&
+  std::is_copy_constructible<basis_matrix_type>::value == true &&
+  std::is_pointer<basis_matrix_type>::value == false &&
   pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
 
-- :cpp:`std::is_copy_constructible<full_state_type>::value == true &&
+- :cpp:`std::is_class<full_state_type>::value == true &&
+  std::is_copy_constructible<full_state_type>::value == true &&
   std::is_pointer<full_state_type>::value == false &&
   pressio::mpl::is_std_shared_ptr<full_state_type>::value == false`
 
@@ -88,7 +89,7 @@ Postconditions
 --------------
 
 The return type is guaranteed to model
-the `PossiblyAffineTrialColumnSubspace concept <rom_concepts_subspaces/possibly_affine_trial_column_subspace.html>`__.
+the `PossiblyAffineTrialColumnSubspace concept <rom_concepts_various/possibly_affine_trial_column_subspace.html>`__.
 
 :red:`finish`
 
@@ -192,8 +193,7 @@ Example
    Constraints
    -----------
 
-   - :cpp:`pressio::is_vector_eigen<ReducedStateType>::value == true ||
-     pressio::is_vector_kokkos<ReducedStateType>::value == true`
+   - :cpp:`pressio::is_vector_eigen<ReducedStateType>::value == true`
 
    - :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true &&` \
      :cpp:`std::is_pointer<basis_matrix_type>::value == false &&

@@ -133,11 +133,11 @@ class MyMasker
 public:
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  auto createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+  Eigen::VectorXd createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
     return Eigen::VectorXd(sample_indices_.size());
   }
 
-  auto createApplyMaskResult(const Eigen::MatrixXd & operand) const{
+  Eigen::MatrixXd createApplyMaskResult(const Eigen::MatrixXd & operand) const{
     return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
   }
 
@@ -185,9 +185,9 @@ TEST(rom_galerkin_steady, test4)
   romState[1]=1.;
   romState[2]=2.;
 
-  /* projector must be applicable to the *masked* operand*/\
-  /* so we need to use only certain rows of phi*/\
-  phi_t matForProj(N - corrupt_indices.size(), 3);\
+  // projector must be applicable to the *masked* operand
+  // so we need to use only certain rows of phi
+  phi_t matForProj(N - corrupt_indices.size(), 3);
   matForProj.col(0).setConstant(0.);
   matForProj.col(1).setConstant(1.);
   matForProj.col(2).setConstant(2.);

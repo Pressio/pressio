@@ -66,6 +66,8 @@
 #include "./rom/reduced_operators_traits.hpp"
 #include "./rom/concepts/valid_reduced_state.hpp"
 
+#include "./rom/concepts/maskable_with.hpp"
+
 // subspaces
 #include "./rom/concepts/linear_subspace.hpp"
 #include "./rom/concepts/possibly_affine_trial_column_subspace.hpp"

@@ -59,7 +59,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
 
 template <class TrialSubspaceType, class FomSystemType, class HyperReducerType>
 concept ComposableIntoHyperReducedProblem =
-  PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
+     PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
   && SteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
   && std::same_as<
        typename TrialSubspaceType::full_state_type,
@@ -74,16 +74,15 @@ concept ComposableIntoHyperReducedProblem =
 
     /*
       Define:
-      - B     : the subspace's basis, i.e. subspace.basisOfTranslatedSpace()
+      - B     : basis of the subspace, i.e. B = subspace.basisOfTranslatedSpace()
       - rFom  : FOM residual instance
-      - JFom  : FOM jacobian instance
-      - JaFom : the action of the FOM jacobian on B, i.e. JFom*B
+      - JaFom : the result of applying the FOM jacobian to B
       - rGal: the reduced Galerkin residual
       - JGal: the reduced Galerkin Jacobian
     */
 
-    hyperReducer(rFom,  rGal);
-    hyperReducer(JaFom, JGal);
+    { hyperReducer(rFom,  rGal) } -> std::same_as<void>;
+    { hyperReducer(JaFom, JGal) } -> std::same_as<void>;
   };
 
 }}}} //end namespace pressio::rom::galerkin::steady
@@ -91,53 +90,56 @@ concept ComposableIntoHyperReducedProblem =
 
 
 
-// #else
 
-// namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
 
-// template<class T, class HyperReducerType, class TrialSubspaceType, class enable = void>
-// struct HyperReducedProblem : std::false_type{};
 
-// template<class T, class HyperReducerType, class TrialSubspaceType>
-// struct HyperReducedProblem<
-//   T, HyperReducerType, TrialSubspaceType,
-//   mpl::enable_if_t<
-//        PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
-//     && SteadyFomWithJacobianAction<T, TrialSubspaceType>::value
-//     //
-//     && std::is_void<
-//         decltype
-// 	(
-// 	 std::declval<HyperReducerType const>()
-// 	 (
-// 	   std::declval<typename T::residual_type const &>(),
-// 	   std::declval<
-// 	    typename SteadyGalerkinDefaultOperatorsTraits<
-// 	     typename TrialSubspaceType::reduced_state_type
-// 	    >::reduced_residual_type &
-// 	   >()
-// 	  )
-// 	 )
-//        >::value
-//   //
-//     && std::is_void<
-//         decltype
-// 	(
-// 	 std::declval<HyperReducerType const>()
-// 	 (
-// 	   std::declval< concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType> const &>(),
-// 	   std::declval<
-// 	    typename SteadyGalerkinDefaultOperatorsTraits<
-// 	     typename TrialSubspaceType::reduced_state_type
-// 	    >::reduced_jacobian_type &
-// 	   >()
-// 	  )
-// 	 )
-//        >::value
-//   >
-//   > : std::true_type{};
 
-// }}}} //end namespace pressio::rom::galerkin::steady
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+
+#else
+
+namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
+
+template <class TrialSubspaceType, class FomSystemType, class HyperReducerType, class enable = void>
+struct ComposableIntoHyperReducedProblem : std::false_type{};
+
+template <class TrialSubspaceType, class FomSystemType, class HyperReducerType>
+struct ComposableIntoHyperReducedProblem<
+  TrialSubspaceType, FomSystemType, HyperReducerType,
+  mpl::enable_if_t<
+    PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    && SteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    && std::is_void<
+        decltype
+	(
+	 std::declval<HyperReducerType const>()
+	 (
+	   std::declval<typename FomSystemType::residual_type const &>(),
+	   std::declval< impl::steady_galerkin_default_reduced_residual_t<TrialSubspaceType> & >()
+	  )
+	 )
+       >::value
+    && std::is_void<
+        decltype
+	(
+	 std::declval<HyperReducerType const>()
+	 (
+	   std::declval<
+	     concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>
+	     const &>(),
+	   std::declval<impl::steady_galerkin_default_reduced_jacobian_t<TrialSubspaceType> &>()
+	  )
+	 )
+       >::value
+    >
+  > : std::true_type{};
+
+}}}} //end namespace pressio::rom::galerkin::steady
 
 #endif
 

@@ -73,11 +73,10 @@ concept ComposableIntoHyperReducedProblem =
 
     /*
       Define:
-      - B     : the subspace's basis, i.e. subspace.basisOfTranslatedSpace()
-      - JaFom : the action of the FOM jacobian on B
-      - alpha : scalar value
-      - beta  : scalar value
-      - JGal: the reduced Galerkin Jacobian
+      - B           : basis of the subspace, i.e. B = subspace.basisOfTranslatedSpace()
+      - JaFom       : the action of the FOM jacobian on B
+      - alpha, beta : scalars
+      - JGal        : the reduced Galerkin Jacobian
     */
 
     { hyperReducer(JaFom, evalTime, JGal) } -> std::same_as<void>;
@@ -85,54 +84,59 @@ concept ComposableIntoHyperReducedProblem =
 
 }}}} //end namespace pressio::rom::galerkin::unsteadyimplicit
 
-// #else
 
-// namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
 
-// template<class T, class SubspaceType, class enable = void>
-// struct ProjectableOnPossiblyAffineSubspace : std::false_type{};
 
-// template<class T, class SubspaceType>
-// struct ProjectableOnPossiblyAffineSubspace<
-//   T, SubspaceType,
-//   mpl::enable_if_t<
-//        SteadyFomWithJacobianAction<T, SubspaceType>::value
-//     && PossiblyAffineTrialColumnSubspace<SubspaceType>::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(),
-//            std::declval<typename ::pressio::Traits<typename SubspaceType::basis_matrix_type>::scalar_type const &>(),
-// 	   std::declval<typename SubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<typename T::residual_type const &>(),
-// 	   std::declval<typename Traits<typename SubspaceType::reduced_state_type>::scalar_type const &>(),
-// 	   std::declval<typename ::pressio::rom::SteadyGalerkinDefaultOperatorsTraits<
-// 	     typename SubspaceType::reduced_state_type>::reduced_residual_type &>()
-// 	   )
-// 	   )
-//     >::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(), ::pressio::nontranspose(),
-//            std::declval<typename Traits<typename SubspaceType::basis_matrix_type>::scalar_type const& >(),
-// 	   std::declval<typename SubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<concepts::impl::fom_jacobian_action_t<T, SubspaceType> const &>(),
-// 	   std::declval<typename Traits<typename SubspaceType::reduced_state_type>::scalar_type const&>(),
-// 	   std::declval<typename ::pressio::rom::SteadyGalerkinDefaultOperatorsTraits<
-//              typename SubspaceType::reduced_state_type>::reduced_jacobian_type &
-// 	   >()
-// 	   )
-// 	   )
-//     >::value
-//    >
-//   > : std::true_type{};
 
-// }}}} //end namespace pressio::rom::galerkin::steady
+
+
+
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+
+#else
+
+namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyimplicit{
+
+template <class TrialSubspaceType, class FomSystemType, class HyperReducerType, class = void>
+struct ComposableIntoHyperReducedProblem : std::false_type{};
+
+template <class TrialSubspaceType, class FomSystemType, class HyperReducerType>
+struct ComposableIntoHyperReducedProblem<
+  TrialSubspaceType, FomSystemType, HyperReducerType,
+  mpl::enable_if_t<
+       unsteadyexplicit::ComposableIntoHyperReducedProblem<
+	 TrialSubspaceType, FomSystemType, HyperReducerType>::value
+    && SemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    && std::is_same<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>::value
+    //
+    && std::is_void<
+        decltype
+	(
+	 std::declval<HyperReducerType const>()
+	 (
+	   std::declval<
+	     concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>
+	     const &>(),
+	   std::declval<typename FomSystemType::time_type const &>(),
+	   std::declval<impl::implicit_galerkin_default_reduced_jacobian_t<TrialSubspaceType> &>()
+	  )
+	 )
+       >::value
+   >
+  > : std::true_type{};
+
+}}}}
 #endif
 
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

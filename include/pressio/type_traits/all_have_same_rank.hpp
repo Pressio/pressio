@@ -2,8 +2,8 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_system_continuous_time.hpp
-//                     		  Pressio
+// are_scalar_compatible.hpp
+//                          Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
@@ -46,40 +46,44 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
-#define ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
+#ifndef TYPE_TRAITS_ALL_HAVE_SAME_RANK_HPP_
+#define TYPE_TRAITS_ALL_HAVE_SAME_RANK_HPP_
 
-#include "helpers.hpp"
+namespace pressio{
 
-#ifdef PRESSIO_ENABLE_CXX20
+namespace impl{
+template <class, class ... Args>
+struct all_have_same_rank;
 
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+template <class T1>
+struct all_have_same_rank<void, T1>{
+  static constexpr auto value = true;
+};
 
-template <class TrialSubspaceType, class FomSystemType>
-concept ComposableIntoDefaultOrHyperReducedProblem =
-     PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
-  && SteadyFomWithJacobianAction<
-       FomSystemType,
-       typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<
-       typename TrialSubspaceType::full_state_type,
-       typename FomSystemType::state_type>;
+template <class T1, class T2>
+struct all_have_same_rank<
+  mpl::enable_if_t< all_have_traits<T1, T2>::value >,
+  T1, T2
+  >
+{
+  static constexpr auto value =
+    ::pressio::Traits<T1>::rank == ::pressio::Traits<T2>::rank;
+};
 
-}}}} //end namespace pressio::rom::lspg::steady
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_same_rank<
+  mpl::enable_if_t< all_have_traits<T1, T2, T3, rest...>::value >,
+  T1, T2, T3, rest...>
+{
+  static constexpr auto value =
+    all_have_same_rank<void, T1, T2>::value and
+    all_have_same_rank<void, T2, T3>::value and
+    all_have_same_rank<void, T3, rest...>::value;
+};
+} //end namespace impl
 
+template <class ...Args>
+using all_have_same_rank = impl::all_have_same_rank<void, Args...>;
 
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-
-
-#endif
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
+} // namespace pressio
+#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_

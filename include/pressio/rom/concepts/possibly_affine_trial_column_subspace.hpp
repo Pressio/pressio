@@ -55,39 +55,77 @@ namespace pressio{ namespace rom{
 
 template <class T>
 concept PossiblyAffineTrialColumnSubspace =
-       std::copy_constructible<T>
-    && !std::assignable_from<T&, T>
-    && pressio::is_vector_eigen< typename T::reduced_state_type>::value
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    ||  pressio::is_vector_kokkos<typename T::reduced_state_type>::value
-#endif
-    && std::copy_constructible<typename T::full_state_type>
-    && std::copy_constructible<typename T::basis_matrix_type>
-    && all_have_traits_and_same_scalar<
-        typename T::reduced_state_type,
-        typename T::full_state_type,
-        typename T::basis_matrix_type>::value
-    && requires(const T & A,
-		const typename T::reduced_state_type & reducedState,
-		typename T::full_state_type & fullState)
-    {
-      {A.createReducedState() } -> std::same_as<typename T::reduced_state_type>;
-      {A.createFullState() }    -> std::same_as<typename T::full_state_type>;
+  /* must have nested aliases */
+  requires(){
+    typename T::reduced_state_type;
+    typename T::basis_matrix_type;
+    typename T::full_state_type;
+  }
+  /*
+    requirements on the nested aliases
+  */
+  && pressio::is_vector_eigen<typename T::reduced_state_type>::value
+  && std::copy_constructible< typename T::full_state_type>
+  && std::copy_constructible< typename T::basis_matrix_type>
+  && all_have_traits_and_same_scalar<
+    typename T::reduced_state_type,
+    typename T::full_state_type,
+    typename T::basis_matrix_type>::value
+  && Traits<typename T::full_state_type>::rank == 1
+  && Traits<typename T::basis_matrix_type>::rank == 2
+  /**/
+  && std::copy_constructible<T>
+  && !std::assignable_from<T&, T>
+  && !std::assignable_from<T&, T&>
+  /*
+    compound requirements on the "create*" methods
+  */
+  && requires(const T & A,
+	      const typename T::reduced_state_type & reducedState,
+	      typename T::full_state_type & fullState)
+  {
+    {A.createReducedState() } -> std::same_as<typename T::reduced_state_type>;
+    {A.createFullState()    } -> std::same_as<typename T::full_state_type>;
 
-      {A.createFullStateFromReducedState(reducedState) }
-            -> std::same_as<typename T::full_state_type>;
+    {A.createFullStateFromReducedState(reducedState) }
+	   -> std::same_as<typename T::full_state_type>;
+  }
+  /*
+    other compound requirements
+  */
+  && requires(const T & A,
+	      const typename T::reduced_state_type & reducedState,
+	      typename T::full_state_type & fullState)
+  {
+    {A.mapFromReducedState(reducedState,
+			   fullState) } -> std::same_as<void>;
 
-      {A.mapFromReducedState(reducedState, fullState) } -> std::same_as<void>;
+    {A.basisOfTranslatedSpace()} -> std::same_as<const typename T::basis_matrix_type &>;
+    {A.translationVector()     } -> std::same_as<const typename T::full_state_type &>;
 
-      {A.basisOfTranslatedSpace()} -> std::same_as<const typename T::basis_matrix_type &>;
-      {A.translationVector()} -> std::same_as<const typename T::full_state_type &>;
-      {A.basis()      } -> std::same_as<const typename T::basis_matrix_type &>;
-      {A.dimension()      } -> std::integral;
-      {A.isColumnSpace()  } -> std::convertible_to<bool>;
-      {A.isRowSpace()     } -> std::convertible_to<bool>;
-    };
+    {A.basis()        } -> std::same_as<const typename T::basis_matrix_type &>;
+    {A.dimension()    } -> std::integral;
+    {A.isColumnSpace()} -> std::convertible_to<bool>;
+    {A.isRowSpace()   } -> std::convertible_to<bool>;
+  };
 
 }} //end namespace pressio::rom
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
 
 #else
 
@@ -100,32 +138,63 @@ template<class T>
 struct PossiblyAffineTrialColumnSubspace<
   T,
   mpl::enable_if_t<
-       LinearSubspaceConcept<T>::value
-    && !std::is_assignable<T&, T>::value
+    ::pressio::has_basis_matrix_typedef<T>::value
     && ::pressio::has_reduced_state_typedef<T>::value
     && ::pressio::has_full_state_typedef<T>::value
-    && std::is_same<
-        typename pressio::Traits<typename T::basis_matrix_type>::scalar_type,
-        typename pressio::Traits<typename T::full_state_type>::scalar_type>::value
-    && std::is_same<
-        typename pressio::Traits<typename T::full_state_type>::scalar_type,
-        typename pressio::Traits<typename T::reduced_state_type>::scalar_type
-	 >::value
+    /*
+      requirements on the nested aliases
+    */
+    && pressio::is_vector_eigen<typename T::reduced_state_type>::value
+    && std::is_copy_constructible< typename T::full_state_type>::value
+    && std::is_copy_constructible< typename T::basis_matrix_type>::value
+    && all_have_traits_and_same_scalar<
+      typename T::reduced_state_type,
+      typename T::full_state_type,
+      typename T::basis_matrix_type>::value
+    && Traits<typename T::full_state_type>::rank == 1
+    && Traits<typename T::basis_matrix_type>::rank == 2
+    /**/
+    && std::is_copy_constructible<T>::value
+    && !std::is_assignable<T&, T>::value
+    && !std::is_assignable<T&, T&>::value
+    /*
+      requirements on the "create*" methods
+    */
     && has_const_create_reduced_state_return_result<T>::value
     && has_const_create_full_state_return_result<T>::value
-    && has_const_map_from_reduced_state_return_void<T>::value
     && has_const_create_full_state_from_reduced_state<T>::value
+    /*
+      other
+    */
+    && has_const_map_from_reduced_state_return_void<T>::value
+    && std::is_same<
+      decltype( std::declval<T const>().basisOfTranslatedSpace() ),
+      typename T::basis_matrix_type const &
+      >::value
     && std::is_same<
       decltype(std::declval<T const>().translationVector()),
       const typename T::full_state_type &
       >::value
     && std::is_same<
-      decltype( std::declval<T const>().basisOfTranslatedSpace() ),
-      typename T::basis_matrix_type const &
+        decltype( std::declval<T const>().basis() ),
+        const typename T::basis_matrix_type &
+      >::value
+    && std::is_integral<
+      decltype( std::declval<T const>().dimension() )
+      >::value
+    //
+    && std::is_same<
+      decltype( std::declval<T const>().isColumnSpace() ),
+      bool
+      >::value
+    && std::is_same<
+      decltype( std::declval<T const>().isRowSpace() ),
+      bool
       >::value
     >
   > : std::true_type{};
 
-}}
+}} //end namespace pressio::rom
 #endif
+
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

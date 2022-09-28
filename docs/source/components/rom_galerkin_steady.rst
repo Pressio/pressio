@@ -17,7 +17,8 @@ API
     class TrialSubspaceType,
     class FomSystemType>
   #ifdef PRESSIO_ENABLE_CXX20
-    requires steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
+    requires steady::ComposableIntoDefaultProblem<
+		TrialSubspaceType, FomSystemType>
   #endif
   /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSubspace,     (1)
                                          const FomSystemType & fomSystem);
@@ -145,16 +146,16 @@ Return value, Postconditions, Side Effects
 
   where:
 
-  - the ``state_type`` is an alias to the reduced state type of your trial subspace class
+  - ``state_type``: must be an Eigen vector as per `this constraints <rom_trial_column_subspace.html>`__
 
-  - ``residual_type``, ``jacobian_type`` are the *reduced* residual and jacobian types
-    which are defined based on what the reduced state type is. Specifically, we have:
+  - ``residual_type``, ``jacobian_type``: types of the *reduced* operators defined as:
 
-    - if ``state_type`` is an Eigen vector, then ``residual_type``
-      is an Eigen vector and ``jacobian_type`` is an Eigen dense matrix
+    - ``residual_type`` is the same as ``state_type``
 
-    - if ``state_type`` is a Kokkos rank-1 view, then ``residual_type``
-      is a Kokkos rank-1 view and ``jacobian_type`` is a Kokkos rank-2 view
+    - ``jacobian_type`` is an Eigen dense matrix with column major layout
+
+  - and the following holds:
+    ``pressio::all_have_traits_and_same_scalar<state_type, residual_type, jacobian_type>::value == true``
 
 
 - any necessary memory allocation needed for the implementation
@@ -165,20 +166,14 @@ Return value, Postconditions, Side Effects
   is satisfied.
 
 
-Problem class: description
---------------------------
-
-:red:`finish, we need to connect to this to the math pdf when we have it`
-
-
 Solve the problem
 -----------------
 
 Solving a steady Galerkin problem practically means solving
 a **reduced dense system of (nonlinear) equations**.
-A Galerkin problem object created as shown above exposes
-the operators that define such reduced system.
-Since the reduced system, by definition, constitutes a *determined system of equations*,
+A Galerkin problem created as shown above exposes the API needed to
+compute the operators defining such reduced system.
+Since the reduced system, by definition, is a *determined system of equations*,
 to solve it one can use a Newton-Raphson solver either
 from the pressio/nonlinear_solvers, or use/implement their own.
 

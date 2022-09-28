@@ -73,11 +73,10 @@ concept ComposableIntoDefaultProblem =
 
     /*
       Define:
-      - B     : the subspace's basis, i.e. subspace.basisOfTranslatedSpace()
-      - rhsFom  : FOM right hand side instance
-      - alpha : scalar value
-      - beta  : scalar value
-      - rhsGal: the reduced Galerkin right hand side
+      - B           : basis of the subspace, i.e. B = subspace.basisOfTranslatedSpace()
+      - rhsFom      : FOM right hand side instance
+      - alpha, beta : scalars
+      - rhsGal      : the reduced Galerkin right hand side
     */
 
     /* rhsGal = beta*rhsGal + alpha * B^T * rhsFom */
@@ -89,37 +88,54 @@ concept ComposableIntoDefaultProblem =
 
 }}}} //end namespace pressio::rom::galerkin::unsteadyexplicit
 
-// #else
 
-// namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
 
-// template<class T, class SubspaceType, class enable = void>
-// struct ProjectableOnPossiblyAffineSubspace : std::false_type{};
 
-// template<class T, class SubspaceType>
-// struct ProjectableOnPossiblyAffineSubspace<
-//   T, SubspaceType,
-//   mpl::enable_if_t<
-//        SemiDiscreteFom<T>::value
-//     && PossiblyAffineColumnSubspace<SubspaceType>::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(),
-//            std::declval<scalar_trait_t<typename SubspaceType::basis_matrix_type> const &>(),
-// 	   std::declval<typename SubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<typename T::right_hand_side_type const &>(),
-// 	   std::declval<scalar_trait_t<typename SubspaceType::reduced_state_type> const &>(),
-// 	   std::declval<impl::explicit_galerkin_default_reduced_right_hand_side_t<SubspaceType> &>()
-// 	   )
-// 	   )
-//     >::value
-//    >
-//   > : std::true_type{};
 
-// }}}} //end namespace pressio::rom::galerkin::steady
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
+
+template <class TrialSubspaceType, class FomSystemType, class = void>
+struct ComposableIntoDefaultProblem : std::false_type{};
+
+template <class TrialSubspaceType, class FomSystemType>
+struct ComposableIntoDefaultProblem<
+  TrialSubspaceType, FomSystemType,
+  mpl::enable_if_t<
+       PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    && SemiDiscreteFom<FomSystemType>::value
+    && std::is_same<
+      typename TrialSubspaceType::full_state_type,
+      typename FomSystemType::state_type>::value
+    //
+    && std::is_void<
+	  decltype
+	  (
+	  ::pressio::ops::product
+	  (::pressio::transpose(),
+           std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
+	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
+	   std::declval<typename FomSystemType::right_hand_side_type const &>(),
+	   std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
+	   std::declval<impl::explicit_galerkin_default_reduced_right_hand_side_t<TrialSubspaceType> &>()
+	   )
+	   )
+    >::value
+   >
+  > : std::true_type{};
+
+}}}} //end namespace pressio::rom::galerkin::unsteadyexplicit
 
 #endif
 

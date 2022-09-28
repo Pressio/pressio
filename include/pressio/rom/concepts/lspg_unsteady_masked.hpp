@@ -61,28 +61,11 @@ template <class TrialSubspaceType, class FomSystemType, class MaskerType>
 concept ComposableIntoMaskedProblem =
      SemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
   && ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
-  && requires(const FomSystemType & A,
-	      const MaskerType & masker,
-	      const concepts::impl::fom_jacobian_action_t<FomSystemType, TrialSubspaceType> & JaFom)
-  {
 
-    { masker.createApplyMaskResult
-    		( std::declval<typename FomSystemType::right_hand_side_type const &>() )}
-            -> std::copy_constructible;
-
-    // { masker( std::declval<typename T::right_hand_side_type const &>(),
-	   //    std::declval<
-	   //      decltype(masker.createApplyMaskResult
-	   //      ( std::declval<typename T::right_hand_side_type const &>() )) &
-	   //    >()
-	   //   ) } -> std::same_as<void>;
-
-    // { masker.createApplyMaskResult(JaFom) } -> std::copy_constructible;
-
-    // { masker(JaFom,
-	   //   std::declval<decltype(masker.createApplyMaskResult(JaFom)) &>()
-	   //   ) } -> std::same_as<void>;
-  };
+  && MaskableWith<typename FomSystemType::right_hand_side_type, MaskerType>
+  && MaskableWith<
+       concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>,
+       MaskerType>;
 
 }}}} //end namespace pressio::rom::lspg::unsteady
 

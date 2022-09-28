@@ -64,32 +64,35 @@ concept ComposableIntoMaskedProblem =
   && std::same_as<
        typename TrialSubspaceType::full_state_type,
        typename FomSystemType::state_type>
-  && requires(
-	const MaskerType & masker,
-	const typename FomSystemType::residual_type & rFom,
-	const concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType> & JaFom)
-  {
-    /*
-      Define:
-      - B     : the subspace's basis, i.e. subspace.basisOfTranslatedSpace()
-      - rFom  : FOM residual instance
-      - JaFom : the action of the FOM jacobian on B
-      - rFomMasked : the result of the masker acting on rFom
-      - JaFomMasked: the result of the masker acting on JaFom
-    */
-
-    { masker.createApplyMaskResult(rFom)  } -> std::copy_constructible;
-    { masker.createApplyMaskResult(JaFom) } -> std::copy_constructible;
-
-    { masker(rFom,
-	     std::declval<decltype(masker.createApplyMaskResult(rFom)) &>()
-	     ) } -> std::same_as<void>;
-    { masker(JaFom,
-	     std::declval<decltype(masker.createApplyMaskResult(JaFom)) &>()
-	     ) } -> std::same_as<void>;
-  };
+  /*
+    requirements on the masker
+    must be applicable to a FOM residual instance as well as
+    to the result of the FOM jacobian action on the basis
+  */
+  && MaskableWith<
+       typename FomSystemType::residual_type,
+       MaskerType>
+  && MaskableWith<
+       concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>,
+       MaskerType>;
 
 }}}} //end namespace pressio::rom::lspg::steady
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
 
 // #else
 

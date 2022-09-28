@@ -59,7 +59,11 @@ namespace pressio{ namespace rom{
 
 template<class T, class JacobianActionOperandType>
 concept SemiDiscreteFomWithJacobianAction =
-     SemiDiscreteFom<T>
+  /* subsumed concept */
+  SemiDiscreteFom<T>
+  /*
+    compund requirements on the "create" method
+  */
   && requires(const T & A,
 	      const typename T::state_type    & state,
 	      const JacobianActionOperandType & operand)
@@ -68,8 +72,21 @@ concept SemiDiscreteFomWithJacobianAction =
   }
   && all_have_traits_and_same_scalar<
       typename T::state_type,
-      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>
+      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
+      JacobianActionOperandType
      >::value
+  && ::pressio::SameRankAs<
+       concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
+       JacobianActionOperandType>
+  /*
+    compund requirements on "evaluation" method:
+    we intentionally do not lump this together with the above
+    one for these reasons:
+    1. it makes sense logically to split them, since the
+       requirements of "applyJacobian()" depend on those
+       for "createApplyJacobianResult"
+    2. helps the compiler with early failure detection
+  */
   && requires(const T & A,
 	      const typename T::state_type    & state,
 	      const typename T::time_type     & evalTime,
@@ -82,39 +99,57 @@ concept SemiDiscreteFomWithJacobianAction =
 
 }} // end namespace pressio::rom
 
-// #else
 
-// namespace pressio{ namespace rom{
 
-// template<class T, class TrialSubspaceType, class enable = void>
-// struct SemiDiscreteFomWithJacobianAction : std::false_type{};
 
-// template<class T, class TrialSubspaceType>
-// struct SemiDiscreteFomWithJacobianAction<
-//   T, TrialSubspaceType,
-//   mpl::enable_if_t<
-//        SemiDiscreteFom<T>::value
-//     && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
-//     //
-//     && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-// 	 T, typename TrialSubspaceType::basis_matrix_type>::value
-//     //
-//     && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
-// 	 T, typename T::state_type, typename TrialSubspaceType::basis_matrix_type, typename T::time_type,
-// 	 concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType>
-// 	 >::value
-//     //
-//     && std::is_copy_constructible<
-// 	 concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType>
-// 	 >::value
-//     //
-//     && ::pressio::VectorSpaceElementsWithSameField<
-// 	 typename T::state_type,
-// 	 concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType>
-// 	 >::value
-//     >
-//   > : std::true_type{};
-// }}
+
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace rom{
+
+template<class T, class JacobianActionOperandType, class enable = void>
+struct SemiDiscreteFomWithJacobianAction : std::false_type{};
+
+template<class T,  class JacobianActionOperandType>
+struct SemiDiscreteFomWithJacobianAction<
+  T,  JacobianActionOperandType,
+  mpl::enable_if_t<
+       SemiDiscreteFom<T>::value
+    //
+    && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+	 T,  JacobianActionOperandType>::value
+    && std::is_copy_constructible<
+	 concepts::impl::fom_jacobian_action_t<T,  JacobianActionOperandType>
+	 >::value
+    //
+    && all_have_traits_and_same_scalar<
+	 typename T::state_type,
+	 concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
+	 JacobianActionOperandType
+       >::value
+    && all_have_same_rank<
+       concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
+	 JacobianActionOperandType>::value
+    //
+    && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
+	 T, typename T::state_type,
+         JacobianActionOperandType, typename T::time_type,
+	 concepts::impl::fom_jacobian_action_t<T,  JacobianActionOperandType>
+	 >::value
+    >
+  > : std::true_type{};
+
+}} // end namespace pressio::rom
 
 #endif
 

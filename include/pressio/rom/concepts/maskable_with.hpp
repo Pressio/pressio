@@ -46,40 +46,62 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
-#define ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_MASKABLE_WITH_HPP_
+#define ROM_CONSTRAINTS_ROM_MASKABLE_WITH_HPP_
 
 #include "helpers.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
 
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+namespace pressio{ namespace rom{
 
-template <class TrialSubspaceType, class FomSystemType>
-concept ComposableIntoDefaultOrHyperReducedProblem =
-     PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
-  && SteadyFomWithJacobianAction<
-       FomSystemType,
-       typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<
-       typename TrialSubspaceType::full_state_type,
-       typename FomSystemType::state_type>;
+template <class T, class MaskerType>
+concept MaskableWith =
+  requires(const T & operand, const MaskerType & masker)
+  {
+    { masker.createApplyMaskResult(operand) } -> std::copy_constructible;
+    { masker(operand,
+	     std::declval<decltype(masker.createApplyMaskResult(operand)) &>()
+	     ) } -> std::same_as<void>;
+  };
 
-}}}} //end namespace pressio::rom::lspg::steady
+}} //end namespace pressio::rom
 
 
+#else
 
+namespace pressio{ namespace rom{
 
+template <class T, class MaskerType, class = void>
+struct MaskableWith : std::false_type{};
 
+template <class T, class MaskerType>
+struct MaskableWith<
+  T, MaskerType,
+  mpl::enable_if_t<
+    std::is_copy_constructible<
+      decltype
+      (std::declval<MaskerType const>().createApplyMaskResult
+       (
+         std::declval<T const &>()
+       )
+       )
+    >::value
+    && std::is_void<
+	decltype
+	(
+	 std::declval<MaskerType const>()
+	 (
+	   std::declval<T const &>(),
+	   std::declval<concepts::impl::mask_action_t<MaskerType, T> &>()
+	 )
+	)
+       >::value
+  >
+> : std::true_type{};
 
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-
+}} //end namespace pressio::rom
 
 #endif
+
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

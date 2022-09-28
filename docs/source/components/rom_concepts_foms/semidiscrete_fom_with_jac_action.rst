@@ -7,7 +7,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/fom_semi_discrete_with_jac_action.hpp
    :language: cpp
-   :lines: 58-84
+   :lines: 58-100
 
 
 The concept ``SemiDiscreteFomWithJacobianAction`` refines

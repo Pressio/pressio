@@ -55,36 +55,58 @@ namespace pressio{ namespace rom{
 
 template <class T>
 concept VectorSubspace =
-       std::copy_constructible<T>
-    && !std::assignable_from<T&, T>
-    && std::copy_constructible<typename T::basis_matrix_type>
-    && requires(const T & A)
-    {
-      { A.basis()         } -> std::same_as<const typename T::basis_matrix_type &>;
-      { A.dimension()     } -> std::integral;
-      { A.isColumnSpace() } -> std::convertible_to<bool>;
-      { A.isRowSpace()    } -> std::convertible_to<bool>;
-    };
+  /* must have nested aliases */
+  requires(){ typename T::basis_matrix_type; }
+  && std::copy_constructible<typename T::basis_matrix_type>
+  && all_have_traits<typename T::basis_matrix_type>::value
+  && Traits<typename T::basis_matrix_type>::rank == 2
+  && std::copy_constructible<T>
+  && !std::assignable_from<T&, T>
+  && !std::assignable_from<T&, T&>
+  /*
+    compound requirements
+  */
+  && requires(const T & A)
+  {
+    { A.basis()         } -> std::same_as<const typename T::basis_matrix_type &>;
+    { A.dimension()     } -> std::integral;
+    { A.isColumnSpace() } -> std::convertible_to<bool>;
+    { A.isRowSpace()    } -> std::convertible_to<bool>;
+  };
 
 }} //end namespace pressio::rom
+
+
+
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
 
 #else
 
 namespace pressio{ namespace rom{
 
 template<class T, class enable = void>
-struct LinearSubspaceConcept : std::false_type{};
+struct VectorSubspace: std::false_type{};
 
 template<class T>
-struct LinearSubspaceConcept<
+struct VectorSubspace<
   T,
   mpl::enable_if_t<
     ::pressio::has_basis_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::basis_matrix_type>::value
+    && all_have_traits<typename T::basis_matrix_type>::value
+    && !std::is_assignable<T&, T>::value
+    && !std::is_assignable<T&, T&>::value
+    //
     && std::is_same<
-      decltype(
-      std::declval<T const>().basis()
-      ),
+      decltype( std::declval<T const>().basis() ),
       const typename T::basis_matrix_type &
       >::value
     && std::is_integral<
@@ -102,7 +124,8 @@ struct LinearSubspaceConcept<
    >
   > : std::true_type{};
 
-}}
+}} //end namespace pressio::rom
+
 #endif
 
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

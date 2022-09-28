@@ -76,77 +76,87 @@ concept ComposableIntoDefaultProblem =
 
     /*
       Define:
-      - B     : the subspace's basis, i.e. subspace.basisOfTranslatedSpace()
-      - rFom  : FOM residual instance
-      - JaFom : the action of the FOM jacobian on B
-      - alpha : a scalar
-      - beta  : a scalar
-      - rGal: the reduced Galerkin residual
-      - JGal: the reduced Galerkin Jacobian
+      - B           : basis of the subspace, i.e. B = subspace.basisOfTranslatedSpace()
+      - rFom        : instance of FOM residual
+      - JaFom       : instance of applying the FOM jacobian to B
+      - alpha, beta : scalars
+      - rGal        : reduced Galerkin residual
+      - JGal        : reduced Galerkin Jacobian
     */
 
     /* rGal = beta*rGal + alpha * B^T * rFom */
     pressio::ops::product
-      (::pressio::transpose(), alpha, subspace.basisOfTranslatedSpace(), rFom,
-	beta, rGal);
+    (::pressio::transpose(), alpha, subspace.basisOfTranslatedSpace(),
+     rFom, beta, rGal);
 
     /* JGal = beta*JGal + alpha * B^T * JaFom * B */
     pressio::ops::product
-       (::pressio::transpose(), ::pressio::nontranspose(),
-	alpha, subspace.basisOfTranslatedSpace(), JaFom,
-	beta, JGal);
+    (::pressio::transpose(), ::pressio::nontranspose(),
+     alpha, subspace.basisOfTranslatedSpace(), JaFom,
+     beta, JGal);
   };
 
 }}}} //end namespace pressio::rom::galerkin::steady
 
-// #else
 
-// namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
 
-// template<class T, class TrialSubspaceType, class enable = void>
-// struct DefaultProblem : std::false_type{};
 
-// template<class T, class TrialSubspaceType>
-// struct DefaultProblem<
-//   T, TrialSubspaceType,
-//   mpl::enable_if_t<
-//        SteadyFomWithJacobianAction<T, TrialSubspaceType>::value
-//     && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(),
-//            std::declval<typename ::pressio::Traits<typename TrialSubspaceType::basis_matrix_type>::scalar_type const &>(),
-// 	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<typename T::residual_type const &>(),
-// 	   std::declval<typename Traits<typename TrialSubspaceType::reduced_state_type>::scalar_type const &>(),
-// 	   std::declval<typename ::pressio::rom::SteadyGalerkinDefaultOperatorsTraits<
-// 	     typename TrialSubspaceType::reduced_state_type>::reduced_residual_type &>()
-// 	   )
-// 	   )
-//     >::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(), ::pressio::nontranspose(),
-//            std::declval<typename Traits<typename TrialSubspaceType::basis_matrix_type>::scalar_type const& >(),
-// 	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType> const &>(),
-// 	   std::declval<typename Traits<typename TrialSubspaceType::reduced_state_type>::scalar_type const&>(),
-// 	   std::declval<typename ::pressio::rom::SteadyGalerkinDefaultOperatorsTraits<
-//              typename TrialSubspaceType::reduced_state_type>::reduced_jacobian_type &
-// 	   >()
-// 	   )
-// 	   )
-//     >::value
-//    >
-//   > : std::true_type{};
 
-// }}}} //end namespace pressio::rom::galerkin::steady
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
+
+template <class TrialSubspaceType, class FomSystemType, class enable = void>
+struct ComposableIntoDefaultProblem : std::false_type{};
+
+template <class TrialSubspaceType, class FomSystemType>
+struct ComposableIntoDefaultProblem<
+  TrialSubspaceType, FomSystemType,
+  mpl::enable_if_t<
+    PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    && SteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    //
+    && std::is_same<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>::value
+    //
+    && std::is_void<
+      decltype
+      (
+      ::pressio::ops::product
+      (::pressio::transpose(),
+       std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
+       std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
+       std::declval<typename FomSystemType::residual_type const &>(),
+       std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
+       std::declval<impl::steady_galerkin_default_reduced_residual_t<TrialSubspaceType> &>()
+      )
+      )
+    >::value
+    && std::is_void<
+	decltype
+	(
+	::pressio::ops::product
+	(::pressio::transpose(), ::pressio::nontranspose(),
+	 std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
+	 std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
+	 std::declval<concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType> const &>(),
+	 std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
+	 std::declval<impl::steady_galerkin_default_reduced_jacobian_t<TrialSubspaceType> &>()
+	 )
+	 )
+      >::value
+   >
+  > : std::true_type{};
+
+}}}} //end namespace pressio::rom::galerkin::steady
 
 #endif
 

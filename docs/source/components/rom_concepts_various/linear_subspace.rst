@@ -7,7 +7,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/linear_subspace.hpp
    :language: cpp
-   :lines: 54-69
+   :lines: 54-85
 
 Semantic requirements
 ---------------------

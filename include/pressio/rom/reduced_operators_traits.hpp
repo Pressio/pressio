@@ -48,6 +48,7 @@ using steady_galerkin_default_reduced_jacobian_t =
     typename SubspaceType::reduced_state_type>::reduced_jacobian_type;
 } //end namespace pressio:rom::impl
 
+
 /*
   unsteady explicit galerkin
 */
@@ -79,6 +80,7 @@ using explicit_galerkin_default_reduced_right_hand_side_t =
   typename ExplicitGalerkinDefaultOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_right_hand_side_type;
 } //end namespace pressio:rom::impl
+
 
 /*
   unsteady implicit galerkin
@@ -118,6 +120,7 @@ using implicit_galerkin_default_reduced_jacobian_t =
   typename ImplicitGalerkinDefaultOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_jacobian_type;
 } //end namespace pressio:rom::impl
+
 
 /*
   steady LSPG

@@ -13,13 +13,18 @@ public:
   using basis_matrix_type = std::remove_cv_t<BasisMatrixType>;
 
 private:
+  static_assert(std::is_class<basis_matrix_type>::value,
+		"std::is_class<basis_matrix_type> == false");
   static_assert(std::is_copy_constructible< basis_matrix_type >::value,
 		"template argument must be copy constructible");
-  static_assert( !std::is_pointer<basis_matrix_type>::value,
-		"basis_matrix_type cannot be pointers");
   static_assert( !mpl::is_std_shared_ptr<basis_matrix_type>::value,
 		"std::unique_ptr is not valid template arguments");
+  static_assert(all_have_traits<basis_matrix_type>::value,
+		"all_have_traits<basis_matrix_type>::value == false");
+  static_assert(::pressio::Traits<basis_matrix_type>::rank == 2,
+		"::pressio::Traits<basis_matrix_type>::rank != 2");
 
+private:
   const basis_matrix_type basisMatrix_;
   const SpanningSet spanningSetValue_;
 
@@ -38,22 +43,11 @@ public:
     : basisMatrix_(::pressio::ops::clone(other.basisMatrix_)),
       spanningSetValue_(other.spanningSetValue_){}
 
-  LinearSubspace& operator=(const LinearSubspace & /*other*/) = delete;
-
-  /* For this class to be really immutable, we should not have a move constr
-     or move assign operator. One way would be to declare them as deleted,
-     but we do NOT want to do that.
-     If we did that, the move cnstr/assign would still participate in OR,
-     which would cause a compiler error in some cases, like when trying
-     to move construct and object. So is there a better way? There is.
-     We exploit the fact that this class has a user-declared copy constructor
-     and copy assignment, so the compiler does not generate automatically
-     a move constructor/move assignment, which means that only the copy
-     constr/copy assign participate in overload resolution, which means we
-     can achieve what we want by simply not declaring move cnstr/assign.
-
-     See this for a full detailed explanation:
-     https://blog.knatten.org/2021/10/15/the-difference-between-no-move-constructor-and-a-deleted-move-constructor/
+  /* For this class to be really immutable, we should not have a
+     move assign operator and copy assign.
+     Since we have const members, the compiler defines all those as deleted.
+     And since we have a copy constructor, the move constructor does not
+     particupare in OR so the copy constructor is always called.
   */
 
   ~LinearSubspace() = default;

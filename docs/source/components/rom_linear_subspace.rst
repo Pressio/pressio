@@ -29,15 +29,14 @@ Synopsis
        LinearSubspace(basis_matrix_type && basisMatrix,                 (2)
                       SpanningSet spanningSetValue);
 
-       // copy constructor and copy assignment
+       // copy constructor
        LinearSubspace(const LinearSubspace &);                          (3)
-       LinearSubspace & operator=(const LinearSubspace&) = delete;      (4)
 
        // accessors
-       const basis_matrix_type & basis() const;                         (5)
-       std::size_t dimension() const;                                   (6)
-       bool isColumnSpace() const;                                      (7)
-       bool isRowSpace() const;                                         (8)
+       const basis_matrix_type & basis() const;                         (4)
+       std::size_t dimension() const;                                   (5)
+       bool isColumnSpace() const;                                      (6)
+       bool isRowSpace() const;                                         (7)
 
      private:
        const basis_matrix_type basis_; // exposition-only
@@ -45,18 +44,27 @@ Synopsis
 
    }} //end namespace
 
+
 Constraints
 -----------
 
-- :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true` \
-  :cpp:`&& std::is_pointer<basis_matrix_type>::value == false` \
-  :cpp:`&& pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
+Let ``basis_matrix_type`` be equal to ``std::remove_cv_t<BasisMatrixType>``, then we must have:
+
+- :cpp:`std::is_class<basis_matrix_type>::value == true`
+
+- and :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true`
+
+- and :cpp:`std::is_pointer<basis_matrix_type>::value == false`
+
+- and :cpp:`pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
+
+- and :cpp:`pressio::Traits::<basis_matrix_type>::rank == 2`
+
 
 Member types
 ------------
 
 - ``basis_matrix_type``: same as ``std::remove_cv_t<BasisMatrixType>``
-
 
 Member functions
 ----------------
@@ -149,32 +157,27 @@ Constructors
 
   - the new object will be identical to ``other``
 
-
-:memberfunction:`(4)`: copy assignment operator
-
-   - this is explicitly marked as deleted because it would violate immutability
-
 Accessors
 ^^^^^^^^^
 
-:memberfunction:`(5)`: returns a reference to the basis
+:memberfunction:`(4)`: returns a reference to the basis
 
    - Note: do NOT use ``const_cast`` on the returned value to modify
      the referenced object, as doing so will break the invariant
      and the immutability of the class.
      If you need a different linear subspace, create a new object.
 
-:memberfunction:`(6)`: returns the dimension of the subspace
+:memberfunction:`(5)`: returns the dimension of the subspace
 
   *Effects*: let ``S`` be an instance of the class and ``M`` be the basis matrix
   stored in ``S``, then the method returns ``pressio::ops::extent(basisMatrix, i)``
   where ``i==0`` for a row subspace, and ``i==1`` for a column subspace.
 
-:memberfunction:`(7)`: query if the spanning set is the set of columns
+:memberfunction:`(6)`: query if the spanning set is the set of columns
 
   *Effects*: ``true`` for a column subspace, ``false`` otherwise
 
-:memberfunction:`(8)`: query if the spanning set is the set of rows
+:memberfunction:`(7)`: query if the spanning set is the set of rows
 
   *Effects*: ``true`` for a row subspace, ``false`` otherwise
 
@@ -182,10 +185,18 @@ Accessors
 Notes
 ^^^^^
 
-- the immutability and invariance of this class strictly
-  hinges on the assumption that users do not violate const
-  correctness: please do not const_cast the return of (5)
+.. Important::
 
+   The class models the `VectorSubspace concept <rom_concepts_various/linear_subspace.html>`__.
+
+
+- the semantics of the class are such that copy and move assignment
+  are implicitly deleted by the compiler, so you cannot copy or move assign
+  an object of the class. The move constructor is guaranteedd to behave as a copy constructor.
+
+- the immutability and invariance of this class rely on the assumption
+  that users do not violate const correctness by const_casting the return of (4).
+  Please do not do that!
 
 - the design and semantics of the class functions needs a clarification:
   the intent is to ensure the class *always* has value semantics because
@@ -215,7 +226,7 @@ Example
      space_t space(columnBasis1, space_t::SpanningSet::Columns);
      // space.dimension() == 5
 
-     basis_t columnBasis2(56,5);
+     basis_t columnBasis2(156,5);
      // fill such that columns are linearly independent
      space_t space(std::move(columnBasis2), space_t::SpanningSet::Columns);
      // space.dimension() == 5
@@ -224,6 +235,22 @@ Example
      // fill such that rows are linearly independent
      space_t space(rowBasis1, space_t::SpanningSet::Rows);
      // space.dimension() == 3
+
+
+     space_t S1(columnBasis1, space_t::SpanningSet::Columns);
+     space_t S2(columnBasis2, space_t::SpanningSet::Columns);
+
+     // S1 = S2;            /*illigal*/
+
+     // S2 = S1;            /*illigal*/
+
+     // S1 = std::move(S2); /*illigal*/
+
+     lspace_t S3 = S1; // calls copy constructor
+
+     lspace_t S4(S1); // calls copy constructor
+
+     lspace_t S5(std::move(S1)); // calls copy constructor
    }
 
 

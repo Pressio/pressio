@@ -55,19 +55,20 @@ template<class T, class = void>
 struct ValidReducedState
   : std::false_type{};
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<class T>
-struct ValidReducedState<
-  T, mpl::enable_if_t< ::pressio::is_vector_kokkos<T>::value >
-  > : std::true_type{};
-#endif
-
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct ValidReducedState<
   T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value >
   > : std::true_type{};
 #endif
+
+// need to renable this at some point
+// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+// template<class T>
+// struct ValidReducedState<
+//   T, mpl::enable_if_t< ::pressio::is_vector_kokkos<T>::value >
+//   > : std::true_type{};
+// #endif
 
 }}
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

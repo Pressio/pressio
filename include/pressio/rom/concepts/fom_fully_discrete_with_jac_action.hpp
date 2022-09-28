@@ -59,84 +59,134 @@ namespace pressio{ namespace rom{
 
 template<class T, int TotalNumStates, class JacobianActionOperandType>
 concept FullyDiscreteSystemWithJacobianAction =
-   (TotalNumStates == 2 || TotalNumStates == 3)
-   && std::regular<typename T::time_type>
-   && std::totally_ordered<typename T::time_type>
-   && std::copy_constructible<typename T::state_type>
-   && std::copy_constructible<typename T::discrete_residual_type>
-   && all_have_traits_and_same_scalar<
-       typename T::state_type,
-       typename T::discrete_residual_type>::value
-   && std::convertible_to<
-       typename T::time_type,
-       typename pressio::Traits<typename T::state_type>::scalar_type>
-   && requires(const T & A,
-	       const typename T::state_type & state,
-	       const JacobianActionOperandType & operand)
-   {
-     { A.createDiscreteTimeResidual() } -> std::same_as<typename T::discrete_residual_type>;
-     { A.createResultOfDiscreteTimeJacobianActionOn(operand) } -> std::copy_constructible;
-   }
-   && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
-	T, TotalNumStates,
-	typename ::pressio::ode::StepCount::value_type,
-	typename T::time_type,
-	typename T::state_type,
-	typename T::discrete_residual_type,
-        JacobianActionOperandType,
-        concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
-     >::value;
+ /* allowed number of state */
+  (TotalNumStates == 2 || TotalNumStates == 3)
+  /* must have nested aliases */
+  && requires(){
+    typename T::time_type;
+    typename T::state_type;
+    typename T::discrete_residual_type;
+  }
+  /*
+    requirements on the nested aliases
+  */
+  && std::regular<typename T::time_type>
+  && std::totally_ordered<typename T::time_type>
+  && std::copy_constructible<typename T::state_type>
+  && std::copy_constructible<typename T::discrete_residual_type>
+  && all_have_traits_and_same_scalar<
+    typename T::state_type, typename T::discrete_residual_type>::value
+  && Traits<typename T::state_type>::rank == 1
+  && Traits<typename T::discrete_residual_type>::rank == 1
+  && std::convertible_to<
+    typename T::time_type, scalar_trait_t<typename T::state_type>>
+  /*
+   requirements on the "create" methods
+  */
+  && requires(const T & A,
+	      const typename T::state_type & state,
+	      const JacobianActionOperandType & operand)
+  {
+    { A.createDiscreteTimeResidual() } -> std::same_as<typename T::discrete_residual_type>;
+    { A.createResultOfDiscreteTimeJacobianActionOn(operand) } -> std::copy_constructible;
+  }
+  && all_have_traits_and_same_scalar<
+    typename T::state_type, JacobianActionOperandType,
+    concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
+    >::value
+  && ::pressio::SameRankAs<
+       concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>,
+       JacobianActionOperandType>
+  /*
+    requirements on "evaluation" methods (fix syntax)
+  */
+  && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+    T, TotalNumStates,
+    typename ::pressio::ode::StepCount::value_type,
+    typename T::time_type,
+    typename T::state_type,
+    typename T::discrete_residual_type,
+    JacobianActionOperandType,
+    concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
+    >::value;
 
 }} // end namespace pressio::rom
 
-// #else
 
-// namespace pressio{ namespace rom{
 
-// template<class T, int NumStates, class TrialSubspaceType, class enable = void>
-// struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
 
-// template<class T, int NumStates, class TrialSubspaceType>
-// struct FullyDiscreteSystemWithJacobianAction<
-//   T, NumStates, TrialSubspaceType,
-//   mpl::enable_if_t<
-//        ::pressio::has_time_typedef<T>::value
-//     && ::pressio::has_state_typedef<T>::value
-//     && ::pressio::has_discrete_residual_typedef<T>::value
-//     //
-//     && mpl::is_same<
-// 	 typename T::discrete_residual_type,
-// 	 decltype(std::declval<T const>().createDiscreteTimeResidual())
-// 	 >::value
-//     //
-//     && std::is_copy_constructible<
-// 	decltype
-// 	(
-// 	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
-// 	  (
-// 	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
-// 	  )
-// 	 )
-// 	>::value
 
-//     && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
-// 	 T, NumStates,
-//          typename ::pressio::ode::StepCount::value_type,
-// 	 typename T::time_type,
-// 	 typename T::state_type,
-// 	 typename T::discrete_residual_type,
-// 	 typename TrialSubspaceType::basis_matrix_type,
-// 	 decltype
-// 	 (
-// 	  std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
-// 	   (
-// 	    std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
-// 	   )
-// 	  )
-// 	 >::value
-//     >
-//   > : std::true_type{};
-// }}
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace rom{
+
+template<class T, int TotalNumStates, class JacobianActionOperandType, class enable = void>
+struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
+
+template<class T, int TotalNumStates, class JacobianActionOperandType>
+struct FullyDiscreteSystemWithJacobianAction<
+  T, TotalNumStates, JacobianActionOperandType,
+  mpl::enable_if_t<
+    (TotalNumStates == 2 || TotalNumStates == 3)
+    //
+    && ::pressio::has_time_typedef<T>::value
+    && ::pressio::has_state_typedef<T>::value
+    && ::pressio::has_discrete_residual_typedef<T>::value
+    /*
+      requirements on the nested aliases
+    */
+    && std::is_copy_constructible<typename T::state_type>::value
+    && std::is_copy_constructible<typename T::discrete_residual_type>::value
+    && all_have_traits_and_same_scalar<
+        typename T::state_type, typename T::discrete_residual_type>::value
+    && Traits<typename T::state_type>::rank == 1
+    && Traits<typename T::discrete_residual_type>::rank == 1
+    && std::is_convertible<
+      typename T::time_type, scalar_trait_t<typename T::state_type>>::value
+    /*
+      requirements on the "create" methods
+    */
+    && mpl::is_same<
+	 typename T::discrete_residual_type,
+	 decltype(std::declval<T const>().createDiscreteTimeResidual())
+	 >::value
+    && std::is_copy_constructible<
+	decltype
+	(
+	 std::declval<T const>().createResultOfDiscreteTimeJacobianActionOn
+	  (
+	   std::declval<JacobianActionOperandType const &>()
+	  )
+	 )
+	>::value
+    && all_have_traits_and_same_scalar<
+         typename T::state_type, JacobianActionOperandType,
+         concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
+      >::value
+    && all_have_same_rank<
+	 concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>,
+         JacobianActionOperandType>::value
+    /*
+      requirements on "evaluation" methods
+    */
+    && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
+      T, TotalNumStates,
+      typename ::pressio::ode::StepCount::value_type,
+      typename T::time_type,
+      typename T::state_type,
+      typename T::discrete_residual_type,
+      JacobianActionOperandType,
+      concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
+      >::value
+    >
+  > : std::true_type{};
+
+}}
 
 #endif
 

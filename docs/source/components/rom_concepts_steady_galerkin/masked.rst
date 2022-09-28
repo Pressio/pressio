@@ -11,7 +11,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/galerkin_steady_masked.hpp
    :language: cpp
-   :lines: 58-128
+   :lines: 58-120
 
 Semantic and complexity requirements
 ------------------------------------

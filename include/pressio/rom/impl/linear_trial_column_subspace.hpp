@@ -89,23 +89,11 @@ public:
       translation_(::pressio::ops::clone(other.translation_)),
       isAffine_(other.isAffine_){}
 
-  TrialColumnSubspace& operator=(const TrialColumnSubspace & /*other*/) = delete;
-
-
-  /* For this class to be really immutable, we should not have a move constr
-     or move assign operator. One way would be to declare them as deleted,
-     but we do NOT want to do that.
-     If we did that, the move cnstr/assign would still participate in OR,
-     which would cause a compiler error in some cases, like when trying
-     to move construct and object. So is there a better way? There is.
-     We exploit the fact that this class has a user-declared copy constructor
-     and copy assignment, so the compiler does not generate automatically
-     a move constructor/move assignment, which means that only the copy
-     constr/copy assign participate in overload resolution, which means we
-     can achieve what we want by simply not declaring move cnstr/assign.
-
-     See this for a full detailed explanation:
-     https://blog.knatten.org/2021/10/15/the-difference-between-no-move-constructor-and-a-deleted-move-constructor/
+  /* For this class to be really immutable, we should not have a
+     move assign operator and copy assign.
+     Since we have a const member, the compiler defines all those as deleted.
+     And since we have a copy constructor, the move constructor does not
+     particupare in OR so the copy constructor is always called.
   */
 
   ~TrialColumnSubspace() = default;

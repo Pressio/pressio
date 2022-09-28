@@ -69,24 +69,15 @@ concept ComposableIntoHyperReducedMaskedProblem =
   && std::same_as<
        typename TrialSubspaceType::full_state_type,
        typename FomSystemType::state_type>
-  // the masker acts on the fom
-  && requires(const MaskerType & masker,
-	      const typename FomSystemType::right_hand_side_type & rhsFom)
-  {
-    /*
-      Define:
-      - B     : the subspace's basis, i.e. subspace.basisOfTranslatedSpace()
-      - rhsFom  : FOM right_hand_side instance
-      - rhsFomMasked : the result of the masker acting on rhsFom
-    */
-
-     { masker.createApplyMaskResult(rhsFom)  } -> std::copy_constructible;
-     { masker(rhsFom,
-	      std::declval<decltype(masker.createApplyMaskResult(rhsFom)) &>()
-	      ) } -> std::same_as<void>;
-  }
-  //
-  // the hyper-reducer acts on the masked operators
+  /*
+    requirements on the masker
+    must be applicable to a FOM rhs instance
+  */
+  && MaskableWith<typename FomSystemType::right_hand_side_type, MaskerType>
+  /*
+    requirements on the hyper-reducer:
+    must be applicable to the masked operators
+  */
   && requires(
 	const HyperReducerType & hyperReducer,
 	const concepts::impl::mask_action_t<
@@ -99,7 +90,7 @@ concept ComposableIntoHyperReducedMaskedProblem =
     /*
       Define:
       - rhsFomMasked : the result of the masker acting on rhsFom
-      - rhsGal: the reduced Galerkin right_hand_side
+      - rhsGal       : the reduced Galerkin right_hand_side
     */
 
     { hyperReducer(rhsFomMasked, evalTime, rhsGal) } -> std::same_as<void>;
@@ -108,54 +99,65 @@ concept ComposableIntoHyperReducedMaskedProblem =
 }}}} //end namespace pressio::rom::galerkin::unsteadyexplicit
 
 
-// #else
 
-// namespace pressio{ namespace rom{ namespace galerkin{ namespace steady{
 
-// template<class T, class SubspaceType, class enable = void>
-// struct ProjectableOnPossiblyAffineSubspace : std::false_type{};
 
-// template<class T, class SubspaceType>
-// struct ProjectableOnPossiblyAffineSubspace<
-//   T, SubspaceType,
-//   mpl::enable_if_t<
-//        SteadyFomWithJacobianAction<T, SubspaceType>::value
-//     && PossiblyAffineTrialColumnSubspace<SubspaceType>::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(),
-//            std::declval<typename ::pressio::Traits<typename SubspaceType::basis_matrix_type>::scalar_type const &>(),
-// 	   std::declval<typename SubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<typename T::residual_type const &>(),
-// 	   std::declval<typename Traits<typename SubspaceType::reduced_state_type>::scalar_type const &>(),
-// 	   std::declval<typename ::pressio::rom::SteadyGalerkinDefaultOperatorsTraits<
-// 	     typename SubspaceType::reduced_state_type>::reduced_residual_type &>()
-// 	   )
-// 	   )
-//     >::value
-//     //
-//     && std::is_void<
-// 	  decltype
-// 	  (
-// 	  ::pressio::ops::product
-// 	  (::pressio::transpose(), ::pressio::nontranspose(),
-//            std::declval<typename Traits<typename SubspaceType::basis_matrix_type>::scalar_type const& >(),
-// 	   std::declval<typename SubspaceType::basis_matrix_type const &>(),
-// 	   std::declval<concepts::impl::fom_jacobian_action_t<T, SubspaceType> const &>(),
-// 	   std::declval<typename Traits<typename SubspaceType::reduced_state_type>::scalar_type const&>(),
-// 	   std::declval<typename ::pressio::rom::SteadyGalerkinDefaultOperatorsTraits<
-//              typename SubspaceType::reduced_state_type>::reduced_jacobian_type &
-// 	   >()
-// 	   )
-// 	   )
-//     >::value
-//    >
-//   > : std::true_type{};
 
-// }}}} //end namespace pressio::rom::galerkin::steady
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+ #else
+
+namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
+
+template <
+  class TrialSubspaceType,
+  class FomSystemType,
+  class MaskerType,
+  class HyperReducerType,
+  class = void
+  >
+struct ComposableIntoHyperReducedMaskedProblem : std::false_type{};
+
+template <
+  class TrialSubspaceType,
+  class FomSystemType,
+  class MaskerType,
+  class HyperReducerType
+  >
+struct ComposableIntoHyperReducedMaskedProblem<
+  TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType,
+  mpl::enable_if_t<
+    PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    && SemiDiscreteFom<FomSystemType>::value
+    && std::is_same<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>::value
+    && MaskableWith<typename FomSystemType::right_hand_side_type, MaskerType>::value
+    && std::is_void<
+        decltype
+	(
+	 std::declval<HyperReducerType const>()
+	 (
+	   std::declval<
+	     concepts::impl::mask_action_t<
+	       MaskerType, typename FomSystemType::right_hand_side_type>
+	   const &>(),
+	   std::declval<typename FomSystemType::time_type const &>(),
+	   std::declval< impl::explicit_galerkin_default_reduced_right_hand_side_t<TrialSubspaceType> & >()
+	  )
+	 )
+       >::value
+    >
+  > : std::true_type{};
+
+}}}} //end namespace pressio::rom::galerkin::unsteadyexplicit
 #endif
 
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
