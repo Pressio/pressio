@@ -12,21 +12,16 @@ template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires SteadyFomWithJacobianAction<FomSystemType, TrialSubspaceType>
+requires steady::ComposableIntoDefaultOrHyperReducedProblem<TrialSubspaceType, FomSystemType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem)
 {
 
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(SteadyFomWithJacobianAction<
-		FomSystemType, TrialSubspaceType>::value,
-		"FomSystemType does not meet the SteadyFomWithJacobianAction concept");
+  static_assert(ComposableIntoDefaultOrHyperReducedProblem<TrialSubspaceType, FomSystemType>::value,
+		"concept not met");
 #endif
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using system_type = impl::LspgSteadyDefaultSystem<
@@ -39,7 +34,7 @@ template<
   class FomSystemType,
   class MaskerType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>
+requires steady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>
 #endif
 auto create_steady_problem(TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem,
@@ -47,13 +42,9 @@ auto create_steady_problem(TrialSubspaceType & trialSpace,
 {
 
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>::value,
-		"MaskableWith not satisfied");
+  static_assert(steady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>::value,
+		"concept not satisfied");
 #endif
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
   using system_type = impl::LspgSteadyMaskedSystem<

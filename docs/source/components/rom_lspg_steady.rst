@@ -14,22 +14,24 @@ API
   namespace pressio { namespace rom{ namespace lspg{
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType>
-  /*
-    requires SteadyFomWithJacobianAction<FomSystemType, SubspaceType>
-  */
-  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (1)
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires steady::ComposableIntoDefaultOrHyperReducedProblem<
+               TrialSubspaceType, FomSystemType>
+  #endif
+  /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSubspace,    (1)
                                          const FomSystemType & fomSystem);
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType,
     class MaskerType>
-  /*
-    requires steady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>
-  */
-  /*impl defined*/ create_steady_problem(const TrialSpaceType & trialSpace,         (2)
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires steady::ComposableIntoMaskedProblem<
+               TrialSubspaceType, FomSystemType, MaskerType>
+  #endif
+  /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSubspace,    (2)
 					 const FomSystemType & fomSystem,
 					 const maskerType & masker);
 
@@ -70,15 +72,10 @@ Since we cannot yet use C++20, the constraints are
 currently enforced via static asserts (to provide a decent error message)
 and/or SFINAE. The concepts used are:
 
-- `rom::SteadyFomWithJacobianAction <rom_concepts_foms/steady_fom_with_jac_action.html>`__
+- `rom::lspg::steady::ComposableIntoDefaultOrHyperReducedProblem <rom_concepts_steady_lspg/default.html>`__
 
-- `rom::lspg::steady::MaskableWith <rom_concepts_steady_lspg/steady_lspg_mask.html>`__
+- `rom::lspg::steady::ComposableIntoMaskedProblem <rom_concepts_steady_lspg/masked.html>`__
 
-Mandates
-~~~~~~~~
-
-- ``std::is_same<typename TrialSubspaceType::full_state_type,
-  typename FomSystemType::state_type >::value == true``
 
 Preconditions
 ~~~~~~~~~~~~~

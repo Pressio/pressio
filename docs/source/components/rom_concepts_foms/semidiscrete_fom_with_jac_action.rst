@@ -5,40 +5,55 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-Namespace: ``pressio::rom``
-
-.. literalinclude:: ../../../../include/pressio/rom/concepts/semi_discrete_fom_with_jac_action.hpp
+.. literalinclude:: ../../../../include/pressio/rom/concepts/fom_semi_discrete_with_jac_action.hpp
    :language: cpp
-   :lines: 58-80
+   :lines: 58-84
+
+
+The concept ``SemiDiscreteFomWithJacobianAction`` refines
+the ``SemiDiscreteFom`` by adding support for the Jacobian evaluation.
 
 Semantic requirements
 ---------------------
 
-:red:`finish`
+Given an instance ``A`` of type ``T`` and an object ``operand``
+of type ``JacobianActionOperandType``,
+``SemiDiscreteFomWithJacobianAction<T, JacobianActionOperandType>``
+is modeled if it is satisfied, all subsumed concepts are modeled and:
 
-..
-   The concept is modeled only if it is satisfied,
-   all subsumed concepts are modeled and given an instance ``S``
-   of the trial subspace, and an instance ``A`` of type ``T``,
-   then all of the following hold:
+- all methods are blocking, meaning that all temporary
+  allocations and operations needed to execute those methods
+  are completed and no outstanding work remains upon return
 
-   - *non aliasing instantiation*: given the following:
+- methods may modify only the non-constant operands.
+  Operands that are constant must not be modified.
 
-     .. code-block:: cpp
+- ``auto result = A.createApplyJacobianResult(operand)``
 
-	auto & basis = S.basisOfTranslatedSpace();
-	auto ja1 = A.createApplyJacobianResult(basis);
-	auto ja2 = A.createApplyJacobianResult(basis);
+  - returns an object with all its "elements" zero initialized
 
-     ``ja1`` and ``ja2`` must be distinct objects, ``std::addressof(ja1) != std::addressof(ja2)``,
-     and such that any modification to ``ja1`` does not affect ``ja2``
 
-   - *blocking operations*: all methods are blocking
+- doing:
 
-   - *equality preserving*
+  .. code-block:: cpp
 
-   - *const correctness*: methods may modify only the non-constant operands.
-     Operands that are constant must not be modified.
+     auto ja1 = A.createApplyJacobianResult(operand);
+     auto ja2 = A.createApplyJacobianResult(operand);
+     // ...
+     auto jaN = A.createApplyJacobianResult(operand);
 
-   - a residual instance and the result of the Jaobian action
-     must be dimensionally consistent
+  implies that ``ja1, ja2, ..., jaN`` must be distinct objects,
+  and such that any modification to ``ja1`` does not affect any of the others and vice versa.
+  In other words, calling ``A.createApplyJacobianResult(operand)`` yields independent instances.
+
+- ``A.applyJacobian(state, operand, evalTime, result)``
+
+  - overwrites ``result`` with the result
+
+  - is equality preserving, i.e. given equal
+    inputs ``state, evalTime``, the result remains the same
+
+  - let ``J`` represent the Jacobian which we compute the action of,
+    then ``J`` must be the jacobian of the right hand side evaluated for the
+    same ``state`` and ``evalTime``. In other words, the Jacobian used for
+    computing its action must be mathematically "consistent" with the right hand side.

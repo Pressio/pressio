@@ -5,37 +5,51 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-Namespace: ``pressio::rom``
-
-.. literalinclude:: ../../../../include/pressio/rom/concepts/steady_fom_with_jac_action.hpp
+.. literalinclude:: ../../../../include/pressio/rom/concepts/fom_steady_with_jac_action.hpp
    :language: cpp
-   :lines: 56-77
+   :lines: 58-86
 
 Semantic requirements
 ---------------------
 
-:red:`finish`
+Given an instance ``A`` of type ``T`` and an object ``operand``
+of type ``JacobianActionOperandType``,
+``SteadyFomWithJacobianAction<T, JacobianActionOperandType>``
+is modeled if it is satisfied, all subsumed concepts are modeled and:
 
-..
-   The concept is modeled only if it is satisfied,
-   all subsumed concepts are modeled and all of the following hold:
+- all methods are blocking, meaning that all temporary
+  allocations and operations needed to execute those methods
+  are completed and no outstanding work remains upon return
 
-   - *non aliasing instantiation*: given the following:
+- methods may modify only the non-constant operands.
+  Operands that are constant must not be modified.
 
-     .. code-block:: cpp
+- ``auto r = A.createResidual()`` and
+  ``auto result = A.createApplyJacobianResult(operand)`` return objects
+  with all "elements" zero initialized
 
-	auto r1 = A.createResidual();
-	auto r2 = A.createResidual();
+- doing:
 
-     ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
-     and such that any modification to ``r1`` does not affect ``r2``
+  .. code-block:: cpp
 
-   - *blocking operations*: all methods are blocking
+     auto r1 = A.createResidual();
+     auto r2 = A.createResidual();
+     //...
+     auto rN = A.createResidual();
 
-   - *equality preserving*
+  implies that ``r1, r2, ..., rN`` must be distinct objects,
+  and such that any modification to ``r1`` does not affect any of the others
+  and viceversa.
+  In other words, calling ``A.createResidual()`` yields independent instances.
+  And similarly applies to ``A.createApplyJacobianResult()``.
 
-   - *const correctness*: methods may modify only the non-constant operands.
-     Operands that are constant must not be modified.
+- ``A.residual(state, r)`` and ``A.applyJacobian(state, operand, ja)``
 
-   - a residual instance and the result of the Jaobian action
-     must be dimensionally consistent
+  - overwrite ``r`` and ``ja`` with their respective results
+
+  - both are equality preserving, i.e. equal inputs imply equal outputs
+
+  - let ``J`` represent the Jacobian which we compute the action of,
+    then ``J`` must be the jacobian of the residual evaluated for the
+    same ``state``. In other words, the Jacobian used for
+    computing its action must be mathematically "consistent" with the residual.

@@ -24,10 +24,18 @@ struct MyFom
 };
 
 namespace pressio{
-template<> struct Traits<MatrixType>{ using scalar_type = double; };
-template<> struct Traits<FomStateType>{ using scalar_type = double; };
-template<> struct Traits<FomResidualType>{ using scalar_type = double; };
-template<> struct Traits<FomJacobianActionResultType>{ using scalar_type = double; };
+template<> struct Traits<MatrixType>{ 
+  static constexpr int rank = 2;
+  using scalar_type = double; };
+template<> struct Traits<FomStateType>{ 
+  static constexpr int rank = 1;
+  using scalar_type = double; };
+template<> struct Traits<FomResidualType>{ 
+  static constexpr int rank = 1;
+  using scalar_type = double; };
+template<> struct Traits<FomJacobianActionResultType>{ 
+  static constexpr int rank = 2;
+  using scalar_type = double; };
 }
 
 class MyFakeTrialSubspace

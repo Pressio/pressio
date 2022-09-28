@@ -14,7 +14,7 @@ LSPG steady default represents:
 */
 template <
   class ReducedStateType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
 class LspgSteadyDefaultSystem
@@ -24,7 +24,7 @@ class LspgSteadyDefaultSystem
   // which becomes the jacobian_type of the problem
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (std::declval<typename TrialSpaceType::basis_matrix_type const &>())
+	     (std::declval<typename TrialSubspaceType::basis_matrix_type const &>())
 	     );
 
 public:
@@ -35,16 +35,16 @@ public:
 
   LspgSteadyDefaultSystem() = delete;
 
-  LspgSteadyDefaultSystem(const TrialSpaceType & trialSpace,
+  LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
 			  const FomSystemType & fomSystem)
-    : trialSpace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState())
+      fomState_(trialSubspace.createFullState())
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   residual_type createResidual() const{
@@ -52,7 +52,7 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    return fomSystem_.get().createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace());
+    return fomSystem_.get().createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace());
   }
 
   void residualAndJacobian(const state_type & lspgState,
@@ -60,17 +60,17 @@ public:
 			   jacobian_type & lspgJacobian,
 			   bool computeJacobian) const
   {
-    trialSpace_.get().mapFromReducedState(lspgState, fomState_);
+    trialSubspace_.get().mapFromReducedState(lspgState, fomState_);
     fomSystem_.get().residual(fomState_, lsgpResidual);
 
     if (computeJacobian){
-      const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+      const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomState_, phi, lspgJacobian);
     }
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
 };

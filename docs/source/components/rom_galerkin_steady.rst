@@ -16,9 +16,9 @@ API
   template<
     class TrialSubspaceType,
     class FomSystemType>
-  /*
-    requires steady::ProjectableOnPossiblyAffineSubspace<FomSystemType, TrialSubspaceType>
-  */
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
+  #endif
   /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSubspace,     (1)
                                          const FomSystemType & fomSystem);
 
@@ -26,9 +26,10 @@ API
     class TrialSubspaceType,
     class FomSystemType,
     class HyperReducerType>
-  /*
-    requires steady::HyperReduceableWith<FomSystemType, HyperReducerType, TrialSubspaceType>
-  */
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires steady::ComposableIntoHyperReducedProblem<
+                TrialSubspaceType, FomSystemType, HyperReducerType>
+  #endif
   /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSubspace,     (2)
 					 const FomSystemType & fomSystem,
 					 const HyperReducerType & hyperReducer);
@@ -38,10 +39,10 @@ API
     class FomSystemType,
     class MaskerType,
     class HyperReducerType>
-  /*
-    requires steady::HyperReduceableAndMaskableWith<FomSystemType, MaskerType,
-						    HyperReducerType, TrialSubspaceType>
-  */
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires steady::ComposableIntoHyperReducedMaskedProblem<
+                TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
+  #endif
   /*impl defined*/ create_steady_problem(const TrialSubspaceType & trialSubspace,     (3)
 					 const FomSystemType & fomSystem,
 					 const maskerType & masker,
@@ -87,18 +88,12 @@ Since we cannot yet use C++20, the constraints are
 currently enforced via static asserts (to provide a decent error message)
 and/or SFINAE. The concepts used are:
 
-- `rom::galerkin::steady::ProjectableOnPossiblyAffineSubspace <rom_concepts_steady_galerkin/steady_gal_default.html>`__
+- `rom::galerkin::steady::ComposableIntoDefaultProblem <rom_concepts_steady_galerkin/default.html>`__
 
-- `rom::galerkin::steady::HyperReduceableWith <rom_concepts_steady_galerkin/steady_gal_hr.html>`__
+- `rom::galerkin::steady::ComposableIntoHyperReducedProblem <rom_concepts_steady_galerkin/hr.html>`__
 
-- `rom::galerkin::steady::HyperReduceableAndMaskableWith <rom_concepts_steady_galerkin/steady_gal_hr_mask.html>`__
+- `rom::galerkin::steady::ComposableIntoHyperReducedMaskedProblem <rom_concepts_steady_galerkin/masked.html>`__
 
-
-Mandates
-~~~~~~~~
-
-- ``std::is_same<typename TrialSubspaceType::full_state_type,
-  typename FomSystemType::state_type >::value == true``
 
 Preconditions
 ~~~~~~~~~~~~~

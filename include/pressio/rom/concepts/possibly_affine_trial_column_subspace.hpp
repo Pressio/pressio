@@ -49,9 +49,9 @@
 #ifndef ROM_CONSTRAINTS_ROM_POSSIBLY_AFFINE_TRIAL_COL_SUBSPACE_HPP_
 #define ROM_CONSTRAINTS_ROM_POSSIBLY_AFFINE_TRIAL_COL_SUBSPACE_HPP_
 
-namespace pressio{ namespace rom{
-
 #ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace rom{
 
 template <class T>
 concept PossiblyAffineTrialColumnSubspace =
@@ -63,25 +63,21 @@ concept PossiblyAffineTrialColumnSubspace =
 #endif
     && std::copy_constructible<typename T::full_state_type>
     && std::copy_constructible<typename T::basis_matrix_type>
-    && std::same_as<
-        typename pressio::Traits<typename T::full_state_type>::scalar_type,
-        typename pressio::Traits<typename T::basis_matrix_type>::scalar_type
-    >
-    && std::same_as<
-        typename pressio::Traits<typename T::full_state_type>::scalar_type,
-        typename pressio::Traits<typename T::reduced_state_type>::scalar_type
-    >
-    && requires(const T & A)
+    && all_have_traits_and_same_scalar<
+        typename T::reduced_state_type,
+        typename T::full_state_type,
+        typename T::basis_matrix_type>::value
+    && requires(const T & A,
+		const typename T::reduced_state_type & reducedState,
+		typename T::full_state_type & fullState)
     {
       {A.createReducedState() } -> std::same_as<typename T::reduced_state_type>;
       {A.createFullState() }    -> std::same_as<typename T::full_state_type>;
 
-      {A.mapFromReducedState(std::declval<const typename T::reduced_state_type &>(),
-                             std::declval< typename T::full_state_type& >() ) }
-                          -> std::same_as<void>;
+      {A.createFullStateFromReducedState(reducedState) }
+            -> std::same_as<typename T::full_state_type>;
 
-      {A.createFullStateFromReducedState(std::declval<const typename T::reduced_state_type &>()) }
-                          -> std::same_as<typename T::full_state_type>;
+      {A.mapFromReducedState(reducedState, fullState) } -> std::same_as<void>;
 
       {A.basisOfTranslatedSpace()} -> std::same_as<const typename T::basis_matrix_type &>;
       {A.translationVector()} -> std::same_as<const typename T::full_state_type &>;
@@ -91,7 +87,11 @@ concept PossiblyAffineTrialColumnSubspace =
       {A.isRowSpace()     } -> std::convertible_to<bool>;
     };
 
+}} //end namespace pressio::rom
+
 #else
+
+namespace pressio{ namespace rom{
 
 template<class T, class enable = void>
 struct PossiblyAffineTrialColumnSubspace : std::false_type{};
@@ -126,17 +126,6 @@ struct PossiblyAffineTrialColumnSubspace<
     >
   > : std::true_type{};
 
-#endif
-
 }}
+#endif
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
-
-
-// { pressio::ops::extent(std::declval<const typename T::basis_matrix_type &>(), int{}) }
-//             -> std::integral;
-
-// && std::is_integral<
-//   decltype(
-//    ::pressio::ops::extent(std::declval<typename T::basis_matrix_type const &>(), int{})
-//    )
-//   >::value

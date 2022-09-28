@@ -13,8 +13,9 @@ default Galerkin problem represents:
 - phi is the basis
 
 From this we get a "reduced" residual/jacobian:
-R = phi^T fom_r(phi x)
-J = phi^T dfom_r/dx(phi x) phi
+  R = phi^T fom_r(phi x)
+  J = phi^T dfom_r/dx(phi x) phi
+
 */
 template <
   class ReducedStateType,

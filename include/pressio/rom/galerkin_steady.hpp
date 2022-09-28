@@ -13,20 +13,15 @@ template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-  requires steady::ProjectableOnPossiblyAffineSubspace<FomSystemType, TrialSubspaceType>
+requires steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const FomSystemType & fomSystem)
 {
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::ProjectableOnPossiblyAffineSubspace<
-		FomSystemType, TrialSubspaceType>::value,
+  static_assert(steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value,
 		"DefaultProjectableWith not satisfied");
 #endif
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
   using default_types         = SteadyGalerkinDefaultOperatorsTraits<reduced_state_type>;
@@ -44,21 +39,16 @@ template<
   class FomSystemType,
   class HyperReducerType>
 #ifdef PRESSIO_ENABLE_CXX20
-  requires steady::HyperReduceableWith<FomSystemType, HyperReducerType, TrialSubspaceType>
+requires steady::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HyperReducerType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const FomSystemType & fomSystem,
 			   const HyperReducerType & hypReducer)
 {
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::HyperReduceableWith<
-		FomSystemType, HyperReducerType, TrialSubspaceType>::value,
-		"steady::HyperReduceableWith not satisfied");
+  static_assert(steady::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HyperReducerType>::value,
+		"steady::HyperReducedProblem not satisfied");
 #endif
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type >::value == true,
-		"Mismatching fom states");
 
   using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
   using default_types         = SteadyGalerkinDefaultOperatorsTraits<reduced_state_type>;
@@ -77,8 +67,8 @@ template<
   class MaskerType,
   class HyperReducerType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::HyperReduceableAndMaskableWith<
-            FomSystemType, MaskerType, HyperReducerType, TrialSubspaceType>
+requires steady::ComposableIntoHyperReducedMaskedProblem<
+  TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const FomSystemType & fomSystem,
@@ -86,14 +76,10 @@ auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const HyperReducerType & hypReducer)
 {
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::HyperReduceableAndMaskableWith<
+  static_assert(steady::ComposableIntoHyperReducedMaskedProblem<
 		FomSystemType, MaskerType, HyperReducerType, TrialSubspaceType>::value,
-		"HyperReduceableAndMaskableWith not satisfied");
+		"MaskedAndHyperReduced not satisfied");
 #endif
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
   using default_types         = SteadyGalerkinDefaultOperatorsTraits<reduced_state_type>;

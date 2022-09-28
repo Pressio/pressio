@@ -362,48 +362,6 @@ public:
 };
 
 
-// struct MyMasker
-// {
-//   const std::vector<int> sample_indices_ = {};
-//   using operand_type = Eigen::VectorXd;
-//   using result_type = operand_type;
-
-//   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-//   Eigen::VectorXd createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
-//     return Eigen::VectorXd(sample_indices_.size());
-//   }
-
-//   void operator()(const operand_type & operand, Eigen::VectorXd & result) const
-//   {
-//     for (std::size_t i=0; i<sample_indices_.size(); ++i){
-//       result(i) = operand(sample_indices_[i]);
-//     }
-//   }
-// };
-
-// struct MyMaskerJacAction
-// {
-//   const std::vector<int> sample_indices_ = {};
-//   using operand_type = Eigen::MatrixXd;
-//   using result_type = operand_type;
-
-//   MyMaskerJacAction(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-//   Eigen::MatrixXd createApplyMaskResult(const Eigen::MatriXd & operand) const{
-//     return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
-//   }
-
-//   void operator()(const Eigen::MatriXd & operand, Eigen::MatrixXd & result) const
-//   {
-//     for (std::size_t i=0; i<sample_indices_.size(); ++i){
-//       for (int j=0; j<operand.cols(); ++j){
-//         result(i,j) = operand(sample_indices_[i],j);
-//       }
-//     }
-//   }
-// };
-
 TEST(rom_lspg_unsteady, test3)
 {
   /* masked lspg eigen */

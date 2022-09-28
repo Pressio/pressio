@@ -56,11 +56,11 @@ public:
   GalerkinSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
 			     const FomSystemType & fomSystem,
 			     const MaskerType & masker,
-			     const HypRedOpType & hrOp)
+			     const HypRedOpType & hyperReducer)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
-      hrOp_(hrOp),
+      hyperReducer_(hyperReducer),
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace())),
@@ -91,12 +91,12 @@ public:
 
     fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
     masker_(unMaskedFomResidual_, maskedFomResidual_);
-    hrOp_(maskedFomResidual_, reducedResidual);
+    hyperReducer_(maskedFomResidual_, reducedResidual);
 
     if (computeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
       masker_(unMaskedFomJacAction_, maskedFomJacAction_);
-      hrOp_(maskedFomJacAction_, reducedJacobian);
+      hyperReducer_(maskedFomJacAction_, reducedJacobian);
     }
   }
 
@@ -104,9 +104,7 @@ private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  std::reference_wrapper<const HypRedOpType> hrOp_;
-
-  // masker
+  std::reference_wrapper<const HypRedOpType> hyperReducer_;
   std::reference_wrapper<const MaskerType> masker_;
 
   // UNMASKED fom R,J instances

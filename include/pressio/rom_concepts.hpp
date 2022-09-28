@@ -65,19 +65,32 @@
 #include "./rom/predicates.hpp"
 #include "./rom/reduced_operators_traits.hpp"
 #include "./rom/concepts/valid_reduced_state.hpp"
+
+// subspaces
 #include "./rom/concepts/linear_subspace.hpp"
 #include "./rom/concepts/possibly_affine_trial_column_subspace.hpp"
-#include "./rom/concepts/steady_fom_with_jac_action.hpp"
-#include "./rom/concepts/steady_galerkin_projectable_on_affine_subspace.hpp"
-#include "./rom/concepts/steady_galerkin_hyperreduceable_with.hpp"
-#include "./rom/concepts/steady_galerkin_hyperreduceable_maskable_with.hpp"
-#include "./rom/concepts/steady_lspg_maskable_with.hpp"
-#include "./rom/concepts/semi_discrete_fom.hpp"
-#include "./rom/concepts/semi_discrete_fom_with_jac_action.hpp"
 
-#include "./rom/concepts/unsteady_lspg_default.hpp"
-#include "./rom/concepts/unsteady_lspg_hypred.hpp"
-#include "./rom/concepts/unsteady_lspg_masked.hpp"
-#include "./rom/concepts/fully_discrete_with_jac_action.hpp"
+// fom
+#include "./rom/concepts/fom_steady_with_jac_action.hpp"
+#include "./rom/concepts/fom_semi_discrete.hpp"
+#include "./rom/concepts/fom_semi_discrete_with_jac_action.hpp"
+#include "./rom/concepts/fom_fully_discrete_with_jac_action.hpp"
+
+// galerkin
+#include "./rom/concepts/galerkin_steady_default.hpp"
+#include "./rom/concepts/galerkin_steady_hyperreduced.hpp"
+#include "./rom/concepts/galerkin_steady_masked.hpp"
+#include "./rom/concepts/galerkin_explicit_default.hpp"
+#include "./rom/concepts/galerkin_explicit_hyperreduced.hpp"
+#include "./rom/concepts/galerkin_explicit_masked.hpp"
+#include "./rom/concepts/galerkin_implicit_default.hpp"
+#include "./rom/concepts/galerkin_implicit_hyperreduced.hpp"
+#include "./rom/concepts/galerkin_implicit_masked.hpp"
+// lspg
+#include "./rom/concepts/lspg_steady_default.hpp"
+#include "./rom/concepts/lspg_steady_masked.hpp"
+#include "./rom/concepts/lspg_unsteady_default.hpp"
+#include "./rom/concepts/lspg_unsteady_hyperreduced.hpp"
+#include "./rom/concepts/lspg_unsteady_masked.hpp"
 
 #endif

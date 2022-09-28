@@ -56,7 +56,7 @@ template <
   class ReducedStateType,
   class LspgResidualType,
   class LspgJacobianType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
   class HypRedUpdaterType
   >
@@ -71,21 +71,21 @@ public:
 
 public:
   LspgUnsteadyResidualJacobianPolicyHypRed() = delete;
-  LspgUnsteadyResidualJacobianPolicyHypRed(const TrialSpaceType & trialSpace,
+  LspgUnsteadyResidualJacobianPolicyHypRed(const TrialSubspaceType & trialSubspace,
 					   const FomSystemType & fomSystem,
-					   LspgFomStatesManager<TrialSpaceType> & fomStatesManager,
+					   LspgFomStatesManager<TrialSubspaceType> & fomStatesManager,
 					   const HypRedUpdaterType & hrUpdater)
-    : trialSpace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomStatesManager_(fomStatesManager),
       hypRedUpdater_(hrUpdater),
-      fomStateHelperInstance_(trialSpace.createFullState())
+      fomStateHelperInstance_(trialSubspace.createFullState())
   {}
 
 public:
   state_type createState() const{
     // this needs to create an instance of the reduced state
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   residual_type createResidual() const{
@@ -94,7 +94,7 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    const auto phi = trialSpace_.get().basisOfTranslatedSpace();
+    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
     return fomSystem_.get().createApplyJacobianResult(phi);
   }
 
@@ -237,11 +237,11 @@ private:
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
       // first, store J*phi into J
-      const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+      const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomStateAt_np1, phi, rhsEvaluationTime, J);
 
       using sc_t = typename ::pressio::Traits<
-	typename TrialSpaceType::basis_matrix_type>::scalar_type;
+	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
       const auto one = ::pressio::utils::Constants<sc_t>::one();
       IndVarType cf = dt;
       if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
@@ -263,11 +263,11 @@ private:
   // To avoid recomputing previous FOM states if we are not in a new time step.
   mutable raw_step_type stepTracker_ = -1;
 
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
-  std::reference_wrapper<LspgFomStatesManager<TrialSpaceType>> fomStatesManager_;
-  mutable typename FomSystemType::state_type fomStateHelperInstance_;
+  std::reference_wrapper<LspgFomStatesManager<TrialSubspaceType>> fomStatesManager_;
   std::reference_wrapper<const HypRedUpdaterType> hypRedUpdater_;
+  mutable typename FomSystemType::state_type fomStateHelperInstance_;
 };
 
 }}}

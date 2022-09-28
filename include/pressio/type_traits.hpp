@@ -57,6 +57,7 @@ template<class T, class Enable = void> struct Traits;
 
 #include "type_traits/all_have_traits.hpp"
 #include "type_traits/all_have_traits_and_same_scalar.hpp"
+#include "type_traits/scalar_trait_t.hpp"
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "type_traits/have_matching_exe_space.hpp"
 #endif

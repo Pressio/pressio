@@ -8,11 +8,9 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-Namespace: ``pressio::rom``
-
 .. literalinclude:: ../../../../include/pressio/rom/concepts/possibly_affine_trial_column_subspace.hpp
    :language: cpp
-   :lines: 56-95
+   :lines: 54-90
 
 
 Semantic requirements

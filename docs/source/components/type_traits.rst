@@ -16,7 +16,7 @@ Scope
 
 Provides functionalities for type introspection and detection.
 One of the main design features of pressio is that it supports arbitrary
-types via generic programming and type introspection, but also 
+types via generic programming and type introspection, but also
 provides special support for some data types commonly used.
 
 
@@ -45,7 +45,7 @@ similar information from types of various libraries.
 This is what motivated us to implement this ``type_traits`` component.
 We need a standard, uniform way to query types for compile-time information.
 We currently have traits specialized for types of a few TPLs, like Trilinos, Kokkos, Eigen.
-An example of `one such specialization <https://github.com/Pressio/pressio/blob/main/include/pressio/type_traits/traits_vector.hpp>`_ (in this case for Eigen) is:
+An example of one such specialization (in this case for Eigen) is:
 
 .. code-block:: cpp
 
@@ -54,15 +54,8 @@ An example of `one such specialization <https://github.com/Pressio/pressio/blob/
      T, ::pressio::mpl::enable_if_t<is_dynamic_vector_eigen<T>::value>
      >
    {
-
-     static constexpr bool is_static = false;
-     static constexpr bool is_dynamic  = !is_static;
      using scalar_type   = typename T::Scalar;
-     using size_type     = typename T::StorageIndex;
-     using reference_type = scalar_type &;
-     using const_reference_type = scalar_type const &;
-
-     // some other things
+     static constexpr int rank = 1;
    };
 
 This ``Traits`` class play a key role when users want to use arbitrary types (i.e. types
@@ -71,9 +64,14 @@ these specialization visibile to pressio to provide information about their gene
 
 For practical examples of how this class is used, see:
 
-* `Newton-Raphson solver <nonlinsolvers_nr.html>`_
-* `ode explicit steppers <ode_steppers_explicit.html>`_
-* `ode implicit steppers <ode_steppers_implicit.html>`_
+:red:`finish`
+
+..
+   * `Newton-Raphson solver <nonlinsolvers_nr.html>`_
+   * `ode explicit steppers <ode_steppers_explicit.html>`_
+   * `ode implicit steppers <ode_steppers_implicit.html>`_
+
+
 
 Type detection and identification
 ---------------------------------

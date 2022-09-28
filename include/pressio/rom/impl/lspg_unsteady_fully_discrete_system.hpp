@@ -57,7 +57,7 @@ template <
   class ReducedStateType,
   class LspgResidualType,
   class LspgJacobianType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
 class LspgFullyDiscreteSystem
@@ -84,17 +84,17 @@ public:
   LspgFullyDiscreteSystem & operator=(LspgFullyDiscreteSystem &&) = delete;
   ~LspgFullyDiscreteSystem() = default;
 
-  LspgFullyDiscreteSystem(const TrialSpaceType & trialSpace,
+  LspgFullyDiscreteSystem(const TrialSubspaceType & trialSubspace,
 			  const FomSystemType & fomSystem,
-			  LspgFomStatesManager<TrialSpaceType> & fomStatesManager)
-    : trialSpace_(trialSpace),
+			  LspgFomStatesManager<TrialSubspaceType> & fomStatesManager)
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomStatesManager_(fomStatesManager)
   {}
 
   state_type createState() const{
     // this needs to create an instance of the reduced state
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   discrete_residual_type createDiscreteResidual() const{
@@ -103,7 +103,7 @@ public:
   }
 
   discrete_jacobian_type createDiscreteJacobian() const{
-    const auto phi = trialSpace_.get().basisOfTranslatedSpace();
+    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
     discrete_jacobian_type J(fomSystem_.get().createResultOfDiscreteTimeJacobianActionOn(phi));
     return J;
   }
@@ -125,7 +125,7 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     try
     {
-      const auto phi = trialSpace_.get().basisOfTranslatedSpace();
+      const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
 							     R, phi, computeJacobian, J,
 							     ynp1, yn);
@@ -155,7 +155,7 @@ public:
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
 
     try{
-      const auto phi = trialSpace_.get().basisOfTranslatedSpace();
+      const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
 							     R, phi, computeJacobian, J,
 							     ynp1, yn, ynm1);
@@ -211,9 +211,9 @@ protected:
   // To avoid recomputing previous FOM states if we are not in a new time step.
   mutable raw_step_type stepTracker_ = -1;
 
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
-  std::reference_wrapper<LspgFomStatesManager<TrialSpaceType>> fomStatesManager_;
+  std::reference_wrapper<LspgFomStatesManager<TrialSubspaceType>> fomStatesManager_;
 };
 
 }}}

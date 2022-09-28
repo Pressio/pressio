@@ -5,41 +5,44 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-Namespace: ``pressio::rom``
-
-.. literalinclude:: ../../../../include/pressio/rom/concepts/semi_discrete_fom.hpp
+.. literalinclude:: ../../../../include/pressio/rom/concepts/fom_semi_discrete.hpp
    :language: cpp
-   :lines: 56-75
+   :lines: 58-79
 
 Semantic requirements
 ---------------------
 
-:red:`finish`
+Given an instance ``A`` of type ``T``, ``SemiDiscreteFom<T>``
+is modeled if it is satisfied, all subsumed concepts are modeled and:
 
-..
-   - *non aliasing instantiation*: given the following:
+- all methods are blocking, meaning that all temporary
+  allocations and operations needed to execute those methods
+  are completed and no outstanding work remains upon return
 
-     .. code-block:: cpp
+- methods may modify only the non-constant operands.
+  Operands that are constant must not be modified.
 
-	auto r1 = A.createRightHandSide();
-	auto r2 = A.createRightHandSide();
+- ``auto rhs = A.createRightHandSide()``
 
-     ``r1`` and ``r2`` must be distinct objects, ``std::addressof(r1) != std::addressof(r2)``,
-     and such that any modification to ``r1`` does not affect ``r2``
+  - returns an object with all its "elements" zero initialized
 
-   - *blocking operations*: all methods are blocking, meaning that all temporary
-     allocations and operations are complete before the methods return and not outstanding work remains
+- doing:
 
-   - *equality preserving*: given ``A`` an object of type `T`, calling ``A.rightHandSide(...)``
-     with equal inputs yields equal outputs.
+  .. code-block:: cpp
 
-   - *const correctness*: methods may modify only the non-constant operands.
-     Operands that are constant must not be modified.
+     auto rhs1 = A.createRightHandSide();
+     auto rhs2 = A.createRightHandSide();
+     //...
+     auto rhsN = A.createRightHandSide();
 
+  implies that ``rhs1, rhs2, ..., rhsN`` must be distinct objects,
+  and such that any modification to ``rhs1`` does not affect any of the others
+  and viceversa.
+  In other words, calling ``A.createRightHandSide()`` yields independent instances.
 
-.. Syntax only
-.. -----------
+- ``A.rightHandSide(state, evalTime, rhs)``
 
-.. .. literalinclude:: ./syntax_only_fom_system_concepts.cc
-..    :language: cpp
-..    :lines: 6-18
+  - overwrites ``rhs`` with the result
+
+  - is equality preserving, i.e. given equal
+    inputs ``state, evalTime``, the result written to ``rhs`` remains the same

@@ -29,6 +29,7 @@ namespace pressio{
 template<>
 struct Traits<JacobianAction>{
   using scalar_type = double;
+  static constexpr int rank = 2;
 };
 
 namespace ops{

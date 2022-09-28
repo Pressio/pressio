@@ -73,15 +73,15 @@ public:
   LspgMaskDecorator() = delete;
 
   template <
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType,
     template<class> class LspgFomStatesManager
     >
-  LspgMaskDecorator(const TrialSpaceType & trialSpace,
+  LspgMaskDecorator(const TrialSubspaceType & trialSubspace,
 		    const FomSystemType & fomSystem,
-		    LspgFomStatesManager<TrialSpaceType> & fomStatesManager,
+		    LspgFomStatesManager<TrialSubspaceType> & fomStatesManager,
 		    const MaskerType & masker)
-    : Maskable(trialSpace, fomSystem, fomStatesManager),
+    : Maskable(trialSubspace, fomSystem, fomStatesManager),
       masker_(masker),
       unMaskedResidual_(Maskable::createResidual()),
       unMaskedJacobian_(Maskable::createJacobian())
@@ -124,9 +124,9 @@ public:
   }
 
 private:
+  std::reference_wrapper<const MaskerType> masker_;
   mutable unmasked_residual_type unMaskedResidual_;
   mutable unmasked_jacobian_type unMaskedJacobian_;
-  std::reference_wrapper<const MaskerType> masker_;
 };
 
 }}}

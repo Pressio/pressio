@@ -7,20 +7,20 @@ namespace pressio{ namespace rom{ namespace impl{
 /*
   hyp-red explicit galerkin system represents:
 
-     d hat{y}/dt = HrOp fom_rhs(phi*hat{y}, ...)
+     d hat{y}/dt = hyperReducer fom_rhs(phi*hat{y}, ...)
 
 - hat{y} is the reduced state
 - fom_rhs is the fom RHS
 - phi is the basis
-- HrOp is the hyper-red operator
+- hyperReducer is the hyper-red operator
 */
 template <
   class IndVarType,
   class ReducedStateType,
   class ReducedRhsType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
-  class HyperReductionOperator
+  class HyperReducerType
   >
 class GalerkinHyperReducedOdeSystemOnlyRhs
 {
@@ -33,24 +33,23 @@ public:
 
   GalerkinHyperReducedOdeSystemOnlyRhs() = delete;
 
-  GalerkinHyperReducedOdeSystemOnlyRhs(const TrialSpaceType & trialSpace,
+  GalerkinHyperReducedOdeSystemOnlyRhs(const TrialSubspaceType & trialSubspace,
 				       const FomSystemType & fomSystem,
-				       const HyperReductionOperator & hrOp)
-    : trialSpace_(trialSpace),
+				       const HyperReducerType & hyperReducer)
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
-      hrOp_(hrOp),
+      fomState_(trialSubspace.createFullState()),
+      hyperReducer_(hyperReducer),
       fomRhs_(fomSystem.createRightHandSide())
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
+    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
   void rightHandSide(const state_type & reducedState,
@@ -59,20 +58,20 @@ public:
   {
 
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     // evaluate fomRhs
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
 
     // evaluate reduced rhs
-    hrOp_(fomRhs_, rhsEvaluationTime, reducedRhs);
+    hyperReducer_(fomRhs_, rhsEvaluationTime, reducedRhs);
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  std::reference_wrapper<const HyperReductionOperator> hrOp_;
+  std::reference_wrapper<const HyperReducerType> hyperReducer_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;
 };
 

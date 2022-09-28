@@ -49,9 +49,9 @@
 #ifndef ROM_CONSTRAINTS_ROM_LINEAR_SUBSPACE_CONCEPT_HPP_
 #define ROM_CONSTRAINTS_ROM_LINEAR_SUBSPACE_CONCEPT_HPP_
 
-namespace pressio{ namespace rom{
-
 #ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace rom{
 
 template <class T>
 concept VectorSubspace =
@@ -66,7 +66,11 @@ concept VectorSubspace =
       { A.isRowSpace()    } -> std::convertible_to<bool>;
     };
 
+}} //end namespace pressio::rom
+
 #else
+
+namespace pressio{ namespace rom{
 
 template<class T, class enable = void>
 struct LinearSubspaceConcept : std::false_type{};
@@ -98,7 +102,7 @@ struct LinearSubspaceConcept<
    >
   > : std::true_type{};
 
+}}
 #endif
 
-}}
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

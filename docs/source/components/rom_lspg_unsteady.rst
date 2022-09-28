@@ -16,9 +16,10 @@ API
   template<
     class TrialSpaceType,
     class FomSystemType>
-  /*
-    requires DefaultDiscreteTimeAssemblyWith<FomSystemType, TrialSubspaceType>
-  */
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires unsteady::ComposableIntoDefaultProblem<
+               TrialSubspaceType, FomSystemType>
+  #endif
   /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,         (1)
 					   const TrialSpaceType & trialSpace,
 					   const FomSystemType & fomSystem);
@@ -27,9 +28,10 @@ API
     class TrialSpaceType,
     class FomSystemType,
     class HyperReductionOperatorType>
-  /*
-    requires unsteady::HyperReduceableWith<FomSystemType, HyperReductionOperatorType, TrialSubspaceType>
-  */
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires unsteady::ComposableIntoHyperReducedProblem<
+               TrialSubspaceType, FomSystemType, HyperReductionOperatorType>
+  #endif
   /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,          (2)
 					   const TrialSpaceType & trialSpace,
 					   const FomSystemType & fomSystem,
@@ -39,9 +41,10 @@ API
     class TrialSpaceType,
     class FomSystemType,
     class MaskerType>
-  /*
-    requires unsteady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>
-  */
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires unsteady::ComposableIntoMaskedProblem<
+               TrialSubspaceType, FomSystemType, MaskerType>
+  #endif
   /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,          (3)
 					   const TrialSpaceType & trialSpace,
 					   const FomSystemType & fomSystem,
@@ -51,10 +54,10 @@ API
     std::size_t TotalNumberOfStencilStates,
     class TrialSpaceType,
     class FomSystemType>
-  /*
+  #ifdef PRESSIO_ENABLE_CXX20
     requires FullyDiscreteSystemWithJacobianAction<
                 FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>
-  */
+  #endif
   /*impl defined*/ create_unsteady_problem(const TrialSpaceType & trialSpace,   (4)
 					   const FomSystemType & fomSystem);
 
@@ -107,11 +110,11 @@ Since we cannot yet use C++20, the constraints are
 currently enforced via static asserts (to provide a decent error message)
 and/or SFINAE. The concepts used are:
 
-- `DefaultDiscreteTimeAssemblyWith <rom_concepts_unsteady_lspg/unsteady_lspg_default.html>`__
+- `rom::lspg::unsteady::DefaultProblem <rom_concepts_unsteady_lspg/default.html>`__
 
-- `rom::lspg::unsteady::HyperReduceableWith <rom_concepts_unsteady_lspg/unsteady_lspg_hyperreduceable.html>`__
+- `rom::lspg::unsteady::HyperReducedProblem <rom_concepts_unsteady_lspg/hyperreduced.html>`__
 
-- `rom::lspg::unsteady::MaskableWith <rom_concepts_unsteady_lspg/unsteady_lspg_maskable.html>`__
+- `rom::lspg::unsteady::MaskedProblem <rom_concepts_unsteady_lspg/masked.html>`__
 
 - `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
 

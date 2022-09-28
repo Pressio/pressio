@@ -27,7 +27,7 @@ template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires DefaultDiscreteTimeAssemblyWith<FomSystemType, TrialSubspaceType>
+requires unsteady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
 #endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 			     const TrialSubspaceType & trialSpace,
@@ -37,14 +37,9 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(DefaultDiscreteTimeAssemblyWith<
-		FomSystemType, TrialSubspaceType>::value,
+    static_assert(steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value,
 		"does not meet the SemiDiscreteFomWithJacobianAction concept");
 #endif
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using independent_variable_type = typename FomSystemType::time_type;
   using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
@@ -73,12 +68,12 @@ template<
   class HypRedUpdaterType
 #if not defined PRESSIO_ENABLE_CXX20
   , mpl::enable_if_t<
-    unsteady::HyperReduceableWith<FomSystemType, HypRedUpdaterType, TrialSubspaceType>::value, int
-    > = 0
+      unsteady::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HypRedUpdaterType>::value,
+      int> = 0
 #endif
   >
 #ifdef PRESSIO_ENABLE_CXX20
-requires unsteady::HyperReduceableWith<FomSystemType, HypRedUpdaterType, TrialSubspaceType>
+requires unsteady::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HypRedUpdaterType>
 #endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 			     const TrialSubspaceType & trialSpace,
@@ -87,10 +82,6 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 {
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using independent_variable_type = typename FomSystemType::time_type;
   using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
@@ -116,12 +107,12 @@ template<
   class MaskerType
 #if not defined PRESSIO_ENABLE_CXX20
   , mpl::enable_if_t<
-    unsteady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>::value, int
+      unsteady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>::value, int
     > = 0
 #endif
   >
 #ifdef PRESSIO_ENABLE_CXX20
-requires unsteady::MaskableWith<FomSystemType, MaskerType, TrialSubspaceType>
+requires unsteady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>
 #endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 			     const TrialSubspaceType & trialSpace,
@@ -130,10 +121,6 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 {
 
   impl::valid_scheme_for_lspg_else_throw(schemeName);
-
-  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
-		typename FomSystemType::state_type>::value == true,
-		"Mismatching fom states");
 
   using independent_variable_type   = typename FomSystemType::time_type;
   using reduced_state_type          = typename TrialSubspaceType::reduced_state_type;
@@ -166,7 +153,8 @@ template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires FullyDiscreteSystemWithJacobianAction<FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>
+requires FullyDiscreteSystemWithJacobianAction<
+  FomSystemType, TotalNumberOfDesiredStates, typename TrialSubspaceType::basis_matrix_type>
 #endif
 auto create_unsteady_problem(const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem)
@@ -174,10 +162,10 @@ auto create_unsteady_problem(const TrialSubspaceType & trialSpace,
 
 #if not defined PRESSIO_ENABLE_CXX20
   static_assert(FullyDiscreteSystemWithJacobianAction<
-		FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>::value,
+		FomSystemType, TotalNumberOfDesiredStates,
+		typename TrialSubspaceType::basis_matrix_type>::value
 		"FullyDiscreteSystemWithJacobianAction not satisfied");
 #endif
-
 
   static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
 		typename FomSystemType::state_type>::value == true,

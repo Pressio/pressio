@@ -7,16 +7,16 @@ namespace pressio{ namespace rom{ namespace impl{
 /*
   hypred implicit galerkin system represents:
 
-     d hat{y}/dt = hrOp fom_rhs(phi*hat{y}, ...)
+     d hat{y}/dt = hyperReducer fom_rhs(phi*hat{y}, ...)
 
 - hat{y} is the reduced state
 - fom_rhs is the fom RHS
 - phi is the basis
-- hrOp is the hypred operator
+- hyperReducer is the hypred operator
 so that it boils down to:
 
-rhs = hrOp fom_rhs(phi*hat{y}, ...)
-rhs_jacobian = hrOp d(fom_rhs(phi*hat{y}, ...))/dy phi
+rhs = hyperReducer fom_rhs(phi*hat{y}, ...)
+rhs_jacobian = hyperReducer d(fom_rhs(phi*hat{y}, ...))/dy phi
 
 */
 template <
@@ -24,16 +24,16 @@ template <
   class ReducedStateType,
   class ReducedRhsType,
   class ReducedJacobianType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
-  class HyperReductionOperator
+  class HyperReducerType
   >
 class GalerkinHypRedOdeSystemRhsAndJacobian
 {
 
   // deduce from the fom object the type of result of
   // applying the Jacobian to the basis
-  using basis_matrix_type = typename TrialSpaceType::basis_matrix_type;
+  using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type;
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
 	     (std::declval<basis_matrix_type const &>()) );
@@ -47,30 +47,29 @@ public:
 
   GalerkinHypRedOdeSystemRhsAndJacobian() = delete;
 
-  GalerkinHypRedOdeSystemRhsAndJacobian(const TrialSpaceType & trialSpace,
+  GalerkinHypRedOdeSystemRhsAndJacobian(const TrialSubspaceType & trialSubspace,
 					const FomSystemType & fomSystem,
-					const HyperReductionOperator & hrOp)
-    : trialSpace_(trialSpace),
+					const HyperReducerType & hyperReducer)
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
-      hrOp_(hrOp),
+      fomState_(trialSubspace.createFullState()),
+      hyperReducer_(hyperReducer),
       fomRhs_(fomSystem.createRightHandSide()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace()))
+      fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
+    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+    return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
   void rightHandSide(const state_type & reducedState,
@@ -79,13 +78,13 @@ public:
   {
 
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    // evaluate fomRhs and apply hrOp
+    // evaluate fomRhs and apply hyperReducer
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
 
     // compute the reduced rhs
-    hrOp_(fomRhs_, rhsEvaluationTime, reducedRhs);
+    hyperReducer_(fomRhs_, rhsEvaluationTime, reducedRhs);
   }
 
   void jacobian(const state_type & reducedState,
@@ -94,22 +93,22 @@ public:
 
   {
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
 
     // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
     fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
 
     // compute the reduced jacobian
-    hrOp_(fomJacAction_, rhsEvaluationTime, reducedJacobian);
+    hyperReducer_(fomJacAction_, rhsEvaluationTime, reducedJacobian);
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  std::reference_wrapper<const HyperReductionOperator> hrOp_;
+  std::reference_wrapper<const HyperReducerType> hyperReducer_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;
   mutable fom_jac_action_result_type fomJacAction_;
 };

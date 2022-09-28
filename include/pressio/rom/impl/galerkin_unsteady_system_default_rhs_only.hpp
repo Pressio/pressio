@@ -18,12 +18,12 @@ template <
   class IndVarType,
   class ReducedStateType,
   class ReducedRhsType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
 class GalerkinDefaultOdeSystemOnlyRhs
 {
-  using basis_matrix_type = typename TrialSpaceType::basis_matrix_type;
+  using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type;
 
 public:
   // required aliases
@@ -33,22 +33,21 @@ public:
 
   GalerkinDefaultOdeSystemOnlyRhs() = delete;
 
-  GalerkinDefaultOdeSystemOnlyRhs(const TrialSpaceType & trialSpace,
+  GalerkinDefaultOdeSystemOnlyRhs(const TrialSubspaceType & trialSubspace,
 				  const FomSystemType & fomSystem)
-    : trialSpace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
+      fomState_(trialSubspace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide())
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
+    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
   void rightHandSide(const state_type & reducedState,
@@ -57,13 +56,13 @@ public:
   {
 
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     // evaluate fomRhs
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
 
     // compute the reduced rhs
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using rhs_scalar_t = typename ::pressio::Traits<right_hand_side_type>::scalar_type;
@@ -74,7 +73,7 @@ public:
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;

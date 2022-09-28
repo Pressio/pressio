@@ -14,7 +14,7 @@ LSPG steady masked represents:
 */
 template <
   class ReducedStateType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
   class MaskerType
   >
@@ -24,7 +24,7 @@ class LspgSteadyMaskedSystem
   using unmasked_fom_residual_type = typename FomSystemType::residual_type;
   using unmasked_fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-      (std::declval<typename TrialSpaceType::basis_matrix_type const &>())
+      (std::declval<typename TrialSubspaceType::basis_matrix_type const &>())
       );
 
   // deduce the masked types
@@ -44,20 +44,20 @@ public:
 
   LspgSteadyMaskedSystem() = delete;
 
-  LspgSteadyMaskedSystem(TrialSpaceType & trialSpace,
+  LspgSteadyMaskedSystem(TrialSubspaceType & trialSubspace,
 			 const FomSystemType & fomSystem,
 			 const MaskerType & masker)
-    : trialSpace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
+      fomState_(trialSubspace.createFullState()),
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
-      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace()))
+      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   residual_type createResidual() const{
@@ -66,7 +66,7 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    auto tmp = fomSystem_.get().createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace());
+    auto tmp = fomSystem_.get().createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace());
     return masker_.get().createApplyMaskResult(tmp);
   }
 
@@ -75,27 +75,23 @@ public:
 			   jacobian_type & lspgJacobian,
 			   bool computeJacobian) const
   {
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
     masker_(unMaskedFomResidual_, lsgpResidual);
 
     if (computeJacobian){
-      const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+      const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
       masker_(unMaskedFomJacAction_, lspgJacobian);
     }
   }
 
 protected:
-  std::reference_wrapper<TrialSpaceType> trialSpace_;
+  std::reference_wrapper<TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-
-  // masker
   std::reference_wrapper<const MaskerType> masker_;
-
-  // UNMASKED fom R,J instances
   mutable unmasked_fom_residual_type unMaskedFomResidual_;
   mutable unmasked_fom_jac_action_result_type unMaskedFomJacAction_;
 };

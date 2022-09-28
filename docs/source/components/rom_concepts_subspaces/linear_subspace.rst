@@ -5,11 +5,9 @@
 
 Header: ``<pressio/rom_concepts.hpp>``
 
-Namespace: ``pressio::rom``
-
 .. literalinclude:: ../../../../include/pressio/rom/concepts/linear_subspace.hpp
    :language: cpp
-   :lines: 56-67
+   :lines: 54-69
 
 Semantic requirements
 ---------------------
@@ -19,27 +17,53 @@ Semantic requirements
 ..
    The concept is modeled only if it is satisfied,
    all subsumed concepts are modeled and given
-   an instance ``s``, of type ``T``, all of the following hold:
+   an instance ``A``, of type ``T``, all of the following hold:
 
-   - ``s`` is immutable and, consequently, so are the underlying basis
-     and subspace it represents.
+   - immutability: ``A`` becomes immutable upon construction
+     and, consequently, so are the underlying basis
+     and subspace it represents
 
-   - let ``auto & basis = s.basis()``, then:
+   - the copy constructor ``auto B = A`` must be such that
+     ``B`` and ``A`` are independent objects but both
+     representing the same subspace
 
-     - if ``s.isColumnSpace() == true``, then ``basis`` is full *column* rank
+   - move semantics should be the same copy semantics
 
-     - if ``s.isRowSpace() == true``, then ``basis`` is full *row* rank
+   - let ``auto & basis = A.basis()``, then:
 
-   - if ``s.isColumnSpace() == true``, then it ``s.isRowSpace() == false`` and vice versa
+     - if ``A.isColumnSpace() == true``, then ``basis`` is full *column* rank
 
-   - ``auto dim = s.dimension()`` represents the true dimensionality of the subspace
+     - if ``A.isRowSpace() == true``, then ``basis`` is full *row* rank
+
+   - if ``A.isColumnSpace() == true``, then it ``A.isRowSpace() == false`` and vice versa
+
+   - ``auto dim = A.dimension()`` represents the true dimensionality of the subspace
 
    - must be closed under addition and scalar multiplication
 
-   ..
-      Syntax only
-      -----------
+   Syntax-only snippet
+   -------------------
 
-      .. literalinclude:: ./syntax_only_subspaces_concepts.cc
-	 :language: cpp
-	 :lines: 8-16
+   The following shows an example class that *satisfies* the concept:
+
+   .. code-block:: cpp
+
+      class SampleClass
+      {
+	public:
+	  /*By having a user-declared copy assignment, the compiler does
+	    not generate automatically a move constructor/move assignment,
+	    which means that only the copy constr/copy assignment participate
+	    in overload resolution, which means we can achieve what we want
+	    by simply not declaring move cnstr/assign.*/
+
+	  SampleClass(const SampleClass & other) = default;
+	  SampleClass& operator=(const SampleClass & /*other*/) = delete;
+
+	  using basis_matrix_type = Eigen::MatrixXd;
+
+	  const basis_matrix_type & basis() const;
+	  std::size_t dimension() const;
+	  bool isColumnSpace() const;
+	  bool isRowSpace() const;
+      }

@@ -18,16 +18,18 @@ template <
   class IndVarType,
   class ReducedStateType,
   class ReducedRhsType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType,
-  class RhsMaskerType,
-  class HyperReductionOperator
+  class MaskerType,
+  class HyperReducerType
   >
 class GalerkinMaskedOdeSystemOnlyRhs
 {
   // deduce types
   using unmasked_fom_rhs_type = typename FomSystemType::right_hand_side_type;
-  using masked_fom_rhs_type = typename RhsMaskerType::result_type;
+  using masked_fom_rhs_type =
+    decltype(std::declval<MaskerType const>().createApplyMaskResult
+	     (std::declval<unmasked_fom_rhs_type const &>()));
 
 public:
   // required aliases
@@ -37,27 +39,26 @@ public:
 
   GalerkinMaskedOdeSystemOnlyRhs() = delete;
 
-  GalerkinMaskedOdeSystemOnlyRhs(const TrialSpaceType & trialSpace,
+  GalerkinMaskedOdeSystemOnlyRhs(const TrialSubspaceType & trialSubspace,
 				 const FomSystemType & fomSystem,
-				 const RhsMaskerType & rhsMasker,
-				 const HyperReductionOperator & hrOp)
-    : trialSpace_(trialSpace),
+				 const MaskerType & masker,
+				 const HyperReducerType & hyperReducer)
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
-      hrOp_(hrOp),
-      rhsMasker_(rhsMasker),
+      fomState_(trialSubspace.createFullState()),
+      hyperReducer_(hyperReducer),
+      masker_(masker),
       unMaskedFomRhs_(fomSystem.createRightHandSide()),
-      maskedFomRhs_(rhsMasker.createApplyMaskResult(unMaskedFomRhs_))
+      maskedFomRhs_(masker.createApplyMaskResult(unMaskedFomRhs_))
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
+    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
   void rightHandSide(const state_type & reducedState,
@@ -66,22 +67,22 @@ public:
   {
 
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     // evaluate fomRhs and mask it
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, unMaskedFomRhs_);
-    rhsMasker_(unMaskedFomRhs_, maskedFomRhs_);
+    masker_(unMaskedFomRhs_, maskedFomRhs_);
 
     // evaluate reduced rhs
-    hrOp_(maskedFomRhs_, rhsEvaluationTime, reducedRhs);
+    hyperReducer_(maskedFomRhs_, rhsEvaluationTime, reducedRhs);
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  std::reference_wrapper<const HyperReductionOperator> hrOp_;
-  std::reference_wrapper<const RhsMaskerType> rhsMasker_;
+  std::reference_wrapper<const HyperReducerType> hyperReducer_;
+  std::reference_wrapper<const MaskerType> masker_;
   mutable unmasked_fom_rhs_type unMaskedFomRhs_;
   mutable masked_fom_rhs_type maskedFomRhs_;
 };

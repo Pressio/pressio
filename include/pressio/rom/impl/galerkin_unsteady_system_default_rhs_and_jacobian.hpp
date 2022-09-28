@@ -23,7 +23,7 @@ template <
   class ReducedStateType,
   class ReducedRhsType,
   class ReducedJacobianType,
-  class TrialSpaceType,
+  class TrialSubspaceType,
   class FomSystemType
   >
 class GalerkinDefaultOdeSystemRhsAndJacobian
@@ -31,7 +31,7 @@ class GalerkinDefaultOdeSystemRhsAndJacobian
 
   // deduce from the fom object the type of result of
   // applying the Jacobian to the basis
-  using basis_matrix_type = typename TrialSpaceType::basis_matrix_type;
+  using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type;
   using fom_jac_action_result_type =
     decltype(std::declval<FomSystemType const>().createApplyJacobianResult
 	     (std::declval<basis_matrix_type const &>()) );
@@ -45,28 +45,26 @@ public:
 
   GalerkinDefaultOdeSystemRhsAndJacobian() = delete;
 
-  GalerkinDefaultOdeSystemRhsAndJacobian(const TrialSpaceType & trialSpace,
+  GalerkinDefaultOdeSystemRhsAndJacobian(const TrialSubspaceType & trialSubspace,
 					 const FomSystemType & fomSystem)
-    : trialSpace_(trialSpace),
+    : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSpace.createFullState()),
+      fomState_(trialSubspace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSpace_.get().basisOfTranslatedSpace()))
+      fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
   state_type createState() const{
-    return trialSpace_.get().createReducedState();
+    return trialSubspace_.get().createReducedState();
   }
 
   right_hand_side_type createRightHandSide() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(phi);
+    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
-    return impl::CreateGalerkinJacobian<jacobian_type>()(phi);
+    return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
   void rightHandSide(const state_type & reducedState,
@@ -75,13 +73,13 @@ public:
   {
 
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     // evaluate fomRhs
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
 
     // compute the reduced rhs
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using rhs_scalar_t = typename ::pressio::Traits<right_hand_side_type>::scalar_type;
@@ -97,9 +95,9 @@ public:
 
   {
     // reconstruct fom state fomState = phi*reducedState
-    trialSpace_.get().mapFromReducedState(reducedState, fomState_);
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    const auto & phi = trialSpace_.get().basisOfTranslatedSpace();
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
 
     // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
     fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
@@ -115,7 +113,7 @@ public:
   }
 
 private:
-  std::reference_wrapper<const TrialSpaceType> trialSpace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;

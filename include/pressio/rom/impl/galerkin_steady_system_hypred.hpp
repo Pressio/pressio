@@ -45,11 +45,11 @@ public:
 
   GalerkinSteadyHypRedSystem(const TrialSubspaceType & trialSubspace,
 			     const FomSystemType & fomSystem,
-			     const HyperReductionOperator & hrOp)
+			     const HyperReductionOperator & hyperReducer)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
-      hrOp_(hrOp),
+      hyperReducer_(hyperReducer),
       fomResidual_(fomSystem.createResidual()),
       fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
@@ -83,11 +83,11 @@ public:
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     fomSystem_.get().residual(fomState_,  fomResidual_);
-    hrOp_(fomResidual_, reducedResidual);
+    hyperReducer_(fomResidual_, reducedResidual);
 
     if (computeJacobian){
       fomSystem_.get().applyJacobian(fomState_, phi, fomJacAction_);
-      hrOp_(fomJacAction_, reducedJacobian);
+      hyperReducer_(fomJacAction_, reducedJacobian);
     }
   }
 
@@ -95,7 +95,7 @@ private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  std::reference_wrapper<const HyperReductionOperator> hrOp_;
+  std::reference_wrapper<const HyperReductionOperator> hyperReducer_;
   mutable typename FomSystemType::residual_type fomResidual_;
   mutable fom_jac_action_result_type fomJacAction_;
 };

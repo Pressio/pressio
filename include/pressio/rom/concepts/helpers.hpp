@@ -49,36 +49,71 @@
 #ifndef ROM_CONSTRAINTS_ROM_CONCEPTS_HELPERS_HPP_
 #define ROM_CONSTRAINTS_ROM_CONCEPTS_HELPERS_HPP_
 
-namespace pressio{ namespace rom{
-namespace concepts{ namespace impl{
+namespace pressio{ namespace rom{ namespace concepts{ namespace impl{
+
+template<class FomSystemType, class OperandType>
+struct fully_discrete_fom_jacobian_action{
+  using type =
+    decltype
+    (std::declval<FomSystemType const>().createResultOfDiscreteTimeJacobianActionOn
+     (
+      std::declval<OperandType const &>()
+     )
+    );
+};
+
+template<class ...Args>
+using fully_discrete_fom_jacobian_action_t =
+  typename fully_discrete_fom_jacobian_action<Args...>::type;
+
+// -----------------------------------------------------------------------------
 
 template<class FomSystemType, class TrialSubspaceType>
-struct FomJacActionResult
-{
+struct fom_jacobian_action_on_trial_space{
   using type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
-	     (
-	      std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
-	      )
-	     );
+    decltype
+    (std::declval<FomSystemType const>().createApplyJacobianResult
+     (
+      std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
+     )
+    );
 };
 
 template<class ...Args>
-using FomJacActionResult_t = typename FomJacActionResult<Args...>::type;
+using fom_jacobian_action_on_trial_space_t =
+  typename fom_jacobian_action_on_trial_space<Args...>::type;
 
-template<class Masker, class Operand>
-struct CreateApplyMaskResult
-{
+// -----------------------------------------------------------------------------
+
+template<class FomSystemType, class OperandType>
+struct fom_jacobian_action{
   using type =
-    decltype(std::declval<Masker const>().createApplyMaskResult
-	     (
-	      std::declval<Operand const &>()
-	      )
-	     );
+    decltype
+    (std::declval<FomSystemType const>().createApplyJacobianResult
+     (
+      std::declval<OperandType const &>()
+     )
+    );
 };
 
 template<class ...Args>
-using CreateApplyMaskResult_t = typename CreateApplyMaskResult<Args...>::type;
+using fom_jacobian_action_t = typename fom_jacobian_action<Args...>::type;
+
+// -----------------------------------------------------------------------------
+
+template<class MaskerType, class OperandType>
+struct mask_action{
+  using type =
+    decltype
+    (std::declval<MaskerType const>().createApplyMaskResult
+     (
+      std::declval<OperandType const &>()
+     )
+    );
+};
+
+template<class ...Args>
+using mask_action_t = typename mask_action<Args...>::type;
 
 }}}}
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
