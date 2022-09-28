@@ -30,27 +30,27 @@ concepts: steady galerkin
     rom_concepts_steady_galerkin/hr
     rom_concepts_steady_galerkin/masked
 
+concepts: explicit galerkin
+===========================
+
+.. toctree::
+    :maxdepth: 1
+
+    rom_concepts_explicit_galerkin/default
+    rom_concepts_explicit_galerkin/hr
+    rom_concepts_explicit_galerkin/masked
+
+concepts: implicit galerkin
+===========================
+
+.. toctree::
+    :maxdepth: 1
+
+    rom_concepts_implicit_galerkin/default
+    rom_concepts_implicit_galerkin/hr
+    rom_concepts_implicit_galerkin/masked
+
 ..
-   concepts: explicit galerkin
-   ===========================
-
-   .. toctree::
-       :maxdepth: 1
-
-       rom_concepts_explicit_galerkin/default
-       rom_concepts_explicit_galerkin/hr
-       rom_concepts_explicit_galerkin/masked
-
-   concepts: implicit galerkin
-   ===========================
-
-   .. toctree::
-       :maxdepth: 1
-
-       rom_concepts_implicit_galerkin/default
-       rom_concepts_implicit_galerkin/hr
-       rom_concepts_implicit_galerkin/masked
-
    concepts: steady lspg
    =====================
 
