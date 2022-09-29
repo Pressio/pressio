@@ -14,18 +14,18 @@ API
   namespace pressio { namespace rom{ namespace lspg{
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteady::ComposableIntoDefaultProblem<
                TrialSubspaceType, FomSystemType>
   #endif
   /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,         (1)
-					   const TrialSpaceType & trialSpace,
+					   const TrialSubspaceType & trialSubspace,
 					   const FomSystemType & fomSystem);
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType,
     class HyperReductionOperatorType>
   #ifdef PRESSIO_ENABLE_CXX20
@@ -33,12 +33,12 @@ API
                TrialSubspaceType, FomSystemType, HyperReductionOperatorType>
   #endif
   /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,          (2)
-					   const TrialSpaceType & trialSpace,
+					   const TrialSubspaceType & trialSubspace,
 					   const FomSystemType & fomSystem,
 					   const HyperReductionOperatorType & hrOp);
 
   template<
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType,
     class MaskerType>
   #ifdef PRESSIO_ENABLE_CXX20
@@ -46,19 +46,19 @@ API
                TrialSubspaceType, FomSystemType, MaskerType>
   #endif
   /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,          (3)
-					   const TrialSpaceType & trialSpace,
+					   const TrialSubspaceType & trialSubspace,
 					   const FomSystemType & fomSystem,
 					   const MaskerType & masker);
 
   template<
     std::size_t TotalNumberOfStencilStates,
-    class TrialSpaceType,
+    class TrialSubspaceType,
     class FomSystemType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires FullyDiscreteSystemWithJacobianAction<
                 FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>
   #endif
-  /*impl defined*/ create_unsteady_problem(const TrialSpaceType & trialSpace,   (4)
+  /*impl defined*/ create_unsteady_problem(const TrialSubspaceType & trialSubspace,   (4)
 					   const FomSystemType & fomSystem);
 
   }}} // end namespace pressio::rom::lspg
@@ -118,12 +118,6 @@ and/or SFINAE. The concepts used are:
 
 - `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
 
-Mandates
-~~~~~~~~
-
-- ``std::is_same<typename TrialSubspaceType::full_state_type,
-  typename FomSystemType::state_type >::value == true``
-
 Preconditions
 ~~~~~~~~~~~~~
 
@@ -157,13 +151,10 @@ Return value, Postconditions and Side Effects
 	public:
 	  using independent_variable_type = /*see description below*/;
 	  using state_type                = /*see description below*/;
+	  using residual_type = /*see description below*/;
+	  using jacobian_type = /*see description below*/;
 
-	  template<class SolverType>
-	  void operator()(state_type & /**/,
-			  const pressio::ode::StepStartAt<independent_variable_type> & /**/,
-			  pressio::ode::StepCount /**/,
-			  pressio::ode::StepSize<independent_variable_type> /**/,
-			  SolverType & /**/)
+	  /*impl defined*/ & lspgStepper();
       };
 
   where:
@@ -171,6 +162,8 @@ Return value, Postconditions and Side Effects
   - ``state_type`` aliases the reduced state type of your trial subspace class
 
   - ``independent_variable_type`` same as the nested type alias in ``FomSystemType``
+
+  - :red:`finish`
 
 - any necessary memory allocation needed for the implementation
   occurs when the constructor of the class is called. However, we

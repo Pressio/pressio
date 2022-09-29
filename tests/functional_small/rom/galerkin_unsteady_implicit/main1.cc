@@ -142,11 +142,13 @@ TEST(rom_galerkin, test5)
   const auto odeScheme = pressio::ode::StepScheme::BDF1;
   namespace gal = pressio::rom::galerkin;
   auto problem = gal::create_unsteady_implicit_problem(odeScheme, space, fomSystem);
+  auto & galStepper = problem.galerkinStepper();
 
   using time_type = typename fom_t::time_type;
   const time_type dt = 2.;
   NonLinearSolver solver;
-  pressio::ode::advance_n_steps(problem, romState, time_type{0}, dt,
+
+  pressio::ode::advance_n_steps(galStepper, romState, time_type{0}, dt,
 				::pressio::ode::StepCount(1), solver);
   std::cout << romState << std::endl;
   EXPECT_TRUE(romState[0] == 2.);

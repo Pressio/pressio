@@ -30,7 +30,7 @@ API
     class HyperReducerType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteadyexplicit::ComposableIntoHyperReducedProblem<
-		            TrialSubspaceType, FomSystemType, HyperReducerType>
+		TrialSubspaceType, FomSystemType, HyperReducerType>
   #endif
   /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (2)
 						    const TrialSubspaceType & trialSubspace,
@@ -44,7 +44,7 @@ API
     class HyperReducerType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteadyexplicit::ComposableIntoHyperReducedMaskedProblem<
-		            TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
+		TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
   #endif
   /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (3)
 						    const TrialSubspaceType & trialSubspace,
@@ -90,11 +90,12 @@ Constraints
 ~~~~~~~~~~~
 
 Each overload is associated with a set of constraints.
-If we could use C++20, these would be enforced via concepts using
+With C++20, these would be enforced via concepts using
 the *requires-clause* shown in the API synopsis above.
-Since we cannot yet use C++20, the constraints are
-currently enforced via static asserts (to provide a decent error message)
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
 and/or SFINAE. The concepts used are:
+
 
 - `rom::galerkin::unsteadyexplicit::ComposableIntoDefaultProblem <rom_concepts_explicit_galerkin/default.html>`__
 
@@ -159,7 +160,53 @@ Solve the problem
 
 An unsteady explicit Galerkin problem satisfies the "steppable" concept
 discussed `here <ode_concepts/c6.html>`__, therefore you can use
-the "advancers" in pressio/ode to step forward the problem.
+the step it to move forward (or backward) in time.
+To do so, you can use the advancers" in ``pressio/ode`` as shown below,
+or you can set up your own time stepping loop.
 
+.. code-block:: cpp
 
-:red:`finish`
+   #include "pressio/rom_subspaces.hpp"
+   #include "pressio/rom_galerkin_unsteady.hpp"
+
+   template<class ReducedStateType>
+   struct ReducedStateObserver
+   {
+     template<class TimeType>
+     void operator()(pressio::ode::StepCount stepIn,
+		     TimeType currentTime,
+		     const ReducedStateType & romState) const
+     {
+       // you are given the step count, the time
+       // and the corresponding rom state
+       // so you can observe, store, etc as needed
+     }
+   };
+
+   int main()
+   {
+     namespace pode = pressio::ode;
+     namespace pgal = pressio::rom::galerkin;
+
+     /*assuming:
+      - trialSubspace : created somehow
+      - fomSystem     : an instance of the full-order model
+     */
+     auto problem = pgal::create_steady_problem(trialSubspace, fomSystem);
+
+     const auto odeScheme = pode::StepScheme::RungeKutta4;
+     auto problem = pgal::create_unsteady_explicit_problem(odeScheme, trialSubpace, fomSystem);
+
+     auto romState = trialSubspace.createReducedState();
+     // set reduced state initial condition somehow
+
+     using time_type = typename fom_t::time_type;
+     const time_type dt = /*set time step size*/;
+     ReducedStateObserver<decltype(romState)> observer;
+     pode::advance_n_steps(problem,              /*the problem is our steppable object*/
+                           romState,             /*the state to evolve in time*/
+			   time_type{0},         /*start at time = 0*/
+			   dt,                   /*the time step size*/
+			   pode::StepCount(100), /*how many steps to take*/
+			   observer);            /*an observer to monitor the solution*/
+   }

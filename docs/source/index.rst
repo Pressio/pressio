@@ -130,6 +130,7 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
 
    overview
    installation
+   keywords
 
 .. toctree::
    :caption: API

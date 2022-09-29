@@ -19,7 +19,8 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,
 {
 
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(ComposableIntoDefaultOrHyperReducedProblem<TrialSubspaceType, FomSystemType>::value,
+  static_assert(steady::ComposableIntoDefaultOrHyperReducedProblem<
+		TrialSubspaceType, FomSystemType>::value,
 		"concept not met");
 #endif
 
@@ -42,7 +43,8 @@ auto create_steady_problem(TrialSubspaceType & trialSpace,
 {
 
 #if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>::value,
+  static_assert(steady::ComposableIntoMaskedProblem<
+		TrialSubspaceType, FomSystemType, MaskerType>::value,
 		"concept not satisfied");
 #endif
 

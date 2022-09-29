@@ -81,66 +81,40 @@ concept ComposableIntoMaskedProblem =
 
 
 
-
-
-
-
-
-
-
-
-
 /* leave some white space on purpose so that
    if we make edits above, we don't have to change
    the line numbers included in the rst doc page */
 
-// #else
+#else
 
-// namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
-// template<class T, class MaskerType, class TrialSubspaceType, class enable = void>
-// struct MaskableWith : std::false_type{};
+template<
+  class TrialSubspaceType,
+  class FomSystemType,
+  class MaskerType,
+  class enable = void>
+struct ComposableIntoMaskedProblem : std::false_type{};
 
-// template<class T, class MaskerType, class TrialSubspaceType>
-// struct MaskableWith<
-//   T, MaskerType, TrialSubspaceType,
-//   mpl::enable_if_t<
-//        PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
-//     && SteadyFomWithJacobianAction<T, TrialSubspaceType>::value
-//     //
-//     && !std::is_void<
-// 	 concepts::impl::mask_action_t<MaskerType, typename T::residual_type>
-// 	 >::value
-//     && !std::is_void<
-// 	 concepts::impl::mask_action_t<
-// 	   MaskerType, concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType>>
-// 	 >::value
-//     //
-//     &&  std::is_void<
-// 	decltype
-// 	(
-// 	 std::declval<MaskerType const>()
-// 	 (
-// 	   std::declval<typename T::residual_type const &>(),
-// 	   std::declval<concepts::impl::mask_action_t<MaskerType, typename T::residual_type> &>()
-// 	  )
-// 	 )
-// 	 >::value
-//     &&  std::is_void<
-// 	decltype
-// 	(
-// 	 std::declval<MaskerType const>()
-// 	 (
-// 	   std::declval<concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType> const &>(),
-// 	   std::declval<concepts::impl::mask_action_t<
-// 	     MaskerType, concepts::impl::fom_jacobian_action_t<T, TrialSubspaceType>> &>()
-// 	  )
-// 	 )
-//         >::value
-//     >
-//   > : std::true_type{};
-// }}}}
+template<class TrialSubspaceType, class FomSystemType, class MaskerType>
+struct ComposableIntoMaskedProblem<
+  TrialSubspaceType, FomSystemType, MaskerType,
+  mpl::enable_if_t<
+    PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    && SteadyFomWithJacobianAction<
+        FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    && std::is_same<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>::value
+    && MaskableWith<
+        typename FomSystemType::residual_type, MaskerType>::value
+    && MaskableWith<
+        concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>,
+        MaskerType>::value
+    >
+  > : std::true_type{};
 
+}}}} //end namespace pressio::rom::lspg::steady
 #endif
 
 #endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_

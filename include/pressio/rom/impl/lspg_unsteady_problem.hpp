@@ -49,8 +49,6 @@ public:
   using residual_type = typename ResJacPolicyOrFullyDiscreteSystemType::residual_type;
   using jacobian_type = typename ResJacPolicyOrFullyDiscreteSystemType::jacobian_type;
 
-  LspgUnsteadyProblem() = delete;
-
   template<
     class FomSystemType,
     class ...Args,
@@ -84,36 +82,19 @@ public:
 		_TotalNumberOfDesiredStates>(rjPolicyOrFullyDiscreteSystem_))
   {}
 
-  template<class SolverType, class ...ArgsOp>
-  void operator()(state_type & reducedState,
-		  pressio::ode::StepStartAt<independent_variable_type> sStart,
-		  pressio::ode::StepCount sCount,
-		  pressio::ode::StepSize<independent_variable_type> sSize,
-		  SolverType & solver,
-		  ArgsOp && ...argsop)
-  {
-    stepper_(reducedState, sStart, sCount, sSize,
-     	     solver, std::forward<ArgsOp>(argsop)...);
-  }
+  stepper_type & lspgStepper(){ return stepper_; }
 
-  auto createState() const{
-    return stepper_.createState();
-  }
-
-  residual_type createResidual() const{
-    return stepper_.createResidual();
-  }
-
-  jacobian_type createJacobian() const{
-    return stepper_.createJacobian();
-  }
-
-  void residualAndJacobian(const state_type & odeState,
-			   residual_type & R,
-			   jacobian_type & J,
-			   bool computeJacobian) const{
-    stepper_.residualAndJacobian(odeState, R, J, computeJacobian);
-  }
+  // template<class SolverType, class ...ArgsOp>
+  // void operator()(state_type & reducedState,
+  // 		  pressio::ode::StepStartAt<independent_variable_type> sStart,
+  // 		  pressio::ode::StepCount sCount,
+  // 		  pressio::ode::StepSize<independent_variable_type> sSize,
+  // 		  SolverType & solver,
+  // 		  ArgsOp && ...argsop)
+  // {
+  //   stepper_(reducedState, sStart, sCount, sSize,
+  //    	     solver, std::forward<ArgsOp>(argsop)...);
+  // }
 
 private:
   LspgFomStatesManager<TrialSubspaceType> fomStatesManager_;

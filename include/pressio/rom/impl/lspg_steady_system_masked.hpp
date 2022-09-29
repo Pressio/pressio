@@ -42,8 +42,6 @@ public:
   using residual_type = masked_fom_residual_type;
   using jacobian_type = masked_fom_jac_action_result_type;
 
-  LspgSteadyMaskedSystem() = delete;
-
   LspgSteadyMaskedSystem(TrialSubspaceType & trialSubspace,
 			 const FomSystemType & fomSystem,
 			 const MaskerType & masker)

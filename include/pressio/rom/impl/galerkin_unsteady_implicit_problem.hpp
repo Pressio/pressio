@@ -15,12 +15,21 @@ class GalerkinUnsteadyImplicitProblem
 	      std::declval<GalSystem &>()
 	      ));
 
-public:
-  // required aliases to be steppable
-  using state_type = typename GalSystem::state_type;
-  using independent_variable_type  = typename GalSystem::independent_variable_type;
+  using default_types = ImplicitGalerkinDefaultOperatorsTraits<typename GalSystem::state_type>;
+  static_assert(std::is_same<
+		typename default_types::reduced_residual_type,
+		typename stepper_type::residual_type>::value,
+		"galerkin implicit problem: impl: mismatching residual type");
+  static_assert(std::is_same<
+		typename default_types::reduced_jacobian_type,
+		typename stepper_type::jacobian_type>::value,
+		"galerkin implicit problem: impl: mismatching jacobian type");
 
-  GalerkinUnsteadyImplicitProblem() = delete;
+public:
+  using independent_variable_type  = typename GalSystem::independent_variable_type;
+  using state_type = typename GalSystem::state_type;
+  using residual_type = typename ImplicitGalerkinDefaultOperatorsTraits<state_type>::reduced_residual_type;
+  using jacobian_type = typename ImplicitGalerkinDefaultOperatorsTraits<state_type>::reduced_jacobian_type;
 
   template<class ...Args>
   GalerkinUnsteadyImplicitProblem(::pressio::ode::StepScheme schemeName,
@@ -29,16 +38,18 @@ public:
       stepper_( ::pressio::ode::create_implicit_stepper(schemeName, galSystem_) )
   {}
 
-  template<class ExtraArg>
-  void operator()(state_type & state,
-		  pressio::ode::StepStartAt<independent_variable_type> sStart,
-		  pressio::ode::StepCount sCount,
-		  pressio::ode::StepSize<independent_variable_type> sSize,
-		  ExtraArg && extra)
-  {
-    stepper_(state, sStart, sCount, sSize,
-	     std::forward<ExtraArg>(extra));
-  }
+  stepper_type & galerkinStepper(){ return stepper_; }
+
+  // template<class ExtraArg>
+  // void operator()(state_type & state,
+  // 		  pressio::ode::StepStartAt<independent_variable_type> sStart,
+  // 		  pressio::ode::StepCount sCount,
+  // 		  pressio::ode::StepSize<independent_variable_type> sSize,
+  // 		  ExtraArg && extra)
+  // {
+  //   stepper_(state, sStart, sCount, sSize,
+  // 	     std::forward<ExtraArg>(extra));
+  // }
 
 private:
   GalSystem galSystem_;

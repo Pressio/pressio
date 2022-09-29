@@ -393,11 +393,12 @@ TEST(rom_lspg_unsteady, test3)
   MyMasker masker(sample_indices);
   auto problem = pressio::rom::lspg::create_unsteady_problem
     (pressio::ode::StepScheme::BDF1, space, fomSystem, masker);
+  auto & stepper = problem.lspgStepper();
 
   const double dt = 2.;
   FakeNonLinSolver nonLinSolver(nMasked);
   Observer obs;
-  pressio::ode::advance_n_steps(problem, romState, 0., dt,
+  pressio::ode::advance_n_steps(stepper, romState, 0., dt,
 				::pressio::ode::StepCount(2),
 				obs, nonLinSolver);
   std::cout << romState << std::endl;

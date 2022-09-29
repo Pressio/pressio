@@ -66,11 +66,12 @@ Constraints
 ~~~~~~~~~~~
 
 Each overload is associated with a set of constraints.
-If we could use C++20, these would be enforced via concepts using
+With C++20, these would be enforced via concepts using
 the *requires-clause* shown in the API synopsis above.
-Since we cannot yet use C++20, the constraints are
-currently enforced via static asserts (to provide a decent error message)
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
 and/or SFINAE. The concepts used are:
+
 
 - `rom::lspg::steady::ComposableIntoDefaultOrHyperReducedProblem <rom_concepts_steady_lspg/default.html>`__
 
@@ -148,7 +149,7 @@ The problem class exposes the operators defining the system to solve.
 Using pressio nonlinear solvers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:red:`complete by saying more`
+:red:`need to say more`
 
 .. important::
 
@@ -172,9 +173,9 @@ Using pressio nonlinear solvers
 
      // let's say we want to use Gauss-newton, then we can do this
      using reduced_state_type = typename decltype(problem)::state_type;
-     using suggested_types = pressio::rom::SteadyLspgDefaultOperatorsTraits<reduced_state_type>;
-     using gradient_type = typename suggested_types::gradient_type;
-     using hessian_type  = typename suggested_types::hessian_type;
+     using default_types = pressio::rom::SteadyLspgDefaultOperatorsTraits<reduced_state_type>;
+     using gradient_type = typename default_types::gradient_type;
+     using hessian_type  = typename default_types::hessian_type;
 
      using solver_tag = pls::direct::HouseholderQR;
      using linear_solver_t = pls::Solver<solver_tag, hessian_type>;
@@ -190,7 +191,7 @@ Using pressio nonlinear solvers
 Use your own solver
 ~~~~~~~~~~~~~~~~~~~
 
-:red:`complete by saying more`
+:red:`need to say more`
 
 If you don't want to use the pressio solvers,
 you can set up your own because the problem object

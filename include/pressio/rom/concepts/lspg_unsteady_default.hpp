@@ -59,62 +59,60 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
 template <class TrialSubspaceType, class FomSystemType>
 concept ComposableIntoDefaultProblem =
-      SemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-   && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
-   && requires(const FomSystemType & A,
-	       const typename TrialSubspaceType::basis_matrix_type & basisMatrix)
-  {
-
-    ::pressio::ops::deep_copy(std::declval<typename FomSystemType::state_type &>(),
-			      std::declval<typename FomSystemType::state_type const &>());
-
- //    ::pressio::ops::set_zero(std::declval<typename T::state_type &>());
- //    ::pressio::ops::set_zero(std::declval<typename T::right_hand_side_type &>());
-
- //    ::pressio::ops::update
- //       (std::declval<typename T::right_hand_side_type &>(),
-	// std::declval<scalar_trait_t<typename T::right_hand_side_type> const &>(),
-	// std::declval<typename T::state_type const &>(),
-	// std::declval<scalar_trait_t<typename T::state_type> const &>(),
-	// std::declval<typename T::state_type const &>(),
-	// std::declval<scalar_trait_t<typename T::state_type> const &>());
-
- //    ::pressio::ops::update
- //       (std::declval<typename T::right_hand_side_type &>(),
-	// std::declval<scalar_trait_t<typename T::right_hand_side_type> const &>(),
-	// std::declval<typename T::state_type const &>(),
-	// std::declval<scalar_trait_t<typename T::state_type> const &>(),
-	// std::declval<typename T::state_type const &>(),
-	// std::declval<scalar_trait_t<typename T::state_type> const &>(),
-	// std::declval<typename T::state_type const &>(),
-	// std::declval<scalar_trait_t<typename T::state_type> const &>());
-
- //    ::pressio::ops::update
- //       (std::declval<decltype(A.createApplyJacobianResult(basisMatrix)) &>(),
-	// std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
-	// basisMatrix,
-	// std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>());
-  };
+     SemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+  && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
+  && std::same_as<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>
+  && ::pressio::ops::is_known_data_type<typename FomSystemType::state_type>::value
+  && ::pressio::ops::is_known_data_type<typename FomSystemType::right_hand_side_type>::value
+  && ::pressio::ops::is_known_data_type<
+       concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>
+     >::value;
 
 }}}} //end namespace pressio::rom::lspg::unsteady
 
-// #else
 
-// namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
-// template<class T, class SubspaceType, class enable = void>
-// struct DefaultDiscreteTimeAssemblyWith : std::false_type{};
 
-// template<class T, class SubspaceType>
-// struct DefaultDiscreteTimeAssemblyWith<
-//   T, SubspaceType,
-//   mpl::enable_if_t<
-//        SemiDiscreteFomWithJacobianAction<T, SubspaceType>::value
-//     && PossiblyAffineTrialColumnSubspace<SubspaceType>::value
-//    >
-//   > : std::true_type{};
 
-// }}}}
+
+
+
+
+
+
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
+
+template <class TrialSubspaceType, class FomSystemType, class = void>
+struct ComposableIntoDefaultProblem : std::false_type{};
+
+template <class TrialSubspaceType, class FomSystemType>
+struct ComposableIntoDefaultProblem<
+  TrialSubspaceType, FomSystemType,
+  mpl::enable_if_t<
+    SemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    && PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
+    && std::is_same<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>::value
+  && ::pressio::ops::is_known_data_type<typename FomSystemType::state_type>::value
+  && ::pressio::ops::is_known_data_type<typename FomSystemType::right_hand_side_type>::value
+  && ::pressio::ops::is_known_data_type<
+       concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType>
+     >::value
+    >
+  > : std::true_type{};
+
+}}}}
 #endif
 
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
+#endif

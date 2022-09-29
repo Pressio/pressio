@@ -101,8 +101,26 @@ using fom_jacobian_action_t = typename fom_jacobian_action<Args...>::type;
 
 // -----------------------------------------------------------------------------
 
-template<class MaskerType, class OperandType>
+template<class MaskerType, class OperandType, class = void>
 struct mask_action{
+  using type = void;
+};
+
+template<class MaskerType, class OperandType>
+struct mask_action<
+  MaskerType, OperandType,
+  mpl::enable_if_t<
+    !std::is_void<
+    decltype
+    (std::declval<MaskerType const>().createApplyMaskResult
+    (
+    std::declval<OperandType const &>()
+    )
+    )
+    >::value
+  >
+  >
+{
   using type =
     decltype
     (std::declval<MaskerType const>().createApplyMaskResult

@@ -67,6 +67,7 @@ template<class ...> struct matching_extents;
 }//end namespace pressio
 
 #include "ops/ops_get_native.hpp"
+#include "ops/ops_known_data_type.hpp"
 
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN

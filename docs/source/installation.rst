@@ -31,46 +31,12 @@ provide built-in support to some external HPC libraries (see below).
 Obviously, these TPLs-specific specializations need to be guarded with
 preprecessor directives, and enabled only if one can access the TPLs.
 
-Enabling/disabling specific dependencies can be done via the following cmake variables:
-
-.. list-table::
-   :header-rows: 1
-
-   * - Variable
-     - Description
-     - Default Value
-   * - ``PRESSIO_ENABLE_TPL_EIGEN``
-     - self-explanatory
-     - ``ON``
-   * - ``PRESSIO_ENABLE_TPL_TRILINOS``
-     - self-explanatory
-     - ``OFF``
-   * - ``PRESSIO_ENABLE_TPL_MPI``
-     - self-explanatory
-     - ``OFF``  automatically ``ON`` if ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-   * - ``PRESSIO_ENABLE_TPL_KOKKOS``
-     - self-explanatory
-     - ``OFF``\ ; automatically ``ON`` if ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-   * - ``PRESSIO_ENABLE_TEUCHOS_TIMERS``
-     - self-explanatory
-     - ``OFF``  automatically ``ON`` if ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-   * - ``PRESSIO_ENABLE_TPL_BLAS``
-     - self-explanatory
-     - ``OFF``\ ; automatically ``ON`` if ``PRESSIO_ENABLE_TPL_LAPACK=ON`` or ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-   * - ``PRESSIO_ENABLE_TPL_LAPACK``
-     - self-explanatory
-     - ``OFF``\ ; automatically ``ON`` if ``PRESSIO_ENABLE_TPL_BLAS=ON`` or ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-   * - ``PRESSIO_ENABLE_DEBUG_PRINT``
-     - to enable debugging print statements
-     - ``OFF``
+Enabling/disabling specific dependencies can be done via
+the cmake variables `listed here <keywords.html>`__.
 
 
 Optional vs Required
 ^^^^^^^^^^^^^^^^^^^^
-
-Eigen is the only required dependency because it is the
-default choice for instantiating the ROM data structures
-and solving the (dense) ROM problem.
 
 .. list-table::
    :header-rows: 1
@@ -100,28 +66,15 @@ and solving the (dense) ROM problem.
      - Optional
      - 1.10.0
 
+Eigen is the only required dependency because it is the
+default choice for instantiating the ROM data structures
+and solving the (dense) ROM problem.
 
-Obviously, the choice of which TPLs to enable is related to
-your application's dependency requirements.
-For example, if you have an application that relies on
-Trilinos data structures and want to use ``pressio``\ ,
-then it makes sense to enable the Trilinos dependency.
-On the contrary, if you have an application that relies only on
-Eigen data structures, then it makes sense to only leave only Eigen on
-and disable the rest.
-
-Also, we note that some of the cmake variables listed above are connected
-and cannot be turned on individualy.
-For example, if we enable Trilinos then ``pressio`` automatically
-enables also Kokkos, BLAS, LAPACK and MPI.
-The reason for this choice is that in a production scenario---which is what
-pressio mainly targets---it is reasonable
-to expect a user to have Trilinos built with BLAS, LAPACK, MPI and Kokkos support.
-
-There might be other constraints on the variables one can set.
-The reason for this is twofold: (a) to simplify what the user needs
-to provide; and (b) we belive some of these constraints are necessary, like
-the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.
+..
+   There might be other constraints on the variables one can set.
+   The reason for this is twofold: (a) to simplify what the user needs
+   to provide; and (b) we belive some of these constraints are necessary, like
+   the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.
 :raw-html-m2r:`<!-- Note that, since `pressio` is header-only, any TPL you want to enable -->`
 :raw-html-m2r:`<!-- is not really needed when installing `pressio`, but it is needed when -->`
 :raw-html-m2r:`<!-- you build any code that *uses* pressio. -->`

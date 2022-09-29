@@ -33,8 +33,6 @@ public:
   using residual_type = typename FomSystemType::residual_type;
   using jacobian_type = fom_jac_action_result_type;
 
-  LspgSteadyDefaultSystem() = delete;
-
   LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
 			  const FomSystemType & fomSystem)
     : trialSubspace_(trialSubspace),

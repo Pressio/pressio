@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_system_continuous_time.hpp
+// ops_get_native.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,67 +46,46 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
-#define ROM_CONSTRAINTS_ROM_STEADY_LSPG_DEFAULT_OR_HYPRED_HPP_
+#ifndef OPS_KNOWN_DATA_TYPE_HPP_
+#define OPS_KNOWN_DATA_TYPE_HPP_
 
-#include "helpers.hpp"
-
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
-
-template <class TrialSubspaceType, class FomSystemType>
-concept ComposableIntoDefaultOrHyperReducedProblem =
-     PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
-  && SteadyFomWithJacobianAction<
-       FomSystemType,
-       typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<
-       typename TrialSubspaceType::full_state_type,
-       typename FomSystemType::state_type>;
-
-}}}} //end namespace pressio::rom::lspg::steady
+namespace pressio{ namespace ops{
 
 
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
+template<class T>
+struct is_known_data_type
+{
+  static constexpr bool v1 =
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    is_vector_eigen<T>::value
+    || is_dense_matrix_eigen<T>::value
+    || is_sparse_matrix_eigen<T>::value;
 #else
-
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
-
-template<
-  class TrialSubspaceType,
-  class FomSystemType,
-  class enable = void>
-struct ComposableIntoDefaultOrHyperReducedProblem : std::false_type{};
-
-template<
-  class TrialSubspaceType,
-  class FomSystemType>
-struct ComposableIntoDefaultOrHyperReducedProblem<
-  TrialSubspaceType, FomSystemType,
-  mpl::enable_if_t<
-  PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value
-  && SteadyFomWithJacobianAction<
-       FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-  && std::is_same<
-    typename TrialSubspaceType::full_state_type,
-    typename FomSystemType::state_type>::value
-    >
-  > : std::true_type{};
-
-}}}} //end namespace pressio::rom::lspg::steady
-
+  false;
 #endif
 
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
+  static constexpr bool v2 =
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    is_vector_kokkos<T>::value
+    || is_dense_matrix_kokkos<T>::value;
+#else
+  false;
+#endif
+
+  static constexpr bool v3 =
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+    is_vector_tpetra<T>::value
+    || is_multi_vector_tpetra<T>::value
+    || is_vector_tpetra_block<T>::value
+    || is_multi_vector_tpetra_block<T>::value
+    || is_vector_epetra<T>::value
+    || is_multi_vector_epetra<T>::value
+#else
+    false;
+#endif
+
+  static constexpr bool value = v1 || v2 || v3;
+};
+
+}}
+#endif

@@ -50,22 +50,22 @@ concepts: implicit galerkin
     rom_concepts_implicit_galerkin/hr
     rom_concepts_implicit_galerkin/masked
 
-..
-   concepts: steady lspg
-   =====================
+concepts: steady lspg
+=====================
 
-   .. toctree::
-       :maxdepth: 1
+.. toctree::
+    :maxdepth: 1
 
-       rom_concepts_steady_lspg/default
-       rom_concepts_steady_lspg/masked
+    rom_concepts_steady_lspg/default
+    rom_concepts_steady_lspg/masked
 
-   concepts: unsteady lspg
-   =======================
 
-   .. toctree::
-       :maxdepth: 1
+concepts: unsteady lspg
+=======================
 
-       rom_concepts_unsteady_lspg/default
-       rom_concepts_unsteady_lspg/hyperreduced
-       rom_concepts_unsteady_lspg/masked
+.. toctree::
+    :maxdepth: 1
+
+    rom_concepts_unsteady_lspg/default
+    rom_concepts_unsteady_lspg/hyperreduced
+    rom_concepts_unsteady_lspg/masked

@@ -20,8 +20,6 @@ public:
   using state_type = typename GalSystem::state_type;
   using independent_variable_type  = typename GalSystem::independent_variable_type;
 
-  GalerkinUnsteadyExplicitProblem() = delete;
-
   template<class ...Args>
   GalerkinUnsteadyExplicitProblem(::pressio::ode::StepScheme schemeName,
 				  Args && ... args)

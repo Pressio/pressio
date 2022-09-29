@@ -83,10 +83,10 @@ Constraints
 ~~~~~~~~~~~
 
 Each overload is associated with a set of constraints.
-If we could use C++20, these would be enforced via concepts using
+With C++20, these would be enforced via concepts using
 the *requires-clause* shown in the API synopsis above.
-Since we cannot yet use C++20, the constraints are
-currently enforced via static asserts (to provide a decent error message)
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
 and/or SFINAE. The concepts used are:
 
 - `rom::galerkin::steady::ComposableIntoDefaultProblem <rom_concepts_steady_galerkin/default.html>`__
@@ -182,6 +182,9 @@ Using pressio nonlinear solvers
 
 .. code-block:: cpp
 
+   #include "pressio/rom_subspaces.hpp"
+   #include "pressio/rom_galerkin_steady.hpp"
+
    int main()
    {
      namespace pls  = pressio::linearsolvers;
@@ -209,6 +212,9 @@ you can easily set up your own because the problem object
 fully identify the system to solve.
 
 .. code-block:: cpp
+
+   #include "pressio/rom_subspaces.hpp"
+   #include "pressio/rom_galerkin_steady.hpp"
 
    class CustomSolver{
      // constructor as needed

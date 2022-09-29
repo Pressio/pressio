@@ -37,8 +37,8 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   impl::valid_scheme_for_lspg_else_throw(schemeName);
 
 #if not defined PRESSIO_ENABLE_CXX20
-    static_assert(steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value,
-		"does not meet the SemiDiscreteFomWithJacobianAction concept");
+    static_assert(unsteady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value,
+		"does not meet concept");
 #endif
 
   using independent_variable_type = typename FomSystemType::time_type;
@@ -163,8 +163,8 @@ auto create_unsteady_problem(const TrialSubspaceType & trialSpace,
 #if not defined PRESSIO_ENABLE_CXX20
   static_assert(FullyDiscreteSystemWithJacobianAction<
 		FomSystemType, TotalNumberOfDesiredStates,
-		typename TrialSubspaceType::basis_matrix_type>::value
-		"FullyDiscreteSystemWithJacobianAction not satisfied");
+		typename TrialSubspaceType::basis_matrix_type>::value,
+		"concept not satisfied");
 #endif
 
   static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
