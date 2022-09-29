@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_IMPL_GALERKIN_IMPLICIT_PROBLEM_HPP_
-#define PRESSIO_ROM_IMPL_GALERKIN_IMPLICIT_PROBLEM_HPP_
+#ifndef ROM_IMPL_GALERKIN_UNSTEADY_IMPLICIT_PROBLEM_HPP_
+#define ROM_IMPL_GALERKIN_UNSTEADY_IMPLICIT_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -57,4 +57,4 @@ private:
 };
 
 }}} // end pressio::rom::impl
-#endif
+#endif  // ROM_IMPL_GALERKIN_UNSTEADY_IMPLICIT_PROBLEM_HPP_

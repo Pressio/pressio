@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_ROM_LSPG_UNSTEADY_DEFAULT_RJ_POLICY_HPP_
-#define ROM_IMPL_ROM_LSPG_UNSTEADY_DEFAULT_RJ_POLICY_HPP_
+#ifndef ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
+#define ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -210,7 +210,6 @@ private:
 };
 
 }}}
-#endif  // ROM_IMPL_ROM_LSPG_UNSTEADY_POLICY_RESIDUAL_HPP_
 
 
   // template <
@@ -285,3 +284,4 @@ private:
 // 	(fomState_np1, lspgResidual, fomStatesMngr_.get(),
 // 	 lspgStencilVelocities, dt, ::pressio::ode::CrankNicolson());
 //   }
+#endif  // ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_

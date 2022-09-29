@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
-#define ODE_ADVANCERS_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
+#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
+#define ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -199,4 +199,4 @@ struct StepSizePolicyWithReductionScheme<
   > : std::true_type{};
 
 }} // namespace pressio::ode::constraints
-#endif
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_

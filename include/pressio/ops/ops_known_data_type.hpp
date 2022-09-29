@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_KNOWN_DATA_TYPE_HPP_
-#define OPS_KNOWN_DATA_TYPE_HPP_
+#ifndef OPS_OPS_KNOWN_DATA_TYPE_HPP_
+#define OPS_OPS_KNOWN_DATA_TYPE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -88,4 +88,4 @@ struct is_known_data_type
 };
 
 }}
-#endif
+#endif  // OPS_OPS_KNOWN_DATA_TYPE_HPP_

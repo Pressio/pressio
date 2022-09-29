@@ -218,4 +218,4 @@ private:
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy
-#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_RESIDUAL_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_POLICY_RESIDUAL_JACOBIAN_HPP_

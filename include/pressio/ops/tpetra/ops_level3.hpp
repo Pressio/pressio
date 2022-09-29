@@ -324,7 +324,6 @@ product(::pressio::transpose /*unused*/,
 
 }}//end namespace pressio::ops
 
-#endif  // OPS_TPETRA_OPS_LEVEL3_HPP_
 
 
 
@@ -356,3 +355,4 @@ product(::pressio::transpose /*unused*/,
 //   auto & Btp = *B.data();
 //   Ctp.elementWiseMultiply(alpha, Atp, Btp, beta);
 // }
+#endif  // OPS_TPETRA_OPS_LEVEL3_HPP_

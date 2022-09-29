@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_CONSTRAINTS_ODE_SYSTEM_API_HPP_
-#define ODE_STEPPERS_CONSTRAINTS_ODE_SYSTEM_API_HPP_
+#ifndef ODE_STEPPERS_CONSTRAINTS_HPP_
+#define ODE_STEPPERS_CONSTRAINTS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -246,4 +246,4 @@ struct ImplicitResidualJacobianPolicy<
   > : std::true_type{};
 
 }} // namespace pressio::ode::constraints
-#endif  // ODE_STEPPERS_CONSTRAINTS_ODE_SYSTEM_API_HPP_
+#endif  // ODE_STEPPERS_CONSTRAINTS_HPP_

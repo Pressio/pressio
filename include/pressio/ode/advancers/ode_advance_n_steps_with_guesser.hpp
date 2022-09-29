@@ -281,4 +281,4 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 }
 
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_WITH_GUESSER_HPP_

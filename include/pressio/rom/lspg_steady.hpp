@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_LSPG_STEADY_HPP_
-#define PRESSIO_ROM_LSPG_STEADY_HPP_
+#ifndef ROM_LSPG_STEADY_HPP_
+#define ROM_LSPG_STEADY_HPP_
 
 #include "./impl/lspg_steady_system_default.hpp"
 #include "./impl/lspg_steady_system_masked.hpp"
@@ -55,4 +55,4 @@ auto create_steady_problem(TrialSubspaceType & trialSpace,
 }
 
 }}} // end pressio::rom::lspg
-#endif
+#endif  // ROM_LSPG_STEADY_HPP_

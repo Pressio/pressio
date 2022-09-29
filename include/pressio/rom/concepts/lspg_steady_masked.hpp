@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_STEADY_LSPG_MASKABLE_WITH_HPP_
-#define ROM_CONSTRAINTS_ROM_STEADY_LSPG_MASKABLE_WITH_HPP_
+#ifndef ROM_CONCEPTS_LSPG_STEADY_MASKED_HPP_
+#define ROM_CONCEPTS_LSPG_STEADY_MASKED_HPP_
 
 #include "helpers.hpp"
 
@@ -117,4 +117,4 @@ struct ComposableIntoMaskedProblem<
 }}}} //end namespace pressio::rom::lspg::steady
 #endif
 
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
+#endif  // ROM_CONCEPTS_LSPG_STEADY_MASKED_HPP_

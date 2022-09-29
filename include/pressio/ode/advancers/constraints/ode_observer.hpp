@@ -72,4 +72,4 @@ struct StateObserver<
   > : std::true_type{};
 
 }}
-#endif
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_

@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_TRIAL_COLUMN_SUBSPACE_HPP_
-#define PRESSIO_ROM_TRIAL_COLUMN_SUBSPACE_HPP_
+#ifndef ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
+#define ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -174,4 +174,4 @@ private:
 };
 
 }}}
-#endif
+#endif  // ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_

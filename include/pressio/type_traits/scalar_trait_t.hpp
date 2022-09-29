@@ -58,4 +58,4 @@ struct _scalar_trait{
 template<class T> using scalar_trait_t = typename impl::_scalar_trait<T>::type;
 
 }
-#endif
+#endif  // TYPE_TRAITS_SCALAR_TRAIT_T_HPP_

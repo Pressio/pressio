@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_PREDICATES_HPP_
-#define PRESSIO_ROM_PREDICATES_HPP_
+#ifndef ROM_PREDICATES_HPP_
+#define ROM_PREDICATES_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -373,4 +373,4 @@ struct has_const_discrete_residual_jacobian_action_method<
 
 
 }} // end pressio::rom
-#endif
+#endif  // ROM_PREDICATES_HPP_

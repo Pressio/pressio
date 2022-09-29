@@ -71,4 +71,4 @@ struct has_const_create_discrete_residual_method_return_result<
   > : std::true_type{};
 
 }} // namespace pressio::ode::predicates
-#endif  // ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_TIME_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+#endif  // ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_RESIDUAL_METHOD_RETURN_RESULT_HPP_

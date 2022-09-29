@@ -278,4 +278,4 @@ advance_n_steps(StepperType & stepper,
 }
 
 }} //end namespace pressio::ode
-#endif
+#endif  // ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_HPP_

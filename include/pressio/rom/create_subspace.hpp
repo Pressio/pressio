@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_CREATE_SUBSPACE_HPP_
-#define PRESSIO_ROM_CREATE_SUBSPACE_HPP_
+#ifndef ROM_CREATE_SUBSPACE_HPP_
+#define ROM_CREATE_SUBSPACE_HPP_
 
 #include "./linear_subspace.hpp"
 #include "./impl/linear_trial_column_subspace.hpp"
@@ -42,4 +42,4 @@ auto create_trial_column_subspace(BasisMatrixType && basisMatrix,
 }
 
 }} // end pressio::rom
-#endif
+#endif  // ROM_CREATE_SUBSPACE_HPP_

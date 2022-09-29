@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_IMPL_LSPG_STEADY_DEFAULT_SYSTEM_HPP_
-#define PRESSIO_ROM_IMPL_LSPG_STEADY_DEFAULT_SYSTEM_HPP_
+#ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
+#define ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -75,4 +75,4 @@ private:
 
 
 }}} // end pressio::rom::impl
-#endif
+#endif  // ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_

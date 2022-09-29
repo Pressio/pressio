@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_LINEAR_SUBSPACE_HPP_
-#define PRESSIO_ROM_LINEAR_SUBSPACE_HPP_
+#ifndef ROM_LINEAR_SUBSPACE_HPP_
+#define ROM_LINEAR_SUBSPACE_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -77,4 +77,4 @@ public:
 };
 
 }}
-#endif
+#endif  // ROM_LINEAR_SUBSPACE_HPP_

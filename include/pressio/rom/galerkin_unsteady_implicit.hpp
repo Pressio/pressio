@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
-#define PRESSIO_ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
+#ifndef ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
+#define ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
 
 #include "impl/galerkin_helpers.hpp"
 #include "impl/galerkin_unsteady_implicit_problem.hpp"
@@ -150,4 +150,4 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
 }
 
 }}} // end pressio::rom::galerkin
-#endif
+#endif  // ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_

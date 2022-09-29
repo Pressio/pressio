@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef TPL_TRAITS_HPP_
-#define TPL_TRAITS_HPP_
+#ifndef TYPE_TRAITS_TRAITS_TPL_HPP_
+#define TYPE_TRAITS_TRAITS_TPL_HPP_
 
 namespace pressio { namespace impl {
 
@@ -265,4 +265,4 @@ struct EigenTraits
 
 
 }} // namespace pressio::impl
-#endif // TPL_TRAITS_HPP_
+#endif  // TYPE_TRAITS_TRAITS_TPL_HPP_

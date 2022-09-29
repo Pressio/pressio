@@ -131,4 +131,4 @@ struct Steppable<
 template <class T> using StronglySteppable = Steppable<T>;
 
 }}
-#endif
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_

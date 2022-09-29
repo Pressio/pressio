@@ -86,4 +86,4 @@ template <class ...Args>
 using all_have_same_rank = impl::all_have_same_rank<void, Args...>;
 
 } // namespace pressio
-#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
+#endif  // TYPE_TRAITS_ALL_HAVE_SAME_RANK_HPP_

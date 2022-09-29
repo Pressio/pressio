@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_PREDICATES_HPP_
-#define SOLVERS_NONLINEAR_PREDICATES_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_PREDICATES_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_PREDICATES_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
@@ -355,4 +355,4 @@ struct has_const_residualnorm_method_accept_state_norm_return_void<
 
     
 }} // namespace pressio::solvers
-#endif
+#endif  // SOLVERS_NONLINEAR_SOLVERS_PREDICATES_HPP_

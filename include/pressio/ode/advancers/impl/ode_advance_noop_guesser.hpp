@@ -63,4 +63,4 @@ struct NoOpStateGuesser
 };
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_NOOP_OBSERVER_HPP_
+#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_NOOP_GUESSER_HPP_

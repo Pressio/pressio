@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_GALERKIN_STEADY_HPP_
-#define PRESSIO_ROM_GALERKIN_STEADY_HPP_
+#ifndef ROM_GALERKIN_STEADY_HPP_
+#define ROM_GALERKIN_STEADY_HPP_
 
 #include "./impl/galerkin_helpers.hpp"
 #include "./impl/galerkin_steady_system_default.hpp"
@@ -97,4 +97,4 @@ auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 }
 
 }}} // end pressio::rom::galerkin
-#endif
+#endif  // ROM_GALERKIN_STEADY_HPP_

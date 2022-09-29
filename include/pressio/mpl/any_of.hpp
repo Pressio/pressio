@@ -13,4 +13,4 @@ template< template<class... T> class F, class ... Args>
 using any_of_t = typename any_of<F, Args...>::type;
 
 }}
-#endif  // MPL_VARIADIC_ANY_OF_HPP_
+#endif  // MPL_ANY_OF_HPP_

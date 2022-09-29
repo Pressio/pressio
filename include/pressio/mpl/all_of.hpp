@@ -13,4 +13,4 @@ template< template<class... T> class F, class ... Args>
 using all_of_t = typename all_of<F, Args...>::type;
 
 }}
-#endif  // MPL_VARIADIC_ALL_OF_HPP_
+#endif  // MPL_ALL_OF_HPP_

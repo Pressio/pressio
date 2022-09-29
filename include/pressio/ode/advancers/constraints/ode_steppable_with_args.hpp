@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_VARIADIC_STEPPER_HPP_
-#define ODE_ADVANCERS_CONSTRAINTS_ODE_VARIADIC_STEPPER_HPP_
+#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
+#define ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -133,4 +133,4 @@ template <class T, class AuxT, class ...Args>
 using StronglySteppableWithAuxiliaryArgs = SteppableWithAuxiliaryArgs<T, AuxT, Args...>;
 
 }}
-#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
+#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_

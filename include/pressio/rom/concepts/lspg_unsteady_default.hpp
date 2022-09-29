@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_UNSTEADY_LSPG_DEFAULT_HPP_
-#define ROM_CONSTRAINTS_ROM_UNSTEADY_LSPG_DEFAULT_HPP_
+#ifndef ROM_CONCEPTS_LSPG_UNSTEADY_DEFAULT_HPP_
+#define ROM_CONCEPTS_LSPG_UNSTEADY_DEFAULT_HPP_
 
 #include "helpers.hpp"
 
@@ -115,4 +115,4 @@ struct ComposableIntoDefaultProblem<
 }}}}
 #endif
 
-#endif
+#endif  // ROM_CONCEPTS_LSPG_UNSTEADY_DEFAULT_HPP_

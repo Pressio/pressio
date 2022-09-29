@@ -451,4 +451,4 @@ private:
 };
 
 }}}//end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_STEPPER_HPP_
+#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_STEPPER_WITH_MASS_MATRIX_HPP_

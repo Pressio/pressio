@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_SAME_RANK_AS_CONCEPT_HPP_
-#define TYPE_TRAITS_SAME_RANK_AS_CONCEPT_HPP_
+#ifndef TYPE_TRAITS_SAME_RANK_AS_HPP_
+#define TYPE_TRAITS_SAME_RANK_AS_HPP_
 
 namespace pressio{
 
@@ -55,4 +55,4 @@ template<class T, class U>
 concept SameRankAs = all_have_same_rank<T,U>::value;
 
 } // namespace pressio
-#endif
+#endif  // TYPE_TRAITS_SAME_RANK_AS_HPP_

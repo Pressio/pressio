@@ -13,4 +13,4 @@ template< template<class... T> class F, class ... Args>
 using none_of_t = typename none_of<F, Args...>::type;
 
 }}
-#endif  // MPL_VARIADIC_NONE_OF_HPP_
+#endif  // MPL_NONE_OF_HPP_

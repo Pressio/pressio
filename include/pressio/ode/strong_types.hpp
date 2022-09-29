@@ -133,4 +133,4 @@ struct IntermediateStepCount{
 
 }}// end namespace ode
 
-#endif  // ODE_ADVANCERS_EXCEPTIONS_HPP_
+#endif  // ODE_STRONG_TYPES_HPP_

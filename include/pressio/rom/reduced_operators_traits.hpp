@@ -1,6 +1,6 @@
 
-#ifndef PRESSIO_ROM_GALERKIN_REDUCED_OPERATORS_TRAITS_HPP_
-#define PRESSIO_ROM_GALERKIN_REDUCED_OPERATORS_TRAITS_HPP_
+#ifndef ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#define ROM_REDUCED_OPERATORS_TRAITS_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -145,4 +145,4 @@ struct SteadyLspgDefaultOperatorsTraits<
 #endif
 
 }}
-#endif
+#endif  // ROM_REDUCED_OPERATORS_TRAITS_HPP_

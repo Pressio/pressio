@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_ROM_CONCEPTS_HELPERS_HPP_
-#define ROM_CONSTRAINTS_ROM_CONCEPTS_HELPERS_HPP_
+#ifndef ROM_CONCEPTS_HELPERS_HPP_
+#define ROM_CONCEPTS_HELPERS_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts{ namespace impl{
 
@@ -134,4 +134,4 @@ template<class ...Args>
 using mask_action_t = typename mask_action<Args...>::type;
 
 }}}}
-#endif  // ROM_CONSTRAINTS_ROM_FOM_SYSTEM_CONTINUOUS_TIME_HPP_
+#endif  // ROM_CONCEPTS_HELPERS_HPP_

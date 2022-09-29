@@ -45,8 +45,8 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_HAS_TRAITS_HPP_
-#define TYPE_TRAITS_HAS_TRAITS_HPP_
+#ifndef TYPE_TRAITS_ALL_HAVE_TRAITS_HPP_
+#define TYPE_TRAITS_ALL_HAVE_TRAITS_HPP_
 
 namespace pressio{ namespace impl{
 
@@ -92,4 +92,4 @@ struct all_have_traits<T1, T2, T3, rest...>{
 };
 
 }
-#endif
+#endif  // TYPE_TRAITS_ALL_HAVE_TRAITS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
-#define TYPE_TRAITS_HAVE_SAME_SCALAR_HPP_
+#ifndef TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_
+#define TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_
 
 namespace pressio{ namespace impl{
 
@@ -88,4 +88,4 @@ template <class ...Args>
 using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
 
 } // namespace
-#endif  // TYPE_TRAITS_ARE_SCALAR_COMPATIBLE_HPP_
+#endif  // TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_
