@@ -73,8 +73,6 @@ This structure is mirrored in the API documentation (see the left sidebar).
 Get Started
 -----------
 
-* `overview <overview.html>`_: motivations, objectives and how have built it from scratch
-
 * `how to install <installation.html>`_: it is a header-only library, should be trivial
 
 * `explore the tutorials <https://pressio.github.io/pressio-tutorials>`_
@@ -85,28 +83,29 @@ Generic programming and concepts
 
 Arguably the main foundation of pressio is the use of
 generic programming--*or, more humbly, we can at least say that it is what we strive for*.
-Since the early development stages, we have tried to rely on
-concept-driven design. Here, the term concept does not necessarily
+Since the early development stages, we have relied on concept-driven design.
+Here, the term concept does not necessarily
 refer to the C++ concepts feature introduced in C++20.
-Rather, you can think of it more loosely as "what properties/syntax a type meets,
+You can think of it more broadly as "what properties/syntax a type meets,
 what you can do with it and, also, what a type should definitely satisfy".
-In pressio, in fact, we cannot yet upgrade to C++20, and thus
-we cannot use and *stricto sensu* enforce concepts.
-For now, concepts are present but enforced via, e.g., SFINAE,
-or in some cases (abusing the syntax) with static asserts.
-Later on, when feasible, we will enforce them as the standard dictates.
 
 Note, that, if you have used or use C++ templates, you *have* used
 concepts knowingly or not. This is becuase when you write a function or class
 template, you have some expectations of what a template is going to do.
 Concepts are basically a way to *explicitly* formalize those expectations.
 
-The message we want to convey is that *"concepts" are a fundamental
-design part of pressio*. In our documentation, we make the effort to
-highlight the use of concepts
-by dedicating to each component of the library a full section
-(see the sidebar menu on the left)
-to discuss and formalize how concepts are used in that component.
+..
+   The message we want to convey is that *"concepts" are a fundamental
+   design part of pressio*. In our documentation, we make the effort to
+   highlight the use of concepts
+   by dedicating to each component of the library a full section
+   to discuss and formalize how concepts are used in that component.
+
+Until we can stably upgrade to C++20, we cannot properly use C++20 concepts.
+The concepts in pressio are guarded inside a preprocessor directive.
+To enable them, it suffices to use a C++20 compiler and set ``-DCMAKE_CXX_STANDARS=20``.
+When disabled, the pressio code by default enforces them via, e.g., SFINAE,
+or in some cases (abusing the syntax) with static asserts.
 
 
 
@@ -128,7 +127,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    :maxdepth: 1
    :hidden:
 
-   overview
    installation
    keywords
 

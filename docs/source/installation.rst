@@ -70,18 +70,6 @@ Eigen is the only required dependency because it is the
 default choice for instantiating the ROM data structures
 and solving the (dense) ROM problem.
 
-..
-   There might be other constraints on the variables one can set.
-   The reason for this is twofold: (a) to simplify what the user needs
-   to provide; and (b) we belive some of these constraints are necessary, like
-   the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.
-:raw-html-m2r:`<!-- Note that, since `pressio` is header-only, any TPL you want to enable -->`
-:raw-html-m2r:`<!-- is not really needed when installing `pressio`, but it is needed when -->`
-:raw-html-m2r:`<!-- you build any code that *uses* pressio. -->`
-:raw-html-m2r:`<!-- Therefore, you need to make sure that before you use `pressio` in your code, -->`
-:raw-html-m2r:`<!-- you include/link to any TPL you want to use. -->`
-:raw-html-m2r:`<!-- At the very minimum, you need to have Eigen installed. -->`
-
 In practice, what are the steps to get, install and use Pressio?
 ----------------------------------------------------------------
 
