@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T>::value
-  == ::pressio::PackageIdentifier::Eigen,
+    ::pressio::is_native_container_eigen<T>::value
+    or ::pressio::is_expression_acting_on_eigen<T>::value,
   T
   >
 clone(const T & clonable)

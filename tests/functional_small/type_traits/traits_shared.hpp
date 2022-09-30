@@ -57,14 +57,12 @@
 */
 template <
   typename T,
-  pressio::PackageIdentifier pack_id,
   int rank,
   typename Scalar,
   typename traits = pressio::Traits<T>
 >
 void test_container_traits()
 {
-  static_assert(::pressio::package_identifier<T>::value == pack_id, "package identifier is different than expected");
   static_assert(traits::rank == rank, "rank is different than expected");
   testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
 }

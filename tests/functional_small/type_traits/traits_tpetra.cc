@@ -16,7 +16,6 @@ void test_tpetra_container()
 {
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Trilinos,
     rank,
     typename T::impl_scalar_type
   >();

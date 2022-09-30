@@ -77,8 +77,10 @@ struct _kokkosUpdateAdmissibleOperands
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   >
@@ -91,8 +93,10 @@ update(T1 & v,         const scalar_t & a,
 
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   >
@@ -108,9 +112,12 @@ update(T1 & v, const T2 & v1, const scalar_t & b)
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  and (::pressio::is_native_container_kokkos<T3>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -134,9 +141,12 @@ update(T1 & v,	   const scalar_t &a,
 
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  and (::pressio::is_native_container_kokkos<T3>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -164,10 +174,14 @@ update(T1 & v,
 // //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  and (::pressio::is_native_container_kokkos<T3>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  and (::pressio::is_native_container_kokkos<T4>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -196,10 +210,14 @@ update(T1 & v,  const scalar_t &a,
 
 template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  and (::pressio::is_native_container_kokkos<T3>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  and (::pressio::is_native_container_kokkos<T4>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -235,11 +253,16 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T5>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  and (::pressio::is_native_container_kokkos<T3>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  and (::pressio::is_native_container_kokkos<T4>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
+  and (::pressio::is_native_container_kokkos<T5>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T5>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1
@@ -275,11 +298,16 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T3>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T4>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T5>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  and (::pressio::is_native_container_kokkos<T3>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  and (::pressio::is_native_container_kokkos<T4>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
+  and (::pressio::is_native_container_kokkos<T5>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T5>::value)
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
   and ::pressio::Traits<T3>::rank == 1

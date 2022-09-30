@@ -73,8 +73,30 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 	 ::pressio::mpl::enable_if_t<
   	   ::pressio::Traits<T>::rank == 1 and
 	   // the vector type should be from same package as Q
-	   ::pressio::package_identifier<T>::value ==
-	   ::pressio::package_identifier<Q_t>::value
+	   (false
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+		or ((::pressio::is_native_container_eigen<T>::value
+		  or ::pressio::is_expression_acting_on_eigen<T>::value)
+		and (::pressio::is_native_container_eigen<Q_t>::value
+		  or ::pressio::is_expression_acting_on_eigen<Q_t>::value))
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+		or ((::pressio::is_native_container_kokkos<T>::value
+		  or ::pressio::is_expression_acting_on_kokkos<T>::value)
+		and (::pressio::is_native_container_kokkos<Q_t>::value
+		  or ::pressio::is_expression_acting_on_kokkos<Q_t>::value))
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+		or ((::pressio::is_vector_tpetra<T>::value
+		  or ::pressio::is_multi_vector_tpetra<T>::value)
+		and (::pressio::is_vector_tpetra<Q_t>::value
+		  or ::pressio::is_multi_vector_tpetra<Q_t>::value))
+		or ((::pressio::is_vector_epetra<T>::value
+		  or ::pressio::is_multi_vector_epetra<T>::value)
+		and (::pressio::is_vector_epetra<Q_t>::value
+		  or ::pressio::is_multi_vector_epetra<Q_t>::value))
+#endif
+	   )
 	 >
       > : std::true_type{};
 

@@ -190,7 +190,7 @@ template <
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
   && ::pressio::is_expression_asdiagonalmatrix<A_type>::value
-  && ::pressio::package_identifier<A_type>::value == PackageIdentifier::Eigen
+  && ::pressio::is_expression_acting_on_eigen<A_type>::value
   && ::pressio::is_dense_matrix_eigen<B_type>::value
   && ::pressio::is_dense_matrix_eigen<C_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value

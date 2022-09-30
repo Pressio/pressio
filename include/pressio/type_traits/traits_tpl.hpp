@@ -49,7 +49,26 @@
 #ifndef TYPE_TRAITS_TRAITS_TPL_HPP_
 #define TYPE_TRAITS_TRAITS_TPL_HPP_
 
-namespace pressio { namespace impl {
+namespace pressio {
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename T>
+struct is_native_container_eigen {
+  static constexpr auto value = ::pressio::is_vector_eigen<T>::value
+    || ::pressio::is_dense_matrix_eigen<T>::value
+    || ::pressio::is_sparse_matrix_eigen<T>::value;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct is_native_container_kokkos {
+  static constexpr auto value = ::pressio::is_vector_kokkos<T>::value
+    || ::pressio::is_dense_matrix_kokkos<T>::value;
+};
+#endif
+
+namespace impl {
 
 // device_type is just an (execution space, memory space) pair.
 // defined as: Kokkos::Device<execution_space, memory_space>

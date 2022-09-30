@@ -9,7 +9,6 @@ void test_eigen_container_traits()
 {
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Eigen,
     rank,
     typename T::Scalar
   >();

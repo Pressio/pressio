@@ -54,8 +54,10 @@ namespace pressio{ namespace ops{
 template <typename T0, typename T1, class ScalarType>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T0,T1>::value
-  && ::pressio::package_identifier<T0>::value == PackageIdentifier::Eigen
-  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
+  && (::pressio::is_vector_eigen<T0>::value
+  || ::pressio::is_expression_acting_on_eigen<T0>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
   && ::pressio::Traits<T0>::rank==1
   && ::pressio::Traits<T1>::rank==1
   >
@@ -68,8 +70,10 @@ dot(const T0 & vecA, const T1 & vecB, ScalarType & result)
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T0,T1>::value
-  && ::pressio::package_identifier<T0>::value == PackageIdentifier::Eigen
-  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen,
+  && (::pressio::is_vector_eigen<T0>::value
+  || ::pressio::is_expression_acting_on_eigen<T0>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value),
   typename ::pressio::Traits<T0>::scalar_type
   >
 dot(const T0 & vecA, const T1 & vecB)

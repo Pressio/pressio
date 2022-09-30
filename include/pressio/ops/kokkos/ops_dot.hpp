@@ -56,8 +56,10 @@ namespace pressio{ namespace ops{
 namespace impl{
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos and
-  ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos,
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value),
   typename ::pressio::Traits<T1>::scalar_type
   >
 kokkos_ops_dot(const T1 & a,
@@ -78,8 +80,10 @@ kokkos_ops_dot(const T1 & a,
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos and
-  ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos,
+      (::pressio::is_native_container_kokkos<T1>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or   ::pressio::is_expression_acting_on_kokkos<T2>::value),
   typename ::pressio::Traits<T1>::scalar_type
   >
 dot(const T1 & a,
@@ -90,8 +94,10 @@ dot(const T1 & a,
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos and
-  ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+  (::pressio::is_native_container_kokkos<T1>::value
+  or ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or ::pressio::is_expression_acting_on_kokkos<T2>::value)
   >
 dot(const T1 & a,
     const T2 & b,

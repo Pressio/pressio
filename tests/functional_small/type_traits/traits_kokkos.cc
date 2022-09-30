@@ -61,7 +61,6 @@ void test_kokkos_container_traits()
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Kokkos,
     T::traits::rank,
     typename T::traits::value_type
   >();

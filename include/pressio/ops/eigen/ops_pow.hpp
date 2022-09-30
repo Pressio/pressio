@@ -55,7 +55,8 @@ namespace pressio{ namespace ops{
 template <class T>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::rank==1 and
-  ::pressio::package_identifier<T>::value == PackageIdentifier::Eigen
+  (::pressio::is_vector_eigen<T>::value or
+  ::pressio::is_expression_acting_on_eigen<T>::value)
   >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
@@ -70,8 +71,10 @@ pow(T & x,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
+  and (::pressio::is_native_container_eigen<T1>::value
+    or ::pressio::is_expression_acting_on_eigen<T1>::value)
+  and (::pressio::is_native_container_eigen<T2>::value
+    or ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 pow(T1 & y,
     const T2 & x,
@@ -89,8 +92,10 @@ pow(T1 & y,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
+  and (::pressio::is_native_container_eigen<T1>::value
+    or ::pressio::is_expression_acting_on_eigen<T1>::value)
+  and (::pressio::is_native_container_eigen<T2>::value
+    or ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -115,8 +120,10 @@ abs_pow(T1 & y,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
+  and (::pressio::is_native_container_eigen<T1>::value
+    or ::pressio::is_expression_acting_on_eigen<T1>::value)
+  and (::pressio::is_native_container_eigen<T2>::value
+    or ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 abs_pow(T1 & y,
 	const T2 & x,

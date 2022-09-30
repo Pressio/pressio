@@ -11,7 +11,6 @@ void test_epetra_container()
 {
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Trilinos,
     rank,
     double /* scalar */
   >();

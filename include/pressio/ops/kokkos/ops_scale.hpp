@@ -55,7 +55,8 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::package_identifier<T>::value == ::pressio::PackageIdentifier::Kokkos
+    (::pressio::is_native_container_kokkos<T>::value
+  or ::pressio::is_expression_acting_on_kokkos<T>::value)
   >
 scale(const T & v, typename ::pressio::Traits<T>::scalar_type value)
 {

@@ -7,7 +7,6 @@ void test_teuchos_container()
 {
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Trilinos,
     rank,
     typename T::scalarType
   >();

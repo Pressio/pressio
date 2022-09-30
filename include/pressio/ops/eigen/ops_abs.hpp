@@ -55,8 +55,10 @@ template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   /* a bit restrictive but fine for now */
   ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
-  && ::pressio::package_identifier<T1>::value == PackageIdentifier::Eigen
-  && ::pressio::package_identifier<T2>::value == PackageIdentifier::Eigen
+  && (::pressio::is_vector_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
   && ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
   >

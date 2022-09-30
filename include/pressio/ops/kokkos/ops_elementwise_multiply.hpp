@@ -58,9 +58,12 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-      ::pressio::package_identifier<T>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T1>::value == PackageIdentifier::Kokkos
-  and ::pressio::package_identifier<T2>::value == PackageIdentifier::Kokkos
+      (::pressio::is_native_container_kokkos<T>::value
+  or ::pressio::is_expression_acting_on_kokkos<T>::value)
+  and (::pressio::is_native_container_kokkos<T1>::value
+  or ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  and (::pressio::is_native_container_kokkos<T2>::value
+  or ::pressio::is_expression_acting_on_kokkos<T2>::value)
   and ::pressio::Traits<T>::rank == 1
   and ::pressio::Traits<T1>::rank == 1
   and ::pressio::Traits<T2>::rank == 1
