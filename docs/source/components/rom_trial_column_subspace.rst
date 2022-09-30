@@ -27,7 +27,7 @@ Parameters
 
 - ``basisMatrix``: the basis matrix
 
-- ``translation``: the affine translation
+- ``translation``: the affine translation (potentially a "zero" vector)
 
 - ``isAffine``: boolean to indicate the space is affine
 
@@ -40,15 +40,33 @@ then all of the following must hold:
 
 - :cpp:`pressio::is_vector_eigen<ReducedStateType>::value == true`
 
-- :cpp:`std::is_class<BasisMatrixType>::value == true &&
-  std::is_copy_constructible<basis_matrix_type>::value == true &&
-  std::is_pointer<basis_matrix_type>::value == false &&
-  pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
 
-- :cpp:`std::is_class<full_state_type>::value == true &&
-  std::is_copy_constructible<full_state_type>::value == true &&
-  std::is_pointer<full_state_type>::value == false &&
-  pressio::mpl::is_std_shared_ptr<full_state_type>::value == false`
+- ``basis_matrix_type`` is a rank-2 matrix data type already supported
+  in pressio, i.e. an Eigen Matrix, a Kokkos rank-2 View, a Trilinos Tpetra multivector,
+  Tpetra block multivector, or Epetra multivector
+
+
+- ``full_state_type`` is an Eigen vector, a Kokkos rank-1 View, a Trilinos Tpetra vector,
+  Tpetra block vector, or Epetra vector
+
+..
+   - :cpp:`std::is_class<BasisMatrixType>::value == true &&
+     std::is_copy_constructible<basis_matrix_type>::value == true &&
+     std::is_pointer<basis_matrix_type>::value == false &&
+     pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
+
+   - :cpp:`std::is_class<full_state_type>::value == true &&
+     std::is_copy_constructible<full_state_type>::value == true &&
+     std::is_pointer<full_state_type>::value == false &&
+     pressio::mpl::is_std_shared_ptr<full_state_type>::value == false`
+
+   And let ``M`` and ``S`` be instances of ``basis_matrix_type`` and ``full_state_type``,
+   then the following operations must be defined:
+
+   - ``pressio::ops::extent(M, /*int*/)``
+
+   - ``pressio::ops::extent(M, /*int*/)``
+
 
 Mandates
 --------
@@ -59,11 +77,12 @@ Mandates
 Preconditions
 -------------
 
-:red:`finish`
+- ``basisMatrix`` *represents a linear basis with full column rank*
+
+- ``translation`` must be compatible with the full space, i.e. the following
+  must hold ``pressio::ops::extent(translation, 0) == pressio::ops::extent(basisMatrix, 0)``
 
 ..
-   - ``basisMatrix`` *represents a linear basis with full column rank*
-
    - the following operation ``auto basisMatrixClone = pressio::ops::clone(basisMatrix)``
      conforms to the requirements/semantics `explained here <ops/clone.html>`__;
      in brief, ``basisMatrixClone`` is an object independent of ``basisMatrix`` and if any
@@ -71,32 +90,22 @@ Preconditions
      these do not affect the original ``basisMatrix`` object (or any data it references/uses),
      and viceversa. The same should hold for ``translation``.
 
-   - ``translation`` must be compatible with the full space, i.e. the following
-     must hold ``pressio::ops::extent(translation, 0) == pressio::ops::extent(basisMatrix, 0)``
 
-Effects
--------
+Return value and effects
+------------------------
 
-:red:`finish`
+Creates an instance of a trial subspace. If passing lvalue arguments,
+the implementation will "clone" the arguments so new allocations will occur.
+If passing rvalues (temporaries), the code will use move semantics,
+so the temporary objects are moved-constructed and no new memory allocation should occur.
 
-..
-   - calls ``pressio::ops::clone(...)`` on both ``basismatrix`` and ``translation``,
-     and invokes the copy-constructor on the results to initialize
-     data members, therefore making new allocations
+:red:`finish description of semantics if isAffine==true, and if translation vector has all zeros`
 
 Postconditions
 --------------
 
-The return type is guaranteed to model
+The return type is implementation defined but guaranteed to model
 the `PossiblyAffineTrialColumnSubspace concept <rom_concepts_various/possibly_affine_trial_column_subspace.html>`__.
-
-:red:`finish`
-
-..
-   - the constructed object is immutable and owns, until its destruction,
-     data members that are clones (according to ``ops::clone()``)
-     of the arguments originally passed to the constructor. Therefore, this class
-     has a well-defined invariant established upon construction.
 
 
 Example
