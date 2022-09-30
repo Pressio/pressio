@@ -60,9 +60,9 @@ concept VectorSubspace =
     typename T::basis_matrix_type;
   }
   && std::copy_constructible<typename T::basis_matrix_type>
-  && all_have_traits<typename T::basis_matrix_type>::value
+  && ::pressio::all_have_traits<typename T::basis_matrix_type>::value
   && ::pressio::Traits<typename T::basis_matrix_type>::rank == 2
-  && std::copy_constructible<T>
+  &&  std::copy_constructible<T>
   && !std::assignable_from<T&, T>
   && !std::assignable_from<T&, T&>
   /*
