@@ -56,10 +56,12 @@ namespace pressio{ namespace rom{
 template <class T>
 concept VectorSubspace =
   /* must have nested aliases */
-  requires(){ typename T::basis_matrix_type; }
+  requires(){
+    typename T::basis_matrix_type;
+  }
   && std::copy_constructible<typename T::basis_matrix_type>
   && all_have_traits<typename T::basis_matrix_type>::value
-  && Traits<typename T::basis_matrix_type>::rank == 2
+  && ::pressio::Traits<typename T::basis_matrix_type>::rank == 2
   && std::copy_constructible<T>
   && !std::assignable_from<T&, T>
   && !std::assignable_from<T&, T&>

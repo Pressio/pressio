@@ -12,58 +12,54 @@ Header: ``<pressio/rom_concepts.hpp>``
 Semantic requirements
 ---------------------
 
-:red:`finish`
+Given an instance ``A`` of type ``T``, ``VectorSubspace<T>``
+is modeled if it is satisfied, all subsumed concepts are modeled and:
 
-..
-   The concept is modeled only if it is satisfied,
-   all subsumed concepts are modeled and given
-   an instance ``A``, of type ``T``, all of the following hold:
+- ``A`` represents a subspace closed under addition and scalar multiplication
 
-   - immutability: ``A`` becomes immutable upon construction
-     and, consequently, so are the underlying basis
-     and subspace it represents
+- upon construction, ``A`` becomes immutable and,
+  consequently, the underlying basis and subspace it represents do not change
 
-   - the copy constructor ``auto B = A`` must be such that
-     ``B`` and ``A`` are independent objects but both
-     representing the same subspace
+- the copy constructor ``auto B = A`` must be such that
+  ``B`` and ``A`` are independent objects but both
+  representing the same subspace. In other words, copying ``A``
+  does not have view semantics.
 
-   - move semantics should be the same copy semantics
+- move semantics should be the same as copy semantics, or it would
+  violate the immutability
 
-   - let ``auto & basis = A.basis()``, then:
+- let ``auto & basis = A.basis()``, then:
 
-     - if ``A.isColumnSpace() == true``, then ``basis`` is full *column* rank
+  - if ``A.isColumnSpace() == true``, then ``basis`` is full *column* rank
 
-     - if ``A.isRowSpace() == true``, then ``basis`` is full *row* rank
+  - if ``A.isRowSpace() == true``, then ``basis`` is full *row* rank
 
-   - if ``A.isColumnSpace() == true``, then it ``A.isRowSpace() == false`` and vice versa
+- if ``A.isColumnSpace() == true``, then it ``A.isRowSpace() == false`` and vice versa
 
-   - ``auto dim = A.dimension()`` represents the true dimensionality of the subspace
+- ``auto dim = A.dimension()`` represents the true dimensionality of the subspace
 
-   - must be closed under addition and scalar multiplication
 
-   Syntax-only snippet
-   -------------------
 
-   The following shows an example class that *satisfies* the concept:
+Syntax-only snippet
+-------------------
 
-   .. code-block:: cpp
+.. code-block:: cpp
 
-      class SampleClass
-      {
-	public:
-	  /*By having a user-declared copy assignment, the compiler does
-	    not generate automatically a move constructor/move assignment,
-	    which means that only the copy constr/copy assignment participate
-	    in overload resolution, which means we can achieve what we want
-	    by simply not declaring move cnstr/assign.*/
+   class SampleClass
+   {
+     public:
+       using basis_matrix_type = Eigen::MatrixXd;
 
-	  SampleClass(const SampleClass & other) = default;
-	  SampleClass& operator=(const SampleClass & /*other*/) = delete;
+       const basis_matrix_type & basis() const;
+       std::size_t dimension() const;
+       bool isColumnSpace() const;
+       bool isRowSpace() const;
 
-	  using basis_matrix_type = Eigen::MatrixXd;
-
-	  const basis_matrix_type & basis() const;
-	  std::size_t dimension() const;
-	  bool isColumnSpace() const;
-	  bool isRowSpace() const;
-      }
+    private:
+      /*
+        Since we have a const qualifid data member, copy and move assignments
+        do not participate in overload resolution, so the class is not
+	copy assignable or move assignable which is needed to satisfy the concept.
+      */
+      const basis_matrix_type matrix_;
+   }
