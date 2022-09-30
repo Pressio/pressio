@@ -1,3 +1,6 @@
+
+.. include:: ../mydefs.rst
+
 ``ops``
 =======
 
@@ -10,3 +13,6 @@ Public namespace: ``pressio::ops``
 
    ops/clone
    ops/fill
+
+
+:red:`finish`
