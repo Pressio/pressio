@@ -53,7 +53,7 @@ then all of the following must hold:
 Mandates
 --------
 
-- :cpp:`pressio::all_have_traits_and_same_scalar,
+- :cpp:`pressio::all_have_traits_and_same_scalar<
   reduced_state_type, full_state_type, basis_matrix_type>::value == true`
 
 Preconditions
