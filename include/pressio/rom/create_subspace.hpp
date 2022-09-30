@@ -30,8 +30,7 @@ auto create_trial_column_subspace(BasisMatrixType && basisMatrix,
   static_assert( !::pressio::mpl::all_of_t<
 		 mpl::is_std_shared_ptr, full_state_type, basis_matrix_type>::value,
 		"std::unique_ptr are not valid template arguments");
-  static_assert(::pressio::mpl::all_of_t<
-		all_have_traits_and_same_scalar,
+  static_assert(::pressio::all_have_traits_and_same_scalar<
 		ReducedStateType, full_state_type, basis_matrix_type>::value,
 		"std::unique_ptr are not valid template arguments");
 

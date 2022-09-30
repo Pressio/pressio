@@ -6,6 +6,7 @@ namespace pressio{
 template<>
 struct Traits<std::vector<double>>{
   using scalar_type = double;
+  static constexpr int rank = 1;
 };
 }
 
