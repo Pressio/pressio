@@ -10,3 +10,5 @@ Public namespace: ``pressio``
    :maxdepth: 1
 
    expressions/span
+   expressions/subspan
+   expressions/diag
