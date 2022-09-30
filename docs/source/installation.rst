@@ -40,16 +40,18 @@ Optional vs Required
 
 .. list-table::
    :header-rows: 1
+   :widths: 10 50 40
+   :align: left
 
-   * - TPL Library Name
+   * - TPL Name
      - Optional/Required
-     - Version Known to Work
+     - Version Known to Work/run in CI
    * - Eigen
      - Required
      - 3.3.7
    * - Trilinos
      - Optional
-     - 12.17.00
+     - commit: ef73d14babf6e7556b0420add98cce257ccaa56b
    * - MPI
      - Optional
      - --
