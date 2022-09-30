@@ -53,3 +53,32 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
     then ``J`` must be the jacobian of the residual evaluated for the
     same ``state``. In other words, the Jacobian used for
     computing its action must be mathematically "consistent" with the residual.
+
+
+
+Syntax-only example
+-------------------
+
+.. code-block:: cpp
+
+   class SampleClass
+   {
+     public:
+       using state_type    = Tpetra::Vector<>; // uses default template parameters
+       using residual_type = state_type;
+
+       residual_type createResidual() const;
+       void residual(const state_type & /*state*/,
+                     residual_type &    /*result*/) const;
+
+       Tpetra::MultiVector<> createApplyJacobianResult(const Tpetra::MultiVector<> & operand);
+
+       void applyJacobianResult(const state_type & /*state*/,
+                                const Tpetra::MultiVector<> & /*operand*/,
+                                const Tpetra::MultiVector<> & /*result*/);
+   }
+
+
+Assuming the default scalar type of Tpetra is ``double``,
+the class above satisfies: ``static_assert(pressio::rom::SteadyFomWithJacobianAction<SampleClass,
+Tpetra::MultiVector<>>, "");``

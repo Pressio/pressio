@@ -46,3 +46,22 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
 
   - is equality preserving, i.e. given equal
     inputs ``state, evalTime``, the result written to ``rhs`` remains the same
+
+
+Syntax-only example
+-------------------
+
+.. code-block:: cpp
+
+   class SampleClass
+   {
+     public:
+       using time_type            = double;
+       using state_type           = Tpetra::Vector<double, /*whatever else*/>;
+       using right_hand_side_type = state_type;
+
+       right_hand_side_type createRightHandSide() const;
+       void rightHandSide(const state_type &     /*state*/,
+                          time_type              /*evalTime*/,
+			  right_hand_side_type & /*result*/) const;
+   }

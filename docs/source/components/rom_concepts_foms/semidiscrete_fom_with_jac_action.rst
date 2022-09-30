@@ -57,3 +57,34 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
     then ``J`` must be the jacobian of the right hand side evaluated for the
     same ``state`` and ``evalTime``. In other words, the Jacobian used for
     computing its action must be mathematically "consistent" with the right hand side.
+
+
+Syntax-only example
+-------------------
+
+.. code-block:: cpp
+
+   class SampleClass
+   {
+     public:
+       using time_type            = double;
+       using state_type           = Tpetra::Vector<>; // uses default template parameters
+       using right_hand_side_type = state_type;
+
+       right_hand_side_type createRightHandSide() const;
+       void rightHandSide(const state_type &     /*state*/,
+                          time_type              /*evalTime*/,
+			  right_hand_side_type & /*result*/) const;
+
+       Tpetra::MultiVector<> createApplyJacobianResult(const Tpetra::MultiVector<> & operand);
+
+       void applyJacobianResult(const state_type & /*state*/,
+                                const Tpetra::MultiVector<> & /*operand*/,
+				time_type /*evalTime*/,
+                                const Tpetra::MultiVector<> & /*result*/);
+   }
+
+
+Assuming the default scalar type of Tpetra is ``double``,
+the class above satisfies: ``static_assert(pressio::rom::SemiDiscreteFomWithJacobianAction<SampleClass,
+Tpetra::MultiVector<>>, "");``
