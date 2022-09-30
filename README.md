@@ -21,12 +21,12 @@ Click below to checkout the documentation:
     <img src='./logos/logo-readme.svg' width='95%'>
 </a>
 
-## Versioning and development
+## Development, versioning and backward compatibility
 
 Until we reach a stable 1.0, please be patient and do not be surprised if the API
-and functionalities rapidly change from one 0.x version to the next,
-and, consequently, backward compability is broken.
-Some components are more mature and stable than others,
+and functionalities somewhat rapidly change from one 0.x version to the next,
+thus affecting backward compability.
+Some components of pressio are more mature and stable than others,
 but until we can claim the *same stability* level for all,
 please keep this mind.
 
