@@ -59,12 +59,70 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
 }
 
 // -------------------------------------------------------------
+// default with state and time-dep mass matrix
+// -------------------------------------------------------------
+template<
+  class TrialSubspaceType,
+  class FomSystemType,
+  class FomMassMatrixOperatorType
+#if not defined PRESSIO_ENABLE_CXX20
+  , mpl::enable_if_t<
+      unsteadyexplicit::ComposableIntoDefaultWithVaryingMassMatrixProblem<
+	   TrialSubspaceType, FomSystemType, FomMassMatrixOperatorType>::value,
+      int> = 0
+#endif
+  >
+#ifdef PRESSIO_ENABLE_CXX20
+requires unsteadyexplicit::ComposableIntoDefaultWithVaryingMassMatrixProblem<
+  TrialSubspaceType, FomSystemType, FomMassMatrixOperatorType>
+#endif
+auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,
+				      const TrialSubspaceType & trialSpace,
+				      const FomSystemType & fomSystem,
+				      const FomMassMatrixOperatorType & fomMassMatrixOpType)
+{
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert(unsteadyexplicit::ComposableIntoDefaultWithVaryingMassMatrixProblem<
+		TrialSubspaceType, FomSystemType, FomMassMatrixOperatorType>::value,
+		"default concept not met");
+#endif
+
+  impl::explicit_scheme_else_throw(schemeName, "galerkin_default_explicit");
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+  using default_types = ExplicitGalerkinDefaultOperatorsTraits<reduced_state_type>;
+  using reduced_rhs_type = typename default_types::reduced_right_hand_side_type;
+  using reduced_mm_type  = typename default_types::reduced_mass_matrix_type;
+
+  using galerkin_system = impl::GalerkinDefaultOdeSystemOnlyRhs<
+    independent_variable_type, reduced_state_type, reduced_rhs_type,
+    TrialSubspaceType, FomSystemType>;
+
+  using galerkin_mass_matri_op_type = impl::GalerkinExplicitReducedVariableMassMatrixEvaluator<
+    independent_variable_type, reduced_state_type, reduced_mm_type,
+    TrialSubspaceType, FomMassMatrixOperatorType>;
+
+  using return_type = impl::GalerkinUnsteadyWithMassMatrixExplicitProblem<
+    galerkin_system, galerkin_mass_matri_op_type>;
+  return return_type(schemeName, trialSpace, fomSystem, fomMassMatrixOpType);
+}
+
+
+// -------------------------------------------------------------
 // hyper-reduced
 // -------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType,
-  class HyperReducerType>
+  class HyperReducerType
+#if not defined PRESSIO_ENABLE_CXX20
+  , mpl::enable_if_t<
+      unsteadyexplicit::ComposableIntoHyperReducedProblem<
+	   TrialSubspaceType, FomSystemType, HyperReducerType>::value,
+      int> = 0
+#endif
+  >
 #ifdef PRESSIO_ENABLE_CXX20
 requires unsteadyexplicit::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HyperReducerType>
 #endif

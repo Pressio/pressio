@@ -57,6 +57,7 @@ struct ExplicitGalerkinDefaultOperatorsTraits
 {
   using reduced_state_type    = void;
   using reduced_right_hand_side_type = void;
+  using reduced_mass_matrix_type = void;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -66,6 +67,7 @@ struct ExplicitGalerkinDefaultOperatorsTraits<
 {
   using reduced_state_type    = T;
   using reduced_right_hand_side_type = T;
+  using reduced_mass_matrix_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
 };
 #endif
 
@@ -79,6 +81,11 @@ template<class SubspaceType>
 using explicit_galerkin_default_reduced_right_hand_side_t =
   typename ExplicitGalerkinDefaultOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_right_hand_side_type;
+
+template<class SubspaceType>
+using explicit_galerkin_default_reduced_mass_matrix_t =
+  typename ExplicitGalerkinDefaultOperatorsTraits<
+    typename SubspaceType::reduced_state_type>::reduced_mass_matrix_type;
 } //end namespace pressio:rom::impl
 
 

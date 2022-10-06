@@ -68,23 +68,6 @@ using fully_discrete_fom_jacobian_action_t =
 
 // -----------------------------------------------------------------------------
 
-template<class FomSystemType, class TrialSubspaceType>
-struct fom_jacobian_action_on_trial_space{
-  using type =
-    decltype
-    (std::declval<FomSystemType const>().createApplyJacobianResult
-     (
-      std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
-     )
-    );
-};
-
-template<class ...Args>
-using fom_jacobian_action_on_trial_space_t =
-  typename fom_jacobian_action_on_trial_space<Args...>::type;
-
-// -----------------------------------------------------------------------------
-
 template<class FomSystemType, class OperandType>
 struct fom_jacobian_action{
   using type =
@@ -98,6 +81,12 @@ struct fom_jacobian_action{
 
 template<class ...Args>
 using fom_jacobian_action_t = typename fom_jacobian_action<Args...>::type;
+
+// -----------------------------------------------------------------------------
+
+template<class T, class TrialSubspaceType>
+using fom_jacobian_action_on_trial_space_t =
+  fom_jacobian_action_t<T, typename TrialSubspaceType::basis_matrix_type>;
 
 // -----------------------------------------------------------------------------
 
@@ -132,6 +121,47 @@ struct mask_action<
 
 template<class ...Args>
 using mask_action_t = typename mask_action<Args...>::type;
+
+
+// -----------------------------------------------------------------------------
+
+template<class MassMatrixOpType, class OperandType, class = void>
+struct fom_mass_matrix_action{
+  using type = void;
+};
+
+template<class MassMatrixOpType, class OperandType>
+struct fom_mass_matrix_action<
+  MassMatrixOpType, OperandType,
+  mpl::enable_if_t<
+    !std::is_void<
+    decltype
+    (std::declval<MassMatrixOpType const>().createApplyMassMatrixResult
+    (
+    std::declval<OperandType const &>()
+    )
+    )
+    >::value
+  >
+  >
+{
+  using type =
+    decltype
+    (std::declval<MassMatrixOpType const>().createApplyMassMatrixResult
+     (
+      std::declval<OperandType const &>()
+     )
+    );
+};
+
+template<class ...Args>
+using fom_mass_matrix_action_t = typename fom_mass_matrix_action<Args...>::type;
+
+// -----------------------------------------------------------------------------
+
+template<class FomMassMatOpType, class TrialSubspaceType>
+using fom_mass_matrix_action_on_trial_space_t =
+  fom_mass_matrix_action_t<FomMassMatOpType, typename TrialSubspaceType::basis_matrix_type>;
 
 }}}}
 #endif  // ROM_CONCEPTS_HELPERS_HPP_

@@ -83,6 +83,7 @@
 #include "./rom/concepts/galerkin_steady_hyperreduced.hpp"
 #include "./rom/concepts/galerkin_steady_masked.hpp"
 #include "./rom/concepts/galerkin_explicit_default.hpp"
+#include "./rom/concepts/galerkin_explicit_default_with_varying_mm.hpp"
 #include "./rom/concepts/galerkin_explicit_hyperreduced.hpp"
 #include "./rom/concepts/galerkin_explicit_masked.hpp"
 #include "./rom/concepts/galerkin_implicit_default.hpp"
