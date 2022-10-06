@@ -32,7 +32,7 @@ class GalerkinSteadyHypRedSystem
   // deduce from the fom object the type of result of
   // applying the Jacobian to the basis
   using fom_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+    decltype(std::declval<FomSystemType const>().createResultOfJacobianActionOn
 	     (std::declval<basis_matrix_type const &>()) );
 
 public:
@@ -51,7 +51,7 @@ public:
       fomState_(trialSubspace.createFullState()),
       hyperReducer_(hyperReducer),
       fomResidual_(fomSystem.createResidual()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
+      fomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
@@ -82,11 +82,13 @@ public:
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    fomSystem_.get().residual(fomState_,  fomResidual_);
-    hyperReducer_(fomResidual_, reducedResidual);
+    fomSystem_.get().residualAndJacobianAction(fomState_,
+					       fomResidual_,
+					       phi, fomJacAction_,
+					       computeJacobian);
 
+    hyperReducer_(fomResidual_, reducedResidual);
     if (computeJacobian){
-      fomSystem_.get().applyJacobian(fomState_, phi, fomJacAction_);
       hyperReducer_(fomJacAction_, reducedJacobian);
     }
   }

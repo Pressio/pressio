@@ -81,7 +81,7 @@ concept SteadyFomWithJacobianAction =
 	      const JacobianActionOperandType & operand)
   {
     { A.createResidual() } -> std::same_as<typename T::residual_type>;
-    { A.createApplyJacobianResult(operand) } -> std::copy_constructible;
+    { A.createResultOfJacobianActionOn(operand) } -> std::copy_constructible;
   }
   && all_have_traits_and_same_scalar<
     typename T::state_type, JacobianActionOperandType,
@@ -91,22 +91,22 @@ concept SteadyFomWithJacobianAction =
        concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
        JacobianActionOperandType>
   /*
-    compound requirements on the "evaluation" methods
-    we intentionally do not lump this together with the one
-    above for these reasons:
+    compound requirements on the "evaluation" method:
+    intentionally not lumped with the one above for these reasons:
     1. it makes sense logically to split them, since the
-       requirements of "A.applyJacobian" and "A.residual"
-       depend on successfully checking the corresponding create methods
+       they depend on successfully checking the corresponding create methods
     2. helps the compiler with early failure detection
   */
   && requires(const T & A,
 	      const typename T::state_type & state,
-	      const JacobianActionOperandType & operand,
 	      typename T::residual_type & residual,
-	      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType> & jAction)
+	      const JacobianActionOperandType & operand,
+	      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType> & jAction,
+	      bool recomputeJacobian)
   {
     { A.residual(state, residual) } -> std::same_as<void>;
-    { A.applyJacobian(state, operand, jAction) } -> std::same_as<void>;
+    { A.residualAndJacobianAction(state, residual, operand,
+				  jAction, recomputeJacobian) } -> std::same_as<void>;
   };
 
 }} // end namespace pressio::rom
@@ -148,7 +148,7 @@ struct SteadyFomWithJacobianAction<
     */
     && ::pressio::rom::has_const_create_residual_method_return_result<
 	 T, typename T::residual_type >::value
-    && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+    && ::pressio::rom::has_const_create_result_of_jacobian_action_on<
 	 T, JacobianActionOperandType>::value
     && std::is_copy_constructible<
 	 concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>
@@ -165,10 +165,19 @@ struct SteadyFomWithJacobianAction<
     */
     && ::pressio::rom::has_const_residual_method_accept_state_result_return_void<
       T, typename T::state_type, typename T::residual_type>::value
-    && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-         T, typename T::state_type, JacobianActionOperandType,
-	 concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>
-	 >::value
+    && std::is_void<
+      decltype
+      (
+       std::declval<T const>().residualAndJacobianAction
+       (
+	std::declval<typename T::state_type const&>(),
+	std::declval<typename T::residual_type &>(),
+	std::declval<JacobianActionOperandType const&>(),
+	std::declval<concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType> &>(),
+	std::declval<bool>()
+	)
+       )
+    >::value
    >
   > : std::true_type{};
 

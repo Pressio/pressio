@@ -18,7 +18,7 @@ struct MyFom
 
   residual_type createResidual() const{ return residual_type(nSample_); }
 
-  Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{
+  Eigen::MatrixXd createResultOfJacobianActionOn(const Eigen::MatrixXd & B) const{
     Eigen::MatrixXd A(nSample_, B.cols());
     return A;
   }
@@ -34,17 +34,24 @@ struct MyFom
     }
   }
 
-  void applyJacobian(const state_type & state,
-                     const Eigen::MatrixXd & B,
-                     Eigen::MatrixXd & A) const
+  void residualAndJacobianAction(const state_type & state,
+				 residual_type & r,
+				 const Eigen::MatrixXd & B,
+				 Eigen::MatrixXd & A,
+				 bool computeJac) const
   {
-    for (std::size_t i=0; i<validStateIndices_.size(); ++i){
-      for (int j=0; j< A.cols(); ++j){
-        A(i,j) = B(validStateIndices_[i], j);
-	A(i,j) += state(validStateIndices_[i]);
+
+    residual(state, r);
+    if (computeJac){
+      for (std::size_t i=0; i<validStateIndices_.size(); ++i){
+	for (int j=0; j< A.cols(); ++j){
+	  A(i,j) = B(validStateIndices_[i], j);
+	  A(i,j) += state(validStateIndices_[i]);
+	}
       }
     }
   }
+
 };
 
 struct FakeNonLinSolverSteady

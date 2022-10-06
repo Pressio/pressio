@@ -32,7 +32,7 @@ class GalerkinSteadyDefaultSystem
   // deduce from the fom object the type of result of
   // applying the Jacobian to the basis
   using fom_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+    decltype(std::declval<FomSystemType const>().createResultOfJacobianActionOn
 	     (std::declval<basis_matrix_type const &>()) );
 
 public:
@@ -49,7 +49,7 @@ public:
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
       fomResidual_(fomSystem.createResidual()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
+      fomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
@@ -78,13 +78,14 @@ public:
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
     using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
     constexpr auto beta = ::pressio::utils::Constants<R_scalar_t>::zero();
-    fomSystem_.get().residual(fomState_, fomResidual_);
+    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_,
+					       phi, fomJacAction_,
+					       computeJacobian);
+
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomResidual_, beta, reducedResidual);
 
     if (computeJacobian){
-      fomSystem_.get().applyJacobian(fomState_, phi, fomJacAction_);
-
       using J_scalar_t = typename ::pressio::Traits<jacobian_type>::scalar_type;
       constexpr auto beta = ::pressio::utils::Constants<J_scalar_t>::zero();
       ::pressio::ops::product(::pressio::transpose(),

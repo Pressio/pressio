@@ -25,7 +25,7 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
   Operands that are constant must not be modified.
 
 - ``auto r = A.createResidual()`` and
-  ``auto result = A.createApplyJacobianResult(operand)`` return objects
+  ``auto result = A.createResultOfJacobianActionOn(operand)`` return objects
   with all "elements" zero initialized
 
 - doing:
@@ -41,13 +41,15 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
   and such that any modification to ``r1`` does not affect any of the others
   and viceversa.
   In other words, calling ``A.createResidual()`` yields independent instances.
-  And similarly applies to ``A.createApplyJacobianResult()``.
+  And similarly applies to ``A.createResultOfJacobianActionOn()``.
 
-- ``A.residual(state, r)`` and ``A.applyJacobian(state, operand, ja)``
+- ``A.residualAndJacobianAction(state, r, operand, ja, /*computeJacobian*/)``
 
   - overwrite ``r`` and ``ja`` with their respective results
 
-  - both are equality preserving, i.e. equal inputs imply equal outputs
+  - the Jacobian must be recomputed if ``computeJacobian == true``
+
+  - equality preserving, i.e. equal inputs imply equal outputs
 
   - let ``J`` represent the Jacobian which we compute the action of,
     then ``J`` must be the jacobian of the residual evaluated for the
@@ -68,14 +70,17 @@ Syntax-only example
        using residual_type = state_type;
 
        residual_type createResidual() const;
+
+       Tpetra::MultiVector<> createResultOfJacobianActionOn(const Tpetra::MultiVector<> & operand);
+
        void residual(const state_type & /*state*/,
                      residual_type &    /*result*/) const;
 
-       Tpetra::MultiVector<> createApplyJacobianResult(const Tpetra::MultiVector<> & operand);
-
-       void applyJacobianResult(const state_type & /*state*/,
-                                const Tpetra::MultiVector<> & /*operand*/,
-                                const Tpetra::MultiVector<> & /*result*/);
+       void residualAndJacobianAction(const state_type & /*state*/,
+                                      residual_type & /*residual*/
+		                      const Tpetra::MultiVector<> & /*operand*/,
+                                      const Tpetra::MultiVector<> & /*result*/,
+				      bool /*computeJaobian*/);
    }
 
 

@@ -34,7 +34,7 @@ class GalerkinSteadyMaskedSystem
   // deduce the unmasked types
   using unmasked_fom_residual_type = typename FomSystemType::residual_type;
   using unmasked_fom_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+    decltype(std::declval<FomSystemType const>().createResultOfJacobianActionOn
 	     (std::declval<basis_matrix_type const &>()));
 
   // deduce the masked types
@@ -63,7 +63,7 @@ public:
       hyperReducer_(hyperReducer),
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
-      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace())),
+      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
       maskedFomResidual_(masker.createApplyMaskResult(unMaskedFomResidual_)),
       maskedFomJacAction_(masker.createApplyMaskResult(unMaskedFomJacAction_))
   {}
@@ -89,12 +89,15 @@ public:
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    fomSystem_.get().residual(fomState_, unMaskedFomResidual_);
+    fomSystem_.get().residualAndJacobianAction(fomState_,
+					       unMaskedFomResidual_,
+					       phi, unMaskedFomJacAction_,
+					       computeJacobian);
+
+    // then do the masking and hyp-red
     masker_(unMaskedFomResidual_, maskedFomResidual_);
     hyperReducer_(maskedFomResidual_, reducedResidual);
-
     if (computeJacobian){
-      fomSystem_.get().applyJacobian(fomState_, phi, unMaskedFomJacAction_);
       masker_(unMaskedFomJacAction_, maskedFomJacAction_);
       hyperReducer_(maskedFomJacAction_, reducedJacobian);
     }

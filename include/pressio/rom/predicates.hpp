@@ -110,38 +110,6 @@ template <
   class T,
   class StateType,
   class OperandType,
-  class ResultType,
-  class = void
-  >
-struct has_const_apply_jacobian_method_accept_state_operand_result_return_void
-  : std::false_type{};
-
-template <
-  class T,
-  class StateType,
-  class OperandType,
-  class ResultType
-  >
-struct has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-  T, StateType, OperandType, ResultType,
-  ::pressio::mpl::void_t<
-    decltype
-    (
-     std::declval<T const>().applyJacobian
-     (
-      std::declval<StateType const&>(),
-      std::declval<OperandType const&>(),
-      std::declval<ResultType &>()
-      )
-     )
-    >
-  >: std::true_type{};
-// ---------------------------------------------------------------
-
-template <
-  class T,
-  class StateType,
-  class OperandType,
   class TimeType,
   class ResultType,
   class = void
@@ -238,17 +206,17 @@ struct has_const_apply_mass_matrix_method_accept_operand_result_return_void<
 // ---------------------------------------------------------------
 
 template <class T, class OperandType, class = void>
-struct has_const_create_apply_jacobian_result_method_accept_operand_return_result
+struct has_const_create_result_of_jacobian_action_on
   : std::false_type{};
 
 template <class T, class OperandType>
-struct has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+struct has_const_create_result_of_jacobian_action_on<
   T, OperandType,
   mpl::enable_if_t<
     !std::is_void<
       decltype
       (
-       std::declval<T const>().createApplyJacobianResult
+       std::declval<T const>().createResultOfJacobianActionOn
        (
 	std::declval<OperandType const &>()
 	)

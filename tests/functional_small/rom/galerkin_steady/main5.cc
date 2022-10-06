@@ -17,48 +17,51 @@ struct MyFom
 
   residual_type createResidual() const { return residual_type{}; }
 
-  FomJacobianActionResultType createApplyJacobianResult(const MatrixType & B) const{
+  FomJacobianActionResultType createResultOfJacobianActionOn(const MatrixType & B) const{
     return FomJacobianActionResultType{};
   }
 
   void residual(const state_type & u,
 		residual_type & r) const{}
 
-  void applyJacobian(const state_type & state,
-                     const MatrixType & B,
-		     FomJacobianActionResultType & A) const{}
+  void residualAndJacobianAction(const state_type & state,
+				 residual_type & r,
+				 const MatrixType & B,
+				 FomJacobianActionResultType &A,
+				 bool computeJac) const
+  {}
 };
 
 namespace pressio{
-template<> struct Traits<MatrixType>{ 
+template<> struct Traits<MatrixType>{
   static constexpr int rank = 2;
-  using scalar_type = double; 
+  using scalar_type = double;
 };
 
 template<> struct Traits<FomStateType>{
   static constexpr int rank = 1;
-  using scalar_type = double; 
+  using scalar_type = double;
 };
 
-template<> struct Traits<FomResidualType>{ 
+template<> struct Traits<FomResidualType>{
   static constexpr int rank = 1;
-  using scalar_type = double; 
+  using scalar_type = double;
 };
 
-template<> struct Traits<FomJacobianActionResultType>{ 
+template<> struct Traits<FomJacobianActionResultType>{
   static constexpr int rank = 2;
-  using scalar_type = double; 
+  using scalar_type = double;
 };
 
-template<> struct Traits<MaskedResidual>{ 
+template<> struct Traits<MaskedResidual>{
   static constexpr int rank = 1;
-  using scalar_type = double; 
+  using scalar_type = double;
 };
 
-template<> struct Traits<MaskedJacobianAction>{ 
+template<> struct Traits<MaskedJacobianAction>{
   static constexpr int rank = 2;
-  using scalar_type = double; 
-};  
+  using scalar_type = double;
+};
 }
 
 namespace pressio { namespace ops{

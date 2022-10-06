@@ -126,7 +126,7 @@ struct SemiDiscreteFomWithJacobianAction<
   mpl::enable_if_t<
        SemiDiscreteFom<T>::value
     //
-    && ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+    && ::pressio::rom::has_const_create_result_of_jacobian_action_on<
 	 T,  JacobianActionOperandType>::value
     && std::is_copy_constructible<
 	 concepts::impl::fom_jacobian_action_t<T,  JacobianActionOperandType>

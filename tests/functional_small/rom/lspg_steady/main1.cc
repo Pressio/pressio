@@ -13,7 +13,7 @@ struct MyFom
 
   residual_type createResidual() const{ return residual_type(N_); }
 
-  Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const
+  Eigen::MatrixXd createResultOfJacobianActionOn(const Eigen::MatrixXd & B) const
   {
     Eigen::MatrixXd A(N_, B.cols());
     return A;
@@ -29,12 +29,19 @@ struct MyFom
     }
   }
 
-  void applyJacobian(const state_type & /*unused*/,
-                     const Eigen::MatrixXd & B,
-                     Eigen::MatrixXd & A) const
+  void residualAndJacobianAction(const state_type & state,
+				 residual_type & r,
+				 const Eigen::MatrixXd & B,
+				 Eigen::MatrixXd & A,
+				 bool computeJac) const
   {
-    A = B;
-    A.array() += 1.;
+
+    residual(state, r);
+    if (computeJac)
+      {
+	A = B;
+	A.array() += 1.;
+      }
   }
 };
 

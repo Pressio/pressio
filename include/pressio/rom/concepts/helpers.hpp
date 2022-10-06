@@ -72,7 +72,7 @@ template<class FomSystemType, class OperandType>
 struct fom_jacobian_action{
   using type =
     decltype
-    (std::declval<FomSystemType const>().createApplyJacobianResult
+    (std::declval<FomSystemType const>().createResultOfJacobianActionOn
      (
       std::declval<OperandType const &>()
      )
