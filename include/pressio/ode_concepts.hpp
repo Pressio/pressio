@@ -72,6 +72,7 @@
 #include "./ode/concepts/ode_observer.hpp"
 #include "./ode/concepts/ode_guesser.hpp"
 #include "./ode/concepts/ode_step_size_policy.hpp"
+#include "./ode/concepts/ode_step_size_policy_with_reduction.hpp"
 #include "./ode/concepts/ode_steppable.hpp"
 #include "./ode/concepts/ode_steppable_with_args.hpp"
 

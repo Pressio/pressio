@@ -49,6 +49,24 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_
 
+#ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace ode{
+
+template <class T, class IndVarType, class StateType>
+concept StateObserver =
+  requires(const T& A,
+	   const StateType & state,
+	   ::pressio::ode::StepCount stepNumber,
+	   const IndVarType & indVal)
+  {
+    A(stepNumber, indVal, state);
+  };
+
+}} // end namespace pressio::ode
+
+#else
+
 namespace pressio{ namespace ode{
 
 template <class T, class IndVarType, class StateType, class enable = void>
@@ -71,5 +89,7 @@ struct StateObserver<
     >
   > : std::true_type{};
 
-}}
+}} // end namespace pressio::ode
+#endif
+
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_OBSERVER_HPP_

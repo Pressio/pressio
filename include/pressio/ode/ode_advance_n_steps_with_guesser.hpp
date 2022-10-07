@@ -59,13 +59,18 @@ namespace pressio{ namespace ode{
 // overload set for steppable
 // ---------------------------------
 
-template<
-  class StepperType, class StateType, class GuesserType, class IndVarType
-  >
-mpl::enable_if_t<
+template<class StepperType, class StateType, class GuesserType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
   Steppable<StepperType>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires Steppable<StepperType>
+  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -84,13 +89,20 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 
 template<
   class StepperType, class StateType, class StepSizePolicyType,
-  class GuesserType, class IndVarType
-  >
+  class GuesserType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   Steppable<StepperType>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires Steppable<StepperType>
+  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -109,13 +121,20 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 
 template<
   class StepperType, class StateType, class GuesserType,
-  class ObserverType, class IndVarType
-  >
+  class ObserverType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   Steppable<StepperType>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires Steppable<StepperType>
+  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -134,14 +153,22 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 
 template<
   class StepperType, class StateType, class StepSizePolicyType,
-  class GuesserType, class ObserverType, class IndVarType
-  >
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  >
+  class GuesserType, class ObserverType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+    Steppable<StepperType>::value
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+    && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+    >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires Steppable<StepperType>
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+    && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -165,11 +192,19 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 template<
   class StepperType, class StateType, class GuesserType, class IndVarType,
   class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -193,12 +228,21 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class GuesserType, class IndVarType, class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value)
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -221,14 +265,22 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 
 template<
   class StepperType, class StateType, class GuesserType,
-  class ObserverType, class IndVarType, class AuxT, class ...Args
-  >
+  class ObserverType, class IndVarType, class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -253,13 +305,23 @@ template<
   class StepperType, class StateType, class StepSizePolicyType,
   class GuesserType, class ObserverType, class IndVarType,
   class AuxT, class ...Args>
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  >
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+    SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+    && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>::value
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+    && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
+    >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+    && StateGuesser<GuesserType, typename StepperType::independent_variable_type, StateType>
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+    && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,

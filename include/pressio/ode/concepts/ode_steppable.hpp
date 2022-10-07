@@ -49,7 +49,7 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace impl{
 
 /*
   for any stepper we need to ensure its operator() accepts the
@@ -72,12 +72,6 @@ namespace pressio{ namespace ode{
       void operator()(state_type && state, ...)
   };
  */
-
-//
-// stepper
-//
-namespace impl{
-
 template <class T, class = void>
 struct stepper_accepting_lvalue_state : std::true_type{};
 
@@ -100,7 +94,41 @@ struct stepper_accepting_lvalue_state<
     >
   > : std::false_type{};
 
-} // end namespace impl
+}}}
+
+#ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace ode{
+
+template <class T>
+concept Steppable =
+  requires(){
+    typename T::independent_variable_type;
+    typename T::state_type;
+  }
+  && requires(T & A,
+	      typename T::state_type & state,
+	      const ::pressio::ode::StepStartAt<typename T::independent_variable_type> startAt,
+	      const ::pressio::ode::StepCount & stepNumber,
+	      const ::pressio::ode::StepSize<typename T::independent_variable_type> & dt)
+  {
+    A(state, startAt, stepNumber, dt);
+  }
+  && impl::stepper_accepting_lvalue_state<T>::value;
+
+template <class T>
+concept StronglySteppable = Steppable<T>;
+
+}} // end namespace pressio::ode
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace ode{
 
 template <class T, class = void>
 struct Steppable : std::false_type{};
@@ -109,7 +137,7 @@ template <class T>
 struct Steppable<
   T,
   mpl::enable_if_t<
-    ::pressio::has_state_typedef<T>::value
+       ::pressio::has_state_typedef<T>::value
     && ::pressio::has_independent_variable_typedef<T>::value
     && std::is_void<
       decltype
@@ -130,5 +158,7 @@ struct Steppable<
 
 template <class T> using StronglySteppable = Steppable<T>;
 
-}}
+}} // end namespace pressio::ode
+#endif //end PRESSIO_ENABLE_CXX20
+
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_

@@ -119,21 +119,49 @@ TEST(ode, concepts__stepper)
 {
   using namespace pressio::ode;
 
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert( Steppable<Stepper1>, "");
+  static_assert(!Steppable<Stepper2>, "");
+  static_assert(!Steppable<Stepper3>, "");
+  static_assert(!Steppable<Stepper4>, "");
+#else
   static_assert( Steppable<Stepper1>::value, "");
   static_assert(!Steppable<Stepper2>::value, "");
   static_assert(!Steppable<Stepper3>::value, "");
   static_assert(!Steppable<Stepper4>::value, "");
+#endif
 }
 
 TEST(ode, concepts_variadic_stepper)
 {
   using namespace pressio::ode;
 
-  static_assert(!Steppable<void, VarStepper1>::value, "");
-  static_assert(!Steppable<void, VarStepper2>::value, "");
-  static_assert(!Steppable<void, VarStepper3>::value, "");
-  static_assert(!Steppable<void, VarStepper4>::value, "");
-  static_assert(!Steppable<void, VarStepper5>::value, "");
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(!Steppable<VarStepper1>, "");
+  static_assert(!Steppable<VarStepper2>, "");
+  static_assert(!Steppable<VarStepper3>, "");
+  static_assert(!Steppable<VarStepper4>, "");
+  static_assert(!Steppable<VarStepper5>, "");
+
+  static_assert(SteppableWithAuxiliaryArgs<
+		VarStepper1, AuxThing1>, "");
+  static_assert(!SteppableWithAuxiliaryArgs<
+		VarStepper2, AuxThing1>, "");
+  static_assert(!SteppableWithAuxiliaryArgs<
+		VarStepper3, AuxThing1>, "");
+  static_assert(!SteppableWithAuxiliaryArgs<
+		VarStepper4, AuxThing1>, "");
+
+  static_assert(!SteppableWithAuxiliaryArgs<
+		VarStepper5, AuxThing1>, "");
+  static_assert(SteppableWithAuxiliaryArgs<
+		VarStepper5, AuxThing1, AuxThing2>, "");
+#else
+  static_assert(!Steppable<VarStepper1>::value, "");
+  static_assert(!Steppable<VarStepper2>::value, "");
+  static_assert(!Steppable<VarStepper3>::value, "");
+  static_assert(!Steppable<VarStepper4>::value, "");
+  static_assert(!Steppable<VarStepper5>::value, "");
 
   static_assert(SteppableWithAuxiliaryArgs<
 		void, VarStepper1, AuxThing1>::value, "");
@@ -143,9 +171,9 @@ TEST(ode, concepts_variadic_stepper)
 		void, VarStepper3, AuxThing1>::value, "");
   static_assert(!SteppableWithAuxiliaryArgs<
 		void, VarStepper4, AuxThing1>::value, "");
-
   static_assert(!SteppableWithAuxiliaryArgs<
 		void, VarStepper5, AuxThing1>::value, "");
   static_assert(SteppableWithAuxiliaryArgs<
 		void, VarStepper5, AuxThing1, AuxThing2>::value, "");
+#endif
 }

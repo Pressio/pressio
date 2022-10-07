@@ -60,10 +60,17 @@ namespace pressio{ namespace ode{
 // ---------------------------------
 
 template<class StepperType, class StateType, class StepSizePolicyType, class IndVarType>
-mpl::enable_if_t<
-  StronglySteppable<StepperType>::value
-  && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  >
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+    StronglySteppable<StepperType>::value
+    && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+    >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires StronglySteppable<StepperType>
+    && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>
+void
+#endif
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -83,11 +90,19 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class ObserverType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   StronglySteppable<StepperType>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires StronglySteppable<StepperType>
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+void
+#endif
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -111,11 +126,19 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class IndVarType, class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -139,12 +162,21 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class ObserverType, class IndVarType, class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,

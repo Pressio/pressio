@@ -49,7 +49,7 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace impl{
 
 /*
   we need to ensure operator() accepts the state
@@ -58,8 +58,6 @@ namespace pressio{ namespace ode{
   Basically if we tried to bind an rvalue to an lvalue reference,
   it should fail, and if it fails that is good because it is what we want.
 */
-
-namespace impl{
 
 template <class T, class IndVarType, class StateType, class Enable = void>
 struct guesser_taking_state_by_ref
@@ -83,7 +81,28 @@ struct guesser_taking_state_by_ref<
     >
   > : std::false_type{};
 
-} // end namespace impl
+}}} // end namespace pressio::ode::impl
+
+#ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace ode{
+
+template <class T, class IndVarType, class StateType>
+concept StateGuesser =
+  requires(const T& A,
+	   StateType & state,
+	   const ::pressio::ode::StepCount & stepNumber,
+	   const ::pressio::ode::StepStartAt<IndVarType> & startAt)
+  {
+    A(stepNumber, startAt, state);
+  }
+  && impl::guesser_taking_state_by_ref<T, IndVarType, StateType>::value;
+
+}} // end namespace pressio::ode
+
+#else
+
+namespace pressio{ namespace ode{
 
 template <class T, class IndVarType, class StateType, class enable = void>
 struct StateGuesser : std::false_type{};
@@ -106,5 +125,7 @@ struct StateGuesser<
     >
   > : std::true_type{};
 
-}}
+}} // end namespace pressio::ode
+#endif
+
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_

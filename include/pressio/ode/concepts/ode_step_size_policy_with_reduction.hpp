@@ -46,42 +46,66 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
-#define ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
-
-/*
-  we need to ensure operator() accepts the step size
-  by **non-const** reference. One (maybe only) way to detect
-  that is check that if operator() can bind an rvalue.
-  Basically if we tried to bind an rvalue to an lvalue reference,
-  it should fail, and if it fails that is good because it is what we want.
-*/
+#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_WITH_REDUCTION_HPP_
+#define ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_WITH_REDUCTION_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
+#define STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(T1, T2, T3)	\
+  T, IndVarType, \
+  mpl::enable_if_t<							\
+    std::is_void<							\
+    decltype								\
+  (									\
+   std::declval<T const>()						\
+   (									\
+    std::declval< ::pressio::ode::StepCount >(),			\
+    std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),		\
+    std::declval< T1 >(),		\
+    std::declval< T2 >(),	\
+    std::declval< T3 >()	\
+   ) \
+  ) \
+  >::value \
+  > \
+
 template <class T, class IndVarType, class Enable = void>
-struct step_size_policy_taking_dt_by_ref
+struct step_size_policy_with_reduc_taking_dt_by_ref
   : std::true_type{};
 
 template <class T, class IndVarType>
-struct step_size_policy_taking_dt_by_ref<
-  T, IndVarType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T const>()
-       (
-	std::declval< ::pressio::ode::StepCount >(),
-	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
-	std::declval< ::pressio::ode::StepSize<IndVarType> >()
-	)
-       )
-      >::value
-    >
+struct step_size_policy_with_reduc_taking_dt_by_ref<
+  STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType>, \
+						    StepSizeMinAllowedValue<IndVarType>, \
+						    StepSizeScalingFactor<IndVarType>)
   > : std::false_type{};
 
-}}}
+template <class T, class IndVarType>
+struct step_size_policy_with_reduc_taking_dt_by_ref<
+  STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType>, \
+						    StepSizeMinAllowedValue<IndVarType> &, \
+						    StepSizeScalingFactor<IndVarType> &)
+  > : std::false_type{};
+
+template <class T, class IndVarType>
+struct step_size_policy_with_reduc_taking_dt_by_ref<
+  STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType> &, \
+						    StepSizeMinAllowedValue<IndVarType> &, \
+						    StepSizeScalingFactor<IndVarType>)
+  > : std::false_type{};
+
+template <class T, class IndVarType>
+struct step_size_policy_with_reduc_taking_dt_by_ref<
+  STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(StepSize<IndVarType> &, \
+						    StepSizeMinAllowedValue<IndVarType> , \
+						    StepSizeScalingFactor<IndVarType> &)
+  > : std::false_type{};
+
+
+// we are missing all cases with just a single one that is ref because
+// when i tried to add those special cases I get ambiguous template error
+
+}}}//end namespace pressio::ode::impl
 
 
 #ifdef PRESSIO_ENABLE_CXX20
@@ -89,28 +113,30 @@ struct step_size_policy_taking_dt_by_ref<
 namespace pressio{ namespace ode{
 
 template <class T, class IndVarType>
-concept StepSizePolicy =
+concept StepSizePolicyWithReductionScheme =
   requires(const T& A,
 	   ::pressio::ode::StepCount stepNumber,
 	   ::pressio::ode::StepStartAt<IndVarType> startAt,
-	   ::pressio::ode::StepSize<IndVarType> & dt)
+	   ::pressio::ode::StepSize<IndVarType> & dt,
+	   ::pressio::ode::StepSizeMinAllowedValue<IndVarType> & minDt,
+	   ::pressio::ode::StepSizeScalingFactor<IndVarType> & scalingFactor)
   {
-    A(stepNumber, startAt, dt);
+    A(stepNumber, startAt, dt, minDt, scalingFactor);
   }
-  && impl::step_size_policy_taking_dt_by_ref<T, IndVarType>::value;
+  && impl::step_size_policy_with_reduc_taking_dt_by_ref<T, IndVarType>::value;
 
-}} // end namespace pressio::ode
+}}//end namespace pressio::ode
 
 #else
 
 namespace pressio{ namespace ode{
 
 template <class T, class IndVarType, class Enable = void>
-struct StepSizePolicy
+struct StepSizePolicyWithReductionScheme
   : std::false_type{};
 
 template <class T, class IndVarType>
-struct StepSizePolicy<
+struct StepSizePolicyWithReductionScheme<
   T, IndVarType,
   mpl::enable_if_t<
     std::is_void<
@@ -120,15 +146,17 @@ struct StepSizePolicy<
        (
 	std::declval< ::pressio::ode::StepCount >(),
 	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
-	std::declval< ::pressio::ode::StepSize<IndVarType> & >()
+	std::declval< ::pressio::ode::StepSize<IndVarType> & >(),
+	std::declval< ::pressio::ode::StepSizeMinAllowedValue<IndVarType> & >(),
+	std::declval< ::pressio::ode::StepSizeScalingFactor<IndVarType> & >()
 	)
        )
       >::value
-    && impl::step_size_policy_taking_dt_by_ref<T, IndVarType>::value
+    && impl::step_size_policy_with_reduc_taking_dt_by_ref<T, IndVarType>::value
     >
   > : std::true_type{};
 
-}} // end namespace pressio::ode
+}}//end namespace pressio::ode
 #endif
 
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_

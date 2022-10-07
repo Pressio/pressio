@@ -59,13 +59,18 @@ namespace pressio{ namespace ode{
 // overload set for steppable
 // ---------------------------------
 
-template<
-  class StepperType, class StateType, class StepSizePolicyType, class IndVarType
-  >
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  >
+template<class StepperType, class StateType, class StepSizePolicyType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+    Steppable<StepperType>::value
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+    >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires Steppable<StepperType>
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+void
+#endif
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -84,11 +89,19 @@ advance_to_target_point(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class ObserverType, class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   Steppable<StepperType>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires Steppable<StepperType>
+  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+void
+#endif
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -111,11 +124,19 @@ advance_to_target_point(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class IndVarType, class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -138,12 +159,21 @@ advance_to_target_point(StepperType & stepper,
 template<
   class StepperType, class StateType, class StepSizePolicyType,
   class ObserverType, class IndVarType, class AuxT, class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
 mpl::enable_if_t<
   SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
   && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
   && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
   && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#endif
+#ifdef PRESSIO_ENABLE_CXX20
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+void
+#endif
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,

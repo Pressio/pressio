@@ -49,7 +49,7 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace impl{
 
 /*
   for any stepper we need to ensure its operator() accepts the
@@ -73,11 +73,6 @@ namespace pressio{ namespace ode{
   };
  */
 
-//
-// variadic stepper
-//
-namespace impl{
-
 template <class T, class AuxT, class ...Args>
 struct variadic_stepper_accepting_lvalue_state : std::true_type{};
 
@@ -100,7 +95,48 @@ struct variadic_stepper_accepting_lvalue_state<
     >, T, AuxT, Args...
   > : std::false_type{};
 
-} // end namespace impl
+}}}
+
+#ifdef PRESSIO_ENABLE_CXX20
+
+// this is here so that we can clearly show it in the
+// doc via rst literal include directive
+namespace pressio{ namespace ode{
+
+template <class T, class AuxT, class ...Args>
+concept SteppableWithAuxiliaryArgs =
+  /* must have nested aliases */
+  requires(){
+    typename T::independent_variable_type;
+    typename T::state_type;
+  }
+  && requires(T & A,
+	      typename T::state_type & state,
+	      const ::pressio::ode::StepStartAt<typename T::independent_variable_type> startAt,
+	      ::pressio::ode::StepCount stepNumber,
+	      ::pressio::ode::StepSize<typename T::independent_variable_type> dt,
+	      AuxT && aux,
+	      Args && ...args)
+  {
+    A(state, startAt, stepNumber, dt,
+      std::forward<AuxT>(aux), std::forward<Args>(args)...);
+  }
+  && impl::variadic_stepper_accepting_lvalue_state<void, T, AuxT, Args...>::value;
+
+template <class T, class AuxT, class ...Args>
+concept StronglySteppableWithAuxiliaryArgs =
+  SteppableWithAuxiliaryArgs<T, AuxT, Args...>;
+
+}} // end namespace pressio::ode
+
+
+/* leave some white space on purpose so that
+   if we make edits above, we don't have to change
+   the line numbers included in the rst doc page */
+
+#else
+
+namespace pressio{ namespace ode{
 
 template <class T, class AuxT, class ...Args>
 struct SteppableWithAuxiliaryArgs : std::false_type{};
@@ -132,5 +168,7 @@ struct SteppableWithAuxiliaryArgs<
 template <class T, class AuxT, class ...Args>
 using StronglySteppableWithAuxiliaryArgs = SteppableWithAuxiliaryArgs<T, AuxT, Args...>;
 
-}}
+}} // end namespace pressio::ode
+#endif //end PRESSIO_ENABLE_CXX20
+
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_

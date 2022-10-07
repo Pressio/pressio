@@ -60,13 +60,20 @@ namespace pressio{ namespace ode{
 // overload set for steppable
 // ---------------------------------
 
+//
 // const dt
+//
 template<
-  class StepperType, class StateType, class IndVarType
+  class StepperType,
+  class StateType,
+  class IndVarType
   >
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  >
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t< Steppable<StepperType>::value >
+#else
+  requires Steppable<StepperType>
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -82,15 +89,27 @@ advance_n_steps(StepperType & stepper,
 				      observer_t(), guesser_t());
 }
 
+//
 // dt policy provided
+//
 template<
-  class StepperType, class StateType,
-  class StepSizePolicyType, class IndVarType
+  class StepperType,
+  class StateType,
+  class StepSizePolicyType,
+  class IndVarType
   >
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+        Steppable<StepperType>::value
+     && StepSizePolicy<StepSizePolicyType,
+		       typename StepperType::independent_variable_type>::value
   >
+#else
+  requires Steppable<StepperType>
+	&& StepSizePolicy<StepSizePolicyType,
+			  typename StepperType::independent_variable_type>
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -106,14 +125,27 @@ advance_n_steps(StepperType & stepper,
 				       observer_t(), guesser_t());
 }
 
+//
 // const dt and observer
+//
 template<
-  class StepperType, class StateType, class ObserverType, class IndVarType
+  class StepperType,
+  class StateType,
+  class ObserverType,
+  class IndVarType
   >
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       Steppable<StepperType>::value
+    && StateObserver<ObserverType,
+		     typename StepperType::independent_variable_type, StateType>::value
   >
+#else
+  requires Steppable<StepperType>
+        && StateObserver<ObserverType,
+			 typename StepperType::independent_variable_type, StateType>
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -130,16 +162,26 @@ advance_n_steps(StepperType & stepper,
 				      guesser_t());
 }
 
+//
 // dt policy provided and observer
+//
 template<
-  class StepperType, class StateType, class ObserverType,
-  class StepSizePolicyType, class IndVarType
-  >
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  >
+  class StepperType,
+  class StateType,
+  class ObserverType,
+  class StepSizePolicyType,
+  class IndVarType>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       Steppable<StepperType>::value
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value>
+#else
+  requires Steppable<StepperType>
+        && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+        && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -163,12 +205,21 @@ advance_n_steps(StepperType & stepper,
 
 // const dt
 template<
-  class StepperType, class StateType, class IndVarType,
-  class AuxT, class ...Args>
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
+  class StepperType,
+  class StateType,
+  class IndVarType,
+  class AuxT,
+  class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
+    && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
   >
+#else
+  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+        && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -189,15 +240,28 @@ advance_n_steps(StepperType & stepper,
 				      std::forward<Args>(args)...);
 }
 
+//
 // dt policy provided
+//
 template<
-  class StepperType, class StateType, class StepSizePolicyType, class IndVarType,
-  class AuxT, class ...Args>
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  >
+  class StepperType,
+  class StateType,
+  class StepSizePolicyType,
+  class IndVarType,
+  class AuxT,
+  class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+    && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
+    >
+#else
+  requires SteppableWithAuxiliaryArgs< StepperType, AuxT, Args...>
+        && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+        && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -217,15 +281,28 @@ advance_n_steps(StepperType & stepper,
 				       std::forward<Args>(args)...);
 }
 
+//
 // const dt and observer
+//
 template<
-  class StepperType, class StateType, class ObserverType, class IndVarType,
-  class AuxT, class ...Args>
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  >
+  class StepperType,
+  class StateType,
+  class ObserverType,
+  class IndVarType,
+  class AuxT,
+  class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+    && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
+    >
+#else
+  requires SteppableWithAuxiliaryArgs< StepperType, AuxT, Args...>
+        && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+        && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -246,17 +323,31 @@ advance_n_steps(StepperType & stepper,
 				      std::forward<Args>(args)...);
 }
 
+//
 // dt policy provided and observer
+//
 template<
-  class StepperType, class StateType, class StepSizePolicyType,
-  class ObserverType, class IndVarType,
-  class AuxT, class ...Args>
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  >
+  class StepperType,
+  class StateType,
+  class StepSizePolicyType,
+  class ObserverType,
+  class IndVarType,
+  class AuxT,
+  class ...Args>
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
+    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+    && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+    && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
+    >
+#else
+  requires SteppableWithAuxiliaryArgs< StepperType, AuxT, Args...>
+        && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+        && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+        && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
+  void
+#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
