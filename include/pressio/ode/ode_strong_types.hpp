@@ -119,10 +119,6 @@ struct StepCount{
   constexpr value_type get() const { return value_; }
 };
 
-namespace impl{
-constexpr StepCount stepZero(0);
-}// end namespace ode::impl
-
 struct IntermediateStepCount{
   using value_type = int32_t;
   value_type value_{};

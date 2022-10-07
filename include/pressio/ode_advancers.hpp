@@ -54,17 +54,12 @@
 #include "./type_traits.hpp"
 
 #include "./ode/exceptions.hpp"
-#include "./ode/strong_types.hpp"
-#include "./ode/advancers/constraints/ode_observer.hpp"
-#include "./ode/advancers/constraints/ode_guesser.hpp"
-#include "./ode/advancers/constraints/ode_step_size_policy.hpp"
-#include "./ode/advancers/constraints/ode_steppable.hpp"
-#include "./ode/advancers/constraints/ode_steppable_with_args.hpp"
+#include "./ode/ode_strong_types.hpp"
 
-// public functions
-#include "./ode/advancers/ode_advance_n_steps.hpp"
-#include "./ode/advancers/ode_advance_n_steps_with_guesser.hpp"
-#include "./ode/advancers/ode_advance_to_target_point.hpp"
-#include "./ode/advancers/ode_advance_to_target_point_with_step_recovery.hpp"
+#include "./ode_concepts.hpp"
+#include "./ode/ode_advance_n_steps.hpp"
+#include "./ode/ode_advance_n_steps_with_guesser.hpp"
+#include "./ode/ode_advance_to_target_point.hpp"
+#include "./ode/ode_advance_to_target_point_with_step_recovery.hpp"
 
 #endif

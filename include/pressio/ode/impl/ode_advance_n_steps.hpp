@@ -79,8 +79,7 @@ void advance_n_steps_with_dt_policy(StepperType & stepper,
 
   using step_t = typename ::pressio::ode::StepCount::value_type;
   IndVarType time = start_val;
-  observer(::pressio::ode::impl::stepZero,
-	   start_val, odeState);
+  observer(StepCount{0}, start_val, odeState);
 
   // default construct
   ::pressio::ode::StepSize<IndVarType> dt;

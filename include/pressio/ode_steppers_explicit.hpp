@@ -56,9 +56,10 @@
 #include "./ops.hpp"
 #include "./solvers.hpp"
 
+#include "./ode_concepts.hpp"
 #include "./ode/exceptions.hpp"
-#include "./ode/strong_types.hpp"
-#include "./ode/steppers/common.hpp"
-#include "./ode/steppers/ode_create_explicit_stepper.hpp"
+#include "./ode/ode_is_explicit_or_implicit.hpp"
+#include "./ode/ode_public_constants.hpp"
+#include "./ode/ode_create_explicit_stepper.hpp"
 
 #endif

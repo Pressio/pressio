@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_steppers_implicit.hpp
+// pressio_ode_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,41 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_IMPLICIT_HPP_
-#define PRESSIO_ODE_IMPLICIT_HPP_
+#ifndef ODE_ENUM_AND_TAG_TYPES_HPP_
+#define ODE_ENUM_AND_TAG_TYPES_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./concepts.hpp"
-#include "./ops.hpp"
-#include "./solvers.hpp"
+namespace pressio{ namespace ode{
 
-#include "./ode_concepts.hpp"
-#include "./ode/exceptions.hpp"
-#include "./ode/ode_is_explicit_or_implicit.hpp"
-#include "./ode/ode_public_constants.hpp"
-#include "./ode/ode_create_implicit_stepper.hpp"
+enum class StepScheme{
+  // explicit
+  ForwardEuler,
+  RungeKutta4,
+  AdamsBashforth2,
+  SSPRungeKutta3,
+  // implicit
+  BDF1,
+  BDF2,
+  CrankNicolson,
+  ImplicitArbitrary
+};
 
-#endif
+struct ForwardEuler{};
+struct RungeKutta4{};
+struct AdamsBashforth2{};
+struct SSPRungeKutta3{};
+
+struct BDF1{};
+struct BDF2{};
+struct CrankNicolson{};
+struct ImplicitArbitrary{};
+
+class nPlusOne{};
+class n{};
+class nMinusOne{};
+class nMinusTwo{};
+class nMinusThree{};
+class nMinusFour{};
+
+}}//end namespace pressio::ode
+
+#endif  // ODE_STEPPERS_COMMON_HPP_

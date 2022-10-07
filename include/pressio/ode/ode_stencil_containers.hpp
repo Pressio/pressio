@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_steppers_implicit.hpp
+// pressio_ode_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,34 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_IMPLICIT_HPP_
-#define PRESSIO_ODE_IMPLICIT_HPP_
+#ifndef ODE_STENCIL_CONTAINERS_HPP_
+#define ODE_STENCIL_CONTAINERS_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./concepts.hpp"
-#include "./ops.hpp"
-#include "./solvers.hpp"
+#include "./impl/ode_stencil_data_container_static.hpp"
+#include "./impl/ode_stencil_data_container_dynamic.hpp"
 
-#include "./ode_concepts.hpp"
-#include "./ode/exceptions.hpp"
-#include "./ode/ode_is_explicit_or_implicit.hpp"
-#include "./ode/ode_public_constants.hpp"
-#include "./ode/ode_create_implicit_stepper.hpp"
+namespace pressio{ namespace ode{
+
+// containers that are used by the implicit steppers
+
+// static
+template<typename T, std::size_t N>
+using ImplicitStencilRightHandSideStaticContainer
+  = impl::StencilDataContainerStaticImpl<T, N, nPlusOne /*stencil ends with n+1*/>;
+
+template<typename T, std::size_t N>
+using ImplicitStencilStatesStaticContainer
+  = impl::StencilDataContainerStaticImpl<T, N, n /*stencils ends at n*/>;
+
+// dynamic
+template<typename T>
+using ImplicitStencilRightHandSideDynamicContainer
+  = impl::StencilDataContainerDynImpl<T, nPlusOne /*stencil ends with n+1*/>;
+
+template<typename T>
+using ImplicitStencilStatesDynamicContainer
+  = impl::StencilDataContainerDynImpl<T, n /*stencils end at n*/>;
+
+}}//end namespace pressio::ode
 
 #endif

@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_concepts.hpp"
 
 using state_type = std::vector<float>;
 

@@ -46,66 +46,66 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_RESIDUAL_JACOBIAN_POLICY_HPP_
-#define ODE_STEPPERS_RESIDUAL_JACOBIAN_POLICY_HPP_
+#ifndef ODE_STEPPERS_FULLY_DISCRETE_SYSTEM_HPP_
+#define ODE_STEPPERS_FULLY_DISCRETE_SYSTEM_HPP_
+
+#include "./predicates/ode_has_const_discrete_residual_jacobian_method.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
 
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
+
+// this is here so that we can clearly show it in the doc via rst literal include directive
 namespace pressio{ namespace ode{
 
-template <class T>
-concept ImplicitResidualJacobianPolicy =
+template <class T, int NumStates>
+concept FullyDiscreteSystemWithJacobian =
   std::copy_constructible<T>
   /* must have nested aliases */
   && requires(){
     typename T::independent_variable_type;
     typename T::state_type;
-    typename T::residual_type;
-    typename T::jacobian_type;
+    typename T::discrete_residual_type;
+    typename T::discrete_jacobian_type;
   }
   /*
     requirements on the nested aliases
   */
   && ::pressio::ops::is_known_data_type<typename T::state_type>::value
-  && ::pressio::ops::is_known_data_type<typename T::residual_type>::value
-  && ::pressio::ops::is_known_data_type<typename T::jacobian_type>::value
+  && ::pressio::ops::is_known_data_type<typename T::discrete_residual_type>::value
+  && ::pressio::ops::is_known_data_type<typename T::discrete_jacobian_type>::value
   && all_have_traits_and_same_scalar<
     typename T::state_type,
-    typename T::residual_type,
-    typename T::jacobian_type>::value
+    typename T::discrete_residual_type,
+    typename T::discrete_jacobian_type>::value
   && std::convertible_to<
-    typename T::independent_variable_type,
-    scalar_trait_t<typename T::state_type>>
+    typename T::independent_variable_type, scalar_trait_t<typename T::state_type>>
   /*
     compund requirements on the "create" methods
   */
   && requires(const T & A)
   {
-    { A.createState()    } -> std::same_as<typename T::state_type>;
-    { A.createResidual() } -> std::same_as<typename T::residual_type>;
-    { A.createJacobian() } -> std::same_as<typename T::jacobian_type>;
+    { A.createState()            } -> std::same_as<typename T::state_type>;
+    { A.createDiscreteResidual() } -> std::same_as<typename T::discrete_residual_type>;
+    { A.createDiscreteJacobian() } -> std::same_as<typename T::discrete_jacobian_type>;
   }
-  && requires(const T & A,
-	      StepScheme schemeName,
-	      const typename T::state_type & predictedState,
-	      const ImplicitStencilStatesDynamicContainer<typename T::state_type> & stencilStatesManager,
-	      ImplicitStencilRightHandSideDynamicContainer<typename T::residual_type> & stencilVelocities,
-	      const ::pressio::ode::StepEndAt<typename T::independent_variable_type> & rhsEvaluationTime,
-	      ::pressio::ode::StepCount stepNumber,
-	      const ::pressio::ode::StepSize<typename T::independent_variable_type> & dt,
-	      typename T::residual_type & R,
-	      typename T::jacobian_type & J,
-	      bool computeJacobian)
-  {
-    A(schemeName, predictedState, stencilStatesManager,
-      stencilVelocities, rhsEvaluationTime, stepNumber, dt,
-      R, J, computeJacobian);
-  };
+  /*
+    compund requirements on "evaluation" method:
+    intentionally not lumped with the above one for these reasons:
+    1. it makes sense logically to split them, since this depends on the above
+    2. helps the compiler with early failure detection
+  */
+  && ::pressio::ode::has_const_discrete_residual_jacobian_method<
+    T, NumStates,
+    typename ::pressio::ode::StepCount::value_type,
+    typename T::independent_variable_type,
+    typename T::state_type,
+    typename T::discrete_residual_type,
+    typename T::discrete_jacobian_type>::value;
 
 }} // end namespace pressio::ode
+
+
+
 
 
 /* leave some white space on purpose so that
@@ -114,65 +114,50 @@ concept ImplicitResidualJacobianPolicy =
 
 #else
 
+#include "./predicates/ode_has_const_create_state_method_return_result.hpp"
+#include "./predicates/ode_has_const_create_discrete_residual_method_return_result.hpp"
+#include "./predicates/ode_has_const_create_discrete_jacobian_method_return_result.hpp"
+
 namespace pressio{ namespace ode{
 
-template<class T, class = void>
-struct ImplicitResidualJacobianPolicy : std::false_type{};
+template<class T, int NumStates,class enable = void>
+struct FullyDiscreteSystemWithJacobian : std::false_type{};
 
-template<class T>
-struct ImplicitResidualJacobianPolicy<
-  T,
-  ::pressio::mpl::enable_if_t<
+template<class T, int NumStates>
+struct FullyDiscreteSystemWithJacobian<
+  T, NumStates,
+  mpl::enable_if_t<
     std::is_copy_constructible<T>::value
     //
     && ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
-    && ::pressio::has_residual_typedef<T>::value
-    && ::pressio::has_jacobian_typedef<T>::value
+    && ::pressio::has_discrete_residual_typedef<T>::value
+    && ::pressio::has_discrete_jacobian_typedef<T>::value
     //
     && ::pressio::ops::is_known_data_type<typename T::state_type>::value
-    && ::pressio::ops::is_known_data_type<typename T::residual_type>::value
-    && ::pressio::ops::is_known_data_type<typename T::jacobian_type>::value
+    && ::pressio::ops::is_known_data_type<typename T::discrete_residual_type>::value
+    && ::pressio::ops::is_known_data_type<typename T::discrete_jacobian_type>::value
     && all_have_traits_and_same_scalar<
       typename T::state_type,
-      typename T::residual_type,
-      typename T::jacobian_type>::value
+      typename T::discrete_residual_type,
+      typename T::discrete_jacobian_type>::value
     && std::is_convertible<
       typename T::independent_variable_type,
       scalar_trait_t<typename T::state_type>>::value
     //
-    // create methods
-    //
+    // creation methods
     && ::pressio::ode::has_const_create_state_method_return_result<
-      T, typename T::state_type>::value
-    && std::is_same<
-      typename T::residual_type,
-      decltype(std::declval<T const>().createResidual())
-      >::value
-    && std::is_same<
-      typename T::jacobian_type,
-      decltype(std::declval<T const>().createJacobian())
-      >::value
+      T, typename T::state_type >::value
+    && ::pressio::ode::has_const_create_discrete_residual_method_return_result<
+      T, typename T::discrete_residual_type>::value
+    && ::pressio::ode::has_const_create_discrete_jacobian_method_return_result<
+      T, typename T::discrete_jacobian_type>::value
     //
-    // evaluate
-    //
-    && std::is_void<
-      decltype
-      (
-       std::declval<T const>()
-       (
-	std::declval<StepScheme const &>(),
-	std::declval<typename T::state_type const &>(),
-	std::declval<ImplicitStencilStatesDynamicContainer<typename T::state_type> const & >(),
-	std::declval<ImplicitStencilRightHandSideDynamicContainer<typename T::residual_type> & >(),
-	std::declval< ::pressio::ode::StepEndAt<typename T::independent_variable_type> >(),
-	std::declval< ::pressio::ode::StepCount >(),
-	std::declval< ::pressio::ode::StepSize<typename T::independent_variable_type> >(),
-	std::declval<typename T::residual_type &>(),
-	std::declval<typename T::jacobian_type &>(),
-	std::declval<bool>()
-	)
-       )
+    && ::pressio::ode::has_const_discrete_residual_jacobian_method<
+      T, NumStates,
+      typename ::pressio::ode::StepCount::value_type,
+      typename T::independent_variable_type, typename T::state_type,
+      typename T::discrete_residual_type, typename T::discrete_jacobian_type
       >::value
     >
   > : std::true_type{};

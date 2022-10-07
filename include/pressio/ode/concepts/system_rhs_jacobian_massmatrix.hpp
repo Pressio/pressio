@@ -46,37 +46,40 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_FULLY_DISCRETE_SYSTEM_HPP_
-#define ODE_STEPPERS_FULLY_DISCRETE_SYSTEM_HPP_
+#ifndef ODE_STEPPERS_SYSTEM_RHS_AND_JACOBIAN_AND_MASS_MATRIX_HPP_
+#define ODE_STEPPERS_SYSTEM_RHS_AND_JACOBIAN_AND_MASS_MATRIX_HPP_
 
 #ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
+
 
 
 // this is here so that we can clearly show it in the
 // doc via rst literal include directive
 namespace pressio{ namespace ode{
 
-template <class T, int NumStates>
-concept FullyDiscreteSystemWithJacobian =
+template <class T>
+concept SystemWithRhsJacobianMassMatrix =
   std::copy_constructible<T>
   /* must have nested aliases */
   && requires(){
     typename T::independent_variable_type;
     typename T::state_type;
-    typename T::discrete_residual_type;
-    typename T::discrete_jacobian_type;
+    typename T::right_hand_side_type;
+    typename T::jacobian_type;
+    typename T::mass_matrix_type;
   }
   /*
     requirements on the nested aliases
   */
   && ::pressio::ops::is_known_data_type<typename T::state_type>::value
-  && ::pressio::ops::is_known_data_type<typename T::discrete_residual_type>::value
-  && ::pressio::ops::is_known_data_type<typename T::discrete_jacobian_type>::value
+  && ::pressio::ops::is_known_data_type<typename T::right_hand_side_type>::value
+  && ::pressio::ops::is_known_data_type<typename T::jacobian_type>::value
+  && ::pressio::ops::is_known_data_type<typename T::mass_matrix_type>::value
   && all_have_traits_and_same_scalar<
     typename T::state_type,
-    typename T::discrete_residual_type,
-    typename T::discrete_jacobian_type>::value
+    typename T::right_hand_side_type,
+    typename T::jacobian_type,
+    typename T::mass_matrix_type>::value
   && std::convertible_to<
     typename T::independent_variable_type, scalar_trait_t<typename T::state_type>>
   /*
@@ -84,9 +87,10 @@ concept FullyDiscreteSystemWithJacobian =
   */
   && requires(const T & A)
   {
-    { A.createState()            } -> std::same_as<typename T::state_type>;
-    { A.createDiscreteResidual() } -> std::same_as<typename T::discrete_residual_type>;
-    { A.createDiscreteJacobian() } -> std::same_as<typename T::discrete_jacobian_type>;
+    { A.createState()         } -> std::same_as<typename T::state_type>;
+    { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
+    { A.createJacobian()      } -> std::same_as<typename T::jacobian_type>;
+    { A.createMassMatrix()    } -> std::same_as<typename T::mass_matrix_type>;
   }
   /*
     compund requirements on "evaluation" method:
@@ -94,16 +98,18 @@ concept FullyDiscreteSystemWithJacobian =
     1. it makes sense logically to split them, since this depends on the above
     2. helps the compiler with early failure detection
   */
-  && ::pressio::ode::has_const_discrete_residual_jacobian_method<
-    T, NumStates,
-    typename ::pressio::ode::StepCount::value_type,
-    typename T::independent_variable_type,
-    typename T::state_type,
-    typename T::discrete_residual_type,
-    typename T::discrete_jacobian_type>::value;
+  && requires(const T & A,
+	      const typename T::state_type & state,
+	      const typename T::independent_variable_type & evalValue,
+	      typename T::right_hand_side_type & rhs,
+	      typename T::jacobian_type & jac,
+	      typename T::mass_matrix_type & M,
+	      bool computeJacobian)
+  {
+    { A(state, evalValue, rhs, M, jac, computeJacobian) } -> std::same_as<void>;
+  };
 
 }} // end namespace pressio::ode
-
 
 
 
@@ -114,51 +120,68 @@ concept FullyDiscreteSystemWithJacobian =
 
 #else
 
+#include "./predicates/ode_has_const_create_state_method_return_result.hpp"
+#include "./predicates/ode_has_const_create_rhs_method_return_result.hpp"
+#include "./predicates/ode_has_const_create_jacobian_method_return_result.hpp"
+#include "./predicates/ode_has_const_create_mass_matrix_method_return_result.hpp"
+
 namespace pressio{ namespace ode{
 
-template<class T, int NumStates,class enable = void>
-struct FullyDiscreteSystemWithJacobian : std::false_type{};
+template<class T, class enable = void>
+struct SystemWithRhsJacobianMassMatrix : std::false_type{};
 
-template<class T, int NumStates>
-struct FullyDiscreteSystemWithJacobian<
-  T, NumStates,
+template<class T>
+struct SystemWithRhsJacobianMassMatrix<
+  T,
   mpl::enable_if_t<
     std::is_copy_constructible<T>::value
     //
     && ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
-    && ::pressio::has_discrete_residual_typedef<T>::value
-    && ::pressio::has_discrete_jacobian_typedef<T>::value
+    && ::pressio::has_right_hand_side_typedef<T>::value
+    && ::pressio::has_jacobian_typedef<T>::value
+    && ::pressio::has_mass_matrix_typedef<T>::value
     //
     && ::pressio::ops::is_known_data_type<typename T::state_type>::value
-    && ::pressio::ops::is_known_data_type<typename T::discrete_residual_type>::value
-    && ::pressio::ops::is_known_data_type<typename T::discrete_jacobian_type>::value
+    && ::pressio::ops::is_known_data_type<typename T::right_hand_side_type>::value
+    && ::pressio::ops::is_known_data_type<typename T::jacobian_type>::value
+    && ::pressio::ops::is_known_data_type<typename T::mass_matrix_type>::value
     && all_have_traits_and_same_scalar<
-      typename T::state_type,
-      typename T::discrete_residual_type,
-      typename T::discrete_jacobian_type>::value
+	 typename T::state_type,
+	 typename T::right_hand_side_type,
+	 typename T::jacobian_type,
+	 typename T::mass_matrix_type>::value
     && std::is_convertible<
-      typename T::independent_variable_type,
+	 typename T::independent_variable_type,
       scalar_trait_t<typename T::state_type>>::value
     //
-    // creation methods
     && ::pressio::ode::has_const_create_state_method_return_result<
       T, typename T::state_type >::value
-    && ::pressio::ode::has_const_create_discrete_residual_method_return_result<
-      T, typename T::discrete_residual_type>::value
-    && ::pressio::ode::has_const_create_discrete_jacobian_method_return_result<
-      T, typename T::discrete_jacobian_type>::value
+    && ::pressio::ode::has_const_create_rhs_method_return_result<
+      T, typename T::right_hand_side_type >::value
+    && ::pressio::ode::has_const_create_jacobian_method_return_result<
+      T, typename T::jacobian_type >::value
+    && ::pressio::ode::has_const_create_mass_matrix_method_return_result<
+      T, typename T::mass_matrix_type >::value
     //
-    && ::pressio::ode::has_const_discrete_residual_jacobian_method<
-      T, NumStates,
-      typename ::pressio::ode::StepCount::value_type,
-      typename T::independent_variable_type, typename T::state_type,
-      typename T::discrete_residual_type, typename T::discrete_jacobian_type
+    && std::is_void<
+      decltype(
+	       std::declval<T const>()
+	       (
+		std::declval<typename T::state_type const&>(),
+		std::declval<typename T::independent_variable_type const &>(),
+		std::declval<typename T::right_hand_side_type &>(),
+		std::declval<typename T::mass_matrix_type &>(),
+		std::declval<typename T::jacobian_type &>(),
+		std::declval<bool>()
+	       )
+	   )
       >::value
-    >
+   >
   > : std::true_type{};
 
 }} // end namespace pressio::ode
+
 #endif //end PRESSIO_ENABLE_CXX20
 
 #endif

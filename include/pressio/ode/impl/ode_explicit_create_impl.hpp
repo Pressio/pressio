@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_steppers_implicit.hpp
+// ode_explicit_compose.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,44 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_IMPLICIT_HPP_
-#define PRESSIO_ODE_IMPLICIT_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
+#define ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./concepts.hpp"
-#include "./ops.hpp"
-#include "./solvers.hpp"
+#include "ode_explicit_stepper_without_mass_matrix.hpp"
+#include "ode_explicit_stepper_with_mass_matrix.hpp"
 
-#include "./ode_concepts.hpp"
-#include "./ode/exceptions.hpp"
-#include "./ode/ode_is_explicit_or_implicit.hpp"
-#include "./ode/ode_public_constants.hpp"
-#include "./ode/ode_create_implicit_stepper.hpp"
+namespace pressio{ namespace ode{ namespace impl{
 
-#endif
+template<class ImplClassType, class SystemType>
+auto create_explicit_stepper(StepScheme name,
+			     SystemType && system)
+{
+
+  if (name == StepScheme::ForwardEuler){
+    return ImplClassType(ode::ForwardEuler(),
+			 std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::RungeKutta4){
+    return ImplClassType(ode::RungeKutta4(),
+			 std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::AdamsBashforth2){
+    return ImplClassType(ode::AdamsBashforth2(),
+			 std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::SSPRungeKutta3){
+    return ImplClassType(ode::SSPRungeKutta3(),
+			 std::forward<SystemType>(system));
+  }
+
+  else{
+    throw std::runtime_error("ode:: create_explicit_stepper: invalid StepScheme enum value");
+  }
+
+}
+
+}}}
+#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_COMPOSE_HPP_

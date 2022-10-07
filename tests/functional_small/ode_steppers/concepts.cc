@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio/type_traits.hpp"
-#include "pressio/ode_steppers_explicit.hpp"
-#include "pressio/ode_steppers_implicit.hpp"
+#include "pressio/ode_concepts.hpp"
 
 struct FakeIndVarTypeForTesting{
   operator double(){ return double{}; }

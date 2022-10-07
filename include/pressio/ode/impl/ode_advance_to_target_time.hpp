@@ -120,7 +120,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
   ::pressio::ode::StepSizeScalingFactor<IndVarType> dtScalingFactor{1};
 
   // observe initial condition
-  observer(::pressio::ode::impl::stepZero, time, odeState);
+  observer(StepCount{0}, time, odeState);
 
   step_t step = 1;
   PRESSIOLOG_INFO("advance_to_target_timeWithDtCallback");

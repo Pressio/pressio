@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_steppers_implicit.hpp
+// pressio_ode_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,26 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_IMPLICIT_HPP_
-#define PRESSIO_ODE_IMPLICIT_HPP_
+#ifndef ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_
+#define ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./concepts.hpp"
-#include "./ops.hpp"
-#include "./solvers.hpp"
+namespace pressio{ namespace ode{
 
-#include "./ode_concepts.hpp"
-#include "./ode/exceptions.hpp"
-#include "./ode/ode_is_explicit_or_implicit.hpp"
-#include "./ode/ode_public_constants.hpp"
-#include "./ode/ode_create_implicit_stepper.hpp"
+template<class T = bool>
+T is_explicit_scheme(StepScheme name)
+{
+  if (name == StepScheme::ForwardEuler){ return true; }
+  else if (name == StepScheme::RungeKutta4){ return true; }
+  else if (name == StepScheme::AdamsBashforth2){ return true; }
+  else if (name == StepScheme::SSPRungeKutta3){ return true; }
+  else{ return false; }
+}
+
+template<class T = bool>
+T is_implicit_scheme(StepScheme name){
+  return !is_explicit_scheme(name);
+}
+
+}}//end namespace pressio::ode
 
 #endif

@@ -51,7 +51,7 @@
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_n_steps.hpp"
-#include "./impl/ode_mandates.hpp"
+#include "./impl/ode_advance_mandates.hpp"
 
 namespace pressio{ namespace ode{
 

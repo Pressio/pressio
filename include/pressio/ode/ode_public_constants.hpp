@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_compose.hpp
+// pressio_ode_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,44 +46,37 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
-#define ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
+#ifndef ODE_PUBLIC_CONSTANTS_HPP_
+#define ODE_PUBLIC_CONSTANTS_HPP_
 
-#include "ode_explicit_stepper.hpp"
-#include "ode_explicit_stepper_with_mass_matrix.hpp"
+namespace pressio{ namespace ode{ namespace constants{
 
-namespace pressio{ namespace ode{ namespace impl{
+template <typename scalar_t>
+struct bdf1{
+  using cnst = ::pressio::utils::Constants<scalar_t>;
+  static constexpr scalar_t c_np1_= cnst::one();
+  static constexpr scalar_t c_n_  = cnst::negOne();
+  static constexpr scalar_t c_f_  = cnst::negOne();
+};
 
-template<class ImplClassType, class SystemType>
-auto create_explicit_stepper(StepScheme name,
-			     SystemType && system)
-{
+template <typename scalar_t>
+struct bdf2{
+  using cnst = ::pressio::utils::Constants<scalar_t>;
+  static constexpr scalar_t c_np1_ = cnst::one();
+  static constexpr scalar_t c_n_   = cnst::negOne()*cnst::fourOvThree();
+  static constexpr scalar_t c_nm1_ = cnst::oneOvThree();
+  static constexpr scalar_t c_f_   = cnst::negOne()*cnst::twoOvThree();
+};
 
-  if (name == StepScheme::ForwardEuler){
-    return ImplClassType(ode::ForwardEuler(),
-			 std::forward<SystemType>(system));
-  }
+template <typename scalar_t>
+struct cranknicolson{
+  using cnst = ::pressio::utils::Constants<scalar_t>;
+  static constexpr scalar_t c_np1_  = cnst::one();
+  static constexpr scalar_t c_n_    = cnst::negOne();
+  static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();
+  static constexpr scalar_t c_fn_   = cnst::negOneHalf();
+};
 
-  else if (name == StepScheme::RungeKutta4){
-    return ImplClassType(ode::RungeKutta4(),
-			 std::forward<SystemType>(system));
-  }
+}}}//end namespace pressio::ode::constants
 
-  else if (name == StepScheme::AdamsBashforth2){
-    return ImplClassType(ode::AdamsBashforth2(),
-			 std::forward<SystemType>(system));
-  }
-
-  else if (name == StepScheme::SSPRungeKutta3){
-    return ImplClassType(ode::SSPRungeKutta3(),
-			 std::forward<SystemType>(system));
-  }
-
-  else{
-    throw std::runtime_error("ode:: create_explicit_stepper: invalid StepScheme enum value");
-  }
-
-}
-
-}}}
-#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_COMPOSE_HPP_
+#endif

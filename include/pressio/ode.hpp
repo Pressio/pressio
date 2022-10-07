@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_HPP_
-#define PRESSIO_ODE_HPP_
+#ifndef PRESSIO_ODE_ALL_TOPLEVEL_INCLUDE_HPP_
+#define PRESSIO_ODE_ALL_TOPLEVEL_INCLUDE_HPP_
 
 #include "./ode_steppers_explicit.hpp"
 #include "./ode_steppers_implicit.hpp"

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_stepper_compose.hpp
+// rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,33 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_CREATE_STEPPER_IMPL_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_CREATE_STEPPER_IMPL_HPP_
+#ifndef PRESSIO_ODE_CONCEPTS_TOPLEVEL_INC_HPP_
+#define PRESSIO_ODE_CONCEPTS_TOPLEVEL_INC_HPP_
 
-#include "ode_implicit_discrete_residual.hpp"
-#include "ode_implicit_discrete_jacobian.hpp"
-#include "ode_implicit_policy_residual_jacobian.hpp"
-#include "ode_implicit_policy_residual_jacobian_with_mass_matrix.hpp"
-#include "ode_implicit_stepper_standard.hpp"
-#include "ode_implicit_stepper_arbitrary.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
 
-namespace pressio{ namespace ode{ namespace impl{
+#ifdef PRESSIO_ENABLE_CXX20
+#include <concepts>
+#endif
 
-template<class ImplType, class ... Args>
-auto create_implicit_stepper_impl(StepScheme name,
-				  Args && ... args)
-{
+#include "./ode/ode_strong_types.hpp"
+#include "./ode/ode_enum_and_tags.hpp"
+#include "./ode/ode_stencil_containers.hpp"
 
-  if (name == StepScheme::BDF1){
-    return ImplType(::pressio::ode::BDF1(),
-		    std::forward<Args>(args)...);
-  }
+#include "./ode/concepts/system_rhs.hpp"
+#include "./ode/concepts/system_rhs_massmatrix.hpp"
+#include "./ode/concepts/system_rhs_jacobian.hpp"
+#include "./ode/concepts/system_rhs_jacobian_massmatrix.hpp"
+#include "./ode/concepts/system_fully_discrete.hpp"
+#include "./ode/concepts/policy_residual_jacobian.hpp"
 
-  else if (name == StepScheme::BDF2){
-    return ImplType(::pressio::ode::BDF2(),
-		    std::forward<Args>(args)...);
-  }
+#include "./ode/concepts/ode_observer.hpp"
+#include "./ode/concepts/ode_guesser.hpp"
+#include "./ode/concepts/ode_step_size_policy.hpp"
+#include "./ode/concepts/ode_steppable.hpp"
+#include "./ode/concepts/ode_steppable_with_args.hpp"
 
-  else if (name == StepScheme::CrankNicolson){
-    return ImplType(::pressio::ode::CrankNicolson(),
-		    std::forward<Args>(args)...);
-  }
-
-  else{
-    throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
-  }
-}
-
-}}}
-#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_
+#endif
