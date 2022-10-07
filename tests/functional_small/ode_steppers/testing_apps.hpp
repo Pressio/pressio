@@ -22,9 +22,9 @@ struct AppEigenA
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type & rhs) const
+  void operator()(const state_type & y,
+		  independent_variable_type /*unused*/,
+		  right_hand_side_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){
@@ -73,15 +73,7 @@ public:
     y0_ = y;
   }
 
-  state_type getInitCond() const{
-    return y0_;
-  }
-
-  void rightHandSide(const state_type & yIn,
-    independent_variable_type /*unused*/, right_hand_side_type & R) const{
-    assert(yIn.size()==3);
-    R = -10. * yIn;
-  };
+  state_type getInitCond() const{ return y0_; }
 
   state_type createState() const{
     state_type ret(3);
@@ -95,23 +87,37 @@ public:
     return R;
   };
 
-  void jacobian(const state_type & /*unused*/,
-                independent_variable_type /*unused*/,
-                jacobian_type & JJ) const
-  {
-    assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
-
-    typedef Eigen::Triplet<double> Tr;
-    std::vector<Tr> tripletList;
-    tripletList.push_back( Tr( 0, 0, -10.) );
-    tripletList.push_back( Tr( 1, 1, -10.) );
-    tripletList.push_back( Tr( 2, 2, -10.) );
-    JJ.setFromTriplets(tripletList.begin(), tripletList.end());
-  };
-
   jacobian_type createJacobian() const{
     jacobian_type JJ(3,3);
     return JJ;
+  };
+
+  void operator()(const state_type & yIn,
+		  independent_variable_type /*unused*/,
+		  right_hand_side_type & R) const
+  {
+    assert(yIn.size()==3);
+    R = -10. * yIn;
+  };
+
+  void operator()(const state_type & yIn,
+		  independent_variable_type /*unused*/,
+		  right_hand_side_type & R,
+		  jacobian_type & JJ,
+		  bool computeJac) const
+  {
+    assert(yIn.size()==3);
+    R = -10. * yIn;
+
+    if (computeJac){
+      assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
+      typedef Eigen::Triplet<double> Tr;
+      std::vector<Tr> tripletList;
+      tripletList.push_back( Tr( 0, 0, -10.) );
+      tripletList.push_back( Tr( 1, 1, -10.) );
+      tripletList.push_back( Tr( 2, 2, -10.) );
+      JJ.setFromTriplets(tripletList.begin(), tripletList.end());
+    }
   };
 
   void analyticAdvanceBackEulerNSteps(double dt, int n){

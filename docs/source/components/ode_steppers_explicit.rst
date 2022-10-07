@@ -53,65 +53,74 @@ API
    namespace pressio{ namespace ode{
 
    template<class SystemType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires SystemWithRhs<mpl::remove_cvref_t<SystemType>>
+  #endif
    /*impl defined*/ create_explicit_stepper(StepScheme odeScheme,                   (1)
                                             SystemType && system);
 
-   template<class SystemType, class MassMatrixOperatorType>
+   template<class SystemType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires SystemWithRhsAndMassMatrix<mpl::remove_cvref_t<SystemType>>
+  #endif
    /*impl defined*/ create_explicit_stepper(StepScheme odeScheme,                   (2)
-                                            SystemType && system,
-					    MassMatrixOperatorType && massMatOperator);
+                                            SystemType && system);
 
    }} //end namespace pressio::ode
+
+Description
+~~~~~~~~~~~
+
+Overload set to instantiate a stepper without (1) or with (2) mass matrix.
 
 Parameters
 ~~~~~~~~~~
 
-* ``odeScheme``: the target integration scheme
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-  * choices: ``pressio::ode::StepScheme::{ForwardEuler, RungeKutta4, AdamsBashforth2, SSPRungeKutta3}``.
+   * -
+     -
 
-* ``system``: an object to compute the RHS for your problem
+   * - ``odeScheme``
+     - the target stepping scheme
 
-* ``massMatOperator``: the mass matrix operator
+   * - ``system``
+     - problem instance
 
 Constraints
 ~~~~~~~~~~~
 
-- ``mpl::remove_cvref_t<SystemType>``: must model the `SystemWithRhs concept <ode_concepts/c1.html>`__
-  or one subsuming it
+Each overload is associated with a set of constraints.
+With C++20, these would be enforced via concepts using
+the *requires-clause* shown in the API synopsis above.
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
+and/or SFINAE. The concepts used are:
 
-- ``mpl::remove_cvref_t<MassMatrixOperatorType>``: must model either the `MassMatrixOperator concept <ode_concepts/c3a.html>`__
-  or the `ConstantMassMatrixOperator concept <ode_concepts/c3b.html>`__
+- `pressio::ode::SystemWithRhs <ode_concepts_system/rhs.html>`__
+
+- `pressio::ode::SystemWithRhsAndMassMatrix <ode_concepts_system/rhs_massmatrix.html>`__
+
 
 Preconditions
 ~~~~~~~~~~~~~
+
+- ``odeScheme`` must be one of ``pressio::ode::StepScheme::{ForwardEuler, RungeKutta4, AdamsBashforth2, SSPRungeKutta3}``.
 
 - if ``system`` does *not* bind to a temporary object,
   it must bind to an lvalue object whose lifetime is
   *longer* that that of the instantiated stepper, i.e., it is destructed
   *after* the stepper goes out of scope
 
-- if passing an lvalue to ``massMatOperator``, the same precondition
-  above applies
-
-Mandates
-~~~~~~~~
-
-- if ``MassMatrixOperatorType`` meets the `MassMatrixOperator concept <ode_concepts/c3a.html>`__,
-  then these must hold:
-
-  - ``std::is_same< typename mpl::remove_cvref_t<SystemType>::independent_variable_type,
-    typename mpl::remove_cvref_t<MassMatrixOperatorType>::independent_variable_type >::value == true``
-
-  - ``std::is_same< typename mpl::remove_cvref_t<SystemType>::state_type,
-    typename mpl::remove_cvref_t<MassMatrixOperatorType>::state_type >::value == true``
 
 Return value
 ~~~~~~~~~~~~
 
 An instance of a pressio explicit stepper suitable for the target scheme.
 The return type is implementation defined.
-
 
 Postconditions and side effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,19 +180,17 @@ you are trying to solve, the stepper object returned by pressio exposes differen
   is the right hand side, you can then provide the most suitable linear solver.
 
 
-- if the function is called with an rvalue for either of the arguments,
+- if you pass a an rvalue "problem" object,
   the constructor of the stepper
   will try to use move semantics. If move semantics are implemented, the temporary
   is moved from and no new memory allocation occurs. If move semantics fallback to copying,
   then a copy of the original object is made. Either way, the stepper instantiated
   directly manages the lifetime of the object.
 
-- if the function is called with an lvalue for either of the arguments,
-  the constructor of the stepper
+- if you pass a an lvalue "problem" object, the constructor of the stepper
   will create a *reference to the* object. In such case, the stepper
   object does NOT manage the lifetime of it. You are responsible to
-  ensure that the ``system`` or the ``massMatOperator`` are destructed
-  *after* the stepper goes out of scope
+  ensure that the ``system`` is destructed *after* the stepper goes out of scope
 
 Use the stepper
 ---------------
@@ -195,7 +202,7 @@ For example, you can either implement your step
 loop which sequentially calls the stepper.
 However, the key thing to notice here is that a stepper
 satisfies the "steppable" concept
-discussed `here <ode_concepts/c6.html>`_\ , so one can
+discussed `here <ode_concepts_various/steppable.html>`_\ , so one can
 use the "advancers" functions to step forward.
 
 Let's first look at an example for a system without mass matrix:
@@ -207,16 +214,16 @@ Let's first look at an example for a system without mass matrix:
    #include "pressio/ode_steppers_explicit.hpp"
    int main()
    {
-     MyRhsEvalClass myRhsEval(/*whatever args*/);
+     MySystemClass system(/*whatever args*/);
 
      namespace pode = pressio::ode;
      const auto scheme = pode::StepScheme::ForwardEuler;
-     auto stepper = pode::create_explicit_stepper(scheme, myRhsEval);
+     auto stepper = pode::create_explicit_stepper(scheme, system);
 
-     auto myState = myRhsEval.createState();
+     auto myState = system.createState();
      // initialize myState to initial condition
 
-     using time_type = typename MyRhsEvalClass::independent_variable_type;
+     using time_type = typename MySystemClass::independent_variable_type;
      const time_type t0 = 0.;
      const time_type dt = 0.1;
      const int num_steps = 100;
@@ -233,19 +240,18 @@ Let's look at an example for a system *with* mass matrix:
    #include "pressio/ode_steppers_explicit.hpp"
    int main()
    {
-     MyRhsEvalClass myRhsEval(/*whatever args*/);
-     MyMassMatrixOpClass myMassMatrixOp(/*whatever args*/);
+     MySystemClass system(/*whatever args*/);
 
      namespace pode = pressio::ode;
      const auto scheme = pode::StepScheme::ForwardEuler;
-     auto stepper = pode::create_explicit_stepper(scheme, myRhsEval, myMassMatrixOp);
+     auto stepper = pode::create_explicit_stepper(scheme, system);
 
-     auto myState = myRhsEval.createState();
+     auto myState = system.createState();
      // initialize myState to initial condition
 
      auto linearSolver = /* create linear solver */;
 
-     using time_type = typename MyRhsEvalClass::independent_variable_type;
+     using time_type = typename MySystemClass::independent_variable_type;
      const time_type time0 = 0.;
      const time_type dt = 0.1;
      const int num_steps = 100;

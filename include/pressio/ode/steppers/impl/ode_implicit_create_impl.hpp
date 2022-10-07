@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_const_velocity_method_accept_state_time_result_return_void.hpp
+// ode_implicit_stepper_compose.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,42 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_RHS_METHOD_ACCEPT_STATE_INDVAR_RESULT_RETURN_VOID_HPP_
-#define ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_RHS_METHOD_ACCEPT_STATE_INDVAR_RESULT_RETURN_VOID_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_CREATE_STEPPER_IMPL_HPP_
+#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_CREATE_STEPPER_IMPL_HPP_
 
-namespace pressio{ namespace ode{
+#include "ode_implicit_discrete_residual.hpp"
+#include "ode_implicit_discrete_jacobian.hpp"
+#include "ode_implicit_policy_residual_jacobian.hpp"
+#include "ode_implicit_policy_residual_jacobian_with_mass_matrix.hpp"
+#include "ode_implicit_stepper_standard.hpp"
+#include "ode_implicit_stepper_arbitrary.hpp"
 
-// template <class T, class StateType, class IndVarType, class RhsType, class = void>
-// struct has_const_rhs_method_accept_state_indvar_result_return_void
-//   : std::false_type{};
+namespace pressio{ namespace ode{ namespace impl{
 
-// template <class T, class StateType, class IndVarType, class RhsType>
-// struct has_const_rhs_method_accept_state_indvar_result_return_void<
-//   T, StateType, IndVarType, RhsType,
-//   ::pressio::mpl::enable_if_t<
-//     std::is_void<
-//       decltype(
-// 	       std::declval<T const>().rightHandSide(
-// 					  std::declval<StateType const&>(),
-// 					  std::declval<IndVarType const &>(),
-// 					  std::declval<RhsType &>()
-// 					  )
-// 	   )
-//       >::value
-//     >
-//   > : std::true_type{};
+template<class ImplType, class ... Args>
+auto create_implicit_stepper_impl(StepScheme name,
+				  Args && ... args)
+{
 
-}} // namespace pressio::ode::predicates
-#endif  // ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_RHS_METHOD_ACCEPT_STATE_INDVAR_RESULT_RETURN_VOID_HPP_
+  if (name == StepScheme::BDF1){
+    return ImplType(::pressio::ode::BDF1(),
+		    std::forward<Args>(args)...);
+  }
+
+  else if (name == StepScheme::BDF2){
+    return ImplType(::pressio::ode::BDF2(),
+		    std::forward<Args>(args)...);
+  }
+
+  else if (name == StepScheme::CrankNicolson){
+    return ImplType(::pressio::ode::CrankNicolson(),
+		    std::forward<Args>(args)...);
+  }
+
+  else{
+    throw std::runtime_error("ode:: create_implicit_stepper: invalid StepScheme enum value");
+  }
+}
+
+}}}
+#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_

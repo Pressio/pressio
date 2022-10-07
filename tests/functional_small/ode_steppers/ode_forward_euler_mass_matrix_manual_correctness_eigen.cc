@@ -8,6 +8,7 @@ struct MyApp1
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
+  using mass_matrix_type     = Eigen::MatrixXd;
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -19,31 +20,20 @@ struct MyApp1
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type evaltime,
-		     right_hand_side_type & rhs) const
-  {
-    for (int i=0; i<y.size(); i++){
-      rhs[i] = evaltime + y[i];
-    }
-  };
-};
-
-struct MassMatrixOperator
-{
-  using independent_variable_type = double;
-  using state_type           = Eigen::VectorXd;
-  using mass_matrix_type     = Eigen::MatrixXd;
-
   mass_matrix_type createMassMatrix() const{
     mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
-  void massMatrix(const state_type & /*unused*/,
+  void operator()(const state_type & y,
 		  independent_variable_type evaltime,
+		  right_hand_side_type & rhs,
 		  mass_matrix_type & M) const
   {
+    for (int i=0; i<y.size(); i++){
+      rhs[i] = evaltime + y[i];
+    }
+
     for (int i=0; i<M.rows(); i++){
       for (int j=0; j<M.cols(); j++){
 	M(i,j) = evaltime + (double) i;
@@ -74,8 +64,7 @@ TEST(ode_explicit_steppers, forward_euler_with_mass_matrix)
   using namespace pressio;
   using app_t   = MyApp1;
   app_t appObj;
-  MassMatrixOperator mmOp;
-  auto stepperObj = ode::create_forward_euler_stepper(appObj, mmOp);
+  auto stepperObj = ode::create_forward_euler_stepper(appObj);
 
   FakeLinearSolver1 solver;
 

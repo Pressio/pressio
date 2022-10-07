@@ -9,15 +9,21 @@ struct MyApp2WithMM
   using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
   using jacobian_type        = Eigen::MatrixXd;
+  using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
+  mutable int count2 = 0;
   mutable int count3 = 0;
   const std::map<int, right_hand_side_type> & rhs_;
+  const std::map<int, mass_matrix_type> & massMatrices_;
   const std::map<int, jacobian_type> & jacobians_;
 
   MyApp2WithMM(const std::map<int, right_hand_side_type> & rhs,
+	       const std::map<int, mass_matrix_type> & matrices,
 	       const std::map<int, jacobian_type> & jacobians)
-    : rhs_(rhs), jacobians_(jacobians){}
+    : rhs_(rhs),
+      massMatrices_(matrices),
+      jacobians_(jacobians){}
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -34,45 +40,24 @@ struct MyApp2WithMM
     return JJ;
   };
 
-  void rightHandSide(const state_type & /*unused*/,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type & rhs) const{
-    rhs = rhs_.at(count1++);
-  };
-
-  void jacobian(const state_type & /*unused*/,
-                independent_variable_type /*unused*/,
-                jacobian_type & JJ) const
-  {
-    JJ = jacobians_.at(count3++);
-  };
-
-};
-
-struct MassMatrixOp
-{
-  using independent_variable_type = double;
-  using state_type           = Eigen::VectorXd;
-  using mass_matrix_type     = Eigen::MatrixXd;
-
-  mutable int count2 = 0;
-  const std::map<int, mass_matrix_type> & massMatrices_;
-
-  MassMatrixOp(const std::map<int, mass_matrix_type> & matrices)
-    : massMatrices_(matrices){}
-
   mass_matrix_type createMassMatrix() const{
     mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
-  void massMatrix(const state_type & /*unused*/,
+  void operator()(const state_type & /*unused*/,
 		  independent_variable_type /*unused*/,
-		  mass_matrix_type & M) const
+		  right_hand_side_type & rhs,
+		  mass_matrix_type & M,
+		  jacobian_type & JJ,
+		  bool computeJac) const
   {
+    rhs = rhs_.at(count1++);
     M = massMatrices_.at(count2++);
+    if (computeJac){
+      JJ = jacobians_.at(count3++);
+    }
   };
-
 };
 
 struct MyApp2NoMM
@@ -109,24 +94,23 @@ struct MyApp2NoMM
     return JJ;
   };
 
-  void jacobian(const state_type & y,
-                independent_variable_type evaltime,
-                jacobian_type & JJ) const
-  {
-    auto tmpJ = jacobians_.at(count3++);
-    auto M = createMassMatrix();
-    massMatrix(y, evaltime, M, true);
-    JJ = M.inverse()*tmpJ;
-  }
-
-  void rightHandSide(const state_type & y,
-		     independent_variable_type evaltime,
-		     right_hand_side_type & rhs) const
+  void operator()(const state_type & y,
+		  independent_variable_type evaltime,
+		  right_hand_side_type & rhs,
+		  jacobian_type & JJ,
+		  bool computeJac) const
   {
     auto tmprhs = rhs_.at(count1++);
     auto M = createMassMatrix();
     massMatrix(y, evaltime, M, false);
     rhs = M.inverse()*tmprhs;
+
+    if (computeJac){
+      auto tmpJ = jacobians_.at(count3++);
+      auto M = createMassMatrix();
+      massMatrix(y, evaltime, M, true);
+      JJ = M.inverse()*tmpJ;
+    }
   };
 
 private:
@@ -245,9 +229,8 @@ struct FakeNonLinearSolver2{
   /* solve problem using mass matrix API */				\
   Eigen::VectorXd y0(3);						\
   y0.setZero();{							\
-    MassMatrixOp mmOp(massMatrices);					\
-    MyApp2WithMM appObj(rhs, rhsJacobians);				\
-    auto stepperObj = ode::create_##NAME##_stepper(appObj, mmOp);	\
+    MyApp2WithMM appObj(rhs, massMatrices, rhsJacobians);		\
+    auto stepperObj = ode::create_##NAME##_stepper(appObj);		\
     y0(0) = 1.; y0(1) = 2.; y0(2) = 3.;					\
     FakeNonLinearSolver1 solver(numFakeSolverIterations, massMatrices,	\
 				odeSchemeResidualsToCompare,		\

@@ -184,6 +184,11 @@ using ImplicitStencilStatesDynamicContainer
 #include "predicates/ode_has_const_mass_matrix_method_accept_result_return_void.hpp"
 #include "predicates/ode_has_const_discrete_residual_jacobian_method.hpp"
 
-#include "./constraints.hpp"
+#include "./concepts/system_rhs.hpp"
+#include "./concepts/system_rhs_massmatrix.hpp"
+#include "./concepts/system_rhs_jacobian.hpp"
+#include "./concepts/system_rhs_jacobian_massmatrix.hpp"
+#include "./concepts/fully_discrete.hpp"
+#include "./concepts/residual_jacobian_policy.hpp"
 
 #endif  // ODE_STEPPERS_COMMON_HPP_

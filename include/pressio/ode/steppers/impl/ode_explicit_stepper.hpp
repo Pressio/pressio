@@ -79,8 +79,6 @@ public:
   ExplicitStepperNoMassMatrixImpl() = delete;
   ExplicitStepperNoMassMatrixImpl(const ExplicitStepperNoMassMatrixImpl &) = default;
   ExplicitStepperNoMassMatrixImpl & operator=(const ExplicitStepperNoMassMatrixImpl &) = delete;
-  ExplicitStepperNoMassMatrixImpl(ExplicitStepperNoMassMatrixImpl &&) = default;
-  ExplicitStepperNoMassMatrixImpl & operator=(ExplicitStepperNoMassMatrixImpl &&) = delete;
   ~ExplicitStepperNoMassMatrixImpl() = default;
 
   ExplicitStepperNoMassMatrixImpl(ode::ForwardEuler,
@@ -179,7 +177,7 @@ private:
 
     //eval rhs
     auto & rhs = rhsInstances_[0];
-    systemObj_.get().rightHandSide(odeState, stepStartTime, rhs);
+    systemObj_.get()(odeState, stepStartTime, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
 
     // y = y + stepSize * rhs
@@ -207,7 +205,7 @@ private:
     if (stepNumber.get()==1){
       // use Euler forward or we could use something else here maybe RK4
       auto & rhs = rhsInstances_[0];
-      systemObj_.get().rightHandSide(odeState, stepStartTime, rhs);
+      systemObj_.get()(odeState, stepStartTime, rhs);
       rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
 
       using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
@@ -220,7 +218,7 @@ private:
       // fn -> fnm1
       ::pressio::ops::deep_copy(fnm1, fn);
 
-      systemObj_.get().rightHandSide(odeState, stepStartTime, fn);
+      systemObj_.get()(odeState, stepStartTime, fn);
       rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, fn);
 
       using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
@@ -259,7 +257,7 @@ private:
     const independent_variable_type t_next{stepStartTime + stepSize};
 
     // rhs(u_n, t_n)
-    systemObj_.get().rightHandSide(odeState, stepStartTime, rhs0);
+    systemObj_.get()(odeState, stepStartTime, rhs0);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs0);
     // u_1 = u_n + stepSize * rhs(u_n, t_n)
     ::pressio::ops::update(auxiliaryState_, zero,
@@ -267,7 +265,7 @@ private:
                            rhs0,            stepSize);
 
     // rhs(u_1, t_n+stepSize)
-    systemObj_.get().rightHandSide(auxiliaryState_, t_next, rhs0);
+    systemObj_.get()(auxiliaryState_, t_next, rhs0);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_next, rhs0);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*stepSize*rhs(u_1, t_n+stepSize)
     ::pressio::ops::update(auxiliaryState_, fourInv,
@@ -275,7 +273,7 @@ private:
                            rhs0,            fourInv*stepSize);
 
     // rhs(u_2, t_n + 0.5*stepSize)
-    systemObj_.get().rightHandSide(auxiliaryState_, t_phalf, rhs0);
+    systemObj_.get()(auxiliaryState_, t_phalf, rhs0);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs0);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*stepSize*rhs(u_2, t_n+0.5*stepSize)
     ::pressio::ops::update(odeState,        oneOvThree,
@@ -312,28 +310,28 @@ private:
 
     // stage 1:
     // rhs1 = rhs(y_n, t_n)
-    systemObj_.get().rightHandSide(odeState, stepStartTime, rhs1);
+    systemObj_.get()(odeState, stepStartTime, rhs1);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs1);
 
     // stage 2:
     // ytmp = y + rhs1*stepSize_half;
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs1, stepSize_half);
     // rhs2 = rhs(y_tmp, t_n+stepSize/2)
-    systemObj_.get().rightHandSide(auxiliaryState_, t_phalf, rhs2);
+    systemObj_.get()(auxiliaryState_, t_phalf, rhs2);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_phalf, rhs2);
 
     // stage 3:
     // ytmp = y + rhs2*stepSize_half;
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs2, stepSize_half);
     // rhs3 = rhs(y_tmp)
-    systemObj_.get().rightHandSide(auxiliaryState_, t_phalf, rhs3);
+    systemObj_.get()(auxiliaryState_, t_phalf, rhs3);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs3);
 
     // stage 4:
     // ytmp = y + rhs3*stepSize;
     this->rk4_stage_update_impl(auxiliaryState_, odeState, rhs3, stepSize);
     // rhs3 = rhs(y_tmp)
-    systemObj_.get().rightHandSide(auxiliaryState_, t_next, rhs4);
+    systemObj_.get()(auxiliaryState_, t_next, rhs4);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(3), t_next, rhs4);
 
     // y_n += stepSize/6 * ( rhs1 + 2*rhs2 + 2*rhs3 + rhs4 )

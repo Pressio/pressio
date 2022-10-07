@@ -52,13 +52,11 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
-  bool massMatrixIsFixed,
   class SystemType,
   class IndVarType,
   class StateType,
   class ResidualType,
-  class JacobianType,
-  class MassMatrixOperatorType
+  class JacobianType
   >
 class ResidualJacobianWithMassMatrixStandardPolicy
 {
@@ -71,20 +69,16 @@ public:
 public:
   ResidualJacobianWithMassMatrixStandardPolicy() = delete;
 
-  explicit ResidualJacobianWithMassMatrixStandardPolicy(SystemType && systemIn,
-							MassMatrixOperatorType && mmOperator)
+  explicit ResidualJacobianWithMassMatrixStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ),
-      mmOpObj_(std::forward<MassMatrixOperatorType>(mmOperator)),
-      massMatrix_(mmOperator.createMassMatrix()),
+      massMatrix_(systemIn.createMassMatrix()),
       rhs_(systemIn.createRightHandSide())
-  {
-    computeMassMatrixOnceIfInvariant();
-  }
+  {}
 
   ResidualJacobianWithMassMatrixStandardPolicy(const ResidualJacobianWithMassMatrixStandardPolicy &) = default;
   ResidualJacobianWithMassMatrixStandardPolicy & operator=(const ResidualJacobianWithMassMatrixStandardPolicy &) = default;
-  ResidualJacobianWithMassMatrixStandardPolicy(ResidualJacobianWithMassMatrixStandardPolicy &&) = default;
-  ResidualJacobianWithMassMatrixStandardPolicy & operator=(ResidualJacobianWithMassMatrixStandardPolicy &&) = default;
+  // ResidualJacobianWithMassMatrixStandardPolicy(ResidualJacobianWithMassMatrixStandardPolicy &&) = default;
+  // ResidualJacobianWithMassMatrixStandardPolicy & operator=(ResidualJacobianWithMassMatrixStandardPolicy &&) = default;
   ~ResidualJacobianWithMassMatrixStandardPolicy() = default;
 
 public:
@@ -129,50 +123,23 @@ public:
 		    stencilVelocities, rhsEvaluationTime.get(),
 		    dt.get(), step.get(), R, J, computeJacobian);
     }
+
     else if (name == StepScheme::BDF2){
       (*this).template compute_impl_bdf
 	<ode::BDF2>(predictedState, stencilStatesManager,
 		    stencilVelocities, rhsEvaluationTime.get(),
 		    dt.get(), step.get(), R, J, computeJacobian);
     }
-    else if (name == StepScheme::CrankNicolson){
 
-      if (!massMatrixIsFixed){
-	throw std::runtime_error("CrankNicolson with varying mass matrix is not implemented yet");
-      }
-      this->compute_impl_cn(predictedState, stencilStatesManager,
-			    stencilVelocities, rhsEvaluationTime.get(),
-			    dt.get(), step.get(), R, J, computeJacobian);
+    else if (name == StepScheme::CrankNicolson){
+      throw std::runtime_error("CrankNicolson with mass matrix is not implemented yet");
+      // this->compute_impl_cn(predictedState, stencilStatesManager,
+      // 			    stencilVelocities, rhsEvaluationTime.get(),
+      // 			    dt.get(), step.get(), R, J, computeJacobian);
     }
   }
 
 private:
-  template<bool _massMatrixIsFixed = massMatrixIsFixed>
-  ::pressio::mpl::enable_if_t<_massMatrixIsFixed>
-  computeMassMatrixOnceIfInvariant(){
-    mmOpObj_.get().massMatrix(massMatrix_);
-  }
-
-  template<bool _massMatrixIsFixed = massMatrixIsFixed>
-  ::pressio::mpl::enable_if_t<!_massMatrixIsFixed>
-  computeMassMatrixOnceIfInvariant(){
-    // no op
-  }
-
-  template<bool _massMatrixIsFixed = massMatrixIsFixed>
-  ::pressio::mpl::enable_if_t<_massMatrixIsFixed>
-  computeMassMatrixIfNeeded(const StateType & /*unused*/,
-			    const IndVarType & /*unused*/) const{
-    // no op
-  }
-
-  template<bool _massMatrixIsFixed = massMatrixIsFixed>
-  ::pressio::mpl::enable_if_t<!_massMatrixIsFixed>
-  computeMassMatrixIfNeeded(const StateType & odeState,
-			    const IndVarType & eval) const{
-    mmOpObj_.get().massMatrix(odeState, eval, massMatrix_);
-  }
-
   // BDF
   template <
   class OdeTag,
@@ -192,13 +159,12 @@ private:
   {
 
     try{
-      systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, rhs_);
-      computeMassMatrixIfNeeded(predictedState, rhsEvaluationTime);
+      systemObj_.get()(predictedState, rhsEvaluationTime, rhs_, massMatrix_, J, computeJacobian);
       ::pressio::ode::impl::discrete_residual(OdeTag(), predictedState, rhs_,
-					      massMatrix_, R, stencilStatesManager, dt);
+					      massMatrix_, R,
+					      stencilStatesManager, dt);
 
       if (computeJacobian){
-	systemObj_.get().jacobian(predictedState, rhsEvaluationTime, J);
 	::pressio::ode::impl::discrete_jacobian(OdeTag(), J, massMatrix_, dt);
       }
 
@@ -210,52 +176,51 @@ private:
 
   }
 
-  //
-  // CN
-  //
-  template <
-    class StencilStatesContainerType,
-    class StencilVelocitiesContainerType,
-    class StepType
-    >
-  void compute_impl_cn(const StateType & predictedState,
-		       const StencilStatesContainerType & stencilStates,
-		       StencilVelocitiesContainerType & stencilVelocities,
-		       const IndVarType & t_np1,
-		       const IndVarType & dt,
-		       const StepType & step,
-		       ResidualType & R,
-		       JacobianType & J,
-		       bool computeJacobian) const
-  {
+  // //
+  // // CN
+  // //
+  // template <
+  //   class StencilStatesContainerType,
+  //   class StencilVelocitiesContainerType,
+  //   class StepType
+  //   >
+  // void compute_impl_cn(const StateType & predictedState,
+  // 		       const StencilStatesContainerType & stencilStates,
+  // 		       StencilVelocitiesContainerType & stencilVelocities,
+  // 		       const IndVarType & t_np1,
+  // 		       const IndVarType & dt,
+  // 		       const StepType & step,
+  // 		       ResidualType & R,
+  // 		       JacobianType & J,
+  // 		       bool computeJacobian) const
+  // {
 
-    if (stepTracker_ != step){
-      auto & f_n     = stencilVelocities(::pressio::ode::n());
-      auto & state_n = stencilStates(::pressio::ode::n());
-      const auto tn = t_np1-dt;
-      systemObj_.get().rightHandSide(state_n, tn, f_n);
-    }
+  //   if (stepTracker_ != step){
+  //     auto & f_n     = stencilVelocities(::pressio::ode::n());
+  //     auto & state_n = stencilStates(::pressio::ode::n());
+  //     const auto tn = t_np1-dt;
+  //     systemObj_.get().rightHandSide(state_n, tn, f_n);
+  //   }
 
-    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
-    systemObj_.get().rightHandSide(predictedState, t_np1, f_np1);
-    ::pressio::ode::impl::discrete_residual
-	(ode::CrankNicolson(), predictedState, massMatrix_,
-	 R, stencilStates, stencilVelocities, dt);
+  //   auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+  //   systemObj_.get().rightHandSide(predictedState, t_np1, f_np1);
+  //   ::pressio::ode::impl::discrete_residual
+  // 	(ode::CrankNicolson(), predictedState, massMatrix_,
+  // 	 R, stencilStates, stencilVelocities, dt);
 
-    if (computeJacobian){
-      systemObj_.get().jacobian(predictedState, t_np1, J);
-      ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(),
-					      J, massMatrix_, dt);
-    }
+  //   if (computeJacobian){
+  //     systemObj_.get().jacobian(predictedState, t_np1, J);
+  //     ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(),
+  // 					      J, massMatrix_, dt);
+  //   }
 
-    stepTracker_ = step;
-  }
+  //   stepTracker_ = step;
+  // }
 
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
-  ::pressio::utils::InstanceOrReferenceWrapper<MassMatrixOperatorType> mmOpObj_;
   mutable int32_t stepTracker_ = -1;
-  mutable typename std::decay_t<MassMatrixOperatorType>::mass_matrix_type massMatrix_;
+  mutable typename mpl::remove_cvref_t<SystemType>::mass_matrix_type massMatrix_;
   mutable ResidualType rhs_;
 };
 

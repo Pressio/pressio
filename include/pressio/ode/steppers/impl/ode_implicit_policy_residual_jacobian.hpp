@@ -78,8 +78,8 @@ public:
 
   ResidualJacobianStandardPolicy(const ResidualJacobianStandardPolicy &) = default;
   ResidualJacobianStandardPolicy & operator=(const ResidualJacobianStandardPolicy &) = default;
-  ResidualJacobianStandardPolicy(ResidualJacobianStandardPolicy &&) = default;
-  ResidualJacobianStandardPolicy & operator=(ResidualJacobianStandardPolicy &&) = default;
+  // ResidualJacobianStandardPolicy(ResidualJacobianStandardPolicy &&) = default;
+  // ResidualJacobianStandardPolicy & operator=(ResidualJacobianStandardPolicy &&) = default;
   ~ResidualJacobianStandardPolicy() = default;
 
 public:
@@ -156,12 +156,11 @@ private:
   {
 
     try{
-      systemObj_.get().rightHandSide(predictedState, rhsEvaluationTime, R);
+      systemObj_.get()(predictedState, rhsEvaluationTime, R, J, computeJacobian);
       ::pressio::ode::impl::discrete_residual(OdeTag(), predictedState,
 					      R, stencilStatesManager, dt);
 
       if (computeJacobian){
-	systemObj_.get().jacobian(predictedState, rhsEvaluationTime, J);
 	::pressio::ode::impl::discrete_jacobian(OdeTag(), J, dt);
       }
 
@@ -195,17 +194,17 @@ private:
       auto & f_n = stencilVelocities(::pressio::ode::n());
       auto & state_n = stencilStates(::pressio::ode::n());
       const auto tn = t_np1-dt;
-      systemObj_.get().rightHandSide(state_n, tn, f_n);
+      systemObj_.get()(state_n, tn, f_n, J, false);
     }
 
     auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
-    systemObj_.get().rightHandSide(predictedState, t_np1, f_np1);
+    systemObj_.get()(predictedState, t_np1, f_np1, J, computeJacobian);
     ::pressio::ode::impl::discrete_residual
 	(ode::CrankNicolson(), predictedState, R, stencilStates,
 	 stencilVelocities, dt);
 
     if (computeJacobian){
-      systemObj_.get().jacobian(predictedState, t_np1, J);
+      //systemObj_.get().jacobian(predictedState, t_np1, J);
       ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), J, dt);
     }
 

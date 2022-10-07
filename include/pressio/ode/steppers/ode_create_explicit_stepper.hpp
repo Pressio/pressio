@@ -46,67 +46,82 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_HPP_
-#define ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#ifndef ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_PUBLIC_HPP_
+#define ODE_STEPPERS_ODE_CREATE_EXPLICIT_STEPPER_PUBLIC_HPP_
 
-#include "./impl/ode_explicit_compose.hpp"
+#include "./impl/ode_explicit_create_impl.hpp"
 
 namespace pressio{ namespace ode{
 
-/*
-  below we abuse things a bit and in some cases we use static asserts
-  to check constraints but this is
-  not fully correct because constraints should have an impact on the
-  overload resolution read this:
-    https://timsong-cpp.github.io/cppwp/n4861/structure#footnote-154
-
-  Since we cannot yet use c++20 concepts, we should enforce these
-  constraints via e.g. SFINAE but that would yield bad error messages.
-  So for now we decide to use static asserts to have readable error messages.
-  Another point that kind of justifies this here, for now, is that
-  we have a simple overload set.
-*/
-
-template<class SystemType>
+//
+// basic, no mass matrix
+//
+template<
+  class SystemType
+#if not defined PRESSIO_ENABLE_CXX20
+  , mpl::enable_if_t<
+      SystemWithRhs<mpl::remove_cvref_t<SystemType>>::value, int
+      > = 0
+#endif
+  >
+#ifdef PRESSIO_ENABLE_CXX20
+requires SystemWithRhs<mpl::remove_cvref_t<SystemType>>
+#endif
 auto create_explicit_stepper(StepScheme name,
 			     SystemType && odeSystem)
 {
-  // constraints
   using sys_type = mpl::remove_cvref_t<SystemType>;
-  static_assert
-  (   ::pressio::ode::SystemWithRhs<sys_type>::value
-   || ::pressio::ode::SystemWithRhsAndJacobian<sys_type>::value,
-   "explicit stepper: your system class does not meet any valid concept");
+  using ind_var_type = typename sys_type::independent_variable_type;
+  using state_type   = typename sys_type::state_type;
+  using right_hand_side_type = typename sys_type::right_hand_side_type;
 
-  return impl::create_explicit_stepper(name,
-				       std::forward<SystemType>(odeSystem));
-}
-
-template<class SystemType, class MassMatrixOperatorType>
-auto create_explicit_stepper(StepScheme name,
-			     SystemType && odeSystem,
-			     MassMatrixOperatorType && massMatrixOperator)
-{
-
-  // constraints
-  using sys_type = mpl::remove_cvref_t<SystemType>;
-  static_assert
-  (   ::pressio::ode::SystemWithRhs<sys_type>::value
-   || ::pressio::ode::SystemWithRhsAndJacobian<sys_type>::value,
-   "explicit stepper: your system class does not meet any valid concept");
-
-  using mmop_type = mpl::remove_cvref_t<MassMatrixOperatorType>;
-  static_assert
-    (::pressio::ode::MassMatrixOperator<mmop_type>::value
-     || ::pressio::ode::ConstantMassMatrixOperator<mmop_type>::value, "");
-
-  return impl::create_explicit_stepper(name,
-				       std::forward<SystemType>(odeSystem),
-				       std::forward<MassMatrixOperatorType>(massMatrixOperator));
+  // it is very important to use "SystemType" as template arg
+  // because that it the right type carrying how we store the system
+  // and NOT SystemType && for the following reason:
+  // when user passes a non-temporary object, SystemType is
+  // deduced to be a reference, so the concrete stepper class
+  // will hold a reference to the provided system object.
+  // When the user passes system to be a temporary object,
+  // SystemType will be deduced so that the stepper will
+  // hold an **instance** of the system that
+  // is move-constructed (if applicable, or copy-constructed) from the system argument.
+  using impl_type = impl::ExplicitStepperNoMassMatrixImpl<
+    state_type, ind_var_type, SystemType, right_hand_side_type>;
+  return impl::create_explicit_stepper<impl_type>
+    (name, std::forward<SystemType>(odeSystem));
 }
 
 //
-// auxiliary
+// WITH mass matrix
+//
+template<
+  class SystemType
+#if not defined PRESSIO_ENABLE_CXX20
+  , mpl::enable_if_t<
+      SystemWithRhsAndMassMatrix<mpl::remove_cvref_t<SystemType>>::value, int
+      > = 0
+#endif
+  >
+#ifdef PRESSIO_ENABLE_CXX20
+requires SystemWithRhsAndMassMatrix<mpl::remove_cvref_t<SystemType>>
+#endif
+auto create_explicit_stepper(StepScheme name,
+			     SystemType && odeSystem)
+{
+  using sys_type = mpl::remove_cvref_t<SystemType>;
+  using ind_var_type = typename sys_type::independent_variable_type;
+  using state_type   = typename sys_type::state_type;
+  using right_hand_side_type = typename sys_type::right_hand_side_type;
+
+  // use "SystemType" as template arg, see above for reason
+  using impl_type = impl::ExplicitStepperWithMassMatrixImpl<
+    state_type, ind_var_type, SystemType, right_hand_side_type>;
+  return impl::create_explicit_stepper<impl_type>
+    (name, std::forward<SystemType>(odeSystem));
+}
+
+//
+// auxiliary functions that spell out scheme in the name
 //
 template<class ...Args>
 auto create_forward_euler_stepper(Args && ...args){

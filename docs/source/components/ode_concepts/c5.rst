@@ -1,7 +1,0 @@
-
-``FullyDiscreteSystemWithJacobian``
-===================================
-
-.. literalinclude:: ./syntax_system_concepts.cc
-   :language: cpp
-   :lines: 40-84

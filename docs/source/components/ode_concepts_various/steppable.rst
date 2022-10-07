@@ -2,9 +2,6 @@
 ``Steppable``
 =============
 
-This concept specifies that a type ``T`` can take a state
-and "advance" by one step.
-
 Syntax only
 -----------
 

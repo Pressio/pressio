@@ -25,9 +25,9 @@ struct MyApp
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type evaltime,
-		     right_hand_side_type & rhs) const
+  void operator()(const state_type & y,
+		  independent_variable_type evaltime,
+		  right_hand_side_type & rhs) const
   {
     rhs = rhs_.at(count1++);
   };

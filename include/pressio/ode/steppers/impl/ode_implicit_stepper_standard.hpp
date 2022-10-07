@@ -56,9 +56,7 @@ template<
   class StateType,
   class ResidualType,
   class JacobianType,
-  class ResidualJacobianPolicyType,
-  bool needs_mass_matrix,
-  bool using_default_policies
+  class ResidualJacobianPolicyType
   >
 class ImplicitStepperStandardImpl
 {
@@ -97,155 +95,34 @@ public:
   ImplicitStepperStandardImpl() = delete;
   ImplicitStepperStandardImpl(const ImplicitStepperStandardImpl & other)  = default;
   ImplicitStepperStandardImpl & operator=(const ImplicitStepperStandardImpl & other) = delete;
-  ImplicitStepperStandardImpl(ImplicitStepperStandardImpl && other)  = default;
-  ImplicitStepperStandardImpl & operator=(ImplicitStepperStandardImpl && other) = delete;
   ~ImplicitStepperStandardImpl() = default;
 
   // *** BDF1 ***//
-  template<
-    class SystemType, class MassMatrixOperatorType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<
-      _using_default_policies && _needs_mass_matrix, int > = 0
-    >
   ImplicitStepperStandardImpl(::pressio::ode::BDF1,
-			      const SystemType & systemObj,
-			      MassMatrixOperatorType && mmOperator)
-    : name_(StepScheme::BDF1),
-      recovery_state_{systemObj.createState()},
-      stencil_states_{systemObj.createState()},
-      rj_policy_{ResidualJacobianPolicyType{systemObj,
-					    std::forward<MassMatrixOperatorType>(mmOperator)}}
-  {}
-
-  template<
-    class SystemType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<
-      _using_default_policies && !_needs_mass_matrix, int > = 0
-    >
-  ImplicitStepperStandardImpl(::pressio::ode::BDF1,
-			      const SystemType & systemObj)
-    : name_(StepScheme::BDF1),
-      recovery_state_{systemObj.createState()},
-      stencil_states_{systemObj.createState()},
-      rj_policy_{ResidualJacobianPolicyType{systemObj}}
-  {}
-
-  template<
-    class _ResidualJacobianPolicyType = ResidualJacobianPolicyType,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
-    >
-  ImplicitStepperStandardImpl(::pressio::ode::BDF1,
-			      _ResidualJacobianPolicyType && rjPolicyObj)
+			      ResidualJacobianPolicyType && rjPolicyObj)
     : name_(StepScheme::BDF1),
       recovery_state_{rjPolicyObj.createState()},
       stencil_states_{rjPolicyObj.createState()},
-      rj_policy_{rjPolicyObj}
+      rj_policy_(std::forward<ResidualJacobianPolicyType>(rjPolicyObj))
   {}
 
   // *** BDF2 ***//
-  template<
-    class SystemType, class MassMatrixOperatorType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<
-      _using_default_policies && _needs_mass_matrix, int > = 0
-    >
   ImplicitStepperStandardImpl(::pressio::ode::BDF2,
-			      const SystemType & systemObj,
-			      MassMatrixOperatorType && mmOperator)
+			      ResidualJacobianPolicyType && rjPolicyObj)
     : name_(StepScheme::BDF2),
-      recovery_state_{systemObj.createState()},
-      stencil_states_{systemObj.createState(),
-		      systemObj.createState()},
-      rj_policy_{ResidualJacobianPolicyType{systemObj,
-					    std::forward<MassMatrixOperatorType>(mmOperator)}}
-  {}
-
-  template<
-    class SystemType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<
-      _using_default_policies && !_needs_mass_matrix, int > = 0
-    >
-  ImplicitStepperStandardImpl(::pressio::ode::BDF2,
-			      const SystemType & systemObj)
-    : name_(StepScheme::BDF2),
-      recovery_state_{systemObj.createState()},
-      stencil_states_{systemObj.createState(),
-                      systemObj.createState()},
-      rj_policy_{ResidualJacobianPolicyType{systemObj}}
-  {}
-
-  template<
-    class _ResidualJacobianPolicyType = ResidualJacobianPolicyType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
-    >
-  ImplicitStepperStandardImpl(::pressio::ode::BDF2,
-			      _ResidualJacobianPolicyType && policyObj)
-    : name_(StepScheme::BDF2),
-      recovery_state_{policyObj.createState()},
-      stencil_states_{policyObj.createState(),
-		      policyObj.createState()},
-      rj_policy_{policyObj}
+      recovery_state_{rjPolicyObj.createState()},
+      stencil_states_{rjPolicyObj.createState(),
+		      rjPolicyObj.createState()},
+      rj_policy_(std::forward<ResidualJacobianPolicyType>(rjPolicyObj))
   {}
 
   // *** CN ***//
-  template<
-    class SystemType, class MassMatrixOperatorType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<
-      _using_default_policies && _needs_mass_matrix, int > = 0
-    >
   ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
-			      const SystemType & systemObj,
-			      MassMatrixOperatorType && mmOperator)
-    : name_(StepScheme::CrankNicolson),
-      recovery_state_{systemObj.createState()},
-      stencil_states_{systemObj.createState()},
-      rj_policy_{ResidualJacobianPolicyType{systemObj,
-					    std::forward<MassMatrixOperatorType>(mmOperator)}},
-      stencil_rhs_{rj_policy_.get().createResidual(),
-                   rj_policy_.get().createResidual()}
-  {}
-
-  template<
-    class SystemType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<
-      _using_default_policies && !_needs_mass_matrix, int > = 0
-    >
-  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
-			      const SystemType & systemObj)
-    : name_(StepScheme::CrankNicolson),
-      recovery_state_{systemObj.createState()},
-      stencil_states_{systemObj.createState()},
-      rj_policy_{ResidualJacobianPolicyType{systemObj}},
-      stencil_rhs_{rj_policy_.get().createResidual(),
-                   rj_policy_.get().createResidual()}
-  {}
-
-  template<
-    class _ResidualJacobianPolicyType = ResidualJacobianPolicyType,
-    bool _needs_mass_matrix = needs_mass_matrix,
-    bool _using_default_policies = using_default_policies,
-    ::pressio::mpl::enable_if_t<!_using_default_policies, int > = 0
-    >
-  ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
-			      _ResidualJacobianPolicyType && rjPolicyObj)
+			      ResidualJacobianPolicyType && rjPolicyObj)
     : name_(StepScheme::CrankNicolson),
       recovery_state_{rjPolicyObj.createState()},
       stencil_states_{rjPolicyObj.createState()},
-      rj_policy_{rjPolicyObj},
+      rj_policy_(std::forward<ResidualJacobianPolicyType>(rjPolicyObj)),
       stencil_rhs_{rj_policy_.get().createResidual(),
                    rj_policy_.get().createResidual()}
   {}
@@ -372,11 +249,9 @@ private:
     if (stepNumber == 1){
         using aux_type = ImplicitStepperStandardImpl<
 	  IndVarType, StateType, ResidualType, JacobianType,
-	  const ResidualJacobianPolicyType &, /*const JacobianPolicyType &,*/
-	  false, false>;
+	  const ResidualJacobianPolicyType &>;
 
-	aux_type auxStepper(::pressio::ode::BDF1(),
-			    rj_policy_.get() /*,rj_policy_.get()*/);
+	aux_type auxStepper(::pressio::ode::BDF1(), rj_policy_.get());
 
 	// step ==1 means that we are going from y_0 to y_1
 	// copy y_0 into stencil_states_(0)
@@ -387,6 +262,7 @@ private:
 		   StepSize<independent_variable_type>(dt),
 		   solver, std::forward<Args>(args)...);
     }
+
     if (stepNumber >= 2)
     {
       /*

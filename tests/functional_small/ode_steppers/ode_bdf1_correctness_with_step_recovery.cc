@@ -22,9 +22,11 @@ public:
     return J;
   }
 
-  void rightHandSide(const state_type & /*unused*/,
-		const independent_variable_type& evaltime,
-		right_hand_side_type & f) const
+  void operator()(const state_type & /*unused*/,
+		  const independent_variable_type& evaltime,
+		  right_hand_side_type & f,
+		  jacobian_type & /*unsued*/,
+		  bool computeJac) const
   {
     std::cout << "f: t=" << evaltime << "\n";
 
@@ -36,12 +38,6 @@ public:
     f[0] = 1.;
     f[1] = 1.;
     f[2] = 2.;
-  }
-
-  void jacobian(const state_type&,
-		const independent_variable_type&,
-		jacobian_type&) const{
-    // not used by the test
   }
 };
 

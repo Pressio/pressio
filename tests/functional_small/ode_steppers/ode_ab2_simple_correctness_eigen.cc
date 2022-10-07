@@ -14,17 +14,17 @@ struct AB2MyApp
 
   state_type createState() const{ return state_type(3); }
 
-  void rightHandSide(const state_type & /*unused*/,
-		independent_variable_type evaltime,
-		right_hand_side_type & f) const
-  {
-    f.setConstant(evaltime);
-  };
-
   right_hand_side_type createRightHandSide() const
   {
     right_hand_side_type R(3);
     return R;
+  };
+
+  void operator()(const state_type & /*unused*/,
+		  independent_variable_type evaltime,
+		  right_hand_side_type & f) const
+  {
+    f.setConstant(evaltime);
   };
 };
 

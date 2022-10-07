@@ -15,9 +15,9 @@ public:
     return state_type(3);
   }
 
-  void rightHandSide(const state_type & /*unused*/,
-		     independent_variable_type evaltime,
-		     right_hand_side_type & R) const
+  void operator()(const state_type & /*unused*/,
+		  independent_variable_type evaltime,
+		  right_hand_side_type & R) const
   {
     R[0] = evaltime;
     R[1] = evaltime;

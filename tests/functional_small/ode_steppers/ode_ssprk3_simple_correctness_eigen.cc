@@ -13,18 +13,18 @@ struct AppForSSPRK3
     return right_hand_side_type(3);
   };
 
-  void rightHandSide(const state_type & y,
-                const independent_variable_type evaltime,
-                right_hand_side_type & rhs) const
+  right_hand_side_type createRightHandSide() const{
+    return right_hand_side_type(3);
+  };
+
+  void operator()(const state_type & y,
+		  const independent_variable_type evaltime,
+		  right_hand_side_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){
       rhs[i] = y[i] + evaltime;
     }
-  };
-
-  right_hand_side_type createRightHandSide() const{
-    return right_hand_side_type(3);
   };
 };
 

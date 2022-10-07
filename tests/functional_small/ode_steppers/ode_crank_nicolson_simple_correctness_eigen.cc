@@ -15,18 +15,16 @@ public:
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(3); }
   jacobian_type createJacobian() const{return jacobian_type(3,3);}
 
-  void rightHandSide(const state_type & y,
-		const independent_variable_type& evaltime,
-		right_hand_side_type & f) const
+  void operator()(const state_type & y,
+		  const independent_variable_type& evaltime,
+		  right_hand_side_type & f,
+		  jacobian_type & /*j*/,
+		  bool computeJac) const
   {
     std::cout << "velo: t=" << evaltime << "\n";
     f[0] = y(0)+evaltime;
     f[1] = y(1)+evaltime;
     f[2] = y(2)+evaltime;
-  }
-
-  void jacobian(const state_type&, const independent_variable_type&, jacobian_type&) const{
-    // not used by the test
   }
 };
 

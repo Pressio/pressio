@@ -1,22 +1,30 @@
 
-concepts
-========
+concepts: system
+================
+
+.. toctree::
+   :maxdepth: 1
+
+   ode_concepts_system/rhs
+   ode_concepts_system/rhs_jac
+   ode_concepts_system/rhs_massmatrix
+   ode_concepts_system/rhs_jac_massmatrix
+   ode_concepts_system/fully_discrete
+
+concepts: various
+=================
 
 .. toctree::
     :maxdepth: 1
 
-    ode_concepts/c1
-    ode_concepts/c2
-    ode_concepts/c3a
-    ode_concepts/c3b
-    ode_concepts/c5
-    ode_concepts/rj_pol
-    ode_concepts/c6
-    ode_concepts/c7
-    ode_concepts/c8
-    ode_concepts/c9
-    ode_concepts/c10
-    ode_concepts/c11
+    ode_concepts_various/steppable
+    ode_concepts_various/steppable_args
+    ode_concepts_various/step_size_pol
+    ode_concepts_various/step_size_pol_with_scaling
+    ode_concepts_various/state_obs
+    ode_concepts_various/state_guesser
+
+
 
 .. A fundamental part of pressio is that concept-driven design has been
    a key part of the development since its early stages.

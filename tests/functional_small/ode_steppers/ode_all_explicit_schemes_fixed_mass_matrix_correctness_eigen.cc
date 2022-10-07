@@ -8,12 +8,16 @@ struct MyApp2WithMM
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
   using right_hand_side_type = state_type;
+  using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
+  mutable int count2 = 0;
   std::map<int, Eigen::VectorXd> & rhs_;
+  const Eigen::MatrixXd & uniqueMM_;
 
-  MyApp2WithMM(std::map<int, Eigen::VectorXd> & rhs)
-    : rhs_(rhs){}
+  MyApp2WithMM(std::map<int, Eigen::VectorXd> & rhs,
+	       const Eigen::MatrixXd & MM)
+    : rhs_(rhs), uniqueMM_(MM){}
 
   state_type createState() const{
     state_type ret(3); ret.setZero();
@@ -25,36 +29,29 @@ struct MyApp2WithMM
     return ret;
   };
 
-  void rightHandSide(const state_type & /*unused*/,
-		     independent_variable_type evaltime,
-		     right_hand_side_type & rhs) const
+  mass_matrix_type createMassMatrix() const{
+    mass_matrix_type ret(3,3); ret.setZero();
+    return ret;
+  };
+
+  void operator()(const state_type & /*unused*/,
+		  independent_variable_type evaltime,
+		  right_hand_side_type & rhs,
+		  mass_matrix_type & M) const
   {
     rhs = Eigen::VectorXd::Random(rhs.rows());
     for (int i=0; i<rhs.size(); ++i){
       rhs(i) = evaltime;
     }
 
+    // we dont need to compute M all the time,
+    // just once since it does not change
+    if (count2==0){
+      count2++;
+      M = uniqueMM_;
+    }
+
     rhs_[++count1] = rhs;
-  };
-};
-
-struct MassMatrixOp
-{
-  using mass_matrix_type     = Eigen::MatrixXd;
-
-  const Eigen::MatrixXd & uniqueMM_;
-
-  MassMatrixOp(const Eigen::MatrixXd & MM)
-    : uniqueMM_(MM){}
-
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
-    return ret;
-  };
-
-  void massMatrix(mass_matrix_type & M) const
-  {
-    M = uniqueMM_;
   };
 };
 
@@ -82,9 +79,9 @@ struct MyApp2NoMM
     return ret;
   };
 
-  void rightHandSide(const state_type & /*unused*/,
-		     independent_variable_type evaltime,
-		     right_hand_side_type & rhs) const
+  void operator()(const state_type & /*unused*/,
+		  independent_variable_type evaltime,
+		  right_hand_side_type & rhs) const
   {
     rhs = rhs_.at(++count1);
     // we want to make sure we have the correct time
@@ -122,9 +119,8 @@ struct LinearSolver2
   /* first, solve problem using mass matrix API */			\
   Eigen::VectorXd y0(3);						\
   y0.setZero();{							\
-    MassMatrixOp mmOp(M);						\
-    MyApp2WithMM appObj(rhs);						\
-    auto stepperObj = ode::create_##NAME##_stepper(appObj, mmOp);	\
+    MyApp2WithMM appObj(rhs, M);					\
+    auto stepperObj = ode::create_##NAME##_stepper(appObj);		\
     LinearSolver2 solver;						\
     y0(0) = 1.; y0(1) = 2.; y0(2) = 3.;					\
     ode::advance_n_steps(stepperObj, y0, 0.0, dt, nsteps, solver);	\

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_const_velocity_method_accept_state_time_result_return_void.hpp
+// ode_explicit_compose.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,44 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_RHS_METHOD_ACCEPT_STATE_INDVAR_RESULT_RETURN_VOID_HPP_
-#define ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_RHS_METHOD_ACCEPT_STATE_INDVAR_RESULT_RETURN_VOID_HPP_
+#ifndef ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
+#define ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
 
-namespace pressio{ namespace ode{
+#include "ode_explicit_stepper.hpp"
+#include "ode_explicit_stepper_with_mass_matrix.hpp"
 
-// template <class T, class StateType, class IndVarType, class RhsType, class = void>
-// struct has_const_rhs_method_accept_state_indvar_result_return_void
-//   : std::false_type{};
+namespace pressio{ namespace ode{ namespace impl{
 
-// template <class T, class StateType, class IndVarType, class RhsType>
-// struct has_const_rhs_method_accept_state_indvar_result_return_void<
-//   T, StateType, IndVarType, RhsType,
-//   ::pressio::mpl::enable_if_t<
-//     std::is_void<
-//       decltype(
-// 	       std::declval<T const>().rightHandSide(
-// 					  std::declval<StateType const&>(),
-// 					  std::declval<IndVarType const &>(),
-// 					  std::declval<RhsType &>()
-// 					  )
-// 	   )
-//       >::value
-//     >
-//   > : std::true_type{};
+template<class ImplClassType, class SystemType>
+auto create_explicit_stepper(StepScheme name,
+			     SystemType && system)
+{
 
-}} // namespace pressio::ode::predicates
-#endif  // ODE_STEPPERS_PREDICATES_ODE_HAS_CONST_RHS_METHOD_ACCEPT_STATE_INDVAR_RESULT_RETURN_VOID_HPP_
+  if (name == StepScheme::ForwardEuler){
+    return ImplClassType(ode::ForwardEuler(),
+			 std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::RungeKutta4){
+    return ImplClassType(ode::RungeKutta4(),
+			 std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::AdamsBashforth2){
+    return ImplClassType(ode::AdamsBashforth2(),
+			 std::forward<SystemType>(system));
+  }
+
+  else if (name == StepScheme::SSPRungeKutta3){
+    return ImplClassType(ode::SSPRungeKutta3(),
+			 std::forward<SystemType>(system));
+  }
+
+  else{
+    throw std::runtime_error("ode:: create_explicit_stepper: invalid StepScheme enum value");
+  }
+
+}
+
+}}}
+#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_COMPOSE_HPP_

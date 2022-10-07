@@ -38,6 +38,9 @@ API
    namespace pressio{ namespace ode{
 
    template<std::size_t TotalNumberOfDesiredStates, class SystemType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires FullyDiscreteSystemWithJacobian<FomSystemType, TotalNumberOfDesiredStates>
+  #endif
    /*impl defined*/ create_implicit_stepper(const SystemType & system);
 
    }} //end namespace pressio::ode
@@ -52,17 +55,14 @@ Parameters and templates
   If you need three auxiliary states (beside) the main state to update,
   then use: ``TotalNumberOfDesiredStates = 4``.
 
-* ``system``: an object that evaluates the discrete residual and jacobian
-
-* ``massMatOperator``: the mass matrix operator
-
+* ``system``: problem instance to evaluate the discrete residual and jacobian
 
 Constraints
 ~~~~~~~~~~~
 
 * ``TotalNumberOfDesiredStates``: currently must be set to one of `{2, 3, 4}`
 
-- ``SystemType`` must model the ``FullyDiscreteSystemWithJacobian`` `concept <ode_concepts/c5.html>`__.
+- ``SystemType`` must model the ``FullyDiscreteSystemWithJacobian`` `concept <ode_concepts_system/fully_discrete.html>`__.
 
 
 Preconditions
@@ -119,6 +119,6 @@ Use the stepper
 
 The stepper created using the functions satisfies two concepts:
 
-- the ``SteppableWithAuxiliaryArgs`` concept discussed `here <ode_concepts/c7.html>`__.
+- the ``SteppableWithAuxiliaryArgs`` concept discussed `here <ode_concepts_various/steppable_args.html>`__.
 
 - the ``SystemWithFusedResidualAndJacobian`` concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.

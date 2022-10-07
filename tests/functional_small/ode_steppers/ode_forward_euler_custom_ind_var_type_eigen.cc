@@ -21,9 +21,9 @@ struct MyApp{
     return ret;
   };
 
-  void rightHandSide(const state_type & y,
-		     independent_variable_type /*unused*/,
-		     right_hand_side_type & f) const
+  void operator()(const state_type & y,
+		  independent_variable_type /*unused*/,
+		  right_hand_side_type & f) const
   {
     f[0] = -10. * y[0];
     f[1] = -10. * y[1];

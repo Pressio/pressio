@@ -87,8 +87,6 @@ public:
   StepperArbitrary() = delete;
   StepperArbitrary(const StepperArbitrary & other)  = default;
   StepperArbitrary & operator=(const StepperArbitrary & other) = delete;
-  StepperArbitrary(StepperArbitrary && other)  = default;
-  StepperArbitrary & operator=(StepperArbitrary && other) = delete;
   ~StepperArbitrary() = default;
 
   StepperArbitrary(SystemType && systemObj)
