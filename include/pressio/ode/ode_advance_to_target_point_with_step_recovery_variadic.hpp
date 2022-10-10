@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
-#define ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
+#ifndef ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
+#define ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
@@ -59,33 +59,41 @@ template<
   class StepperType,
   class StateType,
   class StepSizePolicyType,
-  class IndVarType
+  class IndVarType,
+  class AuxT,
+  class ...Args
   >
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-       StronglySteppable<StepperType>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType &&, IndVarType>::value
+       StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+    && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
+    && !StateObserver<AuxT&&, IndVarType, StateType>::value
     >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppable<StepperType>
-	&& StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
+  requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+    && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
+    && (!StateObserver<AuxT, IndVarType, StateType>)
 void
 #endif
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
 					  const IndVarType & finalVal,
-					  StepSizePolicyType && stepSizePolicy)
+					  StepSizePolicyType && stepSizePolicy,
+					  AuxT && auxArg,
+					  Args && ... args)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::to_target_time_with_step_size_policy
-    <false>(stepper, startVal,
-	    finalVal, state,
-	    std::forward<StepSizePolicyType>(stepSizePolicy),
-	    observer_t());
+    <true>(stepper, startVal,
+	   finalVal, state,
+	   std::forward<StepSizePolicyType>(stepSizePolicy),
+	   observer_t(),
+	   std::forward<AuxT>(auxArg),
+	   std::forward<Args>(args)...);
 }
 
 template<
@@ -93,17 +101,19 @@ template<
   class StateType,
   class StepSizePolicyType,
   class ObserverType,
-  class IndVarType
+  class IndVarType,
+  class AuxT,
+  class ...Args
   >
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-       StronglySteppable<StepperType>::value
+       StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
     && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
     && StateObserver<ObserverType&&, IndVarType, StateType>::value
     >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppable<StepperType>
+  requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
     && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
     && StateObserver<ObserverType, IndVarType, StateType>
 void
@@ -113,17 +123,20 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  const IndVarType & startVal,
 					  const IndVarType & finalVal,
 					  StepSizePolicyType && stepSizePolicy,
-					  ObserverType && observer)
+					  ObserverType && observer,
+					  AuxT && auxArg,
+					  Args && ... args)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
-  impl::to_target_time_with_step_size_policy<
-    false>(stepper, startVal,
+  impl::to_target_time_with_step_size_policy
+    <true>(stepper, startVal,
 	   finalVal, state,
 	   std::forward<StepSizePolicyType>(stepSizePolicy),
-	   std::forward<ObserverType>(observer));
+	   std::forward<ObserverType>(observer),
+	   std::forward<AuxT>(auxArg),
+	   std::forward<Args>(args)...);
 }
 
-
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_

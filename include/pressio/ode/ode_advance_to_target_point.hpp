@@ -55,143 +55,72 @@
 
 namespace pressio{ namespace ode{
 
-// ---------------------------------
-// overload set for steppable
-// ---------------------------------
-
-template<class StepperType, class StateType, class StepSizePolicyType, class IndVarType>
+template<
+  class StepperType,
+  class StateType,
+  class StepSizePolicyType,
+  class IndVarType
+  >
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-    Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
+       Steppable<StepperType>::value
+    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
     >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-requires Steppable<StepperType>
-    && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
+  requires Steppable<StepperType>
+        && StepSizePolicy<StepSizePolicyType, IndVarType>
 void
 #endif
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
-		       const IndVarType & final_val,
+		       const IndVarType & finalVal,
 		       StepSizePolicyType && stepSizePolicy)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
   impl::to_target_time_with_step_size_policy<false>(stepper, startVal,
-						    final_val, state,
+						    finalVal, state,
 						    std::forward<StepSizePolicyType>(stepSizePolicy),
 						    observer_t());
 }
 
 template<
-  class StepperType, class StateType, class StepSizePolicyType,
-  class ObserverType, class IndVarType>
-#if not defined PRESSIO_ENABLE_CXX20
-mpl::enable_if_t<
-  Steppable<StepperType>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
+  class StepperType,
+  class StateType,
+  class StepSizePolicyType,
+  class ObserverType,
+  class IndVarType
   >
+#if not defined PRESSIO_ENABLE_CXX20
+  mpl::enable_if_t<
+       Steppable<StepperType>::value
+    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+    && StateObserver<ObserverType &&, IndVarType, StateType>::value
+    >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-requires Steppable<StepperType>
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
+  requires Steppable<StepperType>
+    && StepSizePolicy<StepSizePolicyType, IndVarType>
+    && StateObserver<ObserverType, IndVarType, StateType>
 void
 #endif
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
-		       const IndVarType & final_val,
+		       const IndVarType & finalVal,
 		       StepSizePolicyType && stepSizePolicy,
 		       ObserverType && observer)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   impl::to_target_time_with_step_size_policy<false>(stepper, startVal,
-						    final_val, state,
+						    finalVal, state,
 						    std::forward<StepSizePolicyType>(stepSizePolicy),
 						    std::forward<ObserverType>(observer));
 }
 
-// ---------------------------------
-// overload set for steppable with extra args
-// ---------------------------------
-
-template<
-  class StepperType, class StateType, class StepSizePolicyType,
-  class IndVarType, class AuxT, class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
-  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
-void
-#endif
-advance_to_target_point(StepperType & stepper,
-		       StateType & state,
-		       const IndVarType & startVal,
-		       const IndVarType & final_val,
-		       StepSizePolicyType && stepSizePolicy,
-		       AuxT && auxArg,
-		       Args && ... args)
-{
-
-  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
-  using observer_t = impl::NoOpStateObserver<IndVarType, StateType>;
-  impl::to_target_time_with_step_size_policy<false>(stepper, startVal,
-						    final_val, state,
-						    std::forward<StepSizePolicyType>(stepSizePolicy),
-						    observer_t(),
-						    std::forward<AuxT>(auxArg),
-						    std::forward<Args>(args)...);
-}
-
-template<
-  class StepperType, class StateType, class StepSizePolicyType,
-  class ObserverType, class IndVarType, class AuxT, class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-mpl::enable_if_t<
-  SteppableWithAuxiliaryArgs<void, StepperType, AuxT, Args...>::value
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>::value
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>::value
-  && !StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>::value
-  >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-  && StepSizePolicy<StepSizePolicyType, typename StepperType::independent_variable_type>
-  && StateObserver<ObserverType, typename StepperType::independent_variable_type, StateType>
-  && (!StateObserver<AuxT, typename StepperType::independent_variable_type, StateType>)
-void
-#endif
-advance_to_target_point(StepperType & stepper,
-		       StateType & state,
-		       const IndVarType & startVal,
-		       const IndVarType & final_val,
-		       StepSizePolicyType && stepSizePolicy,
-		       ObserverType && observer,
-		       AuxT && auxArg,
-		       Args && ... args)
-{
-
-  impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
-  impl::to_target_time_with_step_size_policy<false>(stepper, startVal,
-						    final_val, state,
-						    std::forward<StepSizePolicyType>(stepSizePolicy),
-						    std::forward<ObserverType>(observer),
-						    std::forward<AuxT>(auxArg),
-						    std::forward<Args>(args)...);
-}
-
 }}//end namespace pressio::ode
-#endif  // ODE_ADVANCERS_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#endif

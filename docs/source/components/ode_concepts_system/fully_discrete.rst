@@ -4,7 +4,7 @@
 ``FullyDiscreteSystemWithJacobian``
 ===================================
 
-.. literalinclude:: ../../../../include/pressio/ode/steppers/concepts/fully_discrete.hpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/system_fully_discrete.hpp
    :language: cpp
    :lines: 58-110
 

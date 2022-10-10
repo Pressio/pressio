@@ -8,10 +8,6 @@
 
 Header: ``<pressio/ode_advancers.hpp>``
 
-Scope
------
-
-Overload set for using a stepper object to update/advance a state :math:`n` times.
 
 API
 ---
@@ -20,41 +16,77 @@ API
 
   namespace pressio { namespace ode{
 
-  template<class StepperType, class StateType, class IndVarType>
+  template<
+    class StepperType,
+    class StateType,
+    class IndVarType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires Steppable<StepperType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (1)
                        StateType & state,
                        const IndVarType & startVal,
                        const IndVarType & stepSize,
-                       const ::pressio::ode::StepCount numSteps);
+		       ::pressio::ode::StepCount numSteps);
 
-  template<class StepperType, class StateType, class IndVarType, class StepSizePolicy>
+  template<
+    class StepperType,
+    class StateType,
+    class IndVarType,
+    class StepSizePolicyType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires Steppable<StepperType>
+          && StepSizePolicy<StepSizePolicyType, IndVarType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (2)
                        StateType & state,
                        const IndVarType & startVal,
-                       const StepSizePolicy & stepSizePolicy,
-                       const ::pressio::ode::StepCount numSteps);
+                       const StepSizePolicyType & stepSizePolicy,
+                       ::pressio::ode::StepCount numSteps);
 
-  template<class StepperType, class StateType, class IndVarType, class ObserverType>
+  template<
+    class StepperType,
+    class StateType,
+    class IndVarType,
+    class ObserverType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires Steppable<StepperType>
+          && StateObserver<ObserverType,IndVarType, StateType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (3)
                        StateType & state,
                        const IndVarType & startVal,
                        const IndVarType & stepSize,
-                       const ::pressio::ode::StepCount numSteps,
+                       ::pressio::ode::StepCount numSteps,
 		       ObserverType && observer);
 
-  template<
-    class StepperType, class StateType, class IndVarType,
-    class StepSizePolicy, class ObserverType>
+
+    class StepperType,
+    class StateType,
+    class IndVarType,
+    class StepSizePolicyType,
+    class ObserverType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires Steppable<StepperType>
+          && StepSizePolicy<StepSizePolicyType, IndVarType>
+          && StateObserver<ObserverType, IndVarType, StateType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (4)
                        StateType & state,
                        const IndVarType & startVal,
-                       const StepSizePolicy & stepSizePolicy,
-                       const ::pressio::ode::StepCount numSteps,
+                       const StepSizePolicyType & stepSizePolicy,
+                       ::pressio::ode::StepCount numSteps,
 		       ObserverType && observer);
 
   template<
-    class StepperType, class StateType, class IndVarType,
-    class AuxT, class ...Args>
+    class StepperType,
+    class StateType,
+    class IndVarType,
+    class AuxT,
+    class ...Args>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (5)
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -64,8 +96,16 @@ API
 		       Args && ... args);
 
   template<
-    class StepperType, class StateType, class StepSizePolicyType,
-    class IndVarType, class AuxT, class ...Args>
+    class StepperType,
+    class StateType,
+    class StepSizePolicyType,
+    class IndVarType,
+    class AuxT,
+    class ...Args>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+          && StepSizePolicy<StepSizePolicyType, IndVarType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (6)
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -75,8 +115,16 @@ API
 		       Args && ... args);
 
   template<
-    class StepperType, class StateType, class ObserverType,
-    class IndVarType, class AuxT, class ...Args>
+    class StepperType,
+    class StateType,
+    class ObserverType,
+    class IndVarType,
+    class AuxT,
+    class ...Args>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+          && StateObserver<ObserverType, IndVarType, StateType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (7)
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -87,8 +135,18 @@ API
 		       Args && ... args);
 
   template<
-    class StepperType, class StateType, class StepSizePolicyType,
-    class ObserverType, class IndVarType, class AuxT, class ...Args>
+    class StepperType,
+    class StateType,
+    class StepSizePolicyType,
+    class ObserverType,
+    class IndVarType,
+    class AuxT,
+    class ...Args>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+          && StepSizePolicy<StepSizePolicyType, IndVarType>
+	  && StateObserver<ObserverType, IndVarType, StateType>
+  #endif
   void advance_n_steps(StepperType & stepper,                        (8)
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -98,43 +156,70 @@ API
 		       AuxT && auxArg,
 		       Args && ... args);
 
-
   }} // end namespace pressio::ode
+
+
+Description
+-----------
+
+Perform :math:`n` steps of a stepper object and update a state.
 
 
 Parameters
 ----------
 
-* ``stepper``: object that knows *how to* perform a single step.
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-* ``state``: object that represents the "state" to update
+   * -
+     -
 
-* ``startVal``: the independent variable starting value
+   * - ``stepper``
+     - object that knows *how to* perform a single step
 
-* ``numSteps``: how many steps to take
+   * - ``state``
+     - the "state" information to update
 
-* ``stepSizePolicy``: functor to set the step size
+   * - ``startVal``
+     - starting value of the independent variable
 
-* ``stepSize``: *constant* step size to use for each step
+   * - ``numSteps``
+     - how many steps to take
 
-* ``observer``: object to "observe" the state's evolution, which can be used
-  to potentially collect necessary data/metrics/statistics or do other things from the state.
+   * - ``stepSizePolicy``
+     - functor to set the step size
 
-* ``auxArg``, ``args``: arbitrary objects that are perfectly forwarded to the stepper's operator().
+   * - ``stepSize``
+     - *constant* step size to use for each step
+
+   * - ``observer``
+     - object to "observe" the state's evolution, which can be used
+       to potentially collect necessary data/metrics/statistics or do other things from the state
+
+   * - ``auxArg``, ``args``
+     - extra arguments that might be needed by the stepper to execute one step
 
 
 Constraints
 -----------
 
-* ``StepperType``:
+Each overload is associated with a set of constraints.
+With C++20, these would be enforced via concepts using
+the *requires-clause* shown in the API synopsis above.
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
+and/or SFINAE. The concepts used are:
 
-  - for 1,2,3,5: must satisfy the `Steppable concept <ode_concepts/c6.html>`_
 
-  - for 5,6,7,8, must satisfy the `SteppableWithAuxiliaryArgs concept <ode_concepts/c7.html>`_
+* `Steppable <ode_concepts_various/steppable.html>`_
 
-* ``StepSizePolicyType`` must model the `StepSizePolicy concept <ode_concepts/c8.html>`_
+* `SteppableWithAuxiliaryArgs <ode_concepts_various/steppable_args.html>`_
 
-* ``ObserverType`` must model he `StateObserver concept <ode_concepts/c10.html>`_
+* `StepSizePolicy <ode_concepts_various/step_size_pol.html>`_
+
+* `StateObserver <ode_concepts_various/state_observer.html>`_
 
 
 Preconditions

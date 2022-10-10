@@ -3,9 +3,9 @@
 ``SystemWithRhs``
 =================
 
-.. literalinclude:: ../../../../include/pressio/ode/steppers/concepts/system_rhs.hpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/system_rhs.hpp
    :language: cpp
-   :lines: 58-105
+   :lines: 58-106
 
 
 Semantic requirements

@@ -53,16 +53,16 @@ API
    namespace pressio{ namespace ode{
 
    template<class SystemType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires SystemWithRhs<mpl::remove_cvref_t<SystemType>>
-  #endif
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires SystemWithRhs<mpl::remove_cvref_t<SystemType>>
+   #endif
    /*impl defined*/ create_explicit_stepper(StepScheme odeScheme,                   (1)
                                             SystemType && system);
 
    template<class SystemType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires SystemWithRhsAndMassMatrix<mpl::remove_cvref_t<SystemType>>
-  #endif
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires SystemWithRhsAndMassMatrix<mpl::remove_cvref_t<SystemType>>
+   #endif
    /*impl defined*/ create_explicit_stepper(StepScheme odeScheme,                   (2)
                                             SystemType && system);
 
@@ -180,8 +180,7 @@ you are trying to solve, the stepper object returned by pressio exposes differen
   is the right hand side, you can then provide the most suitable linear solver.
 
 
-- if you pass a an rvalue "problem" object,
-  the constructor of the stepper
+- if you pass a an rvalue "problem" object, the constructor of the stepper
   will try to use move semantics. If move semantics are implemented, the temporary
   is moved from and no new memory allocation occurs. If move semantics fallback to copying,
   then a copy of the original object is made. Either way, the stepper instantiated

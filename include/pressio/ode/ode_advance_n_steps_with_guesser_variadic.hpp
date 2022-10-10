@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_WITH_GUESSER_HPP_
-#define ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_WITH_GUESSER_HPP_
+#ifndef ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_WITH_GUESSER_VARIADIC_HPP_
+#define ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_WITH_GUESSER_VARIADIC_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_n_steps.hpp"
@@ -55,22 +55,22 @@
 
 namespace pressio{ namespace ode{
 
-// const dt
 template<
   class StepperType,
   class StateType,
   class GuesserType,
-  class IndVarType
-  >
+  class IndVarType,
+  class AuxT,
+  class ...Args>
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-    Steppable<StepperType>::value
+       SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
     && StateGuesser<GuesserType &&, IndVarType, StateType>::value
   >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-requires Steppable<StepperType>
-      && StateGuesser<GuesserType, IndVarType, StateType>
+  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+        && StateGuesser<GuesserType, IndVarType, StateType>
 void
 #endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
@@ -78,7 +78,9 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      const IndVarType & startVal,
 				      const IndVarType & stepSize,
 				      StepCount numSteps,
-				      GuesserType && guesser)
+				      GuesserType && guesser,
+				      AuxT && auxArg,
+				      Args && ... args)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
@@ -86,28 +88,30 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
   impl::advance_n_steps_with_fixed_dt(stepper, numSteps, startVal,
 				      stepSize, state,
 				      observer_t(),
-				      std::forward<GuesserType>(guesser));
+				      std::forward<GuesserType>(guesser),
+				      std::forward<AuxT>(auxArg),
+				      std::forward<Args>(args)...);
 }
 
-// step policy
 template<
   class StepperType,
   class StateType,
   class StepSizePolicyType,
   class GuesserType,
-  class IndVarType
-  >
+  class IndVarType,
+  class AuxT,
+  class ...Args>
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-       Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    && StateGuesser<GuesserType &&, IndVarType, StateType>::value
+       SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+    && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
+    && StateGuesser<GuesserType&&, IndVarType, StateType>::value
     >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-  requires Steppable<StepperType>
-	&& StepSizePolicy<StepSizePolicyType, IndVarType>
-	&& StateGuesser<GuesserType, IndVarType, StateType>
+  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+    && StepSizePolicy<StepSizePolicyType, IndVarType>
+    && StateGuesser<GuesserType, IndVarType, StateType>
 void
 #endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
@@ -115,7 +119,9 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      const IndVarType & startVal,
 				      StepSizePolicyType && stepSizePolicy,
 				      StepCount numSteps,
-				      GuesserType && guesser)
+				      GuesserType && guesser,
+				      AuxT && auxArg,
+				      Args && ... args)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
@@ -123,28 +129,30 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
   impl::advance_n_steps_with_dt_policy(stepper, numSteps, startVal, state,
 				       std::forward<StepSizePolicyType>(stepSizePolicy),
 				       observer_t(),
-				       std::forward<GuesserType>(guesser));
+				       std::forward<GuesserType>(guesser),
+				       std::forward<AuxT>(auxArg),
+				       std::forward<Args>(args)...);
 }
 
-// const dt and observer
 template<
   class StepperType,
   class StateType,
   class GuesserType,
   class ObserverType,
-  class IndVarType
-  >
+  class IndVarType,
+  class AuxT,
+  class ...Args>
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-	Steppable<StepperType>::value
-	&& StateGuesser<GuesserType &&, IndVarType, StateType>::value
-	&& StateObserver<ObserverType &&, IndVarType, StateType>::value
+    SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+    && StateGuesser<GuesserType&&, IndVarType, StateType>::value
+    && StateObserver<ObserverType&&, IndVarType, StateType>::value
     >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-  requires Steppable<StepperType>
-	&& StateGuesser<GuesserType, IndVarType, StateType>
-	&& StateObserver<ObserverType, IndVarType, StateType>
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+  && StateGuesser<GuesserType, IndVarType, StateType>
+  && StateObserver<ObserverType, IndVarType, StateType>
 void
 #endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
@@ -153,38 +161,42 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      const IndVarType & stepSize,
 				      StepCount numSteps,
 				      GuesserType && guesser,
-				      ObserverType && observer)
+				      ObserverType && observer,
+				      AuxT && auxArg,
+				      Args && ... args)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   impl::advance_n_steps_with_fixed_dt(stepper, numSteps, startVal,
 				      stepSize, state,
 				      std::forward<ObserverType>(observer),
-				      std::forward<GuesserType>(guesser));
+				      std::forward<GuesserType>(guesser),
+				      std::forward<AuxT>(auxArg),
+				      std::forward<Args>(args)...);
 }
 
-// step policy and observer
 template<
   class StepperType,
   class StateType,
   class StepSizePolicyType,
   class GuesserType,
   class ObserverType,
-  class IndVarType
-  >
+  class IndVarType,
+  class AuxT,
+  class ...Args>
 #if not defined PRESSIO_ENABLE_CXX20
   mpl::enable_if_t<
-       Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    && StateGuesser<GuesserType &&, IndVarType, StateType>::value
-    && StateObserver<ObserverType &&, IndVarType, StateType>::value
+    SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+    && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
+    && StateGuesser<GuesserType&&, IndVarType, StateType>::value
+    && StateObserver<ObserverType&&, IndVarType, StateType>::value
     >
 #endif
 #ifdef PRESSIO_ENABLE_CXX20
-  requires Steppable<StepperType>
-      && StepSizePolicy<StepSizePolicyType, IndVarType>
-      && StateGuesser<GuesserType, IndVarType, StateType>
-      && StateObserver<ObserverType, IndVarType, StateType>
+requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+    && StepSizePolicy<StepSizePolicyType, IndVarType>
+    && StateGuesser<GuesserType, IndVarType, StateType>
+    && StateObserver<ObserverType, IndVarType, StateType>
 void
 #endif
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
@@ -193,14 +205,18 @@ advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StepSizePolicyType && stepSizePolicy,
 				      StepCount numSteps,
 				      GuesserType && guesser,
-				      ObserverType && observer)
+				      ObserverType && observer,
+				      AuxT && auxArg,
+				      Args && ... args)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);
   impl::advance_n_steps_with_dt_policy(stepper, numSteps, startVal, state,
 				       std::forward<StepSizePolicyType>(stepSizePolicy),
 				       std::forward<ObserverType>(observer),
-				       std::forward<GuesserType>(guesser));
+				       std::forward<GuesserType>(guesser),
+				       std::forward<AuxT>(auxArg),
+				       std::forward<Args>(args)...);
 }
 
 }}//end namespace pressio::ode

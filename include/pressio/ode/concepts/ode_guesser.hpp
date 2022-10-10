@@ -49,6 +49,24 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 
+#ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace ode{
+
+template <class T, class IndVarType, class StateType>
+concept StateGuesser =
+  requires(T && A,
+	   const ::pressio::ode::StepCount & stepNumber,
+	   const ::pressio::ode::StepStartAt<IndVarType> & startAt,
+	   StateType & state)
+  {
+    A(stepNumber, startAt, state);
+  };
+
+}} // end namespace pressio::ode
+
+#else
+
 namespace pressio{ namespace ode{ namespace impl{
 
 /*
@@ -70,7 +88,7 @@ struct guesser_taking_state_by_ref<
     std::is_void<
       decltype
       (
-       std::declval<T const>()
+       std::declval<T>()
        (
 	std::declval< ::pressio::ode::StepCount >(),
 	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
@@ -81,28 +99,7 @@ struct guesser_taking_state_by_ref<
     >
   > : std::false_type{};
 
-}}} // end namespace pressio::ode::impl
-
-#ifdef PRESSIO_ENABLE_CXX20
-
-namespace pressio{ namespace ode{
-
-template <class T, class IndVarType, class StateType>
-concept StateGuesser =
-  requires(const T& A,
-	   StateType & state,
-	   const ::pressio::ode::StepCount & stepNumber,
-	   const ::pressio::ode::StepStartAt<IndVarType> & startAt)
-  {
-    A(stepNumber, startAt, state);
-  }
-  && impl::guesser_taking_state_by_ref<T, IndVarType, StateType>::value;
-
-}} // end namespace pressio::ode
-
-#else
-
-namespace pressio{ namespace ode{
+} // end namespace pressio::ode::impl
 
 template <class T, class IndVarType, class StateType, class enable = void>
 struct StateGuesser : std::false_type{};
@@ -113,7 +110,7 @@ struct StateGuesser<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T const>()
+	       std::declval<T>()
 	       (
 		std::declval< ::pressio::ode::StepCount >(),
 		std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),

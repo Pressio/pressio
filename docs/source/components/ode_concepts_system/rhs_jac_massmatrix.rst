@@ -3,7 +3,7 @@
 ``SystemWithRhsJacobianMassMatrix``
 ===================================
 
-.. literalinclude:: ../../../../include/pressio/ode/steppers/concepts/system_rhs_jacobian_massmatrix.hpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/system_rhs_jacobian_massmatrix.hpp
    :language: cpp
    :lines: 58-115
 

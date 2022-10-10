@@ -1,45 +1,24 @@
+.. include:: ../../mydefs.rst
 
 ``StepSizePolicy``
 ==================
 
-This concept specifies that a type ``T`` represents
-a policy to set the step size to use to take a step.
-
-Syntax only
------------
-
-.. literalinclude:: ./syntax_various.cc
+.. literalinclude:: ../../../../include/pressio/ode/concepts/ode_step_size_policy.hpp
    :language: cpp
-   :lines: 36-43
+   :lines: 54-66
+
+Semantic requirements
+---------------------
+
+:red:`finish`
 
 ..
-   Full concept
-   ------------
-
-   .. code-block:: cpp
-
-       template <class T>
-       concept StepSizePolicy =
-	 //
-	 // purely syntactic requirements
-	 //
-	 requires(const T & A,
-		  pressio::ode::StepCount stepNumber,
-		  const pressio::ode::StepStartAt<typename T::time_type> & sst,
-		  pressio::ode::StepSize<typename T::time_type> & dt)
-	 {
-	   A(stepNumber, sst, dt);
-	 } &&
-
-	 //
-	 // execution/language axioms
-	 //
-	 axiom BlockingOperation(){
-	   // callable method is blocking (completes before returning)
-	 } &&
-	 axiom ConsistentUnits(){
-	   // step units are consistent with time
-	 } &&
-	 axiom ConstCorrectness(){
-	   // const qualification is preserved, methods do NOT modify const arguments
-	 };
+   axiom BlockingOperation(){
+     // callable method is blocking (completes before returning)
+   } &&
+   axiom ConsistentUnits(){
+     // step units are consistent with time
+   } &&
+   axiom ConstCorrectness(){
+     // const qualification is preserved, methods do NOT modify const arguments
+   };

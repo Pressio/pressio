@@ -49,6 +49,26 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
 
+#ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace ode{
+
+template <class T, class IndVarType>
+concept StepSizePolicy =
+  requires(T && A,
+	   const ::pressio::ode::StepCount & stepNumber,
+	   const ::pressio::ode::StepStartAt<IndVarType> & startAt,
+	   ::pressio::ode::StepSize<IndVarType> & dt)
+  {
+    A(stepNumber, startAt, dt);
+  };
+
+}} // end namespace pressio::ode
+
+#else
+
+namespace pressio{ namespace ode{ namespace impl{
+
 /*
   we need to ensure operator() accepts the step size
   by **non-const** reference. One (maybe only) way to detect
@@ -56,8 +76,6 @@
   Basically if we tried to bind an rvalue to an lvalue reference,
   it should fail, and if it fails that is good because it is what we want.
 */
-
-namespace pressio{ namespace ode{ namespace impl{
 
 template <class T, class IndVarType, class Enable = void>
 struct step_size_policy_taking_dt_by_ref
@@ -70,7 +88,7 @@ struct step_size_policy_taking_dt_by_ref<
     std::is_void<
       decltype
       (
-       std::declval<T const>()
+       std::declval<T>()
        (
 	std::declval< ::pressio::ode::StepCount >(),
 	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
@@ -81,29 +99,7 @@ struct step_size_policy_taking_dt_by_ref<
     >
   > : std::false_type{};
 
-}}}
-
-
-#ifdef PRESSIO_ENABLE_CXX20
-
-namespace pressio{ namespace ode{
-
-template <class T, class IndVarType>
-concept StepSizePolicy =
-  requires(const T& A,
-	   ::pressio::ode::StepCount stepNumber,
-	   ::pressio::ode::StepStartAt<IndVarType> startAt,
-	   ::pressio::ode::StepSize<IndVarType> & dt)
-  {
-    A(stepNumber, startAt, dt);
-  }
-  && impl::step_size_policy_taking_dt_by_ref<T, IndVarType>::value;
-
-}} // end namespace pressio::ode
-
-#else
-
-namespace pressio{ namespace ode{
+}//end impl
 
 template <class T, class IndVarType, class Enable = void>
 struct StepSizePolicy
@@ -116,7 +112,7 @@ struct StepSizePolicy<
     std::is_void<
       decltype
       (
-       std::declval<T const>()
+       std::declval<T>()
        (
 	std::declval< ::pressio::ode::StepCount >(),
 	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),

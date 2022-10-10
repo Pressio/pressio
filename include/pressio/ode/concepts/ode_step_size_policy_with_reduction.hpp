@@ -49,6 +49,26 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_WITH_REDUCTION_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_WITH_REDUCTION_HPP_
 
+#ifdef PRESSIO_ENABLE_CXX20
+
+namespace pressio{ namespace ode{
+
+template <class T, class IndVarType>
+concept StepSizePolicyWithReductionScheme =
+  requires(T && A,
+	   const ::pressio::ode::StepCount & stepNumber,
+	   const ::pressio::ode::StepStartAt<IndVarType> & startAt,
+	   ::pressio::ode::StepSize<IndVarType> & dt,
+	   ::pressio::ode::StepSizeMinAllowedValue<IndVarType> & minDt,
+	   ::pressio::ode::StepSizeScalingFactor<IndVarType> & scalingFactor)
+  {
+    A(stepNumber, startAt, dt, minDt, scalingFactor);
+  };
+
+}}//end namespace pressio::ode
+
+#else
+
 namespace pressio{ namespace ode{ namespace impl{
 
 #define STEP_SIZE_POLICY_WITH_REDUC_TAKING_DT_BY_REF(T1, T2, T3)	\
@@ -57,17 +77,17 @@ namespace pressio{ namespace ode{ namespace impl{
     std::is_void<							\
     decltype								\
   (									\
-   std::declval<T const>()						\
+ std::declval<T>()							\
    (									\
     std::declval< ::pressio::ode::StepCount >(),			\
-    std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),		\
-    std::declval< T1 >(),		\
-    std::declval< T2 >(),	\
-    std::declval< T3 >()	\
-   ) \
-  ) \
+      std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),	\
+      std::declval< T1 >(),						\
+      std::declval< T2 >(),						\
+      std::declval< T3 >()						\
+      )									\
+   )									\
   >::value \
-  > \
+ > \
 
 template <class T, class IndVarType, class Enable = void>
 struct step_size_policy_with_reduc_taking_dt_by_ref
@@ -105,31 +125,7 @@ struct step_size_policy_with_reduc_taking_dt_by_ref<
 // we are missing all cases with just a single one that is ref because
 // when i tried to add those special cases I get ambiguous template error
 
-}}}//end namespace pressio::ode::impl
-
-
-#ifdef PRESSIO_ENABLE_CXX20
-
-namespace pressio{ namespace ode{
-
-template <class T, class IndVarType>
-concept StepSizePolicyWithReductionScheme =
-  requires(const T& A,
-	   ::pressio::ode::StepCount stepNumber,
-	   ::pressio::ode::StepStartAt<IndVarType> startAt,
-	   ::pressio::ode::StepSize<IndVarType> & dt,
-	   ::pressio::ode::StepSizeMinAllowedValue<IndVarType> & minDt,
-	   ::pressio::ode::StepSizeScalingFactor<IndVarType> & scalingFactor)
-  {
-    A(stepNumber, startAt, dt, minDt, scalingFactor);
-  }
-  && impl::step_size_policy_with_reduc_taking_dt_by_ref<T, IndVarType>::value;
-
-}}//end namespace pressio::ode
-
-#else
-
-namespace pressio{ namespace ode{
+}//end namespace pressio::ode::impl
 
 template <class T, class IndVarType, class Enable = void>
 struct StepSizePolicyWithReductionScheme
@@ -142,7 +138,7 @@ struct StepSizePolicyWithReductionScheme<
     std::is_void<
       decltype
       (
-       std::declval<T const>()
+       std::declval<T>()
        (
 	std::declval< ::pressio::ode::StepCount >(),
 	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),

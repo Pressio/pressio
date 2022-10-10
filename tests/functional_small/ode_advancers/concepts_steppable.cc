@@ -122,8 +122,6 @@ TEST(ode, concepts__stepper)
 #ifdef PRESSIO_ENABLE_CXX20
   static_assert( Steppable<Stepper1>, "");
   static_assert(!Steppable<Stepper2>, "");
-  static_assert(!Steppable<Stepper3>, "");
-  static_assert(!Steppable<Stepper4>, "");
 #else
   static_assert( Steppable<Stepper1>::value, "");
   static_assert(!Steppable<Stepper2>::value, "");
@@ -147,10 +145,6 @@ TEST(ode, concepts_variadic_stepper)
 		VarStepper1, AuxThing1>, "");
   static_assert(!SteppableWithAuxiliaryArgs<
 		VarStepper2, AuxThing1>, "");
-  static_assert(!SteppableWithAuxiliaryArgs<
-		VarStepper3, AuxThing1>, "");
-  static_assert(!SteppableWithAuxiliaryArgs<
-		VarStepper4, AuxThing1>, "");
 
   static_assert(!SteppableWithAuxiliaryArgs<
 		VarStepper5, AuxThing1>, "");

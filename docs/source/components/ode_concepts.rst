@@ -21,7 +21,7 @@ concepts: various
     ode_concepts_various/steppable_args
     ode_concepts_various/step_size_pol
     ode_concepts_various/step_size_pol_with_scaling
-    ode_concepts_various/state_obs
+    ode_concepts_various/state_observer
     ode_concepts_various/state_guesser
 
 

@@ -17,6 +17,16 @@ add_serial_utest(
   ${ROOTNAME}_concepts_state_guesser
   ${CMAKE_CURRENT_SOURCE_DIR}/concepts_state_guesser.cc)
 
+#
+add_serial_utest(
+  ${ROOTNAME}_api_check_advance_n_steps
+  ${CMAKE_CURRENT_SOURCE_DIR}/api_check_advance_n_steps.cc)
+
+add_serial_utest(
+  ${ROOTNAME}_api_check_advance_n_steps_with_guesser
+  ${CMAKE_CURRENT_SOURCE_DIR}/api_check_advance_n_steps_with_guesser.cc)
+
+#
 add_serial_utest(
   ${ROOTNAME}_advance_n_steps_const_dt
   ${CMAKE_CURRENT_SOURCE_DIR}/advance_n_steps_const_dt.cc)

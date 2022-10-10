@@ -3,7 +3,7 @@
 ``SystemWithRhsAndJacobian``
 ============================
 
-.. literalinclude:: ../../../../include/pressio/ode/steppers/concepts/system_rhs_jacobian.hpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/system_rhs_jacobian.hpp
    :language: cpp
    :lines: 58-111
 

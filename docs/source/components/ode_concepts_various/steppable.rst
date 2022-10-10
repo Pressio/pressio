@@ -1,70 +1,40 @@
+.. include:: ../../mydefs.rst
 
 ``Steppable``
 =============
 
-Syntax only
------------
-
-.. literalinclude:: ./syntax_various.cc
+.. literalinclude:: ../../../../include/pressio/ode/concepts/ode_steppable.hpp
    :language: cpp
-   :lines: 7-17
+   :lines: 54-71
+
+Semantic requirements
+---------------------
 
 ..
-   Full concept
-   ------------
+   axiom ConstCorrectness(){
+     // const qualification is preserved, methods do NOT modify const arguments
+   } &&
+   //
+   // stepCount is supposed to be 1,2,3,4,..., so StepCount \in Z^+
+   // this is important
 
-   .. code-block:: cpp
-
-       template <class T>
-       concept Steppable =
-	 //
-	 // purely syntactic requirements
-	 //
-	 requires(){
-	   typename T::state_type;
-	   typename T::independent_variable_type;
-	 } &&
-	 requires(const T & A,
-		  const typename T::state_type & s,
-		  pressio::ode::StepStartAt<typename T::independent_variable_type> sst,
-		  pressio::ode::StepCount stepNumber,
-		  pressio::ode::StepSize<typename T::independent_variable_type> dt)
-	 {
-	   A(s, sst, stepNumber, dt);
-	 } &&
-
-	 //
-	 // execution/language axioms
-	 //
-	 axiom TimeDependence(){
-	   // state has a meaningful dependence on time
-	 } &&
-	 axiom BlockingOperation(){
-	   // callable method is blocking (completes before returning)
-	 } &&
-	 axiom ConsistentUnits(){
-	   // units of time and state are consistent with
-	   // their dependency relationship
-	 } &&
-	 axiom ConstCorrectness(){
-	   // const qualification is preserved, methods do NOT modify const arguments
-	 } &&
-	 //
-	 // stepCount is supposed to be 1,2,3,4,..., so StepCount \in Z^+
-	 // this is important
+:red:`finish`
 
 
 ``StronglySteppable``
 =====================
 
-.. code-block:: cpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/ode_steppable.hpp
+   :language: cpp
+   :lines: 73-78
 
-    template <class T>
-    concept StronglySteppable =
-       Steppable<T> &&
-       axiom StronglyGuaranteeingStep(){
-         // doing one step via operator() is strongly guaranteeing:
-	 // if an exception is thrown inside operator(), upon return,
-	 // the state object is guaranteed to be the same as
-	 // before starting the step
-       };
+Semantic requirements
+---------------------
+
+:red:`finish`
+
+..
+  // doing one step via operator() is strongly guaranteeing:
+  // if an exception is thrown inside operator(), upon return,
+  // the state object is guaranteed to be the same as
+  // before starting the step

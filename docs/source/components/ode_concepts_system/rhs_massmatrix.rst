@@ -3,7 +3,7 @@
 ``SystemWithRhsAndMassMatrix``
 ==============================
 
-.. literalinclude:: ../../../../include/pressio/ode/steppers/concepts/system_rhs_massmatrix.hpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/system_rhs_massmatrix.hpp
    :language: cpp
    :lines: 58-110
 

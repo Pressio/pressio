@@ -48,60 +48,69 @@ API
    namespace pressio{ namespace ode{
 
    template<class SystemType>
-   /*impl defined*/ create_implicit_stepper(StepScheme odeScheme,
-                                            const SystemType & system);
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires SystemWithRhsAndJacobian<mpl::remove_cvref_t<SystemType>>
+   #endif
+   /*impl defined*/ create_implicit_stepper(StepScheme odeScheme,                   (1)
+                                            SystemType && system);
 
-   template<class SystemType, class MassMatrixOperatorType>
-   /*impl defined*/ create_implicit_stepper(StepScheme odeScheme,
-                                            const SystemType & system,
-					    MassMatrixOperatorType && massMatOperator);
+   template<class SystemType>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires SystemWithRhsJacobianMassMatrix<mpl::remove_cvref_t<SystemType>>
+   #endif
+   /*impl defined*/ create_implicit_stepper(StepScheme odeScheme,                   (2)
+                                            SystemType && system);
 
    }} //end namespace pressio::ode
 
 
+Description
+~~~~~~~~~~~
+
+Overload set to instantiate a stepper without (1) or with (2) mass matrix.
+
 Parameters
 ~~~~~~~~~~
 
-* ``odeScheme``: the target integration scheme
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-  * choices: ``pressio::ode::StepScheme::{BDF1, BDF2, CrankNicolson}``
+   * -
+     -
 
-* ``system``: an object that evaluates the rhs and its jacobian for your problem
+   * - ``odeScheme``
+     - the target stepping scheme
 
-* ``massMatOperator``: the mass matrix operator
-
+   * - ``system``
+     - problem instance
 
 Constraints
 ~~~~~~~~~~~
 
-- ``SystemType``: must model the `SystemWithRhsAndJacobian concept <ode_concepts/c2.html>`__
-  or one subsuming it
+Each overload is associated with a set of constraints.
+With C++20, these would be enforced via concepts using
+the *requires-clause* shown in the API synopsis above.
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
+and/or SFINAE. The concepts used are:
 
-- ``mpl::remove_cvref_t<MassMatrixOperatorType>``: must model either the `MassMatrixOperator concept <ode_concepts/c3a.html>`__
-  or the `ConstantMassMatrixOperator concept <ode_concepts/c3b.html>`__
+- `pressio::ode::SystemWithRhsAndJacobian <ode_concepts_system/rhs_jac.html>`__
+
+- `pressio::ode::SystemWithRhsJacobianMassMatrix <ode_concepts_system/rhs_jac_massmatrix.html>`__
 
 
 Preconditions
 ~~~~~~~~~~~~~
 
-- ``system`` must bind to an lvalue object whose lifetime is
-  longer that that of the instantiated stepper, i.e., it is destructed
+- ``odeScheme`` must be one of ``pressio::ode::StepScheme::{BDF1, BDF2}``.
+
+- if ``system`` does *not* bind to a temporary object,
+  it must bind to an lvalue object whose lifetime is
+  *longer* that that of the instantiated stepper, i.e., it is destructed
   *after* the stepper goes out of scope
 
-- if passing an lvalue reference for ``massMatOperator``, the same precondition
-  above applies
-
-Mandates
-~~~~~~~~
-
-- if ``MassMatrixOperatorType`` meets the `MassMatrixOperator concept <ode_concepts/c3a.html>`__,
-  then the following must hold:
-
-  - ``std::is_same< typename SystemType::independent_variable_type,
-    typename mpl::remove_cvref_t<MassMatrixOperatorType>::independent_variable_type >::value == true``
-
-  - ``std::is_same< typename SystemType::state_type,
-    typename mpl::remove_cvref_t<MassMatrixOperatorType>::state_type >::value == true``
 
 Return value
 ~~~~~~~~~~~~
@@ -141,24 +150,16 @@ The returned stepper object is guaranteed to expose this API:
 				 bool computeJacobian) const;
     };
 
-
-- if ``create_implicit_stepper()`` was called with an
-  rvalue for the mass matrix operator, the constructor of the stepper object
+- if you pass a an rvalue "problem" object, the constructor of the stepper
   will try to use move semantics. If move semantics are implemented, the temporary
   is moved from and no new memory allocation occurs. If move semantics fallback to copying,
   then a copy of the original object is made. Either way, the stepper instantiated
   directly manages the lifetime of the object.
 
-- if ``create_implicit_stepper()`` was called with an
-  lvalue for the mass matrix operator, the stepper will create a *reference* to this object.
-  In such case, the stepper instance does NOT manage the lifetime of it.
-  You are responsible to ensure that the ``massMatOperator`` is destructed
-  *after* the stepper goes out of scope
-
-- the returned stepper instance holds a reference to ``system``,
-  therefore the stepper does NOT manage its lifetime. You need to ensure
-  that the ``system`` is destructed *after* the stepper goes out of scope
-
+- if you pass a an lvalue "problem" object, the constructor of the stepper
+  will create a *reference to the* object. In such case, the stepper
+  object does NOT manage the lifetime of it. You are responsible to
+  ensure that the ``system`` is destructed *after* the stepper goes out of scope
 
 Use the stepper
 ---------------
@@ -182,7 +183,7 @@ An example is below:
 
     int main()
     {
-      MyRhsJacEvalClass mySystem(/*whatever args*/);
+      MySystemClass mySystem(/*whatever args*/);
 
       namespace pode = pressio::ode;
       const auto scheme = pode::StepScheme::BDF1;

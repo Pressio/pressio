@@ -58,8 +58,12 @@
 
 #include "./ode_concepts.hpp"
 #include "./ode/ode_advance_n_steps.hpp"
+#include "./ode/ode_advance_n_steps_variadic.hpp"
 #include "./ode/ode_advance_n_steps_with_guesser.hpp"
+#include "./ode/ode_advance_n_steps_with_guesser_variadic.hpp"
 #include "./ode/ode_advance_to_target_point.hpp"
+#include "./ode/ode_advance_to_target_point_variadic.hpp"
 #include "./ode/ode_advance_to_target_point_with_step_recovery.hpp"
+#include "./ode/ode_advance_to_target_point_with_step_recovery_variadic.hpp"
 
 #endif

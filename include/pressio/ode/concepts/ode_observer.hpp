@@ -55,10 +55,10 @@ namespace pressio{ namespace ode{
 
 template <class T, class IndVarType, class StateType>
 concept StateObserver =
-  requires(const T& A,
-	   const StateType & state,
-	   ::pressio::ode::StepCount stepNumber,
-	   const IndVarType & indVal)
+  requires(T && A,
+	   const ::pressio::ode::StepCount & stepNumber,
+	   const IndVarType & indVal,
+	   const StateType & state)
   {
     A(stepNumber, indVal, state);
   };
@@ -78,7 +78,7 @@ struct StateObserver<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T const>().operator()
+	       std::declval<T>().operator()
 	       (
 		std::declval< ::pressio::ode::StepCount >(),
 		std::declval< IndVarType >(),

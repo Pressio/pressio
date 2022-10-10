@@ -1,94 +1,156 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
+.. include:: ../mydefs.rst
+
 ``advance_to_target_point_with_step_recovery``
 ==============================================
 
 Defined in header: ``<pressio/ode_advancers.hpp>``
-
-Scope
------
-
-Overload set for using a stepper object to update/advance a state
-until the independent variable reaches a target value with support
-for recovering if the step fails.
 
 API
 ---
 
 .. code-block:: cpp
 
-   template<class StepperType, class StateType, class StepSizePolicyType, class IndVarType>
+   template<
+     class StepperType,
+     class StateType,
+     class StepSizePolicyType,
+     class IndVarType>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires StronglySteppable<StepperType>
+	   && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
+   #endif
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (1)
 						  StateType & state,
 						  const IndVarType & startVal,
-						  const IndVarType & final_val,
+						  const IndVarType & finalVal,
 						  StepSizePolicyType && stepSizePolicy);
 
    template<
-     class StepperType, class StateType, class StepSizePolicyType,
-     class ObserverType, class IndVarType>
+     class StepperType,
+     class StateType,
+     class StepSizePolicyType,
+     class ObserverType,
+     class IndVarType>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires StronglySteppable<StepperType>
+	   && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
+	   && StateObserver<ObserverType&&, IndVarType, StateType>::value
+   #endif
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (2)
 						  StateType & state,
 						  const IndVarType & startVal,
-						  const IndVarType & final_val,
+						  const IndVarType & finalVal,
 						  StepSizePolicyType && stepSizePolicy,
 						  ObserverType && observer);
 
    template<
-     class StepperType, class StateType, class StepSizePolicyType,
-     class IndVarType, class AuxT, class ...Args>
+     class StepperType,
+     class StateType,
+     class StepSizePolicyType,
+     class IndVarType,
+     class AuxT,
+     class ...Args>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+           && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
+	   && (!StateObserver<AuxT, IndVarType, StateType>)
+   #endif
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (3)
 						  StateType & state,
 						  const IndVarType & startVal,
-						  const IndVarType & final_val,
+						  const IndVarType & finalVal,
 						  StepSizePolicyType && stepSizePolicy,
 						  AuxT && auxArg,
 						  Args && ... args);
 
    template<
-     class StepperType, class StateType, class StepSizePolicyType,
-     class ObserverType, class IndVarType, class AuxT, class ...Args>
+     class StepperType,
+     class StateType,
+     class StepSizePolicyType,
+     class ObserverType,
+     class IndVarType,
+     class AuxT,
+     class ...Args>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
+           && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
+	   && StateObserver<ObserverType, IndVarType, StateType>
+   void
+   #endif
    void advance_to_target_point_with_step_recovery(StepperType & stepper,          (4)
 						  StateType & state,
 						  const IndVarType & startVal,
-						  const IndVarType & final_val,
+						  const IndVarType & finalVal,
 						  StepSizePolicyType && stepSizePolicy,
 						  ObserverType && observer,
 						  AuxT && auxArg,
 						  Args && ... args);
 
+Description
+-----------
+
+Overload set for using a stepper object to update/advance a state
+until the independent variable reaches a target value with support
+for recovering if the step fails.
+
+
 Parameters
 ----------
 
-* ``stepper``: object that knows *how to* perform a single step.
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-* ``state``: object that represents the "state" to update
+   * -
+     -
 
-* ``startVal``, ``final_val``: the independent variable starting value and target final value
+   * - ``stepper``
+     - object that knows *how to* perform a single step
 
-* ``stepSizePolicy``: functor to set the step size
+   * - ``state``
+     - the "state" information to update
 
-* ``step_size``: *constant* step size to use for each step
+   * - ``startVal``, ``finalVal``
+     - the starting and final value of the independent variable
 
-* ``observer``: object to "observe" the state's evolution, which can be used
-  to potentially collect necessary data/metrics/statistics or do other things from the state.
+   * - ``numSteps``
+     - how many steps to take
 
-* ``auxArg``, ``args``: arbitrary objects that are perfectly forwarded to the stepper's operator().
+   * - ``stepSizePolicy``
+     - functor to set the step size
 
+   * - ``stepSize``
+     - *constant* step size to use for each step
+
+   * - ``observer``
+     - object to "observe" the state's evolution, which can be used
+       to potentially collect necessary data/metrics/statistics or do other things from the state
+
+   * - ``auxArg``, ``args``
+     - extra arguments that might be needed by the stepper to execute one step
 
 Constraints
 -----------
 
-* ``StepperType``:
+Each overload is associated with a set of constraints.
+With C++20, these would be enforced via concepts using
+the *requires-clause* shown in the API synopsis above.
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
+and/or SFINAE. The concepts used are:
 
-  - for 1,2 must satisfy the `StronglySteppable concept <ode_concepts/c6.html#stronglysteppable>`_
 
-  - for 3,4 must satisfy the `StronglySteppableWithAuxiliaryArgs concept <ode_concepts/c7.html#stronglysteppablewithauxiliaryargs>`_
+* `StronglySteppable <ode_concepts_various/steppable.html#stronglysteppable>`_
 
-* ``StepSizePolicyType`` must model the `StepSizePolicy concept <ode_concepts/c8.html>`_
+* `StronglySteppableWithAuxiliaryArgs <ode_concepts_various/steppable_args.html#stronglysteppablewithauxiliaryargs>`_
 
-* ``ObserverType`` must model he `StateObserver concept <ode_concepts/c10.html>`_
+* `StepSizePolicy <ode_concepts_various/step_size_pol.html>`_
+
+* `StateObserver <ode_concepts_various/state_observer.html>`_
 
 Preconditions
 -------------

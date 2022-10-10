@@ -1,9 +1,9 @@
 .. include:: ../../mydefs.rst
 
-``StateGuesser``
-================
+``StateObserver``
+=================
 
-.. literalinclude:: ../../../../include/pressio/ode/concepts/ode_guesser.hpp
+.. literalinclude:: ../../../../include/pressio/ode/concepts/ode_observer.hpp
    :language: cpp
    :lines: 54-66
 
