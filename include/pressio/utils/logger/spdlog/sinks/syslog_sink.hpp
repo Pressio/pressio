@@ -85,7 +85,7 @@ private:
     //
     int syslog_prio_from_level(const details::log_msg &msg) const
     {
-        return syslog_levels_.at(static_cast<levels_array::ordinal_type>(msg.level));
+        return syslog_levels_.at(static_cast<levels_array::size_type>(msg.level));
     }
 };
 
