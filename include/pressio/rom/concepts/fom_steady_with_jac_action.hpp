@@ -93,8 +93,7 @@ concept SteadyFomWithJacobianAction =
   /*
     compound requirements on the "evaluation" method:
     intentionally not lumped with the one above for these reasons:
-    1. it makes sense logically to split them, since the
-       they depend on successfully checking the corresponding create methods
+    1. makes sense to split them, since this following depends on the above
     2. helps the compiler with early failure detection
   */
   && requires(const T & A,

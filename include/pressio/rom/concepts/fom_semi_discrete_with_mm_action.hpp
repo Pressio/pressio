@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_ACTION_HPP_
-#define ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_ACTION_HPP_
+#ifndef ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_MM_ACTION_HPP_
+#define ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_MM_ACTION_HPP_
 
 #include "helpers.hpp"
 
@@ -57,8 +57,8 @@
 // doc via rst literal include directive
 namespace pressio{ namespace rom{
 
-template<class T, class JacobianActionOperandType>
-concept SemiDiscreteFomWithJacobianAction =
+template <class T, class MassMatrixActionOperandType>
+concept SemiDiscreteFomWithMassMatrixAction =
   /* subsumed concept */
   SemiDiscreteFom<T>
   /*
@@ -66,18 +66,18 @@ concept SemiDiscreteFomWithJacobianAction =
   */
   && requires(const T & A,
 	      const typename T::state_type    & state,
-	      const JacobianActionOperandType & operand)
+	      const MassMatrixActionOperandType & operand)
   {
-    { A.createResultOfJacobianActionOn(operand) } -> std::copy_constructible;
+    { A.createResultOfMassMatrixActionOn(operand) } -> std::copy_constructible;
   }
   && all_have_traits_and_same_scalar<
       typename T::state_type,
-      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
-      JacobianActionOperandType
+      concepts::impl::fom_mass_matrix_action_t<T, MassMatrixActionOperandType>,
+      MassMatrixActionOperandType
      >::value
   && ::pressio::SameRankAs<
-       concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
-       JacobianActionOperandType>
+       concepts::impl::fom_mass_matrix_action_t<T, MassMatrixActionOperandType>,
+       MassMatrixActionOperandType>
   /*
     compound requirements on the "evaluation" method:
     intentionally not lumped with the one above for these reasons:
@@ -87,17 +87,13 @@ concept SemiDiscreteFomWithJacobianAction =
   && requires(const T & A,
 	      const typename T::state_type    & state,
 	      const typename T::time_type     & evalTime,
-	      const JacobianActionOperandType & operand,
-	      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType> & result)
+	      const MassMatrixActionOperandType & operand,
+	      concepts::impl::fom_mass_matrix_action_t<T, MassMatrixActionOperandType> & result)
   {
-    { A.applyJacobian(state, operand, evalTime, result) } -> std::same_as<void>;
+    { A.applyMassMatrix(state, operand, evalTime, result) } -> std::same_as<void>;
   };
 
 }} // end namespace pressio::rom
-
-
-
-
 
 
 
@@ -113,40 +109,51 @@ concept SemiDiscreteFomWithJacobianAction =
 
 namespace pressio{ namespace rom{
 
-template<class T, class JacobianActionOperandType, class enable = void>
-struct SemiDiscreteFomWithJacobianAction : std::false_type{};
+template<class T, class MassMatrixActionOperandType, class enable = void>
+struct SemiDiscreteFomWithMassMatrixAction : std::false_type{};
 
-template<class T,  class JacobianActionOperandType>
-struct SemiDiscreteFomWithJacobianAction<
-  T,  JacobianActionOperandType,
+template<class T, class MassMatrixActionOperandType>
+struct SemiDiscreteFomWithMassMatrixAction<
+  T, MassMatrixActionOperandType,
   mpl::enable_if_t<
-       SemiDiscreteFom<T>::value
+    SemiDiscreteFom<T>::value
     //
-    && ::pressio::rom::has_const_create_result_of_jacobian_action_on<
-	 T,  JacobianActionOperandType>::value
     && std::is_copy_constructible<
-	 concepts::impl::fom_jacobian_action_t<T,  JacobianActionOperandType>
-	 >::value
+      decltype
+      (
+       std::declval<T const>().createResultOfMassMatrixActionOn
+       (
+	std::declval<MassMatrixActionOperandType const &>()
+	)
+       )
+      >::value
     //
     && all_have_traits_and_same_scalar<
 	 typename T::state_type,
-	 concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
-	 JacobianActionOperandType
+	 concepts::impl::fom_mass_matrix_action_t<T, MassMatrixActionOperandType>,
+	 MassMatrixActionOperandType
        >::value
     && all_have_same_rank<
-       concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
-	 JacobianActionOperandType>::value
+       concepts::impl::fom_mass_matrix_action_t<T, MassMatrixActionOperandType>,
+       MassMatrixActionOperandType>::value
     //
-    && ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
-	 T, typename T::state_type,
-         JacobianActionOperandType, typename T::time_type,
-	 concepts::impl::fom_jacobian_action_t<T,  JacobianActionOperandType>
-	 >::value
-    >
+    && std::is_void<
+       decltype
+       (
+	std::declval<T const>().applyMassMatrix
+	(
+	 std::declval<typename T::state_type const&>(),
+	 std::declval<MassMatrixActionOperandType const&>(),
+	 std::declval<typename T::time_type const &>(),
+	 std::declval<concepts::impl::fom_mass_matrix_action_t<T,  MassMatrixActionOperandType> &>()
+	 )
+	)
+       >::value
+   >
   > : std::true_type{};
 
 }} // end namespace pressio::rom
 
 #endif
 
-#endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_ACTION_HPP_
+#endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_HPP_

@@ -19,7 +19,7 @@ struct MyFom
   }
 
   template<class OperandType>
-  OperandType createApplyJacobianResult(const OperandType & B) const
+  OperandType createResultOfJacobianActionOn(const OperandType & B) const
   {
     OperandType A(N_, B.cols());
     A.setConstant(0.);

@@ -26,13 +26,24 @@ API
 
   template<
     class TrialSubspaceType,
+    class FomSystemType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires unsteadyexplicit::ComposableIntoDefaultWithMassMatrixProblem<
+                TrialSubspaceType, FomSystemType>
+  #endif
+  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (2)
+						    const TrialSubspaceType & trialSubspace,
+						    const FomSystemType & fomSystem);
+
+  template<
+    class TrialSubspaceType,
     class FomSystemType,
     class HyperReducerType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteadyexplicit::ComposableIntoHyperReducedProblem<
 		TrialSubspaceType, FomSystemType, HyperReducerType>
   #endif
-  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (2)
+  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (3)
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem,
 						    const HyperReducerType & hyperReducer);
@@ -46,7 +57,7 @@ API
     requires unsteadyexplicit::ComposableIntoHyperReducedMaskedProblem<
 		TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
   #endif
-  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (3)
+  /*impl defined*/ create_unsteady_explicit_problem(ode::StepScheme schemeName,         (4)
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem,
 						    const MaskerType & masker,
@@ -57,8 +68,8 @@ API
 Description
 ~~~~~~~~~~~
 
-Overload set to instantiate a default (1), hyper-reduced (2) or masked (3) problem
-with *explicit* time integration.
+Overload set to instantiate a default (1), default with mass matrix (2),
+hyper-reduced (3), or masked (4) problem with *explicit* time integration.
 
 Parameters
 ~~~~~~~~~~
@@ -99,6 +110,8 @@ and/or SFINAE. The concepts used are:
 
 - `rom::galerkin::unsteadyexplicit::ComposableIntoDefaultProblem <rom_concepts_explicit_galerkin/default.html>`__
 
+- `rom::galerkin::unsteadyexplicit::ComposableIntoDefaultWithMassMatrixProblem <rom_concepts_explicit_galerkin/default_with_mm.html>`__
+
 - `rom::galerkin::unsteadyexplicit::ComposableIntoHyperReducedProblem <rom_concepts_explicit_galerkin/hr.html>`__
 
 - `rom::galerkin::unsteadyexplicit::ComposableIntoHyperReducedMaskedProblem <rom_concepts_explicit_galerkin/masked.html>`__
@@ -108,8 +121,9 @@ Preconditions
 
 .. _explicitGalerkinPreconditions:
 
-1. ``schemeName`` must be an explicit scheme,
-   see `this page <ode_steppers_explicit.html>`__ for the choices
+1. ``schemeName`` must be an explicit scheme, i.e. one of:
+
+   - ``pressio::ode::StepScheme::{ForwardEuler, RungeKutta4, AdamsBashforth2, SSPRungeKutta3}``
 
 2. all arguments passed to ``create_unsteady_explicit_problem`` must have a
    lifetime *longer* that that of the instantiated problem, i.e., they must be

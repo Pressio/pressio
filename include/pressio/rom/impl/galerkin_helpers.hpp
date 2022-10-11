@@ -4,6 +4,22 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
+void valid_scheme_for_explicit_galerkin_else_throw(::pressio::ode::StepScheme name,
+						   const std::string & str)
+{
+  if (!::pressio::ode::is_explicit_scheme(name)){
+    throw std::runtime_error(str + " requires an explicit stepper");
+  }
+}
+
+void valid_scheme_for_implicit_galerkin_else_throw(::pressio::ode::StepScheme name,
+						   const std::string & str)
+{
+  if (!::pressio::ode::is_implicit_scheme(name)){
+    throw std::runtime_error(str + " requires an implicit stepper");
+  }
+}
+
 // --------------------------------------------------------------
 // CreateGalerkinRhs
 // --------------------------------------------------------------

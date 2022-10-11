@@ -35,7 +35,7 @@ class GalerkinHypRedOdeSystemRhsAndJacobian
   // applying the Jacobian to the basis
   using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type;
   using fom_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+    decltype(std::declval<FomSystemType const>().createResultOfJacobianActionOn
 	     (std::declval<basis_matrix_type const &>()) );
 
 public:
@@ -55,7 +55,7 @@ public:
       fomState_(trialSubspace.createFullState()),
       hyperReducer_(hyperReducer),
       fomRhs_(fomSystem.createRightHandSide()),
-      fomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace()))
+      fomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
@@ -72,9 +72,11 @@ public:
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
-  void rightHandSide(const state_type & reducedState,
-		     const IndVarType & rhsEvaluationTime,
-		     right_hand_side_type & reducedRhs) const
+  void operator()(const state_type & reducedState,
+		  const IndVarType & rhsEvaluationTime,
+		  right_hand_side_type & reducedRhs,
+		  jacobian_type & reducedJacobian,
+		  bool computeJacobian) const
   {
 
     // reconstruct fom state fomState = phi*reducedState
@@ -85,23 +87,14 @@ public:
 
     // compute the reduced rhs
     hyperReducer_(fomRhs_, rhsEvaluationTime, reducedRhs);
-  }
 
-  void jacobian(const state_type & reducedState,
-		const IndVarType & rhsEvaluationTime,
-		jacobian_type & reducedJacobian) const
-
-  {
-    // reconstruct fom state fomState = phi*reducedState
-    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
-
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-
-    // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
-    fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
-
-    // compute the reduced jacobian
-    hyperReducer_(fomJacAction_, rhsEvaluationTime, reducedJacobian);
+    if (computeJacobian){
+      const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+      // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
+      fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
+      // compute the reduced jacobian
+      hyperReducer_(fomJacAction_, rhsEvaluationTime, reducedJacobian);
+    }
   }
 
 private:

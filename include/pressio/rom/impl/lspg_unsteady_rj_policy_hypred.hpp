@@ -95,7 +95,7 @@ public:
 
   jacobian_type createJacobian() const{
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    return fomSystem_.get().createApplyJacobianResult(phi);
+    return fomSystem_.get().createResultOfJacobianActionOn(phi);
   }
 
   template <class StencilStatesContainerType, class StencilRhsContainerType>

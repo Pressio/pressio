@@ -136,11 +136,11 @@ class MyMasker
 public:
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  auto createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+  auto createResultOfMaskActionOn(const Eigen::VectorXd & /*operand*/) const{
     return Eigen::VectorXd(sample_indices_.size());
   }
 
-  auto createApplyMaskResult(const Eigen::MatrixXd & operand) const{
+  auto createResultOfMaskActionOn(const Eigen::MatrixXd & operand) const{
     return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
   }
 

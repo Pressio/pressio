@@ -130,7 +130,7 @@ Return value, Postconditions and Side Effects
     - ``std::is_same<residual_type, typename FomSystemType::residual_type>::value == true``
 
     - ``std::is_same<jacobian_type,
-      decltype(std::declval<FomSystemType const &>().createApplyJacobianResult(trialSubspace.basis()))>::value == true``
+      decltype(std::declval<FomSystemType const &>().createResultOfJacobianActionOn(trialSubspace.basis()))>::value == true``
 
 - any necessary memory allocation needed for the implementation
   occurs when the constructor of the class is called. However, we

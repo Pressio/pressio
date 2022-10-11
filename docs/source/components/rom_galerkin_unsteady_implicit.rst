@@ -131,19 +131,30 @@ Return value, Postconditions and Side Effects
      template<class TrialSubspaceType, ...> // exposition only
      class UnsteadyImplicitGalerkinProblemExpositionOnly
      {
+       // exposition only
+       using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+       using operators_traits = ImplicitGalerkinDefaultOperatorsTraits<reduced_state_type>;
+
        public:
 	 using independent_variable_type = /*same as declared inside your FomSystemType*/;
-	 using state_type    = typename TrialSubspaceType::reduced_state_type;
-	 using residual_type =
-	   typename ImplicitGalerkinDefaultOperatorsTraits<state_type>::reduced_residual_type;
-	 using jacobian_type =
-	   typename ImplicitGalerkinDefaultOperatorsTraits<state_type>::reduced_jacobian_type;
+	 using state_type                = reduced_state_type;
+	 using residual_type             = typename operators_traits::reduced_residual_type;
+	 using jacobian_type             = typename operators_traits::reduced_jacobian_type;
 
+	 template<class SolverType>
+	 void operator()(StateType & /**/,
+			 const pressio::ode::StepStartAt<independent_variable_type> & /**/,
+			 pressio::ode::StepCount /**/,
+			 pressio::ode::StepSize<independent_variable_type> /**/,
+			 SolverType & /**/)
 
-	 /*impl defined*/ & galerkinStepper();
+	 residual_type createResidual() const;
+	 jacobian_type createJacobian() const;
+	 void residualAndJacobian(const state_type & odeState,
+				  residual_type & R,
+				  jacobian_type & J,
+				  bool computeJacobian) const;
      };
-
-
 
 - any necessary memory allocation needed for the implementation
   occurs when the constructor of the class is called. However, we
@@ -152,14 +163,14 @@ Return value, Postconditions and Side Effects
   This is why it is critical to ensure :ref:`precondition 2 <implicitGalerkinPreconditions>`
   is satisfied.
 
+- note that (for now) you should only rely on ``operator()``: :red:`finish`
+
 Solve the problem
 -----------------
 
-To solve an unsteady implicit Galerkin problem, we can use the ``galerkinStepper()``
-method to extract the underlying stepper, which satisfies the "steppable with args"
-concept discussed `here <ode_concepts/c7.html>`__.
-Note that this solution is likely going to change to allow using the problem class directly.
-Solving these problems can thus be done via the "advancers"
+To solve an unsteady implicit Galerkin problem, we can recognize that the problem
+exposes the same API as an `implicit stepper <ode_steppers_implicit_standard_use.html>`__
+Solving the problem can thus be done via the "advancers"
 in pressio/ode to step forward the problem.
 
 .. code-block:: cpp
@@ -196,11 +207,10 @@ in pressio/ode to step forward the problem.
 
      const auto odeScheme = pode::StepScheme::BDF1;
      auto problem = pgal::create_unsteady_implicit_problem(odeScheme, trialSubpace, fomSystem);
-     auto & galStepper = problem.galerkinStepper();
 
      // linear system
      using lin_solver_t = pls::Solver<pls::direct::HouseholderQR, typename decltype(problem)::jacobian_type>;
-     auto solver = pnls::create_newton_raphson(galStepper, lin_solver_t{});
+     auto solver = pnls::create_newton_raphson(problem, lin_solver_t{});
 
      auto romState = trialSubspace.createReducedState();
      // set reduced state initial condition somehow
@@ -208,7 +218,7 @@ in pressio/ode to step forward the problem.
      using time_type = typename fom_t::time_type;
      const time_type dt = /*set time step size*/;
      ReducedStateObserver<decltype(romState)> observer;
-     pode::advance_n_steps(galStepper,            /*the steppable object*/
+     pode::advance_n_steps(problem,              /*the steppable object*/
                            romState,             /*the state to evolve in time*/
 			   time_type{0},         /*start at time = 0*/
 			   dt,                   /*the time step size*/

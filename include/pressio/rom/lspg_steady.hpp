@@ -7,12 +7,15 @@
 
 namespace pressio{ namespace rom{ namespace lspg{
 
+// -------------------------------------------------------------
+// default or hyp-red
 // impl-wise, default and hyp-red LSPG are the same
+// -------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::ComposableIntoDefaultOrHyperReducedProblem<TrialSubspaceType, FomSystemType>
+  requires steady::ComposableIntoDefaultOrHyperReducedProblem<TrialSubspaceType, FomSystemType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem)
@@ -30,12 +33,15 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,
   return system_type(trialSpace, fomSystem);
 }
 
+// -------------------------------------------------------------
+// masked
+// -------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType,
   class MaskerType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>
+  requires steady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>
 #endif
 auto create_steady_problem(TrialSubspaceType & trialSpace,
 			   const FomSystemType & fomSystem,

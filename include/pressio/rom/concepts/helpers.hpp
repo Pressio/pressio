@@ -51,14 +51,15 @@
 
 namespace pressio{ namespace rom{ namespace concepts{ namespace impl{
 
+// -------------------------------------------------------------------------
+// fom fully discrete jacobian action
+// -------------------------------------------------------------------------
 template<class FomSystemType, class OperandType>
 struct fully_discrete_fom_jacobian_action{
   using type =
     decltype
     (std::declval<FomSystemType const>().createResultOfDiscreteTimeJacobianActionOn
-     (
-      std::declval<OperandType const &>()
-     )
+     (std::declval<OperandType const &>())
     );
 };
 
@@ -66,8 +67,10 @@ template<class ...Args>
 using fully_discrete_fom_jacobian_action_t =
   typename fully_discrete_fom_jacobian_action<Args...>::type;
 
-// -----------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// fom jacobian action
+// -------------------------------------------------------------------------
 template<class FomSystemType, class OperandType>
 struct fom_jacobian_action{
   using type =
@@ -82,14 +85,13 @@ struct fom_jacobian_action{
 template<class ...Args>
 using fom_jacobian_action_t = typename fom_jacobian_action<Args...>::type;
 
-// -----------------------------------------------------------------------------
-
 template<class T, class TrialSubspaceType>
 using fom_jacobian_action_on_trial_space_t =
   fom_jacobian_action_t<T, typename TrialSubspaceType::basis_matrix_type>;
 
-// -----------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------
+// mask action
+// -------------------------------------------------------------------------
 template<class MaskerType, class OperandType, class = void>
 struct mask_action{
   using type = void;
@@ -101,21 +103,16 @@ struct mask_action<
   mpl::enable_if_t<
     !std::is_void<
     decltype
-    (std::declval<MaskerType const>().createApplyMaskResult
-    (
-    std::declval<OperandType const &>()
-    )
-    )
+      (std::declval<MaskerType const>().createResultOfMaskActionOn
+       (std::declval<OperandType const &>())
+      )
     >::value
   >
   >
 {
-  using type =
-    decltype
-    (std::declval<MaskerType const>().createApplyMaskResult
-     (
-      std::declval<OperandType const &>()
-     )
+  using type = decltype
+    (std::declval<MaskerType const>().createResultOfMaskActionOn
+     (std::declval<OperandType const &>())
     );
 };
 
@@ -123,8 +120,9 @@ template<class ...Args>
 using mask_action_t = typename mask_action<Args...>::type;
 
 
-// -----------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------
+// mass matrix action
+// -------------------------------------------------------------------------
 template<class MassMatrixOpType, class OperandType, class = void>
 struct fom_mass_matrix_action{
   using type = void;
@@ -136,28 +134,21 @@ struct fom_mass_matrix_action<
   mpl::enable_if_t<
     !std::is_void<
     decltype
-    (std::declval<MassMatrixOpType const>().createApplyMassMatrixResult
-    (
-    std::declval<OperandType const &>()
-    )
-    )
+      (std::declval<MassMatrixOpType const>().createResultOfMassMatrixActionOn
+        (std::declval<OperandType const &>())
+      )
     >::value
   >
   >
 {
-  using type =
-    decltype
-    (std::declval<MassMatrixOpType const>().createApplyMassMatrixResult
-     (
-      std::declval<OperandType const &>()
-     )
+  using type = decltype
+    (std::declval<MassMatrixOpType const>().createResultOfMassMatrixActionOn
+     (std::declval<OperandType const &>())
     );
 };
 
 template<class ...Args>
 using fom_mass_matrix_action_t = typename fom_mass_matrix_action<Args...>::type;
-
-// -----------------------------------------------------------------------------
 
 template<class FomMassMatOpType, class TrialSubspaceType>
 using fom_mass_matrix_action_on_trial_space_t =

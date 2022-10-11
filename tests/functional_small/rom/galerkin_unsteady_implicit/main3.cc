@@ -17,7 +17,7 @@ struct MyFom
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>
-  OperandType createApplyJacobianResult(const OperandType & B) const
+  OperandType createResultOfJacobianActionOn(const OperandType & B) const
   {
     return OperandType(B.rows(), B.cols());
   }
@@ -59,11 +59,11 @@ class MyMasker
 public:
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  auto createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+  auto createResultOfMaskActionOn(const Eigen::VectorXd & /*operand*/) const{
     return Eigen::VectorXd(sample_indices_.size());
   }
 
-  auto createApplyMaskResult(const Eigen::MatrixXd & operand) const{
+  auto createResultOfMaskActionOn(const Eigen::MatrixXd & operand) const{
     return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
   }
 
@@ -256,11 +256,10 @@ TEST(rom_galerkin, test7)
   const auto odeScheme = pressio::ode::StepScheme::BDF1;
   namespace gal = pressio::rom::galerkin;
   auto problem = gal::create_unsteady_implicit_problem(odeScheme, space, fomSystem,masker, hrOp);
-  auto & galStepper = problem.galerkinStepper();
 
   const double dt = 2.;
   NonLinSolver solver;
-  pressio::ode::advance_n_steps(galStepper, romState, 0., dt,
+  pressio::ode::advance_n_steps(problem, romState, 0., dt,
 				::pressio::ode::StepCount(2), solver);
   std::cout << romState << std::endl;
   EXPECT_TRUE(romState[0] == 4.);

@@ -28,7 +28,7 @@ class GalerkinMaskedOdeSystemOnlyRhs
   // deduce types
   using unmasked_fom_rhs_type = typename FomSystemType::right_hand_side_type;
   using masked_fom_rhs_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_rhs_type const &>()));
 
 public:
@@ -49,7 +49,7 @@ public:
       hyperReducer_(hyperReducer),
       masker_(masker),
       unMaskedFomRhs_(fomSystem.createRightHandSide()),
-      maskedFomRhs_(masker.createApplyMaskResult(unMaskedFomRhs_))
+      maskedFomRhs_(masker.createResultOfMaskActionOn(unMaskedFomRhs_))
   {}
 
 public:
@@ -61,9 +61,9 @@ public:
     return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
-  void rightHandSide(const state_type & reducedState,
-		     const IndVarType & rhsEvaluationTime,
-		     right_hand_side_type & reducedRhs) const
+  void operator()(const state_type & reducedState,
+		  const IndVarType & rhsEvaluationTime,
+		  right_hand_side_type & reducedRhs) const
   {
 
     // reconstruct fom state fomState = phi*reducedState

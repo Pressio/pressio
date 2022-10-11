@@ -46,30 +46,14 @@ struct MyFom
     return r;
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type evalTime,
-		     right_hand_side_type & f) const
-  {
-    for (decltype(f.rows()) i=0; i<f.rows(); ++i){
-      f(i) = u(i) + evalTime;
-    }
-  }
-};
-
-struct FomMassMatrixEvaluator
-{
-  int N_ = {};
-
-  FomMassMatrixEvaluator(int N): N_(N){}
-
-  Eigen::MatrixXd createApplyMassMatrixResult(const Eigen::MatrixXd & operand) const{
+  Eigen::MatrixXd createResultOfMassMatrixActionOn(const Eigen::MatrixXd & operand) const{
     return Eigen::MatrixXd(N_, operand.cols());
   }
 
-  void operator()(const Eigen::VectorXd & stateIn,
-		  const Eigen::MatrixXd & operand,
-		  double evalTime,
-		  Eigen::MatrixXd & result) const
+  void applyMassMatrix(const Eigen::VectorXd & stateIn,
+		       const Eigen::MatrixXd & operand,
+		       double evalTime,
+		       Eigen::MatrixXd & result) const
   {
     Eigen::MatrixXd M(N_, N_);
     for (std::size_t j=0; j<M.cols(); ++j){
@@ -79,6 +63,15 @@ struct FomMassMatrixEvaluator
       }
     }
     result = M * operand;
+  }
+
+  void rightHandSide(const state_type & u,
+		     const time_type evalTime,
+		     right_hand_side_type & f) const
+  {
+    for (decltype(f.rows()) i=0; i<f.rows(); ++i){
+      f(i) = u(i) + evalTime;
+    }
   }
 };
 
@@ -153,8 +146,7 @@ TEST(rom_galerkin_unsteady, test5)
 
   const auto odeScheme = pressio::ode::StepScheme::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  FomMassMatrixEvaluator fomMMEval(N);
-  auto problem = gal::create_unsteady_explicit_problem(odeScheme, space, fomSystem, fomMMEval);
+  auto problem = gal::create_unsteady_explicit_problem(odeScheme, space, fomSystem);
 
   using v_t = typename decltype(problem)::state_type;
   using M_t = typename decltype(problem)::mass_matrix_type;

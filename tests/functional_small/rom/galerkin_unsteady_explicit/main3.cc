@@ -87,7 +87,7 @@ struct MyMasker
 
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  result_type createApplyMaskResult(const operand_type & operand) const{
+  result_type createResultOfMaskActionOn(const operand_type & operand) const{
     return result_type(sample_indices_.size());
   }
 

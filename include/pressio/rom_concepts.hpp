@@ -75,6 +75,7 @@
 // fom
 #include "./rom/concepts/fom_steady_with_jac_action.hpp"
 #include "./rom/concepts/fom_semi_discrete.hpp"
+#include "./rom/concepts/fom_semi_discrete_with_mm_action.hpp"
 #include "./rom/concepts/fom_semi_discrete_with_jac_action.hpp"
 #include "./rom/concepts/fom_fully_discrete_with_jac_action.hpp"
 

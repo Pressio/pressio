@@ -50,9 +50,9 @@ public:
     return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
-  void rightHandSide(const state_type & reducedState,
-		     const IndVarType & rhsEvaluationTime,
-		     right_hand_side_type & reducedRhs) const
+  void operator()(const state_type & reducedState,
+		  const IndVarType & rhsEvaluationTime,
+		  right_hand_side_type & reducedRhs) const
   {
 
     // reconstruct fom state fomState = phi*reducedState

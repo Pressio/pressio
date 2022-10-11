@@ -65,9 +65,6 @@ public:
 					       lsgpResidual,
 					       phi, lspgJacobian,
 					       computeJacobian);
-    // if (computeJacobian){
-    //   fomSystem_.get().applyJacobian(fomState_, phi, lspgJacobian);
-    // }
   }
 
 private:

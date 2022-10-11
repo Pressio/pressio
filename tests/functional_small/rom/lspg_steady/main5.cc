@@ -91,11 +91,11 @@ void product(::pressio::nontranspose /*mode*/,
 
 struct MyMasker
 {
-  MaskedResidual createApplyMaskResult(const FomResidualType & /*operand*/) const{
+  MaskedResidual createResultOfMaskActionOn(const FomResidualType & /*operand*/) const{
     return MaskedResidual{};
   }
 
-  MaskedJacobianAction createApplyMaskResult(const FomJacobianActionResultType & /*operand*/) const{
+  MaskedJacobianAction createResultOfMaskActionOn(const FomJacobianActionResultType & /*operand*/) const{
     return MaskedJacobianAction{};
   }
 

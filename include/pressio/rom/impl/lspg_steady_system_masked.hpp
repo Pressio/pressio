@@ -29,11 +29,11 @@ class LspgSteadyMaskedSystem
 
   // deduce the masked types
   using masked_fom_residual_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_residual_type const &>()));
 
   using masked_fom_jac_action_result_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_jac_action_result_type const &>()));
 
 public:
@@ -60,12 +60,12 @@ public:
 
   residual_type createResidual() const{
     auto tmp = fomSystem_.get().createResidual();
-    return masker_.get().createApplyMaskResult(tmp);
+    return masker_.get().createResultOfMaskActionOn(tmp);
   }
 
   jacobian_type createJacobian() const{
     auto tmp = fomSystem_.get().createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace());
-    return masker_.get().createApplyMaskResult(tmp);
+    return masker_.get().createResultOfMaskActionOn(tmp);
   }
 
   void residualAndJacobian(const state_type & reducedState,

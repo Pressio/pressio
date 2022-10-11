@@ -28,7 +28,7 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
 - methods may modify only the non-constant operands.
   Operands that are constant must not be modified.
 
-- ``auto result = A.createApplyJacobianResult(operand)``
+- ``auto result = A.createResultOfJacobianActionOn(operand)``
 
   - returns an object with all its "elements" zero initialized
 
@@ -37,14 +37,14 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
 
   .. code-block:: cpp
 
-     auto ja1 = A.createApplyJacobianResult(operand);
-     auto ja2 = A.createApplyJacobianResult(operand);
+     auto ja1 = A.createResultOfJacobianActionOn(operand);
+     auto ja2 = A.createResultOfJacobianActionOn(operand);
      // ...
-     auto jaN = A.createApplyJacobianResult(operand);
+     auto jaN = A.createResultOfJacobianActionOn(operand);
 
   implies that ``ja1, ja2, ..., jaN`` must be distinct objects,
   and such that any modification to ``ja1`` does not affect any of the others and vice versa.
-  In other words, calling ``A.createApplyJacobianResult(operand)`` yields independent instances.
+  In other words, calling ``A.createResultOfJacobianActionOn(operand)`` yields independent instances.
 
 - ``A.applyJacobian(state, operand, evalTime, result)``
 
@@ -76,7 +76,7 @@ Syntax-only example
                           time_type              /*evalTime*/,
 			  right_hand_side_type & /*result*/) const;
 
-       Tpetra::MultiVector<> createApplyJacobianResult(const Tpetra::MultiVector<> & operand);
+       Tpetra::MultiVector<> createResultOfJacobianActionOn(const Tpetra::MultiVector<> & operand);
 
        void applyJacobianResult(const state_type & /*state*/,
                                 const Tpetra::MultiVector<> & /*operand*/,

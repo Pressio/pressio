@@ -59,9 +59,9 @@ template <class T, class MaskerType>
 concept MaskableWith =
   requires(const T & operand, const MaskerType & masker)
   {
-    { masker.createApplyMaskResult(operand) } -> std::copy_constructible;
+    { masker.createResultOfMaskActionOn(operand) } -> std::copy_constructible;
     { masker(operand,
-	     std::declval<decltype(masker.createApplyMaskResult(operand)) &>()
+	     std::declval<decltype(masker.createResultOfMaskActionOn(operand)) &>()
 	     ) } -> std::same_as<void>;
   };
 
@@ -81,10 +81,8 @@ struct MaskableWith<
   mpl::enable_if_t<
     std::is_copy_constructible<
       decltype
-      (std::declval<MaskerType const>().createApplyMaskResult
-       (
-         std::declval<T const &>()
-       )
+      (std::declval<MaskerType const>().createResultOfMaskActionOn
+       (std::declval<T const &>())
        )
     >::value
     && std::is_void<

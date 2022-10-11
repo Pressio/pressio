@@ -132,7 +132,7 @@ struct SemiDiscreteFom<
     //
     && ::pressio::ode::has_const_create_rhs_method_return_result<
       T, typename T::right_hand_side_type >::value
-    && ::pressio::ode::has_const_rhs_method_accept_state_indvar_result_return_void<
+    && ::pressio::rom::has_const_rhs_method_accept_state_indvar_result_return_void<
       T, typename T::state_type, typename T::time_type, typename T::right_hand_side_type>::value
    >
   > : std::true_type{};

@@ -36,17 +36,17 @@ class GalerkinMaskedOdeSystemRhsAndJacobian
   // deduce the unmasked types
   using unmasked_fom_rhs_type = typename FomSystemType::right_hand_side_type;
   using unmasked_fom_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createApplyJacobianResult
+    decltype(std::declval<FomSystemType const>().createResultOfJacobianActionOn
 	     (std::declval<basis_matrix_type const &>()));
 
   // deduce the masked types
   // deduce the masked types
   using masked_fom_rhs_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_rhs_type const &>()));
 
   using masked_fom_jac_action_result_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_jac_action_result_type const &>()));
 
 public:
@@ -68,9 +68,9 @@ public:
       hyperReducer_(hyperReducer),
       masker_(masker),
       unMaskedFomRhs_(fomSystem.createRightHandSide()),
-      unMaskedFomJacAction_(fomSystem.createApplyJacobianResult(trialSubspace_.get().basisOfTranslatedSpace())),
-      maskedFomRhs_(masker.createApplyMaskResult(unMaskedFomRhs_)),
-      maskedFomJacAction_(masker.createApplyMaskResult(unMaskedFomJacAction_))
+      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
+      maskedFomRhs_(masker.createResultOfMaskActionOn(unMaskedFomRhs_)),
+      maskedFomJacAction_(masker.createResultOfMaskActionOn(unMaskedFomJacAction_))
   {}
 
 public:
@@ -86,28 +86,24 @@ public:
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
-  void rightHandSide(const state_type & reducedState,
-		     const IndVarType & rhsEvaluationTime,
-		     right_hand_side_type & reducedRhs) const
+  void operator()(const state_type & reducedState,
+		  const IndVarType & rhsEvaluationTime,
+		  right_hand_side_type & reducedRhs,
+		  jacobian_type & reducedJacobian,
+		  bool computeJacobian) const
   {
 
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
     fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, unMaskedFomRhs_);
     masker_(unMaskedFomRhs_, maskedFomRhs_);
     hyperReducer_(maskedFomRhs_, rhsEvaluationTime, reducedRhs);
-  }
 
-  void jacobian(const state_type & reducedState,
-		const IndVarType & rhsEvaluationTime,
-		jacobian_type & reducedJacobian) const
-
-  {
-    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
-
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, unMaskedFomJacAction_);
-    masker_(unMaskedFomJacAction_, maskedFomJacAction_);
-    hyperReducer_(maskedFomJacAction_, rhsEvaluationTime, reducedJacobian);
+    if (computeJacobian){
+      const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+      fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, unMaskedFomJacAction_);
+      masker_(unMaskedFomJacAction_, maskedFomJacAction_);
+      hyperReducer_(maskedFomJacAction_, rhsEvaluationTime, reducedJacobian);
+    }
   }
 
 private:

@@ -2,6 +2,7 @@
 #ifndef ROM_LSPG_UNSTEADY_HPP_
 #define ROM_LSPG_UNSTEADY_HPP_
 
+#include "./impl/lspg_helpers.hpp"
 #include "./impl/lspg_unsteady_fom_states_manager.hpp"
 #include "./impl/lspg_unsteady_fully_discrete_system.hpp"
 #include "./impl/lspg_unsteady_rj_policy_default.hpp"
@@ -9,25 +10,16 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{
 
-namespace impl{
-void valid_scheme_for_lspg_else_throw(::pressio::ode::StepScheme name){
-  if (   name != ::pressio::ode::StepScheme::BDF1
-      && name != ::pressio::ode::StepScheme::BDF2)
-  {
-    throw std::runtime_error("LSPG currently accepting BDF1 or BDF2");
-  }
-}
-}//end impl
-
-namespace lspg{
-
+// -------------------------------------------------------------
+// default
+// -------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires unsteady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
+  requires unsteady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
 #endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 			     const TrialSubspaceType & trialSpace,
@@ -46,7 +38,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   using lspg_residual_type = typename FomSystemType::right_hand_side_type;
   using lspg_jacobian_type =
     decltype(
-	     fomSystem.createApplyJacobianResult(trialSpace.basisOfTranslatedSpace())
+	     fomSystem.createResultOfJacobianActionOn(trialSpace.basisOfTranslatedSpace())
 	     );
 
   // defining an unsteady lspg problem boils down to
@@ -61,7 +53,9 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   return return_type(schemeName, trialSpace, fomSystem);
 }
 
-
+// -------------------------------------------------------------
+// hyp-red
+// -------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -73,7 +67,8 @@ template<
 #endif
   >
 #ifdef PRESSIO_ENABLE_CXX20
-requires unsteady::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HypRedUpdaterType>
+  requires unsteady::ComposableIntoHyperReducedProblem<
+	TrialSubspaceType, FomSystemType, HypRedUpdaterType>
 #endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 			     const TrialSubspaceType & trialSpace,
@@ -88,7 +83,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   using lspg_residual_type = typename FomSystemType::right_hand_side_type;
   using lspg_jacobian_type =
     decltype(
-	     fomSystem.createApplyJacobianResult(trialSpace.basisOfTranslatedSpace())
+	     fomSystem.createResultOfJacobianActionOn(trialSpace.basisOfTranslatedSpace())
 	     );
 
   using rj_policy_type = impl::LspgUnsteadyResidualJacobianPolicyHypRed<
@@ -100,7 +95,9 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   return return_type(schemeName, trialSpace, fomSystem, hypRedUpdater);
 }
 
-
+// -------------------------------------------------------------
+// maskd
+// -------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -112,7 +109,7 @@ template<
 #endif
   >
 #ifdef PRESSIO_ENABLE_CXX20
-requires unsteady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>
+  requires unsteady::ComposableIntoMaskedProblem<TrialSubspaceType, FomSystemType, MaskerType>
 #endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
 			     const TrialSubspaceType & trialSpace,
@@ -127,11 +124,11 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   using lspg_unmasked_residual_type = typename FomSystemType::right_hand_side_type;
   using lspg_unmasked_jacobian_type = typename TrialSubspaceType::basis_matrix_type;
   using lspg_residual_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<lspg_unmasked_residual_type const &>()));
 
   using lspg_jacobian_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<lspg_unmasked_jacobian_type const &>()));
 
   using rj_policy_type =
@@ -148,13 +145,16 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   return return_type(schemeName, trialSpace, fomSystem, masker);
 }
 
+// -------------------------------------------------------------
+// fully-discrete
+// -------------------------------------------------------------
 template<
   std::size_t TotalNumberOfDesiredStates,
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires FullyDiscreteSystemWithJacobianAction<
-  FomSystemType, TotalNumberOfDesiredStates, typename TrialSubspaceType::basis_matrix_type>
+  requires FullyDiscreteSystemWithJacobianAction<
+	FomSystemType, TotalNumberOfDesiredStates, typename TrialSubspaceType::basis_matrix_type>
 #endif
 auto create_unsteady_problem(const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem)

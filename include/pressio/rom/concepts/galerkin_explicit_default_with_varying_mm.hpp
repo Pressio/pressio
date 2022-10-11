@@ -57,31 +57,30 @@
 // doc via rst literal include directive
 namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
 
-template <class TrialSubspaceType, class FomSystemType, class FomMassMatrixOperatorType>
-concept ComposableIntoDefaultWithVaryingMassMatrixProblem =
+template <class TrialSubspaceType, class FomSystemType>
+concept ComposableIntoDefaultWithMassMatrixProblem =
      ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
-  && std::same_as<
-       typename TrialSubspaceType::full_state_type,
-       typename FomSystemType::state_type>
+  && SemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+  && requires(
+	const TrialSubspaceType & subspace,
+	const concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomSystemType, TrialSubspaceType> & MMaFom,
+	impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> & massMatGal,
+	scalar_trait_t<typename TrialSubspaceType::basis_matrix_type>  alpha,
+	scalar_trait_t<typename TrialSubspaceType::reduced_state_type> beta)
+  {
 
-  && requires(const FomMassMatrixOperatorType & fomMassMatOp,
-	      const TrialSubspaceType & subspace)
-  {
-    { fomMassMatOp.createApplyMassMatrixResult(subspace.basisOfTranslatedSpace()) } -> std::copy_constructible;
-  }
-  && requires(const TrialSubspaceType & subspace,
-	      const concepts::impl::fom_mass_matrix_action_t<
-	        FomMassMatrixOperatorType,
-	        concepts::impl::fom_mass_matrix_action_on_trial_space_t<
-	           FomMassMatrixOperatorType, TrialSubspaceType>
-	      > & fomMassMatrixAction,
-	      impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> & massMatGal,
-	      scalar_trait_t<typename TrialSubspaceType::basis_matrix_type>  alpha,
-	      scalar_trait_t<typename TrialSubspaceType::reduced_state_type> beta)
-  {
+    /*
+      Define:
+      - B           : basis of the subspace, i.e. B = subspace.basisOfTranslatedSpace()
+      - MMaFom      : the action of the FOM mass matrix on B
+      - alpha, beta : scalars
+      - MGal        : the reduced Galerkin mass matrix
+    */
+
+    /* MGal = beta*MGal + alpha * B^T * MMaFom * B */
     pressio::ops::product
        (::pressio::transpose(), ::pressio::nontranspose(),
-	alpha, subspace.basisOfTranslatedSpace(), fomMassMatrixAction,
+	alpha, subspace.basisOfTranslatedSpace(), MMaFom,
 	beta, massMatGal);
   };
 
@@ -100,55 +99,29 @@ concept ComposableIntoDefaultWithVaryingMassMatrixProblem =
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
 
-template <
-  class TrialSubspaceType, class FomSystemType, class FomMassMatrixOperatorType,
-  class = void>
-struct ComposableIntoDefaultWithVaryingMassMatrixProblem : std::false_type{};
+template <class TrialSubspaceType, class FomSystemType, class = void>
+struct ComposableIntoDefaultWithMassMatrixProblem : std::false_type{};
 
-template <class TrialSubspaceType, class FomSystemType, class FomMassMatrixOperatorType>
-struct ComposableIntoDefaultWithVaryingMassMatrixProblem<
-  TrialSubspaceType, FomSystemType, FomMassMatrixOperatorType,
+template <class TrialSubspaceType, class FomSystemType>
+struct ComposableIntoDefaultWithMassMatrixProblem<
+  TrialSubspaceType, FomSystemType,
   mpl::enable_if_t<
     ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value
-    && std::is_copy_constructible<
+    && SemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    && std::is_void<
       decltype
-      (std::declval<FomMassMatrixOperatorType const>().createApplyMassMatrixResult
-       (
-         std::declval<typename TrialSubspaceType::basis_matrix_type const &>()
+      (
+      ::pressio::ops::product
+	(::pressio::transpose(),
+	 ::pressio::nontranspose(),
+	 std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
+	 std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
+	 std::declval<
+	  concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomSystemType, TrialSubspaceType> const &>(),
+	 std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
+	 std::declval<impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> &>()
        )
        )
-    >::value
-    //
-    && std::is_void<
-	decltype
-	(
-	 std::declval<FomMassMatrixOperatorType const>()
-	 (
-	   std::declval<typename TrialSubspaceType::full_state_type const &>(),
-	   std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
-	   std::declval<typename FomSystemType::time_type const &>(),
-	   std::declval<
-	     concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomMassMatrixOperatorType, TrialSubspaceType > &
-	   >()
-	 )
-	)
-       >::value
-    //
-    && std::is_void<
-	  decltype
-	  (
-	  ::pressio::ops::product
-	    (::pressio::transpose(),
-	     ::pressio::nontranspose(),
-	     std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
-	     std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
-	     std::declval<
-	       concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomMassMatrixOperatorType, TrialSubspaceType>
-	     const &>(),
-	     std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
-	     std::declval<impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> &>()
-	   )
-	   )
       >::value
    >
   > : std::true_type{};

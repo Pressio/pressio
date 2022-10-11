@@ -9,16 +9,19 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
+// ------------------------------------------------------------------------
+// default
+// ------------------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::ComposableIntoDefaultProblem<
-  TrialSubspaceType, FomSystemType>
+  requires steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const FomSystemType & fomSystem)
 {
+
 #if not defined PRESSIO_ENABLE_CXX20
   static_assert(steady::ComposableIntoDefaultProblem<
 		TrialSubspaceType, FomSystemType>::value,
@@ -36,18 +39,22 @@ auto create_steady_problem(const TrialSubspaceType & trialSubspace,
   return return_type(trialSubspace, fomSystem);
 }
 
+// ------------------------------------------------------------------------
+// hyper-reduced
+// ------------------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType,
   class HyperReducerType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::ComposableIntoHyperReducedProblem<
-  TrialSubspaceType, FomSystemType, HyperReducerType>
+  requires steady::ComposableIntoHyperReducedProblem<
+	TrialSubspaceType, FomSystemType, HyperReducerType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const FomSystemType & fomSystem,
-			   const HyperReducerType & hypReducer)
+			   const HyperReducerType & hyperReducer)
 {
+
 #if not defined PRESSIO_ENABLE_CXX20
   static_assert(steady::ComposableIntoHyperReducedProblem<
 		TrialSubspaceType, FomSystemType, HyperReducerType>::value,
@@ -62,23 +69,27 @@ auto create_steady_problem(const TrialSubspaceType & trialSubspace,
   using return_type = impl::GalerkinSteadyHypRedSystem<
     reduced_state_type, reduced_residual_type, reduced_jac_type,
     TrialSubspaceType, FomSystemType, HyperReducerType>;
-  return return_type(trialSubspace, fomSystem, hypReducer);
+  return return_type(trialSubspace, fomSystem, hyperReducer);
 }
 
+// ------------------------------------------------------------------------
+// hyper-reduced masked
+// ------------------------------------------------------------------------
 template<
   class TrialSubspaceType,
   class FomSystemType,
   class MaskerType,
   class HyperReducerType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires steady::ComposableIntoHyperReducedMaskedProblem<
-  TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
+  requires steady::ComposableIntoHyperReducedMaskedProblem<
+	TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
 #endif
 auto create_steady_problem(const TrialSubspaceType & trialSubspace,
 			   const FomSystemType & fomSystem,
 			   const MaskerType & masker,
-			   const HyperReducerType & hypReducer)
+			   const HyperReducerType & hyperReducer)
 {
+
 #if not defined PRESSIO_ENABLE_CXX20
   static_assert(steady::ComposableIntoHyperReducedMaskedProblem<
 		TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>::value,
@@ -93,7 +104,7 @@ auto create_steady_problem(const TrialSubspaceType & trialSubspace,
   using return_type = impl::GalerkinSteadyMaskedSystem<
     reduced_state_type, reduced_residual_type, reduced_jac_type,
     TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>;
-  return return_type(trialSubspace, fomSystem, masker, hypReducer);
+  return return_type(trialSubspace, fomSystem, masker, hyperReducer);
 }
 
 }}} // end pressio::rom::galerkin

@@ -70,7 +70,7 @@ struct MyMasker
   using operand_type = FomRhsType;
   using result_type = MaskedRhs;
 
-  result_type createApplyMaskResult(const operand_type & /*operand*/) const{
+  result_type createResultOfMaskActionOn(const operand_type & /*operand*/) const{
     return result_type{};
   }
   void operator()(const operand_type & operand, result_type & result) const{}

@@ -20,7 +20,7 @@ struct MyFom
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>
-  OperandType createApplyJacobianResult(const OperandType & B) const{
+  OperandType createResultOfJacobianActionOn(const OperandType & B) const{
     OperandType A(N_, B.cols());
     return A;
   }
@@ -229,11 +229,10 @@ TEST(rom_galerkin, test6)
   const auto odeScheme = pressio::ode::StepScheme::BDF1;
   namespace gal = pressio::rom::galerkin;
   auto problem = gal::create_unsteady_implicit_problem(odeScheme, space, fomSystem, hrOp);
-  auto & galStepper = problem.galerkinStepper();
 
   const double dt = 2.;
   NonLinSolver solver;
-  pressio::ode::advance_n_steps(galStepper, romState, 0., dt,
+  pressio::ode::advance_n_steps(problem, romState, 0., dt,
 				::pressio::ode::StepCount(2), solver);
   std::cout << romState << std::endl;
   EXPECT_TRUE(romState[0] == 4.);

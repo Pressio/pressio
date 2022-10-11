@@ -16,7 +16,7 @@ struct MyFom
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>
-  OperandType createApplyJacobianResult(const OperandType & B) const
+  OperandType createResultOfJacobianActionOn(const OperandType & B) const
   {
     OperandType A(N_, B.cols());
     return A;
@@ -341,11 +341,11 @@ class MyMasker
 public:
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  auto createApplyMaskResult(const Eigen::VectorXd & /*operand*/) const{
+  auto createResultOfMaskActionOn(const Eigen::VectorXd & /*operand*/) const{
     return Eigen::VectorXd(sample_indices_.size());
   }
 
-  auto createApplyMaskResult(const Eigen::MatrixXd & operand) const{
+  auto createResultOfMaskActionOn(const Eigen::MatrixXd & operand) const{
     return Eigen::MatrixXd(sample_indices_.size(), operand.cols());
   }
 

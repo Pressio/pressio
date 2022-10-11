@@ -94,12 +94,12 @@ public:
 
   residual_type createResidual() const{
     auto tmp = Maskable::createResidual();
-    return masker_.get().createApplyMaskResult(tmp);
+    return masker_.get().createResultOfMaskActionOn(tmp);
   }
 
   jacobian_type createJacobian() const{
     auto tmp = Maskable::createJacobian();
-    return masker_.get().createApplyMaskResult(tmp);
+    return masker_.get().createResultOfMaskActionOn(tmp);
   }
 
   template <class StencilStatesContainerType, class StencilRhsContainerType>

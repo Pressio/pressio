@@ -237,7 +237,7 @@ struct has_const_create_apply_mass_matrix_result_method_accept_operand_return_re
     !std::is_void<
       decltype
       (
-       std::declval<T const>().createApplyMassMatrixResult
+       std::declval<T const>().createResultOfMassMatrixActionOn
        (
 	std::declval<OperandType const &>()
 	)
@@ -338,7 +338,27 @@ struct has_const_discrete_residual_jacobian_action_method<
   >::value
   >
   > : std::true_type{};
+// ---------------------------------------------------------------
 
+template <class T, class StateType, class IndVarType, class RhsType, class = void>
+struct has_const_rhs_method_accept_state_indvar_result_return_void
+  : std::false_type{};
+
+template <class T, class StateType, class IndVarType, class RhsType>
+struct has_const_rhs_method_accept_state_indvar_result_return_void<
+  T, StateType, IndVarType, RhsType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>().rightHandSide(
+					  std::declval<StateType const&>(),
+					  std::declval<IndVarType const &>(),
+					  std::declval<RhsType &>()
+					  )
+	   )
+      >::value
+    >
+  > : std::true_type{};
 
 }} // end pressio::rom
 #endif  // ROM_PREDICATES_HPP_

@@ -18,7 +18,7 @@ struct MyFom
   right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
 
   template<class OperandType>
-  OperandType createApplyJacobianResult(const OperandType & B) const
+  OperandType createResultOfJacobianActionOn(const OperandType & B) const
   {
     OperandType A(N_, B.cols());
     return A;

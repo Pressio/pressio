@@ -5,7 +5,7 @@
 
 struct FakeStateType{};
 struct FakeRhsType{};
-struct FakeResultOfApplyJacType{};
+struct FakeResultOfApplyMassMatType{};
 struct FakeManifoldJacType{};
 
 struct FakeTimeType{
@@ -28,7 +28,7 @@ template<> struct Traits<FakeRhsType>{
   using scalar_type = double;
   static constexpr int rank = 1;
 };
-template<> struct Traits<FakeResultOfApplyJacType>{
+template<> struct Traits<FakeResultOfApplyMassMatType>{
   using scalar_type = double;
   static constexpr int rank = 2;
 };
@@ -54,12 +54,12 @@ struct System0{
 		     const double & /*unused*/,
 		     right_hand_side_type & /*unused*/) const{}
 
-  FakeResultOfApplyJacType createResultOfJacobianActionOn(const FakeManifoldJacType & ) const;
+  FakeResultOfApplyMassMatType createResultOfMassMatrixActionOn(const FakeManifoldJacType & ) const;
 
-  void applyJacobian(const state_type &,
+  void applyMassMatrix(const state_type &,
 		     const FakeManifoldJacType &,
 		     const time_type &,
-		     FakeResultOfApplyJacType &) const;
+		     FakeResultOfApplyMassMatType &) const;
 };
 
 struct System1{
@@ -73,12 +73,12 @@ struct System1{
 		     const time_type & /*unused*/,
 		     right_hand_side_type & /*unused*/) const{}
 
-  FakeResultOfApplyJacType createResultOfJacobianActionOn(const FakeManifoldJacType & ) const;
+  FakeResultOfApplyMassMatType createResultOfMassMatrixActionOn(const FakeManifoldJacType & ) const;
 
-  void applyJacobian(const state_type &,
+  void applyMassMatrix(const state_type &,
 		     const FakeManifoldJacType &,
 		     const time_type &,
-		     FakeResultOfApplyJacType &) const;
+		     FakeResultOfApplyMassMatType &) const;
 };
 
 struct System2{
@@ -92,13 +92,13 @@ struct System2{
 		     const time_type & /*unused*/,
 		     right_hand_side_type & /*unused*/) const{}
 
-  FakeResultOfApplyJacType createResultOfJacobianActionOn(const FakeManifoldJacType & ) const;
+  FakeResultOfApplyMassMatType createResultOfMassMatrixActionOn(const FakeManifoldJacType & ) const;
 
   // invalidate by commenting this out
-  // void applyJacobian(const state_type &,
+  // void applyMassMatrix(const state_type &,
   // 		     const FakeManifoldJacType &,
   // 		     const time_type &,
-  // 		     FakeResultOfApplyJacType &) const;
+  // 		     FakeResultOfApplyMassMatType &) const;
 };
 
 TEST(rom, concept_semidiscrete_fom_with_jacobian_action)
@@ -106,12 +106,12 @@ TEST(rom, concept_semidiscrete_fom_with_jacobian_action)
   using namespace pressio::rom;
 
 #ifdef PRESSIO_ENABLE_CXX20
-  static_assert( SemiDiscreteFomWithJacobianAction<System0, FakeManifoldJacType>, "");
-  static_assert( SemiDiscreteFomWithJacobianAction<System1, FakeManifoldJacType>, "");
-  static_assert(!SemiDiscreteFomWithJacobianAction<System2, FakeManifoldJacType>, "");
+  static_assert( SemiDiscreteFomWithMassMatrixAction<System0, FakeManifoldJacType>, "");
+  static_assert( SemiDiscreteFomWithMassMatrixAction<System1, FakeManifoldJacType>, "");
+  static_assert(!SemiDiscreteFomWithMassMatrixAction<System2, FakeManifoldJacType>, "");
 #else
-  static_assert( SemiDiscreteFomWithJacobianAction<System0, FakeManifoldJacType>::value, "");
-  static_assert( SemiDiscreteFomWithJacobianAction<System1, FakeManifoldJacType>::value, "");
-  static_assert(!SemiDiscreteFomWithJacobianAction<System2, FakeManifoldJacType>::value, "");
+  static_assert( SemiDiscreteFomWithMassMatrixAction<System0, FakeManifoldJacType>::value, "");
+  static_assert( SemiDiscreteFomWithMassMatrixAction<System1, FakeManifoldJacType>::value, "");
+  static_assert(!SemiDiscreteFomWithMassMatrixAction<System2, FakeManifoldJacType>::value, "");
 #endif
 }

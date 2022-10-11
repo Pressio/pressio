@@ -1,39 +1,22 @@
 
-#ifndef ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_HPP_
-#define ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_HPP_
+#ifndef ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_ONLY_WITH_MASS_MAT_HPP_
+#define ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_ONLY_WITH_MASS_MAT_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
-/*
-  default implicit galerkin system represents:
-
-     d hat{y}/dt = phi^T fom_rhs(phi*hat{y}, ...)
-
-- hat{y} is the reduced state
-- fom_rhs is the fom RHS
-- phi is the basis
-so that it boils down to:
-
-rhs = phi^T fom_rhs(phi*hat{y}, ...)
-rhs_jacobian = phi^T d(fom_rhs(phi*hat{y}, ...))/dy phi
-
-*/
 template <
   class IndVarType,
   class ReducedStateType,
   class ReducedRhsType,
-  class ReducedJacobianType,
+  class ReducedMassMatType,
   class TrialSubspaceType,
   class FomSystemType
   >
-class GalerkinDefaultOdeSystemRhsAndJacobian
+class GalerkinDefaultOdeSystemOnlyRhsAndMassMatrix
 {
-
-  // deduce from the fom object the type of result of
-  // applying the Jacobian to the basis
   using basis_matrix_type = typename TrialSubspaceType::basis_matrix_type;
-  using fom_jac_action_result_type =
-    decltype(std::declval<FomSystemType const>().createResultOfJacobianActionOn
+  using fom_mm_action_result_type =
+    decltype(std::declval<FomSystemType const>().createResultOfMassMatrixActionOn
 	     (std::declval<basis_matrix_type const &>()) );
 
 public:
@@ -41,17 +24,17 @@ public:
   using independent_variable_type = IndVarType;
   using state_type                = ReducedStateType;
   using right_hand_side_type      = ReducedRhsType;
-  using jacobian_type = ReducedJacobianType;
+  using mass_matrix_type           = ReducedMassMatType;
 
-  GalerkinDefaultOdeSystemRhsAndJacobian() = delete;
+  GalerkinDefaultOdeSystemOnlyRhsAndMassMatrix() = delete;
 
-  GalerkinDefaultOdeSystemRhsAndJacobian(const TrialSubspaceType & trialSubspace,
-					 const FomSystemType & fomSystem)
+  GalerkinDefaultOdeSystemOnlyRhsAndMassMatrix(const TrialSubspaceType & trialSubspace,
+					       const FomSystemType & fomSystem)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
       fomRhs_(fomSystem.createRightHandSide()),
-      fomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
+      fomMMAction_(fomSystem.createResultOfMassMatrixActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
 public:
@@ -63,15 +46,14 @@ public:
     return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
   }
 
-  jacobian_type createJacobian() const{
-    return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
+  mass_matrix_type createMassMatrix() const{
+    return impl::CreateGalerkinMassMatrix<mass_matrix_type>()(trialSubspace_.get().dimension());
   }
 
   void operator()(const state_type & reducedState,
 		  const IndVarType & rhsEvaluationTime,
 		  right_hand_side_type & reducedRhs,
-		  jacobian_type & reducedJacobian,
-		  bool computeJacobian) const
+		  mass_matrix_type & reducedMassMat) const
   {
 
     // reconstruct fom state fomState = phi*reducedState
@@ -90,17 +72,12 @@ public:
 			    alpha, phi, fomRhs_,
 			    beta, reducedRhs);
 
-    if (computeJacobian){
-      // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
-      fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
+    fomSystem_.get().applyMassMatrix(fomState_, phi, rhsEvaluationTime, fomMMAction_);
 
-      // compute the reduced jacobian
-      constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
-      constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
-      ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-			      alpha, phi, fomJacAction_,
-			      beta, reducedJacobian);
-    }
+    // compute the reduced mass matrix
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			    alpha, phi, fomMMAction_,
+			    beta, reducedMassMat);
   }
 
 private:
@@ -108,8 +85,8 @@ private:
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   mutable typename FomSystemType::right_hand_side_type fomRhs_;
-  mutable fom_jac_action_result_type fomJacAction_;
+  mutable fom_mm_action_result_type fomMMAction_;
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_HPP_
+#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_ONLY_HPP_

@@ -39,11 +39,11 @@ class GalerkinSteadyMaskedSystem
 
   // deduce the masked types
   using masked_fom_residual_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_residual_type const &>()));
 
   using masked_fom_jac_action_result_type =
-    decltype(std::declval<MaskerType const>().createApplyMaskResult
+    decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_jac_action_result_type const &>()));
 
 public:
@@ -64,8 +64,8 @@ public:
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
-      maskedFomResidual_(masker.createApplyMaskResult(unMaskedFomResidual_)),
-      maskedFomJacAction_(masker.createApplyMaskResult(unMaskedFomJacAction_))
+      maskedFomResidual_(masker.createResultOfMaskActionOn(unMaskedFomResidual_)),
+      maskedFomJacAction_(masker.createResultOfMaskActionOn(unMaskedFomJacAction_))
   {}
 
 public:
