@@ -77,12 +77,12 @@ Syntax-only example
                           time_type              /*evalTime*/,
 			  right_hand_side_type & /*result*/) const;
 
-       Tpetra::MultiVector<> createResultOfMassMatrixActionOn(const Tpetra::MultiVector<> & operand);
+       Tpetra::MultiVector<> createResultOfMassMatrixActionOn(const Tpetra::MultiVector<> & operand) const;
 
        void applyMassMatrix(const state_type & /*state*/,
 		            const Tpetra::MultiVector<> & /*operand*/,
 			    time_type /*evalTime*/,
-			    const Tpetra::MultiVector<> & /*result*/);
+			    const Tpetra::MultiVector<> & /*result*/) const;
    }
 
 

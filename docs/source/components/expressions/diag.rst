@@ -27,10 +27,9 @@ Constraints
 
 - ``T`` must be:
 
-  - an Eigen dense matrix, i.e. one of the following is
-    true ``pressio::is_dense_matrix_eigen<T>::value`` or
+  - an Eigen dense matrix, ``pressio::is_dense_matrix_eigen<T>::value == true``
 
-  - a Kokkos rank-2 view, i.e. ``pressio::is_dense_matrix_kokkos<T>::value``
+  - or a Kokkos rank-2 view, i.e. ``pressio::is_dense_matrix_kokkos<T>::value == true``
 
 Preconditions
 ~~~~~~~~~~~~~

@@ -30,10 +30,9 @@ Constraints
 
 - ``T`` must be:
 
-  - an Eigen vector object, i.e. one of the following is
-    true ``pressio::is_vector_eigen<T>::value`` or
+  - an Eigen vector object: ``pressio::is_vector_eigen<T>::value == true``
 
-  - a Kokkos rank-1 view, i.e. ``pressio::is_vector_kokkos<T>::value``
+  - or a Kokkos rank-1 view, i.e. ``pressio::is_vector_kokkos<T>::value == true``
 
 
 Preconditions

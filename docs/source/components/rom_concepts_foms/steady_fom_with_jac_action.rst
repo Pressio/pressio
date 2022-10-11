@@ -71,7 +71,7 @@ Syntax-only example
 
        residual_type createResidual() const;
 
-       Tpetra::MultiVector<> createResultOfJacobianActionOn(const Tpetra::MultiVector<> & operand);
+       Tpetra::MultiVector<> createResultOfJacobianActionOn(const Tpetra::MultiVector<> & operand) const;
 
        void residual(const state_type & /*state*/,
                      residual_type &    /*result*/) const;
@@ -80,7 +80,7 @@ Syntax-only example
                                       residual_type & /*residual*/
 		                      const Tpetra::MultiVector<> & /*operand*/,
                                       const Tpetra::MultiVector<> & /*result*/,
-				      bool /*computeJaobian*/);
+				      bool /*computeJaobian*/) const;
    }
 
 

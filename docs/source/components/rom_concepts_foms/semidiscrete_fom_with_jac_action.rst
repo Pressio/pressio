@@ -76,12 +76,12 @@ Syntax-only example
                           time_type              /*evalTime*/,
 			  right_hand_side_type & /*result*/) const;
 
-       Tpetra::MultiVector<> createResultOfJacobianActionOn(const Tpetra::MultiVector<> & operand);
+       Tpetra::MultiVector<> createResultOfJacobianActionOn(const Tpetra::MultiVector<> & operand) const;
 
-       void applyJacobianResult(const state_type & /*state*/,
-                                const Tpetra::MultiVector<> & /*operand*/,
-				time_type /*evalTime*/,
-                                const Tpetra::MultiVector<> & /*result*/);
+       void applyJacobian(const state_type & /*state*/,
+                          const Tpetra::MultiVector<> & /*operand*/,
+			  time_type /*evalTime*/,
+                          const Tpetra::MultiVector<> & /*result*/) const;
    }
 
 
