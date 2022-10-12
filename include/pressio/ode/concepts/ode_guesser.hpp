@@ -49,10 +49,9 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class IndVarType, class StateType>
 concept StateGuesser =
   requires(T && A,
@@ -62,10 +61,11 @@ concept StateGuesser =
   {
     A(stepNumber, startAt, state);
   };
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace ode{ namespace impl{
 

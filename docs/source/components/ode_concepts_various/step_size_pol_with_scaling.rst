@@ -5,7 +5,7 @@
 
 .. literalinclude:: ../../../../include/pressio/ode/concepts/ode_step_size_policy_with_reduction.hpp
    :language: cpp
-   :lines: 54-68
+   :lines: 52-68
 
 Semantic requirements
 ---------------------

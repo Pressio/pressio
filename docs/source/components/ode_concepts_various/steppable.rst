@@ -5,7 +5,7 @@
 
 .. literalinclude:: ../../../../include/pressio/ode/concepts/ode_steppable.hpp
    :language: cpp
-   :lines: 54-71
+   :lines: 52-71
 
 Semantic requirements
 ---------------------
@@ -26,7 +26,7 @@ Semantic requirements
 
 .. literalinclude:: ../../../../include/pressio/ode/concepts/ode_steppable.hpp
    :language: cpp
-   :lines: 73-78
+   :lines: 73-80
 
 Semantic requirements
 ---------------------

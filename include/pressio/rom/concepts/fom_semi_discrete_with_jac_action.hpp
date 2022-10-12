@@ -51,18 +51,15 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template<class T, class JacobianActionOperandType>
 concept SemiDiscreteFomWithJacobianAction =
   /* subsumed concept */
   SemiDiscreteFom<T>
   /*
-    compound requirements on the "create" method
+    compound requirements on "create" method
   */
   && requires(const T & A,
 	      const typename T::state_type    & state,
@@ -80,7 +77,7 @@ concept SemiDiscreteFomWithJacobianAction =
        JacobianActionOperandType>
   /*
     compound requirements on the "evaluation" method:
-    intentionally not lumped with the one above for these reasons:
+    intentionally not lumped with the above for these reasons:
     1. makes sense to split them, since the following depends on the above
     2. helps the compiler with early failure detection
   */
@@ -92,25 +89,12 @@ concept SemiDiscreteFomWithJacobianAction =
   {
     { A.applyJacobian(state, operand, evalTime, result) } -> std::same_as<void>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::rom
 
 
-
-
-
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{
 
 template<class T, class JacobianActionOperandType, class enable = void>
@@ -146,7 +130,6 @@ struct SemiDiscreteFomWithJacobianAction<
   > : std::true_type{};
 
 }} // end namespace pressio::rom
-
 #endif
 
 #endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_ACTION_HPP_

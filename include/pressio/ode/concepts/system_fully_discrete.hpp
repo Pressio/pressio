@@ -74,13 +74,15 @@ concept FullyDiscreteSystemWithJacobian =
   && ::pressio::ops::is_known_data_type<typename T::discrete_residual_type>::value
   && ::pressio::ops::is_known_data_type<typename T::discrete_jacobian_type>::value
   && all_have_traits_and_same_scalar<
-    typename T::state_type,
-    typename T::discrete_residual_type,
-    typename T::discrete_jacobian_type>::value
+	typename T::state_type,
+	typename T::discrete_residual_type,
+	typename T::discrete_jacobian_type
+    >::value
   && std::convertible_to<
-    typename T::independent_variable_type, scalar_trait_t<typename T::state_type>>
+	typename T::independent_variable_type,
+	scalar_trait_t<typename T::state_type>>
   /*
-    compund requirements on the "create" methods
+    compound requirements on create methods
   */
   && requires(const T & A)
   {
@@ -88,12 +90,7 @@ concept FullyDiscreteSystemWithJacobian =
     { A.createDiscreteResidual() } -> std::same_as<typename T::discrete_residual_type>;
     { A.createDiscreteJacobian() } -> std::same_as<typename T::discrete_jacobian_type>;
   }
-  /*
-    compund requirements on "evaluation" method:
-    intentionally not lumped with the above one for these reasons:
-    1. it makes sense logically to split them, since this depends on the above
-    2. helps the compiler with early failure detection
-  */
+  /*todo: fix syntax */
   && ::pressio::ode::has_const_discrete_residual_jacobian_method<
     T, NumStates,
     typename ::pressio::ode::StepCount::value_type,

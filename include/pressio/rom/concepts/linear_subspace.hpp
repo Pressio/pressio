@@ -49,10 +49,9 @@
 #ifndef ROM_CONCEPTS_LINEAR_SUBSPACE_HPP_
 #define ROM_CONCEPTS_LINEAR_SUBSPACE_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T>
 concept VectorSubspace =
   /* must have nested aliases */
@@ -62,7 +61,7 @@ concept VectorSubspace =
   && std::copy_constructible<typename T::basis_matrix_type>
   && ::pressio::all_have_traits<typename T::basis_matrix_type>::value
   && ::pressio::Traits<typename T::basis_matrix_type>::rank == 2
-  &&  std::copy_constructible<T>
+  && std::copy_constructible<T>
   && !std::assignable_from<T&, T>
   && !std::assignable_from<T&, T&>
   /*
@@ -75,23 +74,13 @@ concept VectorSubspace =
     { A.isColumnSpace() } -> std::convertible_to<bool>;
     { A.isRowSpace()    } -> std::convertible_to<bool>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} //end namespace pressio::rom
 
 
 
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{
 
 template<class T, class enable = void>

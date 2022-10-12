@@ -11,7 +11,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/galerkin_steady_default.hpp
    :language: cpp
-   :lines: 58-100
+   :lines: 54-98
 
 The ``DefaultProblem`` concept specifies that an object
 of type ``TrialSubspaceType`` and an object of type ``FomSystemType`` can

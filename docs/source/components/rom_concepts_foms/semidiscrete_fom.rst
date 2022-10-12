@@ -7,7 +7,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/fom_semi_discrete.hpp
    :language: cpp
-   :lines: 58-100
+   :lines: 54-96
 
 Semantic requirements
 ---------------------

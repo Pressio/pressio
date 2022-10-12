@@ -51,12 +51,9 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class MassMatrixActionOperandType>
 concept SemiDiscreteFomWithMassMatrixAction =
   /* subsumed concept */
@@ -80,7 +77,7 @@ concept SemiDiscreteFomWithMassMatrixAction =
        MassMatrixActionOperandType>
   /*
     compound requirements on the "evaluation" method:
-    intentionally not lumped with the one above for these reasons:
+    intentionally not lumped with the above for these reasons:
     1. makes sense to split them, since the following depends on the above
     2. helps the compiler with early failure detection
   */
@@ -92,20 +89,12 @@ concept SemiDiscreteFomWithMassMatrixAction =
   {
     { A.applyMassMatrix(state, operand, evalTime, result) } -> std::same_as<void>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::rom
 
 
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace rom{
 

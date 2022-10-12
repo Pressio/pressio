@@ -49,10 +49,9 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEP_SIZE_POLICY_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class IndVarType>
 concept StepSizePolicy =
   requires(T && A,
@@ -62,10 +61,11 @@ concept StepSizePolicy =
   {
     A(stepNumber, startAt, dt);
   };
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace ode{ namespace impl{
 

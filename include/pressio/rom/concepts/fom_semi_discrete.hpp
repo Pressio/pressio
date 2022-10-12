@@ -51,15 +51,14 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T>
 concept SemiDiscreteFom =
-  /* must have nested aliases */
+  /*
+    required nested aliases
+  */
   requires(){
     typename T::time_type;
     typename T::state_type;
@@ -73,11 +72,14 @@ concept SemiDiscreteFom =
   && std::copy_constructible<typename T::state_type>
   && std::copy_constructible<typename T::right_hand_side_type>
   && all_have_traits_and_same_scalar<
-    typename T::state_type, typename T::right_hand_side_type>::value
+	typename T::state_type,
+	typename T::right_hand_side_type>::value
+  && std::convertible_to<
+	typename T::time_type,
+	scalar_trait_t<typename T::state_type>>
+  /* currently requires "vectors" */
   && Traits<typename T::state_type>::rank == 1
   && Traits<typename T::right_hand_side_type>::rank == 1
-  && std::convertible_to<
-    typename T::time_type, scalar_trait_t<typename T::state_type>>
   /*
     compound and nested requirements last
   */
@@ -89,21 +91,12 @@ concept SemiDiscreteFom =
     { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
     { A.rightHandSide(state, evalTime, rhs) } -> std::same_as<void>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::rom
 
 
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{
 
 template<class T, class enable = void>
@@ -138,7 +131,6 @@ struct SemiDiscreteFom<
   > : std::true_type{};
 
 }} // end namespace pressio::rom
-
 #endif
 
 #endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_HPP_

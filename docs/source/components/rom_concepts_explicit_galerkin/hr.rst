@@ -12,7 +12,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/galerkin_explicit_hyperreduced.hpp
    :language: cpp
-   :lines: 58-85
+   :lines: 54-84
 
 Semantic and complexity requirements
 ------------------------------------

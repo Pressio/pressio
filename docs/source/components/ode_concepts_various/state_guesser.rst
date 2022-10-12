@@ -5,7 +5,7 @@
 
 .. literalinclude:: ../../../../include/pressio/ode/concepts/ode_guesser.hpp
    :language: cpp
-   :lines: 54-66
+   :lines: 52-66
 
 Semantic requirements
 ---------------------

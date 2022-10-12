@@ -51,15 +51,14 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class JacobianActionOperandType>
 concept SteadyFomWithJacobianAction =
-  /* must have nested aliases */
+  /*
+    required nested aliases
+  */
   requires(){
     typename T::state_type;
     typename T::residual_type;
@@ -71,6 +70,7 @@ concept SteadyFomWithJacobianAction =
   && std::copy_constructible<typename T::residual_type>
   && all_have_traits_and_same_scalar<
        typename T::state_type, typename T::residual_type>::value
+  /* currently requires "vectors" */
   && Traits<typename T::state_type>::rank == 1
   && Traits<typename T::residual_type>::rank == 1
   /*
@@ -84,12 +84,12 @@ concept SteadyFomWithJacobianAction =
     { A.createResultOfJacobianActionOn(operand) } -> std::copy_constructible;
   }
   && all_have_traits_and_same_scalar<
-    typename T::state_type, JacobianActionOperandType,
-    concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>
+	typename T::state_type, JacobianActionOperandType,
+	concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>
     >::value
   && ::pressio::SameRankAs<
-       concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
-       JacobianActionOperandType>
+	concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType>,
+	JacobianActionOperandType>
   /*
     compound requirements on the "evaluation" method:
     intentionally not lumped with the one above for these reasons:
@@ -101,28 +101,19 @@ concept SteadyFomWithJacobianAction =
 	      typename T::residual_type & residual,
 	      const JacobianActionOperandType & operand,
 	      concepts::impl::fom_jacobian_action_t<T, JacobianActionOperandType> & jAction,
-	      bool recomputeJacobian)
+	      bool computeJacAction)
   {
     { A.residual(state, residual) } -> std::same_as<void>;
     { A.residualAndJacobianAction(state, residual, operand,
-				  jAction, recomputeJacobian) } -> std::same_as<void>;
+				  jAction, computeJacAction) } -> std::same_as<void>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::rom
 
 
 
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace rom{
 

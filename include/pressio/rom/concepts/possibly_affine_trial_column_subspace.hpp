@@ -49,10 +49,9 @@
 #ifndef ROM_CONCEPTS_POSSIBLY_AFFINE_TRIAL_COLUMN_SUBSPACE_HPP_
 #define ROM_CONCEPTS_POSSIBLY_AFFINE_TRIAL_COLUMN_SUBSPACE_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T>
 concept PossiblyAffineTrialColumnSubspace =
   /* must have nested aliases */
@@ -68,9 +67,9 @@ concept PossiblyAffineTrialColumnSubspace =
   && std::copy_constructible< typename T::full_state_type>
   && std::copy_constructible< typename T::basis_matrix_type>
   && all_have_traits_and_same_scalar<
-    typename T::reduced_state_type,
-    typename T::full_state_type,
-    typename T::basis_matrix_type>::value
+	typename T::reduced_state_type,
+	typename T::full_state_type,
+	typename T::basis_matrix_type>::value
   && Traits<typename T::full_state_type>::rank == 1
   && Traits<typename T::basis_matrix_type>::rank == 2
   /**/
@@ -108,27 +107,13 @@ concept PossiblyAffineTrialColumnSubspace =
     {A.isColumnSpace()} -> std::convertible_to<bool>;
     {A.isRowSpace()   } -> std::convertible_to<bool>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} //end namespace pressio::rom
 
 
 
-
-
-
-
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{
 
 template<class T, class enable = void>

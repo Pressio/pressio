@@ -7,7 +7,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/linear_subspace.hpp
    :language: cpp
-   :lines: 54-85
+   :lines: 52-79
 
 Semantic requirements
 ---------------------
@@ -57,7 +57,7 @@ Syntax-only snippet
 
     private:
       /*
-        Since we have a const qualifid data member, copy and move assignments
+        Since we have a const-qualified data member, copy and move assignments
         do not participate in overload resolution, so the class is not
 	copy assignable or move assignable which is needed to satisfy the concept.
       */

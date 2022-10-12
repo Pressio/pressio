@@ -11,7 +11,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/lspg_unsteady_default.hpp
    :language: cpp
-   :lines: 58-85
+   :lines: 54-72
 
 Semantic requirements
 ---------------------

@@ -51,12 +51,9 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class TrialSubspaceType, class FomSystemType>
 concept ComposableIntoDefaultOrHyperReducedProblem =
      PossiblyAffineTrialColumnSubspace<TrialSubspaceType>
@@ -66,22 +63,12 @@ concept ComposableIntoDefaultOrHyperReducedProblem =
   && std::same_as<
        typename TrialSubspaceType::full_state_type,
        typename FomSystemType::state_type>;
+#endif // PRESSIO_ENABLE_CXX20
 
 }}}} //end namespace pressio::rom::lspg::steady
 
 
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template<

@@ -51,12 +51,9 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyimplicit{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class TrialSubspaceType, class FomSystemType>
 concept ComposableIntoDefaultProblem =
      unsteadyexplicit::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
@@ -86,24 +83,12 @@ concept ComposableIntoDefaultProblem =
 	alpha, subspace.basisOfTranslatedSpace(), JaFom,
 	beta, JGal);
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }}}} //end namespace pressio::rom::galerkin::unsteadyimplicit
 
 
-
-
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyimplicit{
 
 template <class TrialSubspaceType, class FomSystemType, class = void>

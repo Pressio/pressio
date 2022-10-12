@@ -5,13 +5,35 @@
 
 .. literalinclude:: ../../../../include/pressio/ode/concepts/system_rhs.hpp
    :language: cpp
-   :lines: 58-106
+   :lines: 52-93
 
 
 Semantic requirements
 ---------------------
 
 :red:`finish`
+
+
+Syntax-only example
+-------------------
+
+.. code-block:: cpp
+
+   class SampleClass
+   {
+     public:
+       using independent_variable_type = double;
+       using state_type                = Eigen::VectorXd;
+       using right_hand_side_type      = Eigen::VectorXd;
+
+       state_type createState() const;
+       right_hand_side_type createRightHandSide() const;
+       void operator()(const state_type &        /*state*/,
+                       independent_variable_type /*ivEval*/,
+		       right_hand_side_type &    /*rhsToOverwrite*/) const;
+   }
+
+
 
 ..
    The concept is modeled only if all of the following hold:

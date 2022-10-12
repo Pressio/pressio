@@ -51,17 +51,18 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template<class T, int TotalNumStates, class JacobianActionOperandType>
 concept FullyDiscreteSystemWithJacobianAction =
- /* allowed number of state */
+ /*
+   allowed number of state
+ */
   (TotalNumStates == 2 || TotalNumStates == 3)
-  /* must have nested aliases */
+  /*
+    required nested aliases
+  */
   && requires(){
     typename T::time_type;
     typename T::state_type;
@@ -99,29 +100,25 @@ concept FullyDiscreteSystemWithJacobianAction =
        JacobianActionOperandType>
   /*
     requirements on "evaluation" methods (fix syntax)
+    intentionally not lumped with the above for these reasons:
+    1. makes sense to split them, since the following depends on the above
+    2. helps the compiler with early failure detection
   */
   && ::pressio::rom::has_const_discrete_residual_jacobian_action_method<
-    T, TotalNumStates,
-    typename ::pressio::ode::StepCount::value_type,
-    typename T::time_type,
-    typename T::state_type,
-    typename T::discrete_residual_type,
-    JacobianActionOperandType,
-    concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
+      T, TotalNumStates,
+      typename ::pressio::ode::StepCount::value_type,
+      typename T::time_type,
+      typename T::state_type,
+      typename T::discrete_residual_type,
+      JacobianActionOperandType,
+      concepts::impl::fully_discrete_fom_jacobian_action_t<T, JacobianActionOperandType>
     >::value;
+#endif // PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::rom
 
 
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace rom{
 

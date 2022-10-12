@@ -49,18 +49,15 @@
 #ifndef ODE_STEPPERS_SYSTEM_RHS_AND_JACOBIAN_AND_MASS_MATRIX_HPP_
 #define ODE_STEPPERS_SYSTEM_RHS_AND_JACOBIAN_AND_MASS_MATRIX_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T>
 concept SystemWithRhsJacobianMassMatrix =
   std::copy_constructible<T>
-  /* must have nested aliases */
+  /*
+    required nested aliases
+  */
   && requires(){
     typename T::independent_variable_type;
     typename T::state_type;
@@ -76,27 +73,16 @@ concept SystemWithRhsJacobianMassMatrix =
   && ::pressio::ops::is_known_data_type<typename T::jacobian_type>::value
   && ::pressio::ops::is_known_data_type<typename T::mass_matrix_type>::value
   && all_have_traits_and_same_scalar<
-    typename T::state_type,
-    typename T::right_hand_side_type,
-    typename T::jacobian_type,
-    typename T::mass_matrix_type>::value
+	typename T::state_type,
+        typename T::right_hand_side_type,
+        typename T::jacobian_type,
+        typename T::mass_matrix_type
+     >::value
   && std::convertible_to<
-    typename T::independent_variable_type, scalar_trait_t<typename T::state_type>>
+	typename T::independent_variable_type,
+	scalar_trait_t<typename T::state_type>>
   /*
-    compund requirements on the "create" methods
-  */
-  && requires(const T & A)
-  {
-    { A.createState()         } -> std::same_as<typename T::state_type>;
-    { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
-    { A.createJacobian()      } -> std::same_as<typename T::jacobian_type>;
-    { A.createMassMatrix()    } -> std::same_as<typename T::mass_matrix_type>;
-  }
-  /*
-    compund requirements on "evaluation" method:
-    intentionally not lumped with the above one for these reasons:
-    1. it makes sense logically to split them, since this depends on the above
-    2. helps the compiler with early failure detection
+    compound requirements
   */
   && requires(const T & A,
 	      const typename T::state_type & state,
@@ -104,10 +90,16 @@ concept SystemWithRhsJacobianMassMatrix =
 	      typename T::right_hand_side_type & rhs,
 	      typename T::jacobian_type & jac,
 	      typename T::mass_matrix_type & M,
-	      bool computeJacobian)
+	      bool computeJac)
   {
-    { A(state, evalValue, rhs, M, jac, computeJacobian) } -> std::same_as<void>;
+    { A.createState()         } -> std::same_as<typename T::state_type>;
+    { A.createRightHandSide() } -> std::same_as<typename T::right_hand_side_type>;
+    { A.createJacobian()      } -> std::same_as<typename T::jacobian_type>;
+    { A.createMassMatrix()    } -> std::same_as<typename T::mass_matrix_type>;
+    { A(state, evalValue, rhs,
+	M, jac, computeJac)   } -> std::same_as<void>;
   };
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
@@ -117,8 +109,7 @@ concept SystemWithRhsJacobianMassMatrix =
 /* leave some white space on purpose so that
    if we make edits above, we don't have to change
    the line numbers included in the rst doc page */
-
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 #include "./predicates/ode_has_const_create_state_method_return_result.hpp"
 #include "./predicates/ode_has_const_create_rhs_method_return_result.hpp"

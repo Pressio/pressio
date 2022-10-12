@@ -11,7 +11,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/galerkin_explicit_default.hpp
    :language: cpp
-   :lines: 58-90
+   :lines: 54-87
 
 
 Semantic requirements

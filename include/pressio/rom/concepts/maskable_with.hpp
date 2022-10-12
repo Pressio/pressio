@@ -51,10 +51,9 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
 namespace pressio{ namespace rom{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class MaskerType>
 concept MaskableWith =
   requires(const T & operand, const MaskerType & masker)
@@ -64,12 +63,12 @@ concept MaskableWith =
 	     std::declval<decltype(masker.createResultOfMaskActionOn(operand)) &>()
 	     ) } -> std::same_as<void>;
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }} //end namespace pressio::rom
 
 
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{
 
 template <class T, class MaskerType, class = void>

@@ -49,10 +49,9 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T>
 concept Steppable =
   requires(){
@@ -67,21 +66,20 @@ concept Steppable =
   {
     A(state, startAt, stepNumber, dt);
   };
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T>
 concept StronglySteppable = Steppable<T>;
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -159,6 +157,6 @@ struct Steppable<
 template <class T> using StronglySteppable = Steppable<T>;
 
 }} // end namespace pressio::ode
-#endif //end PRESSIO_ENABLE_CXX20
+#endif
 
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_HPP_

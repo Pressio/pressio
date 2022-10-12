@@ -7,7 +7,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/fom_fully_discrete_with_jac_action.hpp
    :language: cpp
-   :lines: 58-115
+   :lines: 54-118
 
 Semantic requirements
 ---------------------

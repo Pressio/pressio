@@ -51,12 +51,9 @@
 
 #include "helpers.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here so that we can clearly show it in the
-// doc via rst literal include directive
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class TrialSubspaceType, class FomSystemType, class HyperRedUpdaterType>
 concept ComposableIntoHyperReducedProblem =
   SemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
@@ -83,27 +80,12 @@ concept ComposableIntoHyperReducedProblem =
 	   basisMatrix,
 	   std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>());
   };
+#endif // PRESSIO_ENABLE_CXX20
 
 }}}} //end namespace pressio::rom::lspg::unsteady
 
 
-
-
-
-
-
-
-
-
-
-
-
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
-
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
 template <class TrialSubspaceType, class FomSystemType, class HyperRedUpdaterType, class = void>

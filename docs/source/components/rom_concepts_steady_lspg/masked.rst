@@ -11,7 +11,7 @@ Header: ``<pressio/rom_concepts.hpp>``
 
 .. literalinclude:: ../../../../include/pressio/rom/concepts/lspg_steady_masked.hpp
    :language: cpp
-   :lines: 58-80
+   :lines: 54-78
 
 
 Semantic requirements

@@ -49,12 +49,9 @@
 #ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
 #define ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX20
-
-// this is here to use in the doc
-//via rst literal include directive
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class AuxT, class ...Args>
 concept SteppableWithAuxiliaryArgs =
   /* must have nested aliases */
@@ -73,23 +70,21 @@ concept SteppableWithAuxiliaryArgs =
     A(state, startAt, stepNumber, dt,
       std::forward<AuxT>(aux), std::forward<Args>(args)...);
   };
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
 namespace pressio{ namespace ode{
 
+#ifdef PRESSIO_ENABLE_CXX20
 template <class T, class AuxT, class ...Args>
-concept StronglySteppableWithAuxiliaryArgs =
-  SteppableWithAuxiliaryArgs<T, AuxT, Args...>;
+concept StronglySteppableWithAuxiliaryArgs = SteppableWithAuxiliaryArgs<T, AuxT, Args...>;
+#endif //PRESSIO_ENABLE_CXX20
 
 }} // end namespace pressio::ode
 
 
-/* leave some white space on purpose so that
-   if we make edits above, we don't have to change
-   the line numbers included in the rst doc page */
-
-#else
+#if not defined PRESSIO_ENABLE_CXX20
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -170,6 +165,6 @@ template <class T, class AuxT, class ...Args>
 using StronglySteppableWithAuxiliaryArgs = SteppableWithAuxiliaryArgs<T, AuxT, Args...>;
 
 }} // end namespace pressio::ode
-#endif //end PRESSIO_ENABLE_CXX20
+#endif
 
 #endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_STEPPABLE_WITH_ARGS_HPP_
