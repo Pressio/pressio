@@ -63,7 +63,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::ops::impl::local_ordinal_type<T1>;
+  using ord_t = typename ::pressio::ops::impl::local_ordinal_t<T1>;
 
   assert(extent(x,0) == extent(y,0));
   assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
@@ -98,7 +98,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::ops::impl::local_ordinal_type<T1>;
+  using ord_t = typename ::pressio::ops::impl::local_ordinal_t<T1>;
 
   assert(extent(x,0) == extent(y,0));
   assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
@@ -131,7 +131,7 @@ template <typename T>
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::ops::impl::local_ordinal_type<T>;
+  using ord_t = typename ::pressio::ops::impl::local_ordinal_t<T>;
 
   auto x_tpetraview = x.getVectorView();
   auto x_kv = x_tpetraview.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());

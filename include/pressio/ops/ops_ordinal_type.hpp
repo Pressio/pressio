@@ -51,15 +51,13 @@
 
 namespace pressio{ namespace ops{ namespace impl{
 
-// ContainerInfo extracts types from containers and expressions in a unified way
-// - without the expressions defining same things as the original containers
-// (e.g. StorageIndex in Eigen expr)
-// Note: it's package-specific and should be used after type resolution
-template<typename T, class Enable = void> struct ContainerInfo;
+template<typename T, class Enable = void> struct OrdinalType       { using type = void; };
+template<typename T, class Enable = void> struct LocalOrdinalType  { using type = void; };
+template<typename T, class Enable = void> struct GlobalOrdinalType { using type = void; };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <class T>
-struct ContainerInfo<
+struct OrdinalType<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_eigen<T>::value
@@ -67,30 +65,35 @@ struct ContainerInfo<
     >
   >
 {
-  using ordinal_type = typename T::StorageIndex;
+  using type = typename T::StorageIndex;
 };
 
 // following definitions consider native Eigen expression types
 template <class VectorType, int Size>
-struct ContainerInfo<Eigen::VectorBlock<VectorType, Size>>
-: public ContainerInfo<VectorType>
+struct OrdinalType<
+  Eigen::VectorBlock<VectorType, Size>
+  >
+: public OrdinalType<VectorType>
 {};
 
 template <class MatrixType, int DiagIndex>
-struct ContainerInfo<Eigen::Diagonal<MatrixType, DiagIndex>>
-: public ContainerInfo<MatrixType>
+struct OrdinalType<
+  Eigen::Diagonal<MatrixType, DiagIndex>
+  >
+: public OrdinalType<MatrixType>
 {};
 
 template<class XprType, int BlockRows, int BlockCols, bool InnerPanel>
-struct ContainerInfo<Eigen::Block<XprType, BlockRows, BlockCols, InnerPanel>>
-: public ContainerInfo<XprType>
+struct OrdinalType<
+  Eigen::Block<XprType, BlockRows, BlockCols, InnerPanel>
+  >
+: public OrdinalType<XprType>
 {};
-
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <class T>
-struct ContainerInfo<
+struct OrdinalType<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_kokkos<T>::value
@@ -98,13 +101,13 @@ struct ContainerInfo<
     >
   >
 {
-  using ordinal_type = typename T::traits::size_type;
+  using type = typename T::traits::size_type;
 };
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <class T>
-struct ContainerInfo<
+struct LocalOrdinalType<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_tpetra<T>::value
@@ -114,12 +117,25 @@ struct ContainerInfo<
     >
  >
 {
-  using global_ordinal_type = typename T::global_ordinal_type;
-  using local_ordinal_type = typename T::local_ordinal_type;
+  using type = typename T::local_ordinal_type;
 };
 
 template <class T>
-struct ContainerInfo<
+struct GlobalOrdinalType<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_tpetra<T>::value
+    || ::pressio::is_vector_tpetra_block<T>::value
+    || ::pressio::is_multi_vector_tpetra_block<T>::value
+    || ::pressio::is_multi_vector_tpetra<T>::value
+    >
+ >
+{
+  using type = typename T::global_ordinal_type;
+};
+
+template <class T>
+struct LocalOrdinalType<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_epetra<T>::value
@@ -127,13 +143,24 @@ struct ContainerInfo<
     >
  >
 {
-  using global_ordinal_type = int;
-  using local_ordinal_type = int;
+  using type = int;
+};
+
+template <class T>
+struct GlobalOrdinalType<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_epetra<T>::value
+    || ::pressio::is_multi_vector_epetra<T>::value
+    >
+ >
+{
+  using type = int;
 };
 #endif
 
 template <class T>
-struct ContainerInfo<
+struct OrdinalType<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_expression<T>::value
@@ -143,16 +170,43 @@ struct ContainerInfo<
 private:
   using native_type = typename ::pressio::Traits<T>::native_expr_type;
 public:
-  using ordinal_type = typename ContainerInfo<native_type>::ordinal_type;
+  using type = typename OrdinalType<native_type>::type;
 };
 
-// short predicate-like form
 template <class T>
-using ordinal_type = typename ContainerInfo<T>::ordinal_type;
+struct LocalOrdinalType<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_expression<T>::value
+    >
+  >
+{
+private:
+  using native_type = typename ::pressio::Traits<T>::native_expr_type;
+public:
+  using type = typename OrdinalType<native_type>::type;
+};
+
 template <class T>
-using local_ordinal_type = typename ContainerInfo<T>::local_ordinal_type;
+struct GlobalOrdinalType<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_expression<T>::value
+    >
+  >
+{
+private:
+  using native_type = typename ::pressio::Traits<T>::native_expr_type;
+public:
+  using type = typename OrdinalType<native_type>::type;
+};
+
 template <class T>
-using global_ordinal_type = typename ContainerInfo<T>::global_ordinal_type;
+using ordinal_t = typename OrdinalType<T>::type;
+template <class T>
+using local_ordinal_t = typename LocalOrdinalType<T>::type;
+template <class T>
+using global_ordinal_t = typename GlobalOrdinalType<T>::type;
 
 }}}
 #endif  // OPS_OPS_ORDINAL_TYPE_HPP_

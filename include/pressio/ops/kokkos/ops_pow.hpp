@@ -60,7 +60,7 @@ pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
   auto & x_n = impl::get_native(x);
-  using ord_t = ::pressio::ops::impl::ordinal_type<T>;
+  using ord_t = ::pressio::ops::impl::ordinal_t<T>;
   // this pow won't work for device
   Kokkos::parallel_for(x.extent(0),
 		       KOKKOS_LAMBDA (const ord_t& i){
@@ -82,7 +82,7 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = ::pressio::ops::impl::ordinal_type<T1>;
+  using ord_t = ::pressio::ops::impl::ordinal_t<T1>;
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
@@ -114,7 +114,7 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = ::pressio::ops::impl::ordinal_type<T1>;
+  using ord_t = ::pressio::ops::impl::ordinal_t<T1>;
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
