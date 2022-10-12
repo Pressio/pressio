@@ -64,8 +64,8 @@ template <typename T1, typename T2>
 struct have_matching_device_type<T1, T2>
 {
   static constexpr auto value = std::is_same<
-    typename ::pressio::impl::device_type<T1>::type,
-    typename ::pressio::impl::device_type<T2>::type
+    ::pressio::impl::device_t<T1>,
+    ::pressio::impl::device_t<T2>
     >::value;
 };
 

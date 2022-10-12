@@ -105,8 +105,8 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
 					y_type & y)
 {
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
-  using tpetra_mv_dev_t = typename ::pressio::impl::device_type<A_type>::type;
-  using kokkos_v_dev_t  = typename ::pressio::impl::device_type<x_type>::type;
+  using tpetra_mv_dev_t = ::pressio::impl::device_t<A_type>;
+  using kokkos_v_dev_t  = ::pressio::impl::device_t<x_type>;
   static_assert
     ( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
       "product: tpetra MV and kokkos wrapper need to have same device type" );

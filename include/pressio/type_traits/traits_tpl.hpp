@@ -70,16 +70,16 @@ struct is_native_container_kokkos {
 
 namespace impl {
 
-// device_type is just an (execution space, memory space) pair.
+// DeviceType is just an (execution space, memory space) pair.
 // defined as: Kokkos::Device<execution_space, memory_space>
 // so from the device we can get the device execution and memory space
-template <typename T, typename Enabled=void> struct device_type;
+template <typename T, typename Enabled=void> struct DeviceType;
 
 template <typename T, typename Enabled=void> struct execution_space;
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename T>
-struct device_type<
+struct DeviceType<
   T,
   ::pressio::mpl::enable_if_t<
     is_vector_kokkos<T>::value
@@ -106,7 +106,7 @@ struct execution_space<
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename T>
-struct device_type<
+struct DeviceType<
   T,
   ::pressio::mpl::enable_if_t<
     is_multi_vector_tpetra<T>::value
@@ -119,6 +119,9 @@ struct device_type<
   using type = typename T::device_type;
 };
 #endif
+
+template <typename T>
+using device_t = typename DeviceType<T>::type;
 
 }} // namespace pressio::impl
 #endif  // TYPE_TRAITS_TRAITS_TPL_HPP_
