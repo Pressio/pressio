@@ -28,9 +28,16 @@ API, Parameters and Requirements
 
     .. warning::
 
-        * overload 1: your system must satisfy *one of* the following concepts: ``OverdeterminedSystemWithResidualAndJacobian``, ``OverdeterminedSystemWithFusedResidualAndJacobian``, ``SystemWithHessianAndGradient`` or ``SystemWithFusedHessianAndGradient`` (see `here <nonlinsolvers_system_api.html>`_).
 
-        * overload 2: *only* accepts a system satisfying either the ``OverdeterminedSystemWithResidualAndJacobian`` or the ``OverdeterminedSystemWithFusedResidualAndJacobian`` (see `here <nonlinsolvers_system_api.html>`_).
+        * overload 1 accepts a system satisfying *any of* the following concepts:
+	  `SystemWithResidualAndJacobian <nonlinearsolvers_concepts/c1.html>`__,
+	  `SystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/c2.html>`__,
+	  `SystemWithHessianAndGradient <nonlinearsolvers_concepts/c3.html>`__
+	  or `SystemWithFusedHessianAndGradient <nonlinearsolvers_concepts/c3.html>`__
+
+        * overload 2 *only* accepts a system satisfying either the
+	  `SystemWithResidualAndJacobian <nonlinearsolvers_concepts/c1.html>`__ or
+	  `SystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/c2.html>`__
 
 * ``lsolver``
 

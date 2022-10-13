@@ -21,8 +21,8 @@ API, Parameters and Requirements
 
   - instance of your problem class defining the problem
 
-  * must satisfy either the ``DeterminedSystemWithResidualAndJacobian`` or the
-    ``DeterminedSystemWithFusedResidualAndJacobian`` concepts (see `here <nonlinsolvers_system_api.html>`_).
+  * must satisfy either the `SystemWithResidualAndJacobian <nonlinearsolvers_concepts/c1.html>`__ or the
+    `SystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/c2.html>`__
 
 * ``lsolver``
 

@@ -319,5 +319,4 @@ and properly composes them to instantiate the desired solver object.
     nonlinsolvers_gn_qr
     nonlinsolvers_lm
     nonlinsolvers_irls
-    nonlinsolvers_ops
     nonlinsolvers_concepts
