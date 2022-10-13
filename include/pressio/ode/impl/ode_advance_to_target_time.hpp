@@ -123,7 +123,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
   observer(StepCount{0}, time, odeState);
 
   step_t step = 1;
-  PRESSIOLOG_INFO("advance_to_target_timeWithDtCallback");
+  PRESSIOLOG_DEBUG("impl: advance_to_target_time_with_dt_policy");
   constexpr auto eps = std::numeric_limits<IndVarType>::epsilon();
   bool condition = true;
   while (condition)
