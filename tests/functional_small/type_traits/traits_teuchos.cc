@@ -2,6 +2,8 @@
 #include "pressio/type_traits.hpp"
 #include "traits_shared.hpp"
 
+namespace pressio { namespace traits { namespace test {
+
 template <typename T, int rank>
 void test_teuchos_container()
 {
@@ -50,3 +52,5 @@ TEST(type_traits, TeuchosMatrix)
   static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
   test_teuchos_container<T, 2>();
 }
+
+}}} // pressio::traits::test

@@ -45,6 +45,8 @@
 // ************************************************************************
 //@HEADER
 */
+namespace pressio { namespace traits { namespace test {
+// -------------------------------------------------
 
 /*
   Verify values of common container traits
@@ -68,3 +70,4 @@ void test_container_traits()
 }
 
 // -------------------------------------------------
+}}} // pressio::traits::test

@@ -2,6 +2,8 @@
 #include "pressio/type_traits.hpp"
 #include "traits_shared.hpp"
 
+namespace pressio { namespace traits { namespace test {
+
 template <
   typename T,
   int rank,
@@ -29,3 +31,5 @@ TEST(eped_epetra, MVTraits)
   static_assert(pressio::is_multi_vector_epetra<T>::value,"");
   test_epetra_container<T, 2>();
 }
+
+}}} // pressio::traits::test

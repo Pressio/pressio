@@ -2,6 +2,8 @@
 #include "pressio/type_traits.hpp"
 #include "traits_shared.hpp"
 
+namespace pressio { namespace traits { namespace test {
+
 #define CHECK_TRAIT2(TRAIT, TYPE) \
 ::testing::StaticAssertTypeEq<typename traits::TRAIT, typename TYPE>();
 #define CHECK_TRAIT(TRAIT) CHECK_TRAIT2(TRAIT, T::TRAIT)
@@ -64,3 +66,5 @@ TEST(tpetra_block, MVTraits)
   static_assert(pressio::is_multi_vector_tpetra_block<T>::value,"");
   test_tpetra_container<T, 2>();
 }
+
+}}} // pressio::traits::test
