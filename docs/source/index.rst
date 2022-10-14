@@ -6,19 +6,32 @@
 pressio C++ library
 ===================
 
-.. admonition:: :medium:`Advancing reduced order models (ROMs) for dynamical systems in science and engineering`
+.. admonition:: :medium:`Advancing reduced order models for dynamical systems in science and engineering`
     :class: note
 
     This is the documentation of the `C++ library <https://github.com/Pressio/pressio>`__, one element of the `Pressio ecosystem <https://pressio.github.io/>`_.
 
-.. :summarylineindexpage:`Advancing reduced order models (ROMs) for dynamical systems in science and engineering.`
 
-.. This is the documentation of the `C++ library <https://github.com/Pressio/pressio>`__, one component of the `Pressio ecosystem <https://pressio.github.io/>`_.
+This work was started with a focus on projection-based reduced-order models (ROMs),
+which is a strongly multidisciplinary topic.
+Working towards a production-level ROM capability inevitably means touching
+multiple fields, ranging from, e.g., linear algebra, nonlinear solvers
+and optimization, to time integration, distributed computing and HPC.
+The complexity level is further amplified if the goal is to develop a *generic* library.
+**Modularity, abstractions and well-defined APIs** thus become fundamental design principles
+needed to properly build such a project from the ground up.
 
+This has been part of our effort from the beginning, and has lead to the following
+"stacked" design of pressio: each component (level) handles a specific capability and depends,
+via well-defined public APIs, on the ones below it. This approach has several benefits, but
+the main one is that each component becomes usable on its own, and, as a whole,
+the stack constitutes the foundation of the top-level ``pressio/rom`` component.
+The API documentation mirros this structure.
 
-The following table represents the *software stack* of the functionalities in pressio:
-each component (level) in the stack depends on all the ones below it.
-This structure is mirrored in the API documentation (see the left sidebar).
+..
+  The following table represents the *software stack* of the functionalities in pressio:
+  each component (level) in the stack depends on all the ones below it.
+
 
 .. list-table::
    :widths: 10 48 42
@@ -112,7 +125,7 @@ or in some cases (abusing the syntax) with static asserts.
 License and Citation
 --------------------
 
-The full license (BSD-3) is available `here <https://pressio.github.io/various/license/>`_.
+The full license (BSD-3) is available `here <https://github.com/Pressio/pressio/blob/main/LICENSE>`_.
 
 We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798
 

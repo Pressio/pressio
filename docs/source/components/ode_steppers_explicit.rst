@@ -194,15 +194,10 @@ you are trying to solve, the stepper object returned by pressio exposes differen
 Use the stepper
 ---------------
 
-Now that we discussed what a stepper is and what
-methods it exposes, we have everything we need to
-discuss how to use it to advance in time.
-For example, you can either implement your step
-loop which sequentially calls the stepper.
-However, the key thing to notice here is that a stepper
-satisfies the "steppable" concept
-discussed `here <ode_concepts_various/steppable.html>`_\ , so one can
-use the "advancers" functions to step forward.
+You could for example implement your own stepping loop which sequentially
+calls the stepper, but if you recognize that a stepper
+satisfies the "steppable" concept discussed `here <ode_concepts_various/steppable.html>`_\ ,
+it is easier to just use the "advance_*" functions to step forward.
 
 Let's first look at an example for a system without mass matrix:
 
@@ -213,7 +208,8 @@ Let's first look at an example for a system without mass matrix:
    #include "pressio/ode_steppers_explicit.hpp"
    int main()
    {
-     MySystemClass system(/*whatever args*/);
+     // let "YourSystemClass" be the class that defines your problem
+     // and "system" be an instance of it
 
      namespace pode = pressio::ode;
      const auto scheme = pode::StepScheme::ForwardEuler;
@@ -222,12 +218,20 @@ Let's first look at an example for a system without mass matrix:
      auto myState = system.createState();
      // initialize myState to initial condition
 
-     using time_type = typename MySystemClass::independent_variable_type;
+     using time_type = typename YourSystemClass::independent_variable_type;
      const time_type t0 = 0.;
      const time_type dt = 0.1;
      const int num_steps = 100;
      pode::advance_n_steps(stepper, myState, t0, dt, num_steps);
    }
+
+.. admonition:: Full Demos
+   :class: tip
+
+
+   1. `full demo integrating a simple system using two different advance functions <https://pressio.github.io/pressio-tutorials/using_eigen/ode1.html>`__
+
+   2. `full demo integrating the Lorenz system <https://pressio.github.io/pressio-tutorials/using_eigen/ode2.html>`__
 
 
 Let's look at an example for a system *with* mass matrix:
@@ -239,7 +243,8 @@ Let's look at an example for a system *with* mass matrix:
    #include "pressio/ode_steppers_explicit.hpp"
    int main()
    {
-     MySystemClass system(/*whatever args*/);
+     // let "YourSystemClass" be the class that defines your problem
+     // and "system" be an instance of it
 
      namespace pode = pressio::ode;
      const auto scheme = pode::StepScheme::ForwardEuler;
@@ -250,7 +255,7 @@ Let's look at an example for a system *with* mass matrix:
 
      auto linearSolver = /* create linear solver */;
 
-     using time_type = typename MySystemClass::independent_variable_type;
+     using time_type = typename YourSystemClass::independent_variable_type;
      const time_type time0 = 0.;
      const time_type dt = 0.1;
      const int num_steps = 100;
