@@ -12,6 +12,12 @@ void test_teuchos_container()
     rank,
     typename T::scalarType
   >();
+
+  // negative
+  test_is_not_eigen_container<T>();
+  test_is_not_kokkos_container<T>();
+  test_is_not_tpetra_container<T>();
+  test_is_not_epetra_container<T>();
 }
 
 //*******************************

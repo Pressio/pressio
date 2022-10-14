@@ -21,6 +21,12 @@ void test_tpetra_container()
     rank,
     typename T::impl_scalar_type
   >();
+
+  // negative
+  test_is_not_eigen_container<T>();
+  test_is_not_kokkos_container<T>();
+  test_is_not_teuchos_container<T>();
+  test_is_not_epetra_container<T>();
 }
 
 TEST(tpetra, MVTraits)

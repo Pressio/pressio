@@ -64,6 +64,12 @@ void test_kokkos_container_traits()
     T::traits::rank,
     typename T::traits::value_type
   >();
+
+  // negative
+  test_is_not_eigen_container<T>();
+  test_is_not_teuchos_container<T>();
+  test_is_not_tpetra_container<T>();
+  test_is_not_epetra_container<T>();
 }
 
 //*******************************

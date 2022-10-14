@@ -16,6 +16,12 @@ void test_epetra_container()
     rank,
     double /* scalar */
   >();
+
+  // negative
+  test_is_not_eigen_container<T>();
+  test_is_not_teuchos_container<T>();
+  test_is_not_tpetra_container<T>();
+  test_is_not_kokkos_container<T>();
 }
 
 TEST(epetra, VectorTraits)
