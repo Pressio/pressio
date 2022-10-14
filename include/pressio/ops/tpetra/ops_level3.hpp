@@ -56,7 +56,7 @@ C = beta * C + alpha * A^T * B
 
 A = tpetra multivector
 B = tpetra multivector
-C is an Eigen dense matrix
+C is an Eigen dense matrix with col major
 *-------------------------------------------------------------------*/
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <
@@ -67,7 +67,7 @@ template <
      ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_multi_vector_tpetra<B_type>::value
-  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  && ::pressio::is_dense_col_major_matrix_eigen<C_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
@@ -84,21 +84,42 @@ product(::pressio::transpose /*unused*/,
   assert( (std::size_t)::pressio::ops::extent(C,0) == (std::size_t)numVecsA );
   assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t)numVecsB );
 
-  // compute dot between every column of A with every col of B
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
-    // colI is a Teuchos::RCP<Vector<...>>
-    const auto colI = A.getVector(i);
-    for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
-    {
-      const auto colJ = B.getVector(j);
-      if (beta == pressio::utils::Constants<beta_t>::zero()) {
-        C(i,j) = alpha * colI->dot(*colJ);
-      } else {
-        C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
-      }
-    }
-  }
+  // for col-major, we should have inner stride == 1 and outerstride = num of rows
+  // we should actually check at compile time somehow if C can be viewed in a kokkos view
+  assert(C.innerStride() == 1);
+  assert(C.outerStride() == C.rows());
+
+  using C_sc_t = typename ::pressio::Traits<C_type>::scalar_type;
+  using kokkos_view_t = Kokkos::View<C_sc_t**, Kokkos::LayoutLeft, Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
+  kokkos_view_t Cview(C.data(), C.rows(), C.cols());
+
+  using map_t = typename A_type::map_type;
+  const auto indexBase = A.getMap()->getIndexBase();
+  const auto comm = A.getMap()->getComm();
+  Teuchos::RCP<const map_t> replMap(new map_t(Cview.extent(0), indexBase,
+					      comm, Tpetra::LocallyReplicated));
+  A_type Cmv(replMap, Cview);
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, A, B, beta);
+
+
+  /* this is the old code used when using the Eigen matrix directly
+     but this was inefficient.
+
+     // compute dot between every column of A with every col of B
+     for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
+       // colI is a Teuchos::RCP<Vector<...>>
+       const auto colI = A.getVector(i);
+       for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
+       {
+	 const auto colJ = B.getVector(j);
+	 if (beta == pressio::utils::Constants<beta_t>::zero()) {
+	   C(i,j) = alpha * colI->dot(*colJ);
+	 } else {
+	   C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
+	 }
+       }
+     }
+  */
 }
 
 /* -------------------------------------------------------------------

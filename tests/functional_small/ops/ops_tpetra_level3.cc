@@ -5,33 +5,37 @@
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_mv_storein_eigen_C)
 {
-    auto A = pressio::ops::clone(*myMv_);
-    std::array<double, 4> ac{1.,2.,3.,4.};
-    for (std::size_t i=0; i<A.getNumVectors(); ++i) {
-      A.getVectorNonConst(i)->putScalar(ac[i]);
+  auto A = pressio::ops::clone(*myMv_);
+  std::array<double, 4> ac{1.,2.,3.,4.};
+  for (std::size_t i=0; i<A.getNumVectors(); ++i) {
+    A.getVectorNonConst(i)->putScalar(ac[i]);
+  }
+
+  mvec_t B(contigMap_, 3);
+  std::array<double, 3> bc{1.2, 2.2, 3.2};
+  for (int i=0; i<3; ++i) {
+    B.getVectorNonConst(i)->putScalar(bc[i]);
+  }
+
+  Eigen::MatrixXd C(A.getNumVectors(), B.getNumVectors());
+  C.setConstant(0.);
+
+  // C = 1*C + 1.5 A^T B
+  pressio::ops::product(
+      pressio::transpose(),
+      pressio::nontranspose(),
+      1.5, A, B, 1.0, C);
+
+  if(rank_==0){
+    std::cout << C << std::endl;
+  }
+
+  for (auto i=0; i<C.rows(); i++){
+    for (auto j=0; j<C.cols(); j++){
+      const auto gold = ac[i]*A.getGlobalLength()*1.5*bc[j];
+      EXPECT_NEAR( C(i,j), gold, 1e-12);
     }
-
-    mvec_t B(contigMap_, 3);
-    std::array<double, 3> bc{1.2, 2.2, 3.2};
-    for (int i=0; i<3; ++i) {
-      B.getVectorNonConst(i)->putScalar(bc[i]);
-    }
-
-    Eigen::MatrixXd C(A.getNumVectors(), B.getNumVectors());
-    C.setConstant(0.);
-
-    // C = 1*C + 1.5 A^T B
-    pressio::ops::product(
-        pressio::transpose(),
-        pressio::nontranspose(),
-        1.5, A, B, 1.0, C);
-
-    for (auto i=0; i<C.rows(); i++){
-        for (auto j=0; j<C.cols(); j++){
-            const auto gold = ac[i]*A.getGlobalLength()*1.5*bc[j];
-            EXPECT_NEAR( C(i,j), gold, 1e-12);
-        }
-    }
+  }
 }
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_mv_storein_eigen_C_beta0)
