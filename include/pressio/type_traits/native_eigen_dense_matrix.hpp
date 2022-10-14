@@ -51,7 +51,7 @@
 
 #include "Eigen/Dense"
 
-namespace pressio{ 
+namespace pressio{
 
 template <typename T, typename enable = void>
 struct is_static_dense_matrix_eigen : std::false_type {};
@@ -165,6 +165,20 @@ struct is_dense_row_major_matrix_eigen<
 //----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
+struct is_dense_col_major_matrix_eigen : std::false_type {};
+
+template<typename T>
+struct is_dense_col_major_matrix_eigen<
+  T,
+  mpl::enable_if_t<
+    (is_static_dense_matrix_eigen<T>::value or
+    is_dynamic_dense_matrix_eigen<T>::value) and
+    int(T::IsRowMajor)==0
+    >
+  > : std::true_type{};
+//----------------------------------------------------------------------
+
+template <typename T, typename enable = void>
 struct is_dense_matrix_eigen : std::false_type {};
 
 template<typename T>
@@ -176,5 +190,5 @@ struct is_dense_matrix_eigen<
     >
   > : std::true_type{};
 
-}//end namespace 
+}//end namespace
 #endif  // TYPE_TRAITS_NATIVE_EIGEN_DENSE_MATRIX_HPP_
