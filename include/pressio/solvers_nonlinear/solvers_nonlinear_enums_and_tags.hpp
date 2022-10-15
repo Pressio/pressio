@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_admissible_linear_solver_for_newton_raphson.hpp
+// solvers_nonlinear_enums.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,37 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template <class T, class StateType, class enable = void>
-struct LinearSolverForNewtonRaphson : std::false_type
-{
-  static_assert
-  (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
-};
+enum class Stop
+  {
+   WhenCorrectionAbsoluteNormBelowTolerance, // this is the default
+   WhenCorrectionRelativeNormBelowTolerance,
+   WhenResidualAbsoluteNormBelowTolerance,
+   WhenResidualRelativeNormBelowTolerance,
+   WhenGradientAbsoluteNormBelowTolerance,
+   WhenGradientRelativeNormBelowTolerance,
+   AfterMaxIters
+  };
 
-template <class T, class StateType>
-struct LinearSolverForNewtonRaphson<
-  T, StateType,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::has_matrix_typedef<T>::value and
-    // the matrix_type is not void
-    !std::is_void<typename T::matrix_type>::value and
-    // has a solve method
-    std::is_void<
-      decltype
-      (
-       std::declval<T>().solve
-       (
-        std::declval<typename T::matrix_type const &>(), // A
-        std::declval<StateType const &>(), // b
-        std::declval<StateType &>() // x
-        )
-       )
-      >::value
-    >
-  > : std::true_type{};
+enum class Update
+  {
+   Standard, // default
+   Armijo,
+   LMSchedule1,
+   LMSchedule2,
+   Custom
+  };
+
+struct NewtonRaphson{};
+struct GaussNewton{};
+struct IrwGaussNewton{};
+struct GaussNewtonQR{};
+struct LevenbergMarquardt{};
+using LM = LevenbergMarquardt;
 
 }}
-#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_

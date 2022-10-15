@@ -7,9 +7,14 @@ concepts
 ========
 
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 1
 
-    nonlinearsolvers_concepts/c1
-    nonlinearsolvers_concepts/c2
-    nonlinearsolvers_concepts/c3
-    nonlinearsolvers_concepts/c4
+   nonlinearsolvers_concepts/rj
+   nonlinearsolvers_concepts/rj_det
+   nonlinearsolvers_concepts/rj_ovdet
+   nonlinearsolvers_concepts/rj_fused
+   nonlinearsolvers_concepts/rj_fused_det
+   nonlinearsolvers_concepts/rj_fused_ovdet
+   nonlinearsolvers_concepts/hg
+   nonlinearsolvers_concepts/hg_fused
+   nonlinearsolvers_concepts/c4

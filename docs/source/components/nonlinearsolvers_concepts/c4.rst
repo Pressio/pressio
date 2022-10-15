@@ -4,38 +4,32 @@
 .. include:: ../../mydefs.rst
 
 
-``LinearSolver``
-================
+``LinearSolverForNewtonRaphson``
+================================
 
-Syntax only
------------
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp
+   :language: cpp
+   :lines: 52-66
 
-.. code-block:: cpp
+``LinearSolverForNonlinearLeastSquares``
+========================================
 
-     template<class MatrixType>
-     class LinearSolver
-     {
-       public:
-         using matrix_type = MatrixType;
-
-         template<class StateType, class RhsType>
-         void solve(const MatrixType & A, const RhsType & b, StateType & x);
-     };
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp
+   :language: cpp
+   :lines: 52-72
 
 
-|
+``QRSolverForGnQr``
+===================
 
-``WeightingOperator``
-=====================
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp
+   :language: cpp
+   :lines: 52-71
 
-Syntax only
------------
 
-.. code-block:: cpp
+``LeastSquaresWeightingOperator``
+=================================
 
-     class WeightingOperator
-     {
-       public:
-       void operator()(const residual_type & operand, residual_type & result);
-       void operator()(const jacobian_type & operand, jacobian_type & result);
-     };
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp
+   :language: cpp
+   :lines: 52-68

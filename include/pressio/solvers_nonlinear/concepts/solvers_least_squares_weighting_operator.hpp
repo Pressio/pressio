@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_admissible_linear_solver_for_nonlinear_least_squares.hpp
+// solvers_least_squares_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,54 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
-#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
+#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template <
-  class T,
-  class StateType,
-  class RhsType = StateType,
-  class enable = void
-  >
-struct LinearSolverForNonlinearLeastSquares : std::false_type
-{
-  static_assert
-  (!std::is_const<T>::value,
-   "The linear solver type cannot be cv-qualified: maybe you are using a const object?");
-};
+#ifdef PRESSIO_ENABLE_CXX20
+template <class T, class RType, class JType>
+concept LeastSquaresWeightingOperator =
+  requires(const T & s,
+	   const RType & a,
+	   const JType & b,
+	   RType & c,
+	   JType & d)
+  {
+    { s(a, c) } -> std::same_as<void>;
+    { s(b, d) } -> std::same_as<void>;
+  };
+#endif //PRESSIO_ENABLE_CXX20
 
-template <class T, class StateType>
-struct LinearSolverForNonlinearLeastSquares<
-  T, StateType, StateType,
+}} // end namespace pressio::nonlinearsolvers
+
+#if not defined PRESSIO_ENABLE_CXX20
+namespace pressio{ namespace nonlinearsolvers{
+
+template <class T, class RType, class JType, class enable = void>
+struct LeastSquaresWeightingOperator : std::false_type{};
+
+template <class T, class RType, class JType>
+struct LeastSquaresWeightingOperator<
+  T, RType, JType,
   ::pressio::mpl::enable_if_t<
-    ::pressio::has_matrix_typedef<T>::value and
-    // the matrix_type is not void
-    !std::is_void<typename T::matrix_type>::value and
-    // has a solve method
     std::is_void<
       decltype
-      (
-       std::declval<T>().solve
-       (
-        std::declval<typename T::matrix_type const &>(), // A
-        std::declval<StateType const &>(), // b
-        std::declval<StateType &>() // x
-        )
+      (std::declval<T const>()
+       (std::declval<RType const &>(), std::declval<RType &>())
+       )
+      >::value
+    and
+    std::is_void<
+      decltype
+      (std::declval<T const>()
+       (std::declval<JType const &>(), std::declval<JType &>())
        )
       >::value
     >
   > : std::true_type{};
 
-}}
-#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+}} // end namespace pressio::nonlinearsolvers
+#endif // if not defined PRESSIO_ENABLE_CXX20
+
+#endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_

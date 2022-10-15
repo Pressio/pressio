@@ -58,25 +58,21 @@
 
 #include "solvers_nonlinear/solvers_exceptions.hpp"
 
-#include "solvers_nonlinear/solvers_predicates.hpp"
-#include "solvers_nonlinear/solvers_nonlinear_tags.hpp"
-#include "solvers_nonlinear/solvers_nonlinear_enums.hpp"
-#include "solvers_nonlinear/constraints/solvers_least_squares_weighting_operator.hpp"
+#include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
+
+#include "solvers_nonlinear/concepts/solvers_predicates.hpp"
+#include "solvers_nonlinear/concepts/solvers_system_residual_jacobian.hpp"
+#include "solvers_nonlinear/concepts/solvers_system_fused_residual_jacobian.hpp"
+#include "solvers_nonlinear/concepts/solvers_system_hessian_gradient.hpp"
+#include "solvers_nonlinear/concepts/solvers_system_fused_hessian_gradient.hpp"
+#include "solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp"
+#include "solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp"
+#include "solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp"
+#include "solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp"
+
 #include "solvers_nonlinear/impl/updaters/solvers_create_updater.hpp"
 #include "solvers_nonlinear/impl/solvers_observer.hpp"
-
-// *** newton raphson *** //
-#include "solvers_nonlinear/constraints/solvers_admissible_linear_solver_for_newton_raphson.hpp"
-#include "solvers_nonlinear/constraints/solvers_system_fused_residual_jacobian.hpp"
-#include "solvers_nonlinear/constraints/solvers_system_residual_jacobian.hpp"
 #include "solvers_nonlinear/impl/solvers_printer.hpp"
-
-// *** non-linear least-squares *** //
-#include "solvers_nonlinear/constraints/solvers_system_fused_hessian_gradient.hpp"
-#include "solvers_nonlinear/constraints/solvers_system_hessian_gradient.hpp"
-#include "solvers_nonlinear/constraints/solvers_admissible_linear_solver_for_nonlinear_least_squares.hpp"
-#include "solvers_nonlinear/constraints/solvers_admissible_qr_solver_for_gn_qr.hpp"
-
 #include "solvers_nonlinear/solvers_create_public_api.hpp"
 
 #endif

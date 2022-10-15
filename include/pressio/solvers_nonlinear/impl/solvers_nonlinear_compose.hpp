@@ -66,60 +66,6 @@ namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 ////////////////////////////////////////////////////////////
 //
-// *** NewtonRaphson ***
-//
-////////////////////////////////////////////////////////////
-
-template<class SystemType, class LinearSolverType>
-struct ComposeNewtonRaphson
-{
-  using system_type = mpl::remove_cvref_t<SystemType>;
-  using state_t  = typename system_type::state_type;
-  using r_t = typename system_type::residual_type;
-  using j_t = typename system_type::jacobian_type;
-
-  static_assert
-  (::pressio::nonlinearsolvers::LinearSolverForNewtonRaphson<
-   mpl::remove_cvref_t<LinearSolverType>, state_t>::value,
-   "Newton-Raphson: inadmissible linear solver");
-
-  using operators_t = ResidualJacobianOperators<r_t, j_t>;
-  using corrector_t = RJCorrector<operators_t, state_t, LinearSolverType>;
-  using type = Solver<NewtonRaphson, corrector_t>;
-};
-
-template<class SystemType, class ... Args>
-using ComposeNewtonRaphson_t = typename ComposeNewtonRaphson<SystemType, Args...>::type;
-
-////////////////////////////////////////////////////////////
-//
-// *** GN QR ***
-//
-////////////////////////////////////////////////////////////
-
-template<class SystemType, class SolverType, class ...Args>
-struct ComposeGNQR
-{
-  using system_type = mpl::remove_cvref_t<SystemType>;
-  using state_t = typename system_type::state_type;
-  using r_t = typename system_type::residual_type;
-  using j_t = typename system_type::jacobian_type;
-
-  static_assert
-  (::pressio::nonlinearsolvers::QRSolverForGnQr<
-   mpl::remove_cvref_t<SolverType>, state_t, j_t, r_t>::value,
-   "The solver type passed to compose a QR-based GN solver is not valid");
-
-  using operators_t = ResidualJacobianOperators<r_t, j_t>;
-  using corrector_t  = QRCorrector<operators_t, state_t, SolverType>;
-  using type        = Solver<GaussNewtonQR, corrector_t>;
-};
-
-template<class ...Args>
-using ComposeGaussNewtonQR_t = typename ComposeGNQR<Args...>::type;
-
-////////////////////////////////////////////////////////////
-//
 // *** GN or LM ***
 //
 ////////////////////////////////////////////////////////////
@@ -131,12 +77,19 @@ struct Compose{ using type = void; };
 // GN or LM with Neq and HG api
 // ***
 template<class SystemType, class tag, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires (SystemWithHessianAndGradient<mpl::remove_cvref_t<SystemType>>
+	  || SystemWithFusedHessianAndGradient<mpl::remove_cvref_t<SystemType>>)
+#endif
 struct Compose<
   SystemType, tag,
   mpl::enable_if_t<
+#if not defined PRESSIO_ENABLE_CXX20
     (pressio::nonlinearsolvers::SystemWithHessianAndGradient<mpl::remove_cvref_t<SystemType>>::value or
      pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<mpl::remove_cvref_t<SystemType>>::value)
-    and (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
+    and
+#endif
+    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
     >,
   LinearSolverType
   >
@@ -148,22 +101,11 @@ struct Compose<
   using state_t  = typename system_type::state_type;
   using grad_t   = typename system_type::gradient_type;
 
-  static_assert
-  (::pressio::nonlinearsolvers::LinearSolverForNonlinearLeastSquares<
-   linear_solver_type, state_t>::value,
-   "Invalid linear solver passed to GN or LM with normal equations");
-
-  // hessian_t is extracted from linear solver
-  using hess_t = typename linear_solver_type::matrix_type;
-  static_assert
-  (std::is_same<mpl::remove_cvref_t<hess_t>, typename system_type::hessian_type>::value,
-   "Matrix type detected from the linear solver must match the hessian type detected from system");
-
   using operators_t =
     typename std::conditional<
     std::is_same<tag, GaussNewton>::value,
-    HessianGradientOperatorsHGApi<hess_t,   grad_t, residual_norm_type>,
-    LMHessianGradientOperatorsHGApi<hess_t, grad_t, residual_norm_type>
+    HessianGradientOperatorsHGApi<typename system_type::hessian_type, grad_t, residual_norm_type>,
+    LMHessianGradientOperatorsHGApi<typename system_type::hessian_type, grad_t, residual_norm_type>
     >::type;
 
   using corrector_t = HessianGradientCorrector<operators_t, state_t, LinearSolverType>;
@@ -174,31 +116,32 @@ struct Compose<
 // GN or LM with Neq and r/j api
 // ------------------------------------------------------------
 template<class SystemType, class tag, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires (SystemWithResidualAndJacobian<mpl::remove_cvref_t<SystemType>>
+       || SystemWithFusedResidualAndJacobian<mpl::remove_cvref_t<SystemType>>)
+#endif
 struct Compose<
   SystemType, tag,
   mpl::enable_if_t<
+#if not defined PRESSIO_ENABLE_CXX20
     (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<mpl::remove_cvref_t<SystemType>>::value or
      ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<mpl::remove_cvref_t<SystemType>>::value)
     and
+#endif
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
-    >,
-  LinearSolverType
+    >, LinearSolverType
   >
 {
   using system_type = mpl::remove_cvref_t<SystemType>;
   using state_t  = typename system_type::state_type;
   using r_t	 = typename system_type::residual_type;
   using j_t	 = typename system_type::jacobian_type;
-  using grad_t   = state_t;
-
-  using linear_solver_type = mpl::remove_cvref_t<LinearSolverType>;
-  static_assert
-  (::pressio::nonlinearsolvers::LinearSolverForNonlinearLeastSquares<
-   linear_solver_type, state_t>::value,
-   "Invalid linear solver passed to GN or LM with normal equations");
 
   // hessian_t is extracted from linear solver
+  using linear_solver_type = mpl::remove_cvref_t<LinearSolverType>;
   using hess_t = typename mpl::remove_cvref_t<linear_solver_type>::matrix_type;
+  // gradient is same type as state
+  using grad_t = state_t;
 
   using operators_t =
     typename std::conditional<
@@ -256,20 +199,11 @@ struct Compose<
   using state_t = typename system_type::state_type;
   using r_t = typename system_type::residual_type;
   using j_t = typename system_type::jacobian_type;
-  using grad_t = state_t;
-
-  static_assert
-  (::pressio::nonlinearsolvers::LinearSolverForNonlinearLeastSquares<
-   linear_solver_type, state_t>::value,
-   "A valid linear solver type must be passed to weighted GN or LM with normal equations");
 
   // hessian_t is extracted from linear solver
   using hess_t = typename linear_solver_type::matrix_type;
-
-  static_assert
-  (::pressio::nonlinearsolvers::LeastSquaresWeightingOperator<
-   mpl::remove_cvref_t<WeightingOperator>, r_t, j_t>::value,
-   "Invalid weighting operator for GN or LM");
+  // gradient is same type as state
+  using grad_t = state_t;
 
   using operators_t = typename ComposeOperators<WeightingOperator, tag>::template type<
     hess_t, grad_t, r_t, j_t>;
@@ -289,12 +223,6 @@ struct ComposeIrwGaussNewton
   using r_t = typename system_type::residual_type;
   using j_t = typename system_type::jacobian_type;
   using grad_t = state_t;
-
-  using linear_solver_type = mpl::remove_cvref_t<LinearSolverType>;
-  static_assert
-  (::pressio::nonlinearsolvers::LinearSolverForNonlinearLeastSquares<
-   linear_solver_type, state_t>::value,
-   "A valid linear solver type must be passed to IRSL");
 
   using weighting_t = ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<r_t, j_t>;
   using type = typename Compose<SystemType, GaussNewton,

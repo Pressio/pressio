@@ -6,7 +6,7 @@
 
 namespace pressio{ namespace solvers{ namespace test{
 
-struct EigenRosenbrock3 
+struct EigenRosenbrock3
 {
 
   using scalar_type = double;

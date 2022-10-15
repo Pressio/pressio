@@ -2,11 +2,16 @@
 #include <gtest/gtest.h>
 #include "pressio/solvers_nonlinear.hpp"
 
-struct ValidSystemResJac 
+using MyStateType = Eigen::VectorXd;
+using MyGradientType = Eigen::VectorXd;
+using MyJacType   = Eigen::SparseMatrix<double>;
+using MyHessType  = Eigen::MatrixXd;
+
+struct ValidSystemResJac
 {
-  using state_type     = std::vector<double>;
+  using state_type     = MyStateType;
   using residual_type  = state_type;
-  using jacobian_type  = std::vector<std::vector<double>>;
+  using jacobian_type  = MyJacType;
 
   state_type createState() const;
   residual_type createResidual() const;
@@ -16,11 +21,11 @@ struct ValidSystemResJac
   void jacobian(const state_type& x, jacobian_type & jac) const;
 };
 
-struct NonValidSystemResJac 
+struct NonValidSystemResJac
 {
-  using state_type     = std::vector<double>;
+  using state_type     = MyStateType;
   using residual_type  = state_type;
-  using jacobian_type  = std::vector<std::vector<double>>;
+  using jacobian_type  = MyJacType;
 
   //residual_type createResidual() const; // missing on purpose to fail assert
   state_type createState() const;
@@ -31,24 +36,24 @@ struct NonValidSystemResJac
 
 struct ValidSystemFusedResJac
 {
-  using state_type     = std::vector<double>;
+  using state_type     = MyStateType;
   using residual_type  = state_type;
-  using jacobian_type  = std::vector<std::vector<double>>;
+  using jacobian_type  = MyJacType;
 
   state_type createState() const;
   residual_type createResidual() const;
   jacobian_type createJacobian() const;
 
   void residualAndJacobian(const state_type& x,
-         residual_type & res, 
+         residual_type & res,
          jacobian_type & J,
          bool recomputeJacobian) const;
 };
 
 struct ValidSystemHessGrad {
-  using state_type  = std::vector<double>;
-  using hessian_type  = std::vector<std::vector<double>>;
-  using gradient_type = state_type;
+  using state_type  = MyStateType;
+  using hessian_type  = MyHessType;
+  using gradient_type = MyGradientType;
   using residual_norm_type = double;
 
   state_type createState() const;
@@ -56,22 +61,22 @@ struct ValidSystemHessGrad {
   gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
-          pressio::Norm normKind,
-          residual_norm_type & resNorm) const;
+		    pressio::Norm normKind,
+		    residual_norm_type & resNorm) const;
 
   void gradient(const state_type &,
-    gradient_type &,
-    ::pressio::Norm normKind,
-    double & normResidual,
-    bool recomputeJacobian) const;
+		gradient_type &,
+		::pressio::Norm normKind,
+		double & normResidual,
+		bool recomputeJacobian) const;
 
   void hessian(const state_type &, hessian_type &) const;
 };
 
 struct ValidSystemFusedHessGrad {
-  using state_type  = std::vector<double>;
-  using hessian_type  = std::vector<std::vector<double>>;
-  using gradient_type = state_type;
+  using state_type  = MyStateType;
+  using hessian_type  = MyHessType;
+  using gradient_type = MyGradientType;
   using residual_norm_type = double;
 
   state_type createState() const;
@@ -79,22 +84,26 @@ struct ValidSystemFusedHessGrad {
   gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
-          pressio::Norm normKind,
-          residual_norm_type & resNorm) const;
+		    pressio::Norm normKind,
+		    residual_norm_type & resNorm) const;
 
   void hessianAndGradient(const state_type &, hessian_type &,
-        gradient_type &,
-        ::pressio::Norm normKind,
-        residual_norm_type & normResidual,
-        bool recomputeJacobian) const;
+			  gradient_type &,
+			  ::pressio::Norm normKind,
+			  residual_norm_type & normResidual,
+			  bool recomputeJacobian) const;
 };
 
-struct ValidLinearSolver 
+struct ValidLinearSolverNewtonRaphson
 {
-  using matrix_type = std::vector<std::vector<double>>;
+  using matrix_type = MyJacType;
+  void solve(const matrix_type &, const MyStateType &, MyStateType &);
+};
 
-  template  <typename state_type>
-  void solve(const matrix_type &, const state_type &, state_type &);
+struct ValidLinearSolverGnOrLM
+{
+  using matrix_type = Eigen::MatrixXd;
+  void solve(const matrix_type &, const MyStateType &, MyStateType &);
 };
 
 struct InvalidLinearSolver {
@@ -102,7 +111,7 @@ struct InvalidLinearSolver {
 };
 
 template <typename A_t, typename r_t, typename state_type>
-struct ValidQRSolver 
+struct ValidQRSolver
 {
   void computeThin(const A_t &);
   void applyQTranspose(const r_t &, state_type &) const;
@@ -112,63 +121,104 @@ struct ValidQRSolver
 
 TEST(solvers_nonlinear, res_jac_api)
 {
-  using namespace pressio;
+  using namespace pressio::nonlinearsolvers;
   using system_t   = ValidSystemResJac;
-  static_assert(nonlinearsolvers::SystemWithResidualAndJacobian<system_t>::value, "");
-  static_assert(!nonlinearsolvers::SystemWithFusedResidualAndJacobian<system_t>::value, "");
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(SystemWithResidualAndJacobian<system_t>, "");
+  static_assert(!SystemWithFusedResidualAndJacobian<system_t>, "");
+#else
+  static_assert(SystemWithResidualAndJacobian<system_t>::value, "");
+  static_assert(!SystemWithFusedResidualAndJacobian<system_t>::value, "");
+#endif
 }
 
 TEST(solvers_nonlinear, system_non_admissible_res_jac_api){
-  using namespace pressio;
+  using namespace pressio::nonlinearsolvers;
   using system_t   = NonValidSystemResJac;
-  static_assert(!nonlinearsolvers::SystemWithResidualAndJacobian<system_t>::value, "");
-  static_assert(!nonlinearsolvers::SystemWithFusedResidualAndJacobian<system_t>::value, "");
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(!SystemWithResidualAndJacobian<system_t>, "");
+  static_assert(!SystemWithFusedResidualAndJacobian<system_t>, "");
+#else
+  static_assert(!SystemWithResidualAndJacobian<system_t>::value, "");
+  static_assert(!SystemWithFusedResidualAndJacobian<system_t>::value, "");
+#endif
 }
 
 TEST(solvers_nonlinear, system_admissible_fused_res_jac_api){
-  using namespace pressio;
+  using namespace pressio::nonlinearsolvers;
   using system_t   = ValidSystemFusedResJac;
-  static_assert(!nonlinearsolvers::SystemWithResidualAndJacobian<system_t>::value, "");
-  static_assert(nonlinearsolvers::SystemWithFusedResidualAndJacobian<system_t>::value, "");
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(!SystemWithResidualAndJacobian<system_t>, "");
+  static_assert(SystemWithFusedResidualAndJacobian<system_t>, "");
+#else
+  static_assert(!SystemWithResidualAndJacobian<system_t>::value, "");
+  static_assert(SystemWithFusedResidualAndJacobian<system_t>::value, "");
+#endif
 }
 
 TEST(solvers_nonlinear, hes_gra_api){
-  using namespace pressio;
+  using namespace pressio::nonlinearsolvers;
   using system_t   = ValidSystemHessGrad;
-  static_assert(nonlinearsolvers::SystemWithHessianAndGradient<system_t>::value, "");
-  static_assert(!nonlinearsolvers::SystemWithFusedHessianAndGradient<system_t>::value, "");
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(SystemWithHessianAndGradient<system_t>, "");
+  static_assert(!SystemWithFusedHessianAndGradient<system_t>, "");
+#else
+  static_assert(SystemWithHessianAndGradient<system_t>::value, "");
+  static_assert(!SystemWithFusedHessianAndGradient<system_t>::value, "");
+#endif
 }
 
 TEST(solvers_nonlinear, fused_hes_gra_api){
-  using namespace pressio;
+  using namespace pressio::nonlinearsolvers;
   using system_t   = ValidSystemFusedHessGrad;
-  static_assert(!nonlinearsolvers::SystemWithHessianAndGradient<system_t>::value, "");
-  static_assert(nonlinearsolvers::SystemWithFusedHessianAndGradient<system_t>::value, "");
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(!SystemWithHessianAndGradient<system_t>, "");
+  static_assert(SystemWithFusedHessianAndGradient<system_t>, "");
+#else
+  static_assert(!SystemWithHessianAndGradient<system_t>::value, "");
+  static_assert(SystemWithFusedHessianAndGradient<system_t>::value, "");
+#endif
 }
 
 TEST(solvers_meta, admissible_linear_solver_newtonraphon)
 {
-  using state_type    = std::vector<double>;
-  using namespace pressio;
-  static_assert(nonlinearsolvers::LinearSolverForNewtonRaphson<ValidLinearSolver, state_type>::value, "");
-  static_assert(!nonlinearsolvers::LinearSolverForNewtonRaphson<InvalidLinearSolver, state_type>::value, "");
+  using namespace pressio::nonlinearsolvers;
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(LinearSolverForNewtonRaphson<
+		ValidLinearSolverNewtonRaphson, MyJacType, MyStateType, MyStateType>, "");
+  static_assert(!LinearSolverForNewtonRaphson<
+		InvalidLinearSolver, MyJacType, MyStateType, MyStateType>, "");
+#else
+  static_assert(LinearSolverForNewtonRaphson<
+		ValidLinearSolverNewtonRaphson, MyJacType, MyStateType, MyStateType>::value, "");
+  static_assert(!LinearSolverForNewtonRaphson<
+		InvalidLinearSolver, MyJacType, MyStateType, MyStateType>::value, "");
+#endif
 }
 
 TEST(solvers_meta, admissible_linear_solver_nonlinear_ls)
 {
-  using state_type    = std::vector<double>;
-  using namespace pressio;
-  static_assert(nonlinearsolvers::LinearSolverForNonlinearLeastSquares<ValidLinearSolver, state_type>::value, "");
-  static_assert(!nonlinearsolvers::LinearSolverForNonlinearLeastSquares<InvalidLinearSolver, state_type>::value, "");
+  using state_type    = MyStateType;
+  using namespace pressio::nonlinearsolvers;
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(LinearSolverForNonlinearLeastSquares<ValidLinearSolverGnOrLM, state_type>, "");
+  static_assert(!LinearSolverForNonlinearLeastSquares<InvalidLinearSolver, state_type>, "");
+#else
+  static_assert(LinearSolverForNonlinearLeastSquares<ValidLinearSolverGnOrLM, state_type>::value, "");
+  static_assert(!LinearSolverForNonlinearLeastSquares<InvalidLinearSolver, state_type>::value, "");
+#endif
 }
 
 TEST(solvers_nonlinear, admissible_qr_solver)
 {
-  using A_t = std::vector<std::vector<double>>;
-  using r_t = std::vector<double>;
-  using state_type = std::vector<double>;
-
+  using A_t = std::vector<MyStateType>;
+  using r_t = MyStateType;
+  using state_type = MyStateType;
   using solver_t = ValidQRSolver<A_t, r_t, state_type>;
-  static_assert(pressio::nonlinearsolvers::QRSolverForGnQr<
-    solver_t, state_type, A_t, r_t>::value, "");
+
+#ifdef PRESSIO_ENABLE_CXX20
+  static_assert(pressio::nonlinearsolvers::QRSolverForGnQr<solver_t, state_type, A_t, r_t>, "");
+#else
+  static_assert(pressio::nonlinearsolvers::QRSolverForGnQr<solver_t, state_type, A_t, r_t>::value, "");
+#endif
 }

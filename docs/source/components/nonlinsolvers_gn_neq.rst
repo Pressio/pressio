@@ -1,64 +1,93 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
-Gauss-Newton (via normal-equations)
-===================================
+Gauss-Newton via normal-equations
+=================================
 
 Defined in header ``<pressio/solvers_nonlinear.hpp>``
 
-
-API, Parameters and Requirements
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+API
+---
 
 .. code-block:: cpp
 
    namespace pressio{ namespace nonlinearsolvers{
 
-   template<class ProblemClassType, class LinearSolverType>
-   auto create_gauss_newton(const ProblemClassType & system,    (1)
+   template<class SystemType, class LinearSolverType>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires
+	  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+	|| OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
+	|| SystemWithHessianAndGradient<SystemType>
+	|| SystemWithFusedHessianAndGradient<SystemType>)
+       && LinearSolverForNonlinearLeastSquares<
+	    mpl::remove_cvref_t<LinearSolverType>,
+	    typename SystemType::state_type>
+   #endif
+   auto create_gauss_newton(const SystemType & system,          (1)
                             LinearSolverType && lsolver);
 
-   template<class ProblemClassType, class LinearSolverType, class WeightingOpType>
-   auto create_gauss_newton(const ProblemClassType & system,    (2)
+   template<
+     class SystemType,
+     class LinearSolverType,
+     class WeightingOpType>
+   #ifdef PRESSIO_ENABLE_CXX20
+     requires
+	  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+	|| OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>)
+       && LinearSolverForNonlinearLeastSquares<
+	    mpl::remove_cvref_t<LinearSolverType>,
+	    typename SystemType::state_type>
+       && LeastSquaresWeightingOperator<
+	    mpl::remove_cvref_t<WeightingOpType>,
+	    typename SystemType::residual_type,
+	    typename SystemType::jacobian_type>
+   #endif
+   auto create_gauss_newton(const SystemType & system,          (2)
                             LinearSolverType && lsolver,
                             WeightingOpType && weightOperator);
 
    }}
 
-* ``system``
+Parameters
+~~~~~~~~~~
 
-  - instance of your problem class defining the problem
+.. list-table::
+   :widths: 18 82
+   :header-rows: 1
+   :align: left
 
-    .. warning::
+   * -
+     -
 
-        * overload 1 accepts a system satisfying *any of* the following concepts:
-	  `SystemWithResidualAndJacobian <nonlinearsolvers_concepts/c1.html>`__,
-	  `SystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/c2.html>`__,
-	  `SystemWithHessianAndGradient <nonlinearsolvers_concepts/c3.html>`__
-	  or `SystemWithFusedHessianAndGradient <nonlinearsolvers_concepts/c3.html>`__
+   * - ``system``
+     - your problem instance
 
-        * overload 2 *only* accepts a system satisfying either the
-	  `SystemWithResidualAndJacobian <nonlinearsolvers_concepts/c1.html>`__ or
-	  `SystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/c2.html>`__
+   * - ``lsolver``
+     - linear solver to use within each nonlinear iteration
 
-* ``lsolver``
+   * - ``weightOperator``
+     - the weighting operator for doing weighted least-squares.
 
-  * linear solver for solving the normal equations, choose one from `linear solvers <linsolvers.html>`_
-  * if you want to implement your own, then it has to conform to the `linear solver API <linsolvers.html>`_
+Constraints
+~~~~~~~~~~~
 
-* ``weightOperator``:
+Each overload is associated with a set of constraints.
+With C++20, these would be enforced via concepts using
+the *requires-clause* shown in the API synopsis above.
+Since we cannot yet officially upgrade to C++20, the constraints
+are currently enforced via static asserts (to provide a decent error message)
+and/or SFINAE. The concepts used are:
 
-  * weighting operator for doing weighted least-squares.
-    Must conform to:
+- `nonlinearsolvers::OverDeterminedSystemWithResidualAndJacobian <nonlinearsolvers_concepts/rj_ovdet.html>`__
 
-    .. code-block:: cpp
+- `nonlinearsolvers::OverDeterminedSystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/rj_fused_ovdet.html>`__
 
-       class WeightingOperator
-       {
-         public:
-         void operator()(const residual_type & operand, residual_type & result);
-         void operator()(const jacobian_type & operand, jacobian_type & result);
-       };
+- `nonlinearsolvers::SystemWithHessianAndGradient <nonlinearsolvers_concepts/hg.html>`__
+
+- `nonlinearsolvers::SystemWithFusedHessianAndGradient <nonlinearsolvers_concepts/hg_fused.html>`__
+
+- `nonlinearsolvers::LinearSolverForNonlinearLeastSquares <nonlinearsolvers_concepts/c4.html>`__
 
 
 Example usage

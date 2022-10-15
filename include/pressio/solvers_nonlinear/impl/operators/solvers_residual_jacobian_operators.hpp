@@ -78,12 +78,12 @@ public:
   ~ResidualJacobianOperators() = default;
 
   template <
-    typename SystemType,
+    typename SystemType/*,
     mpl::enable_if_t<
       ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value,
       int
-      > = 0
+      > = 0*/
     >
   ResidualJacobianOperators(const SystemType & system)
     : r_( system.createResidual() ),
@@ -113,9 +113,14 @@ public:
   }
 
   template<typename SystemType, typename StateType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithResidualAndJacobian<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
-    >
+  ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
+  >  
+#endif
   computeOperators(const SystemType & sys,
 		   const StateType & state,
 		   residual_norm_type & residualNorm,
@@ -134,11 +139,16 @@ public:
     }
   }
 
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename state_t>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithFusedResidualAndJacobian<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<system_t>::value
-    >
-  computeOperators(const system_t & sys,
+  ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value
+  >  
+#endif
+  computeOperators(const SystemType & sys,
 		   const state_t & state,
 		   residual_norm_type & residualNorm,
 		   bool recomputeSystemJacobian=true)
@@ -151,11 +161,16 @@ public:
     }
   }
 
-  template< typename system_t, typename state_t>
+  template< typename SystemType, typename state_t>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithResidualAndJacobian<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<system_t>::value
-    >
-  residualNorm(const system_t & system,
+  ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
+  >  
+#endif
+  residualNorm(const SystemType & system,
 	       const state_t & state,
 	       residual_norm_type & residualNorm) const
   {
@@ -167,11 +182,16 @@ public:
     }
   }
 
-  template< typename system_t, typename state_t>
+  template< typename SystemType, typename state_t>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithFusedResidualAndJacobian<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<system_t>::value
-    >
-  residualNorm(const system_t & system,
+  ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value
+  >  
+#endif
+  residualNorm(const SystemType & system,
 	       const state_t & state,
 	       residual_norm_type & residualNorm) const
   {

@@ -46,10 +46,59 @@
 //@HEADER
 */
 
-
 #ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_SYSTEM_FUSED_HESSIAN_GRADIENT_HPP_
 #define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_SYSTEM_FUSED_HESSIAN_GRADIENT_HPP_
 
+namespace pressio{ namespace nonlinearsolvers{
+
+#ifdef PRESSIO_ENABLE_CXX20
+template <class T>
+concept SystemWithFusedHessianAndGradient =
+  /*
+    required nested aliases
+  */
+  requires(){
+    typename T::state_type;
+    typename T::gradient_type;
+    typename T::hessian_type;
+    typename T::residual_norm_type;
+  }
+  /*
+    requirements on the nested aliases
+  */
+  && ::pressio::is_vector_eigen<typename T::state_type>::value
+  && ::pressio::is_vector_eigen<typename T::gradient_type>::value
+  && ::pressio::is_dense_matrix_eigen<typename T::hessian_type>::value
+  && all_have_traits_and_same_scalar<
+	typename T::state_type,
+	typename T::gradient_type,
+	typename T::hessian_type
+     >::value
+  /*
+    compound requirements
+  */
+  && requires(const T & A,
+	      const typename T::state_type & state,
+	      typename T::gradient_type & g,
+	      typename T::hessian_type & H,
+	      pressio::Norm normKind,
+	      typename T::residual_norm_type & rNormValue,
+	      bool recomputeJacobian)
+  {
+    { A.createState()       } -> std::same_as<typename T::state_type>;
+    { A.createGradient()    } -> std::same_as<typename T::gradient_type>;
+    { A.createHessian()     } -> std::same_as<typename T::hessian_type>;
+
+    { A.residualNorm(state, normKind, rNormValue) } -> std::same_as<void>;
+
+    { A.hessianAndGradient(state, H, g, normKind,
+			   rNormValue, recomputeJacobian)  } -> std::same_as<void>;
+  };
+#endif //PRESSIO_ENABLE_CXX20
+
+}} // end namespace pressio::nonlinearsolvers
+
+#if not defined PRESSIO_ENABLE_CXX20
 namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename enable = void>
@@ -57,27 +106,38 @@ struct SystemWithFusedHessianAndGradient : std::false_type{};
 
 template<typename T>
 struct SystemWithFusedHessianAndGradient<
- T,
+  T,
  ::pressio::mpl::enable_if_t<
-   ::pressio::has_state_typedef<T>::value
-   and ::pressio::has_hessian_typedef<T>::value
-   and ::pressio::has_gradient_typedef<T>::value
-   and ::pressio::has_residual_norm_typedef<T>::value
+      ::pressio::has_state_typedef<T>::value
+   && ::pressio::has_hessian_typedef<T>::value
+   && ::pressio::has_gradient_typedef<T>::value
+   && ::pressio::has_residual_norm_typedef<T>::value
    //
-   and ::pressio::nonlinearsolvers::has_const_create_state_method_return_result<
+   && ::pressio::is_vector_eigen<typename T::state_type>::value
+   && ::pressio::is_vector_eigen<typename T::gradient_type>::value
+   && ::pressio::is_dense_matrix_eigen<typename T::hessian_type>::value
+   && all_have_traits_and_same_scalar<
+	 typename T::state_type,
+	 typename T::gradient_type,
+	 typename T::hessian_type
+      >::value
+   //
+   && ::pressio::nonlinearsolvers::has_const_create_state_method_return_result<
      T, typename T::state_type>::value
-   and ::pressio::nonlinearsolvers::has_const_create_hessian_method_return_result<
+   && ::pressio::nonlinearsolvers::has_const_create_hessian_method_return_result<
      T, typename T::hessian_type>::value
-   and ::pressio::nonlinearsolvers::has_const_create_gradient_method_return_result<
+   && ::pressio::nonlinearsolvers::has_const_create_gradient_method_return_result<
      T, typename T::gradient_type>::value
    //
-   and ::pressio::nonlinearsolvers::has_const_hessianandgradient_method_accept_state_result_norm_return_void<
-     T, typename T::state_type, typename T::hessian_type,
-     typename T::gradient_type, typename T::residual_norm_type>::value
-   and ::pressio::nonlinearsolvers::has_const_residualnorm_method_accept_state_norm_return_void<
-     T, typename T::state_type, typename T::residual_norm_type>::value
+   && ::pressio::nonlinearsolvers::has_const_hessianandgradient_method_accept_state_result_norm_return_void<
+	T, typename T::state_type, typename T::hessian_type,
+	typename T::gradient_type, typename T::residual_norm_type>::value
+   && ::pressio::nonlinearsolvers::has_const_residualnorm_method_accept_state_norm_return_void<
+	T, typename T::state_type, typename T::residual_norm_type>::value
    >
  > : std::true_type{};
 
-}}
+}} // end namespace pressio::nonlinearsolvers
+#endif
+
 #endif  // SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_SYSTEM_FUSED_HESSIAN_GRADIENT_HPP_

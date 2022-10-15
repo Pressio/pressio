@@ -87,14 +87,19 @@ public:
   LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi && o) = default;
   ~LMHessianGradientOperatorsRJApi() = default;
 
-  template <
-    typename SystemType,
-    mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
-       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value),
-      int
-      > = 0
-    >
+  template <typename SystemType>
+// #ifdef PRESSIO_ENABLE_CXX20
+//   requires SystemWithResidualAndJacobian<SystemType> || SystemWithFusedResidualAndJacobian<SystemType> 
+// #else
+//   template <
+//     typename SystemType,
+//     mpl::enable_if_t<
+//       (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
+//        ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value),
+//       int
+//       > = 0
+//     >
+// #endif
   LMHessianGradientOperatorsRJApi(const SystemType & system)
     : HGOpRJApi_(system),
       lmH_(::pressio::ops::clone(HGOpRJApi_.hessianCRef()))
@@ -106,9 +111,9 @@ public:
     typename SystemType,
     typename ...ArgsIn,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
-       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value)
-      and sizeof ...(ArgsIn) >= 1,
+      /*(::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value) and */
+      sizeof ...(ArgsIn) >= 1,
       int
       > = 0
     >

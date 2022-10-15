@@ -32,7 +32,7 @@ struct EigenRosenbrock4Impl
     res(5) = (1.-x3);
   }
 
-  void jacobian(const state_type & x, jacobian_type & JJ) const 
+  void jacobian(const state_type & x, jacobian_type & JJ) const
   {
     auto x1 = x(0);
     auto x2 = x(1);
@@ -61,7 +61,7 @@ struct EigenRosenbrock4HessGradApi
   using hessian_type	= Eigen::MatrixXd;
   using gradient_type	= state_type;
   using residual_norm_type = double;
-  
+
   EigenRosenbrock4Impl rosImpl;
 
 public:
@@ -82,7 +82,7 @@ public:
     auto R = rosImpl.createResidual();
     rosImpl.residual(state, R);//, normKind, normResidual);
     if (normKind == pressio::Norm::L2) normResidual = R.norm();
-    if (normKind == pressio::Norm::L1) normResidual = R.lpNorm<1>();    
+    if (normKind == pressio::Norm::L1) normResidual = R.lpNorm<1>();
   }
 
   void hessianAndGradient(const state_type & x,

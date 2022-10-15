@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_nonlinear_enums.hpp
+// solvers_admissible_linear_solver_for_newton_raphson.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,50 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
+#ifndef SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
+#define SOLVERS_NONLINEAR_CONSTRAINTS_SOLVERS_ADMISSIBLE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{
 
-enum class Stop
+#ifdef PRESSIO_ENABLE_CXX20
+template <class T, class MatrixType, class RhsType, class StateType>
+concept LinearSolverForNewtonRaphson =
+  requires(T & s,
+	   const MatrixType & A,
+	   const RhsType & b,
+	   StateType & x)
   {
-   WhenCorrectionAbsoluteNormBelowTolerance, // this is the default
-   WhenCorrectionRelativeNormBelowTolerance,
-   WhenResidualAbsoluteNormBelowTolerance,
-   WhenResidualRelativeNormBelowTolerance,
-   WhenGradientAbsoluteNormBelowTolerance,
-   WhenGradientRelativeNormBelowTolerance,
-   AfterMaxIters
+    { s.solve(A, b, x) } -> std::same_as<void>;
   };
+#endif //PRESSIO_ENABLE_CXX20
 
-enum class Update
-  {
-   Standard, // default
-   Armijo,
-   LMSchedule1,
-   LMSchedule2,
-   Custom
-  };
+}} // end namespace pressio::nonlinearsolvers
 
-}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
+#if not defined PRESSIO_ENABLE_CXX20
+namespace pressio{ namespace nonlinearsolvers{
+
+template <class T, class MatrixType, class RhsType, class StateType, class enable = void>
+struct LinearSolverForNewtonRaphson : std::false_type{};
+
+template <class T, class MatrixType, class RhsType, class StateType>
+struct LinearSolverForNewtonRaphson<
+  T, MatrixType, RhsType, StateType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T>().solve
+       (
+        std::declval<typename T::matrix_type const &>(), // A
+        std::declval<StateType const &>(), // b
+        std::declval<StateType &>() // x
+        )
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+}} // end namespace pressio::nonlinearsolvers
+#endif // if not defined PRESSIO_ENABLE_CXX20
+
+#endif

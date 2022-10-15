@@ -75,14 +75,13 @@ public:
   LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi && o) = default;
   ~LMHessianGradientOperatorsHGApi() = default;
 
-  template <
-   typename SystemType,
-    mpl::enable_if_t<
-      ::pressio::nonlinearsolvers::SystemWithHessianAndGradient<SystemType>::value or
-      ::pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<SystemType>::value,
-      int
-     > = 0
-  >
+  template <typename SystemType>
+  //   mpl::enable_if_t<
+  //     ::pressio::nonlinearsolvers::SystemWithHessianAndGradient<SystemType>::value or
+  //     ::pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<SystemType>::value,
+  //     int
+  //    > = 0
+  // >
   LMHessianGradientOperatorsHGApi(const SystemType & system)
     : HGOpHGApi_(system),
       lmH_(::pressio::ops::clone(HGOpHGApi_.hessianCRef()))
@@ -116,9 +115,14 @@ public:
   }
 
   template<typename SystemType, typename StateType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithHessianAndGradient<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::SystemWithHessianAndGradient<SystemType>::value
-    >
+  ::pressio::nonlinearsolvers::SystemWithHessianAndGradient<SystemType>::value
+  >  
+#endif
   computeOperators(const SystemType & sys,
 		   const StateType & state,
 		   residual_norm_type & residualNorm,
@@ -132,9 +136,14 @@ public:
   }
 
   template<typename SystemType, typename StateType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithFusedHessianAndGradient<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<SystemType>::value
-    >
+  ::pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<SystemType>::value
+  >  
+#endif
   computeOperators(const SystemType & sys,
 		   const StateType & state,
 		   residual_norm_type & residualNorm,
