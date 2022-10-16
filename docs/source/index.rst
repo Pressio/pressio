@@ -42,7 +42,7 @@ in version ``1.0.0`` a uniform maturity level *at least* across
 the ``rom, ode and solvers`` components. Please keep this in mind while browsing
 the documentation and the code.
 
-This table represents the *pressio stack*, and the left sidebar has the same structure.
+|
 
 .. list-table::
    :widths: 10 48 42
