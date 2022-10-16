@@ -11,27 +11,38 @@ pressio C++ library
 
     This is the documentation of the `C++ library <https://github.com/Pressio/pressio>`__, one element of the `Pressio ecosystem <https://pressio.github.io/>`_.
 
-
 This work was started with a focus on projection-based reduced-order models (ROMs),
-which is a strongly multidisciplinary topic.
-Working towards a production-level ROM capability inevitably means touching
-multiple fields, ranging from, e.g., linear algebra, nonlinear solvers
+which is a strongly **multidisciplinary** topic.
+Working towards a production-level ROM capability inevitably means spanning
+multiple fields ranging from, e.g., linear algebra, nonlinear solvers
 and optimization, to time integration, distributed computing and HPC.
-The complexity level is further amplified if the goal is to develop a *generic* library.
-**Modularity, abstractions and well-defined APIs** thus become fundamental design principles
-needed to properly build such a project from the ground up.
+In and of itself this constitutes a substantial challenge to tackle,
+but the complexity increases if the goal is to develop a **generic** library.
 
-This has been part of our effort from the beginning, and has lead to the following
-"stacked" design of pressio: each component (level) handles a specific capability and depends,
-via well-defined public APIs, on the ones below it. This approach has several benefits, but
-the main one is that each component becomes usable on its own, and, as a whole,
-the stack constitutes the foundation of the top-level ``pressio/rom`` component.
-The API documentation mirros this structure.
+To start such a project from the ground up, grow it and then being
+able to maintain it, we believe **modularity, abstractions
+and well-defined APIs** to be fundamental design principles to rely on.
+This has been, and still is, at the core of our development effort,
+and has lead to a highly *modular* design of pressio (see table below):
+each component (level) of the stack covers a specific capability and depends,
+via *well-defined public APIs*, on the ones below it.
 
-..
-  The following table represents the *software stack* of the functionalities in pressio:
-  each component (level) in the stack depends on all the ones below it.
+This has required (and still does) a considerable development effort,
+since each component needs "attention" and can easily be scoped into
+an independent, full-time project.
+So why doing all this rather than adopting a different, simpler approach (for example,
+limiting and hiding as implementation some of the supporting functionalities)?
+Because we believe the current structure/design offers several major benefits
+that would be hard (and in some cases impossible) to obtain otherwise: **flexibility,
+extensibility, maintainability, and the possibility of using each component on its own.**
+One drawback is that at any point in time, the various components might
+have different maturity levels, so reaching a comparable and solid maturity
+across the stack might take some time---our current goal is to obtain
+in version ``1.0.0`` a uniform maturity level *at least* across
+the ``rom, ode and solvers`` components. Please keep this in mind while browsing
+the documentation and the code.
 
+This table represents the *pressio stack*, and the left sidebar has the same structure.
 
 .. list-table::
    :widths: 10 48 42
@@ -43,12 +54,12 @@ The API documentation mirros this structure.
      - Header(s)
 
    * - ``rom``
-     - (linear) subspaces :raw-html-m2r:`<br/>` Galerkin: steady :raw-html-m2r:`<br/>` Galerkin: unsteady :raw-html-m2r:`<br/>` LSPG: steady :raw-html-m2r:`<br/>` LSPG: unsteady :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
-     - ``<pressio/rom_subspaces.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom.hpp>`` :small:`includes all above`
+     - concepts :raw-html-m2r:`<br/>` (linear) subspaces :raw-html-m2r:`<br/>` Galerkin: steady :raw-html-m2r:`<br/>` Galerkin: unsteady :raw-html-m2r:`<br/>` LSPG: steady :raw-html-m2r:`<br/>` LSPG: unsteady :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
+     - ``<pressio/rom_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_subspaces.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom.hpp>`` :small:`includes all above`
 
    * - ``ode``
-     - explicit steppers :raw-html-m2r:`<br/>` implicit steppers :raw-html-m2r:`<br/>` ``advance_<keywords>`` functions :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
-     - ``<pressio/ode_steppers_explicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_implicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_advancers.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode.hpp>`` :small:`includes all above`
+     - concepts :raw-html-m2r:`<br/>` explicit steppers :raw-html-m2r:`<br/>` implicit steppers :raw-html-m2r:`<br/>` ``advance_<keywords>`` functions :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
+     - ``<pressio/ode_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_explicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_implicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_advancers.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode.hpp>`` :small:`includes all above`
 
    * - ``solvers_nonlinear``
      - e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt.
@@ -86,9 +97,13 @@ The API documentation mirros this structure.
 Get Started
 -----------
 
-* `how to install <installation.html>`_: it is a header-only library, should be trivial
+* `Install pressio <installation.html>`_: (currently) it is a header-only library, so should be trivial
 
-* `explore the tutorials <https://pressio.github.io/pressio-tutorials>`_
+* Explore our `end-to-end ROM demos <https://pressio.github.io/pressio-tutorials/endtoend/readthisfirst.html>`_ to
+  see ``pressio/rom`` in action and to experiment directly
+
+* Interested in the pressio supporting functionalities, e.g., ``pressio/ode``?
+  Explore the `tutorials showing the individual capabilities <https://pressio.github.io/pressio-tutorials>`_
 
 
 Generic programming and concepts
@@ -97,29 +112,40 @@ Generic programming and concepts
 Arguably the main foundation of pressio is the use of
 generic programming--*or, more humbly, we can at least say that it is what we strive for*.
 Since the early development stages, we have relied on concept-driven design.
-Here, the term concept does not necessarily
-refer to the C++ concepts feature introduced in C++20.
-You can think of it more broadly as "what properties/syntax a type meets,
-what you can do with it and, also, what a type should definitely satisfy".
-
 Note, that, if you have used or use C++ templates, you *have* used
-concepts knowingly or not. This is becuase when you write a function or class
-template, you have some expectations of what a template is going to do.
-Concepts are basically a way to *explicitly* formalize those expectations.
+concepts knowingly or not. This is because when you write a function or class
+template, you have some expectations of what a template needs to expose/do.
+C++20 concepts are, in some sense, a way to *explicitly* formalize those expectations.
+
+.. admonition:: To use the C++20 pressio concepts, you need to explicitly enable them
+
+   Until we can stably upgrade to C++20, we cannot by default use C++20 concepts,
+   so we currently guard the concepts in pressio inside a
+   preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``. This can be enabled by
+   using a C++20 compliant compiler and setting ``-DCMAKE_CXX_STANDARD=20`` at configure time.
+
+The behavior is as follows:
+
+- if ``PRESSIO_ENABLE_CXX20`` is *enabled*: if you do this, the pressio concepts
+  are compiled and enforced *stricto sensu* on the pressio APIs as discussed by this documentation
+
+- if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
+  default pressio C++ standard is currently C++14. In this case, the "C++20 concepts"
+  are not compiled but the constraints they represent are still valid and implemented
+  differently such that their enforcement is done via a combination of SFINAE and static asserts.
+
+`Read more about how we interpret C++ concepts and use them in pressio <concepts_note.html>`__.
 
 ..
+   Here, the term concept does not necessarily
+   refer to the C++ concepts feature introduced in C++20.
+   You can think of it more broadly as "what properties/syntax a type meets,
+   what you can do with it and, also, what a type should definitely satisfy".
    The message we want to convey is that *"concepts" are a fundamental
    design part of pressio*. In our documentation, we make the effort to
    highlight the use of concepts
    by dedicating to each component of the library a full section
    to discuss and formalize how concepts are used in that component.
-
-Until we can stably upgrade to C++20, we cannot properly use C++20 concepts.
-The concepts in pressio are guarded inside a preprocessor directive.
-To enable them, it suffices to use a C++20 compiler and set ``-DCMAKE_CXX_STANDARS=20``.
-When disabled, the pressio code by default enforces them via, e.g., SFINAE,
-or in some cases (abusing the syntax) with static asserts.
-
 
 
 License and Citation
@@ -142,6 +168,7 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
 
    installation
    keywords
+   concepts_note
 
 .. toctree::
    :caption: API
