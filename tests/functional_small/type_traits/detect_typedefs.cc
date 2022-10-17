@@ -15,22 +15,22 @@ namespace pressio { namespace testing {
 TEST(type_traits, typedef_detect)
 {
   CHECK(T1, scalar_type);
-  CHECK(T2, ordinal_type);
-  CHECK(T3, local_ordinal_type);
-  CHECK(T4, global_ordinal_type);
-  CHECK(T5, data_map_type);
-  CHECK(T6, communicator_type);
-  CHECK(T7, fom_state_type);
-  CHECK(T8, velocity_type);
+  CHECK(T2, state_type);
+  CHECK(T3, full_state_type);
+  CHECK(T4, reduced_state_type);
+  CHECK(T5, basis_matrix_type);
+  CHECK(T6, mass_matrix_type);
+  CHECK(T7, independent_variable_type);
+  CHECK(T8, time_type);
   CHECK(T9, residual_type);
   CHECK(T10, matrix_type);
   CHECK(T11, jacobian_type);
   CHECK(T12, hessian_type);
   CHECK(T13, gradient_type);
-  CHECK(T14, discrete_time_residual_type);
-  CHECK(T15, discrete_time_jacobian_type);
-  CHECK(T16, dense_matrix_type);
-  CHECK(T17, velocity_type);
+  CHECK(T14, discrete_jacobian_type);
+  CHECK(T15, discrete_residual_type);
+  CHECK(T16, right_hand_side_type);
+  CHECK(T17, residual_norm_type);
 }
 
 }} // pressio::testing
