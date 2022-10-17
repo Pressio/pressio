@@ -84,18 +84,6 @@ public:
   ~SpanExpr() = default;
 
   SpanExpr(VectorType & objIn,
-	   const ord_t startIndexIn,
-	   const ord_t extentIn)
-    : vecObj_(objIn),
-      startIndex_(startIndexIn),
-      extent_(extentIn),
-      nativeExprObj_(vecObj_.get().segment(startIndex_, extent_))
-  {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
-    assert( extent_ <= objIn.size() );
-  }
-
-  SpanExpr(VectorType & objIn,
 	   std::pair<ord_t, ord_t> indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
@@ -168,17 +156,17 @@ public:
   SpanExpr & operator=(SpanExpr && other) = delete;
   ~SpanExpr() = default;
 
-  SpanExpr(VectorType & objIn,
-	   const size_t startIndexIn,
-	   const size_t extentIn)
-    : vecObj_(objIn),
-      startIndex_(startIndexIn),
-      extent_(extentIn),
-      nativeExprObj_(Kokkos::subview(vecObj_.get(),std::make_pair(startIndex_, startIndex_+extent_)))
-  {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
-  }
+  // SpanExpr(VectorType & objIn,
+  // 	   const size_t startIndexIn,
+  // 	   const size_t extentIn)
+  //   : vecObj_(objIn),
+  //     startIndex_(startIndexIn),
+  //     extent_(extentIn),
+  //     nativeExprObj_(Kokkos::subview(vecObj_.get(),std::make_pair(startIndex_, startIndex_+extent_)))
+  // {
+  //   assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+  //   assert( extent_ <= objIn.extent(0) );
+  // }
 
   SpanExpr(VectorType & objIn,
 	   pair_t indexRange)

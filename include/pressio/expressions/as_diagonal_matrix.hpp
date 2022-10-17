@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// expressions.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,24 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_EXPRESSIONS_HPP_
-#define PRESSIO_EXPRESSIONS_HPP_
+#ifndef EXPRESSIONS_PUBLIC_AS_DIAG_MATRIX_FUNCTIONS_HPP_
+#define EXPRESSIONS_PUBLIC_AS_DIAG_MATRIX_FUNCTIONS_HPP_
 
-#include "./mpl.hpp"
-#include "./type_traits.hpp"
+#include "impl/asdiagonalmatrix_traits.hpp"
+#include "impl/asdiagonalmatrix_classes.hpp"
 
-#include "./expressions/fwd.hpp"
-#include "./expressions/span.hpp"
-#include "./expressions/subspan.hpp"
-#include "./expressions/diag.hpp"
-#include "./expressions/as_diagonal_matrix.hpp"
+namespace pressio{
 
-#include "./expressions/is_expression.hpp"
+// note that the following works also when T is const-qualified
+// because that qualification carries over to the impl
 
-#endif
+template <typename T>
+auto as_diagonal_matrix(T & operand)
+{
+  static_assert(::pressio::Traits<T>::rank==1,
+		"AsDiagonalMatrix can only be applied to a rank-1 object.");
+  return expressions::impl::AsDiagonalMatrixExpr<T>(operand);
+}
+
+}
+#endif  // EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_

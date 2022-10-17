@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// expressions.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,36 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_EXPRESSIONS_HPP_
-#define PRESSIO_EXPRESSIONS_HPP_
+#ifndef EXPRESSIONS_PUBLIC_SPAN_FUNCTIONS_HPP_
+#define EXPRESSIONS_PUBLIC_SPAN_FUNCTIONS_HPP_
 
-#include "./mpl.hpp"
-#include "./type_traits.hpp"
+#include "impl/span_traits.hpp"
+#include "impl/span_classes.hpp"
 
-#include "./expressions/fwd.hpp"
-#include "./expressions/span.hpp"
-#include "./expressions/subspan.hpp"
-#include "./expressions/diag.hpp"
-#include "./expressions/as_diagonal_matrix.hpp"
+namespace pressio{
 
-#include "./expressions/is_expression.hpp"
+// note that the following works also when T is const-qualified
+// because that qualification carries over to the impl
 
-#endif
+template <class T>
+auto span(T & operand,
+	  const std::pair<std::size_t, std::size_t> & spanRange)
+{
+  static_assert(::pressio::Traits< std::remove_const_t<T> >::rank==1,
+		"span can only be applied to a rank-1 object.");
+  return expressions::impl::SpanExpr<T> (operand, spanRange);
+}
+
+template <class T>
+auto span(T & operand,
+	  std::size_t startIndex,
+	  std::size_t extent)
+{
+  static_assert(::pressio::Traits< std::remove_const_t<T> >::rank==1,
+		"span can only be applied to a rank-1 object.");
+  std::pair<std::size_t, std::size_t> r(startIndex, startIndex + extent);
+  return expressions::impl::SpanExpr<T> (operand, r);
+}
+
+}
+#endif  // EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
