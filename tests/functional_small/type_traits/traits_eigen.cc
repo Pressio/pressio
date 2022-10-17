@@ -18,6 +18,7 @@ void test_eigen_container_traits()
   test_is_not_teuchos_container<T>();
   test_is_not_epetra_container<T>();
   test_is_not_tpetra_container<T>();
+  test_is_not_tpetra_block_container<T>();
   test_is_not_kokkos_container<T>();
 }
 

@@ -93,6 +93,12 @@ void test_is_not_tpetra_container() {
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert(pressio::is_vector_tpetra<T>::value == false, "");
   static_assert(pressio::is_multi_vector_tpetra<T>::value == false, "");
+#endif
+}
+
+template <typename T>
+void test_is_not_tpetra_block_container() {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert(pressio::is_vector_tpetra_block<T>::value == false, "");
   static_assert(pressio::is_multi_vector_tpetra_block<T>::value == false, "");
 #endif
