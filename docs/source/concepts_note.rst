@@ -34,6 +34,16 @@ using a c++20 compiler, you have to comment out all axioms.
 - :red:`the documentation of each concept follows the standard: we have syntax plus semantics`
 
 
+"Satisfying" vs. "modeling" a concept
+-------------------------------------
+
+`Quoting the C++ standard <https://en.cppreference.com/w/cpp/concepts>`__: "It is said
+that a standard concept is satisfied if its syntactic requirements
+are met, and is modeled if it is satisfied and its
+semantic requirements (if any) are also met."
+
+
+
 ..
    The layered design of concepts in pressio
    -----------------------------------------

@@ -173,9 +173,8 @@ Solve the problem
 -----------------
 
 An unsteady explicit Galerkin problem satisfies the "steppable" concept
-discussed `here <ode_concepts/c6.html>`__, therefore you can use
-the step it to move forward (or backward) in time.
-To do so, you can use the advancers" in ``pressio/ode`` as shown below,
+discussed `here <ode_concepts/c6.html>`__, therefore you can step it in time.
+To do so, you can use the ``advance_*`` functions in ``pressio/ode`` as shown below,
 or you can set up your own time stepping loop.
 
 .. code-block:: cpp
@@ -224,3 +223,11 @@ or you can set up your own time stepping loop.
 			   pode::StepCount(100), /*how many steps to take*/
 			   observer);            /*an observer to monitor the solution*/
    }
+
+
+.. admonition:: Full Demos
+   :class: tip
+
+   1. `checkout a full demo of default Galerkin for the 2D Shallow water equations <https://pressio.github.io/pressio-tutorials/endtoend/swe_galerkin_default.html>`__
+
+   2. `checkout a full demo of one variant of hyper-reduced Galerkin for the 2D Shallow water equations <https://pressio.github.io/pressio-tutorials/endtoend/swe_galerkin_hypred_1.html>`__

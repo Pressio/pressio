@@ -16,48 +16,36 @@ the ``SemiDiscreteFom`` by adding support for the mass matrix evaluation.
 Semantic requirements
 ---------------------
 
-..
-   Given an instance ``A`` of type ``T`` and an object ``operand``
-   of type ``MassMatrixActionOperandType``,
-   ``SemiDiscreteFomWithMassMatrixAction<T, MassMatrixActionOperandType>``
-   is modeled if it is satisfied, all subsumed concepts are modeled and:
+Given an instance ``A`` of type ``T`` and an instance ``operand`` of
+type ``MassMatrixActionOperandType``,
+``SemiDiscreteFomWithMassMatrixAction<T, MassMatrixActionOperandType>``
+is modeled if it is satisfied and all of the following are true:
 
-   - all methods are blocking, meaning that all temporary
-     allocations and operations needed to execute those methods
-     are completed and no outstanding work remains upon return
+- methods are blocking: all temporary allocations and operations
+  needed to execute those methods
+  are completed and no outstanding work remains upon return
 
-   - methods may modify only the non-constant operands.
-     Operands that are constant must not be modified.
+- methods only modify non-constant arguments, while const arguments are not modified
 
-   - ``auto result = A.createResultOfMassMatrixActionOn(operand)``
+- ``auto result = A.createResultOfMassMatrixActionOn(operand)`` returns an object
+  with all its "elements" zero initialized
 
-     - returns an object with all its "elements" zero initialized
+- non-aliasing instantation: this means that doing ``auto ja1 = A.createResultOfMassMatrixActionOn(operand);
+  auto ja2 = A.createResultOfMassMatrixActionOn(operand);`` implies that ``ja1, ja2`` are distinct objects,
+  and such that any modification to ``ja1`` does not affect ``ja2`` and vice versa.
+  In other words, calling ``A.createResultOfMassMatrixActionOn(operand)``
+  yields **independent, non-aliasing instances**.
 
+- ``A.applyMassMatrix(state, operand, evalTime, result)``
 
-   - doing:
+  - overwrites ``result`` with the result of left-applying the mass matrix to ``operand``
 
-     .. code-block:: cpp
+  - is equality preserving, i.e. given equal inputs ``state, evalTime``, the result remains the same
 
-	auto ja1 = A.createResultOfMassMatrixActionOn(operand);
-	auto ja2 = A.createResultOfMassMatrixActionOn(operand);
-	// ...
-	auto jaN = A.createResultOfMassMatrixActionOn(operand);
-
-     implies that ``ja1, ja2, ..., jaN`` must be distinct objects,
-     and such that any modification to ``ja1`` does not affect any of the others and vice versa.
-     In other words, calling ``A.createResultOfMassMatrixActionOn(operand)`` yields independent instances.
-
-   - ``A.applyMassMatrix(state, operand, evalTime, result)``
-
-     - overwrites ``result`` with the result
-
-     - is equality preserving, i.e. given equal
-       inputs ``state, evalTime``, the result remains the same
-
-     - let ``J`` represent the MassMatrix which we compute the action of,
-       then ``J`` must be the jacobian of the right hand side evaluated for the
-       same ``state`` and ``evalTime``. In other words, the Jacobian used for
-       computing its action must be mathematically "consistent" with the right hand side.
+  - let ``M`` represent the mass matrix which we compute the action of; then ``M`` must be
+    the correct mass matrix for the target problem evaluated at the given
+    ``state`` and ``evalTime``. Obivously, if your problem has a constant mass matrix,
+    you don't have to recomputed the mass matrix every time.
 
 
 Syntax-only example
@@ -86,6 +74,7 @@ Syntax-only example
    }
 
 
-Assuming the default scalar type of Tpetra is ``double``,
-the class above satisfies: ``static_assert(pressio::rom::SemiDiscreteFomWithMassMatrixAction<SampleClass,
-Tpetra::MultiVector<>>, "");``
+..
+  Assuming the default scalar type of Tpetra is ``double``,
+  the class above satisfies: ``static_assert(pressio::rom::SemiDiscreteFomWithMassMatrixAction<SampleClass,
+  Tpetra::MultiVector<>>, "");``

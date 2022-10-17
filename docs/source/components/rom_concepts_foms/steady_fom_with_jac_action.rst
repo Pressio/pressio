@@ -12,23 +12,21 @@ Header: ``<pressio/rom_concepts.hpp>``
 Semantic requirements
 ---------------------
 
-Given an instance ``A`` of type ``T`` and an object ``operand``
+Given an instance ``A`` of type ``T`` and an instance ``operand``
 of type ``JacobianActionOperandType``,
 ``SteadyFomWithJacobianAction<T, JacobianActionOperandType>``
-is modeled if it is satisfied, all subsumed concepts are modeled and:
+is modeled if it is satisfied and all of the following are true:
 
-- all methods are blocking, meaning that all temporary
-  allocations and operations needed to execute those methods
+- methods are blocking: all temporary allocations and operations
+  needed to execute those methods
   are completed and no outstanding work remains upon return
 
-- methods may modify only the non-constant operands.
-  Operands that are constant must not be modified.
+- methods only modify non-constant arguments, while const arguments are not modified
 
-- ``auto r = A.createResidual()`` and
-  ``auto result = A.createResultOfJacobianActionOn(operand)`` return objects
-  with all "elements" zero initialized
+- ``auto r = A.createResidual()`` and ``auto result = A.createResultOfJacobianActionOn(operand)``
+  return objects with all their "elements" zero initialized
 
-- doing:
+- non-aliasing instantation: this means that doing
 
   .. code-block:: cpp
 
@@ -41,15 +39,17 @@ is modeled if it is satisfied, all subsumed concepts are modeled and:
   and such that any modification to ``r1`` does not affect any of the others
   and viceversa.
   In other words, calling ``A.createResidual()`` yields independent instances.
-  And similarly applies to ``A.createResultOfJacobianActionOn()``.
+  And the same holds for ``A.createResultOfJacobianActionOn(operand)``.
 
-- ``A.residualAndJacobianAction(state, r, operand, ja, /*computeJacobian*/)``
+- ``A.residualAndJacobianAction(state, r, operand, ja, computeJacAction)``
 
-  - overwrite ``r`` and ``ja`` with their respective results
+  - overwrites ``r`` with the residual computation
 
-  - the Jacobian must be recomputed if ``computeJacobian == true``
+  - overwrites ``ja`` with the result of left-applying the jacobian to ``operand``
 
-  - equality preserving, i.e. equal inputs imply equal outputs
+  - recomputes the jacobian action only if ``computeJacobian == true``
+
+  - is equality preserving, i.e. equal inputs imply equal outputs
 
   - let ``J`` represent the Jacobian which we compute the action of,
     then ``J`` must be the jacobian of the residual evaluated for the
@@ -80,10 +80,10 @@ Syntax-only example
                                       residual_type & /*residual*/
 		                      const Tpetra::MultiVector<> & /*operand*/,
                                       const Tpetra::MultiVector<> & /*result*/,
-				      bool /*computeJaobian*/) const;
+				      bool /*computeJacAction*/) const;
    }
 
 
-Assuming the default scalar type of Tpetra is ``double``,
-the class above satisfies: ``static_assert(pressio::rom::SteadyFomWithJacobianAction<SampleClass,
-Tpetra::MultiVector<>>, "");``
+.. Assuming the default scalar type of Tpetra is ``double``,
+   the class above satisfies: ``static_assert(pressio::rom::SteadyFomWithJacobianAction<SampleClass,
+   Tpetra::MultiVector<>>, "");``

@@ -16,39 +16,29 @@ the ``SemiDiscreteFom`` by adding support for the Jacobian evaluation.
 Semantic requirements
 ---------------------
 
-Given an instance ``A`` of type ``T`` and an object ``operand``
+Given an instance ``A`` of type ``T`` and an instance ``operand``
 of type ``JacobianActionOperandType``,
 ``SemiDiscreteFomWithJacobianAction<T, JacobianActionOperandType>``
-is modeled if it is satisfied, all subsumed concepts are modeled and:
+is modeled if it is satisfied and all of the following are true:
 
-- all methods are blocking, meaning that all temporary
-  allocations and operations needed to execute those methods
+- methods are blocking: all temporary allocations and operations
+  needed to execute those methods
   are completed and no outstanding work remains upon return
 
-- methods may modify only the non-constant operands.
-  Operands that are constant must not be modified.
+- methods only modify non-constant arguments, while const arguments are not modified
 
-- ``auto result = A.createResultOfJacobianActionOn(operand)``
+- ``auto result = A.createResultOfJacobianActionOn(operand)`` returns an object
+  with all its "elements" zero initialized
 
-  - returns an object with all its "elements" zero initialized
-
-
-- doing:
-
-  .. code-block:: cpp
-
-     auto ja1 = A.createResultOfJacobianActionOn(operand);
-     auto ja2 = A.createResultOfJacobianActionOn(operand);
-     // ...
-     auto jaN = A.createResultOfJacobianActionOn(operand);
-
-  implies that ``ja1, ja2, ..., jaN`` must be distinct objects,
-  and such that any modification to ``ja1`` does not affect any of the others and vice versa.
-  In other words, calling ``A.createResultOfJacobianActionOn(operand)`` yields independent instances.
+- non-aliasing instantation: this means that doing ``auto ja1 = A.createResultOfJacobianActionOn(operand);
+  auto ja2 = A.createResultOfJacobianActionOn(operand);`` implies ``ja1, ja2`` to be distinct objects,
+  and such that any modification to ``ja1`` does not affect ``ja`` and vice versa.
+  In other words, calling ``A.createResultOfJacobianActionOn(operand)``
+  yields **independent, non-aliasing instances**.
 
 - ``A.applyJacobian(state, operand, evalTime, result)``
 
-  - overwrites ``result`` with the result
+  - overwrites ``result`` with the result of left-applying the jacobian to ``operand``
 
   - is equality preserving, i.e. given equal
     inputs ``state, evalTime``, the result remains the same
@@ -85,6 +75,6 @@ Syntax-only example
    }
 
 
-Assuming the default scalar type of Tpetra is ``double``,
-the class above satisfies: ``static_assert(pressio::rom::SemiDiscreteFomWithJacobianAction<SampleClass,
-Tpetra::MultiVector<>>, "");``
+.. Assuming the default scalar type of Tpetra is ``double``,
+   the class above satisfies: ``static_assert(pressio::rom::SemiDiscreteFomWithJacobianAction<SampleClass,
+   Tpetra::MultiVector<>>, "");``

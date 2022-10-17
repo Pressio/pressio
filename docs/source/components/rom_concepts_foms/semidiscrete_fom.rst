@@ -13,39 +13,26 @@ Semantic requirements
 ---------------------
 
 Given an instance ``A`` of type ``T``, ``SemiDiscreteFom<T>``
-is modeled if it is satisfied, all subsumed concepts are modeled and:
+is modeled if it is satisfied and all of the following are true:
 
-- all methods are blocking, meaning that all temporary
-  allocations and operations needed to execute those methods
+- methods are blocking: all temporary allocations and operations
+  needed to execute those methods
   are completed and no outstanding work remains upon return
 
-- methods may modify only the non-constant operands.
-  Operands that are constant must not be modified.
+- methods only modify non-constant arguments, while const arguments are not modified
 
-- ``auto rhs = A.createRightHandSide()``
+- ``auto rhs = A.createRightHandSide();`` returns an object
+  with all its "elements" zero initialized
 
-  - returns an object with all its "elements" zero initialized
+- non-aliasing instantation: this means that doing ``auto rhs1 = A.createRightHandSide();
+  auto rhs2 = A.createRightHandSide();`` implies that ``rhs1, rhs2`` must be distinct objects,
+  and such that any modification to ``rhs1`` does not affect ``rhs2`` and viceversa.
+  In other words, calling ``A.createRightHandSide()``
+  yields **independent, non-aliasing instances**.
 
-- doing:
-
-  .. code-block:: cpp
-
-     auto rhs1 = A.createRightHandSide();
-     auto rhs2 = A.createRightHandSide();
-     //...
-     auto rhsN = A.createRightHandSide();
-
-  implies that ``rhs1, rhs2, ..., rhsN`` must be distinct objects,
-  and such that any modification to ``rhs1`` does not affect any of the others
-  and viceversa.
-  In other words, calling ``A.createRightHandSide()`` yields independent instances.
-
-- ``A.rightHandSide(state, evalTime, rhs)``
-
-  - overwrites ``rhs`` with the result
-
-  - is equality preserving, i.e. given equal
-    inputs ``state, evalTime``, the result written to ``rhs`` remains the same
+- ``A.rightHandSide(state, evalTime, rhs)`` overwrites ``rhs`` with the result,
+  and is equality preserving, i.e. given equal inputs ``state, evalTime``, the result
+  written to ``rhs`` remains the same
 
 
 Syntax-only example
