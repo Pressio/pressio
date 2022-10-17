@@ -65,7 +65,6 @@ struct AsDiagonalMatrixExpr<
   using this_t = AsDiagonalMatrixExpr<VectorType>;
   using traits = AsdiagmatrixTraits<this_t>;
   using sc_t = typename traits::scalar_type;
-  using size_t = typename traits::size_type;
   using ref_t = typename traits::reference_type;
   using const_ref_t = typename traits::const_reference_type;
   using native_expr_t = typename traits::native_expr_type;

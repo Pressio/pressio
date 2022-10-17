@@ -54,13 +54,13 @@ namespace pressio{ namespace ops{
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::mag_type
+  typename vec_type::mag_type
   >
 norm1(const vec_type & a)
 {
   static_assert(
     std::is_same<typename ::pressio::Traits<vec_type>::scalar_type, 
-    typename ::pressio::Traits<vec_type>::mag_type>::value, "Scalar and mag not same");
+    typename vec_type::mag_type>::value, "Scalar and mag not same");
 
   return a.norm1();
 }
@@ -68,13 +68,13 @@ norm1(const vec_type & a)
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<vec_type>::value,  
-  typename ::pressio::Traits<vec_type>::mag_type
+  typename vec_type::mag_type
   >
 norm2(const vec_type & a)
 {
   static_assert(
     std::is_same<typename ::pressio::Traits<vec_type>::scalar_type, 
-    typename ::pressio::Traits<vec_type>::mag_type>::value, "Scalar and mag not same");
+    typename vec_type::mag_type>::value, "Scalar and mag not same");
 
   return a.norm2();
 }

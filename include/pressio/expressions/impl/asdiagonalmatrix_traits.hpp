@@ -59,13 +59,10 @@ struct AsdiagmatrixTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<
-      ::pressio::mpl::remove_cvref_t<VectorType>,
-      2
-    >,
-    public ::pressio::impl::StaticAllocTrait,
-    public ::pressio::impl::DenseMatrixTrait
+  : public ::pressio::Traits<VectorType>
 {
+  static constexpr int rank = 2; // expression changes the rank
+
   using scalar_type = typename ::pressio::Traits<
     ::pressio::mpl::remove_cvref_t<VectorType>
   >::scalar_type;

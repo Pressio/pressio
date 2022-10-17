@@ -56,8 +56,9 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<T>::rank == 1,
+    (::pressio::is_native_container_kokkos<T>::value
+  or ::pressio::is_expression_acting_on_kokkos<T>::value)
+  and ::pressio::Traits<T>::rank == 1,
   typename ::pressio::Traits<T>::scalar_type
 >
 norm1(const T & a)
@@ -67,8 +68,9 @@ norm1(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<T>::rank == 1,
+    (::pressio::is_native_container_kokkos<T>::value
+  or ::pressio::is_expression_acting_on_kokkos<T>::value)
+  and ::pressio::Traits<T>::rank == 1,
   typename ::pressio::Traits<T>::scalar_type
 >
 norm2(const T & a)

@@ -51,7 +51,7 @@
 
 #include "Eigen/Sparse"
 
-namespace pressio{ 
+namespace pressio{
 
 template <typename T, typename enable = void>
 struct is_sparse_matrix_eigen : std::false_type {};
@@ -76,17 +76,5 @@ struct is_sparse_matrix_eigen<
 
 //----------------------------------------------------------------------
 
-template <typename T1, typename T2, typename enable = void>
-struct sparse_sharedmem_eigen_same_storage : std::false_type{};
-
-template <typename T1, typename T2>
-struct sparse_sharedmem_eigen_same_storage<
-  T1, T2,
-  mpl::enable_if_t<
-    (T1::is_row_major && T2::is_row_major) ||
-    (T1::is_col_major && T2::is_col_major)
-    >
-  > : std::true_type{};
-
-}//end namespace 
+}//end namespace
 #endif  // TYPE_TRAITS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_

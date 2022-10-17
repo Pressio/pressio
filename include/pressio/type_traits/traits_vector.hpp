@@ -61,10 +61,10 @@ struct Traits<
   mpl::enable_if_t<
     is_vector_eigen<T>::value
   >
-> : public ::pressio::impl::EigenTraits<T, 1>,
-    public ::pressio::impl::EigenVectorIdentifier<T>,
-    public ::pressio::impl::EigenVectorAllocTrait<T>
+>
 {
+  static constexpr int rank = 1;
+  using scalar_type = typename T::Scalar;
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
@@ -80,12 +80,9 @@ struct Traits<
     is_vector_kokkos<T>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<T, 1>
 {
-  static constexpr VectorIdentifier
-  vector_identifier =
-    T::traits::rank_dynamic == 0 ? VectorIdentifier::KokkosStatic :
-    VectorIdentifier::KokkosDynamic;
+  static constexpr int rank = 1;
+  using scalar_type = typename T::traits::value_type;
 };
 #endif
 
@@ -98,11 +95,12 @@ struct Traits<
   T,
   mpl::enable_if_t<
     is_vector_tpetra<T>::value
+    || is_vector_tpetra_block<T>::value
     >
   >
-  : public ::pressio::impl::TpetraTraits<T, 1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Tpetra;
+  static constexpr int rank = 1;
+  using scalar_type = typename T::impl_scalar_type;
 };
 #endif
 
@@ -117,26 +115,9 @@ struct Traits<
     is_vector_epetra<T>::value
     >
   >
-  : public ::pressio::impl::EpetraTraits<1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
-};
-#endif
-
-//*******************************
-// for block tpetra vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct Traits<
-  T,
-  mpl::enable_if_t<
-    is_vector_tpetra_block<T>::value
-    >
-  >
-  : public ::pressio::impl::TpetraTraits<T, 1>
-{
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TpetraBlock;
+  static constexpr int rank = 1;
+  using scalar_type = double;
 };
 #endif
 
@@ -151,9 +132,9 @@ struct Traits<
     is_dense_vector_teuchos<T>::value
     >
   >
-  : public ::pressio::impl::TeuchosTraits<T, 1>
 {
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;
+  static constexpr int rank = 1;
+  using scalar_type = typename T::scalarType;
 };
 #endif
 

@@ -67,8 +67,7 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 {
   constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
   const int numVecs = A.NumVectors();
-  using lo_t = typename ::pressio::Traits<A_type>::local_ordinal_type;
-  for (lo_t i=0; i< A.MyLength(); i++)
+  for (int i=0; i< A.MyLength(); i++)
   {
     y[i] = (beta == zero) ? zero : beta * y[i];
     for (int j=0; j< (int)numVecs; j++){

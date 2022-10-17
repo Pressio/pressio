@@ -58,49 +58,20 @@ template <
 >
 void test_kokkos_container_traits()
 {
+  // traits and shared predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Kokkos,
     T::traits::rank,
-    true,
-    is_dynamic,
-    typename T::traits::value_type,
-    typename T::traits::size_type, /* ordinal */
-    typename T::traits::size_type, /* size */
-    typename T::reference_type
+    typename T::traits::value_type
   >();
 
-  // Kokkos-specific traits
-  #define CHECK_KOKKOS_TRAIT2(PRESSIO_TRAIT, KOKKOS_TRAIT) \
-    static_assert(std::is_same< \
-      typename traits::PRESSIO_TRAIT, \
-      typename T::KOKKOS_TRAIT \
-    >::value, "");
-  #define CHECK_KOKKOS_TRAIT(TRAIT) CHECK_KOKKOS_TRAIT2(TRAIT, traits::TRAIT)
-  CHECK_KOKKOS_TRAIT2(layout_type, traits::array_layout);
-  CHECK_KOKKOS_TRAIT(execution_space);
-  CHECK_KOKKOS_TRAIT(memory_space);
-  CHECK_KOKKOS_TRAIT(device_type);
-  CHECK_KOKKOS_TRAIT(memory_traits);
-  CHECK_KOKKOS_TRAIT(host_mirror_space);
-  CHECK_KOKKOS_TRAIT2(host_mirror_t, host_mirror_type);
-
-  static_assert(traits::has_host_execution_space == false
-#ifdef KOKKOS_ENABLE_SERIAL
-    || std::is_same<typename T::traits::execution_space, Kokkos::Serial>::value
-#endif
-#ifdef KOKKOS_ENABLE_OPENMP
-    || std::is_same<typename T::traits::execution_space, Kokkos::OpenMP>::value
-#endif
-#ifdef KOKKOS_ENABLE_THREADS
-    || std::is_same<typename T::traits::execution_space, Kokkos::Threads>::value
-#endif
-    , ""
-  );
-
-  // Kokkos-specific predicates
-  static_assert(have_matching_execution_space<T, T>::value,"");
+  // negative checks (cross-package)
+  test_is_not_eigen_container<T>();
+  test_is_not_teuchos_container<T>();
+  test_is_not_tpetra_container<T>();
+  test_is_not_tpetra_block_container<T>();
+  test_is_not_epetra_container<T>();
 }
 
 //*******************************
@@ -116,14 +87,19 @@ template <
 >
 void test_kokkos_vector_type_traits()
 {
-  // traits
+  // traits and shared predicates
   test_kokkos_container_traits<T>();
 
-  // Kokkos specific vector predicates
+  // vector predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   static_assert(pressio::is_dynamic_vector_kokkos<T>::value == is_dynamic,"");
   static_assert(pressio::is_static_vector_kokkos<T>::value == !is_dynamic,"");
   static_assert(pressio::is_vector_kokkos<T>::value,"");
+
+  // negative checks (within Kokkos)
+  static_assert(pressio::is_dense_matrix_kokkos<T>::value == false,"");
+  static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == false,"");
+  static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == false,"");
 }
 
 TEST(type_traits, kokkos_vector) {
@@ -148,20 +124,24 @@ template <
 >
 void test_kokkos_matrix_type_traits()
 {
-  // traits
+  // traits and shared predicates
   test_kokkos_container_traits<T>();
 
   constexpr bool is_row_major = std::is_same<
         typename T::traits::array_layout,
         Kokkos::LayoutLeft
       >::value;
-  test_matrix_traits<T, pressio::MatrixIdentifier::DenseKokkos, is_row_major>();
 
-  // native Kokkos matrix predicates
+  // dense matrix predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == !is_dynamic,"");
   static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == is_dynamic,"");
   static_assert(pressio::is_dense_matrix_kokkos<T>::value,"");
+
+  // negative checks (within Kokkos)
+  static_assert(pressio::is_dynamic_vector_kokkos<T>::value == false,"");
+  static_assert(pressio::is_static_vector_kokkos<T>::value == false,"");
+  static_assert(pressio::is_vector_kokkos<T>::value == false,"");
 }
 
 TEST(type_traits, kokkos_matrix) {

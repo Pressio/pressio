@@ -63,9 +63,6 @@ template<class T, class Enable = void> struct Traits;
 #endif
 
 #include "type_traits/scalar_trait_t.hpp"
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "type_traits/have_matching_exe_space.hpp"
-#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "type_traits/is_teuchos_rcp.hpp"
 #endif
@@ -107,12 +104,16 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/native_tpetra_multi_vector.hpp"
 #endif
 
-#include "type_traits/enums.hpp"
-#include "type_traits/traits_shared.hpp"
 #include "type_traits/traits_tpl.hpp"
 #include "type_traits/traits_vector.hpp"
 #include "type_traits/traits_dense_matrix.hpp"
 #include "type_traits/traits_multi_vector.hpp"
 #include "type_traits/traits_sparse_matrix.hpp"
+
+//*** derived ****
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "type_traits/have_matching_exe_space.hpp"
+#include "type_traits/have_matching_device_type.hpp"
+#endif
 
 #endif

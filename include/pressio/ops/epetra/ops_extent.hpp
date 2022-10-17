@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value, 
-  typename ::pressio::Traits<T>::global_ordinal_type
+  ::pressio::is_vector_epetra<T>::value,
+  ::pressio::ops::impl::global_ordinal_t<T>
   >
 extent(const T & oIn, const IndexType i)
 {
@@ -66,12 +66,12 @@ extent(const T & oIn, const IndexType i)
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_epetra<T>::value,
-  typename ::pressio::Traits<T>::global_ordinal_type
+  ::pressio::ops::impl::global_ordinal_t<T>
   >
 extent(const T & oIn, const IndexType i)
 {
   assert(i<=1);
-  return (i==0) ? oIn.GlobalLength() : oIn.NumVectors(); 
+  return (i==0) ? oIn.GlobalLength() : oIn.NumVectors();
 }
 
 }}
