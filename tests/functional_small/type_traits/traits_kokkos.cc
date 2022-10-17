@@ -96,9 +96,9 @@ void test_kokkos_vector_type_traits()
   static_assert(pressio::is_vector_kokkos<T>::value,"");
 
   // negative checks (within Kokkos)
-  static_assert(!pressio::is_dense_matrix_kokkos<T>::value,"");
-  static_assert(!pressio::is_static_dense_matrix_kokkos<T>::value,"");
-  static_assert(!pressio::is_dynamic_dense_matrix_kokkos<T>::value,"");
+  static_assert(pressio::is_dense_matrix_kokkos<T>::value == false,"");
+  static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == false,"");
+  static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == false,"");
 }
 
 TEST(type_traits, kokkos_vector) {
@@ -138,9 +138,9 @@ void test_kokkos_matrix_type_traits()
   static_assert(pressio::is_dense_matrix_kokkos<T>::value,"");
 
   // negative checks (within Kokkos)
-  static_assert(!pressio::is_dynamic_vector_kokkos<T>::value,"");
-  static_assert(!pressio::is_static_vector_kokkos<T>::value,"");
-  static_assert(!pressio::is_vector_kokkos<T>::value,"");
+  static_assert(pressio::is_dynamic_vector_kokkos<T>::value == false,"");
+  static_assert(pressio::is_static_vector_kokkos<T>::value == false,"");
+  static_assert(pressio::is_vector_kokkos<T>::value == false,"");
 }
 
 TEST(type_traits, kokkos_matrix) {

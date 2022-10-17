@@ -49,11 +49,11 @@ void test_eigen_vector_type_traits()
   static_assert(pressio::is_static_column_vector_eigen<T>::value == (!is_dynamic && !is_row_vector), "");
 
   // negative checks (within Eigen)
-  static_assert(!pressio::is_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_static_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dense_row_major_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_sparse_matrix_eigen<T>::value, "");
+  static_assert(pressio::is_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_row_major_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_sparse_matrix_eigen<T>::value == false, "");
 }
 
 #define TEST_EIGEN_VECTOR(Type, is_dynamic, is_row_vector) \
@@ -98,14 +98,14 @@ void test_eigen_matrix_type_traits()
   static_assert(pressio::is_dense_row_major_matrix_eigen<T>::value == row_major, "");
 
   // negative checks (within Eigen)
-  static_assert(!pressio::is_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_row_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_column_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_row_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_column_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_sparse_matrix_eigen<T>::value, "");
+  static_assert(pressio::is_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_sparse_matrix_eigen<T>::value == false, "");
 }
 
 #define TEST_EIGEN_MATRIX(Type, is_dynamic) \
@@ -140,17 +140,17 @@ void test_eigen_sparse_matrix_type_traits()
   static_assert(pressio::is_sparse_matrix_eigen<T>::value, "");
 
   // negative checks (within Eigen)
-  static_assert(!pressio::is_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_row_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_column_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_row_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_column_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dense_row_major_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_static_dense_matrix_eigen<T>::value, "");
+  static_assert(pressio::is_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_row_major_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_dense_matrix_eigen<T>::value == false, "");
 }
 
 #define TEST_EIGEN_SPARSE_MATRIX(Type) \

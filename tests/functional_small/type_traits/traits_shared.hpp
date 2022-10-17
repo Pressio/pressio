@@ -55,59 +55,59 @@ namespace pressio { namespace traits { namespace test {
 template <typename T>
 void test_is_not_eigen_container() {
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-  static_assert(!pressio::is_native_container_eigen<T>::value, "");
-  static_assert(!pressio::is_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_row_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_row_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_column_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_static_column_vector_eigen<T>::value, "");
-  static_assert(!pressio::is_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_sparse_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_static_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dynamic_dense_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dense_row_major_matrix_eigen<T>::value, "");
-  static_assert(!pressio::is_dense_col_major_matrix_eigen<T>::value, "");
+  static_assert(pressio::is_native_container_eigen<T>::value == false, "");
+  static_assert(pressio::is_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_sparse_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_row_major_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_col_major_matrix_eigen<T>::value == false, "");
 #endif
 }
 
 template <typename T>
 void test_is_not_teuchos_container() {
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  static_assert(!pressio::is_dense_vector_teuchos<T>::value, "");
-  static_assert(!pressio::is_dense_matrix_teuchos<T>::value, "");
+  static_assert(pressio::is_dense_vector_teuchos<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_teuchos<T>::value == false, "");
 #endif
 }
 
 template <typename T>
 void test_is_not_epetra_container() {
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  static_assert(!pressio::is_vector_epetra<T>::value, "");
-  static_assert(!pressio::is_multi_vector_epetra<T>::value, "");
+  static_assert(pressio::is_vector_epetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_epetra<T>::value == false, "");
 #endif
 }
 
 template <typename T>
 void test_is_not_tpetra_container() {
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  static_assert(!pressio::is_vector_tpetra<T>::value, "");
-  static_assert(!pressio::is_multi_vector_tpetra<T>::value, "");
-  static_assert(!pressio::is_vector_tpetra_block<T>::value, "");
-  static_assert(!pressio::is_multi_vector_tpetra_block<T>::value, "");
+  static_assert(pressio::is_vector_tpetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_tpetra<T>::value == false, "");
+  static_assert(pressio::is_vector_tpetra_block<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_tpetra_block<T>::value == false, "");
 #endif
 }
 
 template <typename T>
 void test_is_not_kokkos_container() {
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  static_assert(!pressio::is_native_container_kokkos<T>::value, "");
-  static_assert(!pressio::is_dynamic_vector_kokkos<T>::value, "");
-  static_assert(!pressio::is_static_vector_kokkos<T>::value, "");
-  static_assert(!pressio::is_vector_kokkos<T>::value, "");
-  static_assert(!pressio::is_static_dense_matrix_kokkos<T>::value, "");
-  static_assert(!pressio::is_dynamic_dense_matrix_kokkos<T>::value, "");
-  static_assert(!pressio::is_dense_matrix_kokkos<T>::value, "");
+  static_assert(pressio::is_native_container_kokkos<T>::value == false, "");
+  static_assert(pressio::is_dynamic_vector_kokkos<T>::value == false, "");
+  static_assert(pressio::is_static_vector_kokkos<T>::value == false, "");
+  static_assert(pressio::is_vector_kokkos<T>::value == false, "");
+  static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == false, "");
+  static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_kokkos<T>::value == false, "");
 #endif
 }
 

@@ -57,7 +57,7 @@ TEST(type_traits, TeuchosVector)
   static_assert(pressio::is_dense_vector_teuchos<T>::value,"");
 
   // negative checks (within Teuchos)
-  static_assert(!pressio::is_dense_matrix_teuchos<T>::value, "");
+  static_assert(pressio::is_dense_matrix_teuchos<T>::value == false, "");
 }
 
 TEST(type_traits, TeuchosMatrix)
@@ -71,7 +71,7 @@ TEST(type_traits, TeuchosMatrix)
   static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
 
   // negative checks (within Teuchos)
-  static_assert(!pressio::is_dense_vector_teuchos<T>::value, "");
+  static_assert(pressio::is_dense_vector_teuchos<T>::value == false, "");
 }
 
 }}} // pressio::traits::test

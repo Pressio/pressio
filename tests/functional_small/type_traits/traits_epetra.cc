@@ -36,7 +36,7 @@ TEST(epetra, VectorTraits)
   static_assert(pressio::is_vector_epetra<T>::value,"");
 
   // negative checks (within Epetra)
-  static_assert(!pressio::is_multi_vector_epetra<T>::value, "");
+  static_assert(pressio::is_multi_vector_epetra<T>::value == false, "");
 }
 
 TEST(eped_epetra, MVTraits)
@@ -50,7 +50,7 @@ TEST(eped_epetra, MVTraits)
   static_assert(pressio::is_multi_vector_epetra<T>::value,"");
 
   // negative checks (within Epetra)
-  static_assert(!pressio::is_vector_epetra<T>::value,"");
+  static_assert(pressio::is_vector_epetra<T>::value == false,"");
 }
 
 }}} // pressio::traits::test
