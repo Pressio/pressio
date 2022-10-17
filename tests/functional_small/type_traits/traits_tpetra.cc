@@ -4,11 +4,6 @@
 
 namespace pressio { namespace traits { namespace test {
 
-#define CHECK_TRAIT2(TRAIT, TYPE) \
-::testing::StaticAssertTypeEq<typename traits::TRAIT, typename TYPE>();
-#define CHECK_TRAIT(TRAIT) CHECK_TRAIT2(TRAIT, T::TRAIT)
-
-
 template <
   typename T,
   int rank,
