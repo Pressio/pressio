@@ -4,7 +4,7 @@
 
 namespace pressio { namespace traits { namespace test {
 
-template <typename T, int rank, bool is_dynamic>
+template <typename T, int rank>
 void test_eigen_container_traits()
 {
   // traits and shared predicates
@@ -37,7 +37,7 @@ template <
 void test_eigen_vector_type_traits()
 {
   // traits and shared predicates
-  test_eigen_container_traits<T, 1, is_dynamic>();
+  test_eigen_container_traits<T, 1>();
 
   // vector predicates
   static_assert(pressio::is_vector_eigen<T>::value, "");
@@ -87,7 +87,7 @@ template <
 void test_eigen_matrix_type_traits()
 {
   // traits and shared predicates
-  test_eigen_container_traits<T, 2, is_dynamic>();
+  test_eigen_container_traits<T, 2>();
 
   constexpr bool row_major = T::IsRowMajor == 1;
 
@@ -134,7 +134,7 @@ template <
 void test_eigen_sparse_matrix_type_traits()
 {
   // traits and shared predicates
-  test_eigen_container_traits<T, 2, true>();
+  test_eigen_container_traits<T, 2>();
 
   // sparse matrix predicates
   static_assert(pressio::is_sparse_matrix_eigen<T>::value, "");
