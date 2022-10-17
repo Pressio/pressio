@@ -16,13 +16,14 @@ template <
 >
 void test_tpetra_container()
 {
+  // traits and shared predicates
   test_container_traits<
     T,
     rank,
     typename T::impl_scalar_type
   >();
 
-  // negative
+  // negative checks (cross-package)
   test_is_not_eigen_container<T>();
   test_is_not_kokkos_container<T>();
   test_is_not_teuchos_container<T>();
@@ -36,8 +37,16 @@ TEST(tpetra, MVTraits)
     int, unsigned int,
     Tpetra::MultiVector<>::node_type
   >;
-  static_assert(pressio::is_multi_vector_tpetra<T>::value,"");
+
+  // traits and shared predicates
   test_tpetra_container<T, 2>();
+
+  static_assert(pressio::is_multi_vector_tpetra<T>::value,"");
+
+  // negative checks (within Tpetra)
+  static_assert(!pressio::is_vector_tpetra<T>::value, "");
+  static_assert(!pressio::is_vector_tpetra_block<T>::value, "");
+  static_assert(!pressio::is_multi_vector_tpetra_block<T>::value, "");
 }
 
 TEST(tpetra, VectorTraits)
@@ -47,8 +56,17 @@ TEST(tpetra, VectorTraits)
     int, unsigned int,
     Tpetra::Vector<>::node_type
   >;
-  static_assert(pressio::is_vector_tpetra<T>::value,"");
+
+  // traits and shared predicates
   test_tpetra_container<T, 1>();
+
+  // vector predicates
+  static_assert(pressio::is_vector_tpetra<T>::value,"");
+
+  // negative checks (within Tpetra)
+  static_assert(!pressio::is_multi_vector_tpetra<T>::value, "");
+  static_assert(!pressio::is_vector_tpetra_block<T>::value, "");
+  static_assert(!pressio::is_multi_vector_tpetra_block<T>::value, "");
 }
 
 TEST(tpetra_block, VectorTraits)
@@ -58,8 +76,17 @@ TEST(tpetra_block, VectorTraits)
     int, unsigned int,
     Tpetra::BlockVector<>::node_type
   >;
-  static_assert(::pressio::is_vector_tpetra_block<T>::value,"");
+
+  // traits and shared predicates
   test_tpetra_container<T, 1>();
+
+  // vector block
+  static_assert(::pressio::is_vector_tpetra_block<T>::value,"");
+
+  // negative checks (within Tpetra)
+  static_assert(!pressio::is_vector_tpetra<T>::value, "");
+  static_assert(!pressio::is_multi_vector_tpetra<T>::value, "");
+  static_assert(!pressio::is_multi_vector_tpetra_block<T>::value, "");
 }
 
 TEST(tpetra_block, MVTraits)
@@ -69,8 +96,17 @@ TEST(tpetra_block, MVTraits)
     int, unsigned int,
     Tpetra::MultiVector<>::node_type
   >;
-  static_assert(pressio::is_multi_vector_tpetra_block<T>::value,"");
+
+  // traits and shared predicates
   test_tpetra_container<T, 2>();
+
+  // multi-vector block
+  static_assert(pressio::is_multi_vector_tpetra_block<T>::value,"");
+
+  // negative checks (within Tpetra)
+  static_assert(!pressio::is_vector_tpetra<T>::value, "");
+  static_assert(!pressio::is_multi_vector_tpetra<T>::value, "");
+  static_assert(!pressio::is_vector_tpetra_block<T>::value, "");
 }
 
 }}} // pressio::traits::test

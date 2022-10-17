@@ -11,13 +11,14 @@ template <
 >
 void test_epetra_container()
 {
+  // traits and shared predicates
   test_container_traits<
     T,
     rank,
     double /* scalar */
   >();
 
-  // negative
+  // negative checks (cross-package)
   test_is_not_eigen_container<T>();
   test_is_not_teuchos_container<T>();
   test_is_not_tpetra_container<T>();
@@ -27,15 +28,29 @@ void test_epetra_container()
 TEST(epetra, VectorTraits)
 {
   using T = Epetra_Vector;
-  static_assert(pressio::is_vector_epetra<T>::value,"");
+
+  // traits and shared predicates
   test_epetra_container<T, 1>();
+
+  // vector predicates
+  static_assert(pressio::is_vector_epetra<T>::value,"");
+
+  // negative checks (within Epetra)
+  static_assert(!pressio::is_multi_vector_epetra<T>::value, "");
 }
 
 TEST(eped_epetra, MVTraits)
 {
   using T = Epetra_MultiVector;
-  static_assert(pressio::is_multi_vector_epetra<T>::value,"");
+
+  // traits and shared predicates
   test_epetra_container<T, 2>();
+
+  // multi-vector predicates
+  static_assert(pressio::is_multi_vector_epetra<T>::value,"");
+
+  // negative checks (within Epetra)
+  static_assert(!pressio::is_vector_epetra<T>::value,"");
 }
 
 }}} // pressio::traits::test

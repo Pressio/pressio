@@ -58,6 +58,7 @@ template <
 >
 void test_kokkos_container_traits()
 {
+  // traits and shared predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   test_container_traits<
     T,
@@ -65,7 +66,7 @@ void test_kokkos_container_traits()
     typename T::traits::value_type
   >();
 
-  // negative
+  // negative checks (cross-package)
   test_is_not_eigen_container<T>();
   test_is_not_teuchos_container<T>();
   test_is_not_tpetra_container<T>();
@@ -85,14 +86,19 @@ template <
 >
 void test_kokkos_vector_type_traits()
 {
-  // traits
+  // traits and shared predicates
   test_kokkos_container_traits<T>();
 
-  // Kokkos specific vector predicates
+  // vector predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   static_assert(pressio::is_dynamic_vector_kokkos<T>::value == is_dynamic,"");
   static_assert(pressio::is_static_vector_kokkos<T>::value == !is_dynamic,"");
   static_assert(pressio::is_vector_kokkos<T>::value,"");
+
+  // negative checks (within Kokkos)
+  static_assert(!pressio::is_dense_matrix_kokkos<T>::value,"");
+  static_assert(!pressio::is_static_dense_matrix_kokkos<T>::value,"");
+  static_assert(!pressio::is_dynamic_dense_matrix_kokkos<T>::value,"");
 }
 
 TEST(type_traits, kokkos_vector) {
@@ -117,7 +123,7 @@ template <
 >
 void test_kokkos_matrix_type_traits()
 {
-  // traits
+  // traits and shared predicates
   test_kokkos_container_traits<T>();
 
   constexpr bool is_row_major = std::is_same<
@@ -125,11 +131,16 @@ void test_kokkos_matrix_type_traits()
         Kokkos::LayoutLeft
       >::value;
 
-  // native Kokkos matrix predicates
+  // dense matrix predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == !is_dynamic,"");
   static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == is_dynamic,"");
   static_assert(pressio::is_dense_matrix_kokkos<T>::value,"");
+
+  // negative checks (within Kokkos)
+  static_assert(!pressio::is_dynamic_vector_kokkos<T>::value,"");
+  static_assert(!pressio::is_static_vector_kokkos<T>::value,"");
+  static_assert(!pressio::is_vector_kokkos<T>::value,"");
 }
 
 TEST(type_traits, kokkos_matrix) {
