@@ -55,12 +55,13 @@ namespace pressio{ namespace ops{
 template <class T>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T>::rank==1 and
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
+  (::pressio::is_vector_eigen<T>::value or
+  ::pressio::is_expression_acting_on_eigen<T>::value)
   >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_t<T>;
   for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
     x(i) = std::pow(x(i), exponent);
   }
@@ -70,14 +71,16 @@ pow(T & x,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  and (::pressio::is_native_container_eigen<T1>::value
+    or ::pressio::is_expression_acting_on_eigen<T1>::value)
+  and (::pressio::is_native_container_eigen<T2>::value
+    or ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 pow(T1 & y,
     const T2 & x,
     const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_t<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
@@ -89,8 +92,10 @@ pow(T1 & y,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  and (::pressio::is_native_container_eigen<T1>::value
+    or ::pressio::is_expression_acting_on_eigen<T1>::value)
+  and (::pressio::is_native_container_eigen<T2>::value
+    or ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -98,7 +103,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_t<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
@@ -115,8 +120,10 @@ abs_pow(T1 & y,
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
-  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  and (::pressio::is_native_container_eigen<T1>::value
+    or ::pressio::is_expression_acting_on_eigen<T1>::value)
+  and (::pressio::is_native_container_eigen<T2>::value
+    or ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -125,7 +132,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = pressio::ops::impl::ordinal_t<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent < ::pressio::utils::Constants<sc_t>::zero());

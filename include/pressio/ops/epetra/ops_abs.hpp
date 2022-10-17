@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
 template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T1>::value and
-  ::pressio::is_vector_epetra<T2>::value 
+  ::pressio::is_vector_epetra<T2>::value
   >
 abs(T1 & y, const T2 & x)
 {

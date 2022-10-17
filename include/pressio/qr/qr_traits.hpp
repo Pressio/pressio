@@ -215,8 +215,8 @@ struct Traits<
   using traits_all_t  = qr_traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
-  using node_t = typename ::pressio::Traits<matrix_type>::node_type;
-  using hexsp  = typename ::pressio::Traits<matrix_type>::host_exec_space_type;
+  using node_t = typename matrix_type::node_type;
+  using hexsp  = typename Kokkos::HostSpace::execution_space;
 
   using impl_t   = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;

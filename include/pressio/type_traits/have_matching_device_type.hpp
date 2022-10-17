@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// enums.hpp
+// have_matching_device_type.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,76 +46,36 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_ENUMS_HPP_
-#define TYPE_TRAITS_ENUMS_HPP_
+#ifndef TYPE_TRAITS_HAVE_MATCHING_DEV_TYPE_HPP_
+#define TYPE_TRAITS_HAVE_MATCHING_DEV_TYPE_HPP_
 
 namespace pressio{
 
-/*--------------------------------------------
-Wrapped library name
---------------------------------------------*/
-enum class PackageIdentifier{
-   Undefined,
-   Eigen,
-   Kokkos,
-   Trilinos,
-   Pybind,
-   Arbitrary
+template <typename ... Args>
+struct have_matching_device_type;
+
+template <typename T1>
+struct have_matching_device_type<T1>
+{
+  static constexpr auto value = true;
 };
 
-/*--------------------------------------------
-Identifier for  vectors
-
-Within a given package, like trilinos, we can
-have multiple types of vectors, e.g. epetra, tpetra.
-Same can be true for other packages.
---------------------------------------------*/
-enum class VectorIdentifier{
-   Undefined,
-   EigenRowStatic,
-   EigenColStatic,
-   EigenRowDynamic,
-   EigenColDynamic,
-   KokkosDynamic,
-   KokkosStatic,
-   Epetra,
-   Tpetra,
-   TpetraBlock,
-   TeuchosSerialDense,
-   Arbitrary
+template <typename T1, typename T2>
+struct have_matching_device_type<T1, T2>
+{
+  static constexpr auto value = std::is_same<
+    ::pressio::impl::device_t<T1>,
+    ::pressio::impl::device_t<T2>
+    >::value;
 };
 
-/*--------------------------------------------
-Identifier for  matrix
---------------------------------------------*/
-enum class MatrixIdentifier{
-   Undefined,
-   DenseEigen,
-   SparseEigen,
-   DenseKokkos,
-   DenseTeuchosSerial,
-   DenseArbitrary
+template <typename T1, typename T2, typename ... rest>
+struct have_matching_device_type<T1, T2, rest...>
+{
+  static constexpr auto value =
+    have_matching_device_type<T1, T2>::value and
+    have_matching_device_type<T2, rest...>::value;
 };
 
-/*--------------------------------------------
-Identifier for  multivector
---------------------------------------------*/
-enum class MultiVectorIdentifier{
-   Undefined,
-   Epetra,
-   Tpetra,
-   TpetraBlock,
-   Arbitrary
-};
-
-/*--------------------------------------------
-Identifier for  tensor
---------------------------------------------*/
-enum class TensorIdentifier{
-   Undefined,
-   Pybind,
-   Arbitrary
-};
-
-}
-#endif  // TYPE_TRAITS_ENUMS_HPP_
+} // namespace
+#endif  // TYPE_TRAITS_HAVE_MATCHING_EXE_SPACE_HPP_

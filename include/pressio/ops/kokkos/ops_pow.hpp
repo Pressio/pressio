@@ -53,13 +53,14 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+    (::pressio::is_native_container_kokkos<T>::value
+  or ::pressio::is_expression_acting_on_kokkos<T>::value)
   >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
   auto & x_n = impl::get_native(x);
-  using ord_t = typename ::pressio::Traits<T>::size_type;
+  using ord_t = ::pressio::ops::impl::ordinal_t<T>;
   // this pow won't work for device
   Kokkos::parallel_for(x.extent(0),
 		       KOKKOS_LAMBDA (const ord_t& i){
@@ -71,15 +72,17 @@ pow(T & x,
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
-  ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  (::pressio::is_native_container_kokkos<T1>::value or
+   ::pressio::is_expression_acting_on_kokkos<T1>::value) and
+  (::pressio::is_native_container_kokkos<T2>::value or
+   ::pressio::is_expression_acting_on_kokkos<T2>::value)
   >
 abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  using ord_t = ::pressio::ops::impl::ordinal_t<T1>;
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
@@ -100,8 +103,10 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
-  ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  (::pressio::is_native_container_kokkos<T1>::value or
+   ::pressio::is_expression_acting_on_kokkos<T1>::value) and
+  (::pressio::is_native_container_kokkos<T2>::value or
+   ::pressio::is_expression_acting_on_kokkos<T2>::value)
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -109,7 +114,7 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  using ord_t = ::pressio::ops::impl::ordinal_t<T1>;
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);

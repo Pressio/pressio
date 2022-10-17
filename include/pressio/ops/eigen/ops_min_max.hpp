@@ -53,7 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen,
+  (::pressio::is_native_container_eigen<T>::value
+  || ::pressio::is_expression_acting_on_eigen<T>::value),
   decltype( impl::get_native(std::declval<const T>()).maxCoeff() )
   >
 max(const T & obj)
@@ -63,7 +64,8 @@ max(const T & obj)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen,
+  (::pressio::is_native_container_eigen<T>::value
+  || ::pressio::is_expression_acting_on_eigen<T>::value),
   decltype( impl::get_native(std::declval<const T>()).minCoeff() )
   >
 min(const T & obj)

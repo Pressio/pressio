@@ -64,9 +64,12 @@ template <
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
-  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen
+  && (::pressio::is_native_container_eigen<A_type>::value
+   || ::pressio::is_expression_acting_on_eigen<A_type>::value)
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   && ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
   && ::pressio::Traits<y_type>::rank == 1
@@ -103,9 +106,12 @@ template <
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
-  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::is_vector_eigen<y_type>::value
+  && (::pressio::is_native_container_eigen<A_type>::value
+   || ::pressio::is_expression_acting_on_eigen<A_type>::value)
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   && ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
   && ::pressio::Traits<y_type>::rank == 1
@@ -135,9 +141,12 @@ template <
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
-  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen
+  && (::pressio::is_native_container_eigen<A_type>::value
+   || ::pressio::is_expression_acting_on_eigen<A_type>::value)
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   && ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
   && ::pressio::Traits<y_type>::rank == 1
@@ -172,9 +181,12 @@ product(::pressio::transpose /*unused*/,
 template <class y_type, class A_type, class x_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, y_type, x_type>::value
-  && ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen
+  && (::pressio::is_native_container_eigen<A_type>::value
+   || ::pressio::is_expression_acting_on_eigen<A_type>::value)
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   && ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
   && ::pressio::Traits<y_type>::rank == 1,

@@ -166,19 +166,78 @@ struct is_expression<
   > : std::true_type{};
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename T, typename enable = void>
-struct is_expression_eigen : std::false_type{};
+template <typename T>
+struct is_expression_acting_on_eigen: public std::false_type {};
 
 template <typename T>
-struct is_expression_eigen<
-  T,
-  mpl::enable_if_t<
-    (is_expression<T>::value and
-     ::pressio::Traits<T>::package_identifier
-     == ::pressio::PackageIdentifier::Eigen)
+struct is_expression_acting_on_eigen<
+    ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
     >
-  > : std::true_type{};
-#endif
+{
+    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_eigen<
+    ::pressio::expressions::impl::DiagExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_eigen<
+    ::pressio::expressions::impl::SpanExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_eigen<
+    ::pressio::expressions::impl::SubspanExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+};
+#endif // PRESSIO_ENABLE_TPL_EIGEN
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct is_expression_acting_on_kokkos: public std::false_type {};
+
+template <typename T>
+struct is_expression_acting_on_kokkos<
+    ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_kokkos<
+    ::pressio::expressions::impl::DiagExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_kokkos<
+    ::pressio::expressions::impl::SpanExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_kokkos<
+    ::pressio::expressions::impl::SubspanExpr<T>
+    >
+{
+    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+};
+#endif // PRESSIO_ENABLE_TPL_KOKKOS
 
 }
 #endif  // EXPRESSIONS_IS_EXPRESSION_HPP_

@@ -45,10 +45,77 @@
 // ************************************************************************
 //@HEADER
 */
+namespace pressio { namespace traits { namespace test {
+// -------------------------------------------------
 
 /*
-  Verify values of common container traits
+  Verify package predicates
 */
+
+template <typename T>
+void test_is_not_eigen_container() {
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+  static_assert(pressio::is_native_container_eigen<T>::value == false, "");
+  static_assert(pressio::is_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_row_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_column_vector_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_sparse_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_static_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dynamic_dense_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_row_major_matrix_eigen<T>::value == false, "");
+  static_assert(pressio::is_dense_col_major_matrix_eigen<T>::value == false, "");
+#endif
+}
+
+template <typename T>
+void test_is_not_teuchos_container() {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  static_assert(pressio::is_dense_vector_teuchos<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_teuchos<T>::value == false, "");
+#endif
+}
+
+template <typename T>
+void test_is_not_epetra_container() {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  static_assert(pressio::is_vector_epetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_epetra<T>::value == false, "");
+#endif
+}
+
+template <typename T>
+void test_is_not_tpetra_container() {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  static_assert(pressio::is_vector_tpetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_tpetra<T>::value == false, "");
+#endif
+}
+
+template <typename T>
+void test_is_not_tpetra_block_container() {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  static_assert(pressio::is_vector_tpetra_block<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_tpetra_block<T>::value == false, "");
+#endif
+}
+
+template <typename T>
+void test_is_not_kokkos_container() {
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+  static_assert(pressio::is_native_container_kokkos<T>::value == false, "");
+  static_assert(pressio::is_dynamic_vector_kokkos<T>::value == false, "");
+  static_assert(pressio::is_static_vector_kokkos<T>::value == false, "");
+  static_assert(pressio::is_vector_kokkos<T>::value == false, "");
+  static_assert(pressio::is_static_dense_matrix_kokkos<T>::value == false, "");
+  static_assert(pressio::is_dynamic_dense_matrix_kokkos<T>::value == false, "");
+  static_assert(pressio::is_dense_matrix_kokkos<T>::value == false, "");
+#endif
+}
 
 // -------------------------------------------------
 
@@ -57,56 +124,15 @@
 */
 template <
   typename T,
-  pressio::PackageIdentifier pack_id,
   int rank,
-  bool is_shared_mem,
-  bool is_dynamic,
   typename Scalar,
-  typename Ordinal,
-  typename SizeType = Ordinal,
-  typename ScalarRef = typename std::add_lvalue_reference<
-    Scalar
-  >::type,
   typename traits = pressio::Traits<T>
 >
 void test_container_traits()
 {
-  // ContainersSharedTraits
-  static_assert(traits::package_identifier == pack_id, "");
-  static_assert(traits::is_shared_mem == is_shared_mem, "");
-  static_assert(traits::is_distributed == !is_shared_mem, "");
-  static_assert(traits::rank == rank, "");
-  // AllocTrait
-  static_assert(traits::is_static == !is_dynamic, "");
-  static_assert(traits::is_dynamic == is_dynamic, "");
-  // ScalarTrait
+  static_assert(traits::rank == rank, "rank is different than expected");
   testing::StaticAssertTypeEq<typename traits::scalar_type, Scalar>();
-  testing::StaticAssertTypeEq<typename traits::reference_type, Scalar &>();
-  testing::StaticAssertTypeEq<typename traits::const_reference_type, Scalar const &>();
-  // OrdinalTrait
-  testing::StaticAssertTypeEq<typename traits::ordinal_type, Ordinal>();
-  testing::StaticAssertTypeEq<typename traits::size_type, SizeType>();
 }
 
 // -------------------------------------------------
-
-/*
-    Verifies traits common for all matrices
-*/
-template <
-  typename T,
-  pressio::MatrixIdentifier mtx_id,
-  bool is_row_major = true,
-  bool is_sparse = false,
-  typename traits = pressio::Traits<T>
->
-void test_matrix_traits()
-{
-  static_assert(traits::matrix_identifier == mtx_id, "");
-  static_assert(traits::is_sparse == is_sparse, "");
-  static_assert(traits::is_dense == !is_sparse, "");
-  static_assert(traits::is_row_major == is_row_major, "");
-  static_assert(traits::is_col_major == !is_row_major, "");
-}
-
-// -------------------------------------------------
+}}} // pressio::traits::test

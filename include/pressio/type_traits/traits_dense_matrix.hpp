@@ -62,13 +62,11 @@ struct Traits<
     is_dense_matrix_eigen<T>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<T, 2>,
-    public ::pressio::impl::EigenMatrixAllocTrait<T>,
-    public ::pressio::impl::MatrixLayoutTrait<T::IsRowMajor>,
-    public ::pressio::impl::DenseMatrixTrait
 {
-  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseEigen;
+  static constexpr int rank = 2;
+  using scalar_type = typename T::Scalar;
 };
+
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
 //*******************************
@@ -82,16 +80,9 @@ struct Traits<
       is_dense_matrix_kokkos<T>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<T, 2>,
-    public ::pressio::impl::MatrixLayoutTrait<
-      std::is_same<
-        typename T::traits::array_layout,
-        Kokkos::LayoutLeft
-      >::value
-    >,
-    public ::pressio::impl::DenseMatrixTrait
 {
-  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseKokkos;
+  static constexpr int rank = 2;
+  using scalar_type = typename T::traits::value_type;
 };
 #endif
 
@@ -106,10 +97,9 @@ struct Traits<
     is_dense_matrix_teuchos<T>::value
     >
   >
-  : public ::pressio::impl::TeuchosTraits<T, 2>,
-    public ::pressio::impl::DenseMatrixTrait
 {
-  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseTeuchosSerial;
+  static constexpr int rank = 2;
+  using scalar_type = typename T::scalarType;
 };
 #endif
 

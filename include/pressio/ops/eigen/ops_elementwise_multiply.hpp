@@ -58,9 +58,12 @@ namespace pressio{ namespace ops{
 template <class T, class T1, class T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
-  && ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
-  && ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  && (::pressio::is_native_container_eigen<T>::value
+  || ::pressio::is_expression_acting_on_eigen<T>::value)
+  && (::pressio::is_native_container_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_native_container_eigen<T2>::value
+  || ::pressio::is_expression_acting_on_eigen<T2>::value)
   && ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1

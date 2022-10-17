@@ -2,18 +2,24 @@
 #include "pressio/type_traits.hpp"
 #include "traits_shared.hpp"
 
+namespace pressio { namespace traits { namespace test {
+
 template <typename T, int rank>
 void test_teuchos_container()
 {
+  // traits and shared predicates
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Trilinos,
     rank,
-    true, /* shared mem */
-    true, /* dynamic */
-    typename T::scalarType,
-    typename T::ordinalType
+    typename T::scalarType
   >();
+
+  // negative checks (cross-package)
+  test_is_not_eigen_container<T>();
+  test_is_not_kokkos_container<T>();
+  test_is_not_tpetra_container<T>();
+  test_is_not_tpetra_block_container<T>();
+  test_is_not_epetra_container<T>();
 }
 
 //*******************************
@@ -44,17 +50,29 @@ TEST(type_traits, isTeuchosRCP)
 TEST(type_traits, TeuchosVector)
 {
   using T = Teuchos::SerialDenseVector<int, double>;
-  static_assert(pressio::is_dense_vector_teuchos<T>::value,"");
-  ASSERT_TRUE(pressio::Traits<T>::vector_identifier
-      == pressio::VectorIdentifier::TeuchosSerialDense);
+
+  // traits and shared predicates
   test_teuchos_container<T, 1>();
+
+  // vector predicates
+  static_assert(pressio::is_dense_vector_teuchos<T>::value,"");
+
+  // negative checks (within Teuchos)
+  static_assert(pressio::is_dense_matrix_teuchos<T>::value == false, "");
 }
 
 TEST(type_traits, TeuchosMatrix)
 {
   using T = Teuchos::SerialDenseMatrix<long long, float>;
-  static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
-  ASSERT_TRUE(pressio::Traits<T>::matrix_identifier
-      == pressio::MatrixIdentifier::DenseTeuchosSerial);
+
+  // traits and shared predicates
   test_teuchos_container<T, 2>();
+
+  // matrix predicates
+  static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
+
+  // negative checks (within Teuchos)
+  static_assert(pressio::is_dense_vector_teuchos<T>::value == false, "");
 }
+
+}}} // pressio::traits::test

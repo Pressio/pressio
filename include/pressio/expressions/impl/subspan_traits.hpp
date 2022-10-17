@@ -59,20 +59,16 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<MatrixType, 2>,
-    public ::pressio::impl::StaticAllocTrait,
-    public ::pressio::impl::MatrixDensityTrait<
-      ::pressio::Traits<MatrixType>::is_sparse
-    >
+  : public ::pressio::Traits<MatrixType>
 {
-  using size_type = typename ::pressio::impl::SizePair<MatrixType>::size_type;
+  using ordinal_type = typename MatrixType::StorageIndex;
 
   // type of the native expression
   using _native_expr_type = decltype(
-    std::declval<MatrixType>().block(size_type{},size_type{},size_type{},size_type{} )
+    std::declval<MatrixType>().block(ordinal_type{},ordinal_type{},ordinal_type{},ordinal_type{} )
     );
   using _const_native_expr_type = decltype(
-    std::declval<const MatrixType>().block(size_type{},size_type{},size_type{},size_type{} )
+    std::declval<const MatrixType>().block(ordinal_type{},ordinal_type{},ordinal_type{},ordinal_type{} )
     );
   using native_expr_type = typename std::conditional<
     std::is_const<MatrixType>::value,
@@ -93,14 +89,10 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-      ::pressio::mpl::remove_cvref_t<MatrixType>,
-      2,
-      true
-    >,
-    public ::pressio::impl::DenseMatrixTrait
+  : public ::pressio::Traits<MatrixType>
 {
-  using pair_type = typename ::pressio::impl::SizePair<MatrixType>::pair_type;
+  using ordinal_type = typename MatrixType::traits::size_type;
+  using pair_type = std::pair<ordinal_type, ordinal_type>;
 
   using _native_expr_type = decltype
     (

@@ -59,12 +59,9 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<VectorType, 1>,
-    public ::pressio::impl::StaticAllocTrait
+  : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename ::pressio::Traits<
-    ::pressio::mpl::remove_cvref_t<VectorType>
-  >::ordinal_type;
+  using ordinal_type = typename VectorType::StorageIndex;
 
   // type of the native expression
   using _native_expr_type =
@@ -97,17 +94,18 @@ struct SpanTraits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-            ::pressio::mpl::remove_cvref_t<VectorType>,
-      1,
-      true
-    >
+  : public ::pressio::Traits<VectorType>
 {
-  using pair_type = typename ::pressio::impl::SizePair<VectorType>::pair_type;
+  using ordinal_type = typename VectorType::traits::size_type;
+  using pair_type = std::pair<ordinal_type, ordinal_type>;
 
   using native_expr_type =
     decltype(
       Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
+     );
+  using const_native_expr_type =
+    decltype(
+      Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
      );
 
   // using _const_native_expr_type =
@@ -124,5 +122,17 @@ struct SpanTraits<
 };
 #endif
 
-}}}
+}}
+
+namespace impl{
+
+template <typename T>
+struct execution_space<::pressio::expressions::impl::SpanExpr<T>>
+{
+  using type = typename T::traits::execution_space;
+};
+
+}
+
+}
 #endif  // EXPRESSIONS_IMPL_SPAN_TRAITS_HPP_

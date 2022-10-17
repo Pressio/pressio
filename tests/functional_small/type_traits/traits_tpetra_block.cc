@@ -9,7 +9,7 @@ template <
   int rank,
   typename traits = pressio::Traits<T>
 >
-void test_tpetra_container()
+void test_tpetra_block_container()
 {
   // traits and shared predicates
   test_container_traits<
@@ -25,43 +25,44 @@ void test_tpetra_container()
   test_is_not_epetra_container<T>();
 }
 
-TEST(tpetra, MVTraits)
+TEST(tpetra_block, VectorTraits)
 {
-  using T = Tpetra::MultiVector<
+  using T = Tpetra::BlockVector<
+    double,
+    int, unsigned int,
+    Tpetra::BlockVector<>::node_type
+  >;
+
+  // traits and shared predicates
+  test_tpetra_block_container<T, 1>();
+
+  // vector block
+  static_assert(::pressio::is_vector_tpetra_block<T>::value,"");
+
+  // negative checks (within Tpetra)
+  static_assert(pressio::is_vector_tpetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_tpetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_tpetra_block<T>::value == false, "");
+}
+
+TEST(tpetra_block, MVTraits)
+{
+  using T = Tpetra::BlockMultiVector<
     double,
     int, unsigned int,
     Tpetra::MultiVector<>::node_type
   >;
 
   // traits and shared predicates
-  test_tpetra_container<T, 2>();
+  test_tpetra_block_container<T, 2>();
 
-  static_assert(pressio::is_multi_vector_tpetra<T>::value,"");
+  // multi-vector block
+  static_assert(pressio::is_multi_vector_tpetra_block<T>::value,"");
 
   // negative checks (within Tpetra)
   static_assert(pressio::is_vector_tpetra<T>::value == false, "");
-  static_assert(pressio::is_vector_tpetra_block<T>::value == false, "");
-  static_assert(pressio::is_multi_vector_tpetra_block<T>::value == false, "");
-}
-
-TEST(tpetra, VectorTraits)
-{
-  using T = Tpetra::Vector<
-    double,
-    int, unsigned int,
-    Tpetra::Vector<>::node_type
-  >;
-
-  // traits and shared predicates
-  test_tpetra_container<T, 1>();
-
-  // vector predicates
-  static_assert(pressio::is_vector_tpetra<T>::value,"");
-
-  // negative checks (within Tpetra)
   static_assert(pressio::is_multi_vector_tpetra<T>::value == false, "");
   static_assert(pressio::is_vector_tpetra_block<T>::value == false, "");
-  static_assert(pressio::is_multi_vector_tpetra_block<T>::value == false, "");
 }
 
 }}} // pressio::traits::test
