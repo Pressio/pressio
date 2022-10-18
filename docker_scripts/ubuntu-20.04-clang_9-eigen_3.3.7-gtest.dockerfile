@@ -27,8 +27,8 @@ RUN rm cmake.sh
 RUN apt-get install -y $CC $CC-doc
 
 # Setting environment variables
-ENV CC=/usr/bin/clang-9
-ENV CXX=/usr/bin/clang++-9
+ENV CC=/usr/bin/clang-$CLANG_VER
+ENV CXX=/usr/bin/clang++-$CLANG_VER
 
 # Building TPLs
 RUN git clone https://github.com/Pressio/pressio-builder.git
