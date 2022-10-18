@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_
-#define ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_
+#ifndef ODE_ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_
+#define ODE_ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -68,4 +68,4 @@ T is_implicit_scheme(StepScheme name){
 
 }}//end namespace pressio::ode
 
-#endif
+#endif  // ODE_ODE_IS_EXPLICIT_OR_IMPLICIT_HPP_

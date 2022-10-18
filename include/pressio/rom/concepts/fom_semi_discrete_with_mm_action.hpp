@@ -145,4 +145,4 @@ struct SemiDiscreteFomWithMassMatrixAction<
 
 #endif
 
-#endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_HPP_
+#endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_MM_ACTION_HPP_

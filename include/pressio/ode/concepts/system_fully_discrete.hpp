@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_FULLY_DISCRETE_SYSTEM_HPP_
-#define ODE_STEPPERS_FULLY_DISCRETE_SYSTEM_HPP_
+#ifndef ODE_CONCEPTS_SYSTEM_FULLY_DISCRETE_HPP_
+#define ODE_CONCEPTS_SYSTEM_FULLY_DISCRETE_HPP_
 
 #include "./predicates/ode_has_const_discrete_residual_jacobian_method.hpp"
 
@@ -162,4 +162,4 @@ struct FullyDiscreteSystemWithJacobian<
 }} // end namespace pressio::ode
 #endif //end PRESSIO_ENABLE_CXX20
 
-#endif
+#endif  // ODE_CONCEPTS_SYSTEM_FULLY_DISCRETE_HPP_

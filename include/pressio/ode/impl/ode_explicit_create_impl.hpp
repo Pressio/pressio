@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
-#define ODE_STEPPERS_IMPL_ODE_EXPLICIT_CREATE_STEPPER_IMPL_HPP_
+#ifndef ODE_IMPL_ODE_EXPLICIT_CREATE_IMPL_HPP_
+#define ODE_IMPL_ODE_EXPLICIT_CREATE_IMPL_HPP_
 
 #include "ode_explicit_stepper_without_mass_matrix.hpp"
 #include "ode_explicit_stepper_with_mass_matrix.hpp"
@@ -86,4 +86,4 @@ auto create_explicit_stepper(StepScheme name,
 }
 
 }}}
-#endif  // ODE_STEPPERS_IMPL_ODE_EXPLICIT_COMPOSE_HPP_
+#endif  // ODE_IMPL_ODE_EXPLICIT_CREATE_IMPL_HPP_

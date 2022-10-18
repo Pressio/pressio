@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_IMPL_ODE_MANDATES_HPP_
-#define ODE_ADVANCERS_IMPL_ODE_MANDATES_HPP_
+#ifndef ODE_IMPL_ODE_ADVANCE_MANDATES_HPP_
+#define ODE_IMPL_ODE_ADVANCE_MANDATES_HPP_
 
 #include <type_traits>
 
@@ -67,4 +67,4 @@ constexpr void mandate_on_ind_var_and_state_types(const StepperType & /*unused*/
 }
 
 }}} //end namespace pressio::ode::impl
-#endif  // ODE_ADVANCERS_IMPL_ODE_MANDATES_HPP_
+#endif  // ODE_IMPL_ODE_ADVANCE_MANDATES_HPP_

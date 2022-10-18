@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_CREATE_STEPPER_IMPL_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_CREATE_STEPPER_IMPL_HPP_
+#ifndef ODE_IMPL_ODE_IMPLICIT_CREATE_IMPL_HPP_
+#define ODE_IMPL_ODE_IMPLICIT_CREATE_IMPL_HPP_
 
 #include "ode_implicit_discrete_residual.hpp"
 #include "ode_implicit_discrete_jacobian.hpp"
@@ -84,4 +84,4 @@ auto create_implicit_stepper_impl(StepScheme name,
 }
 
 }}}
-#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_HPP_
+#endif  // ODE_IMPL_ODE_IMPLICIT_CREATE_IMPL_HPP_

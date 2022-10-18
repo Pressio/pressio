@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
-#define ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
+#ifndef ODE_CONCEPTS_ODE_GUESSER_HPP_
+#define ODE_CONCEPTS_ODE_GUESSER_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -125,4 +125,4 @@ struct StateGuesser<
 }} // end namespace pressio::ode
 #endif
 
-#endif  // ODE_ADVANCERS_CONSTRAINTS_ODE_GUESSER_HPP_
+#endif  // ODE_CONCEPTS_ODE_GUESSER_HPP_

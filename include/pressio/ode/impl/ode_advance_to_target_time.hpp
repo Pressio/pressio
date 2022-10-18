@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
-#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#ifndef ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#define ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
 
 #include "ode_advance_printing_helpers.hpp"
 
@@ -205,4 +205,4 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#endif  // ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_PUBLIC_DIAG_FUNCTIONS_HPP_
-#define EXPRESSIONS_PUBLIC_DIAG_FUNCTIONS_HPP_
+#ifndef EXPRESSIONS_DIAG_HPP_
+#define EXPRESSIONS_DIAG_HPP_
 
 #include "impl/diag_traits.hpp"
 #include "impl/diag_classes.hpp"
@@ -66,4 +66,4 @@ auto diag(T & operand)
 }
 
 }
-#endif  // EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
+#endif  // EXPRESSIONS_DIAG_HPP_

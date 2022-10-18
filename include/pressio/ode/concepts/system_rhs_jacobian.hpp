@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_SYSTEM_RHS_AND_JACOBIAN_HPP_
-#define ODE_STEPPERS_SYSTEM_RHS_AND_JACOBIAN_HPP_
+#ifndef ODE_CONCEPTS_SYSTEM_RHS_JACOBIAN_HPP_
+#define ODE_CONCEPTS_SYSTEM_RHS_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -157,4 +157,4 @@ struct SystemWithRhsAndJacobian<
 }} // end namespace pressio::ode
 #endif
 
-#endif
+#endif  // ODE_CONCEPTS_SYSTEM_RHS_JACOBIAN_HPP_

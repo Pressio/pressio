@@ -13,4 +13,4 @@ void valid_scheme_for_lspg_else_throw(::pressio::ode::StepScheme name){
 }
 
 }}} // end pressio::rom::impl
-#endif
+#endif  // ROM_IMPL_LSPG_HELPERS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
-#define ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
+#ifndef ODE_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
+#define ODE_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -61,4 +61,4 @@ void print_step_and_current_time(const typename StepCount::value_type & step,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_ADVANCERS_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_
+#endif  // ODE_IMPL_ODE_ADVANCE_PRINTING_HELPERS_HPP_

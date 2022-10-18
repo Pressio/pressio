@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_SYSTEM_RHS_ONLY_HPP_
-#define ODE_STEPPERS_SYSTEM_RHS_ONLY_HPP_
+#ifndef ODE_CONCEPTS_SYSTEM_RHS_HPP_
+#define ODE_CONCEPTS_SYSTEM_RHS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -145,4 +145,4 @@ struct SystemWithRhs<
 }} // end namespace pressio::ode
 #endif
 
-#endif
+#endif  // ODE_CONCEPTS_SYSTEM_RHS_HPP_

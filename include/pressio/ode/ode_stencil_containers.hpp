@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STENCIL_CONTAINERS_HPP_
-#define ODE_STENCIL_CONTAINERS_HPP_
+#ifndef ODE_ODE_STENCIL_CONTAINERS_HPP_
+#define ODE_ODE_STENCIL_CONTAINERS_HPP_
 
 #include "./impl/ode_stencil_data_container_static.hpp"
 #include "./impl/ode_stencil_data_container_dynamic.hpp"
@@ -76,4 +76,4 @@ using ImplicitStencilStatesDynamicContainer
 
 }}//end namespace pressio::ode
 
-#endif
+#endif  // ODE_ODE_STENCIL_CONTAINERS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STRONG_TYPES_HPP_
-#define ODE_STRONG_TYPES_HPP_
+#ifndef ODE_ODE_STRONG_TYPES_HPP_
+#define ODE_ODE_STRONG_TYPES_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -129,4 +129,4 @@ struct IntermediateStepCount{
 
 }}// end namespace ode
 
-#endif  // ODE_STRONG_TYPES_HPP_
+#endif  // ODE_ODE_STRONG_TYPES_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_SYSTEM_RHS_AND_MASS_MATRIX_HPP_
-#define ODE_STEPPERS_SYSTEM_RHS_AND_MASS_MATRIX_HPP_
+#ifndef ODE_CONCEPTS_SYSTEM_RHS_MASSMATRIX_HPP_
+#define ODE_CONCEPTS_SYSTEM_RHS_MASSMATRIX_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -159,4 +159,4 @@ struct SystemWithRhsAndMassMatrix<
 
 #endif //end PRESSIO_ENABLE_CXX20
 
-#endif
+#endif  // ODE_CONCEPTS_SYSTEM_RHS_MASSMATRIX_HPP_

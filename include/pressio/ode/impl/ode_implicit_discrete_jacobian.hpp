@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
-#define ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#ifndef ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#define ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -196,4 +196,4 @@ discrete_jacobian(::pressio::ode::CrankNicolson,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_STEPPERS_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#endif  // ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_

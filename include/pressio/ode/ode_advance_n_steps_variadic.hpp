@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
-#define ODE_ADVANCERS_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
+#ifndef ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
+#define ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_noop_guesser.hpp"
@@ -214,4 +214,4 @@ advance_n_steps(StepperType & stepper,
 }
 
 }} //end namespace pressio::ode
-#endif
+#endif  // ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_

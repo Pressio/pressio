@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_PUBLIC_AS_DIAG_MATRIX_FUNCTIONS_HPP_
-#define EXPRESSIONS_PUBLIC_AS_DIAG_MATRIX_FUNCTIONS_HPP_
+#ifndef EXPRESSIONS_AS_DIAGONAL_MATRIX_HPP_
+#define EXPRESSIONS_AS_DIAGONAL_MATRIX_HPP_
 
 #include "impl/asdiagonalmatrix_traits.hpp"
 #include "impl/asdiagonalmatrix_classes.hpp"
@@ -66,4 +66,4 @@ auto as_diagonal_matrix(T & operand)
 }
 
 }
-#endif  // EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
+#endif  // EXPRESSIONS_AS_DIAGONAL_MATRIX_HPP_

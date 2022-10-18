@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_PUBLIC_SPAN_FUNCTIONS_HPP_
-#define EXPRESSIONS_PUBLIC_SPAN_FUNCTIONS_HPP_
+#ifndef EXPRESSIONS_SPAN_HPP_
+#define EXPRESSIONS_SPAN_HPP_
 
 #include "impl/span_traits.hpp"
 #include "impl/span_classes.hpp"
@@ -78,4 +78,4 @@ auto span(T & operand,
 }
 
 }
-#endif  // EXPRESSIONS_PUBLIC_FUNCTIONS_HPP_
+#endif  // EXPRESSIONS_SPAN_HPP_

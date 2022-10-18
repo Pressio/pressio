@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_HAVE_MATCHING_DEV_TYPE_HPP_
-#define TYPE_TRAITS_HAVE_MATCHING_DEV_TYPE_HPP_
+#ifndef TYPE_TRAITS_HAVE_MATCHING_DEVICE_TYPE_HPP_
+#define TYPE_TRAITS_HAVE_MATCHING_DEVICE_TYPE_HPP_
 
 namespace pressio{
 
@@ -78,4 +78,4 @@ struct have_matching_device_type<T1, T2, rest...>
 };
 
 } // namespace
-#endif  // TYPE_TRAITS_HAVE_MATCHING_EXE_SPACE_HPP_
+#endif  // TYPE_TRAITS_HAVE_MATCHING_DEVICE_TYPE_HPP_
