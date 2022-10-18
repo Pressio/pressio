@@ -24,7 +24,10 @@ RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
 RUN rm cmake.sh
 
 # Compilers installation
-RUN apt-get install -y $CC $CC-doc
+# NOTE: clang-12 installs libstdc++-9-dev on focal
+#       ending up without c++20 headers like <concepts>
+#       so request libstdc++-10-dev explicitly
+RUN apt-get install -y $CC $CXX libstdc++-10-dev
 
 # Setting environment variables
 ENV CC=/usr/bin/clang-$CLANG_VER
