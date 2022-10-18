@@ -61,35 +61,33 @@ class Solver
     public IterativeBase<Solver<TagType, T>>
 {
 public:
-  using scalar_type		 = typename T::scalar_type;
-  using solver_tag	 = TagType;
-  using this_type		 = Solver<solver_tag, T>;
-  using state_type		 = typename T::state_type;
+  using state_type = typename T::state_type;
+  using residual_norm_type = typename T::residual_norm_type;
+  using gradient_norm_type = typename T::gradient_norm_type;
+  using correction_norm_type = typename T::correction_norm_type;
+
+  using solver_tag = TagType;
+  using this_type = Solver<solver_tag, T>;
   using iterative_base_type = IterativeBase<this_type>;
   friend iterative_base_type;
   using typename iterative_base_type::iteration_type;
 
 private:
-  const scalar_type defaultTol_  = static_cast<scalar_type>(0.000001);
 
   iteration_type iStep_ = {};
   iteration_type jacobianUpdateFreq_ = 1;
 
-  //0: CorrectionAbsoluteNorm
-  //1: CorrectionRelativeNorm
-  //2: ResidualAbsoluteNorm
-  //3: ResidualRelativeNorm
-  //4: GradientAbsoluteNorm
-  //5: GradientRelativeNorm
-  std::array<scalar_type, 6> norms_ = {};
+  // CorrectionAbsoluteNorm, CorrectionRelativeNorm, and tolerances
+  std::array<correction_norm_type, 2> correctionNorms_ = {};
+  std::array<correction_norm_type, 2> correctionTolerances_ = {};
 
-  //0: tol for CorrectionAbsoluteNorm
-  //1: tol for CorrectionRelativeNorm
-  //2: tol for ResidualAbsoluteNorm
-  //3: tol for ResidualRelativeNorm
-  //4: tol for GradientAbsoluteNorm
-  //5: tol for GradientRelativeNorm
-  std::array<scalar_type, 6> tolerances_ = {};
+  // ResidualAbsoluteNorm, ResidualRelativeNorm, and tolerances
+  std::array<residual_norm_type, 2> residualNorms_ = {};
+  std::array<residual_norm_type, 2> residualTolerances_ = {};
+
+  // GradientAbsoluteNorm, GradientRelativeNorm, and tolerances
+  std::array<gradient_norm_type, 2> gradientNorms_ = {};
+  std::array<gradient_norm_type, 2> gradientTolerances_ = {};
 
   // updating criterion enum
   Update updatingE_ = Update::Standard;
@@ -119,24 +117,22 @@ public:
   Solver & operator=(Solver &&) = delete;
   ~Solver() = default;
 
-  template <typename SystemType, typename StateType, typename ...Args>
+  template <typename SystemType, typename ...Args>
   Solver(const SystemType & system,
-	 const StateType & state,
 	 Stop stoppingE,
 	 Update updatingE,
 	 Args &&... args)
-    : T(system, state, std::forward<Args>(args)...)
+    : T(system, std::forward<Args>(args)...)
     , updatingE_(updatingE)
     , stoppingE_(stoppingE)
   {
-    tolerances_.fill(defaultTol_);
+    fillTolerancesWithDefaultValues();
   }
 
-  template <typename SystemType, typename StateType, typename ...Args>
+  template <typename SystemType, typename ...Args>
   Solver(const SystemType & system,
-	 const StateType & state,
 	 Args &&... args)
-    : Solver(system, state,
+    : Solver(system,
 	     Stop::WhenCorrectionAbsoluteNormBelowTolerance,
 	     Update::Standard,
 	     std::forward<Args>(args)...)
@@ -187,22 +183,35 @@ public:
   // *** set or query tolerances ***
 
   // this is used to set a single tol for all
-  void setTolerance(scalar_type tolerance){ tolerances_.fill(std::move(tolerance)); }
+  template<class ToleranceType>
+  void setTolerance(const ToleranceType & tolerance){
+    correctionTolerances_.fill(tolerance);
+    residualTolerances_.fill(tolerance);
+    gradientTolerances_.fill(tolerance);
+  }
 
   // finer-grained methods for tolerances
-  void setCorrectionAbsoluteTolerance(scalar_type value){ tolerances_[0] = std::move(value); }
-  void setCorrectionRelativeTolerance(scalar_type value){ tolerances_[1] = std::move(value); }
-  void setResidualAbsoluteTolerance(scalar_type value)	 { tolerances_[2] = std::move(value); }
-  void setResidualRelativeTolerance(scalar_type value)  { tolerances_[3] = std::move(value); }
-  void setGradientAbsoluteTolerance(scalar_type value)  { tolerances_[4] = std::move(value); }
-  void setGradientRelativeTolerance(scalar_type value)  { tolerances_[5] = std::move(value); }
+  void setCorrectionAbsoluteTolerance(correction_norm_type value){
+    correctionTolerances_[0] = std::move(value); }
+  void setCorrectionRelativeTolerance(correction_norm_type value){
+    correctionTolerances_[1] = std::move(value); }
 
-  scalar_type correctionAbsoluteTolerance()const { return tolerances_[0]; }
-  scalar_type correctionRelativeTolerance()const { return tolerances_[1]; }
-  scalar_type residualAbsoluteTolerance()const   { return tolerances_[2]; }
-  scalar_type residualRelativeTolerance()const   { return tolerances_[3]; }
-  scalar_type gradientAbsoluteTolerance()const   { return tolerances_[4]; }
-  scalar_type gradientRelativeTolerance()const   { return tolerances_[5]; }
+  void setResidualAbsoluteTolerance(residual_norm_type value) {
+    residualTolerances_[0] = std::move(value); }
+  void setResidualRelativeTolerance(residual_norm_type value) {
+    residualTolerances_[1] = std::move(value); }
+
+  void setGradientAbsoluteTolerance(gradient_norm_type value) {
+    gradientTolerances_[0] = std::move(value); }
+  void setGradientRelativeTolerance(gradient_norm_type value) {
+    gradientTolerances_[1] = std::move(value); }
+
+  auto correctionAbsoluteTolerance()const { return correctionTolerances_[0]; }
+  auto correctionRelativeTolerance()const { return correctionTolerances_[1]; }
+  auto residualAbsoluteTolerance()const   { return residualTolerances_[0]; }
+  auto residualRelativeTolerance()const   { return residualTolerances_[1]; }
+  auto gradientAbsoluteTolerance()const   { return gradientTolerances_[0]; }
+  auto gradientRelativeTolerance()const   { return gradientTolerances_[1]; }
 
   template<typename SystemType>
   void solve(const SystemType & system, state_type & state)
@@ -216,7 +225,6 @@ public:
     this->solveImpl(system, state, *updater_);
   }
 
-#if not defined PRESSIO_ENABLE_TPL_PYBIND11
   template<class SystemType, class custom_updater_t>
   void solve(const SystemType & system,
 	     state_type & state,
@@ -239,22 +247,6 @@ public:
     updater_->resetFnc_ = resetUpdater<u_t>;
     this->solveImpl(system, state, *updater_);
   }
-
-#else
-  template<typename SystemType>
-  void solveForPy(pybind11::object pySystem, state_type state)
-  {
-    SystemType system(pySystem);
-
-    // before we solve, we check if we need to recreate the updater
-    // for example, this is the case if the system object changes
-    if (recreateUpdater(system)){
-      PRESSIOLOG_INFO("nonlinsolver: create updater");
-      updater_ = createUpdater<this_type, SystemType>(state, updatingE_);
-    }
-    this->solveImpl(system, state, *updater_);
-  }
-#endif
 
 private:
   template<typename SystemType>
@@ -280,9 +272,9 @@ private:
   {
     PRESSIOLOG_INFO("nonlinsolver: solve");
 
-    scalar_type residualNorm0 = {};
-    scalar_type correctionNorm0 = {};
-    scalar_type gradientNorm0 = {};
+    residual_norm_type   residualNorm0 = {};
+    correction_norm_type correctionNorm0 = {};
+    gradient_norm_type   gradientNorm0 = {};
     bool recomputeSystemJacobian = true;
 
     iStep_ = 0;
@@ -314,32 +306,34 @@ private:
       const auto correctionNorm = T::correctionNormCurrentCorrectionStep();
       const auto residualNorm	= T::residualNormCurrentCorrectionStep();
       if (iStep_==1) {
-	     residualNorm0   = residualNorm;
-	     correctionNorm0 = correctionNorm;
+	residualNorm0   = residualNorm;
+	correctionNorm0 = correctionNorm;
       }
-      norms_[0] = std::move(correctionNorm);
-      norms_[1] = norms_[0]/correctionNorm0;
-      norms_[2] = std::move(residualNorm);
-      norms_[3] = norms_[2]/residualNorm0;
+      correctionNorms_[0] = correctionNorm;
+      correctionNorms_[1] = correctionNorms_[0]/correctionNorm0;
+      residualNorms_[0]   = residualNorm;
+      residualNorms_[1]   = residualNorms_[0]/residualNorm0;
 
       if (T::hasGradientComputation()){
 	const auto gradientNorm	= T::gradientNormCurrentCorrectionStep();
 	if (iStep_==1) gradientNorm0 = gradientNorm;
 
-	norms_[4] = std::move(gradientNorm);
-	norms_[5] = gradientNorm/gradientNorm0;
+	gradientNorms_[0] = gradientNorm;
+	gradientNorms_[1] = gradientNorms_[0]/gradientNorm0;
       }
 
       if (T::hasGradientComputation()){
 	impl::print_metrics
 	  (iStep_, printStrippedMetrics_,
-	   norms_[0], norms_[1], norms_[2],
-	   norms_[3], norms_[4], norms_[5]);
+	   correctionNorms_[0], correctionNorms_[1],
+	   residualNorms_[0],   residualNorms_[1],
+	   gradientNorms_[0],   gradientNorms_[1]);
       }
       else{
 	impl::print_metrics
 	  (iStep_, printStrippedMetrics_,
-	   norms_[0], norms_[1], norms_[2], norms_[3]);
+	   correctionNorms_[0], correctionNorms_[1],
+	   residualNorms_[0],   residualNorms_[1]);
       }
 
       // 4.
@@ -366,23 +360,30 @@ private:
     	return iStep == iterative_base_type::maxIters_;
 
       case Stop::WhenCorrectionAbsoluteNormBelowTolerance:
-    	return norms_[0] < tolerances_[0];
+    	return correctionNorms_[0] < correctionTolerances_[0];
       case Stop::WhenCorrectionRelativeNormBelowTolerance:
-    	return norms_[1] < tolerances_[1];
+    	return correctionNorms_[1] < correctionTolerances_[1];
 
       case Stop::WhenResidualAbsoluteNormBelowTolerance:
-    	return norms_[2] < tolerances_[2];
+    	return residualNorms_[0] < residualTolerances_[0];
       case Stop::WhenResidualRelativeNormBelowTolerance:
-    	return norms_[3] < tolerances_[3];
+    	return residualNorms_[1] < residualTolerances_[1];
 
       case Stop::WhenGradientAbsoluteNormBelowTolerance:
-    	return norms_[4] < tolerances_[4];
+    	return gradientNorms_[0] < gradientTolerances_[0];
       case Stop::WhenGradientRelativeNormBelowTolerance:
-    	return norms_[5] < tolerances_[5];
+    	return gradientNorms_[1] < gradientTolerances_[1];
 
       default:
     	return false;
       };
+  }
+
+  void fillTolerancesWithDefaultValues()
+  {
+    correctionTolerances_.fill(0.000001);
+    residualTolerances_.fill(0.000001);
+    gradientTolerances_.fill(0.000001);
   }
 
 };

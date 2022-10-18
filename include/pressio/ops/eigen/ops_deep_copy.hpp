@@ -53,20 +53,14 @@ namespace pressio{ namespace ops{
 
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen 
+     ::pressio::is_native_container_eigen<T1>::value
+  && ::pressio::is_native_container_eigen<T2>::value
+  && ::pressio::Traits<T1>::rank == ::pressio::Traits<T2>::rank
   >
 deep_copy(T2 & dest, const T1 & src)
 {
-	static_assert(!::pressio::is_expression_eigen<T1>::value and
-  !::pressio::is_expression_eigen<T2>::value, 
-   "You cannot deep-copy an expression");
-
-	static_assert(::pressio::Traits<T1>::rank == ::pressio::Traits<T2>::rank, 
-   "deep-copy called for objects with incompatible rank");
-
-	assert((matching_extents<T1, T2>::compare(dest, src)));
-	dest = src;
+  assert((matching_extents<T1, T2>::compare(dest, src)));
+  dest = src;
 }
 
 }}//end namespace pressio::ops

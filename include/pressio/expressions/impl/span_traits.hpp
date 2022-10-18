@@ -59,12 +59,9 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::EigenTraits<VectorType, 1>,
-    public ::pressio::impl::StaticAllocTrait
+  : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename ::pressio::Traits<
-    ::pressio::mpl::remove_cvref_t<VectorType>
-  >::ordinal_type;
+  using ordinal_type = typename VectorType::StorageIndex;
 
   // type of the native expression
   using _native_expr_type =
@@ -97,17 +94,18 @@ struct SpanTraits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public ::pressio::impl::KokkosTraits<
-            ::pressio::mpl::remove_cvref_t<VectorType>,
-      1,
-      true
-    >
+  : public ::pressio::Traits<VectorType>
 {
-  using pair_type = typename ::pressio::impl::SizePair<VectorType>::pair_type;
+  using ordinal_type = typename VectorType::traits::size_type;
+  using pair_type = std::pair<ordinal_type, ordinal_type>;
 
   using native_expr_type =
     decltype(
       Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
+     );
+  using const_native_expr_type =
+    decltype(
+      Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
      );
 
   // using _const_native_expr_type =
@@ -124,26 +122,17 @@ struct SpanTraits<
 };
 #endif
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+}}
+
+namespace impl{
+
 template <typename T>
-struct SpanTraits<
-  SpanExpr<T>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_array_pybind<T>::value
-    >
-  >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+struct execution_space<::pressio::expressions::impl::SpanExpr<T>>
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using remove_cv_t = typename std::remove_cv<T>::type;
-  using scalar_type  = typename ::pressio::Traits<remove_cv_t>::scalar_type;
-  using size_type    = typename ::pressio::Traits<remove_cv_t>::size_type;
-  using reference_type =  scalar_type &;
-  using const_reference_type = scalar_type const &;
+  using type = typename T::traits::execution_space;
 };
-#endif
 
-}}}
+}
+
+}
 #endif  // EXPRESSIONS_IMPL_SPAN_TRAITS_HPP_

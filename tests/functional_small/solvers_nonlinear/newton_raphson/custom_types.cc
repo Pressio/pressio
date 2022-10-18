@@ -48,13 +48,13 @@ void scale(MyCustomVector & v, double factor){
 
 struct ValidSystem 
 {
-  using scalar_type = double;
   using state_type = MyCustomVector;
   using residual_type = state_type;
   using jacobian_type = MyCustomMatrix;
 
-  residual_type createResidual() const { return {}; }
-  jacobian_type createJacobian() const { return {}; }
+  state_type createState() const { return state_type{};}
+  residual_type createResidual() const { return residual_type{}; }
+  jacobian_type createJacobian() const { return jacobian_type{}; }
 
   void residual(const state_type& x,
                 residual_type& res) const
@@ -106,7 +106,7 @@ int main()
   y.d_[1] = 0.0001;
 
   LinearSolver linearSolverObj;
-  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(sys, y, linearSolverObj);
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(sys, linearSolverObj);
   NonLinSolver.solve(sys, y);
 
   std::string strOut = "PASSED";

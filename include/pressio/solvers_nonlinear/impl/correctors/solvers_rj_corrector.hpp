@@ -55,26 +55,29 @@ template<class T, class StateType, class LinSolverType>
 class RJCorrector : public T
 {
 public:
-  using typename T::scalar_type;
+  // required aliases
   using state_type = StateType;
+  using residual_norm_type = typename T::residual_norm_type;
+  using correction_norm_type = typename ::pressio::Traits<state_type>::scalar_type;
+  // for RJ corrector, the gradient is not used so set it like this
+  using gradient_norm_type = residual_norm_type;
 
 private:
   state_type correction_ = {};
   ::pressio::utils::InstanceOrReferenceWrapper<LinSolverType> solverObj_;
-  scalar_type residNormCurrCorrStep_ = {};
-  scalar_type gradientNormCurrCorrStep_ = {};
-  scalar_type correctionNormCurrCorrStep_ = {};
+  residual_norm_type residNormCurrCorrStep_ = {};
+  gradient_norm_type gradientNormCurrCorrStep_ = {};
+  correction_norm_type correctionNormCurrCorrStep_ = {};
 
 public:
   RJCorrector() = delete;
 
   template <typename SystemType, typename lsT, typename ...Args>
   RJCorrector(const SystemType & system,
-	      const state_type & state,
 	      lsT && solverIn,
 	      Args && ... args)
-    : T(system, state, std::forward<Args>(args)...),
-      correction_(::pressio::ops::clone(state)),
+    : T(system, std::forward<Args>(args)...),
+      correction_(system.createState()),
       solverObj_(std::forward<lsT>(solverIn))
   {
     ::pressio::ops::set_zero(correction_);
@@ -102,6 +105,7 @@ public:
     // solve J correction = r
     solverObj_.get().solve(J, r, correction_);
     // scale by -1 for sign convention
+    using scalar_type = typename ::pressio::Traits<state_type>::scalar_type;
     pressio::ops::scale(correction_, utils::Constants<scalar_type>::negOne() );
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
@@ -115,15 +119,15 @@ public:
 
   const state_type & correctionCRef() const{ return correction_; }
 
-  const scalar_type & correctionNormCurrentCorrectionStep() const{
+  const correction_norm_type & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;
   }
 
-  const scalar_type & gradientNormCurrentCorrectionStep() const{
+  const gradient_norm_type & gradientNormCurrentCorrectionStep() const{
     return gradientNormCurrCorrStep_;
   }
 
-  const scalar_type & residualNormCurrentCorrectionStep() const{
+  const residual_norm_type & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
 };

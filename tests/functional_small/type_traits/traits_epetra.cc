@@ -2,6 +2,8 @@
 #include "pressio/type_traits.hpp"
 #include "traits_shared.hpp"
 
+namespace pressio { namespace traits { namespace test {
+
 template <
   typename T,
   int rank,
@@ -9,44 +11,47 @@ template <
 >
 void test_epetra_container()
 {
+  // traits and shared predicates
   test_container_traits<
     T,
-    pressio::PackageIdentifier::Trilinos,
     rank,
-    false, /* shared mem */
-    true, /* dynamic */
-    double, /* scalar */
-    int /* ordinal */
+    double /* scalar */
   >();
 
-  ::testing::StaticAssertTypeEq<typename
-          traits::local_ordinal_type, int>();
-
-  ::testing::StaticAssertTypeEq<typename
-          traits::global_ordinal_type, int>();
-
-  ::testing::StaticAssertTypeEq<typename
-          traits::data_map_type, Epetra_BlockMap>();
-
-  ::testing::StaticAssertTypeEq<typename
-          traits::size_type, int>();
-
-  ::testing::StaticAssertTypeEq<typename
-          traits::communicator_type, Epetra_Comm>();
+  // negative checks (cross-package)
+  test_is_not_eigen_container<T>();
+  test_is_not_teuchos_container<T>();
+  test_is_not_tpetra_container<T>();
+  test_is_not_tpetra_block_container<T>();
+  test_is_not_kokkos_container<T>();
 }
 
 TEST(epetra, VectorTraits)
 {
   using T = Epetra_Vector;
-  static_assert(pressio::is_vector_epetra<T>::value,"");
-  static_assert(pressio::Traits<T>::vector_identifier == pressio::VectorIdentifier::Epetra,"");
+
+  // traits and shared predicates
   test_epetra_container<T, 1>();
+
+  // vector predicates
+  static_assert(pressio::is_vector_epetra<T>::value,"");
+
+  // negative checks (within Epetra)
+  static_assert(pressio::is_multi_vector_epetra<T>::value == false, "");
 }
 
 TEST(eped_epetra, MVTraits)
 {
   using T = Epetra_MultiVector;
-  static_assert(pressio::is_multi_vector_epetra<T>::value,"");
-  static_assert(pressio::Traits<T>::multi_vector_identifier == pressio::MultiVectorIdentifier::Epetra,"");
+
+  // traits and shared predicates
   test_epetra_container<T, 2>();
+
+  // multi-vector predicates
+  static_assert(pressio::is_multi_vector_epetra<T>::value,"");
+
+  // negative checks (within Epetra)
+  static_assert(pressio::is_vector_epetra<T>::value == false,"");
 }
+
+}}} // pressio::traits::test

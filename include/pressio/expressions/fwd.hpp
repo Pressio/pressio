@@ -49,7 +49,7 @@
 #ifndef EXPRESSIONS_FWD_HPP_
 #define EXPRESSIONS_FWD_HPP_
 
-namespace pressio{ 
+namespace pressio{
 
 namespace expressions{ namespace impl{
 template <class T, class enable = void> struct SpanExpr;
@@ -60,28 +60,28 @@ template <class T, class enable = void> struct AsDiagonalMatrixExpr;
 template <class T, class enable = void> struct AsdiagmatrixTraits;
 template <class T, class enable = void> struct DiagExpr;
 template <class T, class enable = void> struct DiagTraits;
-}}//end namespace expressions::impl::impl
+}}//end namespace expressions::impl
 
 template<class T>
-struct Traits<::pressio::expressions::impl::SpanExpr<T>> 
+struct Traits<::pressio::expressions::impl::SpanExpr<T>>
   : ::pressio::expressions::impl::SpanTraits<
       ::pressio::expressions::impl::SpanExpr<T>
       >{};
 
 template<class T>
-struct Traits<::pressio::expressions::impl::SubspanExpr<T>> 
+struct Traits<::pressio::expressions::impl::SubspanExpr<T>>
   : ::pressio::expressions::impl::SubSpanTraits<
       ::pressio::expressions::impl::SubspanExpr<T>
       >{};
 
 template<class T>
-struct Traits<::pressio::expressions::impl::AsDiagonalMatrixExpr<T>> 
+struct Traits<::pressio::expressions::impl::AsDiagonalMatrixExpr<T>>
   : ::pressio::expressions::impl::AsdiagmatrixTraits<
      ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
      >{};
 
 template<class T>
-struct Traits<::pressio::expressions::impl::DiagExpr<T>> 
+struct Traits<::pressio::expressions::impl::DiagExpr<T>>
   : ::pressio::expressions::impl::DiagTraits<
       ::pressio::expressions::impl::DiagExpr<T>
       >{};

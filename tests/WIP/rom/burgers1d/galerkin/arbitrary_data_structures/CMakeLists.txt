@@ -1,2 +1,0 @@
-
-add_subdirectory(default_galerkin_euler_continuous_time_api_arb_ds)

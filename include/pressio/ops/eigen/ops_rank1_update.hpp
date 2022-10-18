@@ -51,22 +51,31 @@
 
 namespace pressio{ namespace ops{
 
+/*
+   below we constrain in all cases via is_convertible
+   because the implementations are using Eigen native operations
+   which are based on expressions and require
+   coefficients to be convertible to scalar types of the vectors operands
+ */
+
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename ScalarType>
+template<class T, class T1, class a_Type, class b_Type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 
+     ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (::pressio::is_vector_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,         const ScalarType a, 
-       const T1 & v1, const ScalarType b)
+update(T & v,         const a_Type & a,
+       const T1 & v1, const b_Type & b)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1>::value,
-      "Arguments are not scalar compatible");
 
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
@@ -76,22 +85,29 @@ update(T & v,         const ScalarType a,
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename T2, typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and 
-  ::pressio::Traits<T2>::rank == 1 
+template<
+  class T, class T1, class T2,
+  class a_Type, class b_Type, class c_Type
   >
-update(T & v,         const ScalarType &a,
-       const T1 & v1, const ScalarType &b,
-       const T2 & v2, const ScalarType &c)
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && (::pressio::is_vector_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T2>::value
+   || ::pressio::is_expression_acting_on_eigen<T2>::value)
+  && ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1,T2>::value,
-      "Arguments are not scalar compatible");
 
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
@@ -103,29 +119,35 @@ update(T & v,         const ScalarType &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<typename T,
-         typename T1,
-         typename T2,
-         typename T3,
-         typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and 
-  ::pressio::Traits<T2>::rank == 1 and 
-  ::pressio::Traits<T3>::rank == 1 
+template<
+  class T, class T1, class T2, class T3,
+  class a_Type, class b_Type, class c_Type, class d_Type
   >
-update(T  & v,        const ScalarType &a,
-       const T1 & v1, const ScalarType &b,
-       const T2 & v2, const ScalarType &c,
-       const T3 & v3, const ScalarType &d)
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
+   && (::pressio::is_vector_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T2>::value
+    || ::pressio::is_expression_acting_on_eigen<T2>::value)
+  && (::pressio::is_vector_eigen<T3>::value
+    || ::pressio::is_expression_acting_on_eigen<T3>::value)
+  && ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+
+  >
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c,
+       const T3 & v3, const d_Type &d)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
-      "Arguments are not scalar compatible");
 
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
@@ -138,33 +160,39 @@ update(T  & v,        const ScalarType &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template< typename T,
-          typename T1,
-          typename T2,
-          typename T3,
-          typename T4,
-          typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and 
-  ::pressio::Traits<T2>::rank == 1 and 
-  ::pressio::Traits<T3>::rank == 1 and 
-  ::pressio::Traits<T4>::rank == 1 
+template<
+  class T, class T1, class T2, class T3, class T4,
+  class a_Type, class b_Type, class c_Type, class d_Type, class e_Type
   >
-update(T & v,         const ScalarType &a,
-       const T1 & v1, const ScalarType &b,
-       const T2 & v2, const ScalarType &c,
-       const T3 & v3, const ScalarType &d,
-       const T4 & v4, const ScalarType &e)
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
+   && (::pressio::is_vector_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T2>::value
+    || ::pressio::is_expression_acting_on_eigen<T2>::value)
+  && (::pressio::is_vector_eigen<T3>::value
+    || ::pressio::is_expression_acting_on_eigen<T3>::value)
+  && (::pressio::is_vector_eigen<T4>::value
+    || ::pressio::is_expression_acting_on_eigen<T4>::value)
+  && ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  && ::pressio::Traits<T4>::rank == 1
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<e_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c,
+       const T3 & v3, const d_Type &d,
+       const T4 & v4, const e_Type &e)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
-      "Arguments are not scalar compatible");
 
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);

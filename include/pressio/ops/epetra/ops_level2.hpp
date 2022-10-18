@@ -65,12 +65,11 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 				      const scalar_type beta,
 				      Epetra_Vector & y)
 {
-
+  constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
   const int numVecs = A.NumVectors();
-  using lo_t = typename ::pressio::Traits<A_type>::local_ordinal_type;
-  for (lo_t i=0; i< A.MyLength(); i++)
+  for (int i=0; i< A.MyLength(); i++)
   {
-    y[i] = beta*y[i];
+    y[i] = (beta == zero) ? zero : beta * y[i];
     for (int j=0; j< (int)numVecs; j++){
       y[i] += alpha * A[j][i] * x(j);
     }
@@ -87,18 +86,17 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 // -------------------------------
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-   ::pressio::is_multi_vector_epetra<A_type>::value and 
+   ::pressio::is_multi_vector_epetra<A_type>::value and
    ::pressio::is_dense_vector_teuchos<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
 	Epetra_Vector & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type>::value,
-     "Types are not scalar compatible");
+
   static_assert
     (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
      "Scalar compatibility broken");
@@ -119,24 +117,24 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   and ::pressio::is_vector_epetra<x_type>::value
   and ::pressio::is_dense_vector_teuchos<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const x_type & x,
   const scalar_type beta,
   y_type & y)
 {
-  static_assert(::pressio::are_scalar_compatible<A_type, y_type>::value,
-     "Types are not scalar compatible");
 
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.length() == (std::size_t)numVecs );
 
-  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
     A(i)->Dot(x, &tmp);
-    y(i) = beta * y(i) + alpha * tmp;
+    y(i) = (beta == zero) ? zero : beta * y(i);
+    y(i) += alpha * tmp;
   }
 }
 
@@ -150,18 +148,17 @@ product(::pressio::transpose mode,
 // -------------------------------
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-   ::pressio::is_multi_vector_epetra<A_type>::value and 
+   ::pressio::is_multi_vector_epetra<A_type>::value and
    ::pressio::is_vector_eigen<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const x_type & x,
   const scalar_type beta,
   Epetra_Vector & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type>::value,
-     "Types are not scalar compatible");
+
   static_assert
     (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
      "Scalar compatibility broken");
@@ -182,24 +179,24 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   and ::pressio::is_vector_epetra<x_type>::value
   and ::pressio::is_vector_eigen<y_type>::value
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
   const scalar_type alpha,
   const A_type & A,
   const x_type & x,
   const scalar_type beta,
   y_type & y)
 {
-  static_assert(::pressio::are_scalar_compatible<A_type, y_type>::value,
-     "Types are not scalar compatible");
 
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.size() == (std::size_t)numVecs );
 
-  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
     A(i)->Dot(x, &tmp);
-    y(i) = beta * y(i) + alpha * tmp;
+    y(i) = (beta == zero) ? zero : beta * y(i);
+    y(i) += alpha * tmp;
   }
 }
 #endif
@@ -226,9 +223,6 @@ product(::pressio::transpose mode,
 // 	const scalar_type beta,
 // 	::pressio::containers::Vector<Epetra_Vector> & y)
 // {
-//   static_assert
-//     (containers::predicates::are_scalar_compatible<A_type, x_type>::value,
-//      "Types are not scalar compatible");
 //   static_assert
 //     (mpl::is_same<
 //      scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
@@ -261,10 +255,6 @@ product(::pressio::transpose mode,
 // 	const scalar_type beta,
 // 	y_type & y)
 // {
-//   static_assert
-//     (::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
-//      "Types are not scalar compatible");
-
 //   using eig_mapping_t = const Eigen::Map< const Eigen::Matrix<scalar_type, -1, -1> >;
 //   eig_mapping_t xMapped(x.data()->Values(), x.extentLocal(0), 1);
 //   const auto & AE = *A.data();

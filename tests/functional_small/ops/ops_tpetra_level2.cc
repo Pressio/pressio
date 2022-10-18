@@ -4,7 +4,7 @@
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector)
 {
-    auto myMv_h = myMv_->getLocalViewHost();
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
         myMv_h(i,j) = (double)j;
@@ -18,7 +18,30 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector)
     y.putScalar(0.);
     pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 1., y);
 
-    auto y_h = y.getLocalViewHost();
+    auto y_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
+}
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector_beta0)
+{
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+    for (int i=0; i<localSize_; ++i){
+     for (int j=0; j<numVecs_; ++j){
+        myMv_h(i,j) = (double)j;
+     }
+    }
+
+    Kokkos::View<double*> a("a", numVecs_);
+    KokkosBlas::fill(a, 1.);
+
+    vec_t y(contigMap_);
+    y.putScalar(std::nan("0"));
+    pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
+
+    auto y_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
@@ -27,7 +50,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector)
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_kokkos_vector)
 {
-    auto myMv_h = myMv_->getLocalViewHost();
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
         myMv_h(i,j) = (double)i;
@@ -52,7 +75,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_kokkos_vector)
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)
 {
-    auto myMv_h = myMv_->getLocalViewHost();
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
         myMv_h(i,j) = (double)j;
@@ -66,7 +89,30 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)
     y.putScalar(0.);
     pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 1., y);
 
-    auto y_h = y.getLocalViewHost();
+    auto y_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
+}
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector_beta0)
+{
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+    for (int i=0; i<localSize_; ++i){
+     for (int j=0; j<numVecs_; ++j){
+        myMv_h(i,j) = (double)j;
+     }
+    }
+
+    Eigen::VectorXd a(numVecs_);
+    a.setConstant(1.);
+
+    vec_t y(contigMap_);
+    y.putScalar(std::nan("0"));
+    pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
+
+    auto y_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
@@ -75,7 +121,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_vector)
 {
-    auto myMv_h = myMv_->getLocalViewHost();
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
         myMv_h(i,j) = (double)i;

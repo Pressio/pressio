@@ -59,6 +59,7 @@ mpl::enable_if_t<
 extent(const T & objectIn, const IndexType i)
 {
   assert(i==0);
+  (void) i;
   return objectIn.size();
 }
 
@@ -70,18 +71,17 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, const IndexType i)
 {
-	if (i==0){
-		return objectIn.rows();
-	}
-	else{
-		return objectIn.cols();
-	}
+  if (i==0){
+    return objectIn.rows();
+  }
+  else{
+    return objectIn.cols();
+  }
 }
 
 template<class T, class IndexType>
 mpl::enable_if_t<
-  ::pressio::is_expression<T>::value and 
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen,
+  ::pressio::is_expression_acting_on_eigen<T>::value,
   decltype(std::declval<const T>().extent(0))
   >
 extent(const T & objectIn, const IndexType i)

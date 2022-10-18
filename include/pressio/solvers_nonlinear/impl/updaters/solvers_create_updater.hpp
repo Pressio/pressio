@@ -94,12 +94,11 @@ createUpdater(const StateType & state,
 	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
-  using scalar_t = typename SystemType::scalar_type;
 
   switch (updateE)
     {
     case Update::Standard:{
-      using f_t = DefaultUpdater<scalar_t>;
+      using f_t = DefaultUpdater;
       using u_t = Updater<SystemType, StateType, SolverType, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
       result->applyFnc_ = applyUpdater<u_t>;
@@ -108,7 +107,7 @@ createUpdater(const StateType & state,
     }
 
     case Update::Armijo:{
-      using f_t = ArmijoUpdater<StateType, scalar_t>;
+      using f_t = ArmijoUpdater<StateType>;
       f_t F(state);
       using u_t = Updater<SystemType, StateType, SolverType, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
@@ -135,12 +134,11 @@ createUpdater(const StateType & state,
 	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
-  using scalar_t = typename SystemType::scalar_type;
 
   switch (updateE)
     {
     case Update::Standard:{
-      using f_t = DefaultUpdater<scalar_t>;
+      using f_t = DefaultUpdater;
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
       result->applyFnc_ = applyUpdater<u_t>;
@@ -149,7 +147,7 @@ createUpdater(const StateType & state,
     }
 
     case Update::LMSchedule1:{
-      using f_t = LMSchedule1Updater<StateType, scalar_t>;
+      using f_t = LMSchedule1Updater<StateType>;
       f_t F(state);
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
@@ -159,7 +157,7 @@ createUpdater(const StateType & state,
     }
 
     case Update::LMSchedule2:{
-      using f_t = LMSchedule2Updater<StateType, scalar_t>;
+      using f_t = LMSchedule2Updater<StateType>;
       f_t F(state);
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
@@ -182,16 +180,15 @@ mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, NewtonRaphson>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const StateType & state,
+createUpdater(const StateType & /*state*/,
 	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
-  using scalar_t = typename SystemType::scalar_type;
 
   switch (updateE)
     {
     case Update::Standard:{
-      using f_t = DefaultUpdater<scalar_t>;
+      using f_t = DefaultUpdater;
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
       result->applyFnc_ = applyUpdater<u_t>;

@@ -206,11 +206,9 @@ struct tpetraR9Fixture
 
   void fillMatrix()
   {
-    using mv_device_t = typename pressio::Traits<mymvec_t>::device_type;
-
     // get trilinos tpetra multivector object
     auto trilD = A_;
-    trilD->sync<Kokkos::HostSpace>();
+    // trilD->sync<Kokkos::HostSpace>();
 
     /*--------------------------------------------
      * (1): modify the host view and then sync
@@ -218,10 +216,10 @@ struct tpetraR9Fixture
      * so in theory we should not worry about syncing but it
      * does not hurt to do it anyway
      //--------------------------------------------*/
-    auto v2d = trilD->getLocalView<Kokkos::HostSpace>();
+    auto v2d = trilD->getLocalView<Kokkos::HostSpace>(Tpetra::Access::ReadWriteStruct());
     auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
-    //we are going to change the host view
-    trilD->modify<Kokkos::HostSpace>();
+    // //we are going to change the host view
+    // trilD->modify<Kokkos::HostSpace>();
 
     if(rank_==0){
       v2d(0,0) = 3.2; v2d(0,1) = 1.2;  v2d(0,2) = 1.;
@@ -235,8 +233,8 @@ struct tpetraR9Fixture
       v2d(1,0) = 1.;  v2d(1,1) = 1.1;    v2d(1,2) = 1.25; v2d(1,3) = -3.;
       v2d(2,2) = 1.;  v2d(2,1) = 0.1111; v2d(2,3) = 6.;
     }
-    // sync from host to device
-    trilD->sync<mv_device_t>();
+    // // sync from host to device
+    // trilD->sync<mv_device_t>();
   }
 
   void fillVector(){

@@ -51,22 +51,21 @@
 
 namespace pressio{ namespace ops{
 
-template <class T2, class T1>
+template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
+  /* a bit restrictive but fine for now */
+  ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (::pressio::is_vector_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
   >
 abs(T1 & y, const T2 & x)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1, T2>::value,
-     "Types are not scalar compatible");
 
-  static_assert
-    (::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1,
-     "ops::abs only accepts vectors");
-  
-  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
+  using ord_t = decltype( ::pressio::ops::extent(x, 0) );
   for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = std::abs(x(i));
   }

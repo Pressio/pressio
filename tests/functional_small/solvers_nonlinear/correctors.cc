@@ -15,7 +15,6 @@ TEST(solvers_nonlinear, correctors_residual_jacobian)
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(2);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename mock_system_t::scalar_type;
   using residual_type = typename mock_system_t::residual_type;
   using jacobian_type = typename mock_system_t::jacobian_type;
 
@@ -26,11 +25,12 @@ TEST(solvers_nonlinear, correctors_residual_jacobian)
   mock_lin_solver_t linSolver;
   EXPECT_CALL(linSolver, solve(_,_,_)).Times(2);
 
-  using op_t = psimpl::ResidualJacobianOperators<residual_type, jacobian_type, scalar_type>;
+  using op_t = psimpl::ResidualJacobianOperators<residual_type, jacobian_type>;
   using corrector_t = psimpl::RJCorrector<op_t, state_type, mock_lin_solver_t &>;
-  corrector_t corrector(sysObj, state, linSolver);
+  corrector_t corrector(sysObj, linSolver);
 
-  scalar_type norm = {};
+  using residual_norm_type = typename op_t::residual_norm_type;
+  residual_norm_type norm = {};
   corrector.computeOperators(sysObj, state, norm);
   const auto & J = corrector.jacobianCRef();
   const auto & r = corrector.residualCRef();
@@ -53,7 +53,6 @@ TEST(solvers_nonlinear, correctors_hessian_gradient)
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(2);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename mock_system_t::scalar_type;
   using residual_type = typename mock_system_t::residual_type;
   using jacobian_type = typename mock_system_t::jacobian_type;
 
@@ -67,11 +66,12 @@ TEST(solvers_nonlinear, correctors_hessian_gradient)
   EXPECT_CALL(linSolver, solve(_,_,_)).Times(2);
 
   using op_t = psimpl::HessianGradientOperatorsRJApiNoWeighting<
-    hessian_type, gradient_type, residual_type, jacobian_type, scalar_type>;
+    hessian_type, gradient_type, residual_type, jacobian_type>;
   using corrector_t = psimpl::HessianGradientCorrector<op_t, state_type, mock_lin_solver_t &>;
-  corrector_t corrector(sysObj, state, linSolver);
+  corrector_t corrector(sysObj, linSolver);
 
-  scalar_type norm = {};
+  using residual_norm_type = typename op_t::residual_norm_type;
+  residual_norm_type norm = {};
   corrector.computeOperators(sysObj, state, norm);
   const auto & H = corrector.hessianCRef();
   const auto & g = corrector.gradientCRef();

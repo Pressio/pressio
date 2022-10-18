@@ -6,7 +6,7 @@
 
 namespace pressio{ namespace solvers{ namespace test{
 
-struct EigenRosenbrock3 
+struct EigenRosenbrock3
 {
 
   using scalar_type = double;
@@ -14,6 +14,7 @@ struct EigenRosenbrock3
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
+  state_type createState() const{return state_type(3);}
   residual_type createResidual() const{return residual_type(4);}
   jacobian_type createJacobian() const{return jacobian_type(4, 3);}
 

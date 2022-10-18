@@ -58,79 +58,109 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 // specialize for op(A) = A^T and op(B) = B
 //-------------------------------------------
-template <typename A_type, typename B_type, typename ScalarType, typename C_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_matrix_eigen<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+template <
+  class A_type, class B_type, class C_type,
+  class alpha_t, class beta_t
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
-	const ScalarType alpha,
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar< A_type, B_type, C_type>::value
+  && ::pressio::is_dense_matrix_eigen<A_type>::value
+  && ::pressio::is_dense_matrix_eigen<B_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  /* constrained via is_convertible because the impl is using
+     native Eigen expression whcih only work if the scalars are
+     convertible to object scalar types*/
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
+  >
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
+	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
-	const ScalarType beta,
+	const beta_t & beta,
 	C_type & C)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0) );
-  C = beta * C + alpha * A.transpose() * B;
+  if (beta == pressio::utils::Constants<beta_t>::zero()) {
+    C = alpha * A.transpose() * B;
+  }
+  else {
+    C = beta * C + alpha * A.transpose() * B;
+  }
 }
 
 //-------------------------------------------
 // specialize for op(A) = A and op(B) = B
 //-------------------------------------------
-template <typename A_type, typename B_type, typename ScalarType, typename C_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_matrix_eigen<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+template <
+  class A_type, class B_type, class C_type,
+  class alpha_t, class beta_t
   >
-product(::pressio::nontranspose modeA,
-	::pressio::nontranspose modeB,
-	const ScalarType alpha,
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar< A_type, B_type, C_type>::value
+  && ::pressio::is_dense_matrix_eigen<A_type>::value
+  && ::pressio::is_dense_matrix_eigen<B_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  /* constrained via is_convertible because the impl is using
+     native Eigen expression whcih only work if the scalars are
+     convertible to object scalar types*/
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
+  >
+product(::pressio::nontranspose /*unused*/,
+	::pressio::nontranspose /*unused*/,
+	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
-	const ScalarType beta,
+	const beta_t & beta,
 	C_type & C)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-  C = beta * C + alpha * A * B;
+  if (beta == pressio::utils::Constants<beta_t>::zero()) {
+    C = alpha * A * B;
+  }
+  else {
+    C = beta * C + alpha * A * B;
+  }
 }
 
 /***********************************
 * special case A==B and op(A) = transpose
 **********************************/
-template <typename A_type, typename ScalarType, typename C_type>
+template <class A_type, class C_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_matrix_eigen<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+     ::pressio::all_have_traits_and_same_scalar< A_type, C_type>::value
+  && ::pressio::is_dense_matrix_eigen<A_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  /* constrained via is_convertible because the impl is using
+     native Eigen expression whcih only work if the scalars are
+     convertible to object scalar types*/
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
-	const ScalarType alpha,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
+	const alpha_t & alpha,
 	const A_type & A,
-	const ScalarType beta,
+	const beta_t & beta,
 	C_type & C)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, C_type>::value,
-     "Types are not scalar compatible");
-  C = beta * C + alpha * A.transpose() * A;
+
+  if (beta == pressio::utils::Constants<beta_t>::zero()) {
+    C = alpha * A.transpose() * A;
+  } else {
+    C = beta * C + alpha * A.transpose() * A;
+  }
 }
 
-template <typename C_type, typename A_type, typename ScalarType>
+template <class C_type, class A_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<A_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value,
@@ -138,14 +168,12 @@ template <typename C_type, typename A_type, typename ScalarType>
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
-	const ScalarType alpha,
+	const alpha_t & alpha,
 	const A_type & A)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, C_type>::value,
-     "Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
+  using sc_t = typename ::pressio::Traits<C_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
   product(modeA, modeB, alpha, A, A, zero, C);
   return C;
@@ -155,29 +183,36 @@ product(::pressio::transpose modeA,
 // C = beta * C + alpha*A*B
 // specialize for when A = asDiagonalMatrix expression
 //-------------------------------------------
-template <typename A_type, typename B_type, typename ScalarType, typename C_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_matrix_eigen<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value and 
-  ::pressio::is_expression_asdiagonalmatrix<A_type>::value and 
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
+template <
+  class A_type, class B_type, class C_type,
+  class alpha_t, class beta_t
   >
-product(::pressio::nontranspose modeA,
-	::pressio::nontranspose modeB,
-	const ScalarType alpha,
+::pressio::mpl::enable_if_t<
+     ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && ::pressio::is_expression_asdiagonalmatrix<A_type>::value
+  && ::pressio::is_expression_acting_on_eigen<A_type>::value
+  && ::pressio::is_dense_matrix_eigen<B_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
+  >
+product(::pressio::nontranspose /*unused*/,
+	::pressio::nontranspose /*unused*/,
+	const alpha_t & alpha,
 	const A_type & A,
 	const B_type & B,
-	const ScalarType beta,
+	const beta_t & beta,
 	C_type & C)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-  C = beta*C + alpha * A.native() * B;
+  if (beta == pressio::utils::Constants<beta_t>::zero()) {
+    C = alpha * A.native() * B;
+  } else {
+    C = beta*C + alpha * A.native() * B;
+  }
 }
 
 }}//end namespace pressio::ops
@@ -185,8 +220,7 @@ product(::pressio::nontranspose modeA,
 
 
 
-
-// template < typename A_type, typename B_type, typename ScalarType, typename C_type>
+// template < class A_type, class B_type, class ScalarType, class C_type>
 // ::pressio::mpl::enable_if_t<
 //   ::pressio::is_dense_matrix_eigen<B_type>::value and
 //   ::pressio::is_dense_matrix_eigen<C_type>::value
@@ -199,10 +233,6 @@ product(::pressio::nontranspose modeA,
 //  const ScalarType beta,
 //  C_type & C)
 // {
-//   static_assert
-//     (::pressio::are_scalar_compatible
-//      <::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
-//      "Types are not scalar compatible");
 
 //   const auto & BE = *B.data();
 //   auto & CE = *C.data();
@@ -215,8 +245,7 @@ product(::pressio::nontranspose modeA,
 //   }
 // }
 
-
-// template < typename A_type, typename B_type, typename ScalarType, typename C_type>
+// template < class A_type, class B_type, class ScalarType, class C_type>
 // ::pressio::mpl::enable_if_t<
 //   ::pressio::is_dense_matrix_eigen<B_type>::value and
 //   ::pressio::is_dense_matrix_eigen<C_type>::value
@@ -229,10 +258,6 @@ product(::pressio::nontranspose modeA,
 //  const ScalarType beta,
 //  C_type & C)
 // {
-//   static_assert
-//     (::pressio::are_scalar_compatible
-//      <::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
-//      "Types are not scalar compatible");
 
 //   const auto & BE = *B.data();
 //   auto & CE = *C.data();

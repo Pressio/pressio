@@ -51,7 +51,6 @@
 
 namespace pressio{ namespace ops{
 
-// y= abs(x)
 template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<T1>::value and

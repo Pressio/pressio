@@ -17,6 +17,7 @@ struct EigenExpDataFitN2
   const double times_[8] = {1.,2.,3.,4., 5.,6.,7.,8};
   const double y_[8] = {3.29, 4.27, 5.3, 7.1, 10.1, 9.8, 16.1, 20.2};
 
+  state_type createState() const{return state_type(2);}
   residual_type createResidual() const{return residual_type(8);}
   jacobian_type createJacobian() const{return jacobian_type(8,2);}
 

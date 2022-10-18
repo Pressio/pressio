@@ -54,18 +54,19 @@ namespace pressio{ namespace ops{
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra_block<T>::value,
-  typename ::pressio::Traits<T>::global_ordinal_type
+  ::pressio::ops::impl::global_ordinal_t<T>
   >
 extent(const T & oIn, const IndexType i)
 {
   assert(i==0);
+  (void) i;
   return oIn.getMap()->getGlobalNumElements();
 }
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra_block<T>::value,
-  typename ::pressio::Traits<T>::global_ordinal_type
+  ::pressio::ops::impl::global_ordinal_t<T>
   >
 extent(const T & oIn, const IndexType i)
 {

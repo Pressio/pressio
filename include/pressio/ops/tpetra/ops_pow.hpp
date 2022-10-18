@@ -61,11 +61,9 @@ abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
+  using ord_t = ::pressio::ops::impl::local_ordinal_t<T1>;
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
@@ -74,8 +72,8 @@ abs_pow(T1 & y,
     throw std::runtime_error("this overload is only for exponent > 0");
   }
 
-  auto x_kv = x.getLocalViewDevice();
-  auto y_kv = y.getLocalViewDevice();
+  auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
+  auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i){
 			 using std::pow;
@@ -95,11 +93,9 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
+  using ord_t = ::pressio::ops::impl::local_ordinal_t<T1>;
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
@@ -110,8 +106,8 @@ abs_pow(T1 & y,
 
   constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
-  auto x_kv = x.getLocalViewDevice();
-  auto y_kv = y.getLocalViewDevice();
+  auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
+  auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i){
 			 using std::pow;
@@ -128,8 +124,8 @@ template <typename T>
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  auto x_kv = x.getLocalViewDevice();
+  using ord_t = ::pressio::ops::impl::local_ordinal_t<T>;
+  auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const ord_t& i)
 		       {

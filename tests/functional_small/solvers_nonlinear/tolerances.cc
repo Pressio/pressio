@@ -7,16 +7,15 @@
 namespace{
 struct MySystem
 {
-  using scalar_type = double;
   using state_type  = Eigen::VectorXd;
   using residual_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
+  state_type createState() const { return state_type(2); }
   residual_type createResidual() const { return residual_type(2); }
   jacobian_type createJacobian() const { return jacobian_type(2, 2); }
-
-  void residual(const state_type& x, residual_type& res) const{}
-  void jacobian(const state_type& x, jacobian_type& jac) const{}
+  void residual(const state_type&, residual_type&) const{}
+  void jacobian(const state_type&, jacobian_type&) const{}
 };
 }
 
@@ -28,7 +27,7 @@ TEST(solvers_nonlinear, tolerances)
   using lin_solver_t = pressio::linearsolvers::Solver<
     pressio::linearsolvers::iterative::LSCG, typename MySystem::jacobian_type>;
   lin_solver_t linearSolverObj;
-  auto solver = pressio::nonlinearsolvers::create_newton_raphson(sysObj, y, linearSolverObj);
+  auto solver = pressio::nonlinearsolvers::create_newton_raphson(sysObj, linearSolverObj);
 
   // if we don't specify anything, the tolerance should be defaulted to 0.000001
   const double defaultTol = 0.000001;
@@ -39,7 +38,7 @@ TEST(solvers_nonlinear, tolerances)
   ASSERT_EQ( solver.gradientAbsoluteTolerance(),   defaultTol );
   ASSERT_EQ( solver.gradientRelativeTolerance(),   defaultTol );
 
-  // set each and check
+  // // set each and check
   solver.setCorrectionAbsoluteTolerance(0.01);
   solver.setCorrectionRelativeTolerance(0.02);
   solver.setResidualAbsoluteTolerance(0.03);

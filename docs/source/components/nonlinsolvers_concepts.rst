@@ -1,0 +1,20 @@
+.. role:: raw-html-m2r(raw)
+   :format: html
+
+.. include:: ../mydefs.rst
+
+concepts
+========
+
+.. toctree::
+   :maxdepth: 1
+
+   nonlinearsolvers_concepts/rj
+   nonlinearsolvers_concepts/rj_det
+   nonlinearsolvers_concepts/rj_ovdet
+   nonlinearsolvers_concepts/rj_fused
+   nonlinearsolvers_concepts/rj_fused_det
+   nonlinearsolvers_concepts/rj_fused_ovdet
+   nonlinearsolvers_concepts/hg
+   nonlinearsolvers_concepts/hg_fused
+   nonlinearsolvers_concepts/c4

@@ -71,16 +71,14 @@ template <
   ::pressio::is_multi_vector_epetra<B_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const B_type & B,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
 
   const auto numVecsA = A.NumVectors();
   const auto numVecsB = B.NumVectors();
@@ -88,14 +86,17 @@ product(::pressio::transpose modeA,
   assert( (std::size_t)::pressio::ops::extent(C,0) == (std::size_t)numVecsA );
   assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t)numVecsB );
 
-  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  auto tmp = zero;
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
     {
       A(i)->Dot( *(B(j)), &tmp );
-      C(i,j) = beta*C(i,j) + alpha*tmp;
+      tmp *= alpha;
+      C(i,j) = beta == zero ? zero :beta * C(i,j);
+      C(i,j) += tmp;
     }
   }
 }
@@ -122,8 +123,6 @@ product(::pressio::transpose modeA,
  const A_type & A,
  const B_type & B)
 {
-  static_assert(are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
   constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
 
   const auto numVecsA = A.NumVectors();
@@ -149,35 +148,37 @@ template <
   ::pressio::is_multi_vector_epetra<A_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value
   >
-product(::pressio::transpose modeA,
-	::pressio::nontranspose modeB,
+product(::pressio::transpose /*unused*/,
+	::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
 
   // how many vectors are in A and B
   const int numVecsA = A.NumVectors();
   assert(C.rows() == numVecsA);
   assert(C.cols() == numVecsA);
 
-  scalar_type tmp = ::pressio::utils::Constants<scalar_type>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  scalar_type tmp = zero;
+  const auto apply_beta = [beta](scalar_type c) -> scalar_type {
+    return beta == zero ? zero : beta * c;
+  };
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
   for (int i=0; i< numVecsA; i++)
   {
-    C(i,i) = beta*C(i,i);
+    C(i,i) = apply_beta(C(i,i));
     A(i)->Dot( *(A(i)), &tmp );
     C(i,i) += alpha*tmp;
 
     for (int j=i+1; j<numVecsA; j++)
     {
-      C(i,j) = beta*C(i,j);
-      C(j,i) = beta*C(j,i);
+      C(i,j) = apply_beta(C(i,j));
+      C(j,i) = apply_beta(C(j,i));
 
       A(i)->Dot( *(A(j)), &tmp );
       C(i,j) += alpha*tmp;
@@ -199,8 +200,6 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
   C_type C(A.NumVectors(), A.NumVectors());

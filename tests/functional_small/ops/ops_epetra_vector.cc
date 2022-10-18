@@ -310,5 +310,12 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_elementwiseMultiply)
     pressio::ops::elementwise_multiply(1., x,z, 2., y);
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(y[i], 8.);
-    }    
+    }
+
+    // test beta=0 with simulated NaN in uninitialized y
+    y[0] = std::nan("0");
+    pressio::ops::elementwise_multiply(1., x,z, 0., y);
+    for (int i=0; i<localSize_; ++i){
+      EXPECT_DOUBLE_EQ(y[i], 6.);
+    }
 }

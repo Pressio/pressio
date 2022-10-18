@@ -61,8 +61,7 @@ template<typename T, typename scalar_t>
 update(T & v,        const scalar_t a, 
        const T & v1, const scalar_t b)
 {
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
+  for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i];
 }
 
@@ -77,8 +76,7 @@ update(T & v,     const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c)
 {
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
+  for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i];
 }
 
@@ -95,8 +93,7 @@ update(T & v,     const scalar_t &a,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
 {
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
+  for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
 }
 
@@ -114,8 +111,7 @@ update(T & v,         const scalar_t &a,
     	  const T & v3, const scalar_t &d,
     	  const T & v4, const scalar_t &e)
 {
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
+  for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
 

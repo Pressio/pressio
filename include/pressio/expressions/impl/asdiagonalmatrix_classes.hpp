@@ -51,31 +51,20 @@
 
 namespace pressio{ namespace expressions{ namespace impl{
 
-#if defined PRESSIO_ENABLE_TPL_EIGEN or defined PRESSIO_ENABLE_TPL_PYBIND11
+#if defined PRESSIO_ENABLE_TPL_EIGEN
 template <typename VectorType>
 struct AsDiagonalMatrixExpr<
   VectorType,
   ::pressio::mpl::enable_if_t<
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
     ::pressio::is_dynamic_vector_eigen<
       typename std::remove_cv<VectorType>::type
      >::value
-#endif
-#if defined PRESSIO_ENABLE_TPL_EIGEN and defined PRESSIO_ENABLE_TPL_PYBIND11
-    or
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    ::pressio::is_array_pybind<
-     typename std::remove_cv<VectorType>::type
-     >::value
-#endif
     >
   >
 {
   using this_t = AsDiagonalMatrixExpr<VectorType>;
   using traits = AsdiagmatrixTraits<this_t>;
   using sc_t = typename traits::scalar_type;
-  using size_t = typename traits::size_type;
   using ref_t = typename traits::reference_type;
   using const_ref_t = typename traits::const_reference_type;
   using native_expr_t = typename traits::native_expr_type;
@@ -83,9 +72,7 @@ struct AsDiagonalMatrixExpr<
 private:
   std::reference_wrapper<VectorType> vecObj_;
   size_t extent_ = {};
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
   native_expr_t nativeExprObj_;
-#endif
 
 public:
   AsDiagonalMatrixExpr() = delete;
@@ -98,18 +85,16 @@ public:
   AsDiagonalMatrixExpr(VectorType & objIn)
     : vecObj_(objIn)
     ,extent_(objIn.size())
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
     ,nativeExprObj_(vecObj_.get().asDiagonal())
-#endif
   {}
 
 public:
   size_t extent(size_t i) const{
     assert(i==0 or i==1);
+    (void) i;
     return extent_;
   }
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
   native_expr_t const & native() const{
     return nativeExprObj_;
   }
@@ -117,17 +102,18 @@ public:
   native_expr_t & native(){
     return nativeExprObj_;
   }
-#endif
 
   ref_t operator()(size_t i, size_t j)
   {
     assert(i==j and j < extent_);
+    (void) j;
     return vecObj_(i);
   }
 
   const_ref_t operator()(size_t i, size_t j) const
   {
     assert(i==j and j < extent_);
+    (void) j;
     return vecObj_(i);
   }
 };

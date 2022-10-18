@@ -14,6 +14,7 @@ struct EigenRosenbrock4Impl
   using residual_type	= state_type;
   using jacobian_type	= Eigen::MatrixXd;
 
+  state_type createState() const{return state_type(4);}
   residual_type createResidual() const{return residual_type(6);}
   jacobian_type createJacobian() const{return jacobian_type(6, 4);}
 
@@ -31,7 +32,7 @@ struct EigenRosenbrock4Impl
     res(5) = (1.-x3);
   }
 
-  void jacobian(const state_type & x, jacobian_type & JJ) const 
+  void jacobian(const state_type & x, jacobian_type & JJ) const
   {
     auto x1 = x(0);
     auto x2 = x(1);
@@ -59,10 +60,13 @@ struct EigenRosenbrock4HessGradApi
   using state_type	= Eigen::VectorXd;
   using hessian_type	= Eigen::MatrixXd;
   using gradient_type	= state_type;
+  using residual_norm_type = double;
 
   EigenRosenbrock4Impl rosImpl;
 
 public:
+  state_type createState() const{return state_type(4);}
+
   hessian_type createHessian() const{
     return hessian_type(4, 4);
   }
@@ -73,20 +77,20 @@ public:
 
   void residualNorm(const state_type & state,
 		    pressio::Norm normKind,
-		    scalar_type & normResidual) const
+		    residual_norm_type & normResidual) const
   {
     auto R = rosImpl.createResidual();
     rosImpl.residual(state, R);//, normKind, normResidual);
     if (normKind == pressio::Norm::L2) normResidual = R.norm();
-    if (normKind == pressio::Norm::L1) normResidual = R.lpNorm<1>();    
+    if (normKind == pressio::Norm::L1) normResidual = R.lpNorm<1>();
   }
 
   void hessianAndGradient(const state_type & x,
 			  hessian_type & hess,
 			  gradient_type & grad,
 			  pressio::Norm normType,
-			  scalar_type & residualNorm,
-        bool recomputeJacobian) const
+			  residual_norm_type & residualNorm,
+        bool /*recomputeJacobian*/) const
   {
     auto J = rosImpl.createJacobian();
     rosImpl.jacobian(x, J);

@@ -5,10 +5,10 @@
 TEST_F(tpetraVectorGlobSize15Fixture, vector_clone)
 {
     auto a = pressio::ops::clone(*myVector_);
-    ASSERT_TRUE(a.getLocalViewDevice().data() !=
-		myVector_->getLocalViewDevice().data());
+    ASSERT_TRUE(a.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct()).data() !=
+		myVector_->getLocalViewDevice(Tpetra::Access::ReadOnlyStruct()).data());
 
-    auto a_h = a.getLocalViewHost();
+    auto a_h = a.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(a_h(i,0), 0.0);
     }
@@ -30,7 +30,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_deep_copy)
     auto a = pressio::ops::clone(*myVector_);
     pressio::ops::deep_copy(a, *myVector_);
 
-    auto a_h = a.getLocalViewHost();
+    auto a_h = a.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(a_h(i,0), -5.);
     }
@@ -39,13 +39,13 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_deep_copy)
 TEST_F(tpetraVectorGlobSize15Fixture, vector_setzero)
 {
     myVector_->putScalar(23.);
-    auto x_h = myVector_->getLocalViewHost();
+    auto x_h = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(x_h(i,0), 23.);
     }
 
     pressio::ops::set_zero(*myVector_);
-    auto x_h2 = myVector_->getLocalViewHost();
+    auto x_h2 = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(x_h2(i,0), 0.);
     }
@@ -54,7 +54,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_setzero)
 TEST_F(tpetraVectorGlobSize15Fixture, vector_fill)
 {
     pressio::ops::fill(*myVector_, 55.);
-    auto x_h = myVector_->getLocalViewHost();
+    auto x_h = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(x_h(i,0), 55.);
     }
@@ -63,14 +63,14 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_fill)
 TEST_F(tpetraVectorGlobSize15Fixture, vector_abs)
 {
     pressio::ops::fill(*myVector_, -5.);
-    auto x_h = myVector_->getLocalViewHost();
+    auto x_h = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(x_h(i,0), -5.);
     }
 
     auto a = pressio::ops::clone(*myVector_);
     pressio::ops::abs(a, *myVector_);
-    auto a_h = a.getLocalViewHost();
+    auto a_h = a.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
     for (int i=0; i<localSize_; ++i){
         EXPECT_DOUBLE_EQ(a_h(i,0), 5.);
         EXPECT_DOUBLE_EQ(x_h(i,0), -5.);
@@ -129,7 +129,7 @@ TEST(ops_tpetra, vector_pow)
 
     // 1. create vector x and fill with data
     vec_t x(map);
-    auto xh = x.getLocalViewHost();
+    auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     std::vector<ST> x0(numGlobalEntries);
     for (int i=0; i<6; ++i) x0[i]= (double) i;
     for (int i=0; i<numLocalEntries; ++i) xh(i,0) = x0[shift+i];
@@ -174,9 +174,9 @@ TEST(ops_tpetra, vector_absPowPos)
 
     // 1. create vector x and fill with data
     vec_t y(map);
-    auto yh = y.getLocalViewHost();
+    auto yh = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     vec_t x(map);
-    auto xh = x.getLocalViewHost();
+    auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     std::vector<ST> x0(numGlobalEntries);
     for (int i=0; i<6; ++i){
       x0[i] = (double) i;
@@ -224,9 +224,9 @@ TEST(ops_tpetra, vector_absPowNeg)
 
     // 1. create vector x and fill with data
     vec_t y(map);
-    auto yh = y.getLocalViewHost();
+    auto yh = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     vec_t x(map);
-    auto xh = x.getLocalViewHost();
+    auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     std::vector<ST> x0(numGlobalEntries);
     for (int i=0; i<6; ++i){
       x0[i] = (double) i;
@@ -259,7 +259,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_a)
     auto a = pressio::ops::clone(*myVector_);
     pressio::ops::fill(a, 2.);
     pressio::ops::update(v, 0., a, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 2.);
     }
@@ -272,7 +272,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_b)
     auto a = pressio::ops::clone(*myVector_);
     pressio::ops::fill(a, 2.);
     pressio::ops::update(v, 1., a, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 3.);
     }
@@ -288,7 +288,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_a)
     pressio::ops::fill(b, 3.);
 
     pressio::ops::update(v, 0., a, 1., b, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 5.);
     }
@@ -304,7 +304,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_b)
     pressio::ops::fill(b, 3.);
 
     pressio::ops::update(v, 1., a, 1., b, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 6.);
     }
@@ -322,7 +322,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_a)
     pressio::ops::fill(c, 4.);
 
     pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 9.);
     }
@@ -340,7 +340,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_b)
     pressio::ops::fill(c, 4.);
 
     pressio::ops::update(v, 1., a, 1., b, 1., c, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 10.);
     }
@@ -360,7 +360,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_a)
     pressio::ops::fill(d, 5.);
 
     pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 14.);
     }
@@ -380,7 +380,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_b)
     pressio::ops::fill(d, 5.);
 
     pressio::ops::update(v, 1., a, 1., b, 1., c, 1., d, 1.);
-    auto v_h = v.getLocalViewHost();
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 15.);
     }
@@ -408,23 +408,28 @@ TEST(ops_tpetra, vector_elementwiseMultiply)
 
   // 1. create vector x and fill with data
   vec_t x(map);
-  auto xh = x.getLocalViewHost();
+  auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   std::vector<ST> x0(numGlobalEntries);
   for (int i=0; i<6; ++i) x0[i]= (double) i;
   for (int i=0; i<numLocalEntries; ++i) xh(i,0) = x0[shift+i];
 
   // 2. create vector b and fill with data
   vec_t b(map);
-  auto bh = b.getLocalViewHost();
+  auto bh = b.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   std::vector<ST> b0(numGlobalEntries);
   for (int i=0; i<6; ++i) b0[i]= (double) i + 2.;
   for (int i=0; i<numLocalEntries; ++i) bh(i,0) = b0[shift+i];
 
   // 3. compute ewise multiply
   vec_t c(map);
-  pressio::ops::fill(c, 0.);
-  pressio::ops::elementwise_multiply(1., x, b, 0., c);
-  auto ch = c.getLocalViewHost();
+  const double offset = -5.0;
+  pressio::ops::fill(c, offset);
+  pressio::ops::elementwise_multiply(1., x, b, 1., c);
+  auto ch = c.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  vec_t c0(map);
+  pressio::ops::fill(c0, std::nan("0")); // test beta=0 with simulated NaN in uninitialized c
+  pressio::ops::elementwise_multiply(1., x, b, 0., c0);
+  auto ch0 = c0.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
 
   // 5. check correctness
   Eigen::VectorXd g(numGlobalEntries);
@@ -436,6 +441,7 @@ TEST(ops_tpetra, vector_elementwiseMultiply)
   g(5) = 35.;
 
   for (int i=0; i<numLocalEntries; ++i){
-    EXPECT_DOUBLE_EQ(ch(i,0), g(shift+i));
+    EXPECT_DOUBLE_EQ(ch0(i,0), g(shift+i));
+    EXPECT_DOUBLE_EQ(ch(i,0), g(shift+i) + offset);
   }
 }

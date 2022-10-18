@@ -53,14 +53,13 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename StateType, class ScalarType>
+template<typename StateType>
 class LMSchedule1Updater
 {
-  using scalar_type = ScalarType;
+  using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+  LMGainFactor<StateType> gainFactorEval_;
 
-  LMGainFactor<StateType, scalar_type> gainFactorEval_;
-
-  using cnst		   = pressio::utils::Constants<scalar_type>;
+  using cnst = pressio::utils::Constants<scalar_type>;
   const scalar_type beta_     = cnst::two();
   const scalar_type gammaInv_ = cnst::one()/cnst::three();
   const scalar_type p_	   = cnst::three();

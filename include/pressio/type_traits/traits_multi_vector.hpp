@@ -49,23 +49,25 @@
 #ifndef TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
 #define TYPE_TRAITS_TRAITS_MULTI_VECTOR_HPP_
 
-namespace pressio{ 
+namespace pressio{
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 
 //*******************************
 // for tpetra multivector
+// and block tpetra multivector
 //*******************************
 template<typename T>
 struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_multi_vector_tpetra<T>::value
+    || is_multi_vector_tpetra_block<T>::value
     >
   >
-  : public ::pressio::impl::TpetraTraits<T, 2>
 {
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Tpetra;
+  static constexpr int rank = 2;
+  using scalar_type = typename T::impl_scalar_type;
 };
 
 
@@ -79,25 +81,11 @@ struct Traits<
     is_multi_vector_epetra<T>::value
     >
   >
-  : public ::pressio::impl::EpetraTraits<2>
 {
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
+  static constexpr int rank = 2;
+  using scalar_type = double;
 };
 
-//*******************************
-// for block tpetra multivector
-//*******************************
-template<typename T>
-struct Traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_multi_vector_tpetra_block<T>::value
-    >
-  >
-  : public ::pressio::impl::TpetraTraits<T, 2>
-{
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
-};
 #endif
 
 }

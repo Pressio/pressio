@@ -53,12 +53,12 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename StateType,  class ScalarType>
+template<typename StateType>
 class LMSchedule2Updater
 {
-  using scalar_type = ScalarType;
+  using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
 
-  LMGainFactor<StateType, scalar_type> gainFactorEval_;
+  LMGainFactor<StateType> gainFactorEval_;
 
   using cnst		   = pressio::utils::Constants<scalar_type>;
   const scalar_type rho1_	   = static_cast<scalar_type>(0.2);

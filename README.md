@@ -3,14 +3,14 @@
 
 Pressio is an open-source computational framework aimed at advancing
 the field of reduced-order models (ROMs) for dynamical systems in science and engineering.
-We employ generic programming, and target shared and distributed-memory
-applications using arbitrary data-types and diverse programming models.
+We employ generic programming, and target shared
+and distributed-memory applications using arbitrary data-types and diverse programming models.
 
 We believe that the key to develop such a capability from the ground up
 is to properly identify the building blocks and modularize them accordingly.
-This is the approach we have adopted: the library is broken into
-several components such that they can be used independently
-and in a self-contained fashion.
+This is the approach adopted here: the library is composed of
+several components that can be used independently and in a self-contained fashion,
+but as a whole constitute the stack foundation of the rom component.
 One of the main outcome of this is that regardless of your interest in ROMs,
 you might find useful some of the components of the library.
 
@@ -18,8 +18,17 @@ you might find useful some of the components of the library.
 Click below to checkout the documentation:
 
 <a href="https://pressio.github.io/pressio/html/index.html" target="_blank">
-    <img src='logo-readme.svg' width='95%'>
+    <img src='./logos/logo-readme.svg' width='95%'>
 </a>
+
+## Development, versioning and backward compatibility
+
+Until we reach a stable 1.0, please be patient and do not be surprised if the API
+and functionalities somewhat rapidly change from one 0.x version to the next,
+thus affecting backward compability.
+Some components of pressio are more mature and stable than others,
+but until we can claim the *same stability* level for all,
+please keep this mind.
 
 ## Questions?
 Find us on Slack: https://pressioteam.slack.com and/or

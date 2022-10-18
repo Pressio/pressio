@@ -53,7 +53,11 @@
 #include "./type_traits.hpp"
 
 #include "./expressions/fwd.hpp"
-#include "./expressions/public_functions.hpp"
+#include "./expressions/span.hpp"
+#include "./expressions/subspan.hpp"
+#include "./expressions/diag.hpp"
+#include "./expressions/as_diagonal_matrix.hpp"
+
 #include "./expressions/is_expression.hpp"
 
 #endif

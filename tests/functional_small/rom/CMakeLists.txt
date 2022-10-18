@@ -1,26 +1,50 @@
 
-add_serial_utest(${TESTING_LEVEL}_rom_concepts ${CMAKE_CURRENT_SOURCE_DIR}/rom_concepts.cc)
+#
+# concepts testing
+#
+set(SRC concept_linear_subspace)
+add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+
+set(SRC concept_semidiscrete_fom)
+add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+
+set(SRC concept_semidiscrete_fom_with_jacobian_action)
+add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+
+set(SRC concept_semidiscrete_fom_with_mass_matrix_action)
+add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+
+#
+# subspaces
+#
+if(PRESSIO_ENABLE_TPL_EIGEN)
+set(SRC concept_possibly_affine_trial_subspace)
+add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+endif()
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
- add_serial_utest(${TESTING_LEVEL}_rom_linear_decoder_arbitrary_types
- 		${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_arbitrary_types.cc)
+  set(SRC linear_subspace_test1)
+  add_serial_utest(${TESTING_LEVEL}_rom_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 
- add_serial_utest(${TESTING_LEVEL}_rom_linear_decoder_eigen
- 		${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_eigen.cc)
+  set(SRC trial_subspace_stdvec_full_state_eigen_reduced_state)
+  add_serial_utest(${TESTING_LEVEL}_rom_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 endif()
-
-add_subdirectory(correctness_galerkin)
-add_subdirectory(correctness_lspg_steady)
-add_subdirectory(correctness_lspg_unsteady)
-
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra.cc)
- add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra "${SRC1}" gTestMain_tpetra 3)
-
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_epetra.cc)
- add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_epetra "${SRC1}" gTestMain_mpi 3)
-
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra_block.cc)
- add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra_block "${SRC1}" gTestMain_tpetra 3)
+ set(SRC trial_subspace_tpetra_full_state_eigen_reduced_state)
+ add_utest_mpi(${TESTING_LEVEL}_rom_${SRC} "${SRC}.cc" gTestMain_tpetra 3)
 endif()
+
+#
+# roms
+#
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  set(SRC reduced_default_operators_traits)
+  add_serial_utest(${TESTING_LEVEL}_rom_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+endif()
+
+add_subdirectory(galerkin_steady)
+add_subdirectory(galerkin_unsteady_explicit)
+add_subdirectory(galerkin_unsteady_implicit)
+add_subdirectory(lspg_steady)
+add_subdirectory(lspg_unsteady)

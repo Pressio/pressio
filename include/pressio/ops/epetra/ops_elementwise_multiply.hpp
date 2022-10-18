@@ -69,9 +69,9 @@ elementwise_multiply
 {
   assert(x.MyLength()==z.MyLength());
   assert(z.MyLength()==y.MyLength());
-  using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (ord_t i=0; i<x.MyLength(); ++i){
-    y[i] = beta*y[i] + alpha*x[i]*z[i];
+  const auto has_beta = beta != static_cast<typename ::pressio::Traits<T>::scalar_type>(0);
+  for (int i=0; i<x.MyLength(); ++i){
+    y[i] = has_beta ? (beta*y[i] + alpha*x[i]*z[i]) : alpha*x[i]*z[i];
   }
 }
 

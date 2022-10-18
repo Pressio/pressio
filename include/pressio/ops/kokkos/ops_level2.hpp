@@ -65,23 +65,23 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Kokkos and
+  (::pressio::is_native_container_kokkos<A_type>::value or
+   ::pressio::is_expression_acting_on_kokkos<A_type>::value) and
+  (::pressio::is_native_container_kokkos<x_type>::value or
+   ::pressio::is_expression_acting_on_kokkos<x_type>::value) and
+  (::pressio::is_native_container_kokkos<y_type>::value or
+    ::pressio::is_expression_acting_on_kokkos<y_type>::value) and
   ::pressio::Traits<A_type>::rank == 2 and
   ::pressio::Traits<x_type>::rank == 1 and
   ::pressio::Traits<y_type>::rank == 1
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert
-    (are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
   static_assert
     (::pressio::have_matching_execution_space<A_type, x_type, y_type>::value,
      "operands need to have same execution space" );
@@ -101,22 +101,23 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Kokkos and
+  (::pressio::is_native_container_kokkos<A_type>::value or
+   ::pressio::is_expression_acting_on_kokkos<A_type>::value) and
+  (::pressio::is_native_container_kokkos<x_type>::value or
+   ::pressio::is_expression_acting_on_kokkos<x_type>::value) and
+  (::pressio::is_native_container_kokkos<y_type>::value or
+    ::pressio::is_expression_acting_on_kokkos<y_type>::value) and
   ::pressio::Traits<A_type>::rank == 2 and
   ::pressio::Traits<x_type>::rank == 1 and
   ::pressio::Traits<y_type>::rank == 1
   >
-product(::pressio::transpose mode,
+product(::pressio::transpose /*unused*/,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
   static_assert
     (::pressio::have_matching_execution_space<A_type,x_type, y_type>::value,
      "operands need to have same execution space" );

@@ -62,7 +62,6 @@ struct DiagExpr<
 {
   using this_t = DiagExpr<MatrixType>;
   using traits = DiagTraits<this_t>;
-  using size_t = typename traits::size_type;
   using ref_t = typename traits::reference_type;
   using const_ref_t = typename traits::const_reference_type;
   using native_expr_t = typename traits::native_expr_type;
@@ -96,6 +95,7 @@ public:
 
   size_t extent(size_t i) const{
     assert(i==0);
+    (void) i;
     return extent_;
   }
 
@@ -133,9 +133,9 @@ struct DiagExpr<
 {
   using this_t		= DiagExpr<MatrixType>;
   using traits	= DiagTraits<this_t>;
-  using size_t		= typename traits::size_type;
-  using ref_t		= typename traits::reference_type;
+  using size_t	= typename MatrixType::traits::size_type;
   using native_expr_t	= typename traits::native_expr_type;
+  using ref_t		= decltype( std::declval<native_expr_t>()(size_t{}) );
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -168,6 +168,7 @@ public:
 public:
   size_t extent(size_t i) const{
     assert(i==0);
+    (void) i;
     return extent_;
   }
 
@@ -181,79 +182,13 @@ public:
 
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<
-    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename MatrixType::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
     return nativeExprObj_(i);
-  }
-};
-#endif
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename MatrixType>
-struct DiagExpr<
-  MatrixType,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_array_pybind<MatrixType>::value
-    >
-  >
-{
-  using this_t = DiagExpr<MatrixType>;
-  using traits = DiagTraits<this_t>;
-  using sc_t = typename traits::scalar_type;
-  using size_t = typename traits::size_type;
-  using ref_t = typename traits::reference_type;
-  using const_ref_t = typename traits::const_reference_type;
-  using pair_t = std::pair<std::size_t, std::size_t>;
-
-private:
-  std::reference_wrapper<MatrixType> matObj_;
-  size_t extent_ = {};
-
-public:
-  DiagExpr() = delete;
-  DiagExpr(const DiagExpr & other) = default;
-  DiagExpr & operator=(const DiagExpr & other) = delete;
-  DiagExpr(DiagExpr && other) = default;
-  DiagExpr & operator=(DiagExpr && other) = delete;
-  ~DiagExpr() = default;
-
-  DiagExpr(MatrixType & matObjIn)
-    : matObj_(matObjIn),
-      extent_(matObjIn.shape(0))
-  {
-    assert(matObjIn.ndim()==2);
-    assert(matObjIn.shape(0) == matObjIn.shape(1));
-  }
-
-public:
-  int ndim() const{
-    return 1;
-  }
-
-  size_t extent() const{
-    return extent_;
-  }
-
-  size_t extent(size_t i) const{
-    assert(i==0);
-    return extent_;
-  }
-
-  // non-const subscripting
-  ref_t operator()(size_t i){
-    assert(i < (size_t)extent_);
-    return matObj_(i,i);
-  }
-
-  // const subscripting
-  const_ref_t operator()(size_t i) const{
-    assert(i < (size_t)extent_);
-    return matObj_(i,i);
   }
 };
 #endif

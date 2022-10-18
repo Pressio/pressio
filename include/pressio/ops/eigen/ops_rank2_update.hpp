@@ -51,22 +51,29 @@
 
 namespace pressio{ namespace ops{
 
+/*
+   below we constrain in all cases via is_convertible
+   because the implementations are using Eigen native operations
+   which are based on expressions and require
+   coefficients to be convertible to scalar types of the vectors operands
+ */
+
 //----------------------------------------------------------------------
 // M = a * M + b * M1
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename ScalarType>
+template<typename T, typename T1, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 2 and
-  ::pressio::Traits<T1>::rank == 2
+     ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (::pressio::is_native_container_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  && (::pressio::is_native_container_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
   >
-update(T & M,         const ScalarType a,
-       const T1 & M1, const ScalarType b)
+update(T & M,         const alpha_t & a,
+       const T1 & M1, const beta_t & b)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1>::value,
-      "Arguments are not scalar compatible");
 
   auto & M_n = impl::get_native(M);
   const auto & M_n1 = impl::get_native(M1);

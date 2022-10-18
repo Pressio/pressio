@@ -24,4 +24,4 @@ template<class ... Args>
 using size_t = typename size<Args...>::type;
 
 }}
-#endif  // MPL_VARIADIC_SIZE_HPP_
+#endif  // MPL_SIZE_HPP_

@@ -67,7 +67,7 @@
 #include "burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
 #include "burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
 #include "burgers1d/apps_burgers1d_tpetra.hpp"
-#include "burgers1d/apps_burgers1d_tpetra_block.hpp"
+//#include "burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS

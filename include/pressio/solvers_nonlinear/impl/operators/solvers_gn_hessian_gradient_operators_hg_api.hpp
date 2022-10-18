@@ -51,13 +51,13 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename HessianType, typename GradientType, typename ScalarType>
+template <class HessianType, class GradientType, class ResidualNormType>
 class HessianGradientOperatorsHGApi
 {
 public:
-  using scalar_type = ScalarType;
+  using residual_norm_type = ResidualNormType;
 
-private:  
+private:
   GradientType g_;
   HessianType H_;
 
@@ -69,16 +69,14 @@ public:
   HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi &&) = default;
   ~HessianGradientOperatorsHGApi() = default;
 
-  template <
-   typename SystemType, typename StateType,
-    mpl::enable_if_t<
-      ::pressio::nonlinearsolvers::compliant_with_hessian_gradient_api<SystemType>::value or
-      ::pressio::nonlinearsolvers::compliant_with_fused_hessian_gradient_api<SystemType>::value,
-      int
-     > = 0
-  >
-  HessianGradientOperatorsHGApi(const SystemType & system, 
-                                const StateType & state)
+  template <typename SystemType>
+  //   mpl::enable_if_t<
+  //     ::pressio::nonlinearsolvers::SystemWithHessianAndGradient<SystemType>::value or
+  //     ::pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<SystemType>::value,
+  //     int
+  //    > = 0
+  // >
+  HessianGradientOperatorsHGApi(const SystemType & system)
     : g_(system.createGradient()),
       H_(system.createHessian())
   {
@@ -93,7 +91,8 @@ public:
   const HessianType & hessianCRef() const	{ return H_; }
   const GradientType & gradientCRef() const	{ return g_; }
 
-  scalar_type getParameter(std::string key) const {
+  // fix template
+  residual_norm_type getParameter(std::string key) const {
     throw std::runtime_error("GN HessGrad operators does not have parameters");
     return {};
   }
@@ -106,18 +105,23 @@ public:
   template< typename SystemType, typename StateType>
   void residualNorm(const SystemType & system,
 		    const StateType & state,
-		    scalar_type & residualNorm) const
+		    residual_norm_type & residualNorm) const
   {
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
 
   template<typename SystemType, typename StateType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithHessianAndGradient<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::compliant_with_hessian_gradient_api<SystemType>::value
-    >
+  ::pressio::nonlinearsolvers::SystemWithHessianAndGradient<SystemType>::value
+  >  
+#endif
   computeOperators(const SystemType & sys,
 		   const StateType & state,
-		   scalar_type & residualNormOut,
+		   residual_norm_type & residualNormOut,
 		   bool recomputeSystemJacobian = true)
   {
     if (recomputeSystemJacobian){
@@ -129,16 +133,22 @@ public:
 		 recomputeSystemJacobian);
 
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
+    using g_scalar_type = typename ::pressio::Traits<GradientType>::scalar_type;
+    ::pressio::ops::scale(g_, ::pressio::utils::Constants<g_scalar_type>::negOne());
   }
 
   template<typename SystemType, typename StateType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires SystemWithFusedHessianAndGradient<SystemType> 
+  void 
+#else
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::compliant_with_fused_hessian_gradient_api<SystemType>::value
-    >
+  ::pressio::nonlinearsolvers::SystemWithFusedHessianAndGradient<SystemType>::value
+  >  
+#endif
   computeOperators(const SystemType & sys,
 		   const StateType & state,
-		   scalar_type & residualNorm,
+		   residual_norm_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     sys.hessianAndGradient(state, H_, g_,
@@ -146,7 +156,8 @@ public:
 			   residualNorm, recomputeSystemJacobian);
 
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
+    using g_scalar_type = typename ::pressio::Traits<GradientType>::scalar_type;
+    ::pressio::ops::scale(g_, ::pressio::utils::Constants<g_scalar_type>::negOne());
   }
 };
 

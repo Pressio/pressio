@@ -53,56 +53,273 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template<class SystemType, class StateType, class ...Args>
+// ----------------------------------------------------------------
+// Newton-Raphson
+// ----------------------------------------------------------------
+
+template<class SystemType, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires
+   (DeterminedSystemWithResidualAndJacobian<SystemType>
+ || DeterminedSystemWithFusedResidualAndJacobian<SystemType>)
+  && LinearSolverForNewtonRaphson<
+       mpl::remove_cvref_t<LinearSolverType>,
+       typename SystemType::jacobian_type,
+       typename SystemType::residual_type,
+       typename SystemType::state_type>
+#endif
 auto create_newton_raphson(const SystemType & system,
-			   const StateType & state,
-			   Args && ...args)
+			   LinearSolverType && linSolver)
 {
-  return impl::ComposeNewtonRaphson_t<StateType, SystemType, Args...>
-    (system, state, std::forward<Args>(args)...);
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (DeterminedSystemWithResidualAndJacobian<SystemType>::value or
+     DeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
+     "Newton-Raphson: system not satisfying the residual/jacobian concept.");
+
+  static_assert
+    (LinearSolverForNewtonRaphson<mpl::remove_cvref_t<LinearSolverType>,
+     typename SystemType::jacobian_type, typename SystemType::residual_type,
+     typename SystemType::state_type>::value,
+     "Newton-Raphson: linear solver not satisfying the concept.");
+#endif
+
+  using system_type = SystemType;
+  using state_t  = typename system_type::state_type;
+  using r_t = typename system_type::residual_type;
+  using j_t = typename system_type::jacobian_type;
+
+  using operators_t = impl::ResidualJacobianOperators<r_t, j_t>;
+  using corrector_t = impl::RJCorrector<operators_t, state_t, LinearSolverType>;
+  return impl::Solver<NewtonRaphson, corrector_t>(system, std::forward<LinearSolverType>(linSolver));
 }
 
-template<class SystemType, class StateType, class ...Args>
+// ----------------------------------------------------------------
+// Gauss-Newton
+// ----------------------------------------------------------------
+template<class SystemType, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires
+     (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+   || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
+   || SystemWithHessianAndGradient<SystemType>
+   || SystemWithFusedHessianAndGradient<SystemType>)
+  && LinearSolverForNonlinearLeastSquares<
+       mpl::remove_cvref_t<LinearSolverType>,
+       typename SystemType::state_type>
+#endif
 auto create_gauss_newton(const SystemType & system,
-			 const StateType & state,
-			 Args && ... args)
+			 LinearSolverType && linSolver)
 {
-  return impl::ComposeGaussNewton_t<StateType, SystemType, Args...>
-    (system, state, std::forward<Args>(args)...);
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value
+     or SystemWithHessianAndGradient<SystemType>::value
+     or SystemWithFusedHessianAndGradient<SystemType>::value,
+     "Gauss-Newton: system does not satisfy the residual/jacobian, or hessian/gradient concepts.");
+
+  static_assert(LinearSolverForNonlinearLeastSquares<
+		mpl::remove_cvref_t<LinearSolverType>,
+		typename SystemType::state_type>::value,
+		"Gauss-newton: linear solver not satisfying the concept.");
+#endif
+
+  return impl::ComposeGaussNewton_t<SystemType, LinearSolverType>
+    (system, std::forward<LinearSolverType>(linSolver));
 }
 
-template<class SystemType, class StateType, class ...Args>
+// ----------------------------------------------------------------
+// Weighted Gauss-Newton
+// ----------------------------------------------------------------
+
+template<class SystemType, class LinearSolverType, class WeightingOpType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires
+  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+   || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>)
+  && LinearSolverForNonlinearLeastSquares<
+       mpl::remove_cvref_t<LinearSolverType>,
+       typename SystemType::state_type>
+  && LeastSquaresWeightingOperator<
+       mpl::remove_cvref_t<WeightingOpType>,
+       typename SystemType::residual_type,
+       typename SystemType::jacobian_type>
+#endif
+auto create_gauss_newton(const SystemType & system,
+			 LinearSolverType && linSolver,
+                         WeightingOpType && weightOperator)
+{
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
+     "Weighted Gauss-Newton: system not satisfying the residual/jacobian concept.");
+
+  static_assert(LinearSolverForNonlinearLeastSquares<
+		mpl::remove_cvref_t<LinearSolverType>,
+		typename SystemType::state_type>::value,
+		"Weighted Gauss-newton: linear solver not satisfying the concept.");
+  static_assert(LeastSquaresWeightingOperator<
+		mpl::remove_cvref_t<WeightingOpType>,
+		typename SystemType::residual_type,
+		typename SystemType::jacobian_type>::value,
+		"Invalid weighting operator for GN or LM");
+#endif
+
+  return impl::ComposeGaussNewton_t<SystemType, LinearSolverType, WeightingOpType>
+    (system, std::forward<LinearSolverType>(linSolver),
+     std::forward<WeightingOpType>(weightOperator));
+}
+
+// ----------------------------------------------------------------
+// Gauss-Newton QR
+// ----------------------------------------------------------------
+
+template<class SystemType, class QRSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires
+    (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+  || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>)
+  && QRSolverForGnQr<
+	mpl::remove_cvref_t<QRSolverType>,
+	typename SystemType::state_type,
+	typename SystemType::jacobian_type,
+	typename SystemType::residual_type
+     >
+#endif
 auto create_gauss_newtonQR(const SystemType & system,
-			   const StateType & state,
-			   Args && ...args)
+			   QRSolverType && qrSolver)
 {
-  return impl::ComposeGaussNewtonQR_t<StateType, SystemType, Args...>
-    (system, state, std::forward<Args>(args)...);
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
+     "Gauss-Newton with QR: system not satisfying the residual/jacobian concept.");
+
+  static_assert(QRSolverForGnQr<
+		mpl::remove_cvref_t<QRSolverType>,
+		typename SystemType::state_type,
+		typename SystemType::jacobian_type,
+		typename SystemType::residual_type>::value,
+		"Gauss-newton QR: linear solver not satisfying the concept.");
+#endif
+
+  using state_t = typename SystemType::state_type;
+  using r_t = typename SystemType::residual_type;
+  using j_t = typename SystemType::jacobian_type;
+
+  using operators_t = impl::ResidualJacobianOperators<r_t, j_t>;
+  using corrector_t = impl::QRCorrector<operators_t, state_t, QRSolverType>;
+  return impl::Solver<GaussNewtonQR, corrector_t>(system,
+						  std::forward<QRSolverType>(qrSolver));
 }
 
-template<class SystemType, class StateType, class ...Args>
+// ----------------------------------------------------------------
+// LM
+// ----------------------------------------------------------------
+
+template<class SystemType, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires
+   (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+ || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
+ || SystemWithHessianAndGradient<SystemType>
+ || SystemWithFusedHessianAndGradient<SystemType>)
+  && LinearSolverForNonlinearLeastSquares<
+       mpl::remove_cvref_t<LinearSolverType>,
+       typename SystemType::state_type>
+#endif
 auto create_levenberg_marquardt(const SystemType & system,
-				const StateType & state,
-				Args && ...args)
+				LinearSolverType && linSolver)
 {
-  return impl::ComposeLevenbergMarquardt_t<StateType, SystemType, Args...>
-    ( system, state, std::forward<Args>(args)...);
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value
+     or SystemWithHessianAndGradient<SystemType>::value
+     or SystemWithFusedHessianAndGradient<SystemType>::value,
+     "Levenberg-Marquardt: system not satisfying any of the residual/jacobian or the hessian/gradient concepts.");
+
+  static_assert(LinearSolverForNonlinearLeastSquares<
+		mpl::remove_cvref_t<LinearSolverType>,
+		typename SystemType::state_type>::value,
+		"Levenberg-Marquardt: linear solver not satisfying the concept.");
+#endif
+
+  return impl::ComposeLevenbergMarquardt_t<SystemType, LinearSolverType>
+    (system, std::forward<LinearSolverType>(linSolver));
 }
+
+// ----------------------------------------------------------------
+// Weighted LM
+// ----------------------------------------------------------------
+
+template<class SystemType, class LinearSolverType, class WeightingOpType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires
+      (OverdeterminedSystemWithResidualAndJacobian<SystemType>
+    || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>)
+    && LinearSolverForNonlinearLeastSquares<
+	mpl::remove_cvref_t<LinearSolverType>,
+	typename SystemType::state_type>
+#endif
+auto create_levenberg_marquardt(const SystemType & system,
+				LinearSolverType && linSolver,
+				WeightingOpType && weightOperator)
+{
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
+     "Weighted Levenberg-Marquardt: system not satisfying the residual/jacobian concept.");
+
+  static_assert(LinearSolverForNonlinearLeastSquares<
+		mpl::remove_cvref_t<LinearSolverType>,
+		typename SystemType::state_type>::value,
+		"Levenberg-Marquardt: linear solver not satisfying the concept.");
+#endif
+
+  return impl::ComposeLevenbergMarquardt_t<SystemType, LinearSolverType, WeightingOpType>
+    (system, std::forward<LinearSolverType>(linSolver),
+     std::forward<WeightingOpType>(weightOperator));
+}
+
+
+// ----------------------------------------------------------------
+// IRLS
+// ----------------------------------------------------------------
 
 namespace experimental{
-//***** IRWGN *******
-template<class SystemType, class StateType, class linear_solver_t>
+template<class SystemType, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires OverdeterminedSystemWithResidualAndJacobian<SystemType>
+      || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
+#endif
 auto create_irls_gauss_newton(const SystemType & system,
-			      const StateType & state,
-			      linear_solver_t && linSolver)
+			      LinearSolverType && linSolver)
 {
-  using c_t = impl::ComposeIrwGaussNewton<StateType, SystemType, linear_solver_t>;
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
+     "Weighted Levenberg-Marquardt: system not satisfying the residual/jacobian concept.");
+#endif
+
+  using c_t = impl::ComposeIrwGaussNewton<SystemType, LinearSolverType>;
   using w_t = typename c_t::weighting_t;
   using return_t = typename c_t::type;
 
   w_t W(system);
-  return return_t(system, state,
-		  std::forward<linear_solver_t>(linSolver),
+  return return_t(system,
+		  std::forward<LinearSolverType>(linSolver),
 		  std::move(W));
 }
 }// end namespace experimental

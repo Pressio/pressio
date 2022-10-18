@@ -13,7 +13,7 @@ include(colors)
 # versioning
 #=====================================================================
 set(Pressio_VERSION_MAJOR 0)
-set(Pressio_VERSION_MINOR 12)
+set(Pressio_VERSION_MINOR 13)
 set(Pressio_VERSION_PATCH 0)
 set(Pressio_VERSION
   "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
@@ -47,15 +47,31 @@ endif()
 #=====================================================================
 # c++ standard
 #=====================================================================
+SET(PRESSIO_ENABLE_CXX17 OFF)
+SET(PRESSIO_ENABLE_CXX20 OFF)
+
+IF (NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+ENDIF()
+MESSAGE(STATUS "Setting CXX standard to ${CMAKE_CXX_STANDARD}")
+
+IF(CMAKE_CXX_STANDARD STREQUAL "17")
+  SET(PRESSIO_ENABLE_CXX17 ON)
+ELSEIF(CMAKE_CXX_STANDARD STREQUAL "20")
+  SET(PRESSIO_ENABLE_CXX20 ON)
+ENDIF()
+
 # commands to test if compiler supports standard
-include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_CPP14)
-if(NOT COMPILER_SUPPORT_CPP14)
-  message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
-endif()
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+#include(CheckCXXCompilerFlag)
+#check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_CPP14)
+#if(NOT COMPILER_SUPPORT_CPP14)
+#  message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
+#endif()
+#set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_EXTENSIONS OFF)
 
 #=====================================================================
 # do processing

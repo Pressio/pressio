@@ -61,10 +61,7 @@ abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
-  static_assert(::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
 
   assert(x.GlobalLength() == y.GlobalLength());
   assert(x.MyLength() == y.MyLength());
@@ -72,7 +69,7 @@ abs_pow(T1 & y,
   if (exponent < ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent > 0");
 
-  for (ord_t i=0; i< x.MyLength(); ++i){
+  for (int i=0; i< x.MyLength(); ++i){
     y[i] = std::pow( std::abs(x[i]), exponent);
   }
 }
@@ -88,10 +85,8 @@ abs_pow(T1 & y,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
-  static_assert(::pressio::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::Traits<T1>::local_ordinal_type;
 
   assert(x.GlobalLength() == y.GlobalLength());
   assert(x.MyLength() == y.MyLength());
@@ -103,7 +98,7 @@ abs_pow(T1 & y,
 
   constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
-  for (ord_t i=0; i<x.MyLength(); ++i){
+  for (int i=0; i<x.MyLength(); ++i){
     y[i] = one/std::max(eps, std::pow(std::abs(x[i]), expo));
   }
 }
@@ -115,8 +110,7 @@ template <typename T>
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (ord_t i=0; i<x.MyLength(); ++i){
+  for (int i=0; i<x.MyLength(); ++i){
     x[i] = std::pow(x[i], exponent);
   }
 }

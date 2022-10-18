@@ -1,8 +1,8 @@
 
-set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
-add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_concepts ${SRC1})
-
 if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_concepts ${SRC1})
+
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/tolerances.cc)
   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_tolerances ${SRC1})
 
@@ -20,7 +20,6 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_irwls_gn)
   add_serial_utest(${TESTNAME} ${SRC1})
 endif()
-
 
 set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
 add_subdirectory(newton_raphson)

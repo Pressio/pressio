@@ -15,22 +15,20 @@ TEST(solvers_nonlinear, operators_residual_jacobian)
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(1);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename mock_t::scalar_type;
   using residual_type = typename mock_t::residual_type;
   using jacobian_type = typename mock_t::jacobian_type;
-
-  using op_t = psimpl::ResidualJacobianOperators<residual_type, jacobian_type, scalar_type>;
+  using op_t = psimpl::ResidualJacobianOperators<residual_type, jacobian_type>;
   Eigen::VectorXd state;
-  op_t operators(sysObj, state);
-  scalar_type norm = {};
-  operators.computeOperators(sysObj, state, norm);
+  op_t operators(sysObj);
+  typename op_t::residual_norm_type norm0 = {};
+  operators.computeOperators(sysObj, state, norm0);
 
   const auto & r = operators.residualCRef();
   for (int i=0; i<r.size(); ++i) EXPECT_DOUBLE_EQ(r(i), 1.);
 
-  scalar_type rNorm = {};
-  operators.residualNorm(sysObj, state, rNorm);
-  EXPECT_DOUBLE_EQ(rNorm, std::sqrt(5.));
+  typename op_t::residual_norm_type norm1 = {};
+  operators.residualNorm(sysObj, state, norm1);
+  EXPECT_DOUBLE_EQ(norm1, std::sqrt(5.));
 }
 
 TEST(solvers_nonlinear, operators_residual_jacobian_fused)
@@ -45,22 +43,21 @@ TEST(solvers_nonlinear, operators_residual_jacobian_fused)
   EXPECT_CALL(sysObj, residualAndJacobian(_,_,_,_)).Times(2);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename mock_t::scalar_type;
   using residual_type = typename mock_t::residual_type;
   using jacobian_type = typename mock_t::jacobian_type;
 
-  using op_t = psimpl::ResidualJacobianOperators<residual_type, jacobian_type, scalar_type>;
+  using op_t = psimpl::ResidualJacobianOperators<residual_type, jacobian_type>;
   Eigen::VectorXd state;
-  op_t operators(sysObj, state);
-  scalar_type norm = {};
-  operators.computeOperators(sysObj, state, norm);
+  op_t operators(sysObj);
+  typename op_t::residual_norm_type norm0 = {};
+  operators.computeOperators(sysObj, state, norm0);
 
   const auto & r = operators.residualCRef();
   for (int i=0; i<r.size(); ++i) EXPECT_DOUBLE_EQ(r(i), 1.);
 
-  scalar_type rNorm = {};
-  operators.residualNorm(sysObj, state, rNorm);
-  EXPECT_DOUBLE_EQ(rNorm, std::sqrt(5.));
+  typename op_t::residual_norm_type norm1 = {};
+  operators.residualNorm(sysObj, state, norm1);
+  EXPECT_DOUBLE_EQ(norm1, std::sqrt(5.));
 }
 
 TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_enable_jacobian_computation)
@@ -76,14 +73,14 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_enable_jacobian_comput
   EXPECT_CALL(sysObj, residualNorm(_,_,_)).Times(1);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename MockSystemHessGrad::scalar_type;
   using gradient_type = typename MockSystemHessGrad::gradient_type;
   using hessian_type = typename MockSystemHessGrad::hessian_type;
+  using residual_norm_type = typename MockSystemHessGrad::residual_norm_type;
 
-  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, scalar_type>;
+  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, residual_norm_type>;
   Eigen::VectorXd state;
-  op_t operators(sysObj, state);
-  scalar_type norm = {};
+  op_t operators(sysObj);
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, true);
 
   // check gradient
@@ -97,7 +94,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_enable_jacobian_comput
   EXPECT_TRUE(H.isApprox(goldH, 1e-10));
 
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, 8.);
 }
@@ -115,14 +112,14 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_disable_jacobian_compu
   EXPECT_CALL(sysObj, residualNorm(_,_,_)).Times(1);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename MockSystemHessGrad::scalar_type;
   using gradient_type = typename MockSystemHessGrad::gradient_type;
   using hessian_type = typename MockSystemHessGrad::hessian_type;
+  using residual_norm_type = typename MockSystemHessGrad::residual_norm_type;
 
-  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, scalar_type>;
+  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, residual_norm_type>;
   Eigen::VectorXd state;
-  op_t operators(sysObj, state);
-  scalar_type norm = {};
+  op_t operators(sysObj);
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, false);
 
   // check gradient
@@ -139,11 +136,10 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_disable_jacobian_compu
   }
 
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, 8.);
 }
-
 
 TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_fused_enable_jacobian_computation)
 {
@@ -157,14 +153,14 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_fused_enable_jacobian_
   EXPECT_CALL(sysObj, residualNorm(_,_,_)).Times(1);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename MockSystemHessGradFused::scalar_type;
   using gradient_type = typename MockSystemHessGradFused::gradient_type;
   using hessian_type = typename MockSystemHessGradFused::hessian_type;
+  using residual_norm_type = typename MockSystemHessGrad::residual_norm_type;
 
-  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, scalar_type>;
+  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, residual_norm_type>;
   Eigen::VectorXd state;
-  op_t operators(sysObj, state);
-  scalar_type norm = {};
+  op_t operators(sysObj);
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, true);
 
   // check gradient
@@ -178,11 +174,10 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_fused_enable_jacobian_
   EXPECT_TRUE(H.isApprox(goldH, 1e-10));
 
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, 8.);
 }
-
 
 TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_fused_disable_jacobian_computation)
 {
@@ -196,14 +191,14 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_fused_disable_jacobian
   EXPECT_CALL(sysObj, residualNorm(_,_,_)).Times(1);
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
-  using scalar_type = typename MockSystemHessGradFused::scalar_type;
   using gradient_type = typename MockSystemHessGradFused::gradient_type;
   using hessian_type = typename MockSystemHessGradFused::hessian_type;
+  using residual_norm_type = typename MockSystemHessGrad::residual_norm_type;
 
-  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, scalar_type>;
+  using op_t = psimpl::HessianGradientOperatorsHGApi<hessian_type, gradient_type, residual_norm_type>;
   Eigen::VectorXd state;
-  op_t operators(sysObj, state);
-  scalar_type norm = {};
+  op_t operators(sysObj);
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, false);
 
   // check gradient
@@ -220,12 +215,10 @@ TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_fused_disable_jacobian
   }
 
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, 8.);
 }
-
-
 
 TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_enable_jacobian_computation)
 {
@@ -239,7 +232,6 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_enable_jacobian_comput
   EXPECT_CALL(sysObj, residual(_,_)).Times(2);
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(1);
 
-  using scalar_type = typename mock_t::scalar_type;
   using residual_type = typename mock_t::residual_type;
   using jacobian_type = typename mock_t::jacobian_type;
   using gradient_type = Eigen::VectorXd;
@@ -247,11 +239,12 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_enable_jacobian_comput
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
   using op_t = psimpl::HessianGradientOperatorsRJApiNoWeighting<hessian_type, 
-      gradient_type, residual_type, jacobian_type, scalar_type>;
+      gradient_type, residual_type, jacobian_type>;
   Eigen::VectorXd state(5);
-  op_t operators(sysObj, state);
+  op_t operators(sysObj);
 
-  scalar_type norm = {};
+  using residual_norm_type = typename op_t::residual_norm_type;
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, true);
   EXPECT_DOUBLE_EQ(norm, std::sqrt(5));
 
@@ -270,11 +263,10 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_enable_jacobian_comput
   EXPECT_TRUE(H.isApprox(goldH, 1e-10));
 
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, std::sqrt(5.));
 }
-
 
 TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_computation)
 {
@@ -288,7 +280,6 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_compu
   EXPECT_CALL(sysObj, residual(_,_)).Times(2);
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(0);
 
-  using scalar_type = typename mock_t::scalar_type;
   using residual_type = typename mock_t::residual_type;
   using jacobian_type = typename mock_t::jacobian_type;
   using gradient_type = Eigen::VectorXd;
@@ -296,11 +287,12 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_compu
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
   using op_t = psimpl::HessianGradientOperatorsRJApiNoWeighting<hessian_type, 
-      gradient_type, residual_type, jacobian_type, scalar_type>;
+      gradient_type, residual_type, jacobian_type>;
   Eigen::VectorXd state(5);
-  op_t operators(sysObj, state);
+  op_t operators(sysObj);
 
-  scalar_type norm = {};
+  using residual_norm_type = typename op_t::residual_norm_type;
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, false);
   EXPECT_DOUBLE_EQ(norm, std::sqrt(5));
 
@@ -322,11 +314,10 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_compu
   EXPECT_DOUBLE_EQ(g(4), 0.);
 
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, std::sqrt(5.));
 }
-
 
 TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_enable_jacobian_computation)
 {
@@ -340,7 +331,6 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_enable_jacobi
   EXPECT_CALL(sysObj, residual(_,_)).Times(2);
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(1);
 
-  using scalar_type = typename mock_t::scalar_type;
   using residual_type = typename mock_t::residual_type;
   using jacobian_type = typename mock_t::jacobian_type;
   using gradient_type = Eigen::VectorXd;
@@ -349,14 +339,15 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_enable_jacobi
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
   using op_t = psimpl::WeightedHessianGradientOperatorsRJApi<hessian_type, 
-      gradient_type, residual_type, jacobian_type, scalar_type, const weighting_type & >;
+      gradient_type, residual_type, jacobian_type, const weighting_type & >;
   Eigen::VectorXd state(5);
   weighting_type M;
   EXPECT_CALL(M, compute1(_,_)).Times(2);
   EXPECT_CALL(M, compute2(_,_)).Times(1);
-  op_t operators(sysObj, state, M);
+  op_t operators(sysObj, M);
 
-  scalar_type norm = {};
+  using residual_norm_type = typename op_t::residual_norm_type;
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, true);
   EXPECT_DOUBLE_EQ(norm, std::sqrt(15.));
 
@@ -379,7 +370,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_enable_jacobi
     EXPECT_DOUBLE_EQ(H(4,j), 28.6);
   }
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, std::sqrt(15.));
 }
@@ -396,7 +387,6 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_disable_jacob
   EXPECT_CALL(sysObj, residual(_,_)).Times(2);
   EXPECT_CALL(sysObj, jacobian(_,_)).Times(0);
 
-  using scalar_type = typename mock_t::scalar_type;
   using residual_type = typename mock_t::residual_type;
   using jacobian_type = typename mock_t::jacobian_type;
   using gradient_type = Eigen::VectorXd;
@@ -405,14 +395,15 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_disable_jacob
 
   namespace psimpl = pressio::nonlinearsolvers::impl; 
   using op_t = psimpl::WeightedHessianGradientOperatorsRJApi<hessian_type, 
-      gradient_type, residual_type, jacobian_type, scalar_type, const weighting_type & >;
+      gradient_type, residual_type, jacobian_type, const weighting_type & >;
   Eigen::VectorXd state(5);
   weighting_type M;
   EXPECT_CALL(M, compute1(_,_)).Times(2);
   EXPECT_CALL(M, compute2(_,_)).Times(0);
-  op_t operators(sysObj, state, M);
+  op_t operators(sysObj, M);
 
-  scalar_type norm = {};
+  using residual_norm_type = typename op_t::residual_norm_type;
+  residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, false);
   EXPECT_DOUBLE_EQ(norm, std::sqrt(15.));
 
@@ -433,7 +424,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_disable_jacob
    }
   }
   // check norm
-  scalar_type rNorm = {};
+  residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
   EXPECT_DOUBLE_EQ(rNorm, std::sqrt(15.));
 }
