@@ -17,7 +17,7 @@ RUN mkdir /out
 # System update and packages installation
 RUN apt-get update && apt-get upgrade -y
 # Installing Utilities
-RUN apt-get install -y wget git make
+RUN apt-get install -y wget git make software-properties-common
 
 # CMake installation
 RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-Linux-x86_64.sh
@@ -25,6 +25,8 @@ RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
 RUN rm cmake.sh
 
 # Compilers installation
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
+RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y $CC $CXX
 
 # Setting environment variables
