@@ -6,7 +6,16 @@ name: github-linux
 ############################## TRIGGERS ##############################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
 # This workflow will be triggered on git action defined below e.g. push, pull_request.
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+    types: [ opened, reopened ]
 
 ############################## CONCURRENCY ##############################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#concurrency
