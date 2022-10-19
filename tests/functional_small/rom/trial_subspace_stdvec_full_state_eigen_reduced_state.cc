@@ -151,7 +151,7 @@ TEST(rom, trial_subspace_map_from_reduced_state)
   auto a = space.createFullState();
   space.mapFromReducedState(latState, a);
   for (decltype(a.size()) i=0; i<a.size(); ++i){
-    EXPECT_DOUBLE_EQ(a[i], gold[i]);
+    EXPECT_NEAR(a[i], gold[i], 1e-15);
   }
 }
 
@@ -172,7 +172,7 @@ TEST(rom, trial_subspace_create_full_from_reduced)
 
   auto a = space.createFullStateFromReducedState(latState);
   for (decltype(a.size()) i=0; i<a.size(); ++i){
-    EXPECT_DOUBLE_EQ(a[i], gold[i]);
+    EXPECT_NEAR(a[i], gold[i], 1e-15);
   }
 }
 
@@ -263,7 +263,7 @@ TEST(rom, affine_trial_subspace_map_from_reduced_state)
   auto a = space.createFullState();
   space.mapFromReducedState(latState, a);
   for (decltype(a.size()) i=0; i<a.size(); ++i){
-    EXPECT_DOUBLE_EQ(a[i], gold[i] + 2.);
+    EXPECT_NEAR(a[i], gold[i] + 2., 1e-15);
   }
 }
 
@@ -287,7 +287,7 @@ TEST(rom, affine_trial_subspace_create_full_from_reduced)
 
   auto a = space.createFullStateFromReducedState(latState);
   for (decltype(a.size()) i=0; i<a.size(); ++i){
-    EXPECT_DOUBLE_EQ(a[i], gold[i] + 2.);
+    EXPECT_NEAR(a[i], gold[i] + 2., 1e-15);
   }
 }
 
