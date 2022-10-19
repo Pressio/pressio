@@ -7,15 +7,24 @@ name: github-linux
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
 # This workflow will be triggered on git action defined below e.g. push, pull_request.
 on:
-  push:
   pull_request:
+    types: [ opened, reopened, synchronize ]
     paths-ignore:
     - 'logos/**'
     - 'helper_scripts/**'
     - 'docker_scripts/**'
     - 'docs/**'
     - '**/*.md'
-    types: [ opened, reopened ]
+  push: # for direct quick fixes
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
 
 ############################## CONCURRENCY ##############################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#concurrency
