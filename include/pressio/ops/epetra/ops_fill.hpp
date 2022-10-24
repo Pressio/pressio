@@ -52,10 +52,16 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
+#ifdef PRESSIO_ENABLE_CXX20
+requires (::pressio::is_vector_epetra<T>::value
+       or ::pressio::is_multi_vector_epetra<T>::value)
+void
+#else
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T>::value or
   ::pressio::is_multi_vector_epetra<T>::value
   >
+#endif
 fill(T & o, typename ::pressio::Traits<T>::scalar_type value)
 {
  o.PutScalar(value);

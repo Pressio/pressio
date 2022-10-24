@@ -54,10 +54,16 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
+#ifdef PRESSIO_ENABLE_CXX20
+requires (::pressio::is_native_container_kokkos<T>::value
+       or ::pressio::is_expression_acting_on_kokkos<T>::value)
+void
+#else
 ::pressio::mpl::enable_if_t<
     (::pressio::is_native_container_kokkos<T>::value
   or ::pressio::is_expression_acting_on_kokkos<T>::value)
   >
+#endif
 fill(const T & v, typename ::pressio::Traits<T>::scalar_type value)
 {
   ::KokkosBlas::fill(impl::get_native(v), value);
