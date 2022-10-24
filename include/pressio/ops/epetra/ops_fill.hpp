@@ -66,7 +66,8 @@ void
 #endif
 fill(T & o, const ScalarType & value)
 {
-  impl::get_native(o).PutScalar(value);
+  const auto v = static_cast<typename ::pressio::Traits<T>::scalar_type>(value);
+  impl::get_native(o).PutScalar(v);
 }
 
 }}//end namespace pressio::ops

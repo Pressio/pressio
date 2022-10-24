@@ -63,9 +63,10 @@ void
   ::pressio::is_multi_vector_tpetra_block<T>::value
   >
 #endif
-fill(T & v, const ScalarType & value)
+fill(T & o, const ScalarType & value)
 {
-  impl::get_native(v).putScalar( value );
+  const auto v = static_cast<typename ::pressio::Traits<T>::scalar_type>(value);
+  impl::get_native(o).putScalar(v);
 }
 
 }}//end namespace pressio::ops
