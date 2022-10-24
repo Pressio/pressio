@@ -66,7 +66,7 @@ void
 #endif
 fill(T & o, const ScalarType & value)
 {
- o.PutScalar(value);
+  impl::get_native(o).PutScalar(value);
 }
 
 }}//end namespace pressio::ops

@@ -66,7 +66,7 @@ void
 #endif
 fill(T & v, const ScalarType & value)
 {
-  v.putScalar(value);
+  impl::get_native(v).putScalar(value);
 }
 
 }}//end namespace pressio::ops
