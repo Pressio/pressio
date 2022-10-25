@@ -96,7 +96,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_norm2)
 {
   pressio::ops::fill(*myVector_, 1.0);
   auto mynorm = pressio::ops::norm2(*myVector_);
-  EXPECT_DOUBLE_EQ(mynorm, std::sqrt(15.0));
+  EXPECT_NEAR(mynorm, std::sqrt(15.0), 1e-15);
 }
 
 TEST_F(tpetraVectorGlobSize15Fixture, vector_norm1)
