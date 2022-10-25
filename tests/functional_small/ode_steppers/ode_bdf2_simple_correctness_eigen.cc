@@ -28,9 +28,9 @@ TEST(ode, implicit_bdf2_policy_default_created)
   problemObj.analyticAdvanceBackEulerNSteps(dt, 1);
   problemObj.analyticAdvanceBDF2NSteps(dt, 3);
   std::cout << std::setprecision(14) << problemObj.y << "\n";
-  EXPECT_DOUBLE_EQ(y(0), problemObj.y(0));
-  EXPECT_DOUBLE_EQ(y(1), problemObj.y(1));
-  EXPECT_DOUBLE_EQ(y(2), problemObj.y(2));
+  EXPECT_NEAR(y(0), problemObj.y(0), 1e-15);
+  EXPECT_NEAR(y(1), problemObj.y(1), 1e-15);
+  EXPECT_NEAR(y(2), problemObj.y(2), 1e-15);
 }
 
 TEST(ode, implicit_bdf2_custom_policy)
@@ -59,7 +59,7 @@ TEST(ode, implicit_bdf2_custom_policy)
   problemObj.analyticAdvanceBackEulerNSteps(dt, 1);
   problemObj.analyticAdvanceBDF2NSteps(dt, 3);
   std::cout << std::setprecision(14) << problemObj.y << "\n";
-  EXPECT_DOUBLE_EQ(y(0), problemObj.y(0));
-  EXPECT_DOUBLE_EQ(y(1), problemObj.y(1));
-  EXPECT_DOUBLE_EQ(y(2), problemObj.y(2));
+  EXPECT_NEAR(y(0), problemObj.y(0), 1e-15);
+  EXPECT_NEAR(y(1), problemObj.y(1), 1e-15);
+  EXPECT_NEAR(y(2), problemObj.y(2), 1e-15);
 }
