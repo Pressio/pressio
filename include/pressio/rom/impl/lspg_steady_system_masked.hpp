@@ -2,6 +2,8 @@
 #ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
 #define ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
 
+#include "./lspg_nonop_preconditioner.hpp"
+
 namespace pressio{ namespace rom{ namespace impl{
 
 /*
@@ -16,7 +18,8 @@ template <
   class ReducedStateType,
   class TrialSubspaceType,
   class FomSystemType,
-  class MaskerType
+  class MaskerType,
+  class PreconditionerType = NoOpPreconditionerSteadyLspg
   >
 class LspgSteadyMaskedSystem
 {
@@ -42,7 +45,11 @@ public:
   using residual_type = masked_fom_residual_type;
   using jacobian_type = masked_fom_jac_action_result_type;
 
-  LspgSteadyMaskedSystem(TrialSubspaceType & trialSubspace,
+  template<
+    class _PreconditionerType = PreconditionerType,
+    mpl::enable_if_t< std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
+    >
+  LspgSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
 			 const FomSystemType & fomSystem,
 			 const MaskerType & masker)
     : trialSubspace_(trialSubspace),
@@ -50,7 +57,25 @@ public:
       fomState_(trialSubspace.createFullState()),
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
-      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
+      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
+      prec_{}
+  {}
+
+  template<
+    class _PreconditionerType = PreconditionerType,
+    mpl::enable_if_t< !std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
+    >
+  LspgSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
+			 const FomSystemType & fomSystem,
+			 const MaskerType & masker,
+			 const _PreconditionerType & precIn)
+    : trialSubspace_(trialSubspace),
+      fomSystem_(fomSystem),
+      fomState_(trialSubspace.createFullState()),
+      masker_(masker),
+      unMaskedFomResidual_(fomSystem.createResidual()),
+      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
+      prec_(precIn)
   {}
 
 public:
@@ -69,7 +94,7 @@ public:
   }
 
   void residualAndJacobian(const state_type & reducedState,
-			   residual_type & lsgpResidual,
+			   residual_type & lspgResidual,
 			   jacobian_type & lspgJacobian,
 			   bool computeJacobian) const
   {
@@ -80,19 +105,29 @@ public:
 					       unMaskedFomResidual_,
 					       phi, unMaskedFomJacAction_,
 					       computeJacobian);
-    masker_(unMaskedFomResidual_, lsgpResidual);
+    // do masking
+    masker_(unMaskedFomResidual_, lspgResidual);
     if (computeJacobian){
       masker_(unMaskedFomJacAction_, lspgJacobian);
     }
+
+    // apply preconditioner
+    prec_(fomState_, lspgResidual, lspgJacobian);
   }
 
 protected:
-  std::reference_wrapper<TrialSubspaceType> trialSubspace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   std::reference_wrapper<const MaskerType> masker_;
   mutable unmasked_fom_residual_type unMaskedFomResidual_;
   mutable unmasked_fom_jac_action_result_type unMaskedFomJacAction_;
+
+  std::conditional_t<
+    std::is_same<PreconditionerType, NoOpPreconditionerSteadyLspg>::value,
+    const NoOpPreconditionerSteadyLspg,
+    std::reference_wrapper<const PreconditionerType>
+    > prec_;
 };
 
 }}} // end pressio::rom::impl
