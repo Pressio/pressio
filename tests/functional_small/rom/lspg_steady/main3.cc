@@ -93,7 +93,7 @@ struct FakeNonLinSolverSteady
       int count = 0;
       for (int i=0; i<N_; ++i){
         for (int j=0; j<3; ++j){
-          EXPECT_DOUBLE_EQ(J(i,j), start + (double)count++);
+          EXPECT_NEAR(J(i,j), start + (double)count++, 1e-15);
         }
       }
 
@@ -117,7 +117,7 @@ struct FakeNonLinSolverSteady
       count = 0;
       for (int i=0; i<N_; ++i){
         for (int j=0; j<3; ++j){
-          EXPECT_DOUBLE_EQ(J(i,j), start + (double)count++);
+          EXPECT_NEAR(J(i,j), start + (double)count++, 1e-15);
         }
       }
 
