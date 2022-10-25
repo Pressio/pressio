@@ -2,6 +2,8 @@
 #ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
 #define ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
 
+#include "./lspg_nonop_preconditioner.hpp"
+
 namespace pressio{ namespace rom{ namespace impl{
 
 /*
@@ -15,7 +17,8 @@ LSPG steady default represents:
 template <
   class ReducedStateType,
   class TrialSubspaceType,
-  class FomSystemType
+  class FomSystemType,
+  class PreconditionerType = NoOpPreconditionerSteadyLspg
   >
 class LspgSteadyDefaultSystem
 {
@@ -33,11 +36,29 @@ public:
   using residual_type = typename FomSystemType::residual_type;
   using jacobian_type = fom_jac_action_result_type;
 
+  template<
+    class _PreconditionerType = PreconditionerType,
+    mpl::enable_if_t< std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
+    >
   LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
 			  const FomSystemType & fomSystem)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSubspace.createFullState())
+      fomState_(trialSubspace.createFullState()),
+      prec_{}
+  {}
+
+  template<
+    class _PreconditionerType = PreconditionerType,
+    mpl::enable_if_t< !std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
+    >
+  LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
+			  const FomSystemType & fomSystem,
+			  const _PreconditionerType & precIn)
+    : trialSubspace_(trialSubspace),
+      fomSystem_(fomSystem),
+      fomState_(trialSubspace.createFullState()),
+      prec_(precIn)
   {}
 
 public:
@@ -54,7 +75,7 @@ public:
   }
 
   void residualAndJacobian(const state_type & lspgState,
-			   residual_type & lsgpResidual,
+			   residual_type & lspgResidual,
 			   jacobian_type & lspgJacobian,
 			   bool computeJacobian) const
   {
@@ -62,15 +83,22 @@ public:
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     fomSystem_.get().residualAndJacobianAction(fomState_,
-					       lsgpResidual,
+					       lspgResidual,
 					       phi, lspgJacobian,
 					       computeJacobian);
+    prec_(fomState_, lspgResidual, lspgJacobian);
   }
 
 private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
+
+  std::conditional_t<
+    std::is_same<PreconditionerType, NoOpPreconditionerSteadyLspg>::value,
+    const NoOpPreconditionerSteadyLspg,
+    std::reference_wrapper<const PreconditionerType>
+    > prec_;
 };
 
 
