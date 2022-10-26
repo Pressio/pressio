@@ -69,7 +69,7 @@ void
 #endif
 fill(T & o, const ScalarType & value)
 {
-  const auto v = static_cast<typename ::pressio::Traits<T>::scalar_type>(value);
+  const typename ::pressio::Traits<T>::scalar_type v(value);
   impl::get_native(o).setConstant(v);
 }
 
