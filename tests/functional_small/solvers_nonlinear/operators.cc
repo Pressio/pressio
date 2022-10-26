@@ -28,7 +28,7 @@ TEST(solvers_nonlinear, operators_residual_jacobian)
 
   typename op_t::residual_norm_type norm1 = {};
   operators.residualNorm(sysObj, state, norm1);
-  EXPECT_DOUBLE_EQ(norm1, std::sqrt(5.));
+  EXPECT_NEAR(norm1, std::sqrt(5.), 1e-15);
 }
 
 TEST(solvers_nonlinear, operators_residual_jacobian_fused)
@@ -57,7 +57,7 @@ TEST(solvers_nonlinear, operators_residual_jacobian_fused)
 
   typename op_t::residual_norm_type norm1 = {};
   operators.residualNorm(sysObj, state, norm1);
-  EXPECT_DOUBLE_EQ(norm1, std::sqrt(5.));
+  EXPECT_NEAR(norm1, std::sqrt(5.), 1e-15);
 }
 
 TEST(solvers_nonlinear, operators_hessian_gradient_hg_api_enable_jacobian_computation)
@@ -246,7 +246,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_enable_jacobian_comput
   using residual_norm_type = typename op_t::residual_norm_type;
   residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, true);
-  EXPECT_DOUBLE_EQ(norm, std::sqrt(5));
+  EXPECT_NEAR(norm, std::sqrt(5), 1e-15);
 
   // check gradient
   const auto & g = operators.gradientCRef();
@@ -265,7 +265,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_enable_jacobian_comput
   // check norm
   residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
-  EXPECT_DOUBLE_EQ(rNorm, std::sqrt(5.));
+  EXPECT_NEAR(rNorm, std::sqrt(5.), 1e-15);
 }
 
 TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_computation)
@@ -294,7 +294,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_compu
   using residual_norm_type = typename op_t::residual_norm_type;
   residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, false);
-  EXPECT_DOUBLE_EQ(norm, std::sqrt(5));
+  EXPECT_NEAR(norm, std::sqrt(5), 1e-15);
 
   // check hessian
   const auto & H = operators.hessianCRef();
@@ -316,7 +316,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_rj_api_disable_jacobian_compu
   // check norm
   residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
-  EXPECT_DOUBLE_EQ(rNorm, std::sqrt(5.));
+  EXPECT_NEAR(rNorm, std::sqrt(5.), 1e-15);
 }
 
 TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_enable_jacobian_computation)
@@ -349,7 +349,7 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_enable_jacobi
   using residual_norm_type = typename op_t::residual_norm_type;
   residual_norm_type norm = {};
   operators.computeOperators(sysObj, state, norm, true);
-  EXPECT_DOUBLE_EQ(norm, std::sqrt(15.));
+  EXPECT_NEAR(norm, std::sqrt(15.), 1e-15);
 
   // check gradient
   const auto & g = operators.gradientCRef();
@@ -426,6 +426,6 @@ TEST(solvers_nonlinear, operators_hessian_gradient_weighted_rj_api_disable_jacob
   // check norm
   residual_norm_type rNorm = {};
   operators.residualNorm(sysObj, state, rNorm);
-  EXPECT_DOUBLE_EQ(rNorm, std::sqrt(15.));
+  EXPECT_NEAR(rNorm, std::sqrt(15.), 1e-15);
 }
 

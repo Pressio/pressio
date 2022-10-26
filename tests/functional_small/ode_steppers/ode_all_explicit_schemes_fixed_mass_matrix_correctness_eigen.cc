@@ -86,7 +86,7 @@ struct MyApp2NoMM
     rhs = rhs_.at(++count1);
     // we want to make sure we have the correct time
     for (int i=0; i<rhs.size(); ++i){
-      EXPECT_DOUBLE_EQ(rhs(i), evaltime);
+      EXPECT_NEAR(rhs(i), evaltime, 1e-15);
     }
 
     rhs = uniqueMM_.inverse()*rhs;

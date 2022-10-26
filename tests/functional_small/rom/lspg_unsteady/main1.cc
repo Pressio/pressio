@@ -113,13 +113,13 @@ struct FakeNonLinSolver
 	compute_f(ynp1, f, mytime);
 	// for callcount1, iter1: ynp1 and yn should be same, so use f only
 	for (int i=0; i<N_; ++i){
-	  EXPECT_DOUBLE_EQ(R(i), -dt_*f(i));
+	  EXPECT_NEAR(R(i), -dt_*f(i), 1e-15);
 	}
 	int count = 0;
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_DOUBLE_EQ(J(i,j), phi_val - dt_*(phi_val+mytime));
+	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+mytime), 1e-15);
 	  }
 	}
 
@@ -146,13 +146,13 @@ struct FakeNonLinSolver
 	compute_f(ynp1, f, mytime);
 
 	for (int i=0; i<N_; ++i){
-	  EXPECT_DOUBLE_EQ(R(i), ynp1(i)-yn(i)-dt_*f(i));
+	  EXPECT_NEAR(R(i), ynp1(i)-yn(i)-dt_*f(i), 1e-15);
 	}
 	int count = 0;
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_DOUBLE_EQ(J(i,j), phi_val - dt_*(phi_val+2.));
+	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+2.), 1e-15);
 	  }
 	}
 
@@ -182,13 +182,13 @@ struct FakeNonLinSolver
 	compute_f(ynp1, f, mytime);
 	// for callcount2, iter1: ynp1 and yn should be same, so use f only
 	for (int i=0; i<N_; ++i){
-	  EXPECT_DOUBLE_EQ(R(i), -dt_*f(i));
+	  EXPECT_NEAR(R(i), -dt_*f(i), 1e-15);
 	}
 	int count = 0;
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_DOUBLE_EQ(J(i,j), phi_val - dt_*(phi_val+mytime));
+	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+mytime), 1e-15);
 	  }
 	}
 
@@ -215,13 +215,13 @@ struct FakeNonLinSolver
 	compute_f(ynp1, f, mytime);
 
 	for (int i=0; i<N_; ++i){
-	  EXPECT_DOUBLE_EQ(R(i), ynp1(i)-yn(i)-dt_*f(i));
+	  EXPECT_NEAR(R(i), ynp1(i)-yn(i)-dt_*f(i), 1e-15);
 	}
 	int count = 0;
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_DOUBLE_EQ(J(i,j), phi_val - dt_*(phi_val+mytime));
+	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+mytime), 1e-15);
 	  }
 	}
 
