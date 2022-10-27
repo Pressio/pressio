@@ -66,9 +66,10 @@ void
   and std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
 #endif
-fill(const T & v, const ScalarType & value)
+fill(const T & o, const ScalarType & value)
 {
-  ::KokkosBlas::fill(impl::get_native(v), value);
+  const typename ::pressio::Traits<T>::scalar_type v(value);
+  ::KokkosBlas::fill(impl::get_native(o), v);
 }
 
 }}//end namespace pressio::ops
