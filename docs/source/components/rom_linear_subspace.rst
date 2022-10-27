@@ -54,10 +54,6 @@ Let ``basis_matrix_type`` be equal to ``std::remove_cv_t<BasisMatrixType>``, the
 
 - and :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true`
 
-- and :cpp:`std::is_pointer<basis_matrix_type>::value == false`
-
-- and :cpp:`pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
-
 - and :cpp:`pressio::Traits::<basis_matrix_type>::rank == 2`
 
 
