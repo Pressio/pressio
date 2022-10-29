@@ -108,4 +108,4 @@ private:
 };
 
 }}}
-#endif  // ROM_IMPL_LSPG_UNSTEADY_MASK_DECORATOR_HPP_
+#endif
