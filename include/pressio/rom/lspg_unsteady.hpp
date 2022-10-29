@@ -142,6 +142,56 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   return return_type(schemeName, trialSpace, fomSystem, hypRedUpdater);
 }
 
+namespace experimental{
+// -------------------------------------------------------------
+// hyper-reduced with preconditioning
+// -------------------------------------------------------------
+template<
+  class TrialSubspaceType,
+  class FomSystemType,
+  class HypRedUpdaterType,
+  class PreconditionerType
+#if not defined PRESSIO_ENABLE_CXX20
+  , mpl::enable_if_t<
+      unsteady::ComposableIntoHyperReducedProblem<TrialSubspaceType, FomSystemType, HypRedUpdaterType>::value,
+      int> = 0
+#endif
+  >
+#ifdef PRESSIO_ENABLE_CXX20
+  requires unsteady::ComposableIntoHyperReducedProblem<
+	TrialSubspaceType, FomSystemType, HypRedUpdaterType>
+#endif
+auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
+			     const TrialSubspaceType & trialSpace,
+			     const FomSystemType & fomSystem,
+			     const HypRedUpdaterType & hypRedUpdater,
+			     const PreconditionerType & preconditioner)
+{
+
+  impl::valid_scheme_for_lspg_else_throw(schemeName);
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+  using lspg_residual_type = typename FomSystemType::right_hand_side_type;
+  using lspg_jacobian_type =
+    decltype(
+	     fomSystem.createResultOfJacobianActionOn(trialSpace.basisOfTranslatedSpace())
+	     );
+
+  using rj_policy_type =
+    impl::LspgPreconditioningDecorator<
+      PreconditionerType, lspg_residual_type, lspg_jacobian_type, TrialSubspaceType,
+      impl::LspgUnsteadyResidualJacobianPolicyHypRed<
+	independent_variable_type, reduced_state_type, lspg_residual_type,
+	lspg_jacobian_type, TrialSubspaceType, FomSystemType, HypRedUpdaterType
+	>
+    >;
+
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
+  return return_type(schemeName, trialSpace, fomSystem, preconditioner, hypRedUpdater);
+}
+} //end namespace experimental
+
 // -------------------------------------------------------------
 // maskd
 // -------------------------------------------------------------

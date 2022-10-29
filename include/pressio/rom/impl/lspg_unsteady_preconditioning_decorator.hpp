@@ -69,13 +69,15 @@ public:
 
   template <
     class FomSystemType,
-    template<class> class LspgFomStatesManager
+    template<class> class LspgFomStatesManager,
+    class ...Args
     >
   LspgPreconditioningDecorator(const TrialSubspaceType & trialSubspace,
 			       const FomSystemType & fomSystem,
 			       LspgFomStatesManager<TrialSubspaceType> & fomStatesManager,
-			       const PreconditionerType & preconditioner)
-    : Preconditionable(trialSubspace, fomSystem, fomStatesManager),
+			       const PreconditionerType & preconditioner,
+			       Args && ... args)
+    : Preconditionable(trialSubspace, fomSystem, fomStatesManager, std::forward<Args>(args)...),
       fomStatesManager_(fomStatesManager),
       preconditioner_(preconditioner)
   {}
