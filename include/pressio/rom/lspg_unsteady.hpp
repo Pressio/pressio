@@ -8,6 +8,7 @@
 #include "./impl/lspg_unsteady_rj_policy_default.hpp"
 #include "./impl/lspg_unsteady_rj_policy_hypred.hpp"
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
+#include "./impl/lspg_unsteady_preconditioning_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
@@ -52,6 +53,52 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
   using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem);
 }
+
+namespace experimental{
+// -------------------------------------------------------------
+// default with preconditioning
+// -------------------------------------------------------------
+template<
+  class TrialSubspaceType,
+  class FomSystemType,
+  class PreconditionerType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires unsteady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
+#endif
+auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,
+			     const TrialSubspaceType & trialSpace,
+			     const FomSystemType & fomSystem,
+			     const PreconditionerType & preconditioner)
+{
+
+  impl::valid_scheme_for_lspg_else_throw(schemeName);
+
+#if not defined PRESSIO_ENABLE_CXX20
+    static_assert(unsteady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value,
+		"does not meet concept");
+#endif
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+  using lspg_residual_type = typename FomSystemType::right_hand_side_type;
+  using lspg_jacobian_type =
+    decltype(
+	     fomSystem.createResultOfJacobianActionOn(trialSpace.basisOfTranslatedSpace())
+	     );
+
+  using rj_policy_type =
+    impl::LspgPreconditioningDecorator<
+      PreconditionerType, lspg_residual_type, lspg_jacobian_type, TrialSubspaceType,
+      impl::LspgUnsteadyResidualJacobianPolicy<
+	independent_variable_type, reduced_state_type, lspg_residual_type,
+	lspg_jacobian_type, TrialSubspaceType, FomSystemType
+	>
+    >;
+
+  using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
+  return return_type(schemeName, trialSpace, fomSystem, preconditioner);
+}
+} //end namespace experimental
 
 // -------------------------------------------------------------
 // hyp-red
