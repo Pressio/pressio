@@ -269,7 +269,7 @@ struct Prec{
   }
 };
 
-TEST(rom_lspg_unsteady, test1)
+TEST(rom_lspg_unsteady, test)
 {
   /* default lspg eigen for bdf1 with a trivial preconditioner,
    should be identical to main1.cc.
