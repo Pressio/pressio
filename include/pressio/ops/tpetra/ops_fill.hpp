@@ -52,13 +52,22 @@
 namespace pressio{ namespace ops{
 
 template <typename T, class ScalarType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires (::pressio::is_vector_tpetra<T>::value
+       or ::pressio::is_multi_vector_tpetra<T>::value)
+       and std::convertible_to<ScalarType, typename ::pressio::Traits<T>::scalar_type>
+void
+#else
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<T>::value or
-  ::pressio::is_multi_vector_tpetra<T>::value
+  ::pressio::is_multi_vector_tpetra<T>::value and
+  std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-fill(T & v, const ScalarType & value)
+#endif
+fill(T & o, const ScalarType & value)
 {
-  v.putScalar(value);
+  const typename ::pressio::Traits<T>::scalar_type v(value);
+  impl::get_native(o).putScalar(v);
 }
 
 }}//end namespace pressio::ops
