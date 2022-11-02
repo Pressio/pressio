@@ -4,7 +4,9 @@
 
 #include "./impl/lspg_steady_system_default.hpp"
 #include "./impl/lspg_steady_system_masked.hpp"
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 #include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
+#endif
 
 namespace pressio{ namespace rom{ namespace lspg{
 
