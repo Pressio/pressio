@@ -78,11 +78,9 @@ product(::pressio::transpose /*unused*/,
 	C_type & C)
 {
 
-  const auto numVecsA = A.getNumVectors();
-  const auto numVecsB = B.getNumVectors();
   assert( (std::size_t)::pressio::ops::extent(A,0) == (std::size_t)::pressio::ops::extent(B,0));
-  assert( (std::size_t)::pressio::ops::extent(C,0) == (std::size_t)numVecsA );
-  assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t)numVecsB );
+  assert( (std::size_t)::pressio::ops::extent(C,0) == (std::size_t) A.getNumVectors() );
+  assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t) A.getNumVectors() );
 
   // for col-major, we should have inner stride == 1 and outerstride = num of rows
   // we should actually check at compile time somehow if C can be viewed in a kokkos view
