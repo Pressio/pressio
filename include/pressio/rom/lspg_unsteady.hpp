@@ -10,6 +10,7 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_preconditioning_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
+#include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 

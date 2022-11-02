@@ -4,6 +4,7 @@
 
 #include "./impl/lspg_steady_system_default.hpp"
 #include "./impl/lspg_steady_system_masked.hpp"
+#include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
