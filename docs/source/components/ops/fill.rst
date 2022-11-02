@@ -73,4 +73,4 @@ Overwrites each element of ``operand`` with ``value``.
 Postconditions
 ~~~~~~~~~~~~~~
 
-Each element of ``operand`` is euqal to ``value``.
+Each element of ``operand`` is equal to ``value``.
