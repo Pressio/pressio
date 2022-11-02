@@ -79,7 +79,7 @@ Syntax-only example
        void residualAndJacobianAction(const state_type & /*state*/,
                                       residual_type & /*residual*/
 		                      const Tpetra::MultiVector<> & /*operand*/,
-                                      const Tpetra::MultiVector<> & /*result*/,
+				      Tpetra::MultiVector<> & /*result*/,
 				      bool /*computeJacAction*/) const;
    }
 
