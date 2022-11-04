@@ -56,7 +56,7 @@ public:
     return basisMatrix_;
   }
 
-  const std::size_t dimension() const{
+  std::size_t dimension() const{
     switch(spanningSetValue_){
     case SpanningSet::Columns:
       return ::pressio::ops::extent(basisMatrix_, 1);
