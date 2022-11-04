@@ -151,5 +151,27 @@ struct SteadyLspgDefaultOperatorsTraits<
 };
 #endif
 
+/*
+  unsteady LSPG
+*/
+template<class T, class = void>
+struct UnsteadyLspgDefaultOperatorsTraits
+{
+  using reduced_state_type = void;
+  using hessian_type    = void;
+  using gradient_type = void;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<class T>
+struct UnsteadyLspgDefaultOperatorsTraits<
+  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+{
+  using reduced_state_type = T;
+  using gradient_type = T;
+  using hessian_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
+};
+#endif
+
 }}
 #endif  // ROM_REDUCED_OPERATORS_TRAITS_HPP_
