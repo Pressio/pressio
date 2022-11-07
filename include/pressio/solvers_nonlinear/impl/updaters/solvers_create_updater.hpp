@@ -52,7 +52,7 @@
 #include "solvers_updater.hpp"
 #include "solvers_default.hpp"
 #include "solvers_armijo.hpp"
-//#include "solvers_basic_backtrack.hpp"
+#include "solvers_basic_backtrack.hpp"
 #include "solvers_lm_schedule1.hpp"
 #include "solvers_lm_schedule2.hpp"
 
@@ -116,7 +116,7 @@ createUpdater(const StateType & state,
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
-    /*
+    
     case Update::BasicBacktrack:{
       using f_t = BasicBacktrackUpdater<StateType>;
       f_t F(state);
@@ -126,7 +126,7 @@ createUpdater(const StateType & state,
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
-    */
+    
     default:
       throw std::runtime_error("Invalid update enum for GaussNewton");
       return nullptr;
@@ -207,7 +207,7 @@ createUpdater(const StateType & state,
       return result;
     }
 
-    /*
+    
     case Update::BasicBacktrack:{
       using f_t = BasicBacktrackUpdater<StateType>;
       f_t F(state);
@@ -217,7 +217,7 @@ createUpdater(const StateType & state,
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
-    */
+    
 
     default:
       throw std::runtime_error("Invalid update enum for NewtonRaphson");
