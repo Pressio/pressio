@@ -55,6 +55,12 @@ namespace pressio{ namespace ops{
  * y = beta * y + alpha*op(A)*x
 */
 
+// Implementation notes.
+// Eigen requires that:
+// - scalar type of A, x and y is the same
+// - alpha and beta types are same as scalar type
+// - scalar can be constructed from double, eg. Scalar(1)
+
 //-------------------------------
 // op(A) = A
 //-------------------------------
@@ -73,8 +79,9 @@ template <
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
-  && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
+  && std::is_same<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_same<beta_t, alpha_t>::value
+  && std::is_convertible<double, alpha_t>::value
   >
 product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
@@ -115,7 +122,8 @@ template <
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
+  && std::is_same<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<double, alpha_t>::value,
   y_type
   >
 product(::pressio::nontranspose mode,
@@ -150,8 +158,9 @@ template <
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
-  && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
+  && std::is_same<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_same<beta_t, alpha_t>::value
+  && std::is_convertible<double, alpha_t>::value
   >
 product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
@@ -190,6 +199,8 @@ template <class y_type, class A_type, class x_type, class alpha_t>
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
+  && std::is_same<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<double, alpha_t>::value,
   y_type
   >
 product(::pressio::transpose mode,
