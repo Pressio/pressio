@@ -27,6 +27,10 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   set(fname gn_normal_eq_print_metrics_eigen)
   add_serial_exe_and_test(${fname} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${fname}.cc "PASSED")
+
+  set(fname gn_w_basic_backtrack_eigen)
+  add_serial_exe_and_test(${fname} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${fname}.cc "PASSED")
+
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)

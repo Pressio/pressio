@@ -86,7 +86,6 @@ public:
     using scalar_type = decltype(fx_k);
     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     auto alpha = static_cast<scalar_type>(1);
-    const scalar_type beta_ = static_cast<scalar_type>(0.0001);
     fx_k = std::pow(fx_k, ::pressio::utils::Constants<scalar_type>::two());
 
     PRESSIOLOG_DEBUG("starting backtracking");
