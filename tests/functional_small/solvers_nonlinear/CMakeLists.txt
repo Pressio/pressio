@@ -27,3 +27,5 @@ add_subdirectory(standard_gauss_newton_normal_equations)
 add_subdirectory(standard_gauss_newton_qr)
 add_subdirectory(levenberg_marquardt)
 add_subdirectory(ls_frozen_jacobian_gn_lm)
+add_subdirectory(updater)
+
