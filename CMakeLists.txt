@@ -137,7 +137,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h DESTINATION ${I
 file(GLOB include_helpers "${CMAKE_CURRENT_SOURCE_DIR}/include/pressio/*.hpp")
 install(FILES ${include_helpers} DESTINATION ${INC_INSTALL_DIR})
 
-foreach(X IN ITEMS mpl utils type_traits expressions ops qr solvers_linear solvers_nonlinear ode_advancers ode_steppers rom)
+foreach(X IN ITEMS mpl utils type_traits concepts expressions ops qr solvers_linear solvers_nonlinear ode rom)
   install(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/pressio/${X}
     DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
