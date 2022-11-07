@@ -97,11 +97,17 @@ product(::pressio::nontranspose /*unused*/,
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  if (beta == static_cast<beta_t>(0)){
-    y_n = alpha * A_n * x_n;
-  }
-  else{
+  const bool has_alpha = alpha != static_cast<beta_t>(0);
+  if (beta == static_cast<beta_t>(0)) {
+    if (has_alpha) {
+      y_n = alpha * A_n * x_n;
+    } else {
+      ::pressio::ops::set_zero(y_n);
+    }
+  } else if (has_alpha) {
     y_n = beta * y_n + alpha * A_n * x_n;
+  } else {
+    y_n = beta * y_n;
   }
 }
 
@@ -176,11 +182,17 @@ product(::pressio::transpose /*unused*/,
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  if (beta == static_cast<beta_t>(0)){
-    y_n = alpha * A_n.transpose() * x_n;
-  }
-  else{
+  const bool has_alpha = alpha != static_cast<beta_t>(0);
+  if (beta == static_cast<beta_t>(0)) {
+    if (has_alpha) {
+      y_n = alpha * A_n.transpose() * x_n;
+    } else {
+      ::pressio::ops::set_zero(y_n);
+    }
+  } else if (has_alpha) {
     y_n = beta * y_n + alpha * A_n.transpose() * x_n;
+  } else {
+    y_n = beta * y_n;
   }
 }
 
