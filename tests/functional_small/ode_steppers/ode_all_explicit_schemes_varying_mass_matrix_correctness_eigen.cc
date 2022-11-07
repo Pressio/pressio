@@ -97,16 +97,16 @@ struct MyApp2NoMM
   };
 
 private:
-  using mass_matrix_type = Eigen::MatrixXd;
+  using my_mass_matrix_type = Eigen::MatrixXd;
 
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
+  my_mass_matrix_type createMassMatrix() const{
+    my_mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
   void massMatrix(const state_type & /*unused*/,
 		  independent_variable_type evaltime,
-		  mass_matrix_type & M) const
+		  my_mass_matrix_type & M) const
   {
     M = matrices_.at(++count2);
     for (int i=0; i<M.rows(); ++i){
