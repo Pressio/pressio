@@ -64,15 +64,15 @@ template <
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
   >
@@ -106,15 +106,15 @@ template <
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
   y_type
   >
@@ -141,15 +141,15 @@ template <
   >
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
   >
@@ -181,15 +181,15 @@ product(::pressio::transpose /*unused*/,
 template <class y_type, class A_type, class x_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
      ::pressio::all_have_traits_and_same_scalar<A_type, y_type, x_type>::value
+  && ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1,
   y_type
   >
 product(::pressio::transpose mode,
