@@ -19,13 +19,38 @@
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
   myR_h(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   Kokkos::deep_copy(myR, myR_h); \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
-  pressio::ops::product(pressio::nontranspose(), alpha, M, VECIN, beta, myR); \
+  /* alpha = 1, beta = 0 */ \
+  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();  \
+  pressio::ops::product(pressio::nontranspose(), alpha1, M, VECIN, beta0, myR); \
   Kokkos::deep_copy(myR_h, myR); \
   EXPECT_DOUBLE_EQ( myR_h(0), 16.0); \
   EXPECT_DOUBLE_EQ( myR_h(1), 28.0); \
   EXPECT_DOUBLE_EQ( myR_h(2), 6.0);  \
+  /* alpha = 1, beta = 1 */ \
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  pressio::ops::product(pressio::nontranspose(), alpha1, M, VECIN, beta1, myR); \
+  Kokkos::deep_copy(myR_h, myR); \
+  EXPECT_DOUBLE_EQ( myR_h(0), 32.0); \
+  EXPECT_DOUBLE_EQ( myR_h(1), 56.0); \
+  EXPECT_DOUBLE_EQ( myR_h(2), 12.0); \
+  /* alpha = 0, beta = 1 */ \
+  constexpr auto alpha0 = ::pressio::utils::Constants<double>::zero();  \
+  M_h(0, 0) = std::nan("0"); /* simulate NaN in input A matrix */ \
+  Kokkos::deep_copy(M, M_h); \
+  pressio::ops::product(pressio::nontranspose(), alpha0, M, VECIN, beta1, myR); \
+  Kokkos::deep_copy(myR_h, myR); \
+  EXPECT_DOUBLE_EQ( myR_h(0), 32.0); \
+  EXPECT_DOUBLE_EQ( myR_h(1), 56.0); \
+  EXPECT_DOUBLE_EQ( myR_h(2), 12.0); \
+  /* alpha = 0, beta = 0 */ \
+  myR_h(0) = std::nan("0"); /* simulate uninitialized NaN */ \
+  Kokkos::deep_copy(myR, myR_h); \
+  pressio::ops::product(pressio::nontranspose(), alpha0, M, VECIN, beta0, myR); \
+  Kokkos::deep_copy(myR_h, myR); \
+  EXPECT_DOUBLE_EQ( myR_h(0), 0.0); \
+  EXPECT_DOUBLE_EQ( myR_h(1), 0.0); \
+  EXPECT_DOUBLE_EQ( myR_h(2), 0.0); \
 
 #define OPS_KOKKOS_DENSEMATRIX_T_VEC_PROD(VECIN) \
   Kokkos::View<double**> M("M",4,3); \
@@ -47,13 +72,38 @@
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
   myR_h(0) = std::nan("0"); /* simulate uninitialized NaN */ \
   Kokkos::deep_copy(myR, myR_h); \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
-  pressio::ops::product(pressio::transpose(), alpha, M, VECIN, beta, myR); \
+  /* alpha = 1, beta = 0 */ \
+  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();  \
+  pressio::ops::product(pressio::transpose(), alpha1, M, VECIN, beta0, myR); \
   Kokkos::deep_copy(myR_h, myR); \
   EXPECT_DOUBLE_EQ( myR_h(0), 14.);  \
   EXPECT_DOUBLE_EQ( myR_h(1), 11.0); \
   EXPECT_DOUBLE_EQ( myR_h(2), 8.+6.+6.+12.);  \
+  /* alpha = 1, beta = 1 */ \
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  pressio::ops::product(pressio::transpose(), alpha1, M, VECIN, beta1, myR); \
+  Kokkos::deep_copy(myR_h, myR); \
+  EXPECT_DOUBLE_EQ( myR_h(0), 28.0); \
+  EXPECT_DOUBLE_EQ( myR_h(1), 22.0); \
+  EXPECT_DOUBLE_EQ( myR_h(2), 64.0); \
+  /* alpha = 0, beta = 1 */ \
+  constexpr auto alpha0 = ::pressio::utils::Constants<double>::zero();  \
+  M_h(0, 0) = std::nan("0"); /* simulate NaN in input A matrix */ \
+  Kokkos::deep_copy(M, M_h); \
+  pressio::ops::product(pressio::transpose(), alpha0, M, VECIN, beta1, myR); \
+  Kokkos::deep_copy(myR_h, myR); \
+  EXPECT_DOUBLE_EQ( myR_h(0), 28.0); \
+  EXPECT_DOUBLE_EQ( myR_h(1), 22.0); \
+  EXPECT_DOUBLE_EQ( myR_h(2), 64.0); \
+  /* alpha = 0, beta = 0 */ \
+  myR_h(0) = std::nan("0"); /* simulate uninitialized NaN */ \
+  Kokkos::deep_copy(myR, myR_h); \
+  pressio::ops::product(pressio::transpose(), alpha0, M, VECIN, beta0, myR); \
+  Kokkos::deep_copy(myR_h, myR); \
+  EXPECT_DOUBLE_EQ( myR_h(0), 0.0); \
+  EXPECT_DOUBLE_EQ( myR_h(1), 0.0); \
+  EXPECT_DOUBLE_EQ( myR_h(2), 0.0); \
 
 
 TEST(ops_kokkos, dense_matrix_vector_prod)
