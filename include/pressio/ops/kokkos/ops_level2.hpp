@@ -63,23 +63,34 @@ namespace pressio{ namespace ops{
 //-------------------------------
 // specialize for op(A) = A
 //-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <
+  class A_type, class x_type, class y_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
+  // level2 common constraints
+  ::pressio::Traits<A_type>::rank == 2 and
+  ::pressio::Traits<x_type>::rank == 1 and
+  ::pressio::Traits<y_type>::rank == 1 and
+  // TPL/container specific
   (::pressio::is_native_container_kokkos<A_type>::value or
    ::pressio::is_expression_acting_on_kokkos<A_type>::value) and
   (::pressio::is_native_container_kokkos<x_type>::value or
    ::pressio::is_expression_acting_on_kokkos<x_type>::value) and
   (::pressio::is_native_container_kokkos<y_type>::value or
     ::pressio::is_expression_acting_on_kokkos<y_type>::value) and
-  ::pressio::Traits<A_type>::rank == 2 and
-  ::pressio::Traits<x_type>::rank == 1 and
-  ::pressio::Traits<y_type>::rank == 1
+  // scalar compatibility
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value and
+  std::is_convertible<alpha_t, typename A_type::non_const_value_type>::value and
+  std::is_convertible<beta_t, typename y_type::non_const_value_type>::value and
+  (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value or
+   std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::nontranspose /*unused*/,
-	const scalar_type alpha,
+	const alpha_t alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t beta,
 	y_type & y)
 {
   assert( y.extent(0) == A.extent(0) );
@@ -116,23 +127,34 @@ product(::pressio::nontranspose /*unused*/,
 //-------------------------------
 // specialize for op(A) = A^T
 //-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <
+  class A_type, class x_type, class y_type,
+  class alpha_t, class beta_t
+  >
 ::pressio::mpl::enable_if_t<
+  // level2 common constraints
+  ::pressio::Traits<A_type>::rank == 2 and
+  ::pressio::Traits<x_type>::rank == 1 and
+  ::pressio::Traits<y_type>::rank == 1 and
+  // TPL/container specific
   (::pressio::is_native_container_kokkos<A_type>::value or
    ::pressio::is_expression_acting_on_kokkos<A_type>::value) and
   (::pressio::is_native_container_kokkos<x_type>::value or
    ::pressio::is_expression_acting_on_kokkos<x_type>::value) and
   (::pressio::is_native_container_kokkos<y_type>::value or
     ::pressio::is_expression_acting_on_kokkos<y_type>::value) and
-  ::pressio::Traits<A_type>::rank == 2 and
-  ::pressio::Traits<x_type>::rank == 1 and
-  ::pressio::Traits<y_type>::rank == 1
+  // scalar compatibility
+  ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value and
+  std::is_convertible<alpha_t, typename A_type::non_const_value_type>::value and
+  std::is_convertible<beta_t, typename y_type::non_const_value_type>::value and
+  (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value or
+   std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::transpose /*unused*/,
-	const scalar_type alpha,
+	const alpha_t alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const beta_t beta,
 	y_type & y)
 {
   assert( y.extent(0) == A.extent(1) );
