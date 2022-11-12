@@ -2,7 +2,11 @@
 #include "pressio/solvers_nonlinear.hpp"
 using _this_state_type = Eigen::VectorXd;
 constexpr int _this_N = 3;
-
+/*
+ "simple test to make sure the updater is working correct but without any meaning, 
+the numbers are just crafted to check that the updater finds a direction that is 
+non-increasing the objective"
+*/
 struct FakeSolver
 {
   mutable int count_ = 0;
