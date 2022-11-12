@@ -68,7 +68,7 @@ enum class Update
    Armijo,
    LMSchedule1,
    LMSchedule2,
-   BasicBacktrack,
+   BacktrackStrictlyDecreasingObjective,
    Custom
   };
 

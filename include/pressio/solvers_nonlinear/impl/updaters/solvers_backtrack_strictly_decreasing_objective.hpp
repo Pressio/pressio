@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_backtrack.hpp
+// solvers_backtrack_strictly_decreasing_objective.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,25 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASIC_BACKTRACK_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASIC_BACKTRACK_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BACKTRACK_STRICLTY_DECREASING_OBJECTIVE_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BACKTRACK_STRICTLY_DECREASING_OBJECTIVE_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <typename StateType>
-class BasicBacktrackUpdater
+class BacktrackStrictlyDecreasingObjectiveUpdater
 {
   StateType trialState_;
 
 public:
-  BasicBacktrackUpdater() = delete;
-  BasicBacktrackUpdater(BasicBacktrackUpdater const &) = default;
-  BasicBacktrackUpdater & operator=(BasicBacktrackUpdater const &) = default;
-  BasicBacktrackUpdater(BasicBacktrackUpdater &&) = default;
-  BasicBacktrackUpdater & operator=(BasicBacktrackUpdater &&) = default;
-  ~BasicBacktrackUpdater() = default;
+  BacktrackStrictlyDecreasingObjectiveUpdater() = delete;
+  BacktrackStrictlyDecreasingObjectiveUpdater(BacktrackStrictlyDecreasingObjectiveUpdater const &) = default;
+  BacktrackStrictlyDecreasingObjectiveUpdater & operator=(BacktrackStrictlyDecreasingObjectiveUpdater const &) = default;
+  BacktrackStrictlyDecreasingObjectiveUpdater(BacktrackStrictlyDecreasingObjectiveUpdater &&) = default;
+  BacktrackStrictlyDecreasingObjectiveUpdater & operator=(BacktrackStrictlyDecreasingObjectiveUpdater &&) = default;
+  ~BacktrackStrictlyDecreasingObjectiveUpdater() = default;
 
-  BasicBacktrackUpdater(const StateType & state)
+  BacktrackStrictlyDecreasingObjectiveUpdater(const StateType & state)
     : trialState_(::pressio::ops::clone(state))
   {
     setTrialStateToZero();
@@ -78,7 +78,7 @@ public:
 		  StateType & state,
 		  solver_mixin_t & solver)
   {
-    PRESSIOLOG_DEBUG("BasicBacktrack update");
+    PRESSIOLOG_DEBUG("BacktrackStrictlyDecreasingObjective update");
     setTrialStateToZero();
     const auto & p_k   = solver.correctionCRef();
     auto fx_k    = solver.residualNormCurrentCorrectionStep();
@@ -94,6 +94,11 @@ public:
     while (not done)
     {
       if (std::abs(alpha) <= 0.001){
+        /*
+        Presently set an exit alpha drops below 0.001; anything smaller 
+        than this is probably unreasonable. Note that this quantity doesn't depend on 
+        the dimension or magnitude of the state
+        */
 	PRESSIOLOG_DEBUG("alpha = {:6e}, too small, exiting line search", alpha);
         alpha = 0.;
 	done = true;
@@ -125,4 +130,4 @@ private:
 };
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BACKTRACK_STRICLTY_DECREASING_OBJECTIVE_HPP_

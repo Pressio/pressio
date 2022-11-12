@@ -53,7 +53,7 @@ TEST(solvers_nonlinear, backtracking)
   state.setConstant(5.);
   DummySystem sys;
 
-  pressio::nonlinearsolvers::impl::BasicBacktrackUpdater<_this_state_type> updater(state);
+  pressio::nonlinearsolvers::impl::BacktrackStrictlyDecreasingObjectiveUpdater<_this_state_type> updater(state);
   FakeSolver solver;
   updater(sys, state, solver);
 

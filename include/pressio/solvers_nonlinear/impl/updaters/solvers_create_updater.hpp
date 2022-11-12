@@ -52,7 +52,7 @@
 #include "solvers_updater.hpp"
 #include "solvers_default.hpp"
 #include "solvers_armijo.hpp"
-#include "solvers_basic_backtrack.hpp"
+#include "solvers_backtrack_strictly_decreasing_objective.hpp"
 #include "solvers_lm_schedule1.hpp"
 #include "solvers_lm_schedule2.hpp"
 
@@ -117,8 +117,8 @@ createUpdater(const StateType & state,
       return result;
     }
     
-    case Update::BasicBacktrack:{
-      using f_t = BasicBacktrackUpdater<StateType>;
+    case Update::BacktrackStrictlyDecreasingObjective:{
+      using f_t = BacktrackStrictlyDecreasingObjectiveUpdater<StateType>;
       f_t F(state);
       using u_t = Updater<SystemType, StateType, SolverType, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
@@ -208,8 +208,8 @@ createUpdater(const StateType & state,
     }
 
     
-    case Update::BasicBacktrack:{
-      using f_t = BasicBacktrackUpdater<StateType>;
+    case Update::BacktrackStrictlyDecreasingObjective:{
+      using f_t = BacktrackStrictlyDecreasingObjectiveUpdater<StateType>;
       f_t F(state);
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));

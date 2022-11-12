@@ -1,7 +1,16 @@
-//
+
+#ifndef SOLVERS_TESTS_EIGEN_CH_INTERSECTION_WITH_BAD_JAC_HPP_
+#define SOLVERS_TESTS_EIGEN_CH_INTERSECTION_WITH_BAD_JAC_HPP_
+
 #include "pressio/solvers.hpp"
-struct ValidSystem 
+
+namespace pressio{ namespace solvers{ namespace test{
+struct CircleHyperbolaIntersectionWithBadJacobianSystem 
 {
+  /* Problem is for an intersection of a circle 
+     and hyperbola as described on pg. 128 here: 
+     http://www.math.iit.edu/~fass/477577_Chapter_17.pdf
+  */
   using state_type = Eigen::VectorXd;
   using residual_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
@@ -28,13 +37,13 @@ struct ValidSystem
   void jacobian(const state_type& x, jacobian_type& jac) const {
     jac.coeffRef(0, 0) = 2*x(0);
     jac.coeffRef(0, 1) = 2*x(1);
-    // Have incorrect entries to mimic requirement for line search
+    // Have incorrect entries so that line search is required 
     jac.coeffRef(1, 0) = 0.1*x(1);
     jac.coeffRef(1, 1) = 0.1*x(0);
   }
 };
 
-struct ValidSystem4HessGradApi
+struct CircleHyperbolaIntersectionWithBadJacobianSystem4HessGradApi
 {
   using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
@@ -42,7 +51,7 @@ struct ValidSystem4HessGradApi
   using gradient_type	= state_type;
   using residual_norm_type = double;
 
-  ValidSystem mySystem;
+  CircleHyperbolaIntersectionWithBadJacobianSystem mySystem;
 
 public:
   state_type createState() const{return state_type(2);}
@@ -87,36 +96,6 @@ public:
 };
 
 
-int main()
-{
-  pressio::log::initialize(pressio::logto::fileAndTerminal, "log.txt");
-  pressio::log::setVerbosity({pressio::log::level::trace, pressio::log::level::trace});
 
-  using namespace pressio;
-  using problem_t  = ValidSystem4HessGradApi;
-  using state_t    = problem_t::state_type;
-  using jacobian_t = problem_t::hessian_type;
-
-  problem_t sys;
-  // my solution vector
-  state_t y(2);
-  // initial condition
-  y(0) = 0.3; y(1) = 0.4;
-
-  // linear system
-  using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::LSCG, jacobian_t>;
-  lin_solver_t linearSolverObj;
-
-  auto NonLinSolver = pressio::nonlinearsolvers::create_gauss_newton(sys, linearSolverObj);
-  NonLinSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::BasicBacktrack);
-  NonLinSolver.solve(sys, y);
-
-  std::string strOut = "PASSED";
-  const auto e1 = std::abs(y(0) - (1.93185165));
-  const auto e2 = std::abs(y(1) - (0.51763809));
-  if (e1>1e-7 or e2>1e-7) strOut = "FAILED";
-  std::cout <<  strOut << std::endl;
-  std::cout << y << std::endl;
-  pressio::log::finalize();
-  return 0;
-}
+}}} //end namespace pressio::solvers::test
+#endif

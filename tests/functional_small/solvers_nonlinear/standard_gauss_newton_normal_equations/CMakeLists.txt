@@ -28,7 +28,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(fname gn_normal_eq_print_metrics_eigen)
   add_serial_exe_and_test(${fname} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${fname}.cc "PASSED")
 
-  set(fname gn_w_basic_backtrack_eigen)
+  set(fname gn_normal_eq_hes_gra_api_ch_intersection_w_bad_jac_w_backtrack_strictly_decreasing_objective_eigen)
   add_serial_exe_and_test(${fname} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${fname}.cc "PASSED")
 
 endif()
