@@ -19,6 +19,10 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/iteratively_reweighted_gn.cc)
   set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_irwls_gn)
   add_serial_utest(${TESTNAME} ${SRC1})
+
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/backtrack_strictly_decreasing_objective.cc)
+  set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_backtrack_strictly_decreasing_objective)
+  add_serial_utest(${TESTNAME} ${SRC1})
 endif()
 
 set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
@@ -27,5 +31,4 @@ add_subdirectory(standard_gauss_newton_normal_equations)
 add_subdirectory(standard_gauss_newton_qr)
 add_subdirectory(levenberg_marquardt)
 add_subdirectory(ls_frozen_jacobian_gn_lm)
-add_subdirectory(updater)
 
