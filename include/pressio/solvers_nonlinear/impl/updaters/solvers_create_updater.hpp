@@ -52,6 +52,7 @@
 #include "solvers_updater.hpp"
 #include "solvers_default.hpp"
 #include "solvers_armijo.hpp"
+#include "solvers_backtrack_strictly_decreasing_objective.hpp"
 #include "solvers_lm_schedule1.hpp"
 #include "solvers_lm_schedule2.hpp"
 
@@ -115,7 +116,17 @@ createUpdater(const StateType & state,
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
-
+    
+    case Update::BacktrackStrictlyDecreasingObjective:{
+      using f_t = BacktrackStrictlyDecreasingObjectiveUpdater<StateType>;
+      f_t F(state);
+      using u_t = Updater<SystemType, StateType, SolverType, f_t>;
+      res_t result = pressio::utils::make_unique<u_t>(std::move(F));
+      result->applyFnc_ = applyUpdater<u_t>;
+      result->resetFnc_ = resetUpdater<u_t>;
+      return result;
+    }
+    
     default:
       throw std::runtime_error("Invalid update enum for GaussNewton");
       return nullptr;
@@ -180,7 +191,7 @@ mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, NewtonRaphson>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const StateType & /*state*/,
+createUpdater(const StateType & state,
 	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
@@ -195,6 +206,18 @@ createUpdater(const StateType & /*state*/,
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
+
+    
+    case Update::BacktrackStrictlyDecreasingObjective:{
+      using f_t = BacktrackStrictlyDecreasingObjectiveUpdater<StateType>;
+      f_t F(state);
+      using u_t = Updater<SystemType, StateType, solver_t, f_t>;
+      res_t result = pressio::utils::make_unique<u_t>(std::move(F));
+      result->applyFnc_ = applyUpdater<u_t>;
+      result->resetFnc_ = resetUpdater<u_t>;
+      return result;
+    }
+    
 
     default:
       throw std::runtime_error("Invalid update enum for NewtonRaphson");
