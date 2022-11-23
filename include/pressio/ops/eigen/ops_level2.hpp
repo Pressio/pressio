@@ -60,6 +60,7 @@ namespace pressio{ namespace ops{
 // - scalar type of A, x and y is the same
 // - alpha and beta types are same as scalar type
 // - scalar can be constructed from double, eg. Scalar(1)
+// Note: only applies to the overloads that inside use native Eigen operations
 
 //-------------------------------
 // op(A) = A
