@@ -66,10 +66,6 @@ kokkos_ops_dot(const T1 & a,
     const T2 & b)
 {
   static_assert
-    (have_matching_execution_space<T1, T2>::value,
-     "dot: types must have matching execution space");
-
-  static_assert
     (::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1,
       "ops::dot only accepts vectors");
 

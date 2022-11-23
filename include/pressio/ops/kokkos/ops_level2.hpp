@@ -82,10 +82,6 @@ product(::pressio::nontranspose /*unused*/,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::have_matching_execution_space<A_type, x_type, y_type>::value,
-     "operands need to have same execution space" );
-
   assert( y.extent(0) == A.extent(0) );
   assert( A.extent(1) == x.extent(0) );
   const char ctA = 'N';
@@ -118,10 +114,6 @@ product(::pressio::transpose /*unused*/,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert
-    (::pressio::have_matching_execution_space<A_type,x_type, y_type>::value,
-     "operands need to have same execution space" );
-
   assert( y.extent(0) == A.extent(1) );
   assert( A.extent(0) == x.extent(0) );
   const char ctA = 'T';

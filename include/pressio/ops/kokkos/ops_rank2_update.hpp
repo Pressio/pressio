@@ -70,9 +70,6 @@ update(T1 & mv,     const scalar_t &a,
   static_assert
     (!std::is_const<T1>::value,
      "cannot modify a const-qualified wrapper of a Kokkos view");
-  static_assert
-    (::pressio::containers::predicates::have_matching_execution_space<T1, T2>::value,
-     "operands need to have same execution space" );
 
   ::KokkosBlas::axpby(b, *mv1.data(), a, *mv.data());
 }

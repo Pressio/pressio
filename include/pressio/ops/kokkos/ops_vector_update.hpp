@@ -63,9 +63,6 @@ struct _kokkosUpdateAdmissibleOperands
   static_assert
     (!std::is_const<T1>::value,
      "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
-  static_assert
-    (::pressio::have_matching_execution_space<T1,Args...>::value,
-     "operands need to have same execution space" );
 
   static constexpr auto value = true;
 };

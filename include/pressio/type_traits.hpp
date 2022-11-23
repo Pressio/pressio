@@ -110,10 +110,4 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/traits_multi_vector.hpp"
 #include "type_traits/traits_sparse_matrix.hpp"
 
-//*** derived ****
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "type_traits/have_matching_exe_space.hpp"
-#include "type_traits/have_matching_device_type.hpp"
-#endif
-
 #endif

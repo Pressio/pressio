@@ -153,24 +153,4 @@ TEST(type_traits, kokkos_matrix) {
   >();
 }
 
-//*******************************
-// Other Kokkos tests
-//*******************************
-
-TEST(type_traits, different_kokkos_exec_spaces) {
-#if defined(KOKKOS_ENABLE_SERIAL) && defined(KOKKOS_ENABLE_OPENMP)
-  // TODO: create two views with different execution spaces: Kokkos::Serial & Kokkos::OpenMP
-  // static_assert(!std::is_same<exec_space1, >::value)
-  //    #endif
-  //    #ifdef KOKKOS_ENABLE_OPENMP
-#elif defined(KOKKOS_ENABLE_THREADS) && defined(KOKKOS_ENABLE_CUDA)
-  /* TODO: support few combinations, e.g. SERIAL+CUDA, SERIAL+OpenMP, Threads+CUDA etc. */ \
-#else
-  std::cout << "*\n"
-            << "* Warning: have_matching_execution_space<T1, T2> test skipped\n"
-            << "*          (need Kokkos built with at least two different execution spaces to check this)\n"
-            << "*\n";
-#endif
-}
-
 }}} // pressio::traits::test
