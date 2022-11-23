@@ -74,9 +74,6 @@ product(::pressio::nontranspose /*unused*/,
   const scalar_type beta,
   C_type & C)
 {
-  static_assert(::pressio::have_matching_execution_space<A_type, B_type, C_type>::value,
-     "operands need to have same execution space" );
-
   const char ctA = 'N';
   const char ctB = 'N';
   ::KokkosBlas::gemm(&ctA, &ctB, alpha, A, B, beta, C);
@@ -99,9 +96,6 @@ product(::pressio::transpose /*unused*/,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(::pressio::have_matching_execution_space<A_type, B_type, C_type>::value,
-     "operands need to have same execution space" );
-
   const char ctA = 'T';
   const char ctB = 'N';
   ::KokkosBlas::gemm(&ctA, &ctB, alpha, A, B, beta, C);

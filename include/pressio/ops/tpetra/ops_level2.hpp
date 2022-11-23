@@ -104,13 +104,6 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
 					const beta_t & beta,
 					y_type & y)
 {
-  // make sure the tpetra mv has same exe space of the kokkos vector wrapper
-  using tpetra_mv_dev_t = ::pressio::impl::device_t<A_type>;
-  using kokkos_v_dev_t  = ::pressio::impl::device_t<x_type>;
-  static_assert
-    ( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
-      "product: tpetra MV and kokkos wrapper need to have same device type" );
-
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x,0)));
   const char ctA = 'N';
   const auto ALocalView_d = A.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
@@ -296,15 +289,6 @@ product(::pressio::transpose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-
-  static_assert
-    (::pressio::have_matching_device_type<A_type, x_type>::value,
-     "Tpetra MV dot V: operands do not have the same device type");
-
-  static_assert
-    (::pressio::have_matching_device_type<x_type, y_type>::value,
-     "Tpetra MV dot V: V and result do not have the same device type");
-
   y_type ATx("ATx", y.extent(0));
   auto request = Tpetra::idot(ATx, A, x);
   request->wait();

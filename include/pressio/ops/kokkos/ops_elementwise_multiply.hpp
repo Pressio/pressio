@@ -74,9 +74,6 @@ elementwise_multiply(typename ::pressio::Traits<T>::scalar_type alpha,
 		     typename ::pressio::Traits<T>::scalar_type beta,
 		     T2 & y)
 {
-  static_assert
-    (have_matching_execution_space<T, T1, T2>::value, "types must have matching execution space");
-
   assert(x.extent(0) == z.extent(0));
   assert(z.extent(0) == y.extent(0));
   KokkosBlas::mult(beta, impl::get_native(y),

@@ -243,10 +243,6 @@ product(::pressio::transpose /*unused*/,
 {
 
   static_assert
-    (::pressio::have_matching_device_type<A_type, C_type>::value,
-     "Non-matching device types");
-
-  static_assert
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
 
@@ -313,11 +309,6 @@ product(::pressio::transpose /*unused*/,
 	const beta_t & beta,
 	C_type & C)
 {
-
-  static_assert
-    (have_matching_device_type<A_type, C_type>::value,
-     "Non-matching device types");
-
   static_assert
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
