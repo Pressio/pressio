@@ -104,13 +104,17 @@ public:
     fx_k = std::pow(fx_k, ::pressio::utils::Constants<scalar_type>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
+    constexpr auto alpha_lower_bound = static_cast<scalar_type>(0.001);
+
     PRESSIOLOG_DEBUG("starting backtracking");
     scalar_type ftrial = {};
     while (true)
     {
-      if (std::abs(alpha) <= static_cast<scalar_type>(0.001)){
-	PRESSIOLOG_DEBUG("alpha = {:6e}, too small, exiting line search", alpha);
-	break;
+      if (std::abs(alpha) <= alpha_lower_bound){
+	const auto msg = ": in armijo, alpha = " + std::to_string(alpha)
+	  + " <= " + std::to_string(alpha_lower_bound)
+	  + ", too small, exiting line search";
+	throw ::pressio::eh::LineSearchStepTooSmall(msg);
       }
 
       // update : trialState = x_k + alpha*p_k
@@ -138,14 +142,14 @@ public:
       // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
       if (std::abs(lhs) <= 1e-14){
-	PRESSIOLOG_DEBUG("obj. function change too small, terminating");
-	break;
+	const auto msg = ": in armijo, exiting line search";
+	throw ::pressio::eh::LineSearchObjFunctionChangeTooSmall(msg);
       }
 
       /* convectional way to backtrack:alpha_l+1 = 0.5 * alpha_l */
       alpha *= 0.5;
 
-    }//while not done
+    }//while true
   }
 
 private:

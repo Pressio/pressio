@@ -88,20 +88,23 @@ public:
     auto alpha = static_cast<scalar_type>(1);
     fx_k = std::pow(fx_k, ::pressio::utils::Constants<scalar_type>::two());
 
+    constexpr auto alpha_lower_bound = static_cast<scalar_type>(0.001);
+
     PRESSIOLOG_DEBUG("starting backtracking");
     scalar_type ftrial = {};
-    bool done = false;
-    while (not done)
+    while (true)
     {
-      if (std::abs(alpha) <= 0.001){
+      if (std::abs(alpha) <= alpha_lower_bound){
         /*
-        Presently set an exit alpha drops below 0.001; anything smaller 
-        than this is probably unreasonable. Note that this quantity doesn't depend on 
+        Presently set an exit alpha drops below 0.001; anything smaller
+        than this is probably unreasonable. Note that this quantity doesn't depend on
         the dimension or magnitude of the state
         */
-	PRESSIOLOG_DEBUG("alpha = {:6e}, too small, exiting line search", alpha);
-        alpha = 0.;
-	done = true;
+	const auto msg = ": in BacktrackStrictlyDecreasingObjective: alpha = "
+	  + std::to_string(alpha)
+	  + " <= " + std::to_string(alpha_lower_bound)
+	  + ", too small, exiting line search";
+	throw ::pressio::eh::LineSearchStepTooSmall(msg);
       }
 
       // update : trialState = x_k + alpha*p_k
@@ -113,12 +116,14 @@ public:
 
       if (ftrial <= fx_k){
 	PRESSIOLOG_DEBUG("backtrack; condition satisfied with alpha= {:6e}", alpha);
-	done = true;
         ::pressio::ops::update(state, one, p_k, alpha);
+	break;
       }
+
       /* convectional way to backtrack:alpha_l+1 = 0.5 * alpha_l */
-      if (!done) alpha *= 0.5;
-    }//while
+      alpha *= 0.5;
+
+    }//while true
   }
 
 private:
