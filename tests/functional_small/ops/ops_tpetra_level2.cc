@@ -67,10 +67,10 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_kokkos_vector)
 
     auto a_h = Kokkos::create_mirror_view(a);
     Kokkos::deep_copy(a_h, a);
-    EXPECT_DOUBLE_EQ(a(0), 61.);
-    EXPECT_DOUBLE_EQ(a(1), 61.);
-    EXPECT_DOUBLE_EQ(a(2), 61.);
-    EXPECT_DOUBLE_EQ(a(3), 61.);
+    EXPECT_DOUBLE_EQ(a_h(0), 61.);
+    EXPECT_DOUBLE_EQ(a_h(1), 61.);
+    EXPECT_DOUBLE_EQ(a_h(2), 61.);
+    EXPECT_DOUBLE_EQ(a_h(3), 61.);
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
