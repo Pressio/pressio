@@ -67,10 +67,11 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_kokkos_vector)
 
     auto a_h = Kokkos::create_mirror_view(a);
     Kokkos::deep_copy(a_h, a);
-    EXPECT_DOUBLE_EQ(a_h(0), 61.);
-    EXPECT_DOUBLE_EQ(a_h(1), 61.);
-    EXPECT_DOUBLE_EQ(a_h(2), 61.);
-    EXPECT_DOUBLE_EQ(a_h(3), 61.);
+    const auto a1_ref = numProc_ * 2. * 10. + 1.;
+    EXPECT_DOUBLE_EQ(a_h(0), a1_ref);
+    EXPECT_DOUBLE_EQ(a_h(1), a1_ref);
+    EXPECT_DOUBLE_EQ(a_h(2), a1_ref);
+    EXPECT_DOUBLE_EQ(a_h(3), a1_ref);
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -138,9 +139,10 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_vector)
     a.setConstant(1.);
     pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 1., a);
 
-    EXPECT_DOUBLE_EQ(a(0), 61.);
-    EXPECT_DOUBLE_EQ(a(1), 61.);
-    EXPECT_DOUBLE_EQ(a(2), 61.);
-    EXPECT_DOUBLE_EQ(a(3), 61.);
+    const auto a1_ref = numProc_ * 2. * 10. + 1.;
+    EXPECT_DOUBLE_EQ(a(0), a1_ref);
+    EXPECT_DOUBLE_EQ(a(1), a1_ref);
+    EXPECT_DOUBLE_EQ(a(2), a1_ref);
+    EXPECT_DOUBLE_EQ(a(3), a1_ref);
 }
 #endif
