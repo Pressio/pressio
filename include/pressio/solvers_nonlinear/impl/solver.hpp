@@ -343,7 +343,19 @@ private:
       }
 
       // 5.
-      updater(system, state, *this);
+      try{
+	updater(system, state, *this);
+      }
+      catch (::pressio::eh::LineSearchStepTooSmall const &e) {
+	// stop the solve without terminating
+	PRESSIOLOG_WARN(e.what());
+	break;
+      }
+      catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
+	// stop the solve without terminating
+	PRESSIOLOG_WARN(e.what());
+	break;
+      }
     }
 
     // when we are done with a solver, reset params to default

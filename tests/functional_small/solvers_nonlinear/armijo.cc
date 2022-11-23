@@ -88,9 +88,13 @@ TEST(solvers_nonlinear, armijo_test2)
 
   pressio::nonlinearsolvers::impl::ArmijoUpdater<_this_state_type> updater(state);
   FakeSolver solver(2);
-  updater(sys, state, solver);
+  try{
+    updater(sys, state, solver);
+  }
+  catch (::pressio::eh::LineSearchStepTooSmall const &e) {
+    PRESSIOLOG_WARN(e.what());
+  }
   std::cout << state << std::endl;
-
 
   EXPECT_TRUE(solver.count() == 10);
 
