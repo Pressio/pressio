@@ -106,12 +106,11 @@ public:
 
     PRESSIOLOG_DEBUG("starting backtracking");
     scalar_type ftrial = {};
-    bool done = false;
-    while (not done)
+    while (true)
     {
-      if (std::abs(alpha) <= 1e-12){
+      if (std::abs(alpha) <= static_cast<scalar_type>(0.001)){
 	PRESSIOLOG_DEBUG("alpha = {:6e}, too small, exiting line search", alpha);
-	done = true;
+	break;
       }
 
       // update : trialState = x_k + alpha*p_k
@@ -131,22 +130,22 @@ public:
 
       if (lhs <= rhs){
 	PRESSIOLOG_DEBUG("condition satisfied: f_trial-f <= rhs, exiting");
-	done = true;
+	// solution update: state = state + alpha*p_k
+	::pressio::ops::update(state, one, p_k, alpha);
+	break;
       }
 
       // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
       if (std::abs(lhs) <= 1e-14){
 	PRESSIOLOG_DEBUG("obj. function change too small, terminating");
-	done = true;
+	break;
       }
 
       /* convectional way to backtrack:alpha_l+1 = 0.5 * alpha_l */
-      if (!done) alpha *= 0.5;
-    }//while
+      alpha *= 0.5;
 
-    // solution update: state = state + alpha*p_k
-    ::pressio::ops::update(state, one, p_k, alpha);
+    }//while not done
   }
 
 private:
