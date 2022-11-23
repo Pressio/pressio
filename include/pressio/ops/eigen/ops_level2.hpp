@@ -55,6 +55,13 @@ namespace pressio{ namespace ops{
  * y = beta * y + alpha*op(A)*x
 */
 
+// Implementation notes.
+// Eigen requires that:
+// - scalar type of A, x and y is the same
+// - alpha and beta types are same as scalar type
+// - scalar can be constructed from double, eg. Scalar(1)
+// Note: only applies to the overloads that inside use native Eigen operations
+
 //-------------------------------
 // op(A) = A
 //-------------------------------
@@ -63,18 +70,23 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
-  && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
@@ -83,19 +95,25 @@ product(::pressio::nontranspose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
 
+  using sc_t = typename ::pressio::Traits<y_type>::scalar_type;
+  constexpr sc_t zero{0};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+  const bool has_beta = beta_ != zero;
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  if (beta == static_cast<beta_t>(0)){
-    y_n = alpha * A_n * x_n;
+  if (alpha_ == zero) {
+    if (has_beta) { ::pressio::ops::scale(y_n, beta_); }
+    else { ::pressio::ops::set_zero(y_n); }
+  } else {
+    if (has_beta) { y_n = beta_ * y_n + alpha_ * A_n * x_n; }
+    else { y_n = alpha_ * A_n * x_n; }
   }
-  else{
-    y_n = beta * y_n + alpha * A_n * x_n;
-  }
+
 }
 
 //-------------------------------
@@ -105,17 +123,22 @@ template <
   class y_type, class A_type, class x_type, class alpha_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1
-  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value),
   y_type
   >
 product(::pressio::nontranspose mode,
@@ -140,18 +163,23 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
-  && std::is_convertible<beta_t,  typename ::pressio::Traits<y_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
@@ -164,14 +192,20 @@ product(::pressio::transpose /*unused*/,
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
 
+  using sc_t = typename ::pressio::Traits<y_type>::scalar_type;
+  constexpr sc_t zero{0};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+  const bool has_beta = beta_ != zero;
   auto & y_n = impl::get_native(y);
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
-  if (beta == static_cast<beta_t>(0)){
-    y_n = alpha * A_n.transpose() * x_n;
-  }
-  else{
-    y_n = beta * y_n + alpha * A_n.transpose() * x_n;
+  if (alpha_ == zero) {
+    if (has_beta) { ::pressio::ops::scale(y_n, beta_); }
+    else { ::pressio::ops::set_zero(y_n); }
+  } else {
+    if (has_beta) { y_n = beta_ * y_n + alpha_ * A_n.transpose() * x_n; }
+    else { y_n = alpha_ * A_n.transpose() * x_n; }
   }
 }
 
@@ -180,16 +214,22 @@ product(::pressio::transpose /*unused*/,
 //-------------------------------
 template <class y_type, class A_type, class x_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, y_type, x_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<A_type>::value
    || ::pressio::is_expression_acting_on_eigen<A_type>::value)
   && (::pressio::is_vector_eigen<x_type>::value
    || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
-  && ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<x_type>::rank == 1
-  && ::pressio::Traits<y_type>::rank == 1,
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value),
   y_type
   >
 product(::pressio::transpose mode,
