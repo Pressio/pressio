@@ -23,7 +23,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector)
     EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-}
+    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector_beta0)
 {
@@ -46,6 +46,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector_beta0)
     EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
 }
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_kokkos_vector)
@@ -94,6 +95,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)
     EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
 }
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector_beta0)
@@ -117,6 +119,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector_beta0)
     EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
     EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
+    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
 }
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_vector)
