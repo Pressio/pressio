@@ -263,7 +263,8 @@ product(::pressio::transpose /*unused*/,
       // colI is a Teuchos::RCP<Vector<...>>
       const auto colI = A.getVector(i);
       y(i) = beta == zero ? zero : beta * y(i);
-      y(i) += alpha * colI->dot(x);
+      if (!(alpha == zero))
+        y(i) += alpha * colI->dot(x);
     }
 }
 #endif
