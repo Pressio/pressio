@@ -263,6 +263,60 @@ product(::pressio::nontranspose mode,
 }
 
 // -------------------------------
+// y = beta * y + alpha*A*x
+//
+// x is Pressio expression based on Eigen
+// A = tpetra::MultiVector
+// y = tpetra vector
+// -------------------------------
+template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
+::pressio::mpl::enable_if_t<
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_vector_tpetra<y_type>::value
+  && ::pressio::is_expression_acting_on_eigen<x_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  >
+product(::pressio::nontranspose /*unused*/,
+	const alpha_t & alpha,
+	const A_type & A,
+	const x_type & x,
+	const beta_t & beta,
+	y_type & y)
+{
+  const auto A_h = A.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  const auto y2_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  const auto y_h = Kokkos::subview(y2_h, Kokkos::ALL(), 0);
+
+  assert( ::pressio::ops::extent(y_h, 0) == ::pressio::ops::extent(A_h, 0) );
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A_h, 1) );
+
+  const auto zero = ::pressio::utils::Constants<beta_t>::zero();
+  if (beta == zero) ::pressio::ops::set_zero(y_h);
+  else ::pressio::ops::scale(y_h, beta);
+  if (alpha == zero) return;
+
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const std::size_t m = ::pressio::ops::extent(A_h, 0);
+  const std::size_t n = ::pressio::ops::extent(A_h, 1);
+  Kokkos::parallel_for(m, KOKKOS_LAMBDA (const auto &i) {
+    sc_t t{};
+    for (std::size_t j = 0; j < n; j++) {
+      t += alpha * A_h(i, j) * x(j);
+    }
+    y_h(i) = t;
+  });
+}
+
+// -------------------------------
 // y = beta * y + alpha*A^T*x
 //
 // x = tpetra Vector
@@ -278,7 +332,8 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_vector_tpetra<x_type>::value
-  && ::pressio::is_vector_eigen<y_type>::value
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
