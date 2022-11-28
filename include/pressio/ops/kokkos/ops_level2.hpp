@@ -96,18 +96,15 @@ product(::pressio::nontranspose /*unused*/,
   assert( y.extent(0) == A.extent(0) );
   assert( A.extent(1) == x.extent(0) );
 
-  // Kokkos requires alpha to be of A scalar type and beta to be of y scalar type
-  using a_sc_t = typename A_type::non_const_value_type;
-  using y_sc_t = typename y_type::non_const_value_type;
-  const a_sc_t alpha_(alpha);
-  const y_sc_t beta_(beta);
+  using sc_t = typename A_type::non_const_value_type;
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
 
-  // 2022-11-14: for arbitrary custom scalar types used for A and y
-  // current implementation of Kokkos requires that:
-  // 1. Kokkos::Details::ArithTraits<y_sc_t>::zero() is provided
-  // 2. A scalar type needs to be convertible to
-  const auto zero = Kokkos::Details::ArithTraits<y_sc_t>::zero();
-  if (static_cast<y_sc_t>(alpha_) == zero) {
+  // 2022-11-28: Kokkos requires definition of
+  // Kokkos::Details::ArithTraits<sc_t>::zero()
+  // so we can use it here
+  const auto zero = Kokkos::Details::ArithTraits<sc_t>::zero();
+  if (static_cast<sc_t>(alpha_) == zero) {
     if (beta_ == zero) {
       ::pressio::ops::set_zero(y);
     } else {
@@ -160,18 +157,15 @@ product(::pressio::transpose /*unused*/,
   assert( y.extent(0) == A.extent(1) );
   assert( A.extent(0) == x.extent(0) );
 
-  // Kokkos requires alpha to be of A scalar type and beta to be of y scalar type
-  using a_sc_t = typename A_type::non_const_value_type;
-  using y_sc_t = typename y_type::non_const_value_type;
-  const a_sc_t alpha_(alpha);
-  const y_sc_t beta_(beta);
+  using sc_t = typename A_type::non_const_value_type;
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
 
-  // 2022-11-14: for arbitrary custom scalar types used for A and y
-  // current implementation of Kokkos requires that:
-  // 1. Kokkos::Details::ArithTraits<y_sc_t>::zero() is provided
-  // 2. A scalar type needs to be convertible to
-  const auto zero = Kokkos::Details::ArithTraits<y_sc_t>::zero();
-  if (static_cast<y_sc_t>(alpha_) == zero) {
+  // 2022-11-28: Kokkos requires definition of
+  // Kokkos::Details::ArithTraits<sc_t>::zero()
+  // so we can use it here
+  const auto zero = Kokkos::Details::ArithTraits<sc_t>::zero();
+  if (static_cast<sc_t>(alpha_) == zero) {
     if (beta_ == zero) {
       ::pressio::ops::set_zero(y);
     } else {
