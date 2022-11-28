@@ -74,7 +74,7 @@ void test_impl(FixtureType &test, TransMode trans, ScalarType alpha, AType A, XT
     auto y_ref_h = get_global_host_view(y, test);
 
     // call tested routine on device
-    pressio::ops::product(trans, alpha, A, x, beta, y);
+    ::pressio::ops::product(trans, alpha, A, x, beta, y);
 
     // Note: trick here is to fetch whole data (from all ranks)
     // and run the simplified reference routine locally
@@ -117,14 +117,56 @@ void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
     A_h(0, 0) = a00;
 }
 
+//-------------------------------------------
+// Test Kokkos x
+//-------------------------------------------
+
 TEST_F(ops_tpetra_block,
        mv_prod_kokkos_vector)
 {
-  Kokkos::View<double*> x_kokkos("a", numVecs_);
-  KokkosBlas::fill(x_kokkos, 1.);
+  Kokkos::View<double*> x_kokkos{"x", (size_t)numVecs_};
+  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x_kokkos);
+  for (int j = 0; j < numVecs_; ++j) {
+    x_h(j) = (double)(j + 1.); // unique int values
+  }
+  Kokkos::deep_copy(x_kokkos, x_h);
 
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos, *y_tpetra);
 }
+
+TEST_F(ops_tpetra_block,
+       mv_prod_kokkos_span)
+{
+  Kokkos::View<double*> x0{ "x_span", numVecs_ + (size_t)2 };
+  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
+  for (int i = 0; i < numVecs_ + 2; ++i) {
+    x_h(i) = (double)(i + 1.); // unique int values
+  }
+  Kokkos::deep_copy(x0, x_h);
+  auto x_kokkos_span = ::pressio::span(x0, 1, numVecs_);
+
+  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_span, *y_tpetra);
+}
+
+TEST_F(ops_tpetra_block,
+       mv_prod_kokkos_diag)
+{
+  Kokkos::View<double**> x0{ "x_diag", (size_t)numVecs_, (size_t)numVecs_ };
+  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
+  for (size_t i = 0; i < numVecs_; ++i) {
+      for (size_t j = 0; j < numVecs_; ++j) {
+          x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
+      }
+  }
+  Kokkos::deep_copy(x0, x_h);
+  auto x_kokkos_diag = ::pressio::diag(x0);
+
+  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_diag, *y_tpetra);
+}
+
+//-------------------------------------------
+// Test Kokkos y
+//-------------------------------------------
 
 TEST_F(ops_tpetra_block,
        mv_T_vector_storein_kokkos_vector)
@@ -135,7 +177,42 @@ TEST_F(ops_tpetra_block,
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos);
 }
 
+TEST_F(ops_tpetra_block,
+       mv_T_vector_storein_kokkos_span)
+{
+    Kokkos::View<double*> y0{ "y_span", numVecs_ + 2 };
+    auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
+    for (int i = 0; i < numVecs_ + 2; ++i) {
+      y_h(i) = (double)(i + 1.); // unique int values
+    }
+    Kokkos::deep_copy(y0, y_h);
+    auto y_kokkos_span = ::pressio::span(y0, 1, numVecs_);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_span);
+}
+
+TEST_F(ops_tpetra_block,
+       mv_T_vector_storein_kokkos_diag)
+{
+    Kokkos::View<double**> y0{ "y_diag", numVecs_, numVecs_ };
+    auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
+    for (size_t i = 0; i < numVecs_; ++i) {
+        for (size_t j = 0; j < numVecs_; ++j) {
+            y_h(i, j) = (double)(i * numVecs_ + j + 1.0);
+        }
+    }
+    Kokkos::deep_copy(y0, y_h);
+    auto y_kokkos_diag = ::pressio::diag(y0);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_diag);
+}
+
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
+
+//-------------------------------------------
+// Test Eigen x
+//-------------------------------------------
+
 TEST_F(ops_tpetra_block,
        mv_prod_eigen_vector)
 {
@@ -146,11 +223,59 @@ TEST_F(ops_tpetra_block,
 }
 
 TEST_F(ops_tpetra_block,
+       mv_prod_eigen_span)
+{
+  Eigen::VectorXd x0(numVecs_ + 3);
+  x0.setConstant(1.);
+  auto x_eigen_span = ::pressio::span(x0, 2, numVecs_);
+
+  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_span, *y_tpetra);
+}
+
+TEST_F(ops_tpetra_block,
+       mv_prod_eigen_diag)
+{
+  Eigen::MatrixXd M0(numVecs_, numVecs_);
+  for (int i = 0; i < numVecs_; ++i) {
+      M0(i, i) = 1.;
+  }
+  auto x_eigen_diag = ::pressio::diag(M0);
+
+  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_diag, *y_tpetra);
+}
+
+//-------------------------------------------
+// Test Eigen y
+//-------------------------------------------
+
+TEST_F(ops_tpetra_block,
        mv_T_vector_storein_eigen_vector)
 {
   Eigen::VectorXd y_eigen(numVecs_);
   y_eigen.setConstant(1.);
 
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen);
+}
+
+TEST_F(ops_tpetra_block,
+       mv_T_vector_storein_eigen_span)
+{
+  Eigen::VectorXd y0(numVecs_ + 3);
+  y0.setConstant(1.);
+  auto y_eigen_span = ::pressio::span(y0, 2, numVecs_);
+
+  test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen_span);
+}
+
+TEST_F(ops_tpetra_block,
+       mv_T_vector_storein_eigen_diag)
+{
+  Eigen::MatrixXd M0(numVecs_, numVecs_);
+  for (int i = 0; i < numVecs_; ++i) {
+      M0(i, i) = 1.;
+  }
+  auto y_eigen_diag = ::pressio::diag(M0);
+
+  test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen_diag);
 }
 #endif

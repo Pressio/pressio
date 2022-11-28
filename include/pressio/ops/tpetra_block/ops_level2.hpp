@@ -108,7 +108,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra_block<A_type>::value
   && ::pressio::is_vector_tpetra_block<y_type>::value
-  && ::pressio::is_vector_kokkos<x_type>::value
+  && (::pressio::is_vector_kokkos<x_type>::value
+   || ::pressio::is_expression_acting_on_kokkos<x_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
@@ -132,7 +133,7 @@ product(::pressio::nontranspose mode,
 // -------------------------------
 // y = beta * y + alpha*A*x
 //
-// x is Eigen Vector
+// x is Eigen Vector or Pressio expression based on Eigen container
 // A = tpetra block MultiVector
 // y = tpetra block vector
 // -------------------------------
@@ -146,7 +147,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra_block<A_type>::value
   && ::pressio::is_vector_tpetra_block<y_type>::value
-  && ::pressio::is_vector_eigen<x_type>::value
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
@@ -172,7 +174,7 @@ product(::pressio::nontranspose mode,
 //
 // x = tpetra block Vectorb
 // A = tpetra block MultiVector
-// y = Eigen vector
+// y = Eigen Vector or Pressio expression based on Eigen container
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
@@ -183,7 +185,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra_block<A_type>::value
   && ::pressio::is_vector_tpetra_block<x_type>::value
-  && ::pressio::is_vector_eigen<y_type>::value
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
@@ -221,7 +224,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra_block<A_type>::value
   && ::pressio::is_vector_tpetra_block<x_type>::value
-  && ::pressio::is_vector_kokkos<y_type>::value
+  && (::pressio::is_vector_kokkos<y_type>::value
+   || ::pressio::is_expression_acting_on_kokkos<y_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
