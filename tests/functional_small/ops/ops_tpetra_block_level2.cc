@@ -19,33 +19,37 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   y.putScalar(0.);
   pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 1., y);
 
-  auto y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  auto auto y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
-}
 
-TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
-       mv_prod_kokkos_vector_beta0)
-{
-  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-  for (int i=0; i<localSize_*blockSize_; ++i){
-    for (int j=0; j<numVecs_; ++j){
-      myMv_h(i,j) = (double)j;
-    }
-  }
-
-  Kokkos::View<double*> a("a", numVecs_);
-  KokkosBlas::fill(a, 1.);
-
-  vec_t y(*contigMap_, blockSize_);
-  y.putScalar(std::nan("0"));
+  // simulate beta=0 with uninitialized y containing NaN
+  const auto nan = std::nan("0");
+  y.putScalar(nan);
   pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
 
-  auto y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
   EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
+
+  // simulate alpha=0 with NaN in input matrix
+  myMv_h(0,0) = nan;
+  pressio::ops::product(::pressio::nontranspose{}, 0., *myMv_, a, 1., y);
+
+  y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
+  EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
+  EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
+
+  // alpha == beta == 0
+  pressio::ops::product(::pressio::nontranspose{}, 0., *myMv_, a, 0., y);
+
+  y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  EXPECT_DOUBLE_EQ(y_h(0,0), 0.);
+  EXPECT_DOUBLE_EQ(y_h(1,0), 0.);
+  EXPECT_DOUBLE_EQ(y_h(2,0), 0.);
 }
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
@@ -67,9 +71,38 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
   auto a_h = Kokkos::create_mirror_view(a);
   Kokkos::deep_copy(a_h, a);
-  EXPECT_DOUBLE_EQ(a(0), 1141.);
-  EXPECT_DOUBLE_EQ(a(1), 1141.);
-  EXPECT_DOUBLE_EQ(a(2), 1141.);
+  const auto a1_ref = numProc_ * 2. * 190. + 1.;
+  EXPECT_DOUBLE_EQ(a_h(0), a1_ref);
+  EXPECT_DOUBLE_EQ(a_h(1), a1_ref);
+  EXPECT_DOUBLE_EQ(a_h(2), a1_ref);
+
+  // simulate beta=0 with uninitialized y containing NaN
+  const auto nan = std::nan("0");
+  KokkosBlas::fill(a, nan);
+  pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 0., a);
+
+  Kokkos::deep_copy(a_h, a);
+  const auto a0_ref = numProc_ * 2. * 190.;
+  EXPECT_DOUBLE_EQ(a_h(0), a0_ref);
+  EXPECT_DOUBLE_EQ(a_h(1), a0_ref);
+  EXPECT_DOUBLE_EQ(a_h(2), a0_ref);
+
+  // simulate alpha=0 with NaN in input matrix
+  myMv_h(0, 0) = nan;
+  pressio::ops::product(::pressio::transpose{}, 0., *myMv_, y, 1., a);
+
+  Kokkos::deep_copy(a_h, a);
+  EXPECT_DOUBLE_EQ(a_h(0), a0_ref);
+  EXPECT_DOUBLE_EQ(a_h(1), a0_ref);
+  EXPECT_DOUBLE_EQ(a_h(2), a0_ref);
+
+  // alpha == beta == 0
+  pressio::ops::product(::pressio::transpose{}, 0., *myMv_, y, 0., a);
+
+  Kokkos::deep_copy(a_h, a);
+  EXPECT_DOUBLE_EQ(a_h(0), 0.);
+  EXPECT_DOUBLE_EQ(a_h(1), 0.);
+  EXPECT_DOUBLE_EQ(a_h(2), 0.);
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -94,29 +127,33 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
-}
 
-TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
-       mv_prod_eigen_vector_beta0)
-{
-  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-  for (int i=0; i<localSize_*blockSize_; ++i){
-    for (int j=0; j<numVecs_; ++j){
-      myMv_h(i,j) = (double)j;
-    }
-  }
-
-  Eigen::VectorXd a(numVecs_);
-  a.setConstant(1.);
-
-  vec_t y(*contigMap_, blockSize_);
-  y.putScalar(std::nan("0"));
+  // simulate beta=0 with uninitialized y containing NaN
+  const auto nan = std::nan("0");
+  y.putScalar(nan);
   pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
 
-  auto y_h = y.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  y_h = y.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
   EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
   EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
+
+  // simulate alpha=0 with NaN in input matrix
+  myMv_h(0,0) = nan;
+  pressio::ops::product(::pressio::nontranspose{}, 0., *myMv_, a, 1., y);
+
+  y_h = y.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  EXPECT_DOUBLE_EQ(y_h(0,0), 3.);
+  EXPECT_DOUBLE_EQ(y_h(1,0), 3.);
+  EXPECT_DOUBLE_EQ(y_h(2,0), 3.);
+
+  // alpha == beta == 0
+  pressio::ops::product(::pressio::nontranspose{}, 0., *myMv_, a, 0., y);
+
+  y_h = y.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  EXPECT_DOUBLE_EQ(y_h(0,0), 0.);
+  EXPECT_DOUBLE_EQ(y_h(1,0), 0.);
+  EXPECT_DOUBLE_EQ(y_h(2,0), 0.);
 }
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
@@ -136,8 +173,34 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   a.setConstant(1.);
   pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 1., a);
 
-  EXPECT_DOUBLE_EQ(a(0), 1141.);
-  EXPECT_DOUBLE_EQ(a(1), 1141.);
-  EXPECT_DOUBLE_EQ(a(2), 1141.);
+  const auto a1_ref = numProc_ * 2. * 190. + 1.;
+  EXPECT_DOUBLE_EQ(a(0), a1_ref);
+  EXPECT_DOUBLE_EQ(a(1), a1_ref);
+  EXPECT_DOUBLE_EQ(a(2), a1_ref);
+
+  // simulate beta=0 with uninitialized y containing NaN
+  const auto nan = std::nan("0");
+  a.setConstant(nan);
+  pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 0., a);
+
+  const auto a0_ref = numProc_ * 2. * 190.;
+  EXPECT_DOUBLE_EQ(a(0), a0_ref);
+  EXPECT_DOUBLE_EQ(a(1), a0_ref);
+  EXPECT_DOUBLE_EQ(a(2), a0_ref);
+
+  // simulate alpha=0 with NaN in input matrix
+  myMv_h(0, 0) = nan;
+  pressio::ops::product(::pressio::transpose{}, 0., *myMv_, y, 1., a);
+
+  EXPECT_DOUBLE_EQ(a(0), a0_ref);
+  EXPECT_DOUBLE_EQ(a(1), a0_ref);
+  EXPECT_DOUBLE_EQ(a(2), a0_ref);
+
+  // alpha == beta == 0
+  pressio::ops::product(::pressio::transpose{}, 0., *myMv_, y, 0., a);
+
+  EXPECT_DOUBLE_EQ(a(0), 0.);
+  EXPECT_DOUBLE_EQ(a(1), 0.);
+  EXPECT_DOUBLE_EQ(a(2), 0.);
 }
 #endif
