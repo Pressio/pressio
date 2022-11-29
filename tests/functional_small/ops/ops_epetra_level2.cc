@@ -61,9 +61,10 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_vector)
     a.setConstant(1.);
     pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 1., a);
 
-    EXPECT_DOUBLE_EQ(a(0), 61.);
-    EXPECT_DOUBLE_EQ(a(1), 61.);
-    EXPECT_DOUBLE_EQ(a(2), 61.);
-    EXPECT_DOUBLE_EQ(a(3), 61.);
+    const auto a1_ref = numProc_ * 2. * 10. + 1.;
+    EXPECT_DOUBLE_EQ(a(0), a1_ref);
+    EXPECT_DOUBLE_EQ(a(1), a1_ref);
+    EXPECT_DOUBLE_EQ(a(2), a1_ref);
+    EXPECT_DOUBLE_EQ(a(3), a1_ref);
 }
 #endif
