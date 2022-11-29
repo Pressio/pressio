@@ -22,20 +22,8 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)
     EXPECT_DOUBLE_EQ(y[1], 6.);
     EXPECT_DOUBLE_EQ(y[2], 6.);
     EXPECT_DOUBLE_EQ(y[3], 6.);
-}
 
-TEST_F(epetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector_beta0)
-{
-    for (int i=0; i<localSize_; ++i){
-     for (int j=0; j<numVecs_; ++j){
-        (*myMv_)[j][i] = (double)j;
-     }
-    }
-
-    Eigen::VectorXd a(numVecs_);
-    a.setConstant(1.);
-
-    Epetra_Vector y(*contigMap_);
+    // simulate beta=0 with uninitialized y containing NaN
     y.PutScalar(std::nan("0"));
     pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
 
@@ -66,5 +54,15 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_vector)
     EXPECT_DOUBLE_EQ(a(1), a1_ref);
     EXPECT_DOUBLE_EQ(a(2), a1_ref);
     EXPECT_DOUBLE_EQ(a(3), a1_ref);
+
+    // simulate beta=0 with uninitialized y containing NaN
+    a.setConstant(std::nan("0"));
+    pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 0., a);
+
+    const auto a0_ref = numProc_ * 2. * 10. + 0.;
+    EXPECT_DOUBLE_EQ(a(0), a0_ref);
+    EXPECT_DOUBLE_EQ(a(1), a0_ref);
+    EXPECT_DOUBLE_EQ(a(2), a0_ref);
+    EXPECT_DOUBLE_EQ(a(3), a0_ref);
 }
 #endif
