@@ -66,10 +66,13 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 				      Epetra_Vector & y)
 {
   constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
+  if (beta == zero) ::pressio::ops::set_zero(y);
+  else y.Scale(beta); // TODO: implement ::pressio::ops::scale( Epetra_Vector )
+  if (alpha == zero) return;
+
   const int numVecs = A.NumVectors();
   for (int i=0; i< A.MyLength(); i++)
   {
-    y[i] = (beta == zero) ? zero : beta * y[i];
     for (int j=0; j< (int)numVecs; j++){
       y[i] += alpha * A[j][i] * x(j);
     }
@@ -132,9 +135,11 @@ product(::pressio::transpose /*unused*/,
   auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
-    A(i)->Dot(x, &tmp);
     y(i) = (beta == zero) ? zero : beta * y(i);
-    y(i) += alpha * tmp;
+    if (!(alpha == zero)) {
+      A(i)->Dot(x, &tmp);
+      y(i) += alpha * tmp;
+    }
   }
 }
 
@@ -194,9 +199,11 @@ product(::pressio::transpose /*unused*/,
   auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
-    A(i)->Dot(x, &tmp);
     y(i) = (beta == zero) ? zero : beta * y(i);
-    y(i) += alpha * tmp;
+    if (!(alpha == zero)) {
+      A(i)->Dot(x, &tmp);
+      y(i) += alpha * tmp;
+    }
   }
 }
 #endif
