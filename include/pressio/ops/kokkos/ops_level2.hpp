@@ -81,8 +81,8 @@ template <
     ::pressio::is_expression_acting_on_kokkos<y_type>::value) and
   // scalar compatibility
   ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value and
-  std::is_convertible<alpha_t, typename A_type::non_const_value_type>::value and
-  std::is_convertible<beta_t, typename y_type::non_const_value_type>::value and
+  std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value and
+  std::is_convertible<beta_t, typename ::pressio::Traits<y_type>::scalar_type>::value and
   (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value or
    std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -96,7 +96,7 @@ product(::pressio::nontranspose /*unused*/,
   assert( y.extent(0) == A.extent(0) );
   assert( A.extent(1) == x.extent(0) );
 
-  using sc_t = typename A_type::non_const_value_type;
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
   const sc_t alpha_(alpha);
   const sc_t beta_(beta);
 
@@ -142,8 +142,8 @@ template <
     ::pressio::is_expression_acting_on_kokkos<y_type>::value) and
   // scalar compatibility
   ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value and
-  std::is_convertible<alpha_t, typename A_type::non_const_value_type>::value and
-  std::is_convertible<beta_t, typename y_type::non_const_value_type>::value and
+  std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value and
+  std::is_convertible<beta_t, typename ::pressio::Traits<y_type>::scalar_type>::value and
   (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value or
    std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -157,7 +157,7 @@ product(::pressio::transpose /*unused*/,
   assert( y.extent(0) == A.extent(1) );
   assert( A.extent(0) == x.extent(0) );
 
-  using sc_t = typename A_type::non_const_value_type;
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
   const sc_t alpha_(alpha);
   const sc_t beta_(beta);
 
