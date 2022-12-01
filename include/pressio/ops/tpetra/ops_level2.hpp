@@ -138,6 +138,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -172,6 +173,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -209,6 +211,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -282,6 +285,7 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -337,6 +341,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
@@ -389,6 +394,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
