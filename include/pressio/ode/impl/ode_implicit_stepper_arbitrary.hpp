@@ -144,7 +144,7 @@ public:
     const auto & yn = stencilStates_(ode::n());
 
     try{
-      systemObj_.get().template discreteResidualAndJacobian
+      systemObj_.get().discreteResidualAndJacobian
 	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
 	 odeState, yn);
     }
@@ -165,7 +165,7 @@ public:
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
 
     try{
-      systemObj_.get().template discreteResidualAndJacobian
+      systemObj_.get().discreteResidualAndJacobian
 	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
 	 odeState, yn, ynm1);
     }
@@ -187,7 +187,7 @@ public:
     const auto & ynm2 = stencilStates_(ode::nMinusTwo());
 
     try{
-      systemObj_.get().template discreteResidualAndJacobian
+      systemObj_.get().discreteResidualAndJacobian
 	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
 	 odeState, yn, ynm1, ynm2);
     }
