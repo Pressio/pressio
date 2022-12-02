@@ -57,7 +57,10 @@ int main()
   // to file works as expected by omitting lables/cols names
 
   std::string sentinel = "PASSED";
-  pressio::log::initialize(pressio::logto::fileAndTerminal, "log.txt");
+  // Important: use unique log name, because we read the log contents here
+  // and don't want any other test to write into the same log file.
+  const auto log_file_name = "log_gn_normal_eq_print_metrics_eigen.txt";
+  pressio::log::initialize(pressio::logto::fileAndTerminal, log_file_name);
   pressio::log::setVerbosity({pressio::log::level::info, pressio::log::level::debug});
 
   using namespace pressio;
@@ -81,7 +84,7 @@ int main()
   pressio::log::finalize();
 
   // check file printed
-  std::ifstream file("log.txt");
+  std::ifstream file(log_file_name);
   if (file.is_open())
   {
     std::string line;
