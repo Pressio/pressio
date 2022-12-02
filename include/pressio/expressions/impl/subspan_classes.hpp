@@ -229,7 +229,7 @@ public:
    */
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<
-    std::is_same<typename MatrixType::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename _MatrixType::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(const size_t & i, const size_t & j) const
