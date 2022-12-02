@@ -121,6 +121,10 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     ode_steppers_implicit
     arbitrary_stepper_3_aux_state_with_step_recovery.cc "PASSED")
 
+  add_serial_utest(ode_adjoint_logic_1
+    ${CMAKE_CURRENT_SOURCE_DIR}/adjoint_logic_1.cc)
+  add_serial_utest(ode_adjoint_logic_2
+    ${CMAKE_CURRENT_SOURCE_DIR}/adjoint_logic_2.cc)
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
