@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_nonlinear.hpp
+// solvers_create_public_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,40 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_NONLINEAR_SOLVERS_HPP_
-#define PRESSIO_NONLINEAR_SOLVERS_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_IRLS_GAUSS_NEWTON_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_IRLS_GAUSS_NEWTON_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./expressions.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
+#include "./impl/solvers_nonlinear_compose.hpp"
 
-#include "solvers_nonlinear/solvers_exceptions.hpp"
+namespace pressio{
+namespace nonlinearsolvers{
+namespace experimental{
 
-#include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
-
-#include "solvers_nonlinear/concepts/solvers_predicates.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp"
-#include "solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp"
-
-#include "solvers_nonlinear/impl/updaters/solvers_create_updater.hpp"
-#include "solvers_nonlinear/impl/solvers_observer.hpp"
-#include "solvers_nonlinear/impl/solvers_printer.hpp"
-
-#include "solvers_nonlinear/solvers_create_newton_raphson.hpp"
-#include "solvers_nonlinear/solvers_create_gauss_newton.hpp"
-#include "solvers_nonlinear/solvers_create_irls_gauss_newton.hpp"
-#include "solvers_nonlinear/solvers_create_levenberg_marquardt.hpp"
-
+template<class SystemType, class LinearSolverType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires OverdeterminedSystemWithResidualAndJacobian<SystemType>
+      || OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
 #endif
+auto create_irls_gauss_newton(const SystemType & system,
+			      LinearSolverType && linSolver)
+{
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert
+    (   OverdeterminedSystemWithResidualAndJacobian<SystemType>::value
+     or OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
+     "Weighted Levenberg-Marquardt: system not satisfying the residual/jacobian concept.");
+#endif
+
+  using c_t = impl::ComposeIrwGaussNewton<SystemType, LinearSolverType>;
+  using w_t = typename c_t::weighting_t;
+  using return_t = typename c_t::type;
+
+  w_t W(system);
+  return return_t(system,
+		  std::forward<LinearSolverType>(linSolver),
+		  std::move(W));
+}
+
+}}}// end namespace experimental
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_

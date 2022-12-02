@@ -75,12 +75,6 @@ public:
   ~HessianGradientOperatorsRJApiNoWeighting() = default;
 
   template <typename SystemType>
-    // mpl::enable_if_t<
-    //   (::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value or
-    //    ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value),
-    //   int
-    //   > = 0
-    // >
   HessianGradientOperatorsRJApiNoWeighting(const SystemType & system)
     : r_(system.createResidual()),
       J_(system.createJacobian()),
@@ -114,16 +108,7 @@ public:
   }
 
 public:
-  template<typename SystemType, typename StateType>
-#ifdef PRESSIO_ENABLE_CXX20
-  requires SystemWithResidualAndJacobian<SystemType> 
-  void 
-#else
-  mpl::enable_if_t<
-  ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
-  >  
-#endif
-  computeOperators(const SystemType & systemObj,
+  void computeOperators(const SystemType & systemObj,
 		   const StateType & state,
 		   residual_norm_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
@@ -148,73 +133,13 @@ public:
     this->_computeGradient();
   }
 
-  template<typename SystemType, typename StateType>
-#ifdef PRESSIO_ENABLE_CXX20
-  requires SystemWithFusedResidualAndJacobian<SystemType>
-  void 
-#else  
-  mpl::enable_if_t<
-  ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value
-  >  
-#endif
-  computeOperators(const SystemType & systemObj,
-		   const StateType & state,
-		   residual_norm_type & residualNorm,
-		   bool recomputeSystemJacobian = true)
-  {
-    systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-
-    // compute  norm of r_
-    residualNorm = ::pressio::ops::norm2(r_);
-
-    if (std::isnan(residualNorm)){
-      throw ::pressio::eh::ResidualHasNans();
-    }
-
-    // hessian only recomputed if Jacobian has been updated
-    if (recomputeSystemJacobian){
-      this->_computeHessian();
-    }
-
-    // gradient always computed because residual always changes
-    this->_computeGradient();
-  }
 
   template< typename SystemType, typename StateType>
-#ifdef PRESSIO_ENABLE_CXX20
-  requires SystemWithResidualAndJacobian<SystemType>
-  void 
-#else
-  mpl::enable_if_t<
-  ::pressio::nonlinearsolvers::SystemWithResidualAndJacobian<SystemType>::value
-  >  
-#endif
-  residualNorm(const SystemType & systemObj,
+  void residualNorm(const SystemType & systemObj,
 	       const StateType & state,
 	       residual_norm_type & residualNorm) const
   {
     systemObj.residual(state, r_);
-    residualNorm = ::pressio::ops::norm2(r_);
-
-    if (std::isnan(residualNorm)){
-      throw ::pressio::eh::ResidualHasNans();
-    }
-  }
-
-  template< typename SystemType, typename StateType>
-#ifdef PRESSIO_ENABLE_CXX20
-  requires SystemWithFusedResidualAndJacobian<SystemType>
-  void
-#else
-  mpl::enable_if_t<
-  ::pressio::nonlinearsolvers::SystemWithFusedResidualAndJacobian<SystemType>::value
-  >  
-#endif
-  residualNorm(const SystemType & systemObj,
-	       const StateType & state,
-	       residual_norm_type & residualNorm) const
-  {
-    systemObj.residualAndJacobian(state, r_, J_, false);
     residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
