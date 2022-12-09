@@ -20,7 +20,7 @@ API
     requires unsteadyimplicit::ComposableIntoDefaultProblem<
                 TrialSubspaceType, FomSystemType>
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,       (1)
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,              (1)
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem);
 
@@ -32,7 +32,7 @@ API
     requires unsteadyimplicit::ComposableIntoHyperReducedProblem<
                 TrialSubspaceType, FomSystemType, HyperReducerType>
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,       (2)
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,              (2)
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem,
 						    const HyperReducerType & hyperReducer);
@@ -46,19 +46,36 @@ API
     requires unsteadyimplicit::ComposableIntoHyperReducedMaskedProblem<
                 TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,       (3)
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,              (3)
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem,
 						    const MaskerType & masker,
 						    const HyperReducerType & hyperReducer);
+
+  template<
+    std::size_t TotalNumberOfStencilStates,
+    class TrialSubspaceType,
+    class FomSystemType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires FullyDiscreteSystemWithJacobianAction<
+                FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>
+  #endif
+  /*impl defined*/ create_unsteady_implicit_problem(const TrialSubspaceType & trialSubspace, (4)
+					            const FomSystemType & fomSystem);
 
   }}} // end namespace pressio::rom::galerkin
 
 Description
 ~~~~~~~~~~~
 
-Overload set to instantiate a default (1), hyper-reduced (2) or masked (3) problem
-with *implicit* time integration.
+Overload set to instantiate a default (1), hyper-reduced (2), masked (3)
+or "user-defined" (4) problem with *implicit* time integration.
+
+Non-type Template Parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``TotalNumberOfStencilStates``: total number of desired states needed
+  to define your scheme. Applicable only to overload 4.
 
 Parameters
 ~~~~~~~~~~
@@ -102,6 +119,7 @@ and/or SFINAE. The concepts used are:
 
 - `rom::galerkin::unsteadyimplicit::ComposableIntoHyperReducedMaskedProblem <rom_concepts_implicit_galerkin/masked.html>`__
 
+- `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
 
 Preconditions
 ~~~~~~~~~~~~~

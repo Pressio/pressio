@@ -3,11 +3,56 @@
 #define ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
 
 #include "impl/galerkin_helpers.hpp"
+#include "impl/galerkin_unsteady_fom_states_manager.hpp"
 #include "impl/galerkin_unsteady_system_default_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_hypred_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_masked_rhs_and_jacobian.hpp"
+#include "impl/galerkin_unsteady_system_fully_discrete_fom.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
+
+// -------------------------------------------------------------
+// fully-discrete
+// -------------------------------------------------------------
+template<
+  std::size_t TotalNumberOfDesiredStates,
+  class TrialSubspaceType,
+  class FomSystemType>
+#ifdef PRESSIO_ENABLE_CXX20
+  requires FullyDiscreteSystemWithJacobianAction<
+	FomSystemType, TotalNumberOfDesiredStates, typename TrialSubspaceType::basis_matrix_type>
+#endif
+auto create_unsteady_implicit_problem(const TrialSubspaceType & trialSpace,
+				      const FomSystemType & fomSystem)
+{
+
+#if not defined PRESSIO_ENABLE_CXX20
+  static_assert(FullyDiscreteSystemWithJacobianAction<
+		FomSystemType, TotalNumberOfDesiredStates,
+		typename TrialSubspaceType::basis_matrix_type>::value,
+		"concept not satisfied");
+#endif
+
+  static_assert(std::is_same<typename TrialSubspaceType::full_state_type,
+		typename FomSystemType::state_type>::value == true,
+		"Mismatching fom states");
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type        = typename TrialSubspaceType::reduced_state_type;
+  using default_types             = ImplicitGalerkinDefaultOperatorsTraits<reduced_state_type>;
+  using reduced_residual_type = typename default_types::reduced_residual_type;
+  using reduced_jacobian_type = typename default_types::reduced_jacobian_type;
+
+  // the "system" implements the math
+  using galerkin_system = impl::GalerkinDefaultFullyDiscreteSystem<
+    TotalNumberOfDesiredStates, independent_variable_type,
+    reduced_state_type, reduced_residual_type,
+    reduced_jacobian_type, TrialSubspaceType, FomSystemType>;
+
+  galerkin_system galSystem(trialSpace, fomSystem);
+  return ::pressio::ode::create_implicit_stepper<
+    TotalNumberOfDesiredStates>(std::move(galSystem));
+}
 
 // -------------------------------------------------------------
 // default
