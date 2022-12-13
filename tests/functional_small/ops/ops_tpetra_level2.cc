@@ -1,263 +1,187 @@
 
-#include "tpetra_only_fixtures.hpp"
 #include "pressio/ops.hpp"
+#include "tpetra_only_fixtures.hpp"
+#include "ops_shared_level2.hpp"
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_kokkos_vector)
-{
-    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    for (int i=0; i<localSize_; ++i){
-     for (int j=0; j<numVecs_; ++j){
-        myMv_h(i,j) = (double)j;
-     }
-    }
+//-------------------------------------------
+// Test implementation and utilities
+//-------------------------------------------
 
-    Kokkos::View<double*> a("a", numVecs_);
-    KokkosBlas::fill(a, 1.);
+using vec_t = typename tpetraMultiVectorGlobSize15Fixture::vec_t;
+using mvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
+using importer_t = typename tpetraMultiVectorGlobSize15Fixture::importer_t;
 
-    vec_t y(contigMap_);
-    y.putScalar(0.);
-    pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 1., y);
+// convenient alias for nicer test names
+using ops_tpetra = tpetraMultiVectorGlobSize15Fixture;
 
-    auto y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
-
-    // simulate beta=0 with uninitialized y containing NaN
-    const auto nan = std::nan("0");
-    y.putScalar(nan);
-    pressio::ops::product(::pressio::nontranspose{}, 1., *myMv_, a, 0., y);
-
-    y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
-
-    // simulate alpha=0 with NaN in input matrix
-    myMv_h(0,0) = nan;
-    pressio::ops::product(::pressio::nontranspose{}, 0., *myMv_, a, 1., y);
-    y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
-
-    // alpha == beta == 0
-    pressio::ops::product(::pressio::nontranspose{}, 0., *myMv_, a, 0., y);
-    y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 0.);
+template <typename T>
+auto get_global_host_view(T &view, const importer_t& /* importer */) {
+  return view;
 }
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_kokkos_vector)
-{
-    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    for (int i=0; i<localSize_; ++i){
-     for (int j=0; j<numVecs_; ++j){
-        myMv_h(i,j) = (double)i;
-     }
+template <>
+auto get_global_host_view<mvec_t>(mvec_t &mv, const importer_t &importer) {
+  auto mv_import = Teuchos::rcp(new mvec_t(importer.getTargetMap(), mv.getNumVectors()));
+  mv_import->doImport(mv, importer, Tpetra::REPLACE);
+  return mv_import->getLocalViewHost(Tpetra::Access::ReadWrite);
+}
+
+template <>
+auto get_global_host_view<vec_t>(vec_t &v, const importer_t &importer) {
+  auto v_import = Teuchos::rcp(new vec_t(importer.getTargetMap(), v.getNumVectors()));
+  v_import->doImport(v, importer, Tpetra::REPLACE);
+  auto v_h = v_import->getLocalViewHost(Tpetra::Access::ReadWrite);
+  return Kokkos::subview(v_h, Kokkos::ALL(), 0);
+}
+
+template <
+    typename FixtureType,
+    typename TransMode,
+    typename AType,
+    typename XType,
+    typename YType,
+    typename ScalarType
+    >
+void test_impl(FixtureType &test, TransMode trans, ScalarType alpha, AType A, XType x, ScalarType beta, YType &y) {
+    // copy original values, fetch whole vector (from all ranks) to do the verification locally
+    auto y_ref_h = get_global_host_view(y, *test.importer_);
+
+    // call tested routine on device
+    pressio::ops::product(trans, alpha, A, x, beta, y);
+
+    // Note: trick here is to fetch whole data (from all ranks)
+    // and run the simplified reference routine locally
+    auto A_h = get_global_host_view(A, *test.importer_);
+    auto x_h = get_global_host_view(x, *test.importer_);
+    auto y_h = get_global_host_view(y, *test.importer_);
+    if (test.rank_ == 0) {
+        vanilla_gemv(trans, alpha, A_h, x_h, beta, y_ref_h);
+        const size_t y_size = ::pressio::ops::extent(y_h, 0);
+        for (size_t i = 0; i < y_size; ++i) {
+          EXPECT_DOUBLE_EQ(y_h(i), y_ref_h(i));
+        }
     }
+}
 
-    vec_t y(contigMap_);
-    y.putScalar(2.);
-
-    Kokkos::View<double*> a("a", numVecs_);
-    KokkosBlas::fill(a, 1.);
-    pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 1., a);
-
-    auto a_h = Kokkos::create_mirror_view(a);
-    Kokkos::deep_copy(a_h, a);
-    const auto a1_ref = numProc_ * 2. * 10. + 1.;
-    EXPECT_DOUBLE_EQ(a_h(0), a1_ref);
-    EXPECT_DOUBLE_EQ(a_h(1), a1_ref);
-    EXPECT_DOUBLE_EQ(a_h(2), a1_ref);
-    EXPECT_DOUBLE_EQ(a_h(3), a1_ref);
-
+template <
+    typename FixtureType,
+    typename TransMode,
+    typename AType,
+    typename XType,
+    typename YType
+    >
+void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
+    // non-zero alpha and beta
+    test_impl(test, trans, 2., A, x, -1., y);
     // simulate beta=0 with uninitialized y containing NaN
     const auto nan = std::nan("0");
-    KokkosBlas::fill(a, nan);
-    pressio::ops::product(::pressio::transpose{}, 1., *myMv_, y, 0., a);
-
-    a_h = Kokkos::create_mirror_view(a);
-    Kokkos::deep_copy(a_h, a);
-    const auto a0_ref = numProc_ * 2. * 10. + 0.;
-    EXPECT_DOUBLE_EQ(a_h(0), a0_ref);
-    EXPECT_DOUBLE_EQ(a_h(1), a0_ref);
-    EXPECT_DOUBLE_EQ(a_h(2), a0_ref);
-    EXPECT_DOUBLE_EQ(a_h(3), a0_ref);
-
+    ::pressio::ops::fill(y, nan);
+    test_impl(test, trans, 2., A, x, 0., y);
     // simulate alpha=0 with NaN in input matrix
-    myMv_h(0,0) = nan;
-    pressio::ops::product(::pressio::transpose{}, 0., *myMv_, y, 1., a);
-    Kokkos::deep_copy(a_h, a);
-    EXPECT_DOUBLE_EQ(a_h(0), a0_ref);
-    EXPECT_DOUBLE_EQ(a_h(1), a0_ref);
-    EXPECT_DOUBLE_EQ(a_h(2), a0_ref);
-    EXPECT_DOUBLE_EQ(a_h(3), a0_ref);
+    auto A_h = A.getLocalViewHost(Tpetra::Access::ReadWrite);
+    auto a00 = A_h(0, 0);
+    A_h(0, 0) = nan;
+    test_impl(test, trans, 0., A, x, 0., y);
+    // alpha=0, beta=1
+    ::pressio::ops::fill(y, 2.);
+    test_impl(test, trans, 0., A, x, 1., y);
+    // restore original value
+    A_h(0, 0) = a00;
+}
 
-    // alpha == beta == 0
-    pressio::ops::product(::pressio::transpose{}, 0., *myMv_, y, 0., a);
-    Kokkos::deep_copy(a_h, a);
-    EXPECT_DOUBLE_EQ(a_h(0), 0.);
-    EXPECT_DOUBLE_EQ(a_h(1), 0.);
-    EXPECT_DOUBLE_EQ(a_h(2), 0.);
-    EXPECT_DOUBLE_EQ(a_h(3), 0.);
+//-------------------------------------------
+// Test Kokkos x
+//-------------------------------------------
+
+TEST_F(ops_tpetra, mv_prod_kokkos_vector)
+{
+    Kokkos::View<double*> x_kokkos{"x", (size_t)numVecs_};
+    auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x_kokkos);
+    for (int j = 0; j < numVecs_; ++j) {
+      x_h(j) = (double)(j + 1.); // unique int values
+    }
+    Kokkos::deep_copy(x_kokkos, x_h);
+
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos, *y_tpetra);
+}
+
+//-------------------------------------------
+// Test Kokkos y
+//-------------------------------------------
+
+TEST_F(ops_tpetra, mv_T_vector_storein_kokkos_vector)
+{
+    Kokkos::View<double*> y_kokkos{"y", (size_t)numVecs_};
+    ::pressio::ops::fill(y_kokkos, 2.);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos);
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 
-template <typename XType>
-void test_with_eigen_x(const tpetraMultiVectorGlobSize15Fixture &test, XType x) {
-    auto A = *test.myMv_;
-    auto A_h = A.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    for (int i = 0; i < test.localSize_; ++i) {
-      for (int j = 0; j < test.numVecs_; ++j) {
-        A_h(i, j) = (double)j;
-      }
+//-------------------------------------------
+// Test Eigen x
+//-------------------------------------------
+
+TEST_F(ops_tpetra, mv_prod_eigen_vector)
+{
+    Eigen::VectorXd x_eigen{numVecs_};
+    for (int j = 0; j < numVecs_; ++j) {
+      x_eigen(j) = (double)(j + 1.);
     }
 
-    tpetraMultiVectorGlobSize15Fixture::vec_t y(test.contigMap_);
-    y.putScalar(0.);
-    pressio::ops::product(::pressio::nontranspose{}, 1., A, x, 1., y);
-
-    auto y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
-
-    // simulate beta=0 with uninitialized y containing NaN
-    const auto nan = std::nan("0");
-    y.putScalar(nan);
-    pressio::ops::product(::pressio::nontranspose{}, 1., A, x, 0., y);
-
-    y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
-
-    // simulate alpha=0 with NaN in input matrix
-    A_h(0, 0) = nan;
-    pressio::ops::product(::pressio::nontranspose{}, 0., A, x, 1., y);
-    y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 6.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 6.);
-
-    // alpha == beta == 0
-    pressio::ops::product(::pressio::nontranspose{}, 0., A, x, 0., y);
-    y_h = y.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
-    EXPECT_DOUBLE_EQ(y_h(0,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(1,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(2,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(3,0), 0.);
-    EXPECT_DOUBLE_EQ(y_h(4,0), 0.);
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen, *y_tpetra);
 }
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)
-{
-    Eigen::VectorXd x0(numVecs_);
-    x0.setConstant(1.);
-    test_with_eigen_x(*this, x0);
-}
-
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_span)
+TEST_F(ops_tpetra, mv_prod_eigen_span)
 {
     Eigen::VectorXd x0(numVecs_ + 3);
     x0.setConstant(1.);
-    test_with_eigen_x(*this, pressio::span(x0, 2, numVecs_));
+    auto x_eigen_span = pressio::span(x0, 2, numVecs_);
+
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_span, *y_tpetra);
 }
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_prod_eigen_diag)
+TEST_F(ops_tpetra, mv_prod_eigen_diag)
 {
     Eigen::MatrixXd M0(numVecs_, numVecs_);
     for (int i = 0; i < numVecs_; ++i) {
         M0(i, i) = 1.;
     }
-    test_with_eigen_x(*this, pressio::diag(M0));
+    auto x_eigen_diag = pressio::diag(M0);
+
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_diag, *y_tpetra);
 }
 
-template <typename YType>
-void test_with_eigen_y(const tpetraMultiVectorGlobSize15Fixture &test, YType y) {
-    auto A = *test.myMv_;
-    auto A_h = A.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    for (int i = 0; i < test.localSize_; ++i) {
-      for (int j = 0; j < test.numVecs_; ++j) {
-        A_h(i, j) = (double)i;
-      }
-    }
+//-------------------------------------------
+// Test Eigen y
+//-------------------------------------------
 
-    tpetraMultiVectorGlobSize15Fixture::vec_t x(test.contigMap_);
-    x.putScalar(2.);
-
-    pressio::ops::product(::pressio::transpose{}, 1., A, x, 1., y);
-
-    const auto a1_ref = test.numProc_ * 2. * 10. + 1.;
-    EXPECT_DOUBLE_EQ(y(0), a1_ref);
-    EXPECT_DOUBLE_EQ(y(1), a1_ref);
-    EXPECT_DOUBLE_EQ(y(2), a1_ref);
-    EXPECT_DOUBLE_EQ(y(3), a1_ref);
-
-    // simulate beta=0 with uninitialized y containing NaN
-    const auto nan = std::nan("0");
-    ::pressio::ops::fill(y, nan);
-    pressio::ops::product(::pressio::transpose{}, 1., A, x, 0., y);
-
-    const auto a0_ref = test.numProc_ * 2. * 10. + 0.;
-    EXPECT_DOUBLE_EQ(y(0), a0_ref);
-    EXPECT_DOUBLE_EQ(y(1), a0_ref);
-    EXPECT_DOUBLE_EQ(y(2), a0_ref);
-    EXPECT_DOUBLE_EQ(y(3), a0_ref);
-
-    // simulate alpha=0 with NaN in input matrix
-    A_h(0, 0) = nan;
-    pressio::ops::product(::pressio::transpose{}, 0., A, x, 1., y);
-    EXPECT_DOUBLE_EQ(y(0), a0_ref);
-    EXPECT_DOUBLE_EQ(y(1), a0_ref);
-    EXPECT_DOUBLE_EQ(y(2), a0_ref);
-    EXPECT_DOUBLE_EQ(y(3), a0_ref);
-
-    // alpha == beta == 0
-    pressio::ops::product(::pressio::transpose{}, 0., A, x, 0., y);
-    EXPECT_DOUBLE_EQ(y(0), 0.);
-    EXPECT_DOUBLE_EQ(y(1), 0.);
-    EXPECT_DOUBLE_EQ(y(2), 0.);
-    EXPECT_DOUBLE_EQ(y(3), 0.);
-}
-
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_vector)
+TEST_F(ops_tpetra, mv_T_vector_storein_eigen_vector)
 {
-    Eigen::VectorXd y0(numVecs_);
-    y0.setConstant(1.);
-    test_with_eigen_y(*this, y0);
+    Eigen::VectorXd y_eigen{numVecs_};
+    y_eigen.setConstant(1.);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen);
 }
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_span)
+TEST_F(ops_tpetra, mv_T_vector_storein_eigen_span)
 {
     Eigen::VectorXd y0(numVecs_ + 3);
     y0.setConstant(1.);
-    test_with_eigen_y(*this, pressio::span(y0, 2, numVecs_));
+    auto y_eigen_span = pressio::span(y0, 2, numVecs_);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen_span);
 }
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_vector_storein_eigen_diag)
+TEST_F(ops_tpetra, mv_T_vector_storein_eigen_diag)
 {
     Eigen::MatrixXd M0(numVecs_, numVecs_);
     for (int i = 0; i < numVecs_; ++i) {
         M0(i, i) = 1.;
     }
-    test_with_eigen_y(*this, pressio::diag(M0));
+    auto y_eigen_diag = pressio::diag(M0);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen_diag);
 }
 #endif
