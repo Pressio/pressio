@@ -112,6 +112,10 @@ template<class ...> struct matching_extents;
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// Teuchos
+#include "ops/teuchos/ops_extent.hpp"
+#include "ops/teuchos/ops_level2.hpp"
+
 // Tpetra
 #include "ops/tpetra/ops_clone.hpp"
 #include "ops/tpetra/ops_extent.hpp"
@@ -159,9 +163,6 @@ template<class ...> struct matching_extents;
 #include "ops/epetra/ops_multi_vector_update.hpp"
 #include "ops/epetra/ops_level2.hpp"
 #include "ops/epetra/ops_level3.hpp"
-
-// teuchos
-#include "ops/teuchos/ops_level2.hpp"
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 // keep this last
