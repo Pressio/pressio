@@ -96,6 +96,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
+  ::pressio::is_vector_kokkos<x_type>::value and
   ::pressio::is_vector_tpetra<y_type>::value
   >
 _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
@@ -104,6 +105,7 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
 					const beta_t & beta,
 					y_type & y)
 {
+  assert(x.span_is_contiguous());
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x,0)));
   const char ctA = 'N';
   const auto ALocalView_d = A.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
@@ -114,6 +116,41 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
   const auto yLocalView_drank2 = y.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
   ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, x, beta, yLocalView_drank1);
+}
+
+template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_multi_vector_tpetra<A_type>::value and
+  ::pressio::is_expression_acting_on_kokkos<x_type>::value and
+  ::pressio::is_vector_tpetra<y_type>::value
+  >
+_product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
+					const A_type & A,
+					const x_type & x,
+					const beta_t & beta,
+					y_type & y)
+{
+  assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x, 0)));
+  const char ctA = 'N';
+  const auto ALocalView_d = A.getLocalViewDevice(Tpetra::Access::ReadOnly);
+
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank2 = y.getLocalViewDevice(Tpetra::Access::ReadWrite);
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
+  const auto x_size = ::pressio::ops::extent(x, 0);
+  const auto y_size = ::pressio::ops::extent(yLocalView_drank1, 0);
+  const auto zero = ::pressio::utils::Constants<typename pressio::Traits<x_type>::scalar_type>::zero();
+  for (size_t i = 0; i < y_size; ++i) {
+    if (beta == zero) yLocalView_drank1(i) = zero;
+    else yLocalView_drank1(i) *= beta;
+    if (alpha != zero) {
+      for (size_t j = 0; j < x_size; ++j) {
+        yLocalView_drank1(i) += alpha * ALocalView_d(i, j) * x(j);
+      }
+    }
+  }
 }
 }//end namespace pressio::ops::impl
 
@@ -169,7 +206,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_vector_tpetra<y_type>::value
-  && ::pressio::is_vector_kokkos<x_type>::value
+  && (::pressio::is_vector_kokkos<x_type>::value
+   || ::pressio::is_expression_acting_on_kokkos<x_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
@@ -184,9 +222,6 @@ product(::pressio::nontranspose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-
-  assert(x.span_is_contiguous());
-
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
 }
 
@@ -390,7 +425,8 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_vector_tpetra<x_type>::value
-  && ::pressio::is_vector_kokkos<y_type>::value
+  && (::pressio::is_vector_kokkos<y_type>::value
+   || ::pressio::is_expression_acting_on_kokkos<y_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
@@ -405,10 +441,15 @@ product(::pressio::transpose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-  y_type ATx("ATx", y.extent(0));
+  auto y_native = ::pressio::ops::impl::get_native(y);
+  using y_native_type = typename ::pressio::mpl::remove_cvref<decltype(y_native)>::type;
+  Kokkos::View<
+    typename ::pressio::Traits<y_type>::scalar_type*,
+    typename y_native_type::device_type
+    > ATx("ATx", y.extent(0));
   auto request = Tpetra::idot(ATx, A, x);
   request->wait();
-  ::KokkosBlas::axpby(alpha, ATx, beta, y);
+  ::KokkosBlas::axpby(alpha, ATx, beta, y_native);
 }
 
 }}//end namespace pressio::ops
