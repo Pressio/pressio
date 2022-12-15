@@ -155,6 +155,7 @@ template<class ...> struct matching_extents;
 #include "ops/epetra/ops_clone.hpp"
 #include "ops/epetra/ops_extent.hpp"
 #include "ops/epetra/ops_deep_copy.hpp"
+#include "ops/epetra/ops_scale.hpp"
 #include "ops/epetra/ops_set_zero.hpp"
 #include "ops/epetra/ops_fill.hpp"
 #include "ops/epetra/ops_abs.hpp"
