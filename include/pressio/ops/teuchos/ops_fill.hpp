@@ -56,7 +56,7 @@ template<class T, class ScalarType>
   ::pressio::is_dense_vector_teuchos<T>::value
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-fill(T & objectIn, const ScalarType value)
+fill(T & objectIn, ScalarType value)
 {
   const typename ::pressio::Traits<T>::scalar_type v(value);
   objectIn = v;

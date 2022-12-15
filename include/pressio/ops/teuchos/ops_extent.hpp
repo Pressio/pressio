@@ -56,7 +56,7 @@ mpl::enable_if_t<
   ::pressio::is_dense_vector_teuchos<T>::value,
   typename T::ordinalType
   >
-extent(const T & objectIn, const IndexType i)
+extent(const T & objectIn, IndexType i)
 {
   if (i == 0)
     return objectIn.numRows();
