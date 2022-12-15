@@ -58,12 +58,7 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, IndexType i)
 {
-  if (i == 0)
-    return objectIn.numRows();
-  else if (i == 1)
-    return objectIn.numCols();
-  else
-    return 0;
+  return (i == 0) ? objectIn.length() : 1;
 }
 
 }}
