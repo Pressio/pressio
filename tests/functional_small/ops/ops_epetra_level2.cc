@@ -139,6 +139,10 @@ void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
     A[0][0] = a00;
 }
 
+//-------------------------------------------
+// Test Teuchos x
+//-------------------------------------------
+
 TEST_F(ops_epetra, mv_prod_teuchos_vector)
 {
     Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
@@ -146,6 +150,10 @@ TEST_F(ops_epetra, mv_prod_teuchos_vector)
 
     test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_epetra);
 }
+
+//-------------------------------------------
+// Test Teuchos y
+//-------------------------------------------
 
 TEST_F(ops_epetra, mv_prod_storein_teuchos_vector)
 {
@@ -156,6 +164,9 @@ TEST_F(ops_epetra, mv_prod_storein_teuchos_vector)
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
+//-------------------------------------------
+// Test Eigen x
+//-------------------------------------------
 
 TEST_F(ops_epetra, mv_prod_eigen_vector)
 {
@@ -165,12 +176,56 @@ TEST_F(ops_epetra, mv_prod_eigen_vector)
     test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen, *y_epetra);
 }
 
+TEST_F(ops_epetra, mv_prod_eigen_span)
+{
+    Eigen::VectorXd x0(numVecs_ + 3);
+    x0.setConstant(1.);
+    auto x_eigen_span = pressio::span(x0, 2, numVecs_);
+
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_span, *y_epetra);
+}
+
+TEST_F(ops_epetra, mv_prod_eigen_diag)
+{
+    Eigen::MatrixXd M0(numVecs_, numVecs_);
+    for (int i = 0; i < numVecs_; ++i) {
+        M0(i, i) = 1.;
+    }
+    auto x_eigen_diag = pressio::diag(M0);
+
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_diag, *y_epetra);
+}
+
+//-------------------------------------------
+// Test Eigen y
+//-------------------------------------------
+
 TEST_F(ops_epetra, mv_T_vector_storein_eigen_vector)
 {
     Eigen::VectorXd y_eigen(numVecs_);
     y_eigen.setConstant(1.);
 
     test_impl(*this, ::pressio::transpose{}, *myMv_, *x_epetra, y_eigen);
+}
+
+TEST_F(ops_epetra, mv_T_vector_storein_eigen_span)
+{
+    Eigen::VectorXd y0(numVecs_ + 3);
+    y0.setConstant(1.);
+    auto y_eigen_span = pressio::span(y0, 2, numVecs_);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_epetra, y_eigen_span);
+}
+
+TEST_F(ops_epetra, mv_T_vector_storein_eigen_diag)
+{
+    Eigen::MatrixXd M0(numVecs_, numVecs_);
+    for (int i = 0; i < numVecs_; ++i) {
+        M0(i, i) = 1.;
+    }
+    auto y_eigen_diag = pressio::diag(M0);
+
+    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_epetra, y_eigen_diag);
 }
 
 #endif

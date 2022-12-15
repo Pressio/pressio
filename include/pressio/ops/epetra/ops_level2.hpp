@@ -196,7 +196,8 @@ template <
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_epetra<A_type>::value
-  && ::pressio::is_vector_eigen<x_type>::value
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
   && ::pressio::is_vector_epetra<y_type>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
@@ -237,7 +238,8 @@ template <
   // TPL/container specific
   && ::pressio::is_multi_vector_epetra<A_type>::value
   && ::pressio::is_vector_epetra<x_type>::value
-  && ::pressio::is_vector_eigen<y_type>::value
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
@@ -254,7 +256,7 @@ product(::pressio::transpose /*unused*/,
 {
 
   const int numVecs = A.NumVectors();
-  assert( (std::size_t)y.size() == (std::size_t)numVecs );
+  assert( (std::size_t)::pressio::ops::extent(y, 0) == (std::size_t)numVecs );
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
