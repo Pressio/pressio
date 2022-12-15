@@ -9,14 +9,14 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_clone)
 
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
-        EXPECT_DOUBLE_EQ(a[j][i], 0.0);
+        EXPECT_DOUBLE_EQ(a[j][i], (*myMv_)[j][i]);
      }
     }
 
-    myMv_->PutScalar(23.);
+    myMv_->PutScalar(82631.);
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
-        EXPECT_DOUBLE_EQ(a[j][i], 0.0);
+        EXPECT_NE(a[j][i], 82631.);
      }
     }
 }
@@ -33,7 +33,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_deep_copy)
     auto a = pressio::ops::clone(*myMv_);
     pressio::ops::deep_copy(a, *myMv_);
     for (int i=0; i<localSize_; ++i){
-     for (int j=0; j<numVecs_; ++j){        
+     for (int j=0; j<numVecs_; ++j){
         EXPECT_DOUBLE_EQ(a[j][i], -5.);
      }
     }
@@ -52,7 +52,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_setzero)
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
         EXPECT_DOUBLE_EQ((*myMv_)[j][i], 0.);
-     } 
+     }
     }
 }
 
