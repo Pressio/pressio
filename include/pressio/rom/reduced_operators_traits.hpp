@@ -98,6 +98,7 @@ struct ImplicitGalerkinDefaultOperatorsTraits
   using reduced_state_type    = void;
   using reduced_residual_type = void;
   using reduced_jacobian_type = void;
+  using reduced_mass_matrix_type = void;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -108,6 +109,7 @@ struct ImplicitGalerkinDefaultOperatorsTraits<
   using reduced_state_type    = T;
   using reduced_residual_type = T;
   using reduced_jacobian_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
+  using reduced_mass_matrix_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
 };
 #endif
 
@@ -126,6 +128,11 @@ template<class SubspaceType>
 using implicit_galerkin_default_reduced_jacobian_t =
   typename ImplicitGalerkinDefaultOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_jacobian_type;
+
+template<class SubspaceType>
+using implicit_galerkin_default_reduced_mass_matrix_t =
+  typename ImplicitGalerkinDefaultOperatorsTraits<
+    typename SubspaceType::reduced_state_type>::reduced_mass_matrix_type;
 } //end namespace pressio:rom::impl
 
 

@@ -46,22 +46,29 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_GALERKIN_EXPLICIT_DEFAULT_WITH_VARYING_MM_HPP_
-#define ROM_CONCEPTS_GALERKIN_EXPLICIT_DEFAULT_WITH_VARYING_MM_HPP_
+#ifndef ROM_CONCEPTS_GALERKIN_IMPLICIT_DEFAULT_WITH_MASS_MATRIX_HPP_
+#define ROM_CONCEPTS_GALERKIN_IMPLICIT_DEFAULT_WITH_MASS_MATRIX_HPP_
 
 #include "helpers.hpp"
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyimplicit{
 
 #ifdef PRESSIO_ENABLE_CXX20
 template <class TrialSubspaceType, class FomSystemType>
 concept ComposableIntoDefaultWithMassMatrixProblem =
      ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
-  && SemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+  && SemiDiscreteFomWithJacobianAndMassMatrixAction<
+       FomSystemType, typename TrialSubspaceType::basis_matrix_type,
+       typename TrialSubspaceType::basis_matrix_type>
+  && std::same_as<
+       typename TrialSubspaceType::full_state_type,
+       typename FomSystemType::state_type>
   && requires(
 	const TrialSubspaceType & subspace,
+	const concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType> & JaFom,
 	const concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomSystemType, TrialSubspaceType> & MMaFom,
-	impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> & massMatGal,
+	impl::implicit_galerkin_default_reduced_jacobian_t<TrialSubspaceType> & JGal,
+	impl::implicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> & MGal,
 	scalar_trait_t<typename TrialSubspaceType::basis_matrix_type>  alpha,
 	scalar_trait_t<typename TrialSubspaceType::reduced_state_type> beta)
   {
@@ -69,24 +76,32 @@ concept ComposableIntoDefaultWithMassMatrixProblem =
     /*
       Define:
       - B           : basis of the subspace, i.e. B = subspace.basisOfTranslatedSpace()
+      - JaFom       : the action of the FOM jacobian on B
       - MMaFom      : the action of the FOM mass matrix on B
       - alpha, beta : scalars
+      - JGal        : the reduced Galerkin Jacobian
       - MGal        : the reduced Galerkin mass matrix
     */
+
+    /* JGal = beta*JGal + alpha * B^T * JaFom * B */
+    pressio::ops::product
+       (::pressio::transpose(), ::pressio::nontranspose(),
+	alpha, subspace.basisOfTranslatedSpace(), JaFom,
+	beta, JGal);
 
     /* MGal = beta*MGal + alpha * B^T * MMaFom*/
     pressio::ops::product
        (::pressio::transpose(), ::pressio::nontranspose(),
 	alpha, subspace.basisOfTranslatedSpace(), MMaFom,
-	beta, massMatGal);
+	beta, MGal);
   };
 #endif // PRESSIO_ENABLE_CXX20
 
-}}}} //end namespace pressio::rom::galerkin::unsteadyexplicit
+}}}} //end namespace pressio::rom::galerkin::unsteadyimplicit
 
 
 #if not defined PRESSIO_ENABLE_CXX20
-namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyexplicit{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace unsteadyimplicit{
 
 template <class TrialSubspaceType, class FomSystemType, class = void>
 struct ComposableIntoDefaultWithMassMatrixProblem : std::false_type{};
@@ -95,28 +110,44 @@ template <class TrialSubspaceType, class FomSystemType>
 struct ComposableIntoDefaultWithMassMatrixProblem<
   TrialSubspaceType, FomSystemType,
   mpl::enable_if_t<
-    ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value
-    && SemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    unsteadyexplicit::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value
+    && SemiDiscreteFomWithJacobianAndMassMatrixAction<
+       FomSystemType, typename TrialSubspaceType::basis_matrix_type,
+      typename TrialSubspaceType::basis_matrix_type>::value
+    && std::is_same<
+        typename TrialSubspaceType::full_state_type,
+        typename FomSystemType::state_type>::value
     && std::is_void<
-      decltype
-      (
-      ::pressio::ops::product
-	(::pressio::transpose(),
-	 ::pressio::nontranspose(),
+	decltype
+	(
+	::pressio::ops::product
+	(::pressio::transpose(), ::pressio::nontranspose(),
 	 std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
 	 std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
-	 std::declval<
-	  concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomSystemType, TrialSubspaceType> const &>(),
+	 std::declval<concepts::impl::fom_jacobian_action_on_trial_space_t<FomSystemType, TrialSubspaceType> const &>(),
 	 std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
-	 std::declval<impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> &>()
-       )
-       )
-      >::value
+	 std::declval<impl::implicit_galerkin_default_reduced_jacobian_t<TrialSubspaceType> &>()
+	 )
+	 )
+    >::value
+    && std::is_void<
+	decltype
+	(
+	::pressio::ops::product
+	(::pressio::transpose(), ::pressio::nontranspose(),
+	 std::declval<scalar_trait_t<typename TrialSubspaceType::basis_matrix_type> const &>(),
+	 std::declval<typename TrialSubspaceType::basis_matrix_type const &>(),
+	 std::declval<concepts::impl::fom_mass_matrix_action_on_trial_space_t<FomSystemType, TrialSubspaceType> const &>(),
+	 std::declval<scalar_trait_t<typename TrialSubspaceType::reduced_state_type> const &>(),
+	 std::declval<impl::implicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType> &>()
+	 )
+	 )
+    >::value
    >
   > : std::true_type{};
 
-}}}} //end namespace pressio::rom::galerkin::unsteadyexplicit
+}}}}
 
 #endif
 
-#endif  // ROM_CONCEPTS_GALERKIN_EXPLICIT_DEFAULT_WITH_VARYING_MM_HPP_
+#endif  // ROM_CONCEPTS_GALERKIN_IMPLICIT_DEFAULT_HPP_
