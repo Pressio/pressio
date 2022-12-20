@@ -78,6 +78,7 @@
 #include "./rom/concepts/fom_semi_discrete_with_mm_action.hpp"
 #include "./rom/concepts/fom_semi_discrete_with_jac_action.hpp"
 #include "./rom/concepts/fom_fully_discrete_with_jac_action.hpp"
+#include "./rom/concepts/fom_semi_discrete_with_jac_and_mm_action.hpp"
 
 // galerkin
 #include "./rom/concepts/galerkin_steady_default.hpp"
@@ -88,8 +89,11 @@
 #include "./rom/concepts/galerkin_explicit_hyperreduced.hpp"
 #include "./rom/concepts/galerkin_explicit_masked.hpp"
 #include "./rom/concepts/galerkin_implicit_default.hpp"
+#include "./rom/concepts/galerkin_implicit_default_with_varying_mm.hpp"
 #include "./rom/concepts/galerkin_implicit_hyperreduced.hpp"
 #include "./rom/concepts/galerkin_implicit_masked.hpp"
+
+
 // lspg
 #include "./rom/concepts/lspg_steady_default.hpp"
 #include "./rom/concepts/lspg_steady_masked.hpp"
