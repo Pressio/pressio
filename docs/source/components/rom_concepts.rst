@@ -18,6 +18,7 @@ concepts: fom
     rom_concepts_foms/semidiscrete_fom
     rom_concepts_foms/semidiscrete_fom_with_mass_matrix_action
     rom_concepts_foms/semidiscrete_fom_with_jac_action
+    rom_concepts_foms/semidiscrete_fom_with_jac_mm_action
     rom_concepts_foms/steady_fom_with_jac_action
     rom_concepts_foms/fully_discrete_with_jac_action
 
@@ -49,6 +50,7 @@ concepts: implicit galerkin
     :maxdepth: 1
 
     rom_concepts_implicit_galerkin/default
+    rom_concepts_implicit_galerkin/default_mm
     rom_concepts_implicit_galerkin/hr
     rom_concepts_implicit_galerkin/masked
 

@@ -18,9 +18,20 @@ API
     class FomSystemType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteadyimplicit::ComposableIntoDefaultProblem<
-                TrialSubspaceType, FomSystemType>
+                TrialSubspaceType, FomSystemType>                                    (1)
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,              (1)
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,
+						    const TrialSubspaceType & trialSubspace,
+						    const FomSystemType & fomSystem);
+
+  template<
+    class TrialSubspaceType,
+    class FomSystemType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires unsteadyimplicit::ComposableIntoDefaultWithMassMatrixProblem<
+                TrialSubspaceType, FomSystemType>                                    (2)
+  #endif
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem);
 
@@ -30,9 +41,9 @@ API
     class HyperReducerType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteadyimplicit::ComposableIntoHyperReducedProblem<
-                TrialSubspaceType, FomSystemType, HyperReducerType>
+                TrialSubspaceType, FomSystemType, HyperReducerType>                  (3)
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,              (2)
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem,
 						    const HyperReducerType & hyperReducer);
@@ -44,9 +55,9 @@ API
     class HyperReducerType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires unsteadyimplicit::ComposableIntoHyperReducedMaskedProblem<
-                TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
+                TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>      (4)
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,              (3)
+  /*impl defined*/ create_unsteady_implicit_problem(ode::StepScheme schemeName,
 						    const TrialSubspaceType & trialSubspace,
 						    const FomSystemType & fomSystem,
 						    const MaskerType & masker,
@@ -58,9 +69,9 @@ API
     class FomSystemType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires FullyDiscreteSystemWithJacobianAction<
-                FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>
+                FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>        (5)
   #endif
-  /*impl defined*/ create_unsteady_implicit_problem(const TrialSubspaceType & trialSubspace, (4)
+  /*impl defined*/ create_unsteady_implicit_problem(const TrialSubspaceType & trialSubspace,
 					            const FomSystemType & fomSystem);
 
   }}} // end namespace pressio::rom::galerkin
@@ -68,8 +79,8 @@ API
 Description
 ~~~~~~~~~~~
 
-Overload set to instantiate a default (1), hyper-reduced (2), masked (3)
-or "user-defined" (4) problem with *implicit* time integration.
+Overload set to instantiate a default (1), default with time-varying mass matrix (2),
+hyper-reduced (3), masked (4) or "user-defined" (5) problem with *implicit* time integration.
 
 Non-type Template Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,11 +126,13 @@ and/or SFINAE. The concepts used are:
 
 - `rom::galerkin::unsteadyimplicit::ComposableIntoDefaultProblem <rom_concepts_implicit_galerkin/default.html>`__
 
+- `rom::galerkin::unsteadyimplicit::ComposableIntoDefaultWithMassMatrixProblem <rom_concepts_implicit_galerkin/default_mm.html>`__
 - `rom::galerkin::unsteadyimplicit::ComposableIntoHyperReducedProblem <rom_concepts_implicit_galerkin/hr.html>`__
 
 - `rom::galerkin::unsteadyimplicit::ComposableIntoHyperReducedMaskedProblem <rom_concepts_implicit_galerkin/masked.html>`__
 
 - `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
+
 
 Preconditions
 ~~~~~~~~~~~~~
