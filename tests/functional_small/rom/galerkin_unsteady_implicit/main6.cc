@@ -3,7 +3,7 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
-constexpr int N = 7;
+constexpr int N = 5;
 
 using FomStateType = Eigen::VectorXd;
 using FomRhsType = Eigen::VectorXd;
@@ -27,8 +27,8 @@ struct MyFom
   }
 
   void rightHandSide(const state_type & u,
-         const time_type evalTime,
-         right_hand_side_type & f) const
+		     const time_type evalTime,
+		     right_hand_side_type & f) const
   {
     for (decltype(f.rows()) i=0; i<f.rows(); ++i){
       f(i) = u(i) + evalTime;
@@ -59,28 +59,46 @@ struct MyFom
 		       Eigen::MatrixXd & result) const
   {
     Eigen::MatrixXd M(N, N);
-    for (std::size_t j=0; j<M.cols(); ++j){
-      M.col(j) = stateIn;
-      for (std::size_t i=0; i<M.rows(); ++i){
-	M(i,j) += evalTime + (double) j;
-      }
-    }
+    M.setConstant(1);
+    M.diagonal() = stateIn;
     result = M * operand;
   }
 };
 
 struct NonLinSolver
 {
+  int count_ = 0;
+
   template<class SystemType, class StateType>
   void solve(const SystemType & system, StateType & state)
   {
+    count_++;
     auto R = system.createResidual();
     auto J = system.createJacobian();
 
-    // do solver iterator 1
+    // mimic iteration 1
     system.residualAndJacobian(state, R, J, true);
-    // we fake an update to the state
+
+    if (count_ == 1)
+    {
+      Eigen::VectorXd goldR(3); goldR << 0.,-70.,-140.;
+      EXPECT_TRUE(R.isApprox(goldR));
+
+      Eigen::MatrixXd goldJ(3,3);
+      goldJ << 0.,0.,0., 20., 75., 130., 40., 150., 260.;
+      EXPECT_TRUE(J.isApprox(goldJ));
+    }
     for (int i=0; i<state.size(); ++i){ state[i] += 1.; }
+
+    // mimic iteration 2
+    system.residualAndJacobian(state, R, J, true);
+    if (count_ == 1)
+    {
+      Eigen::VectorXd goldR(3); goldR << 0.,80.,160.;
+      EXPECT_TRUE(R.isApprox(goldR));
+    }
+    for (int i=0; i<state.size(); ++i){ state[i] += 1.; }
+
   }
 };
 
@@ -120,8 +138,6 @@ TEST(rom_galerkin, test)
 
   pressio::ode::advance_n_steps(problem, romState, time_type{0}, dt,
 				::pressio::ode::StepCount(1), solver);
-  std::cout << romState << std::endl;
-  EXPECT_TRUE(false);
 
   pressio::log::finalize();
 }

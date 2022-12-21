@@ -74,8 +74,8 @@ public:
   void operator()(const state_type & reducedState,
 		  const IndVarType & rhsEvaluationTime,
 		  right_hand_side_type & reducedRhs,
-		  jacobian_type & reducedJacobian,
 		  mass_matrix_type & reducedMassMatrix,
+		  jacobian_type & reducedJacobian,
 		  bool computeJacobian) const
   {
 
