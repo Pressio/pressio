@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin.hpp
+// rom_fom_system_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,59 +46,43 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
-#define PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
+#ifndef ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_AND_MM_ACTION_HPP_
+#define ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_AND_MM_ACTION_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
-#include "./solvers_linear.hpp"
-#include "./solvers_nonlinear.hpp"
-#include "./ode.hpp"
+#include "helpers.hpp"
+
+namespace pressio{ namespace rom{
 
 #ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
+template<class T, class JacobianActionOperandType, class MassMatrixActionOperandType>
+concept SemiDiscreteFomWithJacobianAndMassMatrixAction =
+     SemiDiscreteFomWithJacobianAction<T, JacobianActionOperandType>
+  && SemiDiscreteFomWithMassMatrixAction<T, MassMatrixActionOperandType>;
+#endif // PRESSIO_ENABLE_CXX20
+
+}} // end namespace pressio::rom
+
+
+#if not defined PRESSIO_ENABLE_CXX20
+namespace pressio{ namespace rom{
+
+template<
+  class T,
+  class JacobianActionOperandType,
+  class MassMatrixActionOperandType,
+  class enable = void>
+struct SemiDiscreteFomWithJacobianAndMassMatrixAction : std::false_type{};
+
+template<class T, class JacobianActionOperandType, class MassMatrixActionOperandType>
+struct SemiDiscreteFomWithJacobianAndMassMatrixAction<
+  T,  JacobianActionOperandType, MassMatrixActionOperandType,
+  mpl::enable_if_t<
+     SemiDiscreteFomWithJacobianAction<T, JacobianActionOperandType>::value
+  && SemiDiscreteFomWithMassMatrixAction<T, MassMatrixActionOperandType>::value
+  >
+  > : std::true_type{};
+
+}} // end namespace pressio::rom
 #endif
 
-#include "./rom/predicates.hpp"
-#include "./rom/reduced_operators_traits.hpp"
-#include "./rom/concepts/valid_reduced_state.hpp"
-
-#include "./rom/concepts/maskable_with.hpp"
-
-// subspaces
-#include "./rom/concepts/linear_subspace.hpp"
-#include "./rom/concepts/possibly_affine_trial_column_subspace.hpp"
-
-// fom
-#include "./rom/concepts/fom_steady_with_jac_action.hpp"
-#include "./rom/concepts/fom_semi_discrete.hpp"
-#include "./rom/concepts/fom_semi_discrete_with_mm_action.hpp"
-#include "./rom/concepts/fom_semi_discrete_with_jac_action.hpp"
-#include "./rom/concepts/fom_fully_discrete_with_jac_action.hpp"
-#include "./rom/concepts/fom_semi_discrete_with_jac_and_mm_action.hpp"
-
-// galerkin
-#include "./rom/concepts/galerkin_steady_default.hpp"
-#include "./rom/concepts/galerkin_steady_hyperreduced.hpp"
-#include "./rom/concepts/galerkin_steady_masked.hpp"
-#include "./rom/concepts/galerkin_explicit_default.hpp"
-#include "./rom/concepts/galerkin_explicit_default_with_varying_mm.hpp"
-#include "./rom/concepts/galerkin_explicit_hyperreduced.hpp"
-#include "./rom/concepts/galerkin_explicit_masked.hpp"
-#include "./rom/concepts/galerkin_implicit_default.hpp"
-#include "./rom/concepts/galerkin_implicit_default_with_varying_mm.hpp"
-#include "./rom/concepts/galerkin_implicit_hyperreduced.hpp"
-#include "./rom/concepts/galerkin_implicit_masked.hpp"
-
-
-// lspg
-#include "./rom/concepts/lspg_steady_default.hpp"
-#include "./rom/concepts/lspg_steady_masked.hpp"
-#include "./rom/concepts/lspg_unsteady_default.hpp"
-#include "./rom/concepts/lspg_unsteady_hyperreduced.hpp"
-#include "./rom/concepts/lspg_unsteady_masked.hpp"
-
-#endif
+#endif  // ROM_CONCEPTS_FOM_SEMI_DISCRETE_WITH_JAC_ACTION_HPP_

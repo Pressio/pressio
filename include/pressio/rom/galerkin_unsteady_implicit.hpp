@@ -5,6 +5,7 @@
 #include "impl/galerkin_helpers.hpp"
 #include "impl/galerkin_unsteady_fom_states_manager.hpp"
 #include "impl/galerkin_unsteady_system_default_rhs_and_jacobian.hpp"
+#include "impl/galerkin_unsteady_system_default_rhs_and_jacobian_and_mm.hpp"
 #include "impl/galerkin_unsteady_system_hypred_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_masked_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_fully_discrete_fom.hpp"
@@ -59,7 +60,14 @@ auto create_unsteady_implicit_problem(const TrialSubspaceType & trialSpace,
 // -------------------------------------------------------------
 template<
   class TrialSubspaceType,
-  class FomSystemType>
+  class FomSystemType
+#if not defined PRESSIO_ENABLE_CXX20
+  ,mpl::enable_if_t<
+         unsteadyimplicit::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>::value
+     && !unsteadyimplicit::ComposableIntoDefaultWithMassMatrixProblem<TrialSubspaceType, FomSystemType>::value,
+     int> = 0
+#endif
+  >
 #ifdef PRESSIO_ENABLE_CXX20
   requires unsteadyimplicit::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
 #endif
@@ -90,6 +98,52 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
   galerkin_system galSystem(trialSpace, fomSystem);
   return ::pressio::ode::create_implicit_stepper(schemeName, std::move(galSystem));
 }
+
+// -------------------------------------------------------------
+// default with mass matrix
+// -------------------------------------------------------------
+template<
+  class TrialSubspaceType,
+  class FomSystemType
+#if not defined PRESSIO_ENABLE_CXX20
+  ,mpl::enable_if_t<
+     unsteadyimplicit::ComposableIntoDefaultWithMassMatrixProblem<TrialSubspaceType, FomSystemType>::value,
+     int> = 0
+#endif
+  >
+#ifdef PRESSIO_ENABLE_CXX20
+  requires unsteadyimplicit::ComposableIntoDefaultWithMassMatrixProblem<TrialSubspaceType, FomSystemType>
+#endif
+auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,
+				      const TrialSubspaceType & trialSpace,
+				      const FomSystemType & fomSystem)
+{
+
+  impl::valid_scheme_for_implicit_galerkin_else_throw(schemeName, "galerkin_default_implicit");
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+  using default_types      = ImplicitGalerkinDefaultOperatorsTraits<reduced_state_type>;
+  using reduced_residual_type = typename default_types::reduced_residual_type;
+  using reduced_jacobian_type = typename default_types::reduced_jacobian_type;
+  using reduced_mm_type       = typename default_types::reduced_mass_matrix_type;
+
+  using galerkin_system = impl::GalerkinDefaultOdeSystemRhsJacobianMassMatrix<
+    independent_variable_type, reduced_state_type, reduced_residual_type,
+    reduced_jacobian_type, reduced_mm_type, TrialSubspaceType, FomSystemType>;
+
+  galerkin_system galSystem(trialSpace, fomSystem);
+  return ::pressio::ode::create_implicit_stepper(schemeName, std::move(galSystem));
+}
+
+
+
+
+
+
+
+
+
 
 // -------------------------------------------------------------
 // hyper-reduced
