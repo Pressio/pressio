@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_nonlinear.hpp
+// solvers_iterative_base.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,33 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_NONLINEAR_SOLVERS_HPP_
-#define PRESSIO_NONLINEAR_SOLVERS_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_ITERATIVE_BASE_HPP_
+#define SOLVERS_NONLINEAR_IMPL_SOLVERS_ITERATIVE_BASE_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./expressions.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
+namespace pressio { namespace nonlinearsolvers{
 
-#include "solvers_nonlinear/solvers_exceptions.hpp"
+template<typename DerivedType>
+class IterativeBase
+{
+public:
+  using iteration_count_type = unsigned int;
 
-#include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
+  iteration_count_type numIterationsExecuted() const {
+    return static_cast<const DerivedType &>(*this).numIterationsExecuted();
+  }
 
-#include "solvers_nonlinear/concepts/solvers_predicates.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp"
-#include "solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp"
+  iteration_count_type maxIterations() const {
+    return maxIters_;
+  }
 
-// #include "solvers_nonlinear/impl/updaters/solvers_create_updater.hpp"
-// #include "solvers_nonlinear/impl/solvers_observer.hpp"
-// #include "solvers_nonlinear/impl/solvers_printer.hpp"
+  void setMaxIterations(iteration_count_type maxIters) {
+    maxIters_ = maxIters;
+  }
 
-#include "solvers_nonlinear/solvers_create_newton_raphson.hpp"
-// #include "solvers_nonlinear/solvers_create_gauss_newton.hpp"
-// #include "solvers_nonlinear/solvers_create_irls_gauss_newton.hpp"
-// #include "solvers_nonlinear/solvers_create_levenberg_marquardt.hpp"
+protected:
+  iteration_count_type maxIters_ = static_cast<iteration_count_type>(100);
+};
 
-#endif
+
+}} //end namespace pressio::solvers
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_ITERATIVE_BASE_HPP_

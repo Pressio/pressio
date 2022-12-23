@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_iterative_base.hpp
+// solvers_residual_jacobian_operators.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,68 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_ITERATIVE_BASE_HPP_
-#define SOLVERS_NONLINEAR_IMPL_SOLVERS_ITERATIVE_BASE_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
+#define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
 
-namespace pressio { namespace nonlinearsolvers{
+namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename DerivedType>
-struct IterativeBase
+template <class ResidualType, class JacobianType>
+class FusedResidualJacobianOperators
 {
-  using iteration_type = unsigned int;
+public:
+  using residual_norm_value_type = decltype(::pressio::ops::norm2(std::declval<ResidualType>()));
 
-  iteration_type numIterationsExecuted() const {
-    return static_cast<const DerivedType &>(*this).numIterationsExecuted();
+private:
+  ResidualType r_;
+  mutable JacobianType J_;
+  mutable ResidualType auxR_;
+  residual_norm_value_type residualNorm_;
+
+public:
+  template <class SystemType>
+  FusedResidualJacobianOperators(const SystemType & system)
+    : r_( system.createResidual() ),
+      J_( system.createJacobian() ),
+      auxR_(::pressio::ops::clone(r_))
+  {
+    ::pressio::ops::set_zero(r_);
+    ::pressio::ops::set_zero(J_);
   }
 
-  iteration_type maxIterations() const {
-    return maxIters_;
+public:
+  const ResidualType & residualCRef() const { return r_; }
+  const JacobianType & jacobianCRef() const { return J_; }
+
+  template<class SystemType, class state_t>
+  void compute(const SystemType & sys,
+	       const state_t & state,
+	       bool recomputeSystemJacobian=true)
+  {
+    sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+    residualNorm_ = ::pressio::ops::norm2(r_);
+
+    if (std::isnan(residualNorm_)){
+      throw ::pressio::eh::ResidualHasNans();
+    }
   }
 
-  void setMaxIterations(iteration_type maxIters) {
-    maxIters_ = maxIters;
+  residual_norm_value_type residualNorm() const{
+    return residualNorm_:
   }
 
-protected:
-  iteration_type maxIters_ = static_cast<iteration_type>(100);
+  template< class SystemType, class state_t>
+  void residualNorm(const SystemType & system,
+		    const state_t & state,
+		    residual_norm_value_type & residualNorm) const
+  {
+    system.residualAndJacobian(state, auxR_, J_, false);
+    residualNorm = ::pressio::ops::norm2(auxR_);
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::ResidualHasNans();
+    }
+  }
 };
 
-
-}} //end namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_ITERATIVE_BASE_HPP_
+}}}
+#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_

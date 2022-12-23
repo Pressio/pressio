@@ -53,13 +53,13 @@ namespace pressio{ namespace nonlinearsolvers{
 
 enum class Stop
   {
-   WhenCorrectionAbsoluteNormBelowTolerance, // this is the default
-   WhenCorrectionRelativeNormBelowTolerance,
-   WhenResidualAbsoluteNormBelowTolerance,
-   WhenResidualRelativeNormBelowTolerance,
-   WhenGradientAbsoluteNormBelowTolerance,
-   WhenGradientRelativeNormBelowTolerance,
-   AfterMaxIters
+    WhenAbsolutel2NormOfCorrectionBelowTolerance, // this is the default
+    WhenRelativel2NormOfCorrectionBelowTolerance,
+    WhenAbsolutel2NormOfResidualBelowTolerance,
+    WhenRelativel2NormOfResidualBelowTolerance,
+    WhenAbsolutel2NormOfGradientBelowTolerance,
+    WhenRelativel2NormOfGradientBelowTolerance,
+    AfterMaxIters
   };
 
 enum class Update
@@ -72,12 +72,29 @@ enum class Update
    Custom
   };
 
-struct NewtonRaphson{};
-struct GaussNewton{};
-struct IrwGaussNewton{};
-struct GaussNewtonQR{};
-struct LevenbergMarquardt{};
-using LM = LevenbergMarquardt;
+enum class Diagnostic{
+  correctionAbsolutel2Norm,
+  correctionRelativel2Norm,
+  residualAbsolutel2Norm,
+  residualRelativel2Norm,
+  gradientAbsolutel2Norm,
+  gradientRelativel2Norm,
+  hessianConditionNumber,
+  invalid
+};
+
+const std::vector<Diagnostic> defaultDiagnosticsNewtonRaphson =
+  {Diagnostic::residualAbsolutel2Norm,
+   Diagnostic::residualRelativel2Norm,
+   Diagnostic::correctionAbsolutel2Norm,
+   Diagnostic::correctionRelativel2Norm};
+
+// struct NewtonRaphson{};
+// struct GaussNewton{};
+// struct IrwGaussNewton{};
+// struct GaussNewtonQR{};
+// struct LevenbergMarquardt{};
+// using LM = LevenbergMarquardt;
 
 }}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_AND_TAGS_HPP_
