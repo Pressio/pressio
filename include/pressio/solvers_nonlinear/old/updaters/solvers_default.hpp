@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_nonlinear.hpp
+// solvers_default.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,30 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_NONLINEAR_SOLVERS_HPP_
-#define PRESSIO_NONLINEAR_SOLVERS_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./expressions.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
+namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-#include "solvers_nonlinear/solvers_exceptions.hpp"
+class DefaultUpdater
+{
+public:
+  void reset(){}
 
-#include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
+  template<typename SystemType, typename StateType, typename SolverMixinType>
+  void operator()(const SystemType & /*unused*/,
+		  StateType & state,
+		  SolverMixinType & solver)
+  {
 
-#include "solvers_nonlinear/concepts/solvers_predicates.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp"
-#include "solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp"
+    PRESSIOLOG_DEBUG("nonlinsolver: default update");
+    // default update: y = y + alpha*correction
+    const auto & correction = solver.correctionCRef();
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
+    ::pressio::ops::update(state, one, correction, one);
+  }
+};
 
-#include "solvers_nonlinear/updaters/solvers_create_updater.hpp"
-// #include "solvers_nonlinear/impl/solvers_observer.hpp"
-// #include "solvers_nonlinear/impl/solvers_printer.hpp"
-
-#include "solvers_nonlinear/solvers_create_newton_raphson.hpp"
-#include "solvers_nonlinear/solvers_create_gauss_newton.hpp"
-// #include "solvers_nonlinear/solvers_create_irls_gauss_newton.hpp"
-// #include "solvers_nonlinear/solvers_create_levenberg_marquardt.hpp"
-
-#endif
+}}}
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_HPP_

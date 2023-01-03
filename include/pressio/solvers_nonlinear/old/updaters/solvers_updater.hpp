@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_nonlinear.hpp
+// solvers_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,67 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_NONLINEAR_SOLVERS_HPP_
-#define PRESSIO_NONLINEAR_SOLVERS_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./expressions.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
+namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-#include "solvers_nonlinear/solvers_exceptions.hpp"
+struct BaseUpdater
+{
+  using apply_function_type = void (*)(BaseUpdater*, const void*, void*, void*);
+  using reset_function_type = void (*)(BaseUpdater*);
+  apply_function_type applyFnc_;
+  reset_function_type resetFnc_;
 
-#include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
+  BaseUpdater() = default;
+  BaseUpdater(BaseUpdater const &) = default;
+  BaseUpdater & operator=(BaseUpdater const &) = default;
+  BaseUpdater(BaseUpdater &&) = default;
+  BaseUpdater & operator=(BaseUpdater &&) = default;
+  virtual ~BaseUpdater() = default;
 
-#include "solvers_nonlinear/concepts/solvers_predicates.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp"
-#include "solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp"
+  template <class SystemType, class StateType, class SolverType>
+  void operator()(const SystemType & S,
+		  StateType & y,
+		  SolverType & solver)
+  {
+    (*applyFnc_)(this, &S, &y, &solver);
+  }
 
-#include "solvers_nonlinear/updaters/solvers_create_updater.hpp"
-// #include "solvers_nonlinear/impl/solvers_observer.hpp"
-// #include "solvers_nonlinear/impl/solvers_printer.hpp"
+  void reset()
+  {
+    (*resetFnc_)(this);
+  }
+};
 
-#include "solvers_nonlinear/solvers_create_newton_raphson.hpp"
-#include "solvers_nonlinear/solvers_create_gauss_newton.hpp"
-// #include "solvers_nonlinear/solvers_create_irls_gauss_newton.hpp"
-// #include "solvers_nonlinear/solvers_create_levenberg_marquardt.hpp"
+template <class SystemType, class StateType, class SolverType, class FunctorType>
+class Updater : public BaseUpdater
+{
+public:
+  using functor_type = mpl::remove_cvref_t<FunctorType>;
+  using system_type = SystemType;
+  using state_type = StateType;
+  using solver_type = SolverType;
 
-#endif
+private:
+  pressio::utils::InstanceOrReferenceWrapper<FunctorType> F_;
+
+public:
+  template<class T>
+  Updater(T && Fin)
+    : F_(std::forward<T>(Fin)){}
+
+  Updater() = delete;
+  Updater(Updater const &) = default;
+  Updater & operator=(Updater const &) = default;
+  Updater(Updater &&) = default;
+  Updater & operator=(Updater &&) = default;
+  ~Updater() = default;
+
+  functor_type & get(){
+    return F_.get();
+  }
+};
+
+}}}
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_

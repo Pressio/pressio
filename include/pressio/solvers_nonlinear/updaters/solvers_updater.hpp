@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_residual_jacobian_operators.hpp
+// solvers_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,68 +46,67 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <class ResidualType, class JacobianType>
-class FusedResidualJacobianOperators
+struct BaseUpdater
+{
+  using apply_function_type = void (*)(BaseUpdater*, const void*, void*, void*);
+  using reset_function_type = void (*)(BaseUpdater*);
+  apply_function_type applyFnc_;
+  reset_function_type resetFnc_;
+
+  BaseUpdater() = default;
+  BaseUpdater(BaseUpdater const &) = default;
+  BaseUpdater & operator=(BaseUpdater const &) = default;
+  BaseUpdater(BaseUpdater &&) = default;
+  BaseUpdater & operator=(BaseUpdater &&) = default;
+  virtual ~BaseUpdater() = default;
+
+  template <class SystemType, class StateType, class SolverType>
+  void operator()(const SystemType & S,
+		  StateType & y,
+		  SolverType & solver)
+  {
+    (*applyFnc_)(this, &S, &y, &solver);
+  }
+
+  void reset()
+  {
+    (*resetFnc_)(this);
+  }
+};
+
+template <class SystemType, class StateType, class SolverType, class FunctorType>
+class Updater : public BaseUpdater
 {
 public:
-  using residual_norm_value_type = decltype(::pressio::ops::norm2(std::declval<ResidualType>()));
+  using functor_type = mpl::remove_cvref_t<FunctorType>;
+  using system_type = SystemType;
+  using state_type = StateType;
+  using solver_type = SolverType;
 
 private:
-  ResidualType r_;
-  mutable JacobianType J_;
-  mutable ResidualType auxR_;
-  residual_norm_value_type residualNorm_;
+  pressio::utils::InstanceOrReferenceWrapper<FunctorType> F_;
 
 public:
-  template <class SystemType>
-  FusedResidualJacobianOperators(const SystemType & system)
-    : r_( system.createResidual() ),
-      J_( system.createJacobian() ),
-      auxR_(::pressio::ops::clone(r_))
-  {
-    ::pressio::ops::set_zero(r_);
-    ::pressio::ops::set_zero(J_);
-  }
+  template<class T>
+  Updater(T && Fin)
+    : F_(std::forward<T>(Fin)){}
 
-public:
-  const ResidualType & residualCRef() const { return r_; }
-  const JacobianType & jacobianCRef() const { return J_; }
+  Updater() = delete;
+  Updater(Updater const &) = default;
+  Updater & operator=(Updater const &) = default;
+  Updater(Updater &&) = default;
+  Updater & operator=(Updater &&) = default;
+  ~Updater() = default;
 
-  template<class SystemType, class state_t>
-  void compute(const SystemType & sys,
-	       const state_t & state,
-	       bool recomputeSystemJacobian=true)
-  {
-    sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-    residualNorm_ = ::pressio::ops::norm2(r_);
-
-    if (std::isnan(residualNorm_)){
-      throw ::pressio::eh::ResidualHasNans();
-    }
-  }
-
-  residual_norm_value_type residualNorm() const{
-    return residualNorm_:
-  }
-
-  template< class SystemType, class state_t>
-  void residualNorm(const SystemType & system,
-		    const state_t & state,
-		    residual_norm_value_type & residualNorm) const
-  {
-    system.residualAndJacobian(state, auxR_, J_, false);
-    residualNorm = ::pressio::ops::norm2(auxR_);
-
-    if (std::isnan(residualNorm)){
-      throw ::pressio::eh::ResidualHasNans();
-    }
+  functor_type & get(){
+    return F_.get();
   }
 };
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_UPDATER_HPP_

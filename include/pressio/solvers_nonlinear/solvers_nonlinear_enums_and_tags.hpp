@@ -83,18 +83,11 @@ enum class Diagnostic{
   invalid
 };
 
-const std::vector<Diagnostic> defaultDiagnosticsNewtonRaphson =
-  {Diagnostic::residualAbsolutel2Norm,
-   Diagnostic::residualRelativel2Norm,
-   Diagnostic::correctionAbsolutel2Norm,
-   Diagnostic::correctionRelativel2Norm};
-
-// struct NewtonRaphson{};
-// struct GaussNewton{};
-// struct IrwGaussNewton{};
-// struct GaussNewtonQR{};
-// struct LevenbergMarquardt{};
-// using LM = LevenbergMarquardt;
+struct NewtonRaphson{};
+struct GaussNewton{};
+struct IrwGaussNewton{};
+struct GaussNewtonQR{};
+struct LevenbergMarquardt{};
 
 }}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_AND_TAGS_HPP_

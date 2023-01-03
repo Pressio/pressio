@@ -5,6 +5,9 @@
 #include <array>
 #include <typeinfo>
 #include "solvers_iterative_base.hpp"
+#include "solvers_operators.hpp"
+#include "solvers_operators_fused.hpp"
+#include "solvers_decorators.hpp"
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -70,7 +73,12 @@ public:
   template <class lsT>
   RJCorrector(const StateType & stateIn, lsT && solverIn)
     : correction_(::pressio::ops::clone(stateIn)),
-      solverObj_(std::forward<lsT>(solverIn)){}
+      solverObj_(std::forward<lsT>(solverIn))
+  {
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+    ::pressio::ops::fill(correction_, zero);
+  }
 
 public:
   template <class OperatorsT>
@@ -81,9 +89,40 @@ public:
     const auto & J = operators.jacobianCRef();
     // solve J correction = r
     solverObj_.get().solve(J, r, correction_);
+
     // scale by -1 for sign convention
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
     pressio::ops::scale(correction_, utils::Constants<scalar_type>::negOne() );
+  }
+
+  const StateType & correctionCRef() const{ return correction_; }
+};
+
+template<typename StateType, typename LinSolverType>
+class HessianGradientCorrector{
+private:
+  StateType correction_ = {};
+  ::pressio::utils::InstanceOrReferenceWrapper<LinSolverType> solverObj_;
+
+public:
+  template <typename lsT>
+  HessianGradientCorrector(const StateType & stateIn, lsT && solverIn)
+    : correction_(::pressio::ops::clone(stateIn)),
+      solverObj_(std::forward<lsT>(solverIn))
+  {
+    using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+    ::pressio::ops::fill(correction_, zero);
+  }
+
+public:
+  template <class OperatorsT>
+  void compute(const OperatorsT & operators)
+  {
+    PRESSIOLOG_DEBUG("hessian/gradient correction");
+    const auto & H = operators.hessianCRef();
+    const auto & g = operators.gradientCRef();
+    solverObj_.get().solve(H, g, correction_);
   }
 
   const StateType & correctionCRef() const{ return correction_; }
@@ -519,6 +558,12 @@ private:
     else if (dm.publicDiagsCount() == 6){
       logImpl(iStep, dm, std::make_index_sequence<6u>{});
     }
+    else if (dm.publicDiagsCount() == 7){
+      logImpl(iStep, dm, std::make_index_sequence<7u>{});
+    }
+    else if (dm.publicDiagsCount() == 8){
+      logImpl(iStep, dm, std::make_index_sequence<8u>{});
+    }
   }
 
   template <class T, std::size_t ... Is>
@@ -574,11 +619,11 @@ public:
 // SOLVER
 //
 // ------------------------------------------------------
-template<class StateType, class OperatorsT, class CorrectorT>
+template<class TagType, class StateType, class OperatorsT, class CorrectorT>
 class Solver
-  : public IterativeBase<Solver<StateType, OperatorsT, CorrectorT>>
+  : public IterativeBase<Solver<TagType, StateType, OperatorsT, CorrectorT>>
 {
-  using this_type = Solver<StateType, OperatorsT, CorrectorT>;
+  using this_type = Solver<TagType, StateType, OperatorsT, CorrectorT>;
   using iterative_base_type = IterativeBase<this_type>;
   friend iterative_base_type;
   using typename iterative_base_type::iteration_count_type;
@@ -589,9 +634,13 @@ class Solver
   DiagnosticData<norm_value_type> dm_;
   DiagnosticsLogger logger_;
   Stopper<norm_value_type> stopper_;
-  // Updater updater_;
+
+  Update updatingE_ = Update::Standard;
+  std::unique_ptr<impl::BaseUpdater> updater_ = nullptr;
 
 public:
+  using tag_type = TagType;
+
   Solver(OperatorsT && o,
 	 CorrectorT && c,
 	 const std::vector<Diagnostic> & diags)
@@ -606,18 +655,22 @@ public:
     // supported in the diagonstics, otherwise add it
     const auto stopMetric = stopping_criterion_to_diagnostic(stopper_.criterion());
     dm_.addIfUnsupported(stopMetric);
-    //dm_.print();
+    dm_.print();
     // need to reset the logger since the names might have changed
     logger_.resetFor(dm_.publicDiags());
   }
 
-public:
+  const OperatorsT & operatorsHandle()   const { return o_; }
+  const CorrectorT & correctorsHandle() const { return c_; }
+  auto & stopperHandle() { return stopper_; }
+
   template<typename SystemType>
   void solve(const SystemType & system,
 	     StateType & state)
   {
     iteration_count_type iStep = 0;
     bool recomputeSystemJacobian = true;
+    updater_ = create_updater<this_type, SystemType>(state, updatingE_);
 
     while (++iStep <= iterative_base_type::maxIters_)
     {
@@ -647,6 +700,7 @@ public:
 		    [&](auto & m){
 		      computeInternalDiagnosticsOnCorrection(isFirstIteration, m, c_);
 		      computeInternalDiagnosticsOnResidual(isFirstIteration, m, o_);
+		      computeInternalDiagnosticsOnGradient(isFirstIteration, m, o_);
 		    });
 
       // 5.
@@ -658,10 +712,20 @@ public:
 	break;
       }
 
-      const auto & correction = c_.correctionCRef();
-      using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-      constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
-      ::pressio::ops::update(state, one, correction, one);
+      // 7.
+      try{
+	(*updater_)(system, state, *this);
+      }
+      catch (::pressio::eh::LineSearchStepTooSmall const &e) {
+	// stop the solve without terminating
+	PRESSIOLOG_WARN(e.what());
+	break;
+      }
+      catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
+	// stop the solve without terminating
+	PRESSIOLOG_WARN(e.what());
+	break;
+      }
     }
   }
 };

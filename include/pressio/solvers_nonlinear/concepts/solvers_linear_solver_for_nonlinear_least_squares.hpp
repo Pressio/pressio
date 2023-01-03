@@ -52,6 +52,19 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 #ifdef PRESSIO_ENABLE_CXX20
+
+template <class T, class StateType>
+concept NormalEquationsSolver =
+  requires(T & s,
+	   const typename T::matrix_type & A,
+	   const RhsType & b,
+	   StateType & x)
+  {
+    { s.solve(A, b, x) } -> std::same_as<void>;
+  };
+
+
+
 template <class T, class StateType, class RhsType = StateType>
 concept LinearSolverForNonlinearLeastSquares =
   /* required nested aliases */

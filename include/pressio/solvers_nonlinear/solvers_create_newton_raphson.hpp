@@ -49,19 +49,36 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 
-#include "solvers_operators_residual_jacobian.hpp"
 #include "solver.hpp"
 
 namespace pressio{ namespace nonlinearsolvers{
 
+namespace impl{
+template<bool> struct _nr_choose_op;
+template<> struct _nr_choose_op<true>{
+  template<class ...Args> using type = impl::FusedResidualJacobianOperators<Args...>;
+};
+template<> struct _nr_choose_op<false>{
+  template<class ...Args> using type = impl::ResidualJacobianOperators<Args...>;
+};
+} //end namespace impl
+
+const std::vector<Diagnostic> defaultDiagnosticsNewtonRaphson =
+  {Diagnostic::residualAbsolutel2Norm,
+   Diagnostic::residualRelativel2Norm,
+   Diagnostic::correctionAbsolutel2Norm,
+   Diagnostic::correctionRelativel2Norm};
+
 template<class SystemType, class LinearSolverType>
 #ifdef PRESSIO_ENABLE_CXX20
-requires DeterminedSystemWithResidualAndJacobian<SystemType>
-    && LinearSolverForNewtonRaphson<
-       mpl::remove_cvref_t<LinearSolverType>,
-       typename SystemType::jacobian_type,
-       typename SystemType::residual_type,
-       typename SystemType::state_type>
+requires
+   (DeterminedSystemWithResidualAndJacobian<SystemType>
+ || DeterminedSystemWithFusedResidualAndJacobian<SystemType>)
+  && LinearSolverForNewtonRaphson<
+  mpl::remove_cvref_t<LinearSolverType>,
+  typename SystemType::jacobian_type,
+  typename SystemType::residual_type,
+  typename SystemType::state_type>
 #endif
 auto create_newton_raphson(const SystemType & system,
 			   LinearSolverType && linSolver)
@@ -69,7 +86,8 @@ auto create_newton_raphson(const SystemType & system,
 
 #if not defined PRESSIO_ENABLE_CXX20
   static_assert
-    (DeterminedSystemWithResidualAndJacobian<SystemType>::value,
+    (DeterminedSystemWithResidualAndJacobian<SystemType>::value
+     || DeterminedSystemWithFusedResidualAndJacobian<SystemType>::value,
      "Newton-Raphson: system not satisfying the residual/jacobian concept.");
 
   static_assert
@@ -84,14 +102,17 @@ auto create_newton_raphson(const SystemType & system,
   using state_t  = typename system_type::state_type;
   using r_t = typename system_type::residual_type;
   using j_t = typename system_type::jacobian_type;
-  using op_t = impl::ResidualJacobianOperators<r_t, j_t>;
+
+  constexpr bool is_fused = DeterminedSystemWithFusedResidualAndJacobian<SystemType>;
+  using op_t = typename impl::_nr_choose_op<is_fused>::template type<r_t, j_t>;
   using co_t = impl::RJCorrector<state_t, LinearSolverType>;
 
   op_t op(system);
   co_t co(system.createState(), std::forward<LinearSolverType>(linSolver));
-  return impl::Solver<state_t, op_t, co_t>(std::move(op),
-					   std::move(co),
-					   defaultDiagnosticsNewtonRaphson);
+  return impl::Solver<NewtonRaphson, state_t,
+		      op_t, co_t>(std::move(op),
+				  std::move(co),
+				  defaultDiagnosticsNewtonRaphson);
 }
 
 }}
