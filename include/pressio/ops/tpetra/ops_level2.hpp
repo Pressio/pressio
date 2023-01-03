@@ -145,8 +145,12 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
   const auto y_size = ::pressio::ops::extent(yLocalView_drank1, 0);
   const auto zero = ::pressio::utils::Constants<typename pressio::Traits<x_type>::scalar_type>::zero();
   for (size_t i = 0; i < y_size; ++i) {
-    if (beta == zero) yLocalView_drank1(i) = zero;
-    else yLocalView_drank1(i) *= beta;
+    if (beta == zero) {
+      yLocalView_drank1(i) = zero;
+    }
+    else {
+      yLocalView_drank1(i) *= beta;
+    }
     if (alpha != zero) {
       for (size_t j = 0; j < x_size; ++j) {
         yLocalView_drank1(i) += alpha * ALocalView_d(i, j) * x(j);
@@ -340,9 +344,15 @@ product(::pressio::nontranspose /*unused*/,
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A_h, 1) );
 
   const auto zero = ::pressio::utils::Constants<beta_t>::zero();
-  if (beta == zero) ::pressio::ops::set_zero(y_h);
-  else ::pressio::ops::scale(y_h, beta);
-  if (alpha == zero) return;
+  if (beta == zero) {
+    ::pressio::ops::set_zero(y_h);
+  }
+  else {
+    ::pressio::ops::scale(y_h, beta);
+  }
+  if (alpha == zero) {
+    return;
+  }
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
   const std::size_t m = ::pressio::ops::extent(A_h, 0);
@@ -404,8 +414,9 @@ product(::pressio::transpose /*unused*/,
       // colI is a Teuchos::RCP<Vector<...>>
       const auto colI = A.getVector(i);
       y(i) = beta == zero ? zero : beta * y(i);
-      if (!(alpha == zero))
+      if (!(alpha == zero)) {
         y(i) += alpha * colI->dot(x);
+      }
     }
 }
 #endif
