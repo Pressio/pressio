@@ -63,10 +63,18 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar< A_type, B_type, C_type>::value
-  && ::pressio::is_dense_matrix_eigen<A_type>::value
-  && ::pressio::is_dense_matrix_eigen<B_type>::value
-  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_native_container_eigen<A_type>::value
+  && ::pressio::is_native_container_eigen<B_type>::value
+  && ::pressio::is_native_container_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   /* constrained via is_convertible because the impl is using
      native Eigen expression whcih only work if the scalars are
      convertible to object scalar types*/
@@ -101,10 +109,18 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar< A_type, B_type, C_type>::value
-  && ::pressio::is_dense_matrix_eigen<A_type>::value
-  && ::pressio::is_dense_matrix_eigen<B_type>::value
-  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_native_container_eigen<A_type>::value
+  && ::pressio::is_native_container_eigen<B_type>::value
+  && ::pressio::is_native_container_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   /* constrained via is_convertible because the impl is using
      native Eigen expression whcih only work if the scalars are
      convertible to object scalar types*/
@@ -136,9 +152,16 @@ product(::pressio::nontranspose /*unused*/,
 **********************************/
 template <class A_type, class C_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar< A_type, C_type>::value
-  && ::pressio::is_dense_matrix_eigen<A_type>::value
-  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_native_container_eigen<A_type>::value
+  && ::pressio::is_native_container_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   /* constrained via is_convertible because the impl is using
      native Eigen expression whcih only work if the scalars are
      convertible to object scalar types*/
@@ -162,8 +185,20 @@ product(::pressio::transpose /*unused*/,
 
 template <class C_type, class A_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_matrix_eigen<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value,
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_native_container_eigen<A_type>::value
+  && ::pressio::is_native_container_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  /* constrained via is_convertible because the impl is using
+     native Eigen expression whcih only work if the scalars are
+     convertible to object scalar types*/
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -188,11 +223,22 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_expression_asdiagonalmatrix<A_type>::value
   && ::pressio::is_expression_acting_on_eigen<A_type>::value
-  && ::pressio::is_dense_matrix_eigen<B_type>::value
-  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  && ::pressio::is_native_container_eigen<B_type>::value
+  && ::pressio::is_native_container_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  /* constrained via is_convertible because the impl is using
+     native Eigen expression whcih only work if the scalars are
+     convertible to object scalar types*/
   && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
