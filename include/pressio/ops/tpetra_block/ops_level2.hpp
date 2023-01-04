@@ -172,7 +172,7 @@ product(::pressio::nontranspose mode,
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
-// x = tpetra block Vectorb
+// x = tpetra block Vector
 // A = tpetra block MultiVector
 // y = Eigen Vector or Pressio expression based on Eigen container
 // -------------------------------
@@ -211,7 +211,7 @@ product(::pressio::transpose mode,
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
-// x = tpetra block Vectorb
+// x = tpetra block Vector
 // A = tpetra block MultiVector
 // y = Kokkos vector
 // -------------------------------
