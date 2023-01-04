@@ -100,7 +100,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   ::pressio::is_vector_kokkos<x_type>::value and
   ::pressio::is_vector_tpetra<y_type>::value
   >
-_product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
+_product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 					const A_type & A,
 					const x_type & x,
 					const beta_t & beta,
@@ -126,7 +126,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
    ::pressio::is_dense_vector_teuchos<x_type>::value) and
   ::pressio::is_vector_tpetra<y_type>::value
   >
-_product_tpetra_mv_sharedmem_vec_kokkos(const alpha_t & alpha,
+_product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 					const A_type & A,
 					const x_type & x,
 					const beta_t & beta,
@@ -192,7 +192,7 @@ product(::pressio::nontranspose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-  ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
+  ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
 // -------------------------------
@@ -227,7 +227,7 @@ product(::pressio::nontranspose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-  ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
+  ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
 // -------------------------------
