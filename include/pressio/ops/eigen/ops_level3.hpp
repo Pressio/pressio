@@ -188,6 +188,9 @@ product(::pressio::transpose /*unused*/,
 	C_type & C)
 {
 
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(A, 1) );
+
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
   constexpr sc_t zero{0};
   const sc_t alpha_(alpha);
