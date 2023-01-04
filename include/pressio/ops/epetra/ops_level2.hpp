@@ -66,9 +66,14 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 				      Epetra_Vector & y)
 {
   constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
-  if (beta == zero) ::pressio::ops::set_zero(y);
-  else y.Scale(beta); // TODO: implement ::pressio::ops::scale( Epetra_Vector )
-  if (alpha == zero) return;
+  if (beta == zero) {
+    ::pressio::ops::set_zero(y);
+  } else {
+    y.Scale(beta); // TODO: implement ::pressio::ops::scale( Epetra_Vector )
+  }
+  if (alpha == zero) {
+    return;
+  }
 
   const int numVecs = A.NumVectors();
   for (int i=0; i< A.MyLength(); i++)

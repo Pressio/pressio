@@ -62,8 +62,9 @@ scale(T & objectIn, const ScalarType value)
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const sc_t v(value);
 
-  if (0 != objectIn.Scale(v))
+  if (0 != objectIn.Scale(v)) {
     throw std::runtime_error("Epetra scaling failed");
+  }
 }
 
 }}//end namespace pressio::ops

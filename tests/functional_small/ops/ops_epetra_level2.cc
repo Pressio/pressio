@@ -54,16 +54,18 @@ auto get_global_host_view(T &view, const Epetra_Import& /* importer */) {
 template <>
 auto get_global_host_view<Epetra_MultiVector>(Epetra_MultiVector &mv, const Epetra_Import &importer) {
   auto mv_import = std::make_shared<Epetra_MultiVector>(importer.TargetMap(), mv.NumVectors());
-  if (0 != mv_import->Import(mv, importer, Insert))
+  if (0 != mv_import->Import(mv, importer, Insert)) {
     throw std::runtime_error("Epetra import failed");
+  }
   return adapter(mv_import);
 }
 
 template <>
 auto get_global_host_view<Epetra_Vector>(Epetra_Vector &v, const Epetra_Import &importer) {
   auto v_import = std::make_shared<Epetra_Vector>(importer.TargetMap(), v.NumVectors());
-  if (0 != v_import->Import(v, importer, Insert))
+  if (0 != v_import->Import(v, importer, Insert)) {
     throw std::runtime_error("Epetra import failed");
+  }
   return adapter(v_import);
 }
 
