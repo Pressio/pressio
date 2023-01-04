@@ -118,6 +118,20 @@ void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
 }
 
 //-------------------------------------------
+// Test Tuchos x
+//-------------------------------------------
+
+TEST_F(ops_tpetra_block,
+       mv_prod_teuchos_vector)
+{
+    Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
+    for (size_t i = 0; i < numVecs_; ++i) {
+      x_teuchos(i) = (double)(i + 1.);
+    }
+    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
+}
+
+//-------------------------------------------
 // Test Kokkos x
 //-------------------------------------------
 
