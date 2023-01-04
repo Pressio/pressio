@@ -93,11 +93,17 @@ product(::pressio::transpose /*unused*/,
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0) );
-  if (beta == pressio::utils::Constants<beta_t>::zero()) {
-    C = alpha * A.transpose() * B;
+
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr sc_t zero{0};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+
+  if (beta_ == zero) {
+    C = alpha_ * A.transpose() * B;
   }
   else {
-    C = beta * C + alpha * A.transpose() * B;
+    C = beta_ * C + alpha_ * A.transpose() * B;
   }
 }
 
@@ -139,11 +145,17 @@ product(::pressio::nontranspose /*unused*/,
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-  if (beta == pressio::utils::Constants<beta_t>::zero()) {
-    C = alpha * A * B;
+
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr sc_t zero{0};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+
+  if (beta_ == zero) {
+    C = alpha_ * A * B;
   }
   else {
-    C = beta * C + alpha * A * B;
+    C = beta_ * C + alpha_ * A * B;
   }
 }
 
@@ -176,10 +188,15 @@ product(::pressio::transpose /*unused*/,
 	C_type & C)
 {
 
-  if (beta == pressio::utils::Constants<beta_t>::zero()) {
-    C = alpha * A.transpose() * A;
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr sc_t zero{0};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+
+  if (beta_ == zero) {
+    C = alpha_ * A.transpose() * A;
   } else {
-    C = beta * C + alpha * A.transpose() * A;
+    C = beta_ * C + alpha_ * A.transpose() * A;
   }
 }
 
@@ -207,7 +224,7 @@ product(::pressio::transpose modeA,
 	const A_type & A)
 {
 
-  using sc_t = typename ::pressio::Traits<C_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
   product(modeA, modeB, alpha, A, A, zero, C);
@@ -254,10 +271,16 @@ product(::pressio::nontranspose /*unused*/,
   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-  if (beta == pressio::utils::Constants<beta_t>::zero()) {
-    C = alpha * A.native() * B;
+
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr sc_t zero{0};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+
+  if (beta_ == zero) {
+    C = alpha_ * A.native() * B;
   } else {
-    C = beta*C + alpha * A.native() * B;
+    C = beta_ * C + alpha_ * A.native() * B;
   }
 }
 
