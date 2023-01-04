@@ -5,28 +5,28 @@
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_clone)
 {
   auto a = pressio::ops::clone(*myMv_);
-  ASSERT_TRUE(a.getMultiVectorView().getLocalViewDevice(Tpetra::Access::ReadWriteStruct()).data() !=
-	      myMv_->getMultiVectorView().getLocalViewDevice(Tpetra::Access::ReadWriteStruct()).data());
+  auto a_h = a.getMultiVectorView().getLocalViewDevice(Tpetra::Access::ReadOnly);
+  auto myMv_h = myMv_->getMultiVectorView().getLocalViewDevice(Tpetra::Access::ReadOnly);
+  ASSERT_NE(a_h.data(), myMv_h.data());
 
-  auto a_h = a.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
-      EXPECT_DOUBLE_EQ(a_h(i,j), 0.0);
+      EXPECT_DOUBLE_EQ(a_h(i,j), myMv_h(i, j));
     }
   }
 
-  myMv_->putScalar(23.);
+  myMv_->putScalar(82347.);
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
-      EXPECT_DOUBLE_EQ(a_h(i,j), 0.0);
+      EXPECT_NE(a_h(i,j), 82347.0);
     }
   }
 }
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_extent)
 {
-  ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == 15);
-  ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == 3);
+  ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == numProc_ * localSize_);
+  ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == numVecs_);
 }
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_setzero)
