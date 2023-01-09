@@ -2,20 +2,106 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-using mat_t = Eigen::MatrixXd;
+//-------------------------------------------
+// work around weird ::pressio::as_diagonal_matrix semantics
+// which does not produce functional matrix
+//-------------------------------------------
 
-namespace {
+template <typename VecType>
+class ExprAdapter {
+public:
+  using diagexpr_t = pressio::expressions::impl::AsDiagonalMatrixExpr<VecType>;
+  using sc_t = typename ::pressio::Traits<diagexpr_t>::scalar_type;
 
-void fillOperand(mat_t & M, double v0 = 1.0)
-{
-  const auto num_rows = ::pressio::ops::extent(M, 0);
-  const auto num_cols = ::pressio::ops::extent(M, 1);
-  for (int i = 0; i < num_rows; ++i){
-    for (int j = 0; j < num_cols; ++j){
-      M(i, j) = (double)(i * num_cols + j + v0);
-    }
+  ExprAdapter(const diagexpr_t &expr): expr_(expr) {}
+
+  sc_t operator()(size_t i, size_t j) const {
+    return i == j ? expr_(i, j) : ::pressio::utils::Constants<sc_t>::zero();
+  }
+//private:
+  const diagexpr_t &expr_;
+};
+
+namespace pressio::ops {
+  template <typename VecType>
+  size_t extent(const ExprAdapter<VecType> &e, size_t rank) {
+    return e.expr_.extent(rank);
   }
 }
+
+template <typename T, typename enabled=void>
+auto adapter(const T &v) {
+  return v;
+}
+
+template <typename VecType>
+auto adapter(const pressio::expressions::impl::AsDiagonalMatrixExpr<VecType> &as_diag_expr) {
+  return ExprAdapter<VecType>(as_diag_expr);
+}
+
+//-------------------------------------------
+// Test implementation and utilities
+//-------------------------------------------
+
+class ops_eigen
+  : public ::testing::Test
+{
+public:
+  using mat_t = Eigen::MatrixXd;
+  using vec_t = Eigen::VectorXd;
+
+  // containers
+  const size_t m = 4;
+  const size_t n = 3;
+  const size_t k = 2;
+  mat_t A;  // m x k
+  mat_t B;  // k x n
+  mat_t Bt; // m x n
+
+  // expressions
+  vec_t v_k;
+  // decltype(::pressio::as_diagonal_matrix(a0)) A_diag;
+
+  virtual void SetUp(){
+    A = mat_t(m, k);
+    B = mat_t(k, n);
+    Bt = mat_t(m, n);
+    fillOperand(A);
+    fillOperand(B);
+    fillOperand(Bt);
+    // expressions
+    v_k = vec_t(k);
+    fillOperand(v_k);
+  }
+
+  virtual void TearDown(){}
+
+  auto A_diag() {
+    return ::pressio::as_diagonal_matrix(v_k);
+  }
+
+private:
+
+  void fillOperand(mat_t & M, double v0 = 1.0)
+  {
+    const auto num_rows = ::pressio::ops::extent(M, 0);
+    const auto num_cols = ::pressio::ops::extent(M, 1);
+    for (int i = 0; i < num_rows; ++i){
+      for (int j = 0; j < num_cols; ++j){
+        M(i, j) = (double)(i * num_cols + j + v0);
+      }
+    }
+  }
+
+  void fillOperand(vec_t & v, double v0 = 1.0)
+  {
+    const auto size = ::pressio::ops::extent(v, 0);
+    for (int i = 0; i < size; ++i){
+      v(i) = (double)(i + v0);
+    }
+  }
+};
+
 template <
   typename TransModeA,
   typename AType,
@@ -67,7 +153,7 @@ void test_impl(TransModeA trans_a, ScalarType alpha, const AType &A, const BType
   auto C0 = ::pressio::ops::clone(C);
 
   // obtain reference results
-  vanilla_gemm(trans_a, alpha, A, B, beta, C0);
+  vanilla_gemm(trans_a, alpha, adapter(A), adapter(B), beta, C0);
 
   // run tested routine
   F(trans_a, pressio::nontranspose(), alpha, A, B, beta, C);
@@ -88,7 +174,7 @@ void test_impl(TransModeA trans_A, const AType &A, const BType &B) {
 
   const auto num_rows = ::pressio::ops::extent(A,
       std::is_same<TransModeA, ::pressio::transpose>::value ? 1 : 0);
-  mat_t C(num_rows, ::pressio::ops::extent(B, 1));
+  ops_eigen::mat_t C(num_rows, ::pressio::ops::extent(B, 1));
   ::pressio::ops::fill(C, nan); /* simulate NaN in uninitialized output */
 
   constexpr auto beta0  = ::pressio::utils::Constants<double>::zero();
@@ -112,7 +198,7 @@ void test_impl(const AType &A) {
   };
 
   const auto size = ::pressio::ops::extent(A, 1);
-  mat_t C(size, size);
+  ops_eigen::mat_t C(size, size);
   ::pressio::ops::fill(C, nan); /* simulate NaN in uninitialized output */
 
   constexpr auto beta0  = ::pressio::utils::Constants<double>::zero();
@@ -124,29 +210,30 @@ void test_impl(const AType &A) {
   test_impl(::pressio::transpose(), alpha1, A, A, beta1, C, self_product);
 }
 
-}//end namespace
+//-------------------------------------------
+// Test Eigen containers
+//-------------------------------------------
 
-TEST(ops_eigen, dense_matrix_dense_matrix_prod)
+TEST_F(ops_eigen, dense_matrix_dense_matrix_prod)
 {
-  mat_t A(4, 3);
-  mat_t B(3, 4);
-  fillOperand(A);
-  fillOperand(B);
   test_impl(::pressio::nontranspose(), A, B);
 }
 
-TEST(ops_eigen, dense_matrix_T_dense_matrix_prod)
+TEST_F(ops_eigen, dense_matrix_T_dense_matrix_prod)
 {
-  mat_t A(4, 3);
-  mat_t B(4, 3);
-  fillOperand(A);
-  fillOperand(B);
-  test_impl(::pressio::transpose(), A, B);
+  test_impl(::pressio::transpose(), A, Bt);
 }
 
-TEST(ops_eigen, dense_matrix_T_self_prod)
+TEST_F(ops_eigen, dense_matrix_T_self_prod)
 {
-  mat_t A(4, 3);
-  fillOperand(A);
   test_impl(A);
+}
+
+//-------------------------------------------
+// Test Eigen expressions
+//-------------------------------------------
+
+TEST_F(ops_eigen, diagexpr_dense_matrix_prod)
+{
+  test_impl(::pressio::nontranspose(), A_diag(), B);
 }
