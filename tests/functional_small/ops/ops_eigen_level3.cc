@@ -4,155 +4,149 @@
 
 using mat_t = Eigen::MatrixXd;
 
-#define OPS_EIGEN_DENSE_MAT_MAT_PROD(OPERAND) \
-  mat_t M(4,3);                     \
-  M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
-  mat_t myR(4,4);         \
-  myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
-  pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
-      alpha, M, OPERAND, beta, myR);\
-  EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(0,1), 3.0); \
-  EXPECT_DOUBLE_EQ(myR(0,2), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(0,3), 9.0); \
-  EXPECT_DOUBLE_EQ(myR(1,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(1,1), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(1,2), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(1,3), 18.0); \
-  EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(2,1), 1.0); \
-  EXPECT_DOUBLE_EQ(myR(2,2), 2.0); \
-  EXPECT_DOUBLE_EQ(myR(2,3), 3.0); \
-  EXPECT_DOUBLE_EQ(myR(3,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(3,1), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(3,2), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(3,3), 18.0); \
-  /* also cover non-zero beta */ \
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
-  pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
-      alpha, M, OPERAND, beta1, myR);\
-  EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(0,1), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(0,2), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(0,3), 18.0); \
-  EXPECT_DOUBLE_EQ(myR(1,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(1,1), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(1,2), 24.0); \
-  EXPECT_DOUBLE_EQ(myR(1,3), 36.0); \
-  EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(2,1), 2.0); \
-  EXPECT_DOUBLE_EQ(myR(2,2), 4.0); \
-  EXPECT_DOUBLE_EQ(myR(2,3), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(3,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(3,1), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(3,2), 24.0); \
-  EXPECT_DOUBLE_EQ(myR(3,3), 36.0); \
-
-
-#define OPS_EIGEN_DENSE_MAT_T_MAT_PROD(OPERAND) \
-  mat_t M(4,3);                     \
-  M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
-                                  \
-  mat_t myR(3,3);         \
-  myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
-  pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
-      alpha, M, OPERAND, beta, myR); \
-  EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(0,1), 5.0); \
-  EXPECT_DOUBLE_EQ(myR(0,2), 10.0); \
-  EXPECT_DOUBLE_EQ(myR(1,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(1,1), 3.0); \
-  EXPECT_DOUBLE_EQ(myR(1,2), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(2,1), 8.0); \
-  EXPECT_DOUBLE_EQ(myR(2,2), 16.0); \
-  /* also cover non-zero beta */ \
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
-  pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
-      alpha, M, OPERAND, beta1, myR); \
-  EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(0,1), 10.0); \
-  EXPECT_DOUBLE_EQ(myR(0,2), 20.0); \
-  EXPECT_DOUBLE_EQ(myR(1,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(1,1), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(1,2), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(2,0), 0.0); \
-  EXPECT_DOUBLE_EQ(myR(2,1), 16.0); \
-  EXPECT_DOUBLE_EQ(myR(2,2), 32.0); \
-
-
-#define OPS_EIGEN_DENSE_MAT_T_SELF_PROD \
-  mat_t M(4,3);                     \
-  M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
-                                  \
-  mat_t myR(3,3);         \
-  myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
-  pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta, myR); \
-  EXPECT_DOUBLE_EQ(myR(0,0), 9.0); \
-  EXPECT_DOUBLE_EQ(myR(0,1), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(0,2), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(1,0), 6.0); \
-  EXPECT_DOUBLE_EQ(myR(1,1), 5.0); \
-  EXPECT_DOUBLE_EQ(myR(1,2), 7.0); \
-  EXPECT_DOUBLE_EQ(myR(2,0), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(2,1), 7.0); \
-  EXPECT_DOUBLE_EQ(myR(2,2), 18.0); \
-  /* also cover non-zero beta */ \
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
-  pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta1, myR); \
-  EXPECT_DOUBLE_EQ(myR(0,0), 18.0); \
-  EXPECT_DOUBLE_EQ(myR(0,1), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(0,2), 24.0); \
-  EXPECT_DOUBLE_EQ(myR(1,0), 12.0); \
-  EXPECT_DOUBLE_EQ(myR(1,1), 10.0); \
-  EXPECT_DOUBLE_EQ(myR(1,2), 14.0); \
-  EXPECT_DOUBLE_EQ(myR(2,0), 24.0); \
-  EXPECT_DOUBLE_EQ(myR(2,1), 14.0); \
-  EXPECT_DOUBLE_EQ(myR(2,2), 36.0); \
-
-
 namespace {
-template<class T>
-void fillOperand1(T & M)
+
+void fillOperand(mat_t & M, double v0 = 1.0)
 {
-  for (int i=0; i<3; ++i){
-    for (int j=0; j<4; ++j){
-      M(i,j) = (double) j;
+  const auto num_rows = ::pressio::ops::extent(M, 0);
+  const auto num_cols = ::pressio::ops::extent(M, 1);
+  for (int i = 0; i < num_rows; ++i){
+    for (int j = 0; j < num_cols; ++j){
+      M(i, j) = (double)(i * num_cols + j + v0);
     }
   }
 }
-template<class T>
-void fillOperand2(T & M)
-{
-  for (int i=0; i<4; ++i){
-    for (int j=0; j<3; ++j){
-      M(i,j) = (double) j;
+template <
+  typename TransModeA,
+  typename AType,
+  typename BType,
+  typename CType,
+  typename ScalarType
+  >
+void vanilla_gemm(TransModeA /* tA */, ScalarType alpha,
+                  const AType &A, const BType &B,
+                  ScalarType beta, CType &C) {
+  const bool trans_a = std::is_same<TransModeA, ::pressio::transpose>::value;
+  const auto num_rows = ::pressio::ops::extent(C, 0);
+  const auto num_cols = ::pressio::ops::extent(C, 1);
+  const auto b_rows = ::pressio::ops::extent(B, 0);
+  EXPECT_EQ(::pressio::ops::extent(A, trans_a ? 1 : 0), num_rows);
+  EXPECT_EQ(::pressio::ops::extent(A, trans_a ? 0 : 1), b_rows);
+  EXPECT_EQ(::pressio::ops::extent(B, 1), num_cols);
+
+  if (beta == 0.) ::pressio::ops::set_zero(C);
+  else ::pressio::ops::scale(C, beta);
+  if (alpha == 0.) return;
+
+  for (size_t i = 0; i < num_rows; ++i) {
+    for (size_t k = 0; k < b_rows; ++k) {
+      const auto a_val = trans_a ? A(k, i) : A(i, k);
+      for (size_t j = 0; j < num_cols; ++j) {
+        C(i, j) += alpha * a_val * B(k, j);
+      }
     }
   }
 }
+
+template <typename CType, typename CRefType>
+void compare_results(const CType &C, const CRefType &C0) {
+  const auto num_rows = ::pressio::ops::extent(C, 0);
+  const auto num_cols = ::pressio::ops::extent(C, 1);
+  ASSERT_EQ(num_rows, ::pressio::ops::extent(C0, 0));
+  ASSERT_EQ(num_cols, ::pressio::ops::extent(C0, 1));
+  for (size_t i = 0; i < num_rows; ++i) {
+    for (size_t j = 0; j < num_cols; ++j) {
+      ASSERT_DOUBLE_EQ(C0(i, j), C(i, j));
+    }
+  }
+}
+
+template <typename TransModeA, typename AType, typename BType, typename CType, typename ScalarType, typename ProdFunc>
+void test_impl(TransModeA trans_a, ScalarType alpha, const AType &A, const BType &B, ScalarType beta, CType &C, ProdFunc F) {
+  // get reference results
+  auto C0 = ::pressio::ops::clone(C);
+
+  // obtain reference results
+  vanilla_gemm(trans_a, alpha, A, B, beta, C0);
+
+  // run tested routine
+  F(trans_a, pressio::nontranspose(), alpha, A, B, beta, C);
+
+  // compare result
+  compare_results(C, C0);
+}
+
+template <typename TransModeA, typename AType, typename BType>
+void test_impl(TransModeA trans_A, const AType &A, const BType &B) {
+  const auto nan = std::nan("0");
+  const auto product = []( // regular product
+      auto trans_a, auto trans_b,
+      auto alpha, auto &&A, auto &&B,
+      auto beta, auto &&C) {
+    pressio::ops::product(trans_a, trans_b, alpha, A, B, beta, C);
+  };
+
+  const auto num_rows = ::pressio::ops::extent(A,
+      std::is_same<TransModeA, ::pressio::transpose>::value ? 1 : 0);
+  mat_t C(num_rows, ::pressio::ops::extent(B, 1));
+  ::pressio::ops::fill(C, nan); /* simulate NaN in uninitialized output */
+
+  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero();
+  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();
+  test_impl(trans_A, alpha1, A, B, beta0, C, product);
+
+  /* also cover non-zero beta */
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one();
+  test_impl(trans_A, alpha1, A, B, beta1, C, product);
+}
+
+// self product: C = A^T x A
+template <typename AType>
+void test_impl(const AType &A) {
+  const auto nan = std::nan("0");
+  const auto self_product = []( // self product (ignore B)
+      auto trans_a, auto trans_b,
+      auto alpha, auto &&A, auto &&B,
+      auto beta, auto &&C) {
+    pressio::ops::product(trans_a, trans_b, alpha, A, beta, C);
+  };
+
+  const auto size = ::pressio::ops::extent(A, 1);
+  mat_t C(size, size);
+  ::pressio::ops::fill(C, nan); /* simulate NaN in uninitialized output */
+
+  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero();
+  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();
+  test_impl(::pressio::transpose(), alpha1, A, A, beta0, C, self_product);
+
+  /* also cover non-zero beta */
+  constexpr auto beta1 = ::pressio::utils::Constants<double>::one();
+  test_impl(::pressio::transpose(), alpha1, A, A, beta1, C, self_product);
+}
+
 }//end namespace
 
 TEST(ops_eigen, dense_matrix_dense_matrix_prod)
 {
-  mat_t operand(3,4);
-  fillOperand1(operand);
-  OPS_EIGEN_DENSE_MAT_MAT_PROD(operand);
+  mat_t A(4, 3);
+  mat_t B(3, 4);
+  fillOperand(A);
+  fillOperand(B);
+  test_impl(::pressio::nontranspose(), A, B);
 }
 
 TEST(ops_eigen, dense_matrix_T_dense_matrix_prod)
 {
-  mat_t operand(4,3);
-  fillOperand2(operand);
-  OPS_EIGEN_DENSE_MAT_T_MAT_PROD(operand);
+  mat_t A(4, 3);
+  mat_t B(4, 3);
+  fillOperand(A);
+  fillOperand(B);
+  test_impl(::pressio::transpose(), A, B);
 }
 
 TEST(ops_eigen, dense_matrix_T_self_prod)
 {
-  OPS_EIGEN_DENSE_MAT_T_SELF_PROD;
+  mat_t A(4, 3);
+  fillOperand(A);
+  test_impl(A);
 }
