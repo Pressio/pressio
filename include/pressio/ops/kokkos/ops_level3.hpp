@@ -85,6 +85,11 @@ product(::pressio::nontranspose /*unused*/,
   const beta_type beta,
   C_type & C)
 {
+
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
+
   const char ctA = 'N';
   const char ctB = 'N';
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
@@ -121,6 +126,11 @@ product(::pressio::transpose /*unused*/,
 	const beta_type beta,
 	C_type & C)
 {
+
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0) );
+
   const char ctA = 'T';
   const char ctB = 'N';
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
@@ -160,7 +170,7 @@ product(::pressio::transpose modeA,
 /*---------------------------------------------------
 * special case A==B and op(A)=A^T, op(B)=B, return C
 -----------------------------------------------------*/
-template <typename A_type, typename alpha_type, typename C_type>
+template <typename C_type, typename A_type, typename alpha_type>
 ::pressio::mpl::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
