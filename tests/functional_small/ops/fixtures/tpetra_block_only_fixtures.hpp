@@ -75,7 +75,10 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
+
   std::shared_ptr<mvec_t> myMv_;
+  std::shared_ptr<vec_t> x_tpetra;
+  std::shared_ptr<vec_t> y_tpetra;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -85,7 +88,24 @@ public:
 
     numGlobalEntries_ = localSize_*numProc_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
+
+    // initialize data for computations
     myMv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
+    auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWrite);
+    for (int i = 0; i < localSize_; ++i){
+      for (int j = 0; j < numVecs_; ++j){
+        // generate rank-unique int values
+        myMv_h(i, j) = (double)((rank_ * localSize_ + i) * numVecs_ + j + 1.);
+      }
+    }
+    x_tpetra = std::make_shared<vec_t>(*contigMap_, blockSize_);
+    auto x_tpetra_h = x_tpetra->getVectorView().getLocalViewHost(Tpetra::Access::ReadWrite);
+    for (int j = 0; j < localSize_; ++j) {
+      // generate rank-unique int values
+      x_tpetra_h(j, 0) = rank_ * localSize_ + (double)(j + 1.);
+    }
+    y_tpetra = std::make_shared<vec_t>(*contigMap_, blockSize_);
+
   }
 
   virtual void TearDown(){}
