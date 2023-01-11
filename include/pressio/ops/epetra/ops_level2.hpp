@@ -66,10 +66,18 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 				      Epetra_Vector & y)
 {
   constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
+  if (beta == zero) {
+    ::pressio::ops::set_zero(y);
+  } else {
+    y.Scale(beta); // TODO: implement ::pressio::ops::scale( Epetra_Vector )
+  }
+  if (alpha == zero) {
+    return;
+  }
+
   const int numVecs = A.NumVectors();
   for (int i=0; i< A.MyLength(); i++)
   {
-    y[i] = (beta == zero) ? zero : beta * y[i];
     for (int j=0; j< (int)numVecs; j++){
       y[i] += alpha * A[j][i] * x(j);
     }
@@ -84,23 +92,36 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 // A : epetra MultiVector
 // x : Teuchos Vector
 // -------------------------------
-template < typename A_type, typename x_type, typename scalar_type>
+template <
+  typename alpha_t,
+  typename A_type,
+  typename x_type,
+  typename y_type,
+  typename beta_t
+  >
 ::pressio::mpl::enable_if_t<
-   ::pressio::is_multi_vector_epetra<A_type>::value and
-   ::pressio::is_dense_vector_teuchos<x_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_dense_vector_teuchos<x_type>::value
+  && ::pressio::is_vector_epetra<y_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::nontranspose /*unused*/,
-	const scalar_type alpha,
+	const alpha_t alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
-	Epetra_Vector & y)
+	const beta_t beta,
+	y_type & y)
 {
-
-  static_assert
-    (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
-     "Scalar compatibility broken");
-
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
@@ -111,30 +132,50 @@ product(::pressio::nontranspose /*unused*/,
 // A : epetra MultiVector
 // x : epetra Vector
 // -------------------------------
-template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+template <
+  typename alpha_t,
+  typename A_type,
+  typename x_type,
+  typename y_type,
+  typename beta_t
+  >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_epetra<A_type>::value
-  and ::pressio::is_vector_epetra<x_type>::value
-  and ::pressio::is_dense_vector_teuchos<y_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_vector_epetra<x_type>::value
+  && ::pressio::is_dense_vector_teuchos<y_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::transpose /*unused*/,
-  const scalar_type alpha,
+  const alpha_t alpha,
   const A_type & A,
   const x_type & x,
-  const scalar_type beta,
+  const beta_t beta,
   y_type & y)
 {
 
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.length() == (std::size_t)numVecs );
 
-  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
-    A(i)->Dot(x, &tmp);
     y(i) = (beta == zero) ? zero : beta * y(i);
-    y(i) += alpha * tmp;
+    if (!(alpha == zero)) {
+      A(i)->Dot(x, &tmp);
+      y(i) += alpha * tmp;
+    }
   }
 }
 
@@ -146,23 +187,37 @@ product(::pressio::transpose /*unused*/,
 // A : epetra MultiVector
 // x : eigen Vector
 // -------------------------------
-template < typename A_type, typename x_type, typename scalar_type>
+template <
+  typename alpha_t,
+  typename A_type,
+  typename x_type,
+  typename y_type,
+  typename beta_t
+  >
 ::pressio::mpl::enable_if_t<
-   ::pressio::is_multi_vector_epetra<A_type>::value and
-   ::pressio::is_vector_eigen<x_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && (::pressio::is_vector_eigen<x_type>::value
+   || ::pressio::is_expression_acting_on_eigen<x_type>::value)
+  && ::pressio::is_vector_epetra<y_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::nontranspose /*unused*/,
-  const scalar_type alpha,
+  const alpha_t alpha,
   const A_type & A,
   const x_type & x,
-  const scalar_type beta,
-  Epetra_Vector & y)
+  const beta_t beta,
+  y_type & y)
 {
-
-  static_assert
-    (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
-     "Scalar compatibility broken");
-
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
@@ -173,30 +228,51 @@ product(::pressio::nontranspose /*unused*/,
 // A : epetra MultiVector
 // x : epetra Vector
 // -------------------------------
-template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+template <
+  typename alpha_t,
+  typename A_type,
+  typename x_type,
+  typename y_type,
+  typename beta_t
+  >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_epetra<A_type>::value
-  and ::pressio::is_vector_epetra<x_type>::value
-  and ::pressio::is_vector_eigen<y_type>::value
+  // level2 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<x_type>::rank == 1
+  && ::pressio::Traits<y_type>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_vector_epetra<x_type>::value
+  && (::pressio::is_vector_eigen<y_type>::value
+   || ::pressio::is_expression_acting_on_eigen<y_type>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
   >
 product(::pressio::transpose /*unused*/,
-  const scalar_type alpha,
+  const alpha_t alpha,
   const A_type & A,
   const x_type & x,
-  const scalar_type beta,
+  const beta_t beta,
   y_type & y)
 {
 
   const int numVecs = A.NumVectors();
-  assert( (std::size_t)y.size() == (std::size_t)numVecs );
+  assert( (std::size_t)::pressio::ops::extent(y, 0) == (std::size_t)numVecs );
 
-  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
-    A(i)->Dot(x, &tmp);
     y(i) = (beta == zero) ? zero : beta * y(i);
-    y(i) += alpha * tmp;
+    if (!(alpha == zero)) {
+      A(i)->Dot(x, &tmp);
+      y(i) += alpha * tmp;
+    }
   }
 }
 #endif
