@@ -101,13 +101,16 @@ product(::pressio::transpose /*unused*/,
   using kokkos_view_t = Kokkos::View<C_sc_t**, Kokkos::LayoutLeft, Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
   kokkos_view_t Cview(C.data(), C.rows(), C.cols());
 
+  const C_sc_t alpha_(alpha);
+  const C_sc_t beta_(beta);
+
   using map_t = typename A_type::map_type;
   const auto indexBase = A.getMap()->getIndexBase();
   const auto comm = A.getMap()->getComm();
   Teuchos::RCP<const map_t> replMap(new map_t(Cview.extent(0), indexBase,
 					      comm, Tpetra::LocallyReplicated));
   A_type Cmv(replMap, Cview);
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, A, B, beta);
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha_, A, B, beta_);
 
 
   /* this is the old code used when using the Eigen matrix directly
@@ -206,8 +209,11 @@ product(::pressio::transpose /*unused*/,
   const auto numVecsA = A.getNumVectors();
   assert((std::size_t)C.rows() == (std::size_t)numVecsA);
   assert((std::size_t)C.cols() == (std::size_t)numVecsA);
-  const auto zero = pressio::utils::Constants<beta_t>::zero();
-  const auto has_beta = beta != zero;
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const auto zero = pressio::utils::Constants<sc_t>::zero();
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+  const auto has_beta = beta_ != zero;
   beta_t tmp = zero;
 
   // A dot A = A^T*A, which yields a symmetric matrix
@@ -219,10 +225,10 @@ product(::pressio::transpose /*unused*/,
     for (std::size_t j=i; j<(std::size_t)numVecsA; j++)
     {
       auto colJ = A.getVector(j);
-      tmp = alpha*colI->dot(*colJ);
-      C(i,j) = has_beta ? beta*C(i,j) + tmp : tmp;
+      tmp = alpha_*colI->dot(*colJ);
+      C(i,j) = has_beta ? beta_*C(i,j) + tmp : tmp;
       if(j!=i){
-        C(j,i) = has_beta ? beta*C(j,i) + tmp : tmp;
+        C(j,i) = has_beta ? beta_*C(j,i) + tmp : tmp;
       }
     }
   }
@@ -307,7 +313,10 @@ product(::pressio::transpose /*unused*/,
   A_type Cmv(replMap, C);
 
   // do the operation
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, A, A, beta);
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha_, A, A, beta_);
 }
 
 /* -------------------------------------------------------------------
@@ -394,7 +403,10 @@ product(::pressio::transpose /*unused*/,
   A_type Cmv(replMap, C);
 
   // do the operation
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, A, B, beta);
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha_, A, B, beta_);
 }
 
 }}//end namespace pressio::ops
