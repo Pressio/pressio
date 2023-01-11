@@ -64,10 +64,20 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_multi_vector_tpetra<B_type>::value
   && ::pressio::is_dense_col_major_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
@@ -132,10 +142,19 @@ template <
   class alpha_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_multi_vector_tpetra<B_type>::value
-  && ::pressio::is_dense_matrix_eigen<C_type>::value,
+  && ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -162,9 +181,18 @@ template <
   class alpha_t, class beta_t
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
@@ -202,9 +230,17 @@ product(::pressio::transpose /*unused*/,
 
 template <class C_type, class A_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value,
+  && ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -230,9 +266,18 @@ C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
 template <class A_type, class C_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
   && ::pressio::is_dense_matrix_kokkos<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<A_type>::scalar_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
@@ -270,9 +315,17 @@ C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
 template <class C_type, class A_type, class alpha_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_dense_matrix_kokkos<C_type>::value,
+  && ::pressio::is_dynamic_dense_matrix_kokkos<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -295,17 +348,28 @@ A = tpetra multivector
 B = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
-template <class A_type, class C_type, class alpha_t, class beta_t>
+template <class A_type, class B_type, class C_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
+  && ::pressio::is_multi_vector_tpetra<B_type>::value
   && ::pressio::is_dense_matrix_kokkos<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
-	const A_type & B,
+	const B_type & B,
 	const beta_t & beta,
 	C_type & C)
 {
