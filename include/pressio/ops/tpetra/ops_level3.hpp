@@ -291,6 +291,9 @@ product(::pressio::transpose /*unused*/,
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
 
+  assert( (std::size_t)::pressio::ops::extent(C, 0) == (std::size_t) A.getNumVectors() );
+  assert( (std::size_t)::pressio::ops::extent(C, 1) == (std::size_t) A.getNumVectors() );
+
   using map_t      = typename A_type::map_type;
   // using tpetra_mv_t = typename ::pressio::Traits<A_type>::wrapped_type;
   const auto indexBase = A.getMap()->getIndexBase();
@@ -376,6 +379,10 @@ product(::pressio::transpose /*unused*/,
   static_assert
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
+
+  assert( (std::size_t)::pressio::ops::extent(A, 0) == (std::size_t)::pressio::ops::extent(B, 0));
+  assert( (std::size_t)::pressio::ops::extent(C, 0) == (std::size_t) A.getNumVectors() );
+  assert( (std::size_t)::pressio::ops::extent(C, 1) == (std::size_t) B.getNumVectors() );
 
   using map_t = typename A_type::map_type;
   const auto indexBase = A.getMap()->getIndexBase();
