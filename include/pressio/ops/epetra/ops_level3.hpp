@@ -97,7 +97,10 @@ product(::pressio::transpose /*unused*/,
   assert( (std::size_t)::pressio::ops::extent(C,0) == (std::size_t)numVecsA );
   assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t)numVecsB );
 
-  const auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
   auto tmp = zero;
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
@@ -105,8 +108,8 @@ product(::pressio::transpose /*unused*/,
     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
     {
       A(i)->Dot( *(B(j)), &tmp );
-      tmp *= alpha;
-      C(i,j) = beta == zero ? zero :beta * C(i,j);
+      tmp *= alpha_;
+      C(i,j) = beta_ == zero ? zero : beta_ * C(i,j);
       C(i,j) += tmp;
     }
   }
@@ -144,7 +147,8 @@ product(::pressio::transpose modeA,
  const A_type & A,
  const B_type & B)
 {
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
 
   const auto numVecsA = A.NumVectors();
   const auto numVecsB = B.NumVectors();
@@ -195,10 +199,13 @@ product(::pressio::transpose /*unused*/,
   assert(C.rows() == numVecsA);
   assert(C.cols() == numVecsA);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
-  scalar_type tmp = zero;
-  const auto apply_beta = [beta](scalar_type c) -> scalar_type {
-    return beta == zero ? zero : beta * c;
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t tmp = zero;
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
+  const auto apply_beta = [beta_](sc_t c) -> sc_t {
+    return beta_ == zero ? zero : beta_ * c;
   };
 
   // A dot A = A^T*A, which yields a symmetric matrix
@@ -207,7 +214,7 @@ product(::pressio::transpose /*unused*/,
   {
     C(i,i) = apply_beta(C(i,i));
     A(i)->Dot( *(A(i)), &tmp );
-    C(i,i) += alpha*tmp;
+    C(i,i) += alpha_*tmp;
 
     for (int j=i+1; j<numVecsA; j++)
     {
@@ -215,8 +222,8 @@ product(::pressio::transpose /*unused*/,
       C(j,i) = apply_beta(C(j,i));
 
       A(i)->Dot( *(A(j)), &tmp );
-      C(i,j) += alpha*tmp;
-      C(j,i) += alpha*tmp;
+      C(i,j) += alpha_*tmp;
+      C(j,i) += alpha_*tmp;
     }
   }
 }
@@ -243,8 +250,8 @@ product(::pressio::transpose modeA,
 	const alpha_type alpha,
 	const A_type & A)
 {
-
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C(A.NumVectors(), A.NumVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;
