@@ -72,19 +72,31 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
     A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
   }
 
+  mvec_t B(*contigMap_, blockSize_, 4);
+  std::array<double, 4> bc{1.2, 2.2, 3.2, -4.1};
+  for (int i=0; i<4; ++i) {
+    B.getMultiVectorView().getVectorNonConst(i)->putScalar(bc[i]);
+  }
+
   // C = 1.5 A^T A
   auto C = pressio::ops::product<Eigen::MatrixXd>(pressio::transpose(),
 						  pressio::nontranspose(),
 						  1.5, A);
 
+  auto C2 = pressio::ops::product<Eigen::MatrixXd>(pressio::transpose(),
+						  pressio::nontranspose(),
+						  1.5, A, B);
+
   if(rank_==0){
-    std::cout << C << std::endl;
+    std::cout << C << "\n\n" << C2 << std::endl;
   }
 
   for (auto i=0; i<C.rows(); i++){
     for (auto j=0; j<C.cols(); j++){
       const auto gold = ac[i]*A.getMultiVectorView().getGlobalLength()*1.5*ac[j];
       EXPECT_NEAR( C(i,j), gold, 1e-12);
+      const auto gold2 = ac[i]*A.getMultiVectorView().getGlobalLength()*1.5*bc[j];
+      EXPECT_NEAR( C2(i,j), gold, 1e-12);
     }
   }
 }
