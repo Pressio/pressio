@@ -84,14 +84,19 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, mv_T_self_storein_eigen_C)
     pressio::ops::product(pressio::transpose(), pressio::nontranspose(),
         1.5, A, 1.0, C);
 
+    auto C2 = pressio::ops::product<Eigen::MatrixXd>(pressio::transpose(), pressio::nontranspose(),
+        1.5, A);
+
     if(rank_==0){
         std::cout << C << std::endl;
+        std::cout << C2 << std::endl;
     }
 
     for (auto i=0; i<C.rows(); i++){
         for (auto j=0; j<C.cols(); j++){
             const auto gold = ac[i]*A.GlobalLength()*1.5*ac[j];
             EXPECT_NEAR( C(i,j), gold, 1e-12);
+            EXPECT_NEAR( C2(i,j), gold, 1e-12);
         }
     }
 }
