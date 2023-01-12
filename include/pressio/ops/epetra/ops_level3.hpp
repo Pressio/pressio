@@ -187,6 +187,9 @@ product(::pressio::transpose /*unused*/,
 	C_type & C)
 {
 
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(A, 1) );
+
   // how many vectors are in A and B
   const int numVecsA = A.NumVectors();
   assert(C.rows() == numVecsA);
