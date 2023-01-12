@@ -64,19 +64,30 @@ B = epetra multivector
 C is an Eigen dense matrix
 *-------------------------------------------------------------------*/
 template <
-  typename A_type, typename B_type, typename scalar_type, typename C_type
+  typename A_type, typename B_type, typename alpha_type, typename beta_type, typename C_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_epetra<A_type>::value and
-  ::pressio::is_multi_vector_epetra<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_multi_vector_epetra<B_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_type, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_type,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
-	const scalar_type alpha,
+	const alpha_type alpha,
 	const A_type & A,
 	const B_type & B,
-	const scalar_type beta,
+	const beta_type beta,
 	C_type & C)
 {
 
@@ -109,17 +120,27 @@ B = multivector
 C is an Eigen dense matrix returned by the function
 *-------------------------------------------------------------------*/
 template <
-  typename C_type, typename A_type, typename B_type, typename scalar_type
+  typename C_type, typename A_type, typename B_type, typename alpha_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_epetra<A_type>::value and
-  ::pressio::is_multi_vector_epetra<B_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value,
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<B_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_multi_vector_epetra<B_type>::value
+  && ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_type, typename ::pressio::Traits<A_type>::scalar_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
  ::pressio::nontranspose modeB,
- const scalar_type alpha,
+ const alpha_type alpha,
  const A_type & A,
  const B_type & B)
 {
@@ -142,17 +163,27 @@ A = epetra multivector
 C is an Eigen dense matrix
 *-------------------------------------------------------------------*/
 template <
-  typename A_type, typename scalar_type, typename C_type
+  typename A_type, typename alpha_type, typename beta_type, typename C_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_epetra<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_type, typename ::pressio::Traits<A_type>::scalar_type>::value
+  && std::is_convertible<beta_type,  typename ::pressio::Traits<A_type>::scalar_type>::value
   >
 product(::pressio::transpose /*unused*/,
 	::pressio::nontranspose /*unused*/,
-	const scalar_type alpha,
+	const alpha_type alpha,
 	const A_type & A,
-	const scalar_type beta,
+	const beta_type beta,
 	C_type & C)
 {
 
@@ -188,16 +219,25 @@ product(::pressio::transpose /*unused*/,
 }
 
 template <
-  typename C_type, typename A_type, typename scalar_type
+  typename C_type, typename A_type, typename alpha_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_epetra<A_type>::value and
-  ::pressio::is_dense_matrix_eigen<C_type>::value,
+  // level3 common constraints
+     ::pressio::Traits<A_type>::rank == 2
+  && ::pressio::Traits<C_type>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<A_type>::value
+  && ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<A_type, C_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
+  && std::is_convertible<alpha_type, typename ::pressio::Traits<A_type>::scalar_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const alpha_type alpha,
 	const A_type & A)
 {
 
