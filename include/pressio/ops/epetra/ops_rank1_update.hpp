@@ -56,7 +56,14 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & v,        const scalar_t a, 
        const T & v1, const scalar_t b)
@@ -70,7 +77,14 @@ update(T & v,        const scalar_t a,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & v,     const scalar_t &a,
 	  const T & v1, const scalar_t &b,
@@ -86,7 +100,14 @@ update(T & v,     const scalar_t &a,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & v,     const scalar_t &a,
 	  const T & v1, const scalar_t &b,
@@ -103,7 +124,14 @@ update(T & v,     const scalar_t &a,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & v,         const scalar_t &a,
     	  const T & v1, const scalar_t &b,
