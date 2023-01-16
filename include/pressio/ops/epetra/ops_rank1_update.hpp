@@ -68,6 +68,8 @@ template<typename T, typename scalar_t>
 update(T & v,        const scalar_t a, 
        const T & v1, const scalar_t b)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+
   for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i];
 }
@@ -90,6 +92,9 @@ update(T & v,     const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+
   for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i];
 }
@@ -114,6 +119,10 @@ update(T & v,     const scalar_t &a,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
+
   for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
 }
@@ -139,6 +148,11 @@ update(T & v,         const scalar_t &a,
     	  const T & v3, const scalar_t &d,
     	  const T & v4, const scalar_t &e)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
+
   for (int i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
