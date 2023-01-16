@@ -70,11 +70,21 @@ update(T & v,        const scalar_t a,
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
+  const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
 
-  for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a_*v[i] + b_*v1[i];
+  if (b_ == zero) {
+    ::pressio::ops::scale(v, a_);
+  } else {
+    for (int i=0; i<v.MyLength(); ++i) {
+      if (a_ == zero) {
+        v[i] = b_*v1[i];
+      } else {
+        v[i] = a_*v[i] + b_*v1[i];
+      }
+    }
+  }
 }
 
 //----------------------------------------------------------------------
@@ -98,12 +108,24 @@ update(T & v,     const scalar_t &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
+  const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
   scalar_t c_{c};
 
-  for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a_*v[i] + b_*v1[i] + c_*v2[i];
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a, v2, c);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a, v1, b);
+  } else {
+    for (int i=0; i<v.MyLength(); ++i) {
+      if (a_ == zero) {
+        v[i] = b_*v1[i] + c_*v2[i];
+      } else {
+        v[i] = a_*v[i] + b_*v1[i] + c_*v2[i];
+      }
+    }
+  }
 }
 
 //----------------------------------------------------------------------
@@ -130,13 +152,27 @@ update(T & v,     const scalar_t &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
+  const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
   scalar_t c_{c};
   scalar_t d_{d};
 
-  for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a_*v[i] + b_*v1[i] + c_*v2[i] + d_*v3[i];
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a, v2, c, v3, d);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v3, d);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v2, c);
+  } else {
+    for (int i=0; i<v.MyLength(); ++i) {
+      if (a_ == zero) {
+        v[i] = b_*v1[i] + c_*v2[i] + d_*v3[i];
+      } else {
+        v[i] = a_*v[i] + b_*v1[i] + c_*v2[i] + d_*v3[i];
+      }
+    }
+  }
 }
 
 //----------------------------------------------------------------------
@@ -165,14 +201,30 @@ update(T & v,         const scalar_t &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
+  const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
   scalar_t c_{c};
   scalar_t d_{d};
   scalar_t e_{e};
 
-  for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a_*v[i] + b_*v1[i] + c_*v2[i] + d_*v3[i] + e_*v4[i];
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a, v2, c, v3, d, v4, e);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v3, d, v4, e);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v2, c, v4, e);
+  } else if (e_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v2, c, v3, d);
+  } else {
+    for (int i = 0; i < v.MyLength(); ++i) {
+      if (a_ == zero) {
+        v[i] = b_*v1[i] + c_*v2[i] + d_*v3[i] + e_*v4[i];
+      } else {
+        v[i] = a_*v[i] + b_*v1[i] + c_*v2[i] + d_*v3[i] + e_*v4[i];
+      }
+    }
+  }
 }
 
 }}//end namespace pressio::ops

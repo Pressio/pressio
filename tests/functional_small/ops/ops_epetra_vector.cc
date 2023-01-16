@@ -297,6 +297,51 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update4_b)
     }
 }
 
+TEST_F(epetraVectorGlobSize15Fixture, vector_update4_c)
+{
+    auto v = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(v, 3.);
+    auto a = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(a, std::nan("0"));
+
+    pressio::ops::update(v, 2., a, 0., a, 0., a, 0., a, 0.);
+    for (int i=0; i<localSize_; ++i){
+      EXPECT_DOUBLE_EQ(v[i], 6.);
+    }
+}
+
+TEST_F(epetraVectorGlobSize15Fixture, vector_update_nan)
+{
+    const auto nan = std::nan("0");
+    auto v = pressio::ops::clone(*myVector_);
+    auto a = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(a, 2);
+
+    pressio::ops::fill(v, nan);
+    pressio::ops::update(v, 0., a, 1.);
+    for (int i=0; i<localSize_; ++i){
+      EXPECT_DOUBLE_EQ(v[i], 2.);
+    }
+
+    pressio::ops::fill(v, nan);
+    pressio::ops::update(v, 0., a, 1., a, 2.);
+    for (int i=0; i<localSize_; ++i){
+      EXPECT_DOUBLE_EQ(v[i], 6.);
+    }
+
+    pressio::ops::fill(v, nan);
+    pressio::ops::update(v, 0., a, 1., a, 2., a, 3.);
+    for (int i=0; i<localSize_; ++i){
+      EXPECT_DOUBLE_EQ(v[i], 12.);
+    }
+
+    pressio::ops::fill(v, nan);
+    pressio::ops::update(v, 0., a, 1., a, 2., a, 3., a, 4.);
+    for (int i=0; i<localSize_; ++i){
+      EXPECT_DOUBLE_EQ(v[i], 20.);
+    }
+}
+
 TEST_F(epetraVectorGlobSize15Fixture, vector_elementwiseMultiply)
 {
     auto y = pressio::ops::clone(*myVector_);
