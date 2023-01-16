@@ -84,11 +84,26 @@ update(T & v,         const a_Type & a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   sc_t a_{a};
   sc_t b_{b};
+
+  if (b_ == zero) {
+    if (a_ == zero) {
+      ::pressio::ops::set_zero(v);
+    } else {
+      ::pressio::ops::scale(v, a_);
+    }
+    return;
+  }
+
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
-  v_n = a_*v_n + b_*v_n1;
+  if (a_ == zero) {
+    v_n = b_*v_n1;
+  } else {
+    v_n = a_*v_n + b_*v_n1;
+  }
 }
 
 //----------------------------------------------------------------------
@@ -126,13 +141,25 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   sc_t a_{a};
   sc_t b_{b};
   sc_t c_{c};
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  const auto & v_n2 = impl::get_native(v2);
-  v_n = a_*v_n + b_*v_n1 + c_*v_n2;
+
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a, v2, c);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a, v1, b);
+  } else {
+    auto & v_n = impl::get_native(v);
+    const auto & v_n1 = impl::get_native(v1);
+    const auto & v_n2 = impl::get_native(v2);
+    if (a_ == zero) {
+      v_n = b_*v_n1 + c_*v_n2;
+    } else {
+      v_n = a_*v_n + b_*v_n1 + c_*v_n2;
+    }
+  }
 }
 
 //----------------------------------------------------------------------
@@ -177,15 +204,29 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   sc_t a_{a};
   sc_t b_{b};
   sc_t c_{c};
   sc_t d_{d};
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  const auto & v_n2 = impl::get_native(v2);
-  const auto & v_n3 = impl::get_native(v3);
-  v_n = a_*v_n + b_*v_n1 + c_*v_n2 + d_*v_n3;
+
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a, v2, c, v3, d);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v3, d);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v2, c);
+  } else {
+    auto & v_n = impl::get_native(v);
+    const auto & v_n1 = impl::get_native(v1);
+    const auto & v_n2 = impl::get_native(v2);
+    const auto & v_n3 = impl::get_native(v3);
+    if (a_ == zero) {
+      v_n = b_*v_n1 + c_*v_n2 + d_*v_n3;
+    } else {
+      v_n = a_*v_n + b_*v_n1 + c_*v_n2 + d_*v_n3;
+    }
+  }
 }
 
 //----------------------------------------------------------------------
@@ -236,17 +277,33 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   sc_t a_{a};
   sc_t b_{b};
   sc_t c_{c};
   sc_t d_{d};
   sc_t e_{e};
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  const auto & v_n2 = impl::get_native(v2);
-  const auto & v_n3 = impl::get_native(v3);
-  const auto & v_n4 = impl::get_native(v4);
-  v_n = a_*v_n + b_*v_n1 + c_*v_n2 + d_*v_n3 + e_*v_n4;
+
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a, v2, c, v3, d, v4, e);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v3, d, v4, e);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v2, c, v4, e);
+  } else if (e_ == zero) {
+    ::pressio::ops::update(v, a, v1, b, v2, c, v3, d);
+  } else {
+    auto & v_n = impl::get_native(v);
+    const auto & v_n1 = impl::get_native(v1);
+    const auto & v_n2 = impl::get_native(v2);
+    const auto & v_n3 = impl::get_native(v3);
+    const auto & v_n4 = impl::get_native(v4);
+    if (a_ == zero) {
+      v_n = b_*v_n1 + c_*v_n2 + d_*v_n3 + e_*v_n4;
+    } else {
+      v_n = a_*v_n + b_*v_n1 + c_*v_n2 + d_*v_n3 + e_*v_n4;
+    }
+  }
 }
 
 }}//end namespace pressio::ops

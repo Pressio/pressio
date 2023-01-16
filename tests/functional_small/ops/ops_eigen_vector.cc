@@ -282,6 +282,72 @@ TEST(ops_eigen, vector_update4)
   EXPECT_DOUBLE_EQ( v(2), 12.0);
 }
 
+TEST(ops_eigen, vector_update_nan1)
+{
+  const auto nan = std::nan("0");
+  using V_t = Eigen::Matrix<double,3,1>;
+  V_t v; v << 1.,2.,3.;
+  V_t a; a << nan,nan,nan;
+  V_t b; b << nan,nan,nan;
+  V_t c; c << nan,nan,nan;
+  V_t d; d << nan,nan,nan;
+
+  pressio::ops::update(v, 1., a, 0.);
+  EXPECT_DOUBLE_EQ( v(0), 1.0);
+  EXPECT_DOUBLE_EQ( v(1), 2.0);
+  EXPECT_DOUBLE_EQ( v(2), 3.0);
+
+  pressio::ops::update(v, 1., a, 0., b, 0.);
+  EXPECT_DOUBLE_EQ( v(0), 1.0);
+  EXPECT_DOUBLE_EQ( v(1), 2.0);
+  EXPECT_DOUBLE_EQ( v(2), 3.0);
+
+  pressio::ops::update(v, 1., a, 0., b, 0., c, 0.);
+  EXPECT_DOUBLE_EQ( v(0), 1.0);
+  EXPECT_DOUBLE_EQ( v(1), 2.0);
+  EXPECT_DOUBLE_EQ( v(2), 3.0);
+
+  pressio::ops::update(v, 1., a, 0., b, 0., c, 0., d, 0.);
+  EXPECT_DOUBLE_EQ( v(0), 1.0);
+  EXPECT_DOUBLE_EQ( v(1), 2.0);
+  EXPECT_DOUBLE_EQ( v(2), 3.0);
+}
+
+TEST(ops_eigen, vector_update_nan2)
+{
+  const auto nan = std::nan("0");
+  using V_t = Eigen::Matrix<double,3,1>;
+  V_t v;
+  V_t a; a << 1,2,3;
+  V_t b; b << 4,5,6;
+  V_t c; c << 7,8,9;
+  V_t d; d << 3,5,8;
+
+  v << nan,nan,nan;
+  pressio::ops::update(v, 0., a, 1.);
+  EXPECT_DOUBLE_EQ( v(0), 1.0);
+  EXPECT_DOUBLE_EQ( v(1), 2.0);
+  EXPECT_DOUBLE_EQ( v(2), 3.0);
+
+  v << nan,nan,nan;
+  pressio::ops::update(v, 0., a, 1., b, 1.);
+  EXPECT_DOUBLE_EQ( v(0), 5.0);
+  EXPECT_DOUBLE_EQ( v(1), 7.0);
+  EXPECT_DOUBLE_EQ( v(2), 9.0);
+
+  v << nan,nan,nan;
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
+  EXPECT_DOUBLE_EQ( v(0), 12.0);
+  EXPECT_DOUBLE_EQ( v(1), 15.0);
+  EXPECT_DOUBLE_EQ( v(2), 18.0);
+
+  v << nan,nan,nan;
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
+  EXPECT_DOUBLE_EQ( v(0), 15.0);
+  EXPECT_DOUBLE_EQ( v(1), 20.0);
+  EXPECT_DOUBLE_EQ( v(2), 26.0);
+}
+
 TEST(ops_eigen, vector_elementwiseMultiply)
 {
   using V_t = Eigen::Matrix<double,3,1>;
