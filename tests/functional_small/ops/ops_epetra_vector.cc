@@ -19,7 +19,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_clone)
 
 TEST_F(epetraVectorGlobSize15Fixture, vector_extent)
 {
-    ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == 15);
+    ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5.);
 }
 
 TEST_F(epetraVectorGlobSize15Fixture, vector_deep_copy)
@@ -79,25 +79,25 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_dot)
   b.PutScalar(1.0);
 
   auto res = ::pressio::ops::dot(a, b);
-  EXPECT_DOUBLE_EQ(res, 15.0);
+  EXPECT_DOUBLE_EQ(res, numProc_ * 5.);
 
   res = 0.0;
   ::pressio::ops::dot(a, b, res);
-  EXPECT_DOUBLE_EQ(res, 15.0);
+  EXPECT_DOUBLE_EQ(res, numProc_ * 5.);
 }
 
 TEST_F(epetraVectorGlobSize15Fixture, vector_norm2)
 {
   myVector_->PutScalar(1.0);
   auto mynorm = pressio::ops::norm2(*myVector_);
-  EXPECT_NEAR(mynorm, std::sqrt(15.0), 1e-15);
+  EXPECT_NEAR(mynorm, std::sqrt(numProc_ * 5.0), 1e-15);
 }
 
 TEST_F(epetraVectorGlobSize15Fixture, vector_norm1)
 {
   myVector_->PutScalar(1.0);
   auto mynorm = pressio::ops::norm1(*myVector_);
-  EXPECT_DOUBLE_EQ(mynorm, 15.0);
+  EXPECT_DOUBLE_EQ(mynorm, numProc_ * 5.0);
 }
 
 TEST_F(epetraVectorGlobSize15Fixture, vector_pow)
