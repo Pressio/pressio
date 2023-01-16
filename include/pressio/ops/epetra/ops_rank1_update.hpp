@@ -65,13 +65,16 @@ template<typename T, typename scalar_t>
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,        const scalar_t a, 
+update(T & v,        const scalar_t a,
        const T & v1, const scalar_t b)
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+
   for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a*v[i] + b*v1[i];
+    v[i] = a_*v[i] + b_*v1[i];
 }
 
 //----------------------------------------------------------------------
@@ -95,8 +98,12 @@ update(T & v,     const scalar_t &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+  scalar_t c_{c};
+
   for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i];
+    v[i] = a_*v[i] + b_*v1[i] + c_*v2[i];
 }
 
 //----------------------------------------------------------------------
@@ -123,8 +130,13 @@ update(T & v,     const scalar_t &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+  scalar_t c_{c};
+  scalar_t d_{d};
+
   for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
+    v[i] = a_*v[i] + b_*v1[i] + c_*v2[i] + d_*v3[i];
 }
 
 //----------------------------------------------------------------------
@@ -153,8 +165,14 @@ update(T & v,         const scalar_t &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+  scalar_t c_{c};
+  scalar_t d_{d};
+  scalar_t e_{e};
+
   for (int i=0; i<v.MyLength(); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+    v[i] = a_*v[i] + b_*v1[i] + c_*v2[i] + d_*v3[i] + e_*v4[i];
 }
 
 }}//end namespace pressio::ops
