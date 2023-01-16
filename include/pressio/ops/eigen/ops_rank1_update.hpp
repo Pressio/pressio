@@ -83,9 +83,12 @@ update(T & v,         const a_Type & a,
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t a_{a};
+  sc_t b_{b};
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
-  v_n = a*v_n + b*v_n1;
+  v_n = a_*v_n + b_*v_n1;
 }
 
 //----------------------------------------------------------------------
@@ -122,10 +125,14 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t a_{a};
+  sc_t b_{b};
+  sc_t c_{c};
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
   const auto & v_n2 = impl::get_native(v2);
-  v_n = a*v_n + b*v_n1 + c*v_n2;
+  v_n = a_*v_n + b_*v_n1 + c_*v_n2;
 }
 
 //----------------------------------------------------------------------
@@ -169,11 +176,16 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t a_{a};
+  sc_t b_{b};
+  sc_t c_{c};
+  sc_t d_{d};
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
   const auto & v_n2 = impl::get_native(v2);
   const auto & v_n3 = impl::get_native(v3);
-  v_n = a*v_n + b*v_n1 + c*v_n2 + d*v_n3;
+  v_n = a_*v_n + b_*v_n1 + c_*v_n2 + d_*v_n3;
 }
 
 //----------------------------------------------------------------------
@@ -223,12 +235,18 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t a_{a};
+  sc_t b_{b};
+  sc_t c_{c};
+  sc_t d_{d};
+  sc_t e_{e};
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
   const auto & v_n2 = impl::get_native(v2);
   const auto & v_n3 = impl::get_native(v3);
   const auto & v_n4 = impl::get_native(v4);
-  v_n = a*v_n + b*v_n1 + c*v_n2 + d*v_n3 + e*v_n4;
+  v_n = a_*v_n + b_*v_n1 + c_*v_n2 + d_*v_n3 + e_*v_n4;
 }
 
 }}//end namespace pressio::ops
