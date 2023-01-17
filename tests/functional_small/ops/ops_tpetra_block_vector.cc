@@ -279,6 +279,75 @@ TEST_F(ops_tpetra_block, vector_update4_b)
     }
 }
 
+TEST_F(ops_tpetra_block, vector_update_nan1)
+{
+    auto v = pressio::ops::clone(*myVector_);
+    auto v2_h = v.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
+    auto v_h = Kokkos::subview(v2_h, Kokkos::ALL, 0);
+    pressio::ops::fill(v, 1.);
+    auto a = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(a, 1.);
+    auto nan = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(nan, std::nan("0"));
+
+    // Note: this test covers just enough nan/non-nan combinations
+    // to trigger and verify all execution paths in our update()
+    // implementations, which include anti-NaN-injection variants
+    pressio::ops::update(v, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 1.0);
+
+    pressio::ops::update(v, 1., nan, 0., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 1.0);
+    pressio::ops::update(v, 1., a, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 2.);
+
+    pressio::ops::update(v, 1., nan, 0., nan, 0., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 2.0);
+    pressio::ops::update(v, 1., a, 1., nan, 0., a, 1.);
+    EXPECT_DOUBLE_EQ(v_h(0), 4.);
+    pressio::ops::update(v, 1., a, 1., a, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 6.);
+
+    pressio::ops::update(v, 1., nan, 0., nan, 0., nan, 0., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 6.0);
+    pressio::ops::update(v, 1., a, 1., nan, 0., a, 1., a, 1.);
+    EXPECT_DOUBLE_EQ(v_h(0), 9.);
+    pressio::ops::update(v, 1., a, 1., a, 1., nan, 0., a, 1.);
+    EXPECT_DOUBLE_EQ(v_h(0), 12.);
+    pressio::ops::update(v, 1., a, 1., a, 1., a, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v_h(0), 15.);
+}
+
+// injects NaN through the updated vector
+TEST_F(ops_tpetra_block, vector_update_nan2)
+{
+  const auto nan = std::nan("0");
+  auto v = pressio::ops::clone(*myVector_);
+  auto v2_h = v.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
+  auto v_h = Kokkos::subview(v2_h, Kokkos::ALL, 0);
+  auto a = pressio::ops::clone(*myVector_);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1.);
+  EXPECT_DOUBLE_EQ(v_h(0), 1.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 0.);
+  EXPECT_DOUBLE_EQ(v_h(0), 0.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v_h(0), 2.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v_h(0), 3.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v_h(0), 4.0);
+}
 
 TEST_F(ops_tpetra_block, vector_elementwiseMultiply)
 {
