@@ -2,7 +2,10 @@
 #include "tpetra_block_only_fixtures.hpp"
 #include "pressio/ops.hpp"
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_clone)
+// convenient alias for nice test names
+using ops_tpetra_block = tpetraBlockVectorGlobSize15BlockSize5Fixture;
+
+TEST_F(ops_tpetra_block, vector_clone)
 {
   auto a = pressio::ops::clone(*myVector_);
   ASSERT_TRUE(a.getVectorView().getLocalViewDevice(Tpetra::Access::ReadWriteStruct()).data()
@@ -19,12 +22,12 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_clone)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_extent)
+TEST_F(ops_tpetra_block, vector_extent)
 {
     ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5.);
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_deep_copy)
+TEST_F(ops_tpetra_block, vector_deep_copy)
 {
   myVector_->putScalar(-5.);
   auto a = pressio::ops::clone(*myVector_);
@@ -36,7 +39,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_deep_copy)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_setzero)
+TEST_F(ops_tpetra_block, vector_setzero)
 {
   myVector_->putScalar(23.);
   auto x_h = myVector_->getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
@@ -51,7 +54,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_setzero)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_fill)
+TEST_F(ops_tpetra_block, vector_fill)
 {
   pressio::ops::fill(*myVector_, 55.);
   auto x_h = myVector_->getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
@@ -60,7 +63,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_fill)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_abs)
+TEST_F(ops_tpetra_block, vector_abs)
 {
   pressio::ops::fill(*myVector_, -5.);
   auto x_h = myVector_->getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
@@ -77,7 +80,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_abs)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_dot)
+TEST_F(ops_tpetra_block, vector_dot)
 {
   auto a = pressio::ops::clone(*myVector_);
   auto b = pressio::ops::clone(*myVector_);
@@ -92,21 +95,21 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_dot)
   EXPECT_DOUBLE_EQ(res, numProc_ * 5. * blockSize_);
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_norm2)
+TEST_F(ops_tpetra_block, vector_norm2)
 {
   pressio::ops::fill(*myVector_, 1.0);
   auto mynorm = pressio::ops::norm2(*myVector_);
-  EXPECT_NEAR(mynorm, std::sqrt(75.0), 1e-15);
+  EXPECT_NEAR(mynorm, std::sqrt(numProc_ * 25.0), 1e-15);
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_norm1)
+TEST_F(ops_tpetra_block, vector_norm1)
 {
   pressio::ops::fill(*myVector_, 1.0);
   auto mynorm = pressio::ops::norm1(*myVector_);
   EXPECT_DOUBLE_EQ(mynorm, numProc_ * 25.);
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_pow)
+TEST_F(ops_tpetra_block, vector_pow)
 {
   pressio::ops::fill(*myVector_, 3.0);
   pressio::ops::pow(*myVector_, 2.);
@@ -117,7 +120,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_pow)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_absPowPos)
+TEST_F(ops_tpetra_block, vector_absPowPos)
 {
   pressio::ops::fill(*myVector_, -3.0);
   auto y = ::pressio::ops::clone(*myVector_);
@@ -130,7 +133,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_absPowPos)
 }
 
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_absPowNeg)
+TEST_F(ops_tpetra_block, vector_absPowNeg)
 {
   pressio::ops::fill(*myVector_, -3.0);
   auto y = ::pressio::ops::clone(*myVector_);
@@ -142,7 +145,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_absPowNeg)
   }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update1_a)
+TEST_F(ops_tpetra_block, vector_update1_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -155,7 +158,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update1_a)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update1_b)
+TEST_F(ops_tpetra_block, vector_update1_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -168,7 +171,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update1_b)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update2_a)
+TEST_F(ops_tpetra_block, vector_update2_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -184,7 +187,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update2_a)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update2_b)
+TEST_F(ops_tpetra_block, vector_update2_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -200,7 +203,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update2_b)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update3_a)
+TEST_F(ops_tpetra_block, vector_update3_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -218,7 +221,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update3_a)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update3_b)
+TEST_F(ops_tpetra_block, vector_update3_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -236,7 +239,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update3_b)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update4_a)
+TEST_F(ops_tpetra_block, vector_update4_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -256,7 +259,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update4_a)
     }
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update4_b)
+TEST_F(ops_tpetra_block, vector_update4_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -277,7 +280,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_update4_b)
 }
 
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_elementwiseMultiply)
+TEST_F(ops_tpetra_block, vector_elementwiseMultiply)
 {
   // computing elementwise:  y = beta * y + alpha * x * z
 
