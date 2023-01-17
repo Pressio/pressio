@@ -81,14 +81,19 @@ update(T & v,         const a_Type a,
   scalar_t b_{b};
 
   if (b_ == zero) {
-    ::pressio::ops::scale(v, a_);
-  } else {
-    for (int i=0; i<v.MyLength(); ++i) {
-      if (a_ == zero) {
-        v[i] = b_*v1[i];
-      } else {
-        v[i] = a_*v[i] + b_*v1[i];
-      }
+    if (a_ == zero) {
+      ::pressio::ops::set_zero(v);
+    } else {
+      ::pressio::ops::scale(v, a_);
+    }
+    return;
+  }
+
+  for (int i=0; i<v.MyLength(); ++i) {
+    if (a_ == zero) {
+      v[i] = b_*v1[i];
+    } else {
+      v[i] = a_*v[i] + b_*v1[i];
     }
   }
 }
