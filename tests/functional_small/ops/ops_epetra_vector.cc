@@ -2,7 +2,10 @@
 #include "epetra_only_fixtures.hpp"
 #include "pressio/ops.hpp"
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_clone)
+// convenient alias for nice test names
+using ops_epetra = epetraVectorGlobSize15Fixture;
+
+TEST_F(ops_epetra, vector_clone)
 {
     auto a = pressio::ops::clone(*myVector_);
     ASSERT_TRUE(a.Values() != myVector_->Values());
@@ -17,12 +20,12 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_clone)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_extent)
+TEST_F(ops_epetra, vector_extent)
 {
     ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5.);
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_deep_copy)
+TEST_F(ops_epetra, vector_deep_copy)
 {
     myVector_->PutScalar(-5.);
     auto a = pressio::ops::clone(*myVector_);
@@ -33,7 +36,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_deep_copy)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_setzero)
+TEST_F(ops_epetra, vector_setzero)
 {
     myVector_->PutScalar(23.);
     for (int i=0; i<localSize_; ++i){
@@ -46,7 +49,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_setzero)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_fill)
+TEST_F(ops_epetra, vector_fill)
 {
     pressio::ops::fill(*myVector_, 55.);
     auto & x_h = *myVector_;
@@ -55,7 +58,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_fill)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_abs)
+TEST_F(ops_epetra, vector_abs)
 {
     pressio::ops::fill(*myVector_, -5.);
     auto & x_h = *myVector_;
@@ -71,7 +74,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_abs)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_dot)
+TEST_F(ops_epetra, vector_dot)
 {
   auto a = pressio::ops::clone(*myVector_);
   auto b = pressio::ops::clone(*myVector_);
@@ -86,21 +89,21 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_dot)
   EXPECT_DOUBLE_EQ(res, numProc_ * 5.);
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_norm2)
+TEST_F(ops_epetra, vector_norm2)
 {
   myVector_->PutScalar(1.0);
   auto mynorm = pressio::ops::norm2(*myVector_);
   EXPECT_NEAR(mynorm, std::sqrt(numProc_ * 5.0), 1e-15);
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_norm1)
+TEST_F(ops_epetra, vector_norm1)
 {
   myVector_->PutScalar(1.0);
   auto mynorm = pressio::ops::norm1(*myVector_);
   EXPECT_DOUBLE_EQ(mynorm, numProc_ * 5.0);
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_pow)
+TEST_F(ops_epetra, vector_pow)
 {
   auto & x = *myVector_;
   x.PutScalar(2.);
@@ -110,7 +113,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_pow)
   }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_absPowPos)
+TEST_F(ops_epetra, vector_absPowPos)
 {
   auto & x = *myVector_;
   x.PutScalar(-2.);
@@ -171,7 +174,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_absPowPos)
 //   }
 // }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update1_a)
+TEST_F(ops_epetra, vector_update1_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -183,7 +186,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update1_a)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update1_b)
+TEST_F(ops_epetra, vector_update1_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -195,7 +198,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update1_b)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update2_a)
+TEST_F(ops_epetra, vector_update2_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -210,7 +213,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update2_a)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update2_b)
+TEST_F(ops_epetra, vector_update2_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -225,7 +228,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update2_b)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update3_a)
+TEST_F(ops_epetra, vector_update3_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -242,7 +245,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update3_a)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update3_b)
+TEST_F(ops_epetra, vector_update3_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -259,7 +262,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update3_b)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update4_a)
+TEST_F(ops_epetra, vector_update4_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -278,7 +281,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update4_a)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update4_b)
+TEST_F(ops_epetra, vector_update4_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -297,7 +300,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update4_b)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update4_c)
+TEST_F(ops_epetra, vector_update4_c)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 3.);
@@ -310,7 +313,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update4_c)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_update_nan)
+TEST_F(ops_epetra, vector_update_nan)
 {
     const auto nan = std::nan("0");
     auto v = pressio::ops::clone(*myVector_);
@@ -342,7 +345,7 @@ TEST_F(epetraVectorGlobSize15Fixture, vector_update_nan)
     }
 }
 
-TEST_F(epetraVectorGlobSize15Fixture, vector_elementwiseMultiply)
+TEST_F(ops_epetra, vector_elementwiseMultiply)
 {
     auto y = pressio::ops::clone(*myVector_);
     pressio::ops::fill(y, 1.);
