@@ -72,6 +72,8 @@ template<class T, class T1, class a_Type, class b_Type>
 update(T & v,         const a_Type & a,
        const T1 & v1, const b_Type & b)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+
   v.update(b, v1, a);
 }
 
@@ -103,6 +105,8 @@ update(T & v,         const a_Type &a,
        const T1 & v1, const b_Type &b,
        const T2 & v2, const c_Type &c)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
@@ -143,6 +147,9 @@ update(T & v,         const a_Type &a,
        const T2 & v2, const c_Type &c,
        const T3 & v3, const d_Type &d)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
@@ -188,6 +195,10 @@ update(T & v,         const a_Type &a,
        const T3 & v3, const d_Type &d,
        const T4 & v4, const e_Type &e)
 {
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
