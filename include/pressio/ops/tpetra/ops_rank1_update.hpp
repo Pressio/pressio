@@ -56,8 +56,16 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<class T, class T1, class a_Type, class b_Type>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  // TPL/container specific
   && ::pressio::is_vector_tpetra<T>::value
+  && ::pressio::is_vector_tpetra<T1>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
@@ -75,8 +83,18 @@ template<
   class a_Type, class b_Type, class c_Type
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
   && ::pressio::is_vector_tpetra<T>::value
+  && ::pressio::is_vector_tpetra<T1>::value
+  && ::pressio::is_vector_tpetra<T2>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
@@ -101,13 +119,24 @@ template<
   class a_Type, class b_Type, class c_Type, class d_Type
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  // TPL/container specific
   && ::pressio::is_vector_tpetra<T>::value
+  && ::pressio::is_vector_tpetra<T1>::value
+  && ::pressio::is_vector_tpetra<T2>::value
+  && ::pressio::is_vector_tpetra<T3>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
-
   >
 update(T & v,         const a_Type &a,
        const T1 & v1, const b_Type &b,
@@ -131,8 +160,22 @@ template<
   class a_Type, class b_Type, class c_Type, class d_Type, class e_Type
   >
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  && ::pressio::Traits<T4>::rank == 1
+  // TPL/container specific
   && ::pressio::is_vector_tpetra<T>::value
+  && ::pressio::is_vector_tpetra<T1>::value
+  && ::pressio::is_vector_tpetra<T2>::value
+  && ::pressio::is_vector_tpetra<T3>::value
+  && ::pressio::is_vector_tpetra<T4>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
