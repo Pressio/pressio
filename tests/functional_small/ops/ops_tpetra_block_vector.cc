@@ -21,7 +21,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_clone)
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_extent)
 {
-    ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == 15);
+    ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5.);
 }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_deep_copy)
@@ -85,11 +85,11 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_dot)
   pressio::ops::fill(b, 1.0);
 
   auto res = ::pressio::ops::dot(a, b);
-  EXPECT_DOUBLE_EQ(res, 15. * blockSize_);
+  EXPECT_DOUBLE_EQ(res, numProc_ * 5. * blockSize_);
 
   res = 0.0;
   ::pressio::ops::dot(a, b, res);
-  EXPECT_DOUBLE_EQ(res, 15. * blockSize_);
+  EXPECT_DOUBLE_EQ(res, numProc_ * 5. * blockSize_);
 }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_norm2)
@@ -103,7 +103,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_norm1)
 {
   pressio::ops::fill(*myVector_, 1.0);
   auto mynorm = pressio::ops::norm1(*myVector_);
-  EXPECT_DOUBLE_EQ(mynorm, 75.0);
+  EXPECT_DOUBLE_EQ(mynorm, numProc_ * 25.);
 }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture, vector_pow)
