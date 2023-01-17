@@ -315,34 +315,68 @@ TEST_F(ops_epetra, vector_update4_c)
 
 TEST_F(ops_epetra, vector_update_nan)
 {
+    auto v = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(v, 1.);
+    auto a = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(a, 1.);
+    auto nan = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(nan, std::nan("0"));
+
+    // Note: this test covers just enough nan/non-nan combinations
+    // to trigger and verify all execution paths in our update()
+    // implementations, which include anti-NaN-injection variants
+    pressio::ops::update(v, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 1.0);
+
+    pressio::ops::update(v, 1., nan, 0., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 1.0);
+    pressio::ops::update(v, 1., a, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 2.);
+
+    pressio::ops::update(v, 1., nan, 0., nan, 0., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 2.0);
+    pressio::ops::update(v, 1., a, 1., nan, 0., a, 1.);
+    EXPECT_DOUBLE_EQ(v[0], 4.);
+    pressio::ops::update(v, 1., a, 1., a, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 6.);
+
+    pressio::ops::update(v, 1., nan, 0., nan, 0., nan, 0., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 6.0);
+    pressio::ops::update(v, 1., a, 1., nan, 0., a, 1., a, 1.);
+    EXPECT_DOUBLE_EQ(v[0], 9.);
+    pressio::ops::update(v, 1., a, 1., a, 1., nan, 0., a, 1.);
+    EXPECT_DOUBLE_EQ(v[0], 12.);
+    pressio::ops::update(v, 1., a, 1., a, 1., a, 1., nan, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 15.);
+}
+
+// covers other NaN execution paths (if-branches)
+TEST_F(ops_epetra, vector_update_nan2)
+{
     const auto nan = std::nan("0");
     auto v = pressio::ops::clone(*myVector_);
     auto a = pressio::ops::clone(*myVector_);
-    pressio::ops::fill(a, 2);
+    pressio::ops::fill(a, 1);
 
     pressio::ops::fill(v, nan);
     pressio::ops::update(v, 0., a, 1.);
-    for (int i=0; i<localSize_; ++i){
-      EXPECT_DOUBLE_EQ(v[i], 2.);
-    }
+    EXPECT_DOUBLE_EQ(v[0], 1.0);
 
     pressio::ops::fill(v, nan);
-    pressio::ops::update(v, 0., a, 1., a, 2.);
-    for (int i=0; i<localSize_; ++i){
-      EXPECT_DOUBLE_EQ(v[i], 6.);
-    }
+    pressio::ops::update(v, 0., a, 0.);
+    EXPECT_DOUBLE_EQ(v[0], 0.0);
 
     pressio::ops::fill(v, nan);
-    pressio::ops::update(v, 0., a, 1., a, 2., a, 3.);
-    for (int i=0; i<localSize_; ++i){
-      EXPECT_DOUBLE_EQ(v[i], 12.);
-    }
+    pressio::ops::update(v, 0., a, 1., a, 1.);
+    EXPECT_DOUBLE_EQ(v[0], 2.0);
 
     pressio::ops::fill(v, nan);
-    pressio::ops::update(v, 0., a, 1., a, 2., a, 3., a, 4.);
-    for (int i=0; i<localSize_; ++i){
-      EXPECT_DOUBLE_EQ(v[i], 20.);
-    }
+    pressio::ops::update(v, 0., a, 1., a, 1., a, 1.);
+    EXPECT_DOUBLE_EQ(v[0], 3.0);
+
+    pressio::ops::fill(v, nan);
+    pressio::ops::update(v, 0., a, 1., a, 1., a, 1., a, 1.);
+    EXPECT_DOUBLE_EQ(v[0], 4.0);
 }
 
 TEST_F(ops_epetra, vector_elementwiseMultiply)
