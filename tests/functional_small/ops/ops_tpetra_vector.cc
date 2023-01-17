@@ -2,7 +2,10 @@
 #include "tpetra_only_fixtures.hpp"
 #include "pressio/ops.hpp"
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_clone)
+// convenient alias for nice test names
+using ops_tpetra = tpetraVectorGlobSize15Fixture;
+
+TEST_F(ops_tpetra, vector_clone)
 {
     auto a = pressio::ops::clone(*myVector_);
     ASSERT_TRUE(a.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct()).data() !=
@@ -19,12 +22,12 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_clone)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_extent)
+TEST_F(ops_tpetra, vector_extent)
 {
     ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5);
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_deep_copy)
+TEST_F(ops_tpetra, vector_deep_copy)
 {
     pressio::ops::fill(*myVector_, -5.);
     auto a = pressio::ops::clone(*myVector_);
@@ -36,7 +39,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_deep_copy)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_setzero)
+TEST_F(ops_tpetra, vector_setzero)
 {
     myVector_->putScalar(23.);
     auto x_h = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
@@ -51,7 +54,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_setzero)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_fill)
+TEST_F(ops_tpetra, vector_fill)
 {
     pressio::ops::fill(*myVector_, 55.);
     auto x_h = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
@@ -60,7 +63,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_fill)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_abs)
+TEST_F(ops_tpetra, vector_abs)
 {
     pressio::ops::fill(*myVector_, -5.);
     auto x_h = myVector_->getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
@@ -77,7 +80,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_abs)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_dot)
+TEST_F(ops_tpetra, vector_dot)
 {
   auto a = pressio::ops::clone(*myVector_);
   auto b = pressio::ops::clone(*myVector_);
@@ -92,159 +95,111 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_dot)
   EXPECT_DOUBLE_EQ(res, numProc_ * 5.);
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_norm2)
+TEST_F(ops_tpetra, vector_norm2)
 {
   pressio::ops::fill(*myVector_, 1.0);
   auto mynorm = pressio::ops::norm2(*myVector_);
   EXPECT_NEAR(mynorm, std::sqrt(numProc_ * 5.), 1e-15);
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_norm1)
+TEST_F(ops_tpetra, vector_norm1)
 {
   pressio::ops::fill(*myVector_, 1.0);
   auto mynorm = pressio::ops::norm1(*myVector_);
   EXPECT_DOUBLE_EQ(mynorm, numProc_ * 5.);
 }
 
-TEST(ops_tpetra, vector_pow)
+TEST_F(ops_tpetra, vector_pow)
 {
   {
-    using tcomm = Teuchos::Comm<int>;
-    using map_t = Tpetra::Map<>;
-    using vec_t = Tpetra::Vector<>;
-    using ST = typename vec_t::scalar_type;
-
-    Teuchos::RCP<const tcomm> comm =
-      Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-    auto rank    = comm->getRank();
-    auto numProc = comm->getSize();
-    // EXPECT_EQ(numProc,3);
-
-    int numLocalEntries = 2;
-    auto numGlobalEntries = numProc * numLocalEntries;
-    Teuchos::RCP<const map_t> map =
-      Teuchos::rcp(new map_t(numGlobalEntries, 0, comm));
-
-    auto shift = rank*numLocalEntries;
+    auto shift = rank_*localSize_;
 
     // 1. create vector x and fill with data
-    vec_t x(map);
+    vec_t x(contigMap_);
     auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    std::vector<ST> x0(numGlobalEntries);
-    for (int i=0; i<numGlobalEntries; ++i) x0[i]= (double) i;
-    for (int i=0; i<numLocalEntries; ++i) xh(i,0) = x0[shift+i];
+    std::vector<ST> x0(numGlobalEntries_);
+    for (int i=0; i<numGlobalEntries_; ++i) x0[i]= (double) i;
+    for (int i=0; i<localSize_; ++i) xh(i,0) = x0[shift+i];
 
     pressio::ops::pow(x, 2.);
 
     // 5. check correctness
-    Eigen::VectorXd g(numGlobalEntries);
-    for (int i=0; i<numGlobalEntries; ++i){
+    Eigen::VectorXd g(numGlobalEntries_);
+    for (int i=0; i<numGlobalEntries_; ++i){
       g(i) = i * i;
     }
-    ASSERT_EQ( pressio::ops::extent(x,0), numProc * numLocalEntries );
-    for (int i=0; i<numLocalEntries; ++i){
+    ASSERT_EQ( pressio::ops::extent(x,0), numProc_ * localSize_ );
+    for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(xh(i,0), g(shift+i));
     }
   }
 }
 
-TEST(ops_tpetra, vector_absPowPos)
+TEST_F(ops_tpetra, vector_absPowPos)
 {
   {
-    using tcomm = Teuchos::Comm<int>;
-    using map_t = Tpetra::Map<>;
-    using vec_t = Tpetra::Vector<>;
-    using ST = typename vec_t::scalar_type;
-
-    Teuchos::RCP<const tcomm> comm =
-      Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-    auto rank    = comm->getRank();
-    auto numProc = comm->getSize();
-    // EXPECT_EQ(numProc,3);
-
-    int numLocalEntries = 2;
-    auto numGlobalEntries = numProc * numLocalEntries;
-    Teuchos::RCP<const map_t> map =
-      Teuchos::rcp(new map_t(numGlobalEntries, 0, comm));
-
-    auto shift = rank*numLocalEntries;
+    auto shift = rank_*localSize_;
 
     // 1. create vector x and fill with data
-    vec_t y(map);
+    vec_t y(contigMap_);
     auto yh = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    vec_t x(map);
+    vec_t x(contigMap_);
     auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    std::vector<ST> x0(numGlobalEntries);
-    for (int i=0; i<numGlobalEntries; ++i){
+    std::vector<ST> x0(numGlobalEntries_);
+    for (int i=0; i<numGlobalEntries_; ++i){
       x0[i] = (double) i;
       x0[i] = -x0[i];
     }
-    for (int i=0; i<numLocalEntries; ++i) xh(i,0) = x0[shift+i];
+    for (int i=0; i<localSize_; ++i) xh(i,0) = x0[shift+i];
 
     // 2. compute
     ::pressio::ops::abs_pow(y, x, 3.);
 
     // 5. check correctness
-    Eigen::VectorXd g(numGlobalEntries);
-    for (int i=0; i<numGlobalEntries; ++i){
+    Eigen::VectorXd g(numGlobalEntries_);
+    for (int i=0; i<numGlobalEntries_; ++i){
       g(i) = i * i * i;
     }
-    for (int i=0; i<numLocalEntries; ++i){
+    for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(yh(i,0), g(shift+i));
     }
   }
 }
 
-TEST(ops_tpetra, vector_absPowNeg)
+TEST_F(ops_tpetra, vector_absPowNeg)
 {
   {
-    using tcomm = Teuchos::Comm<int>;
-    using map_t = Tpetra::Map<>;
-    using vec_t = Tpetra::Vector<>;
-    using ST = typename vec_t::scalar_type;
-
-    Teuchos::RCP<const tcomm> comm =
-      Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-    auto rank    = comm->getRank();
-    auto numProc = comm->getSize();
-    // EXPECT_EQ(numProc,3);
-
-    int numLocalEntries = 2;
-    auto numGlobalEntries = numProc * numLocalEntries;
-    Teuchos::RCP<const map_t> map =
-      Teuchos::rcp(new map_t(numGlobalEntries, 0, comm));
-
-    auto shift = rank*numLocalEntries;
+    auto shift = rank_*localSize_;
 
     // 1. create vector x and fill with data
-    vec_t y(map);
+    vec_t y(contigMap_);
     auto yh = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    vec_t x(map);
+    vec_t x(contigMap_);
     auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-    std::vector<ST> x0(numGlobalEntries);
-    for (int i=0; i<numGlobalEntries; ++i){
+    std::vector<ST> x0(numGlobalEntries_);
+    for (int i=0; i<numGlobalEntries_; ++i){
       x0[i] = (double) i;
       x0[i] = -x0[i];
     }
-    for (int i=0; i<numLocalEntries; ++i) xh(i,0) = x0[shift+i];
+    for (int i=0; i<localSize_; ++i) xh(i,0) = x0[shift+i];
 
     // 2. compute
     pressio::ops::abs_pow(y, x, -3., 0.001);
 
     // 5. check correctness
-    Eigen::VectorXd g(numGlobalEntries);
+    Eigen::VectorXd g(numGlobalEntries_);
     g(0) = 1./0.001; //because we guard against div by 0
-    for (int i=1; i<numGlobalEntries; ++i){
+    for (int i=1; i<numGlobalEntries_; ++i){
       g(i) = 1. / (i * i * i);
     }
-    for (int i=0; i<numLocalEntries; ++i){
+    for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(yh(i,0), g(shift+i));
     }
   }
 }
 
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_a)
+TEST_F(ops_tpetra, vector_update1_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -257,7 +212,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_a)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_b)
+TEST_F(ops_tpetra, vector_update1_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -270,7 +225,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_b)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_a)
+TEST_F(ops_tpetra, vector_update2_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -286,7 +241,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_a)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_b)
+TEST_F(ops_tpetra, vector_update2_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -302,7 +257,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_b)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_a)
+TEST_F(ops_tpetra, vector_update3_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -320,7 +275,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_a)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_b)
+TEST_F(ops_tpetra, vector_update3_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -338,7 +293,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_b)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_a)
+TEST_F(ops_tpetra, vector_update4_a)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -358,7 +313,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_a)
     }
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_b)
+TEST_F(ops_tpetra, vector_update4_b)
 {
     auto v = pressio::ops::clone(*myVector_);
     pressio::ops::fill(v, 1.);
@@ -378,54 +333,40 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_b)
     }
 }
 
-TEST(ops_tpetra, vector_elementwiseMultiply)
+TEST_F(ops_tpetra, vector_elementwiseMultiply)
 {
-  using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<>;
-  using vec_t = Tpetra::Vector<>;
-  using ST = typename vec_t::scalar_type;
-
-  Teuchos::RCP<const tcomm> comm = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-  auto rank    = comm->getRank();
-  auto numProc = comm->getSize();
-  // EXPECT_EQ(numProc,3);
-
-  int numLocalEntries = 2;
-  auto numGlobalEntries = numProc * numLocalEntries;
-  Teuchos::RCP<const map_t> map = Teuchos::rcp(new map_t(numGlobalEntries, 0, comm));
-
-  auto shift = rank*numLocalEntries;
+  auto shift = rank_*localSize_;
 
   // c = beta*c + alpha*x*b;
 
   // 1. create vector x and fill with data
-  vec_t x(map);
+  vec_t x(contigMap_);
   auto xh = x.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-  std::vector<ST> x0(numGlobalEntries);
-  for (int i=0; i<numGlobalEntries; ++i) x0[i]= (double) i;
-  for (int i=0; i<numLocalEntries; ++i) xh(i,0) = x0[shift+i];
+  std::vector<ST> x0(numGlobalEntries_);
+  for (int i=0; i<numGlobalEntries_; ++i) x0[i]= (double) i;
+  for (int i=0; i<localSize_; ++i) xh(i,0) = x0[shift+i];
 
   // 2. create vector b and fill with data
-  vec_t b(map);
+  vec_t b(contigMap_);
   auto bh = b.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-  std::vector<ST> b0(numGlobalEntries);
-  for (int i=0; i<numGlobalEntries; ++i) b0[i]= (double) i + 2.;
-  for (int i=0; i<numLocalEntries; ++i) bh(i,0) = b0[shift+i];
+  std::vector<ST> b0(numGlobalEntries_);
+  for (int i=0; i<numGlobalEntries_; ++i) b0[i]= (double) i + 2.;
+  for (int i=0; i<localSize_; ++i) bh(i,0) = b0[shift+i];
 
   // 3. compute ewise multiply
   const auto alpha1 = 1.;
-  vec_t c(map);
+  vec_t c(contigMap_);
   const double offset = -5.0;
   pressio::ops::fill(c, offset);
   pressio::ops::elementwise_multiply(alpha1, x, b, 1., c);
   auto ch = c.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
-  vec_t c0(map);
+  vec_t c0(contigMap_);
   pressio::ops::fill(c0, std::nan("0")); // test beta=0 with simulated NaN in uninitialized c
   pressio::ops::elementwise_multiply(alpha1, x, b, 0., c0);
   auto ch0 = c0.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
 
   // 5. check correctness
-  for (int i=0; i<numLocalEntries; ++i){
+  for (int i=0; i<localSize_; ++i){
     const auto gold = alpha1 * xh(i, 0) * bh(i, 0);
     EXPECT_DOUBLE_EQ(ch0(i,0), gold);
     EXPECT_DOUBLE_EQ(ch(i,0), gold + offset);
