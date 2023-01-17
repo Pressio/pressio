@@ -54,22 +54,28 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<typename T, typename T1,
+         typename a_Type, typename b_Type>
 ::pressio::mpl::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
   // TPL/container specific
   && ::pressio::is_vector_epetra<T>::value
+  && ::pressio::is_vector_epetra<T1>::value
   // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
-  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,        const scalar_t a,
-       const T & v1, const scalar_t b)
+update(T & v,         const a_Type a,
+       const T1 & v1, const b_Type b)
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
@@ -90,24 +96,35 @@ update(T & v,        const scalar_t a,
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<
+  class T, class T1, class T2,
+  class a_Type, class b_Type, class c_Type
+  >
 ::pressio::mpl::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
   // TPL/container specific
   && ::pressio::is_vector_epetra<T>::value
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
   // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
-  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,     const scalar_t &a,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c)
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c)
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
@@ -132,26 +149,40 @@ update(T & v,     const scalar_t &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<
+  class T, class T1, class T2, class T3,
+  class a_Type, class b_Type, class c_Type, class d_Type
+  >
 ::pressio::mpl::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
   // TPL/container specific
   && ::pressio::is_vector_epetra<T>::value
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  && ::pressio::is_vector_epetra<T3>::value
   // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
-  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,     const scalar_t &a,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c,
-	  const T & v3, const scalar_t &d)
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c,
+       const T3 & v3, const d_Type &d)
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
@@ -179,28 +210,45 @@ update(T & v,     const scalar_t &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<
+  class T, class T1, class T2, class T3, class T4,
+  class a_Type, class b_Type, class c_Type, class d_Type, class e_Type
+  >
 ::pressio::mpl::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  && ::pressio::Traits<T4>::rank == 1
   // TPL/container specific
   && ::pressio::is_vector_epetra<T>::value
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  && ::pressio::is_vector_epetra<T3>::value
+  && ::pressio::is_vector_epetra<T4>::value
   // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
-  && std::is_convertible<scalar_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<e_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,         const scalar_t &a,
-    	  const T & v1, const scalar_t &b,
-    	  const T & v2, const scalar_t &c,
-    	  const T & v3, const scalar_t &d,
-    	  const T & v4, const scalar_t &e)
+update(T & v,         const a_Type &a,
+       const T1 & v1, const b_Type &b,
+       const T2 & v2, const c_Type &c,
+       const T3 & v3, const d_Type &d,
+       const T4 & v4, const e_Type &e)
 {
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   scalar_t a_{a};
   scalar_t b_{b};
