@@ -99,7 +99,9 @@ update(T & v, const a_Type &a,
 
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
-  ::KokkosBlas::axpby(b, impl::get_native(v1), a, impl::get_native(v));
+  scalar_t a_{a};
+  scalar_t b_{b};
+  ::KokkosBlas::axpby(b_, impl::get_native(v1), a_, impl::get_native(v));
 }
 
 template<typename T, typename T1, typename T2, typename b_Type>
@@ -127,8 +129,9 @@ update(T & v, const T1 & v1, const b_Type &b)
 
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
+  scalar_t b_{b};
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  ::KokkosBlas::axpby(b, impl::get_native(v1), zero, impl::get_native(v));
+  ::KokkosBlas::axpby(b_, impl::get_native(v1), zero, impl::get_native(v));
 }
 
 //----------------------------------------------------------------------
@@ -168,6 +171,10 @@ update(T & v, const a_Type &a,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2>::value,"");
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+  scalar_t c_{c};
+
   using v_t = typename impl::NativeType<T>::type;
   using v1_t = typename impl::NativeType<T1>::type;
   using v2_t = typename impl::NativeType<T2>::type;
@@ -175,7 +182,7 @@ update(T & v, const a_Type &a,
   using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
   fnctr_t F(impl::get_native(v),
             impl::get_native(v1),
-            impl::get_native(v2), a, b, c);
+            impl::get_native(v2), a_, b_, c_);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
@@ -212,6 +219,9 @@ update(T & v,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2>::value,"");
 
+  scalar_t b_{b};
+  scalar_t c_{c};
+
   using v_t = typename impl::NativeType<T>::type;
   using v1_t = typename impl::NativeType<T1>::type;
   using v2_t = typename impl::NativeType<T2>::type;
@@ -219,7 +229,7 @@ update(T & v,
   using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
   fnctr_t F(impl::get_native(v),
             impl::get_native(v1),
-            impl::get_native(v2), b, c);
+            impl::get_native(v2), b_, c_);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
@@ -267,6 +277,11 @@ update(T & v, const a_Type &a,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3>::value,"");
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+  scalar_t c_{c};
+  scalar_t d_{d};
+
   using v_t = typename impl::NativeType<T>::type;
   using v1_t = typename impl::NativeType<T1>::type;
   using v2_t = typename impl::NativeType<T2>::type;
@@ -277,7 +292,7 @@ update(T & v, const a_Type &a,
             impl::get_native(v1),
             impl::get_native(v2),
             impl::get_native(v3),
-            a, b, c, d);
+            a_, b_, c_, d_);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
@@ -320,6 +335,10 @@ update(T & v,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3>::value,"");
 
+  scalar_t b_{b};
+  scalar_t c_{c};
+  scalar_t d_{d};
+
   using v_t = typename impl::NativeType<T>::type;
   using v1_t = typename impl::NativeType<T1>::type;
   using v2_t = typename impl::NativeType<T2>::type;
@@ -330,7 +349,7 @@ update(T & v,
             impl::get_native(v1),
             impl::get_native(v2),
             impl::get_native(v3),
-            b, c, d);
+            b_, c_, d_);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
@@ -384,6 +403,12 @@ update(T & v, const a_Type &a,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl:: _kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3,T4>::value,"");
 
+  scalar_t a_{a};
+  scalar_t b_{b};
+  scalar_t c_{c};
+  scalar_t d_{d};
+  scalar_t e_{e};
+
   using v_t = typename impl::NativeType<T>::type;
   using v1_t = typename impl::NativeType<T1>::type;
   using v2_t = typename impl::NativeType<T2>::type;
@@ -396,7 +421,7 @@ update(T & v, const a_Type &a,
             impl::get_native(v2),
             impl::get_native(v3),
             impl::get_native(v4),
-            a, b, c, d, e);
+            a_, b_, c_, d_, e_);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
@@ -445,6 +470,11 @@ update(T & v,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3,T4>::value,"");
 
+  scalar_t b_{b};
+  scalar_t c_{c};
+  scalar_t d_{d};
+  scalar_t e_{e};
+
   using v_t = typename impl::NativeType<T>::type;
   using v1_t = typename impl::NativeType<T1>::type;
   using v2_t = typename impl::NativeType<T2>::type;
@@ -457,7 +487,7 @@ update(T & v,
             impl::get_native(v2),
             impl::get_native(v3),
             impl::get_native(v4),
-            b, c, d, e);
+            b_, c_, d_, e_);
   Kokkos::parallel_for(v.extent(0), F);
 }
 
