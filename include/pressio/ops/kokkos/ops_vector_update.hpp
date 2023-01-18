@@ -104,21 +104,18 @@ update(T & v, const a_Type &a,
   ::KokkosBlas::axpby(b_, impl::get_native(v1), a_, impl::get_native(v));
 }
 
-template<typename T, typename T1, typename T2, typename b_Type>
+template<typename T, typename T1, typename b_Type>
 ::pressio::mpl::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
-  && ::pressio::Traits<T2>::rank == 1
   // TPL/container specific
   && (::pressio::is_native_container_kokkos<T>::value
    || ::pressio::is_expression_acting_on_kokkos<T>::value)
   && (::pressio::is_native_container_kokkos<T1>::value
    ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  && (::pressio::is_native_container_kokkos<T2>::value
-   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
   // scalar compatibility
-  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
@@ -128,7 +125,7 @@ update(T & v, const T1 & v1, const b_Type &b)
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
   scalar_t b_{b};
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   ::KokkosBlas::axpby(b_, impl::get_native(v1), zero, impl::get_native(v));
@@ -175,15 +172,22 @@ update(T & v, const a_Type &a,
   scalar_t b_{b};
   scalar_t c_{c};
 
-  using v_t = typename impl::NativeType<T>::type;
-  using v1_t = typename impl::NativeType<T1>::type;
-  using v2_t = typename impl::NativeType<T2>::type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a_, v2, c_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2), a_, b_, c_);
-  Kokkos::parallel_for(v.extent(0), F);
+    using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2), a_, b_, c_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 template<
@@ -222,15 +226,22 @@ update(T & v,
   scalar_t b_{b};
   scalar_t c_{c};
 
-  using v_t = typename impl::NativeType<T>::type;
-  using v1_t = typename impl::NativeType<T1>::type;
-  using v2_t = typename impl::NativeType<T2>::type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, v2, c_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, v1, b_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2), b_, c_);
-  Kokkos::parallel_for(v.extent(0), F);
+    using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2), b_, c_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 // //----------------------------------------------------------------------
@@ -282,18 +293,27 @@ update(T & v, const a_Type &a,
   scalar_t c_{c};
   scalar_t d_{d};
 
-  using v_t = typename impl::NativeType<T>::type;
-  using v1_t = typename impl::NativeType<T1>::type;
-  using v2_t = typename impl::NativeType<T2>::type;
-  using v3_t = typename impl::NativeType<T3>::type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a_, v2, c_, v3, d_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v3, d_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v2, c_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            a_, b_, c_, d_);
-  Kokkos::parallel_for(v.extent(0), F);
+    using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              a_, b_, c_, d_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 template<
@@ -339,18 +359,27 @@ update(T & v,
   scalar_t c_{c};
   scalar_t d_{d};
 
-  using v_t = typename impl::NativeType<T>::type;
-  using v1_t = typename impl::NativeType<T1>::type;
-  using v2_t = typename impl::NativeType<T2>::type;
-  using v3_t = typename impl::NativeType<T3>::type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, v2, c_, v3, d_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v3, d_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v2, c_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            b_, c_, d_);
-  Kokkos::parallel_for(v.extent(0), F);
+    using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              b_, c_, d_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 //----------------------------------------------------------------------
@@ -409,20 +438,31 @@ update(T & v, const a_Type &a,
   scalar_t d_{d};
   scalar_t e_{e};
 
-  using v_t = typename impl::NativeType<T>::type;
-  using v1_t = typename impl::NativeType<T1>::type;
-  using v2_t = typename impl::NativeType<T2>::type;
-  using v3_t = typename impl::NativeType<T3>::type;
-  using v4_t = typename impl::NativeType<T4>::type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a_, v2, c_, v3, d_, v4, e_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v3, d_, v4, e_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v2, c_, v4, e_);
+  } else if (e_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v2, c_, v3, d_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
+    using v4_t = typename impl::NativeType<T4>::type;
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            impl::get_native(v4),
-            a_, b_, c_, d_, e_);
-  Kokkos::parallel_for(v.extent(0), F);
+    using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              impl::get_native(v4),
+              a_, b_, c_, d_, e_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 template<
@@ -475,20 +515,31 @@ update(T & v,
   scalar_t d_{d};
   scalar_t e_{e};
 
-  using v_t = typename impl::NativeType<T>::type;
-  using v1_t = typename impl::NativeType<T1>::type;
-  using v2_t = typename impl::NativeType<T2>::type;
-  using v3_t = typename impl::NativeType<T3>::type;
-  using v4_t = typename impl::NativeType<T4>::type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, v2, c_, v3, d_, v4, e_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v3, d_, v4, e_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v2, c_, v4, e_);
+  } else if (e_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v2, c_, v3, d_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
+    using v4_t = typename impl::NativeType<T4>::type;
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            impl::get_native(v4),
-            b_, c_, d_, e_);
-  Kokkos::parallel_for(v.extent(0), F);
+    using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              impl::get_native(v4),
+              b_, c_, d_, e_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 }}//end namespace pressio::ops
