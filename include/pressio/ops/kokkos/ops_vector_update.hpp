@@ -62,7 +62,7 @@ struct _kokkosUpdateAdmissibleOperands
      In kokkos it is legal to modify const views, not for pressio wrappers. */
   static_assert
     (!std::is_const<T1>::value,
-     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
+     "ops:update: cannot modify a const-qualified wrapper of a Kokkos view");
 
   static constexpr auto value = true;
 };
