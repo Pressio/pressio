@@ -342,6 +342,48 @@ TEST(ops_eigen, vector_update_nan2)
   EXPECT_DOUBLE_EQ(v(0), 4.0);
 }
 
+TEST(ops_kokkos, vector_update_expr_span)
+{
+  T v0(5);
+  T a0(5);
+  auto v = pressio::span(v0, 1, 3);
+  auto a = pressio::span(a0, 1, 3);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  EXPECT_DOUBLE_EQ(v(0), 30.0);
+  EXPECT_DOUBLE_EQ(v(1), 30.0);
+  EXPECT_DOUBLE_EQ(v(2), 30.0);
+}
+
+TEST(ops_kokkos, vector_update_expr_diag)
+{
+  Eigen::Matrix<double, 3, 3> v0;
+  Eigen::Matrix<double, 3, 3> a0;
+  auto v = pressio::diag(v0);
+  auto a = pressio::diag(a0);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  EXPECT_DOUBLE_EQ(v(0), 30.0);
+  EXPECT_DOUBLE_EQ(v(1), 30.0);
+  EXPECT_DOUBLE_EQ(v(2), 30.0);
+}
+
 TEST(ops_eigen, vector_elementwiseMultiply)
 {
   V_t y; y << 1.,2.,3.;
