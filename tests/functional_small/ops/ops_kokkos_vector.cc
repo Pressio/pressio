@@ -387,6 +387,52 @@ TEST(ops_kokkos, vector_update_nan2)
   EXPECT_DOUBLE_EQ(v_h(0), 4.0);
 }
 
+TEST(ops_kokkos, vector_update_expr_span)
+{
+  Kokkos::View<double*> v0("v_span", 5);
+  Kokkos::View<double*> a0("a_span", 5);
+  auto v = pressio::span(v0, 1, 3);
+  auto a = pressio::span(a0, 1, 3);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  auto v_h = Kokkos::create_mirror_view_and_copy(
+                Kokkos::HostSpace(), pressio::ops::impl::get_native(v));
+  EXPECT_DOUBLE_EQ( v_h(0), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(1), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(2), 30.0);
+}
+
+TEST(ops_kokkos, vector_update_expr_diag)
+{
+  Kokkos::View<double**> v0("v_diag", 3, 3);
+  Kokkos::View<double**> a0("a_diag", 3, 3);
+  auto v = pressio::diag(v0);
+  auto a = pressio::diag(a0);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  auto v_h = Kokkos::create_mirror_view_and_copy(
+                Kokkos::HostSpace(), pressio::ops::impl::get_native(v));
+  EXPECT_DOUBLE_EQ( v_h(0), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(1), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(2), 30.0);
+}
+
 TEST(ops_kokkos, vector_elementwiseMultiply)
 {
   Kokkos::View<double*> y("y", 3);
