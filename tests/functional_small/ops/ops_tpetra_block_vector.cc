@@ -287,34 +287,34 @@ TEST_F(ops_tpetra_block, vector_update_nan1)
     pressio::ops::fill(v, 1.);
     auto a = pressio::ops::clone(*myVector_);
     pressio::ops::fill(a, 1.);
-    auto nan = pressio::ops::clone(*myVector_);
-    pressio::ops::fill(nan, std::nan("0"));
+    auto vecOfNans = pressio::ops::clone(*myVector_);
+    pressio::ops::fill(vecOfNans, std::nan("0"));
 
     // Note: this test covers just enough nan/non-nan combinations
     // to trigger and verify all execution paths in our update()
     // implementations, which include anti-NaN-injection variants
-    pressio::ops::update(v, 1., nan, 0.);
+    pressio::ops::update(v, 1., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 1.0);
 
-    pressio::ops::update(v, 1., nan, 0., nan, 0.);
+    pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 1.0);
-    pressio::ops::update(v, 1., a, 1., nan, 0.);
+    pressio::ops::update(v, 1., a, 1., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 2.);
 
-    pressio::ops::update(v, 1., nan, 0., nan, 0., nan, 0.);
+    pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 2.0);
-    pressio::ops::update(v, 1., a, 1., nan, 0., a, 1.);
+    pressio::ops::update(v, 1., a, 1., vecOfNans, 0., a, 1.);
     EXPECT_DOUBLE_EQ(v_h(0), 4.);
-    pressio::ops::update(v, 1., a, 1., a, 1., nan, 0.);
+    pressio::ops::update(v, 1., a, 1., a, 1., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 6.);
 
-    pressio::ops::update(v, 1., nan, 0., nan, 0., nan, 0., nan, 0.);
+    pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 6.0);
-    pressio::ops::update(v, 1., a, 1., nan, 0., a, 1., a, 1.);
+    pressio::ops::update(v, 1., a, 1., vecOfNans, 0., a, 1., a, 1.);
     EXPECT_DOUBLE_EQ(v_h(0), 9.);
-    pressio::ops::update(v, 1., a, 1., a, 1., nan, 0., a, 1.);
+    pressio::ops::update(v, 1., a, 1., a, 1., vecOfNans, 0., a, 1.);
     EXPECT_DOUBLE_EQ(v_h(0), 12.);
-    pressio::ops::update(v, 1., a, 1., a, 1., a, 1., nan, 0.);
+    pressio::ops::update(v, 1., a, 1., a, 1., a, 1., vecOfNans, 0.);
     EXPECT_DOUBLE_EQ(v_h(0), 15.);
 }
 
