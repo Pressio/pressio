@@ -72,7 +72,8 @@ struct DoUpdateTwoTermsFunctor {
 
   KOKKOS_INLINE_FUNCTION
   void operator () (const int i) const {
-    v_(i) = a_*v_(i) + b_*v1_(i) + c_*v2_(i);
+    const auto t = b_*v1_(i) + c_*v2_(i);
+    v_(i) = (a_ == ::pressio::utils::Constants<sc_t>::zero()) ? t : a_*v_(i) + t;
   }
 };
 
@@ -99,7 +100,8 @@ struct DoUpdateThreeTermsFunctor {
 
   KOKKOS_INLINE_FUNCTION
   void operator () (const int i) const {
-    v_(i) = a_*v_(i) + b_*v1_(i) + c_*v2_(i) + d_*v3_(i);
+    const auto t = b_*v1_(i) + c_*v2_(i) + d_*v3_(i);
+    v_(i) = (a_ == ::pressio::utils::Constants<sc_t>::zero()) ? t : a_*v_(i) + t;
   }
 };
 
@@ -129,7 +131,8 @@ struct DoUpdateFourTermsFunctor {
 
   KOKKOS_INLINE_FUNCTION
   void operator () (const int i) const {
-    v_(i) = a_*v_(i) + b_*v1_(i) + c_*v2_(i) + d_*v3_(i) + e_*v4_(i);
+    const auto t = b_*v1_(i) + c_*v2_(i) + d_*v3_(i) + e_*v4_(i);
+    v_(i) = (a_ == ::pressio::utils::Constants<sc_t>::zero()) ? t : a_*v_(i) + t;
   }
 };
 
