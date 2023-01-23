@@ -54,20 +54,46 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 //  overloads for computing: MV = a * MV + b * MV1
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<is_multi_vector_epetra<T>::value>
-update(T & mv, const scalar_t &a,
-	  const T & mv1, const scalar_t &b)
+template<typename T, typename T1, typename alpha_t, typename beta_t>
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<T>::value
+  && ::pressio::is_multi_vector_epetra<T1>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & mv, const alpha_t &a,
+       const T1 & mv1, const beta_t &b)
 {
   mv.Update(b, mv1, a);
 }
 
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<::pressio::is_multi_vector_epetra<T>::value>
-update(T & mv, const T & mv1, const scalar_t & b)
+template<typename T, typename T1, typename beta_t>
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_epetra<T>::value
+  && ::pressio::is_multi_vector_epetra<T1>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<beta_t, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & mv, const T1 & mv1, const beta_t & b)
 {
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  mv.Update(b, mv1, zero);
+  pressio::ops::update(mv, b, mv1, zero);
 }
 
 }}//end namespace pressio::ops
