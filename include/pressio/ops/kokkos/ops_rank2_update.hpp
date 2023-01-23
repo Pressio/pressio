@@ -58,12 +58,12 @@ namespace pressio{ namespace ops{
 // where MV is an kokkos multivector wrapper
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
-  containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
-  >
-update(T1 & mv,     const scalar_t &a,
-	  const T2 & mv1, const scalar_t &b)
+// ::pressio::mpl::enable_if_t<
+//   containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
+//   containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
+//   >
+void update(T1 & mv, const scalar_t &a,
+	    const T2 & mv1, const scalar_t &b)
 {
   /* make sure we don't pass const objects to be modified.
      In kokkos it is legal to modify const views, not for pressio wrappers. */
@@ -71,7 +71,7 @@ update(T1 & mv,     const scalar_t &a,
     (!std::is_const<T1>::value,
      "cannot modify a const-qualified wrapper of a Kokkos view");
 
-  ::KokkosBlas::axpby(b, *mv1.data(), a, *mv.data());
+  ::KokkosBlas::axpby(b, mv1, a, mv);
 }
 
 }}//end namespace pressio::ops

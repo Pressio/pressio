@@ -6,7 +6,7 @@ TEST(ops_kokkos, dense_matrix_clone)
 {
   Kokkos::View<double**> A("A", 6,8);
   auto A_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), A);
-  int c=0;  
+  int c=0;
   for (int i=0; i<6; ++i){
     for (int j=0; j<8; ++j){
      A_h(i,j)= (double) ++c;
@@ -98,4 +98,19 @@ TEST(ops_kokkos, dense_matrix_deep_copy)
     ASSERT_DOUBLE_EQ(B_h(i,j),44.);
    }
   }
+}
+
+TEST(ops_kokkos, dense_matrix_update)
+{
+  Kokkos::View<double**> M("A", 2, 2);
+  Kokkos::View<double**> A("A", 2, 2);
+  pressio::ops::fill(M, 1.);
+  pressio::ops::fill(A, 2.);
+
+  pressio::ops::update(M, 2., A, 3.);
+  auto M_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M);
+  EXPECT_DOUBLE_EQ(M_h(0, 0), 8.);
+  EXPECT_DOUBLE_EQ(M_h(0, 1), 8.);
+  EXPECT_DOUBLE_EQ(M_h(1, 0), 8.);
+  EXPECT_DOUBLE_EQ(M_h(1, 1), 8.);
 }
