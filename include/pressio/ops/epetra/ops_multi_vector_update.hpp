@@ -72,6 +72,9 @@ template<typename T, typename T1, typename alpha_t, typename beta_t>
 update(T & mv, const alpha_t &a,
        const T1 & mv1, const beta_t &b)
 {
+  assert(::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0));
+  assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
+
   mv.Update(b, mv1, a);
 }
 
