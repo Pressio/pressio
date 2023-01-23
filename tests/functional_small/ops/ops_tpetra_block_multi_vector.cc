@@ -86,4 +86,10 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_upda
       EXPECT_DOUBLE_EQ(v_h(i,j), 2.);
     }
   }
+  pressio::ops::update(v, a, 1.);
+  for (int i=0; i<localSize_*blockSize_; ++i){
+    for (int j=0; j<numVecs_; ++j){
+      EXPECT_DOUBLE_EQ(v_h(i,j), 2.);
+    }
+  }
 }
