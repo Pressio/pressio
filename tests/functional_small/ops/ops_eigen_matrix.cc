@@ -117,3 +117,17 @@ TEST(ops_eigen, add_to_diagonal)
     }
   }
 }
+
+TEST(ops_eigen, dense_matrix_update)
+{
+  Eigen::Matrix<double, 2, 2> M;
+  Eigen::Matrix<double, 2, 2> A;
+  M << 1., 2., 3., 4.;
+  A << 5., 6., 7., 8.;
+
+  pressio::ops::update(M, 2., A, 3.);
+  EXPECT_DOUBLE_EQ(M(0, 0), 17.);
+  EXPECT_DOUBLE_EQ(M(0, 1), 22.);
+  EXPECT_DOUBLE_EQ(M(1, 0), 27.);
+  EXPECT_DOUBLE_EQ(M(1, 1), 32.);
+}
