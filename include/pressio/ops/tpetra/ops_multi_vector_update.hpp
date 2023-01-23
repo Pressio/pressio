@@ -72,7 +72,7 @@ template<typename T, class T2, typename scalar_t>
   ::pressio::is_multi_vector_tpetra<T>::value
   && ::pressio::is_multi_vector_tpetra<T2>::value
   >
-update(T & mv, const T & mv1, const scalar_t & b)
+update(T & mv, const T2 & mv1, const scalar_t & b)
 {
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   mv.update(b, mv1, zero);
