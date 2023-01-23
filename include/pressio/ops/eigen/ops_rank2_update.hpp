@@ -63,13 +63,20 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename T1, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<T>::value
    || ::pressio::is_expression_acting_on_eigen<T>::value)
   && (::pressio::is_native_container_eigen<T1>::value
    || ::pressio::is_expression_acting_on_eigen<T1>::value)
-  && ::pressio::Traits<T>::rank == 2
-  && ::pressio::Traits<T1>::rank == 2
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & M,         const alpha_t & a,
        const T1 & M1, const beta_t & b)
