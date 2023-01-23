@@ -84,7 +84,11 @@ update(T & mv, const alpha_t &a,
   assert(::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0));
   assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
 
-  ::KokkosBlas::axpby(b, mv1, a, mv);
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t a_{a};
+  sc_t b_{b};
+
+  ::KokkosBlas::axpby(b_, mv1, a_, mv);
 }
 
 }}//end namespace pressio::ops
