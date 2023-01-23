@@ -63,8 +63,10 @@ template<typename T, typename T1, typename alpha_t, typename beta_t>
      ::pressio::Traits<T>::rank == 2
   && ::pressio::Traits<T1>::rank == 2
   // TPL/container specific
-  && ::pressio::is_native_container_kokkos<T>::value
-  && ::pressio::is_native_container_kokkos<T1>::value
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   || ::pressio::is_expression_acting_on_kokkos<T1>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -88,7 +90,9 @@ update(T & mv, const alpha_t &a,
   sc_t a_{a};
   sc_t b_{b};
 
-  ::KokkosBlas::axpby(b_, mv1, a_, mv);
+  auto & mv_n = impl::get_native(mv);
+  const auto & mv1_n = impl::get_native(mv1);
+ ::KokkosBlas::axpby(b_, mv1_n, a_, mv_n);
 }
 
 }}//end namespace pressio::ops

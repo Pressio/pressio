@@ -143,3 +143,23 @@ TEST(ops_kokkos, dense_matrix_update)
   EXPECT_DOUBLE_EQ(M_h(1, 0), 0.);
   EXPECT_DOUBLE_EQ(M_h(1, 1), 0.);
 }
+
+TEST(ops_kokkos, dense_matrix_update_epxr)
+{
+  Kokkos::View<double**> M0("M", 4, 4);
+  Kokkos::View<double**> A0("A", 4, 4);
+  pressio::ops::fill(M0, 1);
+  pressio::ops::fill(A0, 2);
+  auto M = pressio::subspan(M0, {1, 3}, {1, 3});
+  auto A = pressio::subspan(A0, {1, 3}, {1, 3});
+
+  pressio::ops::update(M, 2., A, 3.);
+  auto M0_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M0);
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      const bool sub = i > 0 && i < 3 && j > 0 && j < 3;
+      EXPECT_DOUBLE_EQ(M0_h(i, j), sub ? 8.   // updated M
+                                       : 1.); // unmodified part of M0
+    }
+  }
+}
