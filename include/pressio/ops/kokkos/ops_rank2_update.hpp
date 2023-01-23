@@ -57,13 +57,23 @@ namespace pressio{ namespace ops{
 // overloads for computing: MV = a * MV + b * MV1
 // where MV is an kokkos multivector wrapper
 //----------------------------------------------------------------------
-template<typename T1, typename T2, typename scalar_t>
-// ::pressio::mpl::enable_if_t<
-//   containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
-//   containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
-//   >
-void update(T1 & mv, const scalar_t &a,
-	    const T2 & mv1, const scalar_t &b)
+template<typename T, typename T1, typename alpha_t, typename beta_t>
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_native_container_kokkos<T>::value
+  && ::pressio::is_native_container_kokkos<T1>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & mv, const alpha_t &a,
+       const T1 & mv1, const beta_t &b)
 {
   /* make sure we don't pass const objects to be modified.
      In kokkos it is legal to modify const views, not for pressio wrappers. */
