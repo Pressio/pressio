@@ -74,7 +74,14 @@ template<typename T, typename T1, typename a_t, typename b_t>
 update(T & mv, const a_t &a,
        const T1 & mv1, const b_t &b)
 {
-  mv.update(b, mv1, a);
+  assert(::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0));
+  assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
+
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  scalar_t a_{a};
+  scalar_t b_{b};
+
+  mv.update(b_, mv1, a_);
 }
 
 template<typename T, typename T1, typename b_t>
