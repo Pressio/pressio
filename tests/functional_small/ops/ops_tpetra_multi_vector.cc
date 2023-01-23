@@ -108,3 +108,39 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_update1_b)
      }
     }
 }
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_update2_nan)
+{
+    auto v = pressio::ops::clone(*myMv_);
+    auto a = pressio::ops::clone(*myMv_);
+    auto v_h = v.getLocalViewHost(Tpetra::Access::ReadOnly);
+
+    // NaN injection through alpha=0
+    const auto nan = std::nan("0");
+    pressio::ops::fill(v, nan);
+    pressio::ops::fill(a, 1.);
+    pressio::ops::update(v, 0., a, 2.);
+    for (int i = 0; i < localSize_; ++i) {
+      for (int j = 0; j < numVecs_; ++j) {
+        EXPECT_DOUBLE_EQ(v_h(i, j), 2.);
+      }
+    }
+
+    // NaN injection through beta=0
+    pressio::ops::fill(a, nan);
+    pressio::ops::update(v, -1., a, 0.);
+    for (int i = 0; i < localSize_; ++i) {
+      for (int j = 0; j < numVecs_; ++j) {
+        EXPECT_DOUBLE_EQ(v_h(i, j), -2.);
+      }
+    }
+
+    // alpha=beta=0 corner case
+    pressio::ops::fill(v, nan);
+    pressio::ops::update(v, 0., a, 0.);
+    for (int i = 0; i < localSize_; ++i) {
+      for (int j = 0; j < numVecs_; ++j) {
+        EXPECT_DOUBLE_EQ(v_h(i, j), 0.);
+      }
+    }
+}
