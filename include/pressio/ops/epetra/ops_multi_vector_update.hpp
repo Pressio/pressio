@@ -79,7 +79,15 @@ update(T & mv, const alpha_t &a,
   scalar_t a_{a};
   scalar_t b_{b};
 
-  mv.Update(b_, mv1, a_);
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (a_ == zero) {
+    pressio::ops::set_zero(mv);
+  }
+  if (b_ == zero) {
+    pressio::ops::scale(mv, a_);
+  } else {
+    mv.Update(b_, mv1, a_);
+  }
 }
 
 template<typename T, typename T1, typename beta_t>
