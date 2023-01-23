@@ -81,6 +81,8 @@ template<typename T, typename T1, class alpha_t, class beta_t>
 update(T & M,         const alpha_t & a,
        const T1 & M1, const beta_t & b)
 {
+  assert(::pressio::ops::extent(M, 0) == ::pressio::ops::extent(M1, 0));
+  assert(::pressio::ops::extent(M, 1) == ::pressio::ops::extent(M1, 1));
 
   auto & M_n = impl::get_native(M);
   const auto & M_n1 = impl::get_native(M1);
