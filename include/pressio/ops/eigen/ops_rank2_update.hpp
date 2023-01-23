@@ -88,9 +88,23 @@ update(T & M,         const alpha_t & a,
   sc_t a_{a};
   sc_t b_{b};
 
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  if (b_ == zero) {
+    if (a_ == zero) {
+      ::pressio::ops::set_zero(M);
+    } else {
+      ::pressio::ops::scale(M, a_);
+    }
+    return;
+  }
+
   auto & M_n = impl::get_native(M);
   const auto & M_n1 = impl::get_native(M1);
-  M_n = a_*M_n + b_*M_n1;
+  if (a_ == zero) {
+    M_n = b_*M_n1;
+  } else {
+    M_n = a_*M_n + b_*M_n1;
+  }
 }
 
 }}//end namespace pressio::ops
