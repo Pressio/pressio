@@ -84,9 +84,13 @@ update(T & M,         const alpha_t & a,
   assert(::pressio::ops::extent(M, 0) == ::pressio::ops::extent(M1, 0));
   assert(::pressio::ops::extent(M, 1) == ::pressio::ops::extent(M1, 1));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t a_{a};
+  sc_t b_{b};
+
   auto & M_n = impl::get_native(M);
   const auto & M_n1 = impl::get_native(M1);
-  M_n = a*M_n + b*M_n1;
+  M_n = a_*M_n + b_*M_n1;
 }
 
 }}//end namespace pressio::ops
