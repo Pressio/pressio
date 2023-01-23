@@ -81,6 +81,9 @@ update(T & mv, const alpha_t &a,
     (!std::is_const<T1>::value,
      "cannot modify a const-qualified wrapper of a Kokkos view");
 
+  assert(::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0));
+  assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
+
   ::KokkosBlas::axpby(b, mv1, a, mv);
 }
 
