@@ -113,4 +113,33 @@ TEST(ops_kokkos, dense_matrix_update)
   EXPECT_DOUBLE_EQ(M_h(0, 1), 8.);
   EXPECT_DOUBLE_EQ(M_h(1, 0), 8.);
   EXPECT_DOUBLE_EQ(M_h(1, 1), 8.);
+
+  // NaN injection through alpha=0
+  const auto nan = std::nan("0");
+  pressio::ops::fill(M, nan);
+  pressio::ops::update(M, 0., A, 2.);
+  M_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M);
+  EXPECT_DOUBLE_EQ(M_h(0, 0), 4.);
+  EXPECT_DOUBLE_EQ(M_h(0, 1), 4.);
+  EXPECT_DOUBLE_EQ(M_h(1, 0), 4.);
+  EXPECT_DOUBLE_EQ(M_h(1, 1), 4.);
+
+  // NaN injection through beta=0
+  pressio::ops::fill(A, nan);
+  pressio::ops::update(M, -1., A, 0.);
+  M_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M);
+  EXPECT_DOUBLE_EQ(M_h(0, 0), -4.);
+  EXPECT_DOUBLE_EQ(M_h(0, 1), -4.);
+  EXPECT_DOUBLE_EQ(M_h(1, 0), -4.);
+  EXPECT_DOUBLE_EQ(M_h(1, 1), -4.);
+
+  // alpha=beta=0 corner case
+  pressio::ops::fill(M, nan);
+  pressio::ops::fill(A, nan);
+  pressio::ops::update(M, 0., A, 0.);
+  M_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M);
+  EXPECT_DOUBLE_EQ(M_h(0, 0), 0.);
+  EXPECT_DOUBLE_EQ(M_h(0, 1), 0.);
+  EXPECT_DOUBLE_EQ(M_h(1, 0), 0.);
+  EXPECT_DOUBLE_EQ(M_h(1, 1), 0.);
 }
