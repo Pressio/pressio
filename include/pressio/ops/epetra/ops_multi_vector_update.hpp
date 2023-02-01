@@ -76,8 +76,8 @@ update(T & mv, const alpha_t &a,
   assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
 
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
-  scalar_t a_{a};
-  scalar_t b_{b};
+  const scalar_t a_{a};
+  const scalar_t b_{b};
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (a_ == zero) {
