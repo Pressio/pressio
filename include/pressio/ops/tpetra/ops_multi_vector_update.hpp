@@ -102,8 +102,8 @@ update(T & mv, const T1 & mv1, const b_t & b)
 {
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  pressio::ops::update(mv, zero, mv1, b);
+  ::pressio::ops::update(mv, zero, mv1, b);
 }
 
-}}//end namespace pressio::ops
+}}//end namespace ::pressio::ops
 #endif  // OPS_TPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
