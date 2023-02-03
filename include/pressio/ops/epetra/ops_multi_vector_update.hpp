@@ -81,10 +81,10 @@ update(T & mv, const alpha_t &a,
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (a_ == zero) {
-    pressio::ops::set_zero(mv);
+    ::pressio::ops::set_zero(mv);
   }
   if (b_ == zero) {
-    pressio::ops::scale(mv, a_);
+    ::pressio::ops::scale(mv, a_);
   } else {
     mv.Update(b_, mv1, a_);
   }
@@ -108,8 +108,8 @@ update(T & mv, const T1 & mv1, const beta_t & b)
 {
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  pressio::ops::update(mv, b, mv1, zero);
+  ::pressio::ops::update(mv, b, mv1, zero);
 }
 
-}}//end namespace pressio::ops
+}}//end namespace ::pressio::ops
 #endif  // OPS_EPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
