@@ -4,7 +4,7 @@
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_clone)
 {
-  auto a = pressio::ops::clone(*myMv_);
+  auto a = ::pressio::ops::clone(*myMv_);
   auto a_h = a.getMultiVectorView().getLocalViewDevice(Tpetra::Access::ReadOnly);
   auto myMv_h = myMv_->getMultiVectorView().getLocalViewDevice(Tpetra::Access::ReadOnly);
   ASSERT_NE(a_h.data(), myMv_h.data());
@@ -39,7 +39,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_setz
     }
   }
 
-  pressio::ops::set_zero(*myMv_);
+  ::pressio::ops::set_zero(*myMv_);
   auto myMv_h2 = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
@@ -50,7 +50,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_setz
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_fill)
 {
-  pressio::ops::fill(*myMv_, 55.);
+  ::pressio::ops::fill(*myMv_, 55.);
   auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
@@ -61,9 +61,9 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_fill
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_deep_copy)
 {
-  pressio::ops::fill(*myMv_, -5.);
-  auto a = pressio::ops::clone(*myMv_);
-  pressio::ops::deep_copy(a, *myMv_);
+  ::pressio::ops::fill(*myMv_, -5.);
+  auto a = ::pressio::ops::clone(*myMv_);
+  ::pressio::ops::deep_copy(a, *myMv_);
 
   auto a_h = a.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
@@ -75,18 +75,18 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_deep
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_update)
 {
-  auto v = pressio::ops::clone(*myMv_);
-  pressio::ops::fill(v, 1.);
-  auto a = pressio::ops::clone(*myMv_);
-  pressio::ops::fill(a, 2.);
-  pressio::ops::update(v, 0., a, 1.);
+  auto v = ::pressio::ops::clone(*myMv_);
+  ::pressio::ops::fill(v, 1.);
+  auto a = ::pressio::ops::clone(*myMv_);
+  ::pressio::ops::fill(a, 2.);
+  ::pressio::ops::update(v, 0., a, 1.);
   auto v_h = v.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       EXPECT_DOUBLE_EQ(v_h(i,j), 2.);
     }
   }
-  pressio::ops::update(v, a, 1.);
+  ::pressio::ops::update(v, a, 1.);
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       EXPECT_DOUBLE_EQ(v_h(i,j), 2.);
@@ -96,15 +96,15 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_upda
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_update_nan)
 {
-    auto v = pressio::ops::clone(*myMv_);
-    auto a = pressio::ops::clone(*myMv_);
+    auto v = ::pressio::ops::clone(*myMv_);
+    auto a = ::pressio::ops::clone(*myMv_);
     auto v_h = v.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
 
     // NaN injection through alpha=0
     const auto nan = std::nan("0");
-    pressio::ops::fill(v, nan);
-    pressio::ops::fill(a, 1.);
-    pressio::ops::update(v, 0., a, 2.);
+    ::pressio::ops::fill(v, nan);
+    ::pressio::ops::fill(a, 1.);
+    ::pressio::ops::update(v, 0., a, 2.);
     for (int i = 0; i < localSize_; ++i) {
       for (int j = 0; j < numVecs_; ++j) {
         EXPECT_DOUBLE_EQ(v_h(i, j), 2.);
@@ -112,8 +112,8 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_upda
     }
 
     // NaN injection through beta=0
-    pressio::ops::fill(a, nan);
-    pressio::ops::update(v, -1., a, 0.);
+    ::pressio::ops::fill(a, nan);
+    ::pressio::ops::update(v, -1., a, 0.);
     for (int i = 0; i < localSize_; ++i) {
       for (int j = 0; j < numVecs_; ++j) {
         EXPECT_DOUBLE_EQ(v_h(i, j), -2.);
@@ -121,8 +121,8 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_upda
     }
 
     // alpha=beta=0 corner case
-    pressio::ops::fill(v, nan);
-    pressio::ops::update(v, 0., a, 0.);
+    ::pressio::ops::fill(v, nan);
+    ::pressio::ops::update(v, 0., a, 0.);
     for (int i = 0; i < localSize_; ++i) {
       for (int j = 0; j < numVecs_; ++j) {
         EXPECT_DOUBLE_EQ(v_h(i, j), 0.);
