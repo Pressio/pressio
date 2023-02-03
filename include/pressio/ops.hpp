@@ -106,6 +106,7 @@ template<class ...> struct matching_extents;
 #include "ops/kokkos/ops_dot.hpp"
 #include "ops/kokkos/ops_pow.hpp"
 #include "ops/kokkos/ops_vector_update.hpp"
+#include "ops/kokkos/ops_rank2_update.hpp"
 #include "ops/kokkos/ops_elementwise_multiply.hpp"
 #include "ops/kokkos/ops_level2.hpp"
 #include "ops/kokkos/ops_level3.hpp"
