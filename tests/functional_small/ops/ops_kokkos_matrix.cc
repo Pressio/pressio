@@ -100,6 +100,20 @@ TEST(ops_kokkos, dense_matrix_deep_copy)
   }
 }
 
+TEST(ops_kokkos, dense_matrix_min_max)
+{
+  Kokkos::View<double**> A("A", 6, 3);
+  auto A_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), A);
+  for (int i = 0; i < 6; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      A_h(i, j) = 100 - i * 6 - j;
+    }
+  }
+  Kokkos::deep_copy(A, A_h);
+  ASSERT_DOUBLE_EQ(pressio::ops::min(A), 68.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(A), 100.);
+}
+
 TEST(ops_kokkos, dense_matrix_update)
 {
   Kokkos::View<double**> M("A", 2, 2);

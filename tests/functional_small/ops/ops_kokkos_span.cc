@@ -73,6 +73,20 @@ TEST(ops_kokkos, span_fill)
   ASSERT_DOUBLE_EQ(a_h(5),1.2);
 }
 
+TEST(ops_kokkos, span_min_max)
+{
+  vec_t a("a",6);
+  auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
+  for (int i=0; i<6; ++i){
+    a_h(i) = (double) i - 2.0;
+  }
+  Kokkos::deep_copy(a, a_h);
+
+  auto sp = pressio::span(a, 1,3);
+  ASSERT_DOUBLE_EQ(pressio::ops::min(sp), -1.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(sp), 1.);
+}
+
 TEST(ops_kokkos, span_norms)
 {
   vec_t a("a",6);
