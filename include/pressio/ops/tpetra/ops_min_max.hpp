@@ -46,53 +46,10 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_MIN_MAX_HPP_
-#define OPS_KOKKOS_OPS_MIN_MAX_HPP_
+#ifndef OPS_TPETRA_OPS_MIN_MAX_HPP_
+#define OPS_TPETRA_OPS_MIN_MAX_HPP_
 
 namespace pressio{ namespace ops{
-
-namespace impl{
-
-template <typename ReducerType, typename ViewType>
-::pressio::mpl::enable_if_t<
-  ViewType::rank == 1,
-  typename ::pressio::Traits<ViewType>::scalar_type
-  >
-kokkos_reduce(const ViewType & view) {
-  using sc_t = typename ::pressio::Traits<ViewType>::scalar_type;
-  sc_t result;
-  ReducerType reducer(result);
-  auto f = KOKKOS_LAMBDA(size_t i, sc_t& r) {
-      reducer.join(r, view(i));
-    };
-  Kokkos::parallel_reduce(
-    "reduce_1d", view.extent(0), f, reducer);
-  return result;
-}
-
-template <typename ReducerType, typename ViewType>
-::pressio::mpl::enable_if_t<
-  ViewType::rank == 2,
-  typename ::pressio::Traits<ViewType>::scalar_type
-  >
-kokkos_reduce(const ViewType & view) {
-  using sc_t = typename std::remove_cv<
-    typename ::pressio::Traits<ViewType>::scalar_type
-    >::type;
-  sc_t result;
-  ReducerType reducer(result);
-  Kokkos::MDRangePolicy<Kokkos::Rank<2>> range_2d(
-      {0, 0},
-      {view.extent(0), view.extent(1)}
-    );
-  auto f = KOKKOS_LAMBDA(size_t i0, size_t i1, sc_t& r) {
-      reducer.join(r, view(i0, i1));
-    };
-  Kokkos::parallel_reduce("reduce_2d", range_2d, f, reducer);
-  return result;
-}
-
-}
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
@@ -100,8 +57,8 @@ template <typename T>
     (::pressio::Traits<T>::rank == 1
   || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-  && (::pressio::is_native_container_kokkos<T>::value
-  || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_vector_tpetra<T>::value
+  || ::pressio::is_multi_vector_tpetra<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
@@ -110,9 +67,25 @@ template <typename T>
 max(const T & obj)
 {
   assert(::pressio::ops::extent(obj, 0) > 0);
+  assert(!::pressio::is_multi_vector_tpetra<T>::value
+       || ::pressio::ops::extent(obj, 1) > 0);
 
+  // get local minimum
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  return impl::kokkos_reduce<Kokkos::Max<sc_t>>(impl::get_native(obj));
+  auto local = obj.getLocalViewDevice(Tpetra::Access::ReadOnly);
+  sc_t max_local = ::pressio::ops::max(local);
+
+  // reduce over ranks to get global minimum
+  sc_t max_global = max_local;
+  Teuchos::reduceAll<int, sc_t>(
+    *obj.getMap()->getComm(),
+    Teuchos::REDUCE_MAX,
+    1,
+    &max_local,
+    &max_global
+    );
+
+  return max_global;
 }
 
 template <typename T>
@@ -121,8 +94,8 @@ template <typename T>
     (::pressio::Traits<T>::rank == 1
   || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-  && (::pressio::is_native_container_kokkos<T>::value
-  || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_vector_tpetra<T>::value
+  || ::pressio::is_multi_vector_tpetra<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
@@ -131,10 +104,26 @@ template <typename T>
 min(const T & obj)
 {
   assert(::pressio::ops::extent(obj, 0) > 0);
+  assert(!::pressio::is_multi_vector_tpetra<T>::value
+       || ::pressio::ops::extent(obj, 1) > 0);
 
+  // get local minimum
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  return impl::kokkos_reduce<Kokkos::Min<sc_t>>(impl::get_native(obj));
+  auto local = obj.getLocalViewDevice(Tpetra::Access::ReadOnly);
+  sc_t min_local = ::pressio::ops::min(local);
+
+  // reduce over ranks to get global minimum
+  sc_t min_global = min_local;
+  Teuchos::reduceAll<int, sc_t>(
+    *obj.getMap()->getComm(),
+    Teuchos::REDUCE_MIN,
+    1,
+    &min_local,
+    &min_global
+    );
+
+  return min_global;
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_MIN_MAX_HPP_
+#endif  // OPS_TPETRA_OPS_MIN_MAX_HPP_
