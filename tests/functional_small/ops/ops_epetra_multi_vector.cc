@@ -23,8 +23,8 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_clone)
 
 TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_extent)
 {
-    ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == 15);
-    ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == 4);
+    ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == numProc_ * localSize_);
+    ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == numVecs_);
 }
 
 TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_deep_copy)
@@ -134,4 +134,10 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_update2_nan)
       EXPECT_DOUBLE_EQ(v[j][i], 0.);
      }
     }
+}
+
+TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_min_max)
+{
+  ASSERT_DOUBLE_EQ(pressio::ops::min(*myMv_), 1.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(*myMv_), numProc_ * localSize_ * numVecs_);
 }
