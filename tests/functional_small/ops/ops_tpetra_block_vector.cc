@@ -95,6 +95,20 @@ TEST_F(ops_tpetra_block, vector_dot)
   EXPECT_DOUBLE_EQ(res, numProc_ * 5. * blockSize_);
 }
 
+TEST_F(ops_tpetra_block, vector_min_max)
+{
+  auto a = pressio::ops::clone(*myVector_);
+  auto a_mv = a.getMultiVectorView();
+  auto a2_h = a_mv.getLocalViewHost(Tpetra::Access::ReadWrite);
+  auto a_h = Kokkos::subview(a2_h, Kokkos::ALL, 0);
+  const auto n = localSize_ * blockSize_;
+  for (int i = 0; i < n; ++i) {
+    a_h(i) = 100.0 - (rank_ * n + i);
+  }
+  ASSERT_DOUBLE_EQ(pressio::ops::min(a), 100. - (numProc_ * n - 1.0));
+  ASSERT_DOUBLE_EQ(pressio::ops::max(a), 100.);
+}
+
 TEST_F(ops_tpetra_block, vector_norm2)
 {
   pressio::ops::fill(*myVector_, 1.0);
