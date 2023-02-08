@@ -103,10 +103,11 @@ public:
     // initialize data for computations
     myMv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
     auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWrite);
-    for (int i = 0; i < localSize_; ++i){
+    for (int i = 0; i < localSize_ * blockSize_; ++i){
       for (int j = 0; j < numVecs_; ++j){
         // generate rank-unique int values
-        myMv_h(i, j) = (double)((rank_ * localSize_ + i) * numVecs_ + j + 1.);
+        myMv_h(i, j) = (double)((rank_ * localSize_ * blockSize_ + i) * numVecs_ + j + 1.);
+        printf("\t@ [%d](%d, %d) -> %g\n", rank_, i, j, myMv_h(i, j));
       }
     }
     x_tpetra = std::make_shared<vec_t>(*contigMap_, blockSize_);
