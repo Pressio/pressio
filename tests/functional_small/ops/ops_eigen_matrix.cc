@@ -100,6 +100,19 @@ TEST(ops_eigen, dense_matrix_deep_copy)
   }
 }
 
+TEST(ops_eigen, matrix_min_max)
+{
+  using T = Eigen::MatrixXd;
+  T a(5, 5);
+  for (int i = 0; i < 5; ++i) {
+    for (int j = 0; j < 5; ++j) {
+      a(i, j) = 5 * i + j + 1;
+    }
+  }
+  ASSERT_DOUBLE_EQ(pressio::ops::min(a), 1.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(a), 25.);
+}
+
 TEST(ops_eigen, add_to_diagonal)
 {
   using T = Eigen::MatrixXd;
