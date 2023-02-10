@@ -161,6 +161,7 @@ template<class ...> struct matching_extents;
 #include "ops/epetra/ops_fill.hpp"
 #include "ops/epetra/ops_abs.hpp"
 #include "ops/epetra/ops_dot.hpp"
+#include "ops/epetra/ops_min_max.hpp"
 #include "ops/epetra/ops_norms.hpp"
 #include "ops/epetra/ops_pow.hpp"
 #include "ops/epetra/ops_rank1_update.hpp"
