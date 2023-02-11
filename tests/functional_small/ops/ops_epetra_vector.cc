@@ -57,6 +57,13 @@ TEST_F(ops_epetra, vector_scale)
   for (int i = 0; i < localSize_; ++i){
     EXPECT_DOUBLE_EQ(x[i], 6.);
   }
+
+  // check NaN injection
+  x.PutScalar(std::nan("0"));
+  pressio::ops::scale(x, 0.);
+  for (int i = 0; i < localSize_; ++i){
+    EXPECT_DOUBLE_EQ(x[i], 0.);
+  }
 }
 
 TEST_F(ops_epetra, vector_fill)
