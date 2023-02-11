@@ -69,9 +69,14 @@ template <typename T, typename ScalarType>
 scale(const T & v, ScalarType value)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  sc_t value_{value_};
-  auto vn = impl::get_native(v);
-  ::KokkosBlas::scal(vn, value_, vn);
+  const sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t value_{value};
+  if (value_ == zero) {
+    ::pressio::ops::set_zero(v);
+  } else {
+    auto vn = impl::get_native(v);
+    ::KokkosBlas::scal(vn, value_, vn);
+  }
 }
 
 }}//end namespace pressio::ops

@@ -96,6 +96,17 @@ TEST(ops_kokkos, vector_scale)
   EXPECT_DOUBLE_EQ(x_h(3), 6.);
   EXPECT_DOUBLE_EQ(x_h(4), 8.);
   EXPECT_DOUBLE_EQ(x_h(5), 10.);
+
+  // check NaN injection with zero scaling
+  ::pressio::ops::fill(x, std::nan("0"));
+  pressio::ops::scale(x, 0.);
+  x_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), x);
+  EXPECT_DOUBLE_EQ(x_h(0), 0.);
+  EXPECT_DOUBLE_EQ(x_h(1), 0.);
+  EXPECT_DOUBLE_EQ(x_h(2), 0.);
+  EXPECT_DOUBLE_EQ(x_h(3), 0.);
+  EXPECT_DOUBLE_EQ(x_h(4), 0.);
+  EXPECT_DOUBLE_EQ(x_h(5), 0.);
 }
 
 TEST(ops_kokkos, vector_fill)
