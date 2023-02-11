@@ -94,8 +94,11 @@ kokkos_reduce(const ViewType & view) {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
+  // min/max common constraints
+    (::pressio::Traits<T>::rank == 1
+  || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-    (::pressio::is_native_container_kokkos<T>::value
+  && (::pressio::is_native_container_kokkos<T>::value
   || ::pressio::is_expression_acting_on_kokkos<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -112,8 +115,11 @@ max(const T & obj)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
+  // min/max common constraints
+    (::pressio::Traits<T>::rank == 1
+  || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-    (::pressio::is_native_container_kokkos<T>::value
+  && (::pressio::is_native_container_kokkos<T>::value
   || ::pressio::is_expression_acting_on_kokkos<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
