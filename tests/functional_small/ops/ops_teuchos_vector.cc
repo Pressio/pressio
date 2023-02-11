@@ -17,4 +17,9 @@ TEST(ops_teuchos, vector_scale)
   for (int i=0; i<6; ++i){
     ASSERT_DOUBLE_EQ(a(i), (i + 1.) * s);
   }
+
+  // check NaN injection with zero scaling
+  a(0) = std::nan("0");
+  pressio::ops::scale(a, 0.);
+  EXPECT_DOUBLE_EQ(a(0), 0.);
 }
