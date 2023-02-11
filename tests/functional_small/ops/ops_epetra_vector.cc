@@ -94,7 +94,6 @@ TEST_F(ops_epetra, vector_min_max)
   auto a = pressio::ops::clone(*myVector_);
   for (int i = 0; i < localSize_; ++i) {
     a[i] = 100.0 - (rank_ * localSize_ + i);
-    printf("@ %d:%d -> %g\n", rank_, i, a[i]);
   }
   ASSERT_DOUBLE_EQ(pressio::ops::min(a), 100. - (numProc_ * localSize_ - 1.0));
   ASSERT_DOUBLE_EQ(pressio::ops::max(a), 100.);
