@@ -49,6 +49,16 @@ TEST_F(ops_epetra, vector_setzero)
     }
 }
 
+TEST_F(ops_epetra, vector_scale)
+{
+  auto & x = *myVector_;
+  x.PutScalar(2.);
+  pressio::ops::scale(x, 3.);
+  for (int i = 0; i < localSize_; ++i){
+    EXPECT_DOUBLE_EQ(x[i], 6.);
+  }
+}
+
 TEST_F(ops_epetra, vector_fill)
 {
     pressio::ops::fill(*myVector_, 55.);

@@ -56,6 +56,17 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_setzero)
     }
 }
 
+TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_scale)
+{
+    myMv_->PutScalar(2.);
+    ::pressio::ops::scale(*myMv_, 3);
+    for (int i = 0; i < localSize_; ++i){
+     for (int j = 0; j < numVecs_; ++j){
+        EXPECT_DOUBLE_EQ((*myMv_)[j][i], 6.);
+     }
+    }
+}
+
 TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_fill)
 {
     ::pressio::ops::fill(*myMv_, 55.);
