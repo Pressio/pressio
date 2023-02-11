@@ -69,7 +69,10 @@ template <typename T, class ScalarType>
   >
 scale(T & o, const ScalarType & value)
 {
-  impl::get_native(o) *= value;
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t value_{value_};
+  auto && on = impl::get_native(o);
+  on *= value_;
 }
 
 }}//end namespace pressio::ops
