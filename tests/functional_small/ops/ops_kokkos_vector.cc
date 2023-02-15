@@ -131,17 +131,18 @@ TEST(ops_kokkos, vector_deep_copy)
   }
 }
 
-// TEST(ops_kokkos, vector_min_max)
-// {
-//   using T = Eigen::VectorXd;
-//   T a(5);
-//   for (int i=0; i<5; ++i){
-//    a(i)= (double) i;
-//   }
+TEST(ops_kokkos, vector_min_max)
+{
+  Kokkos::View<double*> x("x", 6);
+  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x);
+  for (int i = 0; i < 6; ++i) {
+    x_h(i) = 100 - i * 5;
+  }
+  Kokkos::deep_copy(x, x_h);
 
-//   ASSERT_DOUBLE_EQ(pressio::ops::min(a), 0.);
-//   ASSERT_DOUBLE_EQ(pressio::ops::max(a), 4.);
-// }
+  ASSERT_DOUBLE_EQ(pressio::ops::min(x), 75.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(x), 100.);
+}
 
 TEST(ops_kokkos, vector_norm1)
 {

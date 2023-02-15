@@ -102,6 +102,7 @@ template<class ...> struct matching_extents;
 #include "ops/kokkos/ops_fill.hpp"
 #include "ops/kokkos/ops_resize.hpp"
 #include "ops/kokkos/ops_abs.hpp"
+#include "ops/kokkos/ops_min_max.hpp"
 #include "ops/kokkos/ops_norms_vector.hpp"
 #include "ops/kokkos/ops_dot.hpp"
 #include "ops/kokkos/ops_pow.hpp"
