@@ -49,6 +49,23 @@ TEST_F(ops_epetra, vector_setzero)
     }
 }
 
+TEST_F(ops_epetra, vector_scale)
+{
+  auto & x = *myVector_;
+  x.PutScalar(2.);
+  pressio::ops::scale(x, 3.);
+  for (int i = 0; i < localSize_; ++i){
+    EXPECT_DOUBLE_EQ(x[i], 6.);
+  }
+
+  // check NaN injection
+  x.PutScalar(std::nan("0"));
+  pressio::ops::scale(x, 0.);
+  for (int i = 0; i < localSize_; ++i){
+    EXPECT_DOUBLE_EQ(x[i], 0.);
+  }
+}
+
 TEST_F(ops_epetra, vector_fill)
 {
     pressio::ops::fill(*myVector_, 55.);
@@ -94,7 +111,6 @@ TEST_F(ops_epetra, vector_min_max)
   auto a = pressio::ops::clone(*myVector_);
   for (int i = 0; i < localSize_; ++i) {
     a[i] = 100.0 - (rank_ * localSize_ + i);
-    printf("@ %d:%d -> %g\n", rank_, i, a[i]);
   }
   ASSERT_DOUBLE_EQ(pressio::ops::min(a), 100. - (numProc_ * localSize_ - 1.0));
   ASSERT_DOUBLE_EQ(pressio::ops::max(a), 100.);
