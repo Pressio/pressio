@@ -51,14 +51,22 @@ TEST(ops_eigen, vector_abs)
 
 TEST(ops_eigen, vector_scale)
 {
-  T a(6);
-  a.setConstant(1.);
+  const size_t n = 6;
+  T a(n);
+  a.setConstant(2.);
 
   pressio::ops::scale(a, 3.);
-  for (int i=0; i<6; ++i){
-    ASSERT_DOUBLE_EQ(a(i),3.);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(a(i), 6.);
+  }
+
+  a.setConstant(std::nan("0"));
+  pressio::ops::scale(a, 0.);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(a(i), 0.);
   }
 }
+
 TEST(ops_eigen, vector_setzero)
 {
   T a(6);
