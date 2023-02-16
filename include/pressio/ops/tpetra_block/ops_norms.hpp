@@ -71,8 +71,9 @@ norm2(const T & a)
 
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
-  using mv_t = Tpetra::BlockVector<>;
-  return const_cast<mv_t &>(a).getVectorView().norm2();
+  using vec_t = typename std::remove_const<T>::type;
+  const auto a_v = const_cast<vec_t &>(a).getVectorView();
+  return a_v.norm2();
 }
 
 template <typename T>
@@ -95,8 +96,9 @@ norm1(const T & a)
 
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
-  using mv_t = Tpetra::BlockVector<>;
-  return const_cast<mv_t &>(a).getVectorView().norm1();
+  using vec_t = typename std::remove_const<T>::type;
+  const auto a_v = const_cast<vec_t &>(a).getVectorView();
+  return a_v.norm1();
 }
 
 }}//end namespace pressio::ops
