@@ -51,27 +51,39 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename ::pressio::Traits<T>::scalar_type
   >
-norm1(const vec_type & a)
+norm1(const T & a)
 {
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
   sc_t result = 0.0;
   a.Norm1(&result);
   return result;
 }
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename ::pressio::Traits<T>::scalar_type
   >
-norm2(const vec_type & a)
+norm2(const T & a)
 {
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
   sc_t result = 0.0;
   a.Norm2(&result);
   return result;
