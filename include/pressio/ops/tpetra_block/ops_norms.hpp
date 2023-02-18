@@ -51,30 +51,54 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra_block<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_tpetra_block<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename decltype(std::declval<T>().getVectorView())::mag_type
   >
-norm2(const vec_type & a)
+norm2(const T & a)
 {
+  static_assert(
+    std::is_same<typename ::pressio::Traits<T>::scalar_type,
+    typename decltype(std::declval<T>().getVectorView())::mag_type>::value,
+    "Scalar and mag not same");
+
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
-  using mv_t = Tpetra::BlockVector<>;
-  return const_cast<mv_t &>(a).getVectorView().norm2();
+  using vec_t = typename std::remove_const<T>::type;
+  const auto a_v = const_cast<vec_t &>(a).getVectorView();
+  return a_v.norm2();
 }
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra_block<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_tpetra_block<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename decltype(std::declval<T>().getVectorView())::mag_type
   >
-norm1(const vec_type & a)
+norm1(const T & a)
 {
+  static_assert(
+    std::is_same<typename ::pressio::Traits<T>::scalar_type,
+    typename decltype(std::declval<T>().getVectorView())::mag_type>::value,
+    "Scalar and mag not same");
+
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
-  using mv_t = Tpetra::BlockVector<>;
-  return const_cast<mv_t &>(a).getVectorView().norm1();
+  using vec_t = typename std::remove_const<T>::type;
+  const auto a_v = const_cast<vec_t &>(a).getVectorView();
+  return a_v.norm1();
 }
 
 }}//end namespace pressio::ops
