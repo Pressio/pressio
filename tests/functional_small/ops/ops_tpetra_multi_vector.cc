@@ -156,3 +156,9 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_update2_nan)
       }
     }
 }
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_min_max)
+{
+  ASSERT_DOUBLE_EQ(pressio::ops::min(*myMv_), 1.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(*myMv_), numProc_ * localSize_ * numVecs_);
+}
