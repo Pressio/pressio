@@ -51,26 +51,50 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T1, typename T2, typename DotResult>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value
+  // dot common constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
+  && std::is_convertible<
+    typename ::pressio::Traits<T1>::scalar_type,
+    DotResult>::value
   >
-dot(const vec_type & a,
-    const vec_type & b,
-    typename ::pressio::Traits<vec_type>::scalar_type & result)
+dot(const T1 & a,
+    const T2 & b,
+    DotResult & result)
 {
   assert(a.MyLength() == b.MyLength());
-  a.Dot(b, &result);
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  sc_t ret;
+  a.Dot(b, &ret);
+  result = static_cast<DotResult>(ret);
 }
 
-template <typename vec_type>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::Traits<vec_type>::scalar_type
+  // dot common constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value),
+  typename ::pressio::Traits<T1>::scalar_type
   >
-dot(const vec_type & a, const vec_type & b)
+dot(const T1 & a, const T2 & b)
 {
-  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   sc_t result = {};
   dot(a, b, result);
   return result;
