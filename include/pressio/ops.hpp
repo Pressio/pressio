@@ -147,6 +147,7 @@ template<class ...> struct matching_extents;
 #include "ops/tpetra_block/ops_fill.hpp"
 #include "ops/tpetra_block/ops_abs.hpp"
 #include "ops/tpetra_block/ops_dot.hpp"
+#include "ops/tpetra_block/ops_min_max.hpp"
 #include "ops/tpetra_block/ops_norms.hpp"
 #include "ops/tpetra_block/ops_pow.hpp"
 #include "ops/tpetra_block/ops_rank1_update.hpp"
