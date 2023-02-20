@@ -66,8 +66,9 @@ template <typename T, class ScalarType>
   >
 scale(T & objectIn, const ScalarType value)
 {
-  auto obj = objectIn.getMultiVectorView();
-  ::pressio::ops::scale(obj, value);
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const sc_t v{value};
+  objectIn.scale(v);
 }
 
 }}//end namespace pressio::ops
