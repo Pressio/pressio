@@ -51,34 +51,53 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T0, typename T1, class ScalarType>
+template <typename T1, typename T2, typename DotResult>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T0,T1>::value
-  && (::pressio::is_vector_eigen<T0>::value
-  || ::pressio::is_expression_acting_on_eigen<T0>::value)
+  // dot common constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
   && (::pressio::is_vector_eigen<T1>::value
   || ::pressio::is_expression_acting_on_eigen<T1>::value)
-  && ::pressio::Traits<T0>::rank==1
-  && ::pressio::Traits<T1>::rank==1
+  && (::pressio::is_vector_eigen<T2>::value
+  || ::pressio::is_expression_acting_on_eigen<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
+  && std::is_convertible<
+    decltype(impl::get_native(std::declval<T1>()).dot(
+      impl::get_native(std::declval<T2>()))),
+    DotResult>::value
   >
-dot(const T0 & vecA, const T1 & vecB, ScalarType & result)
+dot(const T1 & vecA, const T2 & vecB, DotResult & result)
 {
-  assert((matching_extents<T0, T1>::compare(vecA, vecB)));
-  result = impl::get_native(vecA).dot(impl::get_native(vecB));
+  assert((::pressio::ops::matching_extents<T1, T2>::compare(vecA, vecB)));
+
+  const auto vA_n = impl::get_native(vecA);
+  const auto vB_n = impl::get_native(vecB);
+  result = static_cast<DotResult>(vA_n.dot(vB_n));
 }
 
-template <typename T0, typename T1>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T0,T1>::value
-  && (::pressio::is_vector_eigen<T0>::value
-  || ::pressio::is_expression_acting_on_eigen<T0>::value)
+  // dot common constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
   && (::pressio::is_vector_eigen<T1>::value
-  || ::pressio::is_expression_acting_on_eigen<T1>::value),
-  typename ::pressio::Traits<T0>::scalar_type
+  || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T2>::value
+  || ::pressio::is_expression_acting_on_eigen<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value),
+  typename ::pressio::Traits<T1>::scalar_type
   >
-dot(const T0 & vecA, const T1 & vecB)
+dot(const T1 & vecA, const T2 & vecB)
 {
-  using sc_t = typename ::pressio::Traits<T0>::scalar_type;
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
   sc_t result = {};
   dot(vecA, vecB, result);
   return result;
