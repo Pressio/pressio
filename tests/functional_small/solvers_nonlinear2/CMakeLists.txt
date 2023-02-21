@@ -1,7 +1,30 @@
 
+set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
+
 if (PRESSIO_ENABLE_TPL_EIGEN)
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
-  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_concepts ${SRC1})
+  # set(name newton_problem1_eigen)
+  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  # add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+
+  # set(name newton_problem2_eigen)
+  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  # add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+
+  set(name gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name gaussnewton_normaleqs_problem5_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name weighted_gaussnewton_customproblem_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+endif()
+
+
+#if (PRESSIO_ENABLE_TPL_EIGEN)
+  #set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
+  #add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_concepts ${SRC1})
 
   # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/tolerances.cc)
   # add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_tolerances ${SRC1})
@@ -27,11 +50,10 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/armijo.cc)
   # set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_armijo)
   # add_serial_utest(${TESTNAME} ${SRC1})
-endif()
+#endif()
 
-set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
-add_subdirectory(newton_raphson)
-add_subdirectory(gauss_newton_normal_equations)
+#add_subdirectory(newton_raphson)
+# add_subdirectory(gauss_newton_normal_equations)
 # add_subdirectory(standard_gauss_newton_qr)
 # add_subdirectory(levenberg_marquardt)
 # add_subdirectory(ls_frozen_jacobian_gn_lm)

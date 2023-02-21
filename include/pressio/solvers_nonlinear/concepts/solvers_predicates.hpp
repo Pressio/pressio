@@ -51,10 +51,10 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template<typename T, typename GradientType, typename enable = void>
+template<class T, class GradientType, class enable = void>
 struct has_const_create_gradient_method_return_result : std::false_type{};
 
-template<typename T, typename GradientType>
+template<class T, class GradientType>
 struct has_const_create_gradient_method_return_result
 <T, GradientType,
  ::pressio::mpl::enable_if_t<
@@ -66,10 +66,10 @@ struct has_const_create_gradient_method_return_result
  > : std::true_type{};
 
 
-template<typename T, typename HessianType, typename enable = void>
+template<class T, class HessianType, class enable = void>
 struct has_const_create_hessian_method_return_result : std::false_type{};
 
-template<typename T, typename HessianType>
+template<class T, class HessianType>
 struct has_const_create_hessian_method_return_result
 <T, HessianType,
  ::pressio::mpl::enable_if_t<
@@ -81,10 +81,10 @@ struct has_const_create_hessian_method_return_result
  > : std::true_type{};
 
 
-template<typename T, typename JacobianType, typename enable = void>
+template<class T, class JacobianType, class enable = void>
 struct has_const_create_jacobian_method_return_result : std::false_type{};
 
-template<typename T, typename JacobianType>
+template<class T, class JacobianType>
 struct has_const_create_jacobian_method_return_result
 <T, JacobianType,
  ::pressio::mpl::enable_if_t<
@@ -96,10 +96,10 @@ struct has_const_create_jacobian_method_return_result
  > : std::true_type{};
 
 
-template<typename T, typename ResidualType, typename Enable = void>
+template<class T, class ResidualType, class Enable = void>
 struct has_const_create_residual_method_return_result : std::false_type{};
 
-template<typename T, typename ResidualType>
+template<class T, class ResidualType>
 struct has_const_create_residual_method_return_result
 <T, ResidualType,
  ::pressio::mpl::enable_if_t<
@@ -127,20 +127,20 @@ struct has_const_create_state_method_return_result<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename GradientType,
-  typename NormType,
-  typename = void
+  class T,
+  class StateType,
+  class GradientType,
+  class NormType,
+  class = void
   >
 struct has_const_gradient_method_accept_state_result_norm_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename GradientType,
-  typename NormType
+  class T,
+  class StateType,
+  class GradientType,
+  class NormType
   >
 struct has_const_gradient_method_accept_state_result_norm_return_void<
   T, StateType, GradientType, NormType,
@@ -161,21 +161,21 @@ struct has_const_gradient_method_accept_state_result_norm_return_void<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename HessianType,
-  typename = void
+  class T,
+  class StateType,
+  class HessianType,
+  class = void
   >
 struct has_const_hessian_method_accept_state_result_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename HessianType
+  class T,
+  class StateType,
+  class HessianType
   >
 struct has_const_hessian_method_accept_state_result_return_void<
-  T, StateType, HessianType, 
+  T, StateType, HessianType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
@@ -190,22 +190,22 @@ struct has_const_hessian_method_accept_state_result_return_void<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename HessianType,
-  typename GradientType,
-  typename NormType,
-  typename = void
+  class T,
+  class StateType,
+  class HessianType,
+  class GradientType,
+  class NormType,
+  class = void
   >
 struct has_const_hessianandgradient_method_accept_state_result_norm_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename HessianType,
-  typename GradientType,
-  typename NormType
+  class T,
+  class StateType,
+  class HessianType,
+  class GradientType,
+  class NormType
   >
 struct has_const_hessianandgradient_method_accept_state_result_norm_return_void<
   T, StateType, HessianType, GradientType, NormType,
@@ -229,18 +229,18 @@ struct has_const_hessianandgradient_method_accept_state_result_norm_return_void<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename JacobianType,
-  typename = void
+  class T,
+  class StateType,
+  class JacobianType,
+  class = void
   >
 struct has_const_jacobian_method_accept_state_result_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename JacobianType
+  class T,
+  class StateType,
+  class JacobianType
   >
 struct has_const_jacobian_method_accept_state_result_return_void<
   T, StateType, JacobianType,
@@ -260,21 +260,21 @@ struct has_const_jacobian_method_accept_state_result_return_void<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename ResidualType,
-  typename = void
+  class T,
+  class StateType,
+  class ResidualType,
+  class = void
   >
 struct has_const_residual_method_accept_state_result_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename ResidualType
+  class T,
+  class StateType,
+  class ResidualType
   >
 struct has_const_residual_method_accept_state_result_return_void<
-  T, StateType, ResidualType,  
+  T, StateType, ResidualType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
@@ -290,20 +290,20 @@ struct has_const_residual_method_accept_state_result_return_void<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename = void
+  class T,
+  class StateType,
+  class ResidualType,
+  class JacobianType,
+  class = void
   >
 struct has_const_residualandjacobian_method_accept_state_result_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType
+  class T,
+  class StateType,
+  class ResidualType,
+  class JacobianType
   >
 struct has_const_residualandjacobian_method_accept_state_result_return_void<
   T, StateType, ResidualType, JacobianType,
@@ -324,21 +324,21 @@ struct has_const_residualandjacobian_method_accept_state_result_return_void<
 
 
 template <
-  typename T,
-  typename StateType,
-  typename NormType,
-  typename = void
+  class T,
+  class StateType,
+  class NormType,
+  class = void
   >
 struct has_const_residualnorm_method_accept_state_norm_return_void
   : std::false_type{};
 
 template <
-  typename T,
-  typename StateType,
-  typename NormType
+  class T,
+  class StateType,
+  class NormType
   >
 struct has_const_residualnorm_method_accept_state_norm_return_void<
-  T, StateType, NormType, 
+  T, StateType, NormType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
@@ -353,6 +353,6 @@ struct has_const_residualnorm_method_accept_state_norm_return_void<
     >
   > : std::true_type{};
 
-    
+
 }} // namespace pressio::solvers
 #endif  // SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_PREDICATES_HPP_

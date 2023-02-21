@@ -65,7 +65,7 @@ public:
     PRESSIOLOG_DEBUG("nonlinsolver: default update");
 
     // default update: y = y + alpha*correction
-    const auto & correction = solver.correctorsHandle().correctionCRef();
+    const auto & correction = solver.registry().correctionCRef();
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(state, one, correction, one);

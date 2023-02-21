@@ -51,22 +51,76 @@
 
 namespace pressio{
 
-template<typename T, typename enable = void>
-struct VectorSpaceElement : std::false_type{};
+#ifdef PRESSIO_ENABLE_CXX20
 
-template<typename T>
-struct VectorSpaceElement<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::has_scalar_typedef<
-      ::pressio::Traits<T>
-      >::value
-    >
-  > : std::true_type{};
+template <class T>
+concept VectorSpaceElement =
+  requires(){
+    // the trait specialization AND scalar_type have to exists
+    typename ::pressio::Traits<T>::scalar_type;
+  }
+  /*
+  axiom ScalarTypeRepresentsTheFieldScalar(){
+    // scalar_type represents the scalar type of the field F on which the space is defined
+  } &&
+  axiom AdditiveClosure(const T& v, const T& w){
+    // v + w is defined and belongs to same vector space
+  } &&
+  axiom ScalarMultiplicationClosure(const T& v,
+				    typename pressio::Traits<T>::scalar_type a){
+    // av is defined and belongs to same space
+  } &&
+  axiom Associativity(const T& u, const T& v, const T& w){
+    // u + (v + w) = (u + v) + w
+  } &&
+  axiom Commutativity(const T& u, const T& v){
+    // u + v = v + u
+  } &&
+  axiom IdentityElement(const T& v){
+    // there exits a zero-element "0 \in V" such that: v + 0 = v
+  } &&
+  axiom InverseElement(const T& v){
+    // there exists an element -v such that: v + (−v) = 0 (the zero-element)
+  } &&
+  axiom ScalarCompatibility(const T& v,
+			    typename pressio::Traits<T>::scalar_type a,
+			    typename pressio::Traits<T>::scalar_type b){
+    // a(bv) = (ab)v
+  } &&
+  axiom ScalarMultiplicationIdentity(const T& v){
+    // 1v = v where 1 is the multiplicative identity in F
+  } &&
+  axiom DitributivityWrtVectorAddition(const T& u,
+				       const T& v,
+				       typename pressio::Traits<T>::scalar_type a,
+				       typename pressio::Traits<T>::scalar_type b){
+    // a(u + v) = au + av
+  } &&
+  axiom DitributivityWrtFieldAddition(const T& v,
+				      typename pressio::Traits<T>::scalar_type a,
+				      typename pressio::Traits<T>::scalar_type b){
+    // (a + b)v = av + bv
+  }*/
+  ;
 
 
-template<typename T>
-using RealVectorSpaceElement =  VectorSpaceElement<T>;
+
+// template<typename T, typename enable = void>
+// struct VectorSpaceElement : std::false_type{};
+
+// template<typename T>
+// struct VectorSpaceElement<
+//   T,
+//   ::pressio::mpl::enable_if_t<
+//     ::pressio::has_scalar_typedef<
+//       ::pressio::Traits<T>
+//       >::value
+//     >
+//   > : std::true_type{};
+
+
+// template<typename T>
+// using RealVectorSpaceElement =  VectorSpaceElement<T>;
 
 } // namespace pressio
 #endif

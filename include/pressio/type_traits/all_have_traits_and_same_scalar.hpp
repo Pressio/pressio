@@ -87,5 +87,12 @@ struct all_have_traits_and_same_scalar<
 template <class ...Args>
 using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
 
+template <class ...Args>
+struct all_have_floating_point_scalar
+{
+  static constexpr bool value = all_have_traits_and_same_scalar<Args...>::value
+    && ::pressio::mpl::all_of< std::is_floating_point, Args...>::value;
+};
+
 } // namespace
 #endif  // TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_

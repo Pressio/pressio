@@ -1,0 +1,35 @@
+.. role:: raw-html-m2r(raw)
+   :format: html
+
+.. include:: ../../mydefs.rst
+
+
+``LinearSolverForNewtonRaphson``
+================================
+
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp
+   :language: cpp
+   :lines: 52-66
+
+``LinearSolverForNonlinearLeastSquares``
+========================================
+
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp
+   :language: cpp
+   :lines: 52-72
+
+
+``QRSolverForGnQr``
+===================
+
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp
+   :language: cpp
+   :lines: 52-71
+
+
+``LeastSquaresWeightingOperator``
+=================================
+
+.. literalinclude:: ../../../../include/pressio/solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp
+   :language: cpp
+   :lines: 52-68
