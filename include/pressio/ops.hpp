@@ -119,6 +119,7 @@ template<class ...> struct matching_extents;
 #include "ops/teuchos/ops_set_zero.hpp"
 #include "ops/teuchos/ops_scale.hpp"
 #include "ops/teuchos/ops_fill.hpp"
+#include "ops/teuchos/ops_norms.hpp"
 #include "ops/teuchos/ops_level2.hpp"
 
 // Tpetra
