@@ -18,6 +18,10 @@ TEST(ops_eigen, diag_clone)
   for (int i=0; i<6; ++i){
     ASSERT_DOUBLE_EQ(b(i),ex(i));
   }
+
+  // check if b.data() == ex.data()
+  b(0) = ex(0) + 1.;
+  ASSERT_FALSE(b(0) == ex(0));
 }
 
 TEST(ops_eigen, diag_extent)

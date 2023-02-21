@@ -19,13 +19,17 @@ TEST(ops_eigen, subspan_clone)
   }
 
   auto b = pressio::ops::clone(ex);
-  ASSERT_EQ(b.rows(), 6);
-  ASSERT_EQ(b.cols(), 8);
+  ASSERT_EQ(::pressio::ops::extent(b, 0), 6);
+  ASSERT_EQ(::pressio::ops::extent(b, 1), 8);
   for (int i=0; i<6; ++i){
     for (int j=0; j<8; ++j){
       ASSERT_DOUBLE_EQ(b(i,j),ex(i,j));
    }
   }
+
+  // check if b.data() == ex.data()
+  b(0, 0) = ex(0, 0) + 1.;
+  ASSERT_FALSE(b(0, 0) == ex(0, 0));
 }
 
 TEST(ops_eigen, subspan_extent)

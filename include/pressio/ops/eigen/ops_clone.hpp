@@ -57,13 +57,51 @@ template <typename T>
     (::pressio::Traits<T>::rank == 1
   || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-  && (::pressio::is_native_container_eigen<T>::value
-   || ::pressio::is_expression_acting_on_eigen<T>::value),
+  && ::pressio::is_native_container_eigen<T>::value,
   T
   >
 clone(const T & clonable)
 {
  return T(clonable);
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  // common clone constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_expression_acting_on_eigen<T>::value,
+  Eigen::VectorXd
+  >
+clone(const T & clonable)
+{
+  const auto size = ::pressio::ops::extent(clonable, 0);
+  Eigen::VectorXd v(size);
+  for (int i = 0; i < size; ++i) {
+    v(i) = clonable(i);
+  }
+  return v;
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  // common clone constraints
+  ::pressio::Traits<T>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_expression_acting_on_eigen<T>::value,
+  Eigen::MatrixXd
+  >
+clone(const T & clonable)
+{
+  const auto m = ::pressio::ops::extent(clonable, 0);
+  const auto n = ::pressio::ops::extent(clonable, 1);
+  Eigen::MatrixXd A(m, n);
+  for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < n; ++j) {
+      A(i, j) = clonable(i, j);
+    }
+  }
+  return A;
 }
 
 }}

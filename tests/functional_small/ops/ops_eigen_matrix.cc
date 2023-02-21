@@ -17,13 +17,15 @@ TEST(ops_eigen, dense_matrix_clone)
   auto b = pressio::ops::clone(a);
   ASSERT_EQ(b.rows(), 6);
   ASSERT_EQ(b.cols(), 8);
-  ASSERT_FALSE( b.data()==a.data());
-
   for (int i=0; i<6; ++i){
     for (int j=0; j<8; ++j){
       ASSERT_DOUBLE_EQ(b(i,j),a(i,j));
    }
   }
+
+  // check if b.data() == a.data()
+  b(0, 0) = a(0, 0) + 1.;
+  ASSERT_FALSE(b(0, 0) == a(0, 0));
 }
 
 TEST(ops_eigen, dense_matrix_extent)
