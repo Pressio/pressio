@@ -2,6 +2,21 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
+TEST(ops_eigen, span_clone)
+{
+  using T = Eigen::VectorXd;
+  T a(8);
+  auto ex = pressio::span(a,2,6);
+  for (int i=0; i<6; ++i){
+   ex(i)= (double) i;
+  }
+
+  auto b = pressio::ops::clone(ex);
+  ASSERT_EQ(pressio::ops::extent(b, 0), 6);
+  for (int i=0; i<6; ++i){
+    ASSERT_DOUBLE_EQ(b(i),ex(i));
+  }
+}
 
 TEST(ops_eigen, span_extent)
 {
