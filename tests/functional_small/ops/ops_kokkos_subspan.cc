@@ -5,6 +5,36 @@
 using vec_t = Kokkos::View<double*>;
 using mat_t = Kokkos::View<double**>;
 
+TEST(ops_kokkos, subspan_clone)
+{
+  const int m = 6, n = 8;
+  Kokkos::View<double**> A("matrix", m + 2, n + 2);
+  auto A_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), A);
+  const auto ex0 = ::pressio::ops::extent(A_h, 0);
+  const auto ex1 = ::pressio::ops::extent(A_h, 1);
+  for (int i = 0; i < ex0; ++i) {
+    for (int j = 0; j < ex1; ++j) {
+      A_h(i, j) = (double)(i * ex1 + j + 1); // unique int values from 1
+    }
+  }
+  Kokkos::deep_copy(A, A_h);
+  auto ex = pressio::subspan(A, std::make_pair(1, 1 + m), std::make_pair(1, 1 + n));
+  auto B = pressio::ops::clone(ex);
+  ASSERT_EQ(B.extent(0), m);
+  ASSERT_EQ(B.extent(1), n);
+  const auto ex_view = ::pressio::ops::impl::get_native(ex);
+  const auto B_view = ::pressio::ops::impl::get_native(B);
+  ASSERT_FALSE(ex_view.data() == B_view.data());
+
+  const auto ex_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), ex_view);
+  const auto B_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), B_view);
+  for (int i = 0; i < m; ++i){
+    for (int j = 0; j < n; ++j){
+      ASSERT_DOUBLE_EQ(B_h(i, j), ex_h(i, j));
+    }
+  }
+}
+
 TEST(ops_kokkos, subspan_extent)
 {
   mat_t A("A",5,5);

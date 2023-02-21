@@ -51,6 +51,22 @@
 
 namespace pressio{ namespace ops{
 
+namespace impl{
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+     ::pressio::is_native_container_kokkos<T>::value
+  || ::pressio::is_expression_acting_on_kokkos<T>::value,
+  decltype(Kokkos::create_mirror(std::declval<const T&>()))
+  >
+kokkos_clone(const T& view) {
+  auto mirror = Kokkos::create_mirror(view);
+  Kokkos::deep_copy(mirror, view);
+  return mirror;
+}
+
+}
+
 template <typename T>
 ::pressio::mpl::enable_if_t<
   // common clone constraints
@@ -58,13 +74,14 @@ template <typename T>
   // TPL/container specific
   && (::pressio::is_native_container_kokkos<T>::value
    || ::pressio::is_expression_acting_on_kokkos<T>::value),
-  T
+  decltype(impl::kokkos_clone(std::declval<
+    decltype(impl::get_native(std::declval<const T&>()))
+    >()))
   >
 clone(const T & clonable)
 {
-  T r(clonable.label(), clonable.extent(0));
-  Kokkos::deep_copy(r, clonable);
-  return r;
+  const auto view = impl::get_native(clonable);
+  return impl::kokkos_clone(view);
 }
 
 template <typename T>
@@ -74,13 +91,14 @@ template <typename T>
   // TPL/container specific
   && (::pressio::is_native_container_kokkos<T>::value
    || ::pressio::is_expression_acting_on_kokkos<T>::value),
-  T
+  decltype(impl::kokkos_clone(std::declval<
+    decltype(impl::get_native(std::declval<const T&>()))
+    >()))
   >
 clone(const T & clonable)
 {
-  T r(clonable.label(), clonable.extent(0), clonable.extent(1));
-  Kokkos::deep_copy(r, clonable);
-  return r;
+  const auto view = impl::get_native(clonable);
+  return impl::kokkos_clone(view);
 }
 
 }}

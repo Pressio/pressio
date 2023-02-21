@@ -5,6 +5,30 @@
 using vec_t = Kokkos::View<double*>;
 using mat_t = Kokkos::View<double**>;
 
+TEST(ops_kokkos, span_clone)
+{
+  const auto size = 6;
+  Kokkos::View<double*> v("v", size + 2);
+  auto v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  const auto ext = ::pressio::ops::extent(v_h, 0);
+  for (int i = 0; i < ext; ++i) {
+    v_h(i)= (double)(i + 1.);
+  }
+  Kokkos::deep_copy(v, v_h);
+  const auto a = pressio::span(v, 1, size);
+
+  auto b = pressio::ops::clone(a);
+  ASSERT_EQ(b.extent(0), size);
+  const auto a_view = ::pressio::ops::impl::get_native(a);
+  const auto b_view = ::pressio::ops::impl::get_native(b);
+  ASSERT_FALSE(a_view.data() == b_view.data());
+  auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a_view);
+  auto b_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), b_view);
+  for (int i = 0; i < size; ++i){
+    ASSERT_DOUBLE_EQ(b_h(i), a_h(i));
+  }
+}
+
 TEST(ops_kokkos, span_extent)
 {
   vec_t a("a", 8);
