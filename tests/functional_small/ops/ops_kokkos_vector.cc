@@ -44,7 +44,7 @@ TEST(ops_kokkos, vector_clone)
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
   auto b_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), b);
   for (int i=0; i<6; ++i){
-    ASSERT_DOUBLE_EQ(b(i),a_h(i));
+    ASSERT_DOUBLE_EQ(b_h(i),a_h(i));
   }
 }
 
