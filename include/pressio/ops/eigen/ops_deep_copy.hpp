@@ -56,13 +56,18 @@ template<typename T1, typename T2>
   // common deep_copy constraints
   ::pressio::Traits<T1>::rank == ::pressio::Traits<T2>::rank
   // TPL/container specific
-  && ::pressio::is_native_container_eigen<T1>::value
-  && ::pressio::is_native_container_eigen<T2>::value
+  && (::pressio::is_native_container_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_native_container_eigen<T2>::value
+   || ::pressio::is_expression_acting_on_eigen<T2>::value)
   >
 deep_copy(T2 & dest, const T1 & src)
 {
   assert((matching_extents<T2, T1>::compare(dest, src)));
-  dest = src;
+
+  const auto src_n = impl::get_native(src);
+  auto && dest_n = impl::get_native(dest);
+  dest_n = src_n;
 }
 
 }}//end namespace pressio::ops
