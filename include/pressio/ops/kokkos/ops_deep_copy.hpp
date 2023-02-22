@@ -64,7 +64,10 @@ std::enable_if_t<
 deep_copy(const T1 & dest, const T2 & src)
 {
   assert((matching_extents<T1, T2>::compare(dest, src)));
-  ::Kokkos::deep_copy(dest, src);
+
+  const auto src_view = impl::get_native(src);
+  const auto dest_view = impl::get_native(dest);
+  ::Kokkos::deep_copy(dest_view, src_view);
 }
 
 }}//end namespace pressio::ops
