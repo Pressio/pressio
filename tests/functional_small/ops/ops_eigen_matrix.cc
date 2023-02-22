@@ -98,7 +98,7 @@ TEST(ops_eigen_matrix, dense_matrix_deep_copy)
   pressio::ops::deep_copy(b,a);
   for (int i=0; i<6; ++i){
    for (int j=0; j<5; ++j){
-    ASSERT_DOUBLE_EQ(a(i,j),44.);
+    ASSERT_DOUBLE_EQ(b(i,j),44.);
    }
   }
 }
