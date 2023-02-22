@@ -61,7 +61,7 @@ template<typename T1, typename T2>
   >
 deep_copy(T2 & dest, const T1 & src)
 {
-  assert((matching_extents<T1, T2>::compare(dest, src)));
+  assert((matching_extents<T2, T1>::compare(dest, src)));
   dest = src;
 }
 
