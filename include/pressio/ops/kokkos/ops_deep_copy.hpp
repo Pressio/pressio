@@ -63,6 +63,7 @@ std::enable_if_t<
   >
 deep_copy(const T1 & dest, const T2 & src)
 {
+  assert((matching_extents<T1, T2>::compare(dest, src)));
   ::Kokkos::deep_copy(dest, src);
 }
 
