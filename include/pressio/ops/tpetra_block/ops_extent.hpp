@@ -53,8 +53,9 @@ namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
+  // TPL/container specific
   ::pressio::is_vector_tpetra_block<T>::value,
-  ::pressio::ops::impl::global_ordinal_t<T>
+  decltype(std::declval<const T&>().getMap()->getGlobalNumElements())
   >
 extent(const T & oIn, const IndexType i)
 {
@@ -65,8 +66,9 @@ extent(const T & oIn, const IndexType i)
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
+  // TPL/container specific
   ::pressio::is_multi_vector_tpetra_block<T>::value,
-  ::pressio::ops::impl::global_ordinal_t<T>
+  decltype(std::declval<const T&>().getMap()->getGlobalNumElements())
   >
 extent(const T & oIn, const IndexType i)
 {
