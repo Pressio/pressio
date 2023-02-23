@@ -29,11 +29,11 @@ TEST_F(ops_tpetra_block, vector_extent)
 
 TEST_F(ops_tpetra_block, vector_deep_copy)
 {
-  myVector_->putScalar(-5.);
   auto a = pressio::ops::clone(*myVector_);
+  myVector_->putScalar(-5.);
   pressio::ops::deep_copy(a, *myVector_);
 
-  auto a_h = a.getVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  auto a_h = a.getVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
   for (int i=0; i<localSize_*blockSize_; ++i){
     EXPECT_DOUBLE_EQ(a_h(i,0), -5.);
   }
