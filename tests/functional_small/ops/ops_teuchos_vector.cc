@@ -23,3 +23,14 @@ TEST(ops_teuchos, vector_scale)
   pressio::ops::scale(a, 0.);
   EXPECT_DOUBLE_EQ(a(0), 0.);
 }
+
+TEST(ops_teuchos, vector_deep_copy)
+{
+  const int n = 6;
+  V_t a(n), b(n);
+  ::pressio::ops::fill(a, 44.);
+  pressio::ops::deep_copy(b, a);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(b(i), 44.);
+  }
+}
