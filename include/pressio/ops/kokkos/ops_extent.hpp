@@ -60,7 +60,7 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, const IndexType i)
 {
-  return objectIn.extent(i);
+  return (i < ::pressio::Traits<T>::rank) ? objectIn.extent(i) : 1;
 }
 
 }}

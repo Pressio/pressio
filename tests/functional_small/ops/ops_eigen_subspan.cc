@@ -11,8 +11,9 @@ TEST(ops_eigen, subspan_extent)
   std::pair<int,int> c(2,5);
 
   auto ex = pressio::subspan(A,r,c);
-  ASSERT_TRUE(pressio::ops::extent(ex,0)==2);
-  ASSERT_TRUE(pressio::ops::extent(ex,1)==3);
+  ASSERT_EQ(2, pressio::ops::extent(ex, 0));
+  ASSERT_EQ(3, pressio::ops::extent(ex, 1));
+  ASSERT_EQ(1, pressio::ops::extent(ex, 2)); // check extent over the rank
 }
 
 TEST(ops_eigen, subspan_scale)

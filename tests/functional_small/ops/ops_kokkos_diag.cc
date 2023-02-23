@@ -10,6 +10,7 @@ TEST(ops_kokkos, diag_extent)
   mat_t a("a", 5,5);
   auto ex = pressio::diag(a);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==5);
+  ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
 
 TEST(ops_kokkos, diag_abs)
@@ -220,7 +221,7 @@ TEST(ops_kokkos, diag_pow)
   }
   Kokkos::deep_copy(a, a_h);
 
-  Eigen::VectorXd gold(5); 
+  Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
   auto exp = pressio::diag(a);
@@ -364,4 +365,3 @@ TEST(ops_kokkos, diag_elementwiseMultiply)
   EXPECT_DOUBLE_EQ( M1_h(1,1), 14.0);
   EXPECT_DOUBLE_EQ( M1_h(2,2), 23.0);
 }
-

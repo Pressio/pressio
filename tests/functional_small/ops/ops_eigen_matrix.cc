@@ -34,6 +34,7 @@ TEST(ops_eigen, dense_matrix_extent)
   T x(6,8);
   ASSERT_TRUE(pressio::ops::extent(x,0) == 6);
   ASSERT_TRUE(pressio::ops::extent(x,1) == 8);
+  ASSERT_TRUE(pressio::ops::extent(x,2) == 1); // check extent over the rank
 }
 
 TEST(ops_eigen, dense_matrix_scale)

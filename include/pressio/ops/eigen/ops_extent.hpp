@@ -59,9 +59,7 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, const IndexType i)
 {
-  assert(i==0);
-  (void) i;
-  return objectIn.size();
+  return (i == 0) ? objectIn.size() : 1;
 }
 
 template<class T, class IndexType>
@@ -73,11 +71,12 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, const IndexType i)
 {
-  if (i==0){
+  if (i == 0){
     return objectIn.rows();
-  }
-  else{
+  } else if (i == 1) {
     return objectIn.cols();
+  } else {
+    return 1;
   }
 }
 
