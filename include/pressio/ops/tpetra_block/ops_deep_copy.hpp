@@ -59,6 +59,8 @@ template<typename T>
   >
 deep_copy(T & dest, const T & src)
 {
+  assert((matching_extents<T, T>::compare(dest, src)));
+
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   dest.update(::pressio::utils::Constants<sc_t>::one(),
 	      src,
