@@ -53,10 +53,12 @@ namespace pressio{ namespace ops{
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value or 
+  // TPL/container specific
+  ::pressio::is_vector_epetra<T>::value or
   ::pressio::is_multi_vector_epetra<T>::value
   >
 deep_copy(T & dest, const T & src){
+  assert((matching_extents<T, T>::compare(dest, src)));
   dest = src;
 }
 
