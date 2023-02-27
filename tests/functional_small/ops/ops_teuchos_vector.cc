@@ -23,3 +23,13 @@ TEST(ops_teuchos, vector_scale)
   pressio::ops::scale(a, 0.);
   EXPECT_DOUBLE_EQ(a(0), 0.);
 }
+
+TEST(ops_teuchos, vector_norms)
+{
+  const int n = 2;
+  V_t a(n);
+  a(0) = -3.;
+  a(1) = -4.;
+  ASSERT_DOUBLE_EQ(pressio::ops::norm1(a), std::abs(-3) + std::abs(-4));
+  ASSERT_DOUBLE_EQ(pressio::ops::norm2(a), std::sqrt( 9. + 16. ));
+}
