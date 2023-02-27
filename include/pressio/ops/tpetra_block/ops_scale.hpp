@@ -53,11 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
-  // rank-1 update common constraints
-    (::pressio::Traits<T>::rank == 1
-  || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-  && (::pressio::is_vector_tpetra_block<T>::value
+    (::pressio::is_vector_tpetra_block<T>::value
   || ::pressio::is_multi_vector_tpetra_block<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
