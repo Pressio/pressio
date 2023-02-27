@@ -350,7 +350,7 @@ TEST(ops_eigen, vector_update_nan2)
   EXPECT_DOUBLE_EQ(v(0), 4.0);
 }
 
-TEST(ops_kokkos, vector_update_expr_span)
+TEST(ops_eigen, vector_update_expr_span)
 {
   T v0(5);
   T a0(5);
@@ -371,7 +371,7 @@ TEST(ops_kokkos, vector_update_expr_span)
   EXPECT_DOUBLE_EQ(v(2), 30.0);
 }
 
-TEST(ops_kokkos, vector_update_expr_diag)
+TEST(ops_eigen, vector_update_expr_diag)
 {
   Eigen::Matrix<double, 3, 3> v0;
   Eigen::Matrix<double, 3, 3> a0;
