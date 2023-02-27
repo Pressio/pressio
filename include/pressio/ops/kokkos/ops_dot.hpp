@@ -76,10 +76,18 @@ kokkos_ops_dot(const T1 & a,
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value),
+  // dot common constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T1>::value
+  || ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  &&(::pressio::is_native_container_kokkos<T2>::value
+  || ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value),
   typename ::pressio::Traits<T1>::scalar_type
   >
 dot(const T1 & a,
@@ -88,18 +96,29 @@ dot(const T1 & a,
   return impl::kokkos_ops_dot(a,b);
 }
 
-template <typename T1, typename T2>
+template <typename T1, typename T2, typename DotResult>
 ::pressio::mpl::enable_if_t<
-  (::pressio::is_native_container_kokkos<T1>::value
-  or ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // dot common constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T1>::value
+  || ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  &&(::pressio::is_native_container_kokkos<T2>::value
+  || ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
+  && std::is_convertible<
+    decltype(impl::kokkos_ops_dot(std::declval<T1>(), std::declval<T2>())),
+    DotResult>::value
   >
 dot(const T1 & a,
     const T2 & b,
-    typename ::pressio::Traits<T1>::scalar_type & result)
+    DotResult & result)
 {
-  result = impl::kokkos_ops_dot(a,b);
+  result = static_cast<DotResult>(impl::kokkos_ops_dot(a, b));
 }
 
 

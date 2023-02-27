@@ -176,6 +176,9 @@ TEST(ops_kokkos, vector_dot)
   Kokkos::View<double*> b("b", 6);
   pressio::ops::fill(b, 2.);
   ASSERT_DOUBLE_EQ(pressio::ops::dot(a,b), 12.);
+  double result;
+  pressio::ops::dot(a,b,result);
+  ASSERT_DOUBLE_EQ(result,12.);
 }
 
 TEST(ops_kokkos, vector_pow)
