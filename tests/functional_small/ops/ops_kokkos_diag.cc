@@ -5,34 +5,6 @@
 using vec_t = Kokkos::View<double*>;
 using mat_t = Kokkos::View<double**>;
 
-TEST(ops_kokkos, diag_clone)
-{
-  const int size = 6;
-  Kokkos::View<double**> A("A", size, size);
-  auto A_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), A);
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j) {
-      A_h(i, j)= (double)(i * size + j + 1.);
-    }
-  }
-  Kokkos::deep_copy(A, A_h);
-  auto a = pressio::diag(A);
-
-  auto b = pressio::ops::clone(a);
-  ASSERT_EQ(b.extent(0), size);
-  auto a_h = Kokkos::create_mirror_view_and_copy(
-    Kokkos::HostSpace(),
-    pressio::ops::impl::get_native(a)
-    );
-  auto b_h = Kokkos::create_mirror_view_and_copy(
-    Kokkos::HostSpace(),
-    pressio::ops::impl::get_native(b)
-    );
-  for (int i=0; i < size; ++i){
-    ASSERT_DOUBLE_EQ(b_h(i), a_h(i));
-  }
-}
-
 TEST(ops_kokkos, diag_extent)
 {
   mat_t a("a", 5,5);
