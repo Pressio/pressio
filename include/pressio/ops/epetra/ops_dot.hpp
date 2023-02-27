@@ -53,11 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T1, typename T2, typename DotResult>
 ::pressio::mpl::enable_if_t<
-  // dot common constraints
-     ::pressio::Traits<T1>::rank == 1
-  && ::pressio::Traits<T2>::rank == 1
   // TPL/container specific
-  && ::pressio::is_vector_epetra<T1>::value
+     ::pressio::is_vector_epetra<T1>::value
   && ::pressio::is_vector_epetra<T2>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
@@ -80,11 +77,8 @@ dot(const T1 & a,
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  // dot common constraints
-     ::pressio::Traits<T1>::rank == 1
-  && ::pressio::Traits<T2>::rank == 1
   // TPL/container specific
-  && ::pressio::is_vector_epetra<T1>::value
+     ::pressio::is_vector_epetra<T1>::value
   && ::pressio::is_vector_epetra<T2>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
