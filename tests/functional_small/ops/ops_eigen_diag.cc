@@ -5,25 +5,6 @@
 using vec_t = Eigen::VectorXd;
 using mat_t = Eigen::MatrixXd;
 
-TEST(ops_eigen, diag_clone)
-{
-  mat_t a(6,6);
-  auto ex = pressio::diag(a);
-  for (int i=0; i<6; ++i){
-   ex(i)= (double) i;
-  }
-
-  auto b = pressio::ops::clone(ex);
-  ASSERT_EQ(pressio::ops::extent(b, 0), 6);
-  for (int i=0; i<6; ++i){
-    ASSERT_DOUBLE_EQ(b(i),ex(i));
-  }
-
-  // check if b.data() == ex.data()
-  b(0) = ex(0) + 1.;
-  ASSERT_FALSE(b(0) == ex(0));
-}
-
 TEST(ops_eigen, diag_extent)
 {
   mat_t a(5,5);

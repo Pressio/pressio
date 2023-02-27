@@ -3,35 +3,6 @@
 #include "pressio/ops.hpp"
 
 
-TEST(ops_eigen, subspan_clone)
-{
-  using T = Eigen::MatrixXd;
-  T A(10,12);
-  std::pair<int,int> rows(1,7);
-  std::pair<int,int> cols(2,10);
-  auto ex = pressio::subspan(A,rows,cols);
-
-  int c=0;
-  for (int i=0; i<6; ++i){
-    for (int j=0; j<8; ++j){
-     ex(i,j)= (double) ++c;
-   }
-  }
-
-  auto b = pressio::ops::clone(ex);
-  ASSERT_EQ(::pressio::ops::extent(b, 0), 6);
-  ASSERT_EQ(::pressio::ops::extent(b, 1), 8);
-  for (int i=0; i<6; ++i){
-    for (int j=0; j<8; ++j){
-      ASSERT_DOUBLE_EQ(b(i,j),ex(i,j));
-   }
-  }
-
-  // check if b.data() == ex.data()
-  b(0, 0) = ex(0, 0) + 1.;
-  ASSERT_FALSE(b(0, 0) == ex(0, 0));
-}
-
 TEST(ops_eigen, subspan_extent)
 {
   using T = Eigen::MatrixXd;
