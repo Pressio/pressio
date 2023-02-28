@@ -73,11 +73,11 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_fill
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_deep_copy)
 {
-  ::pressio::ops::fill(*myMv_, -5.);
   auto a = ::pressio::ops::clone(*myMv_);
+  ::pressio::ops::fill(*myMv_, -5.);
   ::pressio::ops::deep_copy(a, *myMv_);
 
-  auto a_h = a.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWriteStruct());
+  auto a_h = a.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
   for (int i=0; i<localSize_*blockSize_; ++i){
     for (int j=0; j<numVecs_; ++j){
       EXPECT_DOUBLE_EQ(a_h(i,j), -5.);
