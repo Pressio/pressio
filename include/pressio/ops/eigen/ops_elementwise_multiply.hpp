@@ -57,21 +57,26 @@ namespace pressio{ namespace ops{
 
 template <class T, class T1, class T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  // common elementwise_multiply constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<T>::value
   || ::pressio::is_expression_acting_on_eigen<T>::value)
   && (::pressio::is_native_container_eigen<T1>::value
   || ::pressio::is_expression_acting_on_eigen<T1>::value)
   && (::pressio::is_native_container_eigen<T2>::value
   || ::pressio::is_expression_acting_on_eigen<T2>::value)
-  && ::pressio::Traits<T>::rank == 1
-  && ::pressio::Traits<T1>::rank == 1
-  && ::pressio::Traits<T2>::rank == 1
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
   /* constrained via is_convertible because the impl is using
      Eigen native operations which are based on expressions and require
      coefficients to be convertible to scalar types of the vector/matrices */
   && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<beta_t,  typename ::pressio::Traits<T>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   >
 elementwise_multiply(const alpha_t & alpha,
 		     const T & x,
