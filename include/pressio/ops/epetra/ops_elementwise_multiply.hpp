@@ -54,24 +54,23 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2>
+template <class T, class T1, class T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T>::value and
   ::pressio::is_vector_epetra<T1>::value and
   ::pressio::is_vector_epetra<T2>::value
   >
-elementwise_multiply
-(typename ::pressio::Traits<T>::scalar_type alpha,
- const T & x,
- const T1 & z,
- typename ::pressio::Traits<T>::scalar_type beta,
- T2 & y)
+elementwise_multiply(alpha_t alpha, const T & x, const T1 & z, beta_t beta, T2 & y)
 {
   assert(x.MyLength()==z.MyLength());
   assert(z.MyLength()==y.MyLength());
-  const auto has_beta = beta != static_cast<typename ::pressio::Traits<T>::scalar_type>(0);
+
+  double alpha_{alpha};
+  double beta_{beta};
+
+  const auto has_beta = beta_ != 0.0;
   for (int i=0; i<x.MyLength(); ++i){
-    y[i] = has_beta ? (beta*y[i] + alpha*x[i]*z[i]) : alpha*x[i]*z[i];
+    y[i] = has_beta ? (beta_*y[i] + alpha_*x[i]*z[i]) : alpha_*x[i]*z[i];
   }
 }
 
