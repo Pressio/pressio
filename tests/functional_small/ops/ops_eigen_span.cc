@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-
 TEST(ops_eigen, span_extent)
 {
   using T = Eigen::VectorXd;

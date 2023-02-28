@@ -14,10 +14,13 @@ TEST(ops_eigen, vector_clone)
 
   auto b = pressio::ops::clone(a);
   ASSERT_EQ(b.size(), 6);
-  ASSERT_FALSE( b.data()==a.data());
   for (int i=0; i<6; ++i){
     ASSERT_DOUBLE_EQ(b(i),a(i));
   }
+
+  // check if b.data() == ex.data()
+  b(0) = a(0) + 1.;
+  ASSERT_FALSE(b(0) == a(0));
 }
 
 TEST(ops_eigen, vector_extent)
