@@ -54,19 +54,31 @@ namespace pressio{ namespace ops{
 template <typename T>
 ::pressio::mpl::enable_if_t<
   // common clone constraints
-    (::pressio::Traits<T>::rank == 1
-  || ::pressio::Traits<T>::rank == 2)
+  ::pressio::Traits<T>::rank == 1
   // TPL/container specific
   && ::pressio::is_native_container_kokkos<T>::value,
-  decltype(Kokkos::create_mirror(std::declval<
-    const T &
-    >()))
+  T
   >
 clone(const T & clonable)
 {
-  auto mirror = Kokkos::create_mirror(clonable);
-  Kokkos::deep_copy(mirror, clonable);
-  return mirror;
+  T r(clonable.label()+"_clone", clonable.extent(0));
+  Kokkos::deep_copy(r, clonable);
+  return r;
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  // common clone constraints
+  ::pressio::Traits<T>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_native_container_kokkos<T>::value,
+  T
+  >
+clone(const T & clonable)
+{
+  T r(clonable.label()+"_clone", clonable.extent(0), clonable.extent(1));
+  Kokkos::deep_copy(r, clonable);
+  return r;
 }
 
 }}
