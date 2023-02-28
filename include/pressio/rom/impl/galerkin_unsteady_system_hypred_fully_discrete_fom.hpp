@@ -102,7 +102,7 @@ public:
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
 
-    computeReducedOperators(galerkinResidual, galerkinJacobian, computeJacobian);
+    computeReducedOperators(time_np1, galerkinResidual, galerkinJacobian, computeJacobian);
   }
 
   template<typename step_t, std::size_t _n = n>
