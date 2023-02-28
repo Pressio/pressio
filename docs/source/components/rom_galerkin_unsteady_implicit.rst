@@ -74,13 +74,27 @@ API
   /*impl defined*/ create_unsteady_implicit_problem(const TrialSubspaceType & trialSubspace,
 					            const FomSystemType & fomSystem);
 
+  template<
+    std::size_t TotalNumberOfStencilStates,
+    class TrialSubspaceType,
+    class FomSystemType,
+    class HyperReducerType>
+  #ifdef PRESSIO_ENABLE_CXX20
+    requires FullyDiscreteSystemWithJacobianAction<
+                FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>        (6)
+  #endif
+  /*impl defined*/ create_unsteady_implicit_problem(const TrialSubspaceType & trialSubspace,
+					            const FomSystemType & fomSystem,
+						    const HyperReducerType & hyperReducer);
+
   }}} // end namespace pressio::rom::galerkin
 
 Description
 ~~~~~~~~~~~
 
 Overload set to instantiate a default (1), default with time-varying mass matrix (2),
-hyper-reduced (3), masked (4) or "user-defined" (5) problem with *implicit* time integration.
+hyper-reduced (3), masked (4), "user-defined" (5) problem or
+hyper-reduced "user-defined" (6) problem with *implicit* time integration.
 
 Non-type Template Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,7 +146,6 @@ and/or SFINAE. The concepts used are:
 - `rom::galerkin::unsteadyimplicit::ComposableIntoHyperReducedMaskedProblem <rom_concepts_implicit_galerkin/masked.html>`__
 
 - `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
-
 
 Preconditions
 ~~~~~~~~~~~~~
