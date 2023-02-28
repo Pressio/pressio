@@ -14,6 +14,7 @@ TEST(ops_kokkos, subspan_extent)
   auto ex = pressio::subspan(A,r,c);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==2);
   ASSERT_TRUE(pressio::ops::extent(ex,1)==3);
+  ASSERT_TRUE(pressio::ops::extent(ex,2)==1); // check extent over the rank
 }
 
 TEST(ops_kokkos, subspan_scale)

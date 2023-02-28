@@ -27,6 +27,7 @@ TEST(ops_eigen, vector_extent)
 {
   T x(6);
   ASSERT_TRUE(pressio::ops::extent(x,0)== 6);
+  ASSERT_TRUE(pressio::ops::extent(x,1)== 1); // check extent over the rank
 }
 
 TEST(ops_eigen, vector_abs)

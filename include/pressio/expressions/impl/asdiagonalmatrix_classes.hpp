@@ -90,9 +90,7 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    assert(i==0 or i==1);
-    (void) i;
-    return extent_;
+    return (i < 2) ? extent_ : 1;
   }
 
   native_expr_t const & native() const{

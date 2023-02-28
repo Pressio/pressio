@@ -27,6 +27,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_exte
 {
   ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == numProc_ * localSize_);
   ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == numVecs_);
+  ASSERT_TRUE(pressio::ops::extent(*myMv_,2) == 1); // check extent over the rank
 }
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_setzero)

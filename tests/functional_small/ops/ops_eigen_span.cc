@@ -8,6 +8,7 @@ TEST(ops_eigen, span_extent)
   T a(8);
   auto ex = pressio::span(a,5,2);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==2);
+  ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
 
 TEST(ops_eigen, span_abs)

@@ -113,7 +113,13 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+    if (i == 0) {
+      return numRows_;
+    } else if (i == 1) {
+      return numCols_;
+    } else {
+      return 1;
+    }
   }
 
   native_expr_t const & native() const{
@@ -203,7 +209,13 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+    if (i == 0) {
+      return numRows_;
+    } else if (i == 1) {
+      return numCols_;
+    } else {
+      return 1;
+    }
   }
 
   native_expr_t const & native() const{

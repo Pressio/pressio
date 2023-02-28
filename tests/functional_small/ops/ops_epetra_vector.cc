@@ -23,6 +23,7 @@ TEST_F(ops_epetra, vector_clone)
 TEST_F(ops_epetra, vector_extent)
 {
     ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5.);
+    ASSERT_TRUE(pressio::ops::extent(*myVector_,1) == 1); // check extent over the rank
 }
 
 TEST_F(ops_epetra, vector_deep_copy)

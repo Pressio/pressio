@@ -59,9 +59,7 @@ template <typename T, class IndexType>
   >
 extent(const T & oIn, const IndexType i)
 {
-  assert(i==0);
-  (void) i;
-  return oIn.GlobalLength();
+  return (i == 0) ? oIn.GlobalLength() : 1;
 }
 
 template <typename T, class IndexType>
@@ -72,8 +70,13 @@ template <typename T, class IndexType>
   >
 extent(const T & oIn, const IndexType i)
 {
-  assert(i<=1);
-  return (i==0) ? oIn.GlobalLength() : oIn.NumVectors();
+  if (i == 0) {
+    return oIn.GlobalLength();
+  } else if (i == 1) {
+    return oIn.NumVectors();
+  } else {
+    return 1;
+  }
 }
 
 }}

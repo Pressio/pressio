@@ -10,6 +10,7 @@ TEST(ops_eigen, diag_extent)
   mat_t a(5,5);
   auto ex = pressio::diag(a);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==5);
+  ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
 
 TEST(ops_eigen, diag_abs)

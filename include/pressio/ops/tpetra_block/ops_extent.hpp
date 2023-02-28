@@ -59,9 +59,11 @@ template <typename T, class IndexType>
   >
 extent(const T & oIn, const IndexType i)
 {
-  assert(i==0);
-  (void) i;
-  return oIn.getMap()->getGlobalNumElements();
+  if (i == 0) {
+    return oIn.getMap()->getGlobalNumElements();
+  } else {
+    return 1;
+  }
 }
 
 template <typename T, class IndexType>
@@ -72,8 +74,13 @@ template <typename T, class IndexType>
   >
 extent(const T & oIn, const IndexType i)
 {
-  assert(i<=1);
-  return (i==0) ? oIn.getMap()->getGlobalNumElements() : oIn.getNumVectors();
+  if (i == 0) {
+    return oIn.getMap()->getGlobalNumElements();
+  } else if (i == 1) {
+    return oIn.getNumVectors();
+  } else {
+    return 1;
+  }
 }
 
 }}

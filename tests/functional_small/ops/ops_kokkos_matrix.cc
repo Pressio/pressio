@@ -31,6 +31,7 @@ TEST(ops_kokkos, dense_matrix_extent)
   Kokkos::View<double**> A("A", 6,8);
   ASSERT_TRUE(pressio::ops::extent(A,0) == 6);
   ASSERT_TRUE(pressio::ops::extent(A,1) == 8);
+  ASSERT_TRUE(pressio::ops::extent(A,2) == 1); // check extent over the rank
 }
 
 TEST(ops_kokkos, dense_matrix_scale)
