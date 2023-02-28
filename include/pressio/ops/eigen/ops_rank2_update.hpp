@@ -90,11 +90,7 @@ update(T & M,         const alpha_t & a,
 
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   if (b_ == zero) {
-    if (a_ == zero) {
-      ::pressio::ops::set_zero(M);
-    } else {
-      ::pressio::ops::scale(M, a_);
-    }
+    ::pressio::ops::scale(M, a_);
     return;
   }
 

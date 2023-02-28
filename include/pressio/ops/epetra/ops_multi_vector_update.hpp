@@ -80,9 +80,6 @@ update(T & mv, const alpha_t &a,
   const scalar_t b_{b};
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  if (a_ == zero) {
-    ::pressio::ops::set_zero(mv);
-  }
   if (b_ == zero) {
     ::pressio::ops::scale(mv, a_);
   } else {

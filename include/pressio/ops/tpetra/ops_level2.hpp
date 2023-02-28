@@ -344,12 +344,7 @@ product(::pressio::nontranspose /*unused*/,
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A_h, 1) );
 
   const auto zero = ::pressio::utils::Constants<beta_t>::zero();
-  if (beta == zero) {
-    ::pressio::ops::set_zero(y_h);
-  }
-  else {
-    ::pressio::ops::scale(y_h, beta);
-  }
+  ::pressio::ops::scale(y_h, beta);
   if (alpha == zero) {
     return;
   }

@@ -89,11 +89,7 @@ update(T & v,         const a_Type & a,
   sc_t b_{b};
 
   if (b_ == zero) {
-    if (a_ == zero) {
-      ::pressio::ops::set_zero(v);
-    } else {
-      ::pressio::ops::scale(v, a_);
-    }
+    ::pressio::ops::scale(v, a_);
     return;
   }
 
