@@ -56,9 +56,17 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <class T, class T1, class T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value and
-  ::pressio::is_vector_epetra<T1>::value and
-  ::pressio::is_vector_epetra<T2>::value
+  // common elementwise_multiply constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  // scalar compatibility
+  && std::is_convertible<alpha_t, double>::value
+  && std::is_convertible<beta_t,  double>::value
   >
 elementwise_multiply(alpha_t alpha, const T & x, const T1 & z, beta_t beta, T2 & y)
 {
