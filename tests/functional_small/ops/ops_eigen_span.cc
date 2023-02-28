@@ -18,7 +18,7 @@ TEST(ops_eigen, span_abs)
   a.setConstant(-1);
   auto ex = pressio::span(a,5,2);
 
-  T y(5);
+  T y(2);
   pressio::ops::abs(y,ex);
   ASSERT_DOUBLE_EQ(y(0),1.);
   ASSERT_DOUBLE_EQ(y(1),1.);
