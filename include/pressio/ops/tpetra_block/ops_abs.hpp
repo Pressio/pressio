@@ -67,6 +67,8 @@ template <typename T1, class T2>
   >
 abs(T1 & y, const T2 & x)
 {
+  assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
+
   auto y_tpetraview = y.getVectorView();
   auto x_tpetraview = const_cast<T2 &>(x).getVectorView();
   y_tpetraview.abs(x_tpetraview);
