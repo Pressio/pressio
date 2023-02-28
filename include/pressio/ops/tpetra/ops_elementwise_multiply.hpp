@@ -68,7 +68,12 @@ elementwise_multiply(const alpha_t & alpha,
 {
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
-  y.elementWiseMultiply(alpha, x, z, beta);
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t alpha_{alpha};
+  sc_t beta_{beta};
+
+  y.elementWiseMultiply(alpha_, x, z, beta_);
 }
 
 }}//end namespace pressio::ops
