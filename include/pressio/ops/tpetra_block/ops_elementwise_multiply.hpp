@@ -69,10 +69,14 @@ elementwise_multiply(const alpha_t & alpha,
   assert(extent(x,0)==extent(z,0));
   assert(extent(z,0)==extent(y,0));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t alpha_{alpha};
+  sc_t beta_{beta};
+
   auto x_tpetraview = const_cast<T &>(x).getVectorView();
   auto z_tpetraview = const_cast<T1 &>(z).getVectorView();
   auto y_tpetraview = y.getVectorView();
-  y_tpetraview.elementWiseMultiply(alpha, x_tpetraview, z_tpetraview, beta);
+  y_tpetraview.elementWiseMultiply(alpha_, x_tpetraview, z_tpetraview, beta_);
 }
 
 }}//end namespace pressio::ops
