@@ -48,6 +48,18 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_setz
   }
 }
 
+TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_scale)
+{
+  myMv_->putScalar(2.);
+  ::pressio::ops::scale(*myMv_, 3.);
+  auto myMv_h = myMv_->getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
+  for (int i = 0; i < localSize_ * blockSize_; ++i){
+    for (int j = 0; j < numVecs_; ++j){
+      EXPECT_DOUBLE_EQ(myMv_h(i, j), 6.);
+    }
+  }
+}
+
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture, multi_vector_fill)
 {
   ::pressio::ops::fill(*myMv_, 55.);

@@ -54,6 +54,24 @@ TEST_F(ops_tpetra_block, vector_setzero)
   }
 }
 
+TEST_F(ops_tpetra_block, vector_scale)
+{
+  myVector_->putScalar(2.);
+  ::pressio::ops::scale(*myVector_, 3.);
+  auto x_h2 = myVector_->getVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
+  for (int i = 0; i < localSize_ * blockSize_; ++i){
+    EXPECT_DOUBLE_EQ(x_h2(i, 0), 6.);
+  }
+
+  // NaN injection
+  myVector_->putScalar(std::nan("0"));
+  pressio::ops::scale(*myVector_, 0.);
+  x_h2 = myVector_->getVectorView().getLocalViewHost(Tpetra::Access::ReadOnly);
+  for (int i = 0; i < localSize_ * blockSize_; ++i){
+    EXPECT_DOUBLE_EQ(x_h2(i, 0), 0.);
+  }
+}
+
 TEST_F(ops_tpetra_block, vector_fill)
 {
   pressio::ops::fill(*myVector_, 55.);

@@ -146,6 +146,7 @@ template<class ...> struct matching_extents;
 #include "ops/tpetra_block/ops_extent.hpp"
 #include "ops/tpetra_block/ops_deep_copy.hpp"
 #include "ops/tpetra_block/ops_set_zero.hpp"
+#include "ops/tpetra_block/ops_scale.hpp"
 #include "ops/tpetra_block/ops_fill.hpp"
 #include "ops/tpetra_block/ops_abs.hpp"
 #include "ops/tpetra_block/ops_dot.hpp"
