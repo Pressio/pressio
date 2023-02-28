@@ -71,6 +71,8 @@ template <class T1, class T2>
   >
 abs(T1 & y, const T2 & x)
 {
+  assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
+
   KokkosBlas::abs(impl::get_native(y), impl::get_native(x));
 }
 
