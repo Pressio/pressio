@@ -87,13 +87,17 @@ elementwise_multiply(const alpha_t & alpha,
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
 
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t alpha_{alpha};
+  sc_t beta_{beta};
+
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
   const auto & z_n = impl::get_native(z);
-  if (beta == static_cast<beta_t>(0)) {
-    y_n = alpha * x_n.cwiseProduct(z_n);
+  if (beta_ == static_cast<sc_t>(0)) {
+    y_n = alpha_ * x_n.cwiseProduct(z_n);
   } else {
-    y_n = beta * y_n + alpha * x_n.cwiseProduct(z_n);
+    y_n = beta_ * y_n + alpha_ * x_n.cwiseProduct(z_n);
   }
 }
 
