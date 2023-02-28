@@ -68,9 +68,12 @@ template <class T1, class T2>
   >
 abs(T1 & y, const T2 & x)
 {
+  const auto size = ::pressio::ops::extent(x, 0);
 
-  using ord_t = decltype( ::pressio::ops::extent(x, 0) );
-  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
+  assert(::pressio::ops::extent(y, 0) == size);
+
+  using ord_t = typename std::remove_const<decltype(size)>::type;
+  for (ord_t i = 0; i < size; ++i) {
     y(i) = std::abs(x(i));
   }
 }
