@@ -56,12 +56,7 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-  // common elementwise_multiply constraints
-     ::pressio::Traits<T>::rank == 1
-  && ::pressio::Traits<T1>::rank == 1
-  && ::pressio::Traits<T2>::rank == 1
-  // TPL/container specific
-  && ::pressio::is_vector_tpetra_block<T>::value
+     ::pressio::is_vector_tpetra_block<T>::value
   && ::pressio::is_vector_tpetra_block<T1>::value
   && ::pressio::is_vector_tpetra_block<T2>::value
   // scalar compatibility
@@ -81,8 +76,8 @@ elementwise_multiply(const alpha_t & alpha,
   assert(extent(z,0)==extent(y,0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  sc_t alpha_{alpha};
-  sc_t beta_{beta};
+  const sc_t alpha_{alpha};
+  const sc_t beta_{beta};
 
   auto x_tpetraview = const_cast<T &>(x).getVectorView();
   auto z_tpetraview = const_cast<T1 &>(z).getVectorView();
