@@ -56,28 +56,41 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2>
+template <typename T, typename T1, typename T2, typename alpha_t, typename beta_t>
 ::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T>::value
-  or ::pressio::is_expression_acting_on_kokkos<T>::value)
-  and (::pressio::is_native_container_kokkos<T1>::value
-  or ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and ::pressio::Traits<T>::rank == 1
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
+  // common elementwise_multiply constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   || ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   || ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<beta_t,  typename ::pressio::Traits<T>::scalar_type>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   >
-elementwise_multiply(typename ::pressio::Traits<T>::scalar_type alpha,
+elementwise_multiply(alpha_t alpha,
 		     const T & x,
 		     const T1 & z,
-		     typename ::pressio::Traits<T>::scalar_type beta,
+		     beta_t beta,
 		     T2 & y)
 {
   assert(x.extent(0) == z.extent(0));
   assert(z.extent(0) == y.extent(0));
-  KokkosBlas::mult(beta, impl::get_native(y),
-    alpha, impl::get_native(x), impl::get_native(z) );
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t alpha_{alpha};
+  sc_t beta_{beta};
+
+  KokkosBlas::mult(beta_, impl::get_native(y),
+    alpha_, impl::get_native(x), impl::get_native(z) );
 }
 
 }}//end namespace pressio::ops
