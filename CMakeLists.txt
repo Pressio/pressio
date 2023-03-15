@@ -13,7 +13,7 @@ include(colors)
 # versioning
 #=====================================================================
 set(Pressio_VERSION_MAJOR 0)
-set(Pressio_VERSION_MINOR 13)
+set(Pressio_VERSION_MINOR 14)
 set(Pressio_VERSION_PATCH 0)
 set(Pressio_VERSION
   "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
@@ -51,7 +51,7 @@ SET(PRESSIO_ENABLE_CXX17 OFF)
 SET(PRESSIO_ENABLE_CXX20 OFF)
 
 IF (NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
 ENDIF()

@@ -18,7 +18,7 @@ TEST(ode, implicit_bdf2_policy_default_created)
   using jac_t = typename problem_t::jacobian_type;
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,linSolverObj);
+  auto NonLinSolver = create_newton_solver(stepperObj,linSolverObj);
 
   // integrate in time
   double dt = 0.01;
@@ -49,7 +49,7 @@ TEST(ode, implicit_bdf2_custom_policy)
 
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(stepperObj,linSolverObj);
+  auto NonLinSolver = create_newton_solver(stepperObj,linSolverObj);
 
   // integrate in time
   double dt = 0.01;

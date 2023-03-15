@@ -26,7 +26,7 @@ copyright = u"2021, National Technology & Engineering Solutions of Sandia, LLC (
 author = 'Francesco Rizzi'
 
 # The full version, including alpha/beta/rc tags
-release = '0.13.0'
+release = '0.14.0'
 
 
 # -- General configuration ---------------------------------------------------

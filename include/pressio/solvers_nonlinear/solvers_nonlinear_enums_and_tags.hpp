@@ -145,5 +145,5 @@ struct WeightingOperatorTag{};
 struct WeightedResidualTag{};
 struct WeightedJacobianTag{};
 
-}}
+}} //end namespace pressio::nonlinearsolvers
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_AND_TAGS_HPP_

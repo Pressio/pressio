@@ -7,6 +7,52 @@
 
 namespace pressio{
 namespace nonlinearsolvers{
+
+template<class T, class = void>
+struct normal_eqs_default_types{
+  using hessian_type  = void;
+  using gradient_type = void;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<class T>
+struct normal_eqs_default_types<
+  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+{
+  using hessian_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
+  using gradient_type = T;
+
+  static hessian_type createHessian(const T & v){
+    const auto ext = ::pressio::ops::extent(v, 0);
+    return hessian_type(ext, ext);
+  }
+};
+#endif
+
+template<class T> using normal_eqs_default_hessian_t =
+  typename normal_eqs_default_types<T>::hessian_type;
+template<class T> using normal_eqs_default_gradient_t =
+  typename normal_eqs_default_types<T>::gradient_type;
+
+// ====================================================================
+// ====================================================================
+// ====================================================================
+
+template<class T, class = void>
+struct valid_state_for_least_squares : std::false_type{};
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<class T>
+struct valid_state_for_least_squares<
+  T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value >
+  > : std::true_type{};
+#endif
+
+
+// ====================================================================
+// ====================================================================
+// ====================================================================
+
 namespace impl{
 
 template<class, class> struct TagBasedStaticRegistry;
@@ -21,8 +67,8 @@ struct TagBasedStaticRegistry< std::tuple<Tags...>, std::tuple<DataTypes...> >
 
   template<class TagToFind>
   static constexpr bool contains(){
-    return mpl::variadic::find_if_binary_pred_t<
-      TagToFind, std::is_same, Tags...>::value < mpl::size<Tags...>::value;
+    return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same, Tags...>::value)
+      < mpl::size<Tags...>::value;
   }
 
   template<class TagToFind, class T>
@@ -47,129 +93,140 @@ struct TagBasedStaticRegistry< std::tuple<Tags...>, std::tuple<DataTypes...> >
   }
 };
 
+template<class, class, class> struct TagBasedStaticRegistryExtension;
 
-template<class ...> struct RegistryDecorator;
-
-template<class Tag, class T, class ParentType>
-struct RegistryDecorator<Tag, T, ParentType>
+template<class Extendable, class ...ETags, class ...EDataTypes>
+struct TagBasedStaticRegistryExtension<
+  Extendable, std::tuple<ETags...>, std::tuple<EDataTypes...>
+  >
 {
-  T myO_;
-  ParentType & reg_;
+  Extendable & reg_;
+  using extension_registry_type = TagBasedStaticRegistry<
+    std::tuple<ETags...>, std::tuple<EDataTypes...> >;
+  extension_registry_type newReg_;
 
-  template<class CArg>
-  RegistryDecorator(CArg && carg,
-		    ParentType & reg)
-    : myO_(std::forward<CArg>(carg)),
-      reg_(reg){}
+  template<class ...CArgs>
+  TagBasedStaticRegistryExtension(Extendable & reg, CArgs && ... cargs)
+    : reg_(reg), newReg_(std::forward<CArgs>(cargs)...){}
 
   template<class TagToFind>
   static constexpr bool contains(){
-    if constexpr(std::is_same_v<TagToFind, Tag>){
-      return true;
-    }
-    else{
-      return ParentType::template contains<TagToFind>();
-    }
+    return Extendable::template contains<TagToFind>() ||
+      extension_registry_type::template contains<TagToFind>();
   }
 
-  template<class TagToFind, class TIn>
-  void set(TIn && o)
-  {
-    if constexpr(std::is_same_v<TagToFind, Tag>){
-      myO_ = std::forward<TIn>(o);
+  template<class TagToFind, class T>
+  void set(T && o){
+    if constexpr(Extendable::template contains<TagToFind>()){
+      reg_.template set<TagToFind>(std::forward<T>(o));
     }
     else{
-      reg_.template set<TagToFind>(o);
+      newReg_.template set<TagToFind>(std::forward<T>(o));
     }
   }
 
   template<class TagToFind>
   auto & get(){
-    if constexpr(std::is_same_v<TagToFind, Tag>){
-      return myO_;
+    if constexpr(Extendable::template contains<TagToFind>()){
+      return reg_.template get<TagToFind>();
     }
     else{
-      return reg_.template get<TagToFind>();
+      return newReg_.template get<TagToFind>();
     }
   }
 
   template<class TagToFind>
-  const auto & get() const{
-    if constexpr(std::is_same_v<TagToFind, Tag>){
-      return myO_;
+  const auto & get() const {
+    if constexpr(Extendable::template contains<TagToFind>()){
+      return reg_.template get<TagToFind>();
     }
     else{
-      return reg_.template get<TagToFind>();
+      return newReg_.template get<TagToFind>();
     }
   }
 };
 
-template<class TagA, class TA, class TagB, class TB, class ParentType>
-struct RegistryDecorator<TagA, TA, TagB, TB, ParentType>
+template<
+  class Tag, class DataType,
+  class Extendable, class ...CArgs
+  >
+auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
 {
-  TA a_;
-  TB b_;
-  ParentType & reg_;
+  static_assert(!Extendable::template contains<Tag>(),
+		"Registry not extendable: already contains tag");
 
-  template<class ArgA, class ArgB>
-  RegistryDecorator(ArgA && argA,
-		    ArgB && argB,
-		    ParentType & reg)
-    : a_(std::forward<ArgA>(argA)),
-      b_(std::forward<ArgB>(argB)),
-      reg_(reg){}
+  using ret_t = TagBasedStaticRegistryExtension<
+    Extendable, std::tuple<Tag>, std::tuple<DataType>
+    >;
+  return ret_t(reg, std::forward<CArgs>(cargs)...);
+}
 
-  template<class TagToFind>
-  static constexpr bool contains(){
-    if constexpr(std::is_same_v<TagToFind, TagA> ||
-		 std::is_same_v<TagToFind, TagB>){
-      return true;
-    }
-    else{
-      return ParentType::template contains<TagToFind>();
-    }
-  }
+template<
+  class T1, class T2,
+  class D1, class D2,
+  class Extendable, class ...CArgs
+  >
+auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
+{
+  static_assert(!Extendable::template contains<T1>(),
+		"Registry not extendable: already contains tag");
+  static_assert(!Extendable::template contains<T2>(),
+		"Registry not extendable: already contains tag");
 
-  template<class TagToFind, class TIn>
-  void set(TIn && o)
-  {
-    if constexpr(std::is_same_v<TagToFind, TagA>){
-      a_ = std::forward<TIn>(o);
-    }
-    else if constexpr(std::is_same_v<TagToFind, TagB>){
-      b_ = std::forward<TIn>(o);
-    }
-    else{
-      reg_.template set<TagToFind>(o);
-    }
-  }
+  using ret_t = TagBasedStaticRegistryExtension<
+    Extendable, std::tuple<T1,T2>, std::tuple<D1,D2>
+    >;
+  return ret_t(reg, std::forward<CArgs>(cargs)...);
+}
 
-  template<class TagToFind>
-  auto & get(){
-    if constexpr(std::is_same_v<TagToFind, TagA>){
-      return a_;
-    }
-    else if constexpr(std::is_same_v<TagToFind, TagB>){
-      return b_;
-    }
-    else{
-      return reg_.template get<TagToFind>();
-    }
-  }
+template<
+  class T1, class T2, class T3,
+  class D1, class D2, class D3,
+  class Extendable, class ...CArgs
+  >
+auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
+{
+  static_assert(!Extendable::template contains<T1>(),
+		"Registry not extendable: already contains tag");
+  static_assert(!Extendable::template contains<T2>(),
+		"Registry not extendable: already contains tag");
+  static_assert(!Extendable::template contains<T3>(),
+		"Registry not extendable: already contains tag");
 
-  template<class TagToFind>
-  const auto & get() const{
-    if constexpr(std::is_same_v<TagToFind, TagA>){
-      return a_;
-    }
-    else if constexpr(std::is_same_v<TagToFind, TagB>){
-      return b_;
-    }
-    else{
-      return reg_.template get<TagToFind>();
-    }
-  }
-};
+  using ret_t = TagBasedStaticRegistryExtension<
+    Extendable, std::tuple<T1,T2,T3>, std::tuple<D1,D2,D3>
+    >;
+  return ret_t(reg, std::forward<CArgs>(cargs)...);
+}
+
+template<
+  class T1, class T2, class T3, class T4,
+  class D1, class D2, class D3, class D4,
+  class Extendable, class ...CArgs
+  >
+auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
+{
+  static_assert(!Extendable::template contains<T1>(),
+		"Registry not extendable: already contains tag");
+  static_assert(!Extendable::template contains<T2>(),
+		"Registry not extendable: already contains tag");
+  static_assert(!Extendable::template contains<T3>(),
+		"Registry not extendable: already contains tag");
+  static_assert(!Extendable::template contains<T4>(),
+		"Registry not extendable: already contains tag");
+
+  using ret_t = TagBasedStaticRegistryExtension<
+    Extendable, std::tuple<T1,T2,T3,T4>, std::tuple<D1,D2,D3,D4>
+    >;
+  return ret_t(reg, std::forward<CArgs>(cargs)...);
+}
+
+// this tag is inside the impl namespace because we do NOT want
+// to expose it outside, this is an impl detail
+struct SystemTag{};
+
+// this represent ths Q^T *r for QR gauss newton
+struct QTransposeResidualTag{};
 
 
 enum class InternalDiagnostic{
@@ -499,21 +556,36 @@ struct NewtonTag{};
 struct GaussNewtonNormalEqTag{};
 struct WeightedGaussNewtonNormalEqTag{};
 struct LevenbergMarquardtNormalEqTag{};
-//struct GaussNewtonQRTag{};
+struct GaussNewtonQrTag{};
 
 // =====================================================
 // =====================================================
+
+template<class T>
+class LevenbergMarquardtDamping
+{
+  static_assert(std::is_floating_point<T>::value, "");
+  using value_type = T;
+  value_type v_{1};
+public:
+  LevenbergMarquardtDamping & operator = (T v){ v_ = v; return *this; }
+  LevenbergMarquardtDamping & operator *= (T v){ v_ *= v; return *this; }
+  operator value_type () const { return v_; }
+};
 
 template<class RegistryType, class SystemType>
-requires (SystemWithResidualAndJacobian<SystemType> ||
-	  SystemWithFusedResidualAndJacobian<SystemType>)
 void compute_residual_and_jacobian(RegistryType & reg,
 				   const SystemType & system)
 {
   const auto & state = reg.template get<StateTag>();
   auto & r = reg.template get<ResidualTag>();
   auto & j = reg.template get<JacobianTag>();
-  if constexpr(SystemWithResidualAndJacobian<SystemType>){
+#if defined PRESSIO_ENABLE_CXX20
+  if constexpr(SystemWithResidualAndJacobian<SystemType>)
+#else
+  if constexpr(SystemWithResidualAndJacobian<SystemType>::value)
+#endif
+  {
     system.residual(state, r);
     system.jacobian(state, j);
   }
@@ -538,15 +610,15 @@ void compute_gradient(RegistryType & reg)
 template<class T>
 auto compute_half_sum_of_squares(const T & operand)
 {
+  static_assert(Traits<T>::rank == 1, "");
   const auto normVal = ::pressio::ops::norm2(operand);
   using sc_type = mpl::remove_cvref_t<decltype(normVal)>;
   constexpr auto one  = ::pressio::utils::Constants<sc_type>::one();
   constexpr auto two  = ::pressio::utils::Constants<sc_type>::two();
-    return std::pow(normVal, two)*(one/two);
+  return std::pow(normVal, two)*(one/two);
 }
 
 template<class RegistryType, class StateType, class SystemType>
-requires SystemWithResidual<SystemType>
 auto compute_nonlinearls_objective(GaussNewtonNormalEqTag /*tag*/,
 				   RegistryType & reg,
 				   const StateType & state,
@@ -558,7 +630,28 @@ auto compute_nonlinearls_objective(GaussNewtonNormalEqTag /*tag*/,
 }
 
 template<class RegistryType, class StateType, class SystemType>
-requires SystemWithResidual<SystemType>
+auto compute_nonlinearls_objective(GaussNewtonQrTag /*tag*/,
+				   RegistryType & reg,
+				   const StateType & state,
+				   const SystemType & system)
+{
+  auto & r = reg.template get<ResidualTag>();
+  system.residual(state, r);
+  return compute_half_sum_of_squares(r);
+}
+
+template<class RegistryType, class StateType, class SystemType>
+auto compute_nonlinearls_objective(LevenbergMarquardtNormalEqTag /*tag*/,
+				   RegistryType & reg,
+				   const StateType & state,
+				   const SystemType & system)
+{
+  auto & r = reg.template get<ResidualTag>();
+  system.residual(state, r);
+  return compute_half_sum_of_squares(r);
+}
+
+template<class RegistryType, class StateType, class SystemType>
 auto compute_nonlinearls_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
 				   RegistryType & reg,
 				   const StateType & state,
@@ -577,9 +670,19 @@ auto compute_nonlinearls_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
   return v*(one/two);
 }
 
+#ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   OverdeterminedRealValuedSystemWithResidualAndJacobian<SystemType>
-	  || OverdeterminedRealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
+	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+#else
+template<
+  class RegistryType, class SystemType,
+  mpl::enable_if_t<
+       RealValuedSystemWithResidualAndJacobian<SystemType>::value
+    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    int> = 0
+  >
+#endif
 auto compute_nonlinearls_operators_and_objective(GaussNewtonNormalEqTag /*tag*/,
 						 RegistryType & reg,
 						 const SystemType & system)
@@ -588,21 +691,64 @@ auto compute_nonlinearls_operators_and_objective(GaussNewtonNormalEqTag /*tag*/,
   compute_residual_and_jacobian(reg, system);
 
   const auto & r = reg.template get<ResidualTag>();
-  const auto & j = reg.template get<JacobianTag>();
+  const auto & J = reg.template get<JacobianTag>();
   auto & g = reg.template get<GradientTag>();
   auto & H = reg.template get<HessianTag>();
   constexpr auto pT  = ::pressio::transpose();
   constexpr auto pnT = ::pressio::nontranspose();
   // H = J_r^T J_r, g = J_r^T r
-  ::pressio::ops::product(pT, pnT, 1, j, 0, H);
-  ::pressio::ops::product(pT, 1, j, r, 0, g);
+  ::pressio::ops::product(pT, pnT, 1, J, 0, H);
+  ::pressio::ops::product(pT, 1, J, r, 0, g);
 
   return compute_half_sum_of_squares(r);
 }
 
+#ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   OverdeterminedRealValuedSystemWithResidualAndJacobian<SystemType>
-	  || OverdeterminedRealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
+	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+#else
+template<
+  class RegistryType, class SystemType,
+  mpl::enable_if_t<
+       RealValuedSystemWithResidualAndJacobian<SystemType>::value
+    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    int> = 0
+  >
+#endif
+auto compute_nonlinearls_operators_and_objective(GaussNewtonQrTag /*tag*/,
+						 RegistryType & reg,
+						 const SystemType & system)
+{
+
+  compute_residual_and_jacobian(reg, system);
+
+  const auto & r = reg.template get<ResidualTag>();
+  const auto & J = reg.template get<JacobianTag>();
+
+  auto & g = reg.template get<GradientTag>();
+  constexpr auto pT  = ::pressio::transpose();
+  constexpr auto pnT = ::pressio::nontranspose();
+  // g = J_r^T r
+  ::pressio::ops::product(pT, 1, J, r, 0, g);
+
+  return compute_half_sum_of_squares(r);
+}
+
+
+#ifdef PRESSIO_ENABLE_CXX20
+template<class RegistryType, class SystemType>
+requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
+	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+#else
+template<
+  class RegistryType, class SystemType,
+  mpl::enable_if_t<
+       RealValuedSystemWithResidualAndJacobian<SystemType>::value
+    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    int> = 0
+  >
+#endif
 auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
 						 RegistryType & reg,
 						 const SystemType & system)
@@ -613,16 +759,16 @@ auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag 
   constexpr auto pnT = ::pressio::nontranspose();
   const auto & W = reg.template get<WeightingOperatorTag>();
   const auto & r = reg.template get<ResidualTag>();
-  const auto & j = reg.template get<JacobianTag>();
+  const auto & J = reg.template get<JacobianTag>();
   auto & Wr = reg.template get<WeightedResidualTag>();
-  auto & Wj = reg.template get<WeightedJacobianTag>();
+  auto & WJ = reg.template get<WeightedJacobianTag>();
   auto & g  = reg.template get<GradientTag>();
   auto & H  = reg.template get<HessianTag>();
 
   W.get()(r, Wr);
-  W.get()(j, Wj);
-  ::pressio::ops::product(pT, pnT, 1, j, Wj, 0, H);
-  ::pressio::ops::product(pT, 1, j, Wr, 0, g);
+  W.get()(J, WJ);
+  ::pressio::ops::product(pT, pnT, 1, J, WJ, 0, H);
+  ::pressio::ops::product(pT, 1, J, Wr, 0, g);
 
   using sc_t = scalar_trait_t<typename SystemType::state_type>;
   const auto v = ::pressio::ops::dot(r, Wr);
@@ -631,9 +777,20 @@ auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag 
   return v*(one/two);
 }
 
+
+#ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   OverdeterminedRealValuedSystemWithResidualAndJacobian<SystemType>
-	  || OverdeterminedRealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
+	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+#else
+template<
+  class RegistryType, class SystemType,
+  mpl::enable_if_t<
+       RealValuedSystemWithResidualAndJacobian<SystemType>::value
+    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    int> = 0
+  >
+#endif
 auto compute_nonlinearls_operators_and_objective(LevenbergMarquardtNormalEqTag /*tag*/,
 						 RegistryType & reg,
 						 const SystemType & system)
@@ -643,14 +800,14 @@ auto compute_nonlinearls_operators_and_objective(LevenbergMarquardtNormalEqTag /
   constexpr auto pT  = ::pressio::transpose();
   constexpr auto pnT = ::pressio::nontranspose();
   const auto & r = reg.template get<ResidualTag>();
-  const auto & j = reg.template get<JacobianTag>();
+  const auto & J = reg.template get<JacobianTag>();
   auto & g = reg.template get<GradientTag>();
   auto & H = reg.template get<LevenbergMarquardtUndampedHessianTag>();
   auto & scaledH = reg.template get<HessianTag>();
   const auto & damp = reg.template get<LevenbergMarquardtDampingTag>();
 
-  ::pressio::ops::product(pT, pnT, 1, j, 0, H);
-  ::pressio::ops::product(pT, 1, j, r, 0, g);
+  ::pressio::ops::product(pT, pnT, 1, J, 0, H);
+  ::pressio::ops::product(pT, 1, J, r, 0, g);
 
   // compute scaledH = H + mu*diag(H)
   ::pressio::ops::deep_copy(scaledH, H);
@@ -669,12 +826,12 @@ void solve_newton_step(RegistryType & reg)
      so we solve: J_r (-delta) = r and then scale by -1
   */
 
-  auto & r = reg.template get<ResidualTag>();
-  auto & j = reg.template get<JacobianTag>();
+  const auto & r = reg.template get<ResidualTag>();
+  const auto & J = reg.template get<JacobianTag>();
   auto & c = reg.template get<CorrectionTag>();
   auto & solver = reg.template get<InnerSolverTag>();
   // solve J_r correction = r
-  solver.get().solve(j, r, c);
+  solver.get().solve(J, r, c);
   // scale by -1 for sign convention
   using c_t = mpl::remove_cvref_t<decltype(c)>;
   using scalar_type = typename ::pressio::Traits<c_t>::scalar_type;
@@ -682,13 +839,8 @@ void solve_newton_step(RegistryType & reg)
 }
 
 template<class RegistryType>
-void solve_normal_equations(RegistryType & reg)
+void solve_hessian_gradient_linear_system(RegistryType & reg)
 {
-  // This assumes that the normal equations are:
-  //      H c = g
-  // where
-  //   c = x_k - x_k+1
-
   const auto & g = reg.template get<GradientTag>();
   const auto & H = reg.template get<HessianTag>();
   auto & c = reg.template get<CorrectionTag>();
@@ -701,19 +853,19 @@ void compute_correction(GaussNewtonNormalEqTag /*tag*/,
 			RegistryType & reg)
 {
   /* Gauss-newton with normal eq, we are solving:
-        x_k+1 = x_k - J_r^T*J_r  J_r^T*r
+       J_r^T*J_r  (x_k+1 - x_k) = - J_r^T*r
      which we can write as:  H c = g
        H = J_r^T*J_r
        g = J_r^T r
        c = x_k - x_k+1
 
      IMPORTANT: since we define the correction as:
-        c = x_k+1 - x_k,
-     we need to rescale c by -1 before the solve
+       c = x_k+1 - x_k,
+     we need to rescale c by -1 after the solve
   */
+  solve_hessian_gradient_linear_system(reg);
   auto & c = reg.template get<CorrectionTag>();
   ::pressio::ops::scale(c, -1);
-  solve_normal_equations(reg);
 }
 
 template<class RegistryType>
@@ -721,9 +873,9 @@ void compute_correction(WeightedGaussNewtonNormalEqTag /*tag*/,
 			RegistryType & reg)
 {
   // this is same as regular GN since we solve H delta = g
+  solve_hessian_gradient_linear_system(reg);
   auto & c = reg.template get<CorrectionTag>();
   ::pressio::ops::scale(c, -1);
-  solve_normal_equations(reg);
 }
 
 template<class RegistryType>
@@ -738,38 +890,47 @@ void compute_correction(LevenbergMarquardtNormalEqTag /*tag*/,
        c = x_k - x_k+1
 
     IMPORTANT: since we define the correction as:
-        c = x_k+1 - x_k,
-    we need to rescale c by -1 before the solve
+       c = x_k+1 - x_k,
+    we need to rescale c by -1 after
   */
+  solve_hessian_gradient_linear_system(reg);
   auto & c = reg.template get<CorrectionTag>();
   ::pressio::ops::scale(c, -1);
-  solve_normal_equations(reg);
 }
 
-// template<class RegistryType>
-// void solve_ls_correction(GaussNewtonQRTag /*tag*/,
-// 			 RegistryType & reg)
-// {
-//   // // see: https://en.wikipedia.org/wiki/Non-linear_least_squares#QR_decomposition
-//   // // but careful that here we use J_r which is the negative of J_f
-//   // // so we need to rescale c by -1 afterwards
+template<class RegistryType>
+void compute_correction(GaussNewtonQrTag /*tag*/,
+			RegistryType & reg)
+{
+  /*
+    see: https://en.wikipedia.org/wiki/Non-linear_least_squares#QR_decomposition
+    but careful that here we use J to refer to jacobian wrt r,
+    which is the negative of J_f
 
-//   // const auto & r  = reg.template get<ResidualTag>();
-//   // const auto & Jr = reg.template get<JacobianTag>();
-//   // auto & c = reg.template get<CorrectionTag>();
-//   // auto & solver = reg.template get<InnerSolverTag>();
+     IMPORTANT: since we define the correction as:
+       c = x_k+1 - x_k,
+     we need to rescale c by -1 after the solve
+  */
 
-//   // auto QTResid = ::pressio::ops::clone(c);
-//   // // Jr = QR
-//   // solver.get().computeThin(Jr);
-//   // // compute Q^T r
-//   // solver.get().applyQTranspose(r, QTResid);
+  const auto & r  = reg.template get<ResidualTag>();
+  const auto & J = reg.template get<JacobianTag>();
+  auto & c = reg.template get<CorrectionTag>();
+  auto & QTr = reg.template get<QTransposeResidualTag>();
+  auto & solver = reg.template get<InnerSolverTag>();
 
-//   // solver.get().solve(QTResid, c);
-//   // ::pressio::ops::scale(c, -1);
-//   // //typename ::pressio::Traits<StateType>::scalar_type;
-//   // // pressio::ops::scale(c, utils::Constants<scalar_type>::negOne() );
-// }
+  auto QTResid = ::pressio::ops::clone(c);
+  // factorize J = QR
+  solver.get().computeThin(J);
+
+  // compute Q^T r
+  solver.get().applyQTranspose(r, QTr);
+
+  // solve Rfactor c = Q^T r
+  solver.get().solve(QTr, c);
+
+  // rescale as said above
+  ::pressio::ops::scale(c, -1);
+}
 
 // =====================================================
 // =====================================================
@@ -834,14 +995,12 @@ void compute_norm_internal_diagnostics(const RegistryType & reg,
 //---------------------------------------------------
 //---------------------------------------------------
 
-
 class DefaultUpdater{
 public:
   template<class RegType, class ... Args>
   void operator()(RegType & reg, Args && ... /*unused*/)
   {
     PRESSIOLOG_DEBUG("nonlinsolver: default update");
-    // // default update: y = y + alpha*correction
     auto & state = reg.template get<StateTag>();
     const auto & c = reg.template get<CorrectionTag>();
     ::pressio::ops::update(state, 1, c, 1);
@@ -881,7 +1040,7 @@ public:
     const auto beta = static_cast<scalar_type>(0.0001);
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
-    PRESSIOLOG_DEBUG("starting backtracking");
+    PRESSIOLOG_DEBUG("start backtracking");
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     scalar_type ftrial = {};
@@ -941,7 +1100,7 @@ public:
     constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
 
-    PRESSIOLOG_DEBUG("starting backtracking");
+    PRESSIOLOG_DEBUG("start backtracking");
     while (true)
       {
 	if (std::abs(alpha) <= alpha_lower_bound){
@@ -1104,14 +1263,14 @@ public:
 //---------------------------------------------------
 
 template<
-  class TagType,
+  class ProblemTag,
   class UserDefinedSystemType,
   class RegistryType,
   class ToleranceType,
   class NormDiagnosticsContainerType,
   class DiagnosticsLoggerType,
   class UpdaterType>
-void root_solving_loop_impl(TagType /*tag*/,
+void root_solving_loop_impl(ProblemTag /*problemTag*/,
 			    const UserDefinedSystemType & system,
 			    RegistryType & reg,
 			    Stop stopEnumValue,
@@ -1179,7 +1338,7 @@ void root_solving_loop_impl(TagType /*tag*/,
     /* stage 5 */
     try{
       const auto currentObjValue =
-	normDiagnostics[Diagnostic::residualAbsolutel2Norm].getAbsolute();
+	normDiagnostics[InternalDiagnostic::residualAbsoluteRelativel2Norm].getAbsolute();
       updater(reg, objective, currentObjValue);
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
@@ -1204,9 +1363,7 @@ class RootFinder
   Stop stopEnValue_ = Stop::WhenAbsolutel2NormOfCorrectionBelowTolerance;
   NormValueType stopTolerance_ = 0.000001;
   Update updateEnValue_ = Update::Standard;
-
   RegistryType reg_;
-
   using norm_diagnostics_container = DiagnosticsContainer<
     InternalDiagnosticDataWithAbsoluteRelativeTracking<NormValueType> >;
   norm_diagnostics_container normDiagnostics_;
@@ -1245,29 +1402,28 @@ public:
   void setStopTolerance(NormValueType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)          { maxIters_ = newMax; }
 
-  template<typename SystemType>
+  template<class SystemType>
   void solve(const SystemType & system, StateType & solutionInOut)
   {
     // deep copy the initial guess
     ::pressio::ops::deep_copy(reg_.template get<InitialGuessTag>(), solutionInOut);
 
     if (updateEnValue_ == Update::Standard){
-      RegistryDecorator<
-	StateTag, StateType &, RegistryType> regImpl(solutionInOut, reg_);
-      root_solving_loop_impl(tag_, system, regImpl,
+      auto extReg = reference_capture_registry_and_extend_with<
+	StateTag, StateType &>(reg_, solutionInOut);
+      root_solving_loop_impl(tag_, system, extReg,
 			     stopEnValue_, stopTolerance_,
 			     normDiagnostics_, diagnosticsLogger_,
 			     maxIters_,
 			     DefaultUpdater());
     }
     else if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
-      RegistryDecorator<
-	StateTag, StateType &,
-	LineSearchTrialStateTag, StateType,
-	RegistryType
-	> regImpl(solutionInOut, system.createState(), reg_);
 
-      root_solving_loop_impl(tag_, system, regImpl,
+      auto extReg = reference_capture_registry_and_extend_with<
+	StateTag, LineSearchTrialStateTag,
+	StateType &, StateType>(reg_, solutionInOut, system.createState());
+
+      root_solving_loop_impl(tag_, system, extReg,
 			     stopEnValue_, stopTolerance_,
 			     normDiagnostics_, diagnosticsLogger_,
 			     maxIters_,
@@ -1277,19 +1433,26 @@ public:
       throw std::runtime_error("Invalid criterion");
     }
   }
+
+  // this method can be used when the solver is applied
+  // to the same system used for constructing it
+  void solve(StateType & solutionInOut)
+  {
+    auto * system = reg_.template get<SystemTag>();
+    assert(system != nullptr);
+    this->solve(*system, solutionInOut);
+  }
 };
 
-
-
 template<
-  class TagType,
+  class ProblemTag,
   class UserDefinedSystemType,
   class RegistryType,
   class ToleranceType,
   class DiagnosticsContainerType,
   class DiagnosticsLoggerType,
   class UpdaterType>
-void nonlin_ls_solving_loop_impl(TagType tag,
+void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
 				 const UserDefinedSystemType & system,
 				 RegistryType & reg,
 				 Stop stopEnumValue,
@@ -1321,7 +1484,7 @@ void nonlin_ls_solving_loop_impl(TagType tag,
 
     // 1. compute operators
     try{
-      auto objValue = compute_nonlinearls_operators_and_objective(tag, reg, system);
+      auto objValue = compute_nonlinearls_operators_and_objective(problemTag, reg, system);
       diagnostics[InternalDiagnostic::objectiveAbsoluteRelative].update(objValue, isFirstIteration);
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
@@ -1334,7 +1497,7 @@ void nonlin_ls_solving_loop_impl(TagType tag,
     }
 
     // 2. solve for correction
-    compute_correction(tag, reg);
+    compute_correction(problemTag, reg);
 
     /* stage 3 */
     std::for_each(diagnostics.begin(), diagnostics.end(),
@@ -1352,11 +1515,12 @@ void nonlin_ls_solving_loop_impl(TagType tag,
     // 5. run update and continue
     try{
       using state_type = typename UserDefinedSystemType::state_type;
-      auto objective = [&reg, &system, tag](const state_type & stateIn){
-	return compute_nonlinearls_objective(tag, reg, stateIn, system);
+      auto objective = [&reg, &system, problemTag](const state_type & stateIn){
+	return compute_nonlinearls_objective(problemTag, reg, stateIn, system);
       };
-      updater(reg, objective,
-	      diagnostics[InternalDiagnostic::objectiveAbsoluteRelative].getAbsolute());
+      const auto currObjValue = diagnostics[InternalDiagnostic::objectiveAbsoluteRelative].getAbsolute();
+      updater(reg, objective, currObjValue);
+
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
       // nicely exist the solve
@@ -1427,112 +1591,122 @@ public:
   void setStopTolerance(ScalarType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)       { maxIters_ = newMax; }
 
-  template<class SystemType, class _tag = Tag>
-  mpl::enable_if_t<
-       std::is_same_v<_tag, GaussNewtonNormalEqTag>
-    || std::is_same_v<_tag, WeightedGaussNewtonNormalEqTag>
-    >
-  solve(const SystemType & system, StateType & solutionInOut)
+  // this method can be used when passing a system object
+  // that is different but syntactically and semantically equivalent
+  // to the one used for constructing the solver
+  template<class SystemType>
+  void solve(const SystemType & system, StateType & solutionInOut)
   {
-    if (updateEnValue_ == Update::Standard){
-      solve_with_standard_update_impl(system, solutionInOut);
-    }
-    else if (   updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective
-	     || updateEnValue_ == Update::Armijo)
+    // the solve method potentially be called multiple times
+    // so we need to reset the data in the registry everytime
+    // if not applicable, this is a noop
+    reset_for_new_solve_loop(tag_, reg_);
+
+    switch (updateEnValue_)
     {
-      solve_with_line_search_impl(system, solutionInOut);
-    }
-    else{
-      throw std::runtime_error("invalid Update value");
-    }
+      case Update::Standard:
+	solve_with_standard_update_impl(system, solutionInOut);
+	break;
+
+      case Update::BacktrackStrictlyDecreasingObjective:
+      case Update::Armijo:{
+	solve_with_line_search_impl(system, solutionInOut);
+	break;
+      }
+
+      case Update::LMSchedule1:
+      case Update::LMSchedule2:{
+	if constexpr(std::is_same_v<Tag, LevenbergMarquardtNormalEqTag>){
+	  solve_lm_impl(system, solutionInOut);
+	  break;
+	}
+	else{
+	  throw std::runtime_error("invalid Update value");
+	}
+      }
+
+      default:
+	throw std::runtime_error("invalid Update value");
+    };
   }
 
-  template<class SystemType, class _tag = Tag>
-  mpl::enable_if_t< std::is_same_v<_tag, LevenbergMarquardtNormalEqTag> >
-  solve(const SystemType & system, StateType & solutionInOut)
+  // this method can be used when the solver is applied
+  // to the same system used for constructing it
+  void solve(StateType & solutionInOut)
   {
-    if (updateEnValue_ == Update::Standard){
-      solve_with_standard_update_impl(system, solutionInOut);
-    }
-    else if (   updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective
-	     || updateEnValue_ == Update::Armijo)
-    {
-      solve_with_line_search_impl(system, solutionInOut);
-    }
-    else if (   updateEnValue_ == Update::LMSchedule1
-	     || updateEnValue_ == Update::LMSchedule2)
-    {
-      RegistryDecorator<
-	StateTag, StateType &, LineSearchTrialStateTag, StateType, RegistryType
-	> regImpl(solutionInOut, system.createState(), reg_);
-
-      // the solve method potentially be called multiple times
-      // so we need to reset the data in the registry everytime
-      reset_for_new_solve_loop(tag_, regImpl);
-
-      if (updateEnValue_ == Update::LMSchedule1){
-	using up_t = LMSchedule1Updater<ScalarType, StateType>;
-	nonlin_ls_solving_loop_impl(tag_, system, regImpl,
-				    stopEnValue_, stopTolerance_,
-				    diagnostics_, diagnosticsLogger_,
-				    maxIters_,
-				    up_t(solutionInOut));
-      }else{
-	using up_t = LMSchedule2Updater<ScalarType, StateType>;
-	nonlin_ls_solving_loop_impl(tag_, system, regImpl,
-				    stopEnValue_, stopTolerance_,
-				    diagnostics_, diagnosticsLogger_,
-				    maxIters_,
-				    up_t(solutionInOut));
-      }
-    }
-
-    else{
-      throw std::runtime_error("invalid Update value");
-    }
+    auto * system = reg_.template get<SystemTag>();
+    assert(system != nullptr);
+    this->solve(*system, solutionInOut);
   }
 
 private:
-  template<class SystemType, class _tag = Tag>
-  void solve_with_standard_update_impl(const SystemType & system, StateType & solutionInOut)
+  template<class SystemType>
+  void solve_with_standard_update_impl(const SystemType & system,
+				       StateType & solutionInOut)
   {
-    RegistryDecorator<
-      StateTag, StateType &, RegistryType> regImpl(solutionInOut, reg_);
+    auto extReg = reference_capture_registry_and_extend_with<
+      StateTag, StateType &>(reg_, solutionInOut);
 
     // the solve method potentially be called multiple times
     // so we need to reset the data in the registry everytime
-    reset_for_new_solve_loop(tag_, regImpl);
+    reset_for_new_solve_loop(tag_, extReg);
 
-    nonlin_ls_solving_loop_impl(tag_, system, regImpl,
+    nonlin_ls_solving_loop_impl(tag_, system, extReg,
 				stopEnValue_, stopTolerance_,
 				diagnostics_, diagnosticsLogger_,
 				maxIters_,
 				DefaultUpdater());
   }
 
-  template<class SystemType, class _tag = Tag>
-  void solve_with_line_search_impl(const SystemType & system, StateType & solutionInOut)
+  template<class SystemType>
+  void solve_with_line_search_impl(const SystemType & system,
+				   StateType & solutionInOut)
   {
-    RegistryDecorator<
-      StateTag, StateType &, LineSearchTrialStateTag, StateType, RegistryType
-      > regImpl(solutionInOut, system.createState(), reg_);
+    auto extReg = reference_capture_registry_and_extend_with<
+      StateTag, LineSearchTrialStateTag,
+      StateType &, StateType>(reg_, solutionInOut, system.createState());
 
     // the solve method potentially be called multiple times
     // so we need to reset the data in the registry everytime
-    reset_for_new_solve_loop(tag_, regImpl);
+    reset_for_new_solve_loop(tag_, extReg);
 
     if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
-      nonlin_ls_solving_loop_impl(tag_, system, regImpl,
+      nonlin_ls_solving_loop_impl(tag_, system, extReg,
 				  stopEnValue_, stopTolerance_,
 				  diagnostics_, diagnosticsLogger_,
 				  maxIters_,
 				  BacktrackStrictlyDecreasingObjectiveUpdater{});
     }else{
-      nonlin_ls_solving_loop_impl(tag_, system, regImpl,
+      nonlin_ls_solving_loop_impl(tag_, system, extReg,
 				  stopEnValue_, stopTolerance_,
 				  diagnostics_, diagnosticsLogger_,
 				  maxIters_,
 				  BacktrackStrictlyDecreasingObjectiveUpdater{});
+    }
+  }
+
+  template<class SystemType>
+  void solve_lm_impl(const SystemType & system,
+		     StateType & solutionInOut)
+  {
+    auto extReg = reference_capture_registry_and_extend_with<
+      StateTag, LineSearchTrialStateTag,
+      StateType &, StateType>(reg_, solutionInOut, system.createState());
+
+    if (updateEnValue_ == Update::LMSchedule1){
+      using up_t = LMSchedule1Updater<ScalarType, StateType>;
+      nonlin_ls_solving_loop_impl(tag_, system, extReg,
+				  stopEnValue_, stopTolerance_,
+				  diagnostics_, diagnosticsLogger_,
+				  maxIters_,
+				  up_t(solutionInOut));
+    }else{
+      using up_t = LMSchedule2Updater<ScalarType, StateType>;
+      nonlin_ls_solving_loop_impl(tag_, system, extReg,
+				  stopEnValue_, stopTolerance_,
+				  diagnostics_, diagnosticsLogger_,
+				  maxIters_,
+				  up_t(solutionInOut));
     }
   }
 };

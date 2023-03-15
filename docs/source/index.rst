@@ -55,15 +55,15 @@ the documentation and the code.
 
    * - ``rom``
      - concepts :raw-html-m2r:`<br/>` (linear) subspaces :raw-html-m2r:`<br/>` Galerkin: steady :raw-html-m2r:`<br/>` Galerkin: unsteady :raw-html-m2r:`<br/>` LSPG: steady :raw-html-m2r:`<br/>` LSPG: unsteady :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
-     - ``<pressio/rom_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_subspaces.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom.hpp>`` :small:`includes all above`
+     - ``<pressio/rom_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_subspaces.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_galerkin_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_steady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom_lspg_unsteady.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/rom.hpp>`` :small:`includes all`
 
    * - ``ode``
-     - concepts :raw-html-m2r:`<br/>` explicit steppers :raw-html-m2r:`<br/>` implicit steppers :raw-html-m2r:`<br/>` ``advance_<keywords>`` functions :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
-     - ``<pressio/ode_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_explicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_implicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_advancers.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode.hpp>`` :small:`includes all above`
+     - concepts :raw-html-m2r:`<br/>` explicit steppers :raw-html-m2r:`<br/>` implicit steppers :raw-html-m2r:`<br/>` ``advance_<*>`` fncs :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
+     - ``<pressio/ode_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_explicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_steppers_implicit.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode_advancers.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/ode.hpp>`` :small:`includes all`
 
    * - ``solvers_nonlinear``
-     - e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt.
-     - ``<pressio/solvers_nonlinear.hpp>``
+     - concepts :raw-html-m2r:`<br/>` Newton method :raw-html-m2r:`<br/>` Gauss-Newton :raw-html-m2r:`<br/>` Lev.-Marq. :raw-html-m2r:`<br/>` :raw-html-m2r:`<br/>`
+     - ``<pressio/solvers_nonlinear_concepts.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/solvers_nonlinear_newton.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/solvers_nonlinear_gaussnewton.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/solvers_nonlinear_levmarq.hpp>`` :raw-html-m2r:`<br/>` ``<pressio/solvers_nonlinear.hpp>`` :small:`includes all`
 
    * - ``solvers_linear``
      - linear dense (on-node) solvers
@@ -102,8 +102,7 @@ Get Started
 * Explore our `end-to-end ROM demos <https://pressio.github.io/pressio-tutorials/endtoend/readthisfirst.html>`_ to
   see ``pressio/rom`` in action and to experiment directly
 
-* Interested in the pressio supporting functionalities, e.g., ``pressio/ode``?
-  Explore the `tutorials showing the individual capabilities <https://pressio.github.io/pressio-tutorials>`_
+* Explore the `tutorials showing the individual capabilities <https://pressio.github.io/pressio-tutorials>`_
 
 
 Generic programming and concepts
@@ -124,17 +123,17 @@ C++20 concepts are, in some sense, a way to *explicitly* formalize those expecta
    preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``. This can be enabled by
    using a C++20 compliant compiler and setting ``-DCMAKE_CXX_STANDARD=20`` at configure time.
 
-The behavior is as follows:
+   The behavior is as follows:
 
-- if ``PRESSIO_ENABLE_CXX20`` is *enabled*: if you do this, the pressio concepts
-  are compiled and enforced *stricto sensu* on the pressio APIs as discussed by this documentation
+   - if ``PRESSIO_ENABLE_CXX20`` is *enabled*: if you do this, the pressio concepts
+     are compiled and enforced *stricto sensu* on the pressio APIs as discussed by this documentation
 
-- if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
-  default pressio C++ standard is currently C++14. In this case, the "C++20 concepts"
-  are not compiled but the constraints they represent are still valid and implemented
-  differently such that their enforcement is done via a combination of SFINAE and static asserts.
+   - if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
+     default pressio C++ standard is currently C++17. In this case, the "C++20 concepts"
+     are not compiled but the constraints they represent are still valid and implemented
+     differently such that their enforcement is done via a combination of SFINAE and static asserts.
 
-`Read more about how we interpret C++ concepts and use them in pressio <concepts_note.html>`__.
+   `Read more about how we interpret C++ concepts and use them in pressio <concepts_note.html>`__.
 
 ..
    Here, the term concept does not necessarily
@@ -153,7 +152,8 @@ License and Citation
 
 The full license (BSD-3) is available `here <https://github.com/Pressio/pressio/blob/main/LICENSE>`_.
 
-We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798
+Sooner or later we will publish this... in the meantime, you can find on arXiv
+an (outdated) preprint at: https://arxiv.org/abs/2003.07798
 
 Questions?
 ----------
@@ -175,8 +175,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    :maxdepth: 1
    :hidden:
 
-   ./components/rom
-   ./components/ode
    ./components/nonlinsolvers
    ./components/linsolvers
    ./components/qr

@@ -1,53 +1,17 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
-Gauss-Newton via normal-equations
-=================================
+Gauss-Newton (via normal eqs)
+=============================
 
-Defined in header ``<pressio/solvers_nonlinear.hpp>``
+Defined in ``<pressio/solvers_nonlinear_gaussnewton.hpp>``
 
 API
 ---
 
-.. code-block:: cpp
-
-   namespace pressio{ namespace nonlinearsolvers{
-
-   template<class SystemType, class LinearSolverType>
-   #ifdef PRESSIO_ENABLE_CXX20
-     requires
-	  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
-	|| OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
-	|| SystemWithHessianAndGradient<SystemType>
-	|| SystemWithFusedHessianAndGradient<SystemType>)
-       && LinearSolverForNonlinearLeastSquares<
-	    mpl::remove_cvref_t<LinearSolverType>,
-	    typename SystemType::state_type>
-   #endif
-   auto create_gauss_newton(const SystemType & system,          (1)
-                            LinearSolverType && lsolver);
-
-   template<
-     class SystemType,
-     class LinearSolverType,
-     class WeightingOpType>
-   #ifdef PRESSIO_ENABLE_CXX20
-     requires
-	  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
-	|| OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>)
-       && LinearSolverForNonlinearLeastSquares<
-	    mpl::remove_cvref_t<LinearSolverType>,
-	    typename SystemType::state_type>
-       && LeastSquaresWeightingOperator<
-	    mpl::remove_cvref_t<WeightingOpType>,
-	    typename SystemType::residual_type,
-	    typename SystemType::jacobian_type>
-   #endif
-   auto create_gauss_newton(const SystemType & system,          (2)
-                            LinearSolverType && lsolver,
-                            WeightingOpType && weightOperator);
-
-   }}
+.. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_gauss_newton.hpp
+   :language: cpp
+   :lines: 54-55, 65-84, 53,53,53, 140-167, 303-304
 
 Parameters
 ~~~~~~~~~~
@@ -63,34 +27,50 @@ Parameters
    * - ``system``
      - your problem instance
 
-   * - ``lsolver``
+   * - ``linSolver``
      - linear solver to use within each nonlinear iteration
 
-   * - ``weightOperator``
-     - the weighting operator for doing weighted least-squares.
+   * - ``weigher``
+     - the weighting operator for doing weighted least-squares
 
 Constraints
 ~~~~~~~~~~~
 
-Each overload is associated with a set of constraints.
-With C++20, these would be enforced via concepts using
+With C++20, the constraints would be enforced via concepts using
 the *requires-clause* shown in the API synopsis above.
 Since we cannot yet officially upgrade to C++20, the constraints
 are currently enforced via static asserts (to provide a decent error message)
-and/or SFINAE. The concepts used are:
+and/or SFINAE. The concepts are documented `here <nonlinearsolvers_concepts>`__.
 
-- `nonlinearsolvers::OverDeterminedSystemWithResidualAndJacobian <nonlinearsolvers_concepts/rj_ovdet.html>`__
+Return Value
+~~~~~~~~~~~~
 
-- `nonlinearsolvers::OverDeterminedSystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/rj_fused_ovdet.html>`__
+Returns a solver object exposing the following public API:
 
-- `nonlinearsolvers::SystemWithHessianAndGradient <nonlinearsolvers_concepts/hg.html>`__
+.. code-block:: cpp
 
-- `nonlinearsolvers::SystemWithFusedHessianAndGradient <nonlinearsolvers_concepts/hg_fused.html>`__
+   // This is not the actual class, it just describes the API
+   class Solver
+   {
 
-- `nonlinearsolvers::LinearSolverForNonlinearLeastSquares <nonlinearsolvers_concepts/c4.html>`__
+   public:
+     // query/set update criterion
+     Update currentUpdateCriterion() const;
+     void setUpdateCriterion(Update value);
 
+     // query/set stop criterion, tolerance
+     Stop currentStopCriterion() const;
+     void setStopCriterion(Stop value);
+     void setStopTolerance(ScalarType value);
+     void setMaxIterations(int newMax);
 
-Example usage
-^^^^^^^^^^^^^
+     void solve(StateType & solutionInOut);
+   };
 
-bla blas
+Examples
+^^^^^^^^
+
+.. admonition:: Demos
+   :class: tip
+
+   1. `full demo for the Rosenbrock function <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers1.html>`__
