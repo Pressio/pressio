@@ -42,7 +42,7 @@ TEST(ode, implicit_bdf2_custom_policy)
   problem_t problemObj;
   state_t y = problemObj.getInitCond();
 
-  using res_t = typename problem_t::right_hand_side_type;
+  using res_t = typename problem_t::rhs_type;
   using jac_t = typename problem_t::jacobian_type;
   using pol_t = ode::impl::ResidualJacobianStandardPolicy<problem_t&, time_type, state_t, res_t, jac_t>;
   auto stepperObj = ode::create_bdf2_stepper(pol_t(problemObj));

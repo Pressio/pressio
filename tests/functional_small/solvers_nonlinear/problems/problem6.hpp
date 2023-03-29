@@ -95,24 +95,23 @@ struct Problem6
   residual_type createResidual() const{ return *R_; }
   jacobian_type createJacobian() const{ return *J_; }
 
-  void residual(const state_type& x, residual_type & R) const
+  void residualAndJacobian(const state_type& x,
+			   residual_type& res,
+			   std::optional<jacobian_type*> Jin) const
   {
-    for (auto i=0; i< NumMyElem_; i++){
-      R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
-    };
-  }
+    auto * jac = Jin.value_or(nullptr);
 
-  void jacobian(const state_type & x, jacobian_type & jac) const{
-    for (int i=0; i<NumMyElem_; i++)
-      {
-	scalar_type t = (*tt_)[i];
-	jac[0][i] = -1.0;
-	jac[1][i] = -exp(-t*x(3));
-	jac[2][i] = -exp(-t*x(4));
-	jac[3][i] = x(1)*exp(-t*x(3))*t;
-	jac[4][i] = x(2)*exp(-t*x(4))*t;
+    for (int i=0; i<NumMyElem_; i++){
+      const scalar_type t = (*tt_)[i];
+      R[i] = (*yy_)[i] - this->model(x, t);
+      if (jac){
+	(*jac)[0][i] = -1.0;
+	(*jac)[1][i] = -exp(-t*x(3));
+	(*jac)[2][i] = -exp(-t*x(4));
+	(*jac)[3][i] = x(1)*exp(-t*x(3))*t;
+	(*jac)[4][i] = x(2)*exp(-t*x(4))*t;
       }
-    //jac.data()->Print(std::cout);
+    }
   }
 };
 

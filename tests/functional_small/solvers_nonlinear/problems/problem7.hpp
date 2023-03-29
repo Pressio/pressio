@@ -109,36 +109,36 @@ struct Problem7
   residual_type createResidual() const{ return *R_; }
   jacobian_type createJacobian() const{ return *J_; }
 
-  void residual(const state_type& x, residual_type & R) const
+  void residualAndJacobian(const state_type& x,
+			   residual_type& res,
+			   std::optional<jacobian_type*> Jin) const
   {
-    for (auto i=0; i< NumMyElem_; i++){
-      R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
-    };
-  }
+    auto * jac = Jin.value_or(nullptr);
 
-  void jacobian(const state_type & x, jacobian_type & jac) const{
-    for (int i=0; i<NumMyElem_; i++)
-      {
-	scalar_type t = (*tt_)[i];
+    for (int i=0; i<NumMyElem_; i++){
+      const scalar_type t = (*tt_)[i];
 
-	auto temp1 = exp(-x(4)*t);
-	auto temp2 = exp(-x(5) * (t-x(8)) * (t-x(8)) );
-	auto temp3 = exp(-x(6) * (t-x(9)) * (t-x(9)) );
-	auto temp4 = exp(-x(7) * (t-x(10)) * (t-x(10)) );
-	jac[0][i] = -temp1;
-	jac[1][i] = -temp2;
-	jac[2][i] = -temp3;
-	jac[3][i] = -temp4;
-	jac[4][i] = x(0)*temp1*t;
-	jac[5][i] = x(1) * (t-x(8)) * (t-x(8))  * temp2;
-	jac[6][i] = x(2) * (t-x(9)) * (t-x(9))  * temp3;
-	jac[7][i] = x(3) * (t-x(10)) * (t-x(10)) * temp4;
-	jac[8][i] =  -2.*x(1)*x(5)*(t-x(8))*temp2;
-	jac[9][i] =  -2.*x(2)*x(6)*(t-x(9))*temp3;
-	jac[10][i] = -2.*x(3)*x(7)*(t-x(10))*temp4;
+      R[i] = (*yy_)[i] - this->model(x, t);
+
+      auto temp1 = exp(-x(4)*t);
+      auto temp2 = exp(-x(5) * (t-x(8)) * (t-x(8)) );
+      auto temp3 = exp(-x(6) * (t-x(9)) * (t-x(9)) );
+      auto temp4 = exp(-x(7) * (t-x(10)) * (t-x(10)) );
+      if (jac){
+	(*jac)[0][i] = -temp1;
+	(*jac)[1][i] = -temp2;
+	(*jac)[2][i] = -temp3;
+	(*jac)[3][i] = -temp4;
+	(*jac)[4][i] = x(0)*temp1*t;
+	(*jac)[5][i] = x(1) * (t-x(8)) * (t-x(8))  * temp2;
+	(*jac)[6][i] = x(2) * (t-x(9)) * (t-x(9))  * temp3;
+	(*jac)[7][i] = x(3) * (t-x(10)) * (t-x(10)) * temp4;
+	(*jac)[8][i] =  -2.*x(1)*x(5)*(t-x(8))*temp2;
+	(*jac)[9][i] =  -2.*x(2)*x(6)*(t-x(9))*temp3;
+	(*jac)[10][i] = -2.*x(3)*x(7)*(t-x(10))*temp4;
       }
-    //    jac.data()->Print(std::cout);
-  }//end jacobian
+    }
+  }
 };
 
 }}} //end namespace pressio::solvers::test

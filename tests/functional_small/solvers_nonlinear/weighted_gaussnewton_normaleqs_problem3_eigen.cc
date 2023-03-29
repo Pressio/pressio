@@ -1,6 +1,6 @@
 
 #include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem3.hpp"
 
 template<class scalar_t = double>

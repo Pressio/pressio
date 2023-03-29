@@ -30,8 +30,7 @@ why it is included, where it was found
 
 - Eigen
 
-- Problem1A: RealSystemWithResidualAndJacobian
-- Problem1B: RealSystemWithFusedResidualAndJacobian
+- RealSystemWithFusedResidualAndJacobian
 
 - very simple problem
 

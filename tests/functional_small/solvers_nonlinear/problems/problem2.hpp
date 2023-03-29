@@ -2,8 +2,6 @@
 #ifndef NONLINEAR_SOLVERS_TESTS_PROBLEM2_HPP_
 #define NONLINEAR_SOLVERS_TESTS_PROBLEM2_HPP_
 
-#include "pressio/solvers.hpp"
-
 namespace pressio{ namespace solvers{ namespace test{
 
 struct Problem2
@@ -30,19 +28,21 @@ struct Problem2
     return a;
   }
 
-  void residual(const state_type& x,
-                residual_type& res) const
+  void residualAndJacobian(const state_type& x,
+			   residual_type& res,
+			   std::optional<jacobian_type*> Jin) const
   {
     res(0) = x(0)*x(0) + x(1)*x(1) - 4.0;
     res(1) = x(0)*x(1) - 1.0;
-  }
 
-  void jacobian(const state_type& x, jacobian_type& jac) const {
-    jac.coeffRef(0, 0) = 2*x(0);
-    jac.coeffRef(0, 1) = 2*x(1);
-    // Have incorrect entries so that line search is required
-    jac.coeffRef(1, 0) = 0.1*x(1);
-    jac.coeffRef(1, 1) = 0.1*x(0);
+    if (Jin){
+     auto & jac = *Jin.value();
+      jac.coeffRef(0, 0) = 2*x(0);
+      jac.coeffRef(0, 1) = 2*x(1);
+      // Have incorrect entries so that line search is required
+      jac.coeffRef(1, 0) = 0.1*x(1);
+      jac.coeffRef(1, 1) = 0.1*x(0);
+    }
   }
 };
 

@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear_newton.hpp"
 #include "./problems/problem1.hpp"
 
 template<class SystemType, bool logOn = false>
@@ -60,34 +60,19 @@ void run_impl(int reps, bool callSolveWithJustState = true)
   }
 }
 
-TEST(solvers_nonlinear, problem1A){
-  run_impl<pressio::solvers::test::Problem1A, true>(1, false);
+TEST(solvers_nonlinear, problem1){
+  run_impl<pressio::solvers::test::Problem1, true>(1, false);
 }
 
-TEST(solvers_nonlinear, problem1A_repeated_solve){
-  run_impl<pressio::solvers::test::Problem1A>(100, false);
+TEST(solvers_nonlinear, problem1_repeated_solve){
+  run_impl<pressio::solvers::test::Problem1>(100, false);
 }
 
-TEST(solvers_nonlinear, problem1A_call_solve_with_only_state){
-  run_impl<pressio::solvers::test::Problem1A, true>(1, true);
+TEST(solvers_nonlinear, problem1_call_solve_with_only_state){
+  run_impl<pressio::solvers::test::Problem1, true>(1, true);
 }
 
-TEST(solvers_nonlinear, problem1A_repeated_solve_call_solve_with_only_state){
-  run_impl<pressio::solvers::test::Problem1A>(100, true);
+TEST(solvers_nonlinear, problem1_repeated_solve_call_solve_with_only_state){
+  run_impl<pressio::solvers::test::Problem1>(100, true);
 }
 
-TEST(solvers_nonlinear, problem1B){
-  run_impl<pressio::solvers::test::Problem1B, true>(1, false);
-}
-
-TEST(solvers_nonlinear, problem1B_repeated_solve){
-  run_impl<pressio::solvers::test::Problem1B>(100, false);
-}
-
-TEST(solvers_nonlinear, problem1B_call_solve_with_only_state){
-  run_impl<pressio::solvers::test::Problem1B, true>(1, true);
-}
-
-TEST(solvers_nonlinear, problem1B_repeated_solve_call_solve_with_only_state){
-  run_impl<pressio::solvers::test::Problem1B>(100, true);
-}

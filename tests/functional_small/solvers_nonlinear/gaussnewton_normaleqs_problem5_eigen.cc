@@ -1,6 +1,6 @@
 
 #include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem5.hpp"
 
 int main()

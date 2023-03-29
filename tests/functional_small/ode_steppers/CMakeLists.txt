@@ -1,21 +1,23 @@
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
   add_serial_utest(ode_steppers_concepts ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
+endif()
 
+# ========================
+#
+# EXPLICIT METHODS
+#
+# ========================
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  # -----------------
+  # NO mass matrix
+  # -----------------
   set(FILENAME ode_all_explicit_schemes_no_mass_matrix_rhs_observer_correctness_eigen)
-  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
-
-  set(FILENAME ode_all_explicit_schemes_varying_mass_matrix_rhs_observer_correctness_eigen)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
   # forward euler
   set(FILENAME ode_forward_euler_simple_correctness_eigen)
-  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
-
-  set(FILENAME ode_forward_euler_mass_matrix_manual_correctness_eigen)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
@@ -50,6 +52,18 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
+  # -----------------
+  # WITH mass matrix
+  # -----------------
+  set(FILENAME ode_all_explicit_schemes_varying_mass_matrix_rhs_observer_correctness_eigen)
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+
+  # forward euler
+  set(FILENAME ode_forward_euler_mass_matrix_manual_correctness_eigen)
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+
   # with mass matrix, all explicit schemes in sinle exe
   set(FILENAME ode_all_explicit_schemes_varying_mass_matrix_correctness_eigen)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
@@ -58,7 +72,14 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(FILENAME ode_all_explicit_schemes_fixed_mass_matrix_correctness_eigen)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+endif()
 
+# ========================
+#
+# IMPLICIT METHODS (CONT-TIME API)
+#
+# ========================
+if(PRESSIO_ENABLE_TPL_EIGEN)
   # implicit stencil data
   set(FILENAME ode_implicit_stencil_data_eigen)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
@@ -69,7 +90,11 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
-  # bdf1 with step recovery
+  set(FILENAME ode_bdf1_strong_condition_correctness)
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+
+  # with step recovery
   add_serial_exe_and_test(
     integrate_to_time_with_failure_bdf1_stepper
     ode_steppers_implicit
@@ -80,10 +105,14 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
-  # cn
-  set(FILENAME ode_crank_nicolson_simple_correctness_eigen)
+  set(FILENAME ode_bdf2_strong_condition_correctness)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+
+  #   # cn
+  #   set(FILENAME ode_crank_nicolson_simple_correctness_eigen)
+  #   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+  #   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
   # with mass matrix, all implicit schemes in single exe
   set(FILENAME ode_all_implicit_schemes_varying_mass_matrix_correctness_eigen)
@@ -98,7 +127,14 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(FILENAME ode_all_implicit_schemes_check_app_called_with_correct_time)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+endif()
 
+# ========================
+#
+# IMPLICIT METHODS (DISCRETE-TIME API)
+#
+# ========================
+if(PRESSIO_ENABLE_TPL_EIGEN)
   set(FILENAME ode_arbitrary_stepper_check_app_called_with_correct_time)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
@@ -127,24 +163,9 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     ${CMAKE_CURRENT_SOURCE_DIR}/adjoint_logic_2.cc)
 endif()
 
-if(PRESSIO_ENABLE_TPL_KOKKOS)
-  set(FILENAME ode_implicit_stencil_data_kokkos)
-  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_${FILENAME} ${SRC})
-endif()
 
-#
-# this is commented out for now until is finalized
-#
-# # using custom types, explicit schemes
-# set(FILENAME ode_forward_euler_simple_correctness_custom_types)
-# set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-# add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
-
-# set(FILENAME ode_rk4_simple_correctness_custom_types)
-# set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-# add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
-
-# set(FILENAME ode_ab2_simple_correctness_custom_types)
-# set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-# add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+# if(PRESSIO_ENABLE_TPL_KOKKOS)
+#   set(FILENAME ode_implicit_stencil_data_kokkos)
+#   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+#   add_serial_utest_kokkos(${TESTING_LEVEL}_${FILENAME} ${SRC})
+# endif()

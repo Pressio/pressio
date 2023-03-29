@@ -8,7 +8,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_newton.hpp
    :language: cpp
-   :lines: 54-55, 74-98, 141-142
+   :lines: 73-103
 
 Parameters
 ~~~~~~~~~~

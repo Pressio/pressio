@@ -51,24 +51,18 @@
 
 #ifdef PRESSIO_ENABLE_CXX20
 
-
 // this is here so that we can clearly show it in the
 // doc via rst literal include directive
 namespace pressio{ namespace ode{
 
 template <class T>
 concept ImplicitResidualJacobianPolicy =
-  std::copy_constructible<T>
-  /* must have nested aliases */
-  && requires(){
+  requires(){
     typename T::independent_variable_type;
     typename T::state_type;
     typename T::residual_type;
     typename T::jacobian_type;
   }
-  /*
-    requirements on the nested aliases
-  */
   && ::pressio::ops::is_known_data_type<typename T::state_type>::value
   && ::pressio::ops::is_known_data_type<typename T::residual_type>::value
   && ::pressio::ops::is_known_data_type<typename T::jacobian_type>::value
@@ -79,9 +73,6 @@ concept ImplicitResidualJacobianPolicy =
   && std::convertible_to<
     typename T::independent_variable_type,
     scalar_trait_t<typename T::state_type>>
-  /*
-    compund requirements on the "create" methods
-  */
   && requires(const T & A)
   {
     { A.createState()    } -> std::same_as<typename T::state_type>;
@@ -97,12 +88,10 @@ concept ImplicitResidualJacobianPolicy =
 	      ::pressio::ode::StepCount stepNumber,
 	      const ::pressio::ode::StepSize<typename T::independent_variable_type> & dt,
 	      typename T::residual_type & R,
-	      typename T::jacobian_type & J,
-	      bool computeJacobian)
+	      std::optional<typename T::jacobian_type *> J)
   {
     A(schemeName, predictedState, stencilStatesManager,
-      stencilVelocities, rhsEvaluationTime, stepNumber, dt,
-      R, J, computeJacobian);
+      stencilVelocities, rhsEvaluationTime, stepNumber, dt, R, J);
   };
 
 }} // end namespace pressio::ode

@@ -1,6 +1,6 @@
 
 #include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear_levmarq.hpp"
 #include "./problems/problem9.hpp"
 
 template <typename problem_t, typename solver_t>

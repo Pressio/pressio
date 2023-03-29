@@ -32,8 +32,7 @@ public:
 				   const independent_variable_type & time,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & /*unused*/,
-				   discrete_jacobian_type & /*unused*/,
-				   bool computeJacobian,
+				   std::optional<discrete_jacobian_type *> /*unused*/,
 				   const state_type & /*unused*/,
 				   const state_type & /*unused*/) const
   {
@@ -65,7 +64,7 @@ struct MyFakeSolver3
   {
     R_t R(3);
     J_t J(3,3);
-    sys.residualAndJacobian(state, R, J, true);
+    sys.residualAndJacobian(state, R, &J);
   }
 };
 }

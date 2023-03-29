@@ -64,9 +64,11 @@ namespace pressio{
 
 template<class SystemType, class LinearSolverType>
 #ifdef PRESSIO_ENABLE_CXX20
-     requires (nonlinearsolvers::RealValuedSystemWithResidualAndJacobian<SystemType>
-	    || nonlinearsolvers::RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+  requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
   && nonlinearsolvers::valid_state_for_least_squares<typename SystemType::state_type>::value
+  && (Traits<typename SystemType::state_type>::rank == 1)
+  && (Traits<typename SystemType::residual_type>::rank == 1)
+  && (Traits<typename SystemType::jacobian_type>::rank == 2)
   && requires(typename SystemType::state_type & x,
 	      const typename SystemType::jacobian_type & J,
 	      const typename SystemType::residual_type & r,
@@ -139,9 +141,11 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(1)*/
 
 template<class SystemType, class LinearSolverType, class WeightingOpType>
 #ifdef PRESSIO_ENABLE_CXX20
-     requires (nonlinearsolvers::RealValuedSystemWithResidualAndJacobian<SystemType>
-	    || nonlinearsolvers::RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+  requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
   && nonlinearsolvers::valid_state_for_least_squares<typename SystemType::state_type>::value
+  && (Traits<typename SystemType::state_type>::rank == 1)
+  && (Traits<typename SystemType::residual_type>::rank == 1)
+  && (Traits<typename SystemType::jacobian_type>::rank == 2)
   && requires(typename SystemType::state_type & x,
 	      const typename SystemType::jacobian_type & J,
 	      const typename SystemType::residual_type & r,
@@ -152,13 +156,16 @@ template<class SystemType, class LinearSolverType, class WeightingOpType>
 	      WeightingOpType && W,
 	      LinearSolverType && linSolver)
   {
-    { ::pressio::ops::norm2(r) } -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
-    { ::pressio::ops::dot(std::as_const(r),
-			  std::as_const(Wr)) } -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+    { ::pressio::ops::norm2(r) }
+	-> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+    { ::pressio::ops::dot(std::as_const(r), std::as_const(Wr)) }
+	-> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+
     { W(r, Wr) };
     { W(J, WJ) };
     { ::pressio::ops::product(transpose(), nontranspose(), 1, J, std::as_const(WJ), 0, H) };
     { ::pressio::ops::product(transpose(), 1, J, std::as_const(Wr), 0, g) };
+
     { linSolver.solve(std::as_const(H), std::as_const(g), x) };
   }
 #endif
@@ -235,9 +242,11 @@ namespace experimental{
 
 template<class SystemType, class QRSolverType>
 #ifdef PRESSIO_ENABLE_CXX20
-     requires (nonlinearsolvers::RealValuedSystemWithResidualAndJacobian<SystemType>
-	    || nonlinearsolvers::RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+  requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
   && nonlinearsolvers::valid_state_for_least_squares< typename SystemType::state_type >::value
+  && (Traits<typename SystemType::state_type>::rank    == 1)
+  && (Traits<typename SystemType::residual_type>::rank == 1)
+  && (Traits<typename SystemType::jacobian_type>::rank == 2)
   && requires(typename SystemType::state_type & x,
 	      const typename SystemType::jacobian_type & J,
 	      const typename SystemType::residual_type & r,

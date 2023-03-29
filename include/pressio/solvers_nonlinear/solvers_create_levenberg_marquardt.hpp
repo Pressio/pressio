@@ -53,7 +53,6 @@
 
 namespace pressio{
 
-
 /*
   LM minimizes the sum of squares: S(x) = (1/2) * \sum r_i(x)*r_i(x)
   where r(x) is the residual vector with r \in R^n and x \in R^k, with k < n,
@@ -68,9 +67,11 @@ namespace pressio{
 
 template<class SystemType, class LinearSolverType>
 #ifdef PRESSIO_ENABLE_CXX20
-     requires (nonlinearsolvers::RealValuedSystemWithResidualAndJacobian<SystemType>
-	    || nonlinearsolvers::RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+  requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
   && nonlinearsolvers::valid_state_for_least_squares< typename SystemType::state_type >::value
+  && (Traits<typename SystemType::state_type>::rank    == 1)
+  && (Traits<typename SystemType::residual_type>::rank == 1)
+  && (Traits<typename SystemType::jacobian_type>::rank == 2)
   && requires(typename SystemType::state_type & x,
 	      const typename SystemType::jacobian_type & J,
 	      const typename SystemType::residual_type & r,

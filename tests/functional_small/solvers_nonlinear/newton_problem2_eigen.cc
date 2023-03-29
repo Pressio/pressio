@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear_newton.hpp"
 #include "./problems/problem2.hpp"
 
 TEST(solvers_nonlinear, problem1A)

@@ -7,19 +7,19 @@ struct AppForSSPRK3
 {
   using independent_variable_type = double;
   using state_type = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   state_type createState() const{
-    return right_hand_side_type(3);
+    return rhs_type(3);
   };
 
-  right_hand_side_type createRightHandSide() const{
-    return right_hand_side_type(3);
+  rhs_type createRhs() const{
+    return rhs_type(3);
   };
 
-  void operator()(const state_type & y,
-		  const independent_variable_type evaltime,
-		  right_hand_side_type & rhs) const
+  void rhs(const state_type & y,
+	   const independent_variable_type evaltime,
+	   rhs_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){

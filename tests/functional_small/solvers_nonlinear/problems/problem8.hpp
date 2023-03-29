@@ -55,20 +55,22 @@ struct Problem8
   residual_type createResidual() const{return residual_type(16);}
   jacobian_type createJacobian() const{return jacobian_type(16,3);}
 
-  void residual(const state_type& x, residual_type & res) const
+  void residualAndJacobian(const state_type& x,
+			   residual_type& res,
+			   std::optional<jacobian_type*> Jin) const
   {
-    for (auto i = 0; i < res.size(); i++) {
-      res(i) = x(0) * exp(x(1)/(times_[i] + x(2))) - y_[i];
-    }
-  }
+    auto * jac = Jin.value_or(nullptr);
 
-  void jacobian(const state_type & x, jacobian_type & jac) const {
     for (int i = 0; i < 16; i++) {
-      double expval = exp(x(1)/(times_[i] + x(2)));
-      double tplusx2 = times_[i] + x(2);
-      jac(i,0) = expval;
-      jac(i,1) = x(0)*expval/tplusx2;
-      jac(i,2) = -1*x(0)*expval*x(1)/(tplusx2*tplusx2);
+      const double expval = exp(x(1)/(times_[i] + x(2)));
+      const double tplusx2 = times_[i] + x(2);
+
+      res(i) = x(0) * expval - y_[i];
+      if (jac){
+	(*jac)(i,0) = expval;
+	(*jac)(i,1) = x(0)*expval/tplusx2;
+	(*jac)(i,2) = -1*x(0)*expval*x(1)/(tplusx2*tplusx2);
+      }
     }
   }
 

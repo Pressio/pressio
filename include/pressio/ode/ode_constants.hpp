@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_guesser.hpp
+// pressio_ode_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,83 +46,41 @@
 //@HEADER
 */
 
-#ifndef ODE_CONCEPTS_ODE_GUESSER_HPP_
-#define ODE_CONCEPTS_ODE_GUESSER_HPP_
+#ifndef ODE_ODE_PUBLIC_CONSTANTS_HPP_
+#define ODE_ODE_PUBLIC_CONSTANTS_HPP_
 
 namespace pressio{ namespace ode{
 
-#ifdef PRESSIO_ENABLE_CXX20
-template <class T, class IndVarType, class StateType>
-concept StateGuesser =
-  requires(T && A,
-	   const ::pressio::ode::StepCount & stepNumber,
-	   const ::pressio::ode::StepStartAt<IndVarType> & startAt,
-	   StateType & state)
-  {
-    A(stepNumber, startAt, state);
-  };
-#endif //PRESSIO_ENABLE_CXX20
+inline constexpr typename StepCount::value_type first_step_value = 1;
 
-}} // end namespace pressio::ode
+namespace constants{
 
-#if not defined PRESSIO_ENABLE_CXX20
+template <typename scalar_t>
+struct bdf1{
+  using cnst = ::pressio::utils::Constants<scalar_t>;
+  static constexpr scalar_t c_np1_= cnst::one();
+  static constexpr scalar_t c_n_  = cnst::negOne();
+  static constexpr scalar_t c_f_  = cnst::negOne();
+};
 
-namespace pressio{ namespace ode{ namespace impl{
+template <typename scalar_t>
+struct bdf2{
+  using cnst = ::pressio::utils::Constants<scalar_t>;
+  static constexpr scalar_t c_np1_ = cnst::one();
+  static constexpr scalar_t c_n_   = cnst::negOne()*cnst::fourOvThree();
+  static constexpr scalar_t c_nm1_ = cnst::oneOvThree();
+  static constexpr scalar_t c_f_   = cnst::negOne()*cnst::twoOvThree();
+};
 
-/*
-  we need to ensure operator() accepts the state
-  by **non-const** reference. One (maybe only) way to detect
-  that is check that if operator() can bind an rvalue.
-  Basically if we tried to bind an rvalue to an lvalue reference,
-  it should fail, and if it fails that is good because it is what we want.
-*/
+template <typename scalar_t>
+struct cranknicolson{
+  using cnst = ::pressio::utils::Constants<scalar_t>;
+  static constexpr scalar_t c_np1_  = cnst::one();
+  static constexpr scalar_t c_n_    = cnst::negOne();
+  static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();
+  static constexpr scalar_t c_fn_   = cnst::negOneHalf();
+};
 
-template <class T, class IndVarType, class StateType, class Enable = void>
-struct guesser_taking_state_by_ref
-  : std::true_type{};
+}}}//end namespace pressio::ode::constants
 
-template <class T, class IndVarType, class StateType>
-struct guesser_taking_state_by_ref<
-  T, IndVarType, StateType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T>()
-       (
-	std::declval< ::pressio::ode::StepCount >(),
-	std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
-	std::declval< StateType >()
-	)
-       )
-      >::value
-    >
-  > : std::false_type{};
-
-} // end namespace pressio::ode::impl
-
-template <class T, class IndVarType, class StateType, class enable = void>
-struct StateGuesser : std::false_type{};
-
-template <class T, class IndVarType, class StateType>
-struct StateGuesser<
-  T, IndVarType, StateType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-	       std::declval<T>()
-	       (
-		std::declval< ::pressio::ode::StepCount >(),
-		std::declval< ::pressio::ode::StepStartAt<IndVarType> >(),
-		std::declval<StateType &>()
-		)
-	       )
-      >::value
-    && impl::guesser_taking_state_by_ref<T, IndVarType, StateType>::value
-    >
-  > : std::true_type{};
-
-}} // end namespace pressio::ode
-#endif
-
-#endif  // ODE_CONCEPTS_ODE_GUESSER_HPP_
+#endif  // ODE_ODE_PUBLIC_CONSTANTS_HPP_

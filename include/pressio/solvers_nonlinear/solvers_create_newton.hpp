@@ -58,8 +58,7 @@ namespace pressio{
 
   preconditions
   - system must bind to an object that outlives the return of this function
-  - if linSolver binds to a lvalue object, that must also outlive
-    the lifetime of the object returned here
+  - if linSolver binds an a lvalue object, it must outlive the lifetime of the object returned here
 
   effects
   - if linSolver binds a tempor object, it is move constructed from it
@@ -73,24 +72,30 @@ namespace pressio{
 
 template<class SystemType, class LinearSolverType>
 #ifdef PRESSIO_ENABLE_CXX20
-     requires (nonlinearsolvers::RealValuedSystemWithResidualAndJacobian<SystemType>
-            || nonlinearsolvers::RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+     requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
+  && (Traits<typename SystemType::state_type>::rank == 1)
+  && (Traits<typename SystemType::residual_type>::rank == 1)
+  && (Traits<typename SystemType::jacobian_type>::rank == 2)
   && requires(typename SystemType::state_type & a,
 	      typename SystemType::state_type & b,
 	      typename SystemType::state_type & c,
 	      typename SystemType::residual_type & r,
 	      typename SystemType::jacobian_type & J,
+	      nonlinearsolvers::scalar_of_t<SystemType> alpha,
+	      nonlinearsolvers::scalar_of_t<SystemType> beta,
+	      nonlinearsolvers::scalar_of_t<SystemType> gamma,
 	      LinearSolverType && linSolver)
   {
-    { ::pressio::ops::norm2(std::as_const(a)) } -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
-    { ::pressio::ops::norm2(std::as_const(r)) } -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+    { ::pressio::ops::norm2(std::as_const(a)) }
+	-> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+    { ::pressio::ops::norm2(std::as_const(r)) }
+	-> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+
     { ::pressio::ops::deep_copy(b, std::as_const(a)) };
-    { ::pressio::ops::scale (a, nonlinearsolvers::scalar_of_t<SystemType>{}) };
-    { ::pressio::ops::update(a,		       nonlinearsolvers::scalar_of_t<SystemType>{},
-			     std::as_const(b), nonlinearsolvers::scalar_of_t<SystemType>{}) };
-    { ::pressio::ops::update(a,		       nonlinearsolvers::scalar_of_t<SystemType>{},
-			     std::as_const(b), nonlinearsolvers::scalar_of_t<SystemType>{},
-			     std::as_const(c), nonlinearsolvers::scalar_of_t<SystemType>{}) };
+    { ::pressio::ops::scale (a, alpha) };
+    { ::pressio::ops::update(a,	alpha, std::as_const(b), beta) };
+    { ::pressio::ops::update(a,	alpha, std::as_const(b), beta, std::as_const(c), gamma) };
+
     { linSolver.solve(std::as_const(J), std::as_const(r), a) };
   }
 #endif

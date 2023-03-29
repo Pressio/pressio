@@ -34,18 +34,20 @@ struct Problem3
     return a;
   }
 
-  void residual(const state_type& x, residual_type & res) const
+  void residualAndJacobian(const state_type& x,
+			   residual_type& res,
+			   std::optional<jacobian_type*> Jin) const
   {
-    for (auto i = 0; i < res.size(); i++) {
-      res(i) = x(0) * exp(x(1)*times_[i]) - y_[i];
-    }
-  }
+    auto * jac = Jin.value_or(nullptr);
 
-  void jacobian(const state_type & x, jacobian_type & jac) const {
-    for (int i = 0; i < 8; i++) {
-      double expval = exp(x(1) * times_[i]);
-      jac(i,0) = expval;
-      jac(i,1) = x(0)*times_[i]*expval;
+    for (int i = 0; i < 8; i++){
+      const double expval = exp(x(1) * times_[i]);
+      res(i) = x(0) * expval - y_[i];
+
+      if (jac){
+	(*jac)(i,0) = expval;
+	(*jac)(i,1) = x(0)*times_[i]*expval;
+      }
     }
   }
 };

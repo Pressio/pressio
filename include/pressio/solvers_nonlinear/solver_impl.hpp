@@ -573,6 +573,41 @@ public:
   operator value_type () const { return v_; }
 };
 
+
+#ifdef PRESSIO_ENABLE_CXX20
+template<class RegistryType, class StateType, class SystemType>
+requires NonlinearSystemFusingResidualAndJacobian<SystemType>
+#else
+template<
+  class RegistryType, class SystemType,
+  mpl::enable_if_t<NonlinearSystemFusingResidualAndJacobian<SystemType>::value, int> = 0
+  >
+#endif
+void compute_residual(RegistryType & reg,
+		      const StateType & state,
+		      const SystemType & system)
+{
+  auto & r = reg.template get<ResidualTag>();
+  system.residualAndJacobian(state, r, {});
+}
+
+#ifdef PRESSIO_ENABLE_CXX20
+template<class RegistryType, class StateType, class SystemType>
+requires NonlinearSystem<SystemType>
+#else
+template<
+  class RegistryType, class SystemType,
+  mpl::enable_if_t< NonlinearSystem<SystemType>::value, int> = 0
+  >
+#endif
+void compute_residual(RegistryType & reg,
+		      const StateType & state,
+		      const SystemType & system)
+{
+  auto & r = reg.template get<ResidualTag>();
+  system.residual(state, r);
+}
+
 template<class RegistryType, class SystemType>
 void compute_residual_and_jacobian(RegistryType & reg,
 				   const SystemType & system)
@@ -580,18 +615,8 @@ void compute_residual_and_jacobian(RegistryType & reg,
   const auto & state = reg.template get<StateTag>();
   auto & r = reg.template get<ResidualTag>();
   auto & j = reg.template get<JacobianTag>();
-#if defined PRESSIO_ENABLE_CXX20
-  if constexpr(SystemWithResidualAndJacobian<SystemType>)
-#else
-  if constexpr(SystemWithResidualAndJacobian<SystemType>::value)
-#endif
-  {
-    system.residual(state, r);
-    system.jacobian(state, j);
-  }
-  else{
-    system.residualAndJacobian(state, r, j);
-  }
+  using j_t = typename SystemType::jacobian_type;
+  system.residualAndJacobian(state, r, std::optional<j_t*>{&j});
 }
 
 template<class RegistryType>
@@ -603,7 +628,7 @@ void compute_gradient(RegistryType & reg)
   const auto & r = reg.template get<ResidualTag>();
   const auto & j = reg.template get<JacobianTag>();
   auto & g = reg.template get<GradientTag>();
-  // compute gradient (g_ = J_r^T r)
+  // g = J_r^T r
   ::pressio::ops::product(pT, 1, j, r, 0, g);
 }
 
@@ -624,8 +649,8 @@ auto compute_nonlinearls_objective(GaussNewtonNormalEqTag /*tag*/,
 				   const StateType & state,
 				   const SystemType & system)
 {
+  compute_residual(reg, state, system);
   auto & r = reg.template get<ResidualTag>();
-  system.residual(state, r);
   return compute_half_sum_of_squares(r);
 }
 
@@ -635,8 +660,8 @@ auto compute_nonlinearls_objective(GaussNewtonQrTag /*tag*/,
 				   const StateType & state,
 				   const SystemType & system)
 {
+  compute_residual(reg, state, system);
   auto & r = reg.template get<ResidualTag>();
-  system.residual(state, r);
   return compute_half_sum_of_squares(r);
 }
 
@@ -646,8 +671,8 @@ auto compute_nonlinearls_objective(LevenbergMarquardtNormalEqTag /*tag*/,
 				   const StateType & state,
 				   const SystemType & system)
 {
+  compute_residual(reg, state, system);
   auto & r = reg.template get<ResidualTag>();
-  system.residual(state, r);
   return compute_half_sum_of_squares(r);
 }
 
@@ -660,7 +685,7 @@ auto compute_nonlinearls_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
   const auto & W = reg.template get<WeightingOperatorTag>();
   auto & r  = reg.template get<ResidualTag>();
   auto & Wr = reg.template get<WeightedResidualTag>();
-  system.residual(state, r);
+  compute_residual(reg, state, system);
   W.get()(r, Wr);
 
   const auto v = ::pressio::ops::dot(r, Wr);
@@ -672,14 +697,12 @@ auto compute_nonlinearls_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
 
 #ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
-	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
   mpl::enable_if_t<
-       RealValuedSystemWithResidualAndJacobian<SystemType>::value
-    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
 #endif
@@ -705,14 +728,12 @@ auto compute_nonlinearls_operators_and_objective(GaussNewtonNormalEqTag /*tag*/,
 
 #ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
-	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
   mpl::enable_if_t<
-       RealValuedSystemWithResidualAndJacobian<SystemType>::value
-    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
 #endif
@@ -725,27 +746,22 @@ auto compute_nonlinearls_operators_and_objective(GaussNewtonQrTag /*tag*/,
 
   const auto & r = reg.template get<ResidualTag>();
   const auto & J = reg.template get<JacobianTag>();
-
   auto & g = reg.template get<GradientTag>();
   constexpr auto pT  = ::pressio::transpose();
-  constexpr auto pnT = ::pressio::nontranspose();
   // g = J_r^T r
   ::pressio::ops::product(pT, 1, J, r, 0, g);
 
   return compute_half_sum_of_squares(r);
 }
 
-
 #ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
-	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
   mpl::enable_if_t<
-       RealValuedSystemWithResidualAndJacobian<SystemType>::value
-    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
 #endif
@@ -780,14 +796,12 @@ auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag 
 
 #ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
-requires (   RealValuedSystemWithResidualAndJacobian<SystemType>
-	  || RealValuedSystemWithFusedResidualAndJacobian<SystemType>)
+requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
   mpl::enable_if_t<
-       RealValuedSystemWithResidualAndJacobian<SystemType>::value
-    || RealValuedSystemWithFusedResidualAndJacobian<SystemType>::value,
+    RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
 #endif
@@ -1282,9 +1296,11 @@ void root_solving_loop_impl(ProblemTag /*problemTag*/,
 {
 
   using state_type = typename UserDefinedSystemType::state_type;
+  using j_t = typename UserDefinedSystemType::jacobian_type;
+
   auto objective = [&reg, &system](const state_type & stateIn){
     auto & r = reg.template get<ResidualTag>();
-    system.residual(stateIn, r);
+    system.residualAndJacobian(stateIn, r, {});
     return ::pressio::ops::norm2(r);
   };
 

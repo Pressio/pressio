@@ -30,33 +30,35 @@ struct Problem5a
     return a;
   }
 
-  void residual(const state_type& x, residual_type & res) const{
+  void residualAndJacobian(const state_type& x,
+			   residual_type& res,
+			   std::optional<jacobian_type*> Jin) const
+  {
     auto x1 = x(0);
     auto x2 = x(1);
     auto x3 = x(2);
     auto x4 = x(3);
+
     res(0) = 10.*(x4 - x3*x3);
     res(1) = 10.*(x3 - x2*x2);
     res(2) = 10.*(x2 - x1*x1);
     res(3) = (1.-x1);
     res(4) = (1.-x2);
     res(5) = (1.-x3);
-  }
 
-  void jacobian(const state_type & x, jacobian_type & JJ) const{
-    auto x1 = x(0);
-    auto x2 = x(1);
-    auto x3 = x(2);
-    JJ.setZero();
-    JJ(0,2) = -20.*x3;
-    JJ(0,3) = 10.;
-    JJ(1,1) = -20.*x2;
-    JJ(1,2) = 10.;
-    JJ(2,0) = -20.*x1;
-    JJ(2,1) = 10.;
-    JJ(3,0) = -1.;
-    JJ(4,1) = -1.;
-    JJ(5,2) = -1.;
+    if (Jin){
+      auto & J = *Jin.value();
+      J.setZero();
+      J(0,2) = -20.*x3;
+      J(0,3) = 10.;
+      J(1,1) = -20.*x2;
+      J(1,2) = 10.;
+      J(2,0) = -20.*x1;
+      J(2,1) = 10.;
+      J(3,0) = -1.;
+      J(4,1) = -1.;
+      J(5,2) = -1.;
+    }
   }
 };
 

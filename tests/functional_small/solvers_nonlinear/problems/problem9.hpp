@@ -66,31 +66,34 @@ struct Problem9
     return x(0)*temp1 + x(1)*temp2 + x(2)*temp3 + x(3)*temp4;
   }
 
-  void residual(const state_type& x, residual_type & r) const{
-    for (auto i=0; i< m; i++){
-      r[i] = y_[i] - this->model(x, times_[i]);
-    };
-  }
-
-  void jacobian(const state_type & x, jacobian_type & jac) const
+  void residualAndJacobian(const state_type& x,
+			   residual_type& r,
+			   std::optional<jacobian_type*> Jin) const
   {
+    auto * jac = Jin.value_or(nullptr);
+
     for (int i=0; i<m; i++){
       const scalar_type t = times_[i];
       const auto temp1 = exp(-x(4)*t);
       const auto temp2 = exp(-x(5) * (t-x(8)) * (t-x(8)) );
       const auto temp3 = exp(-x(6) * (t-x(9)) * (t-x(9)) );
       const auto temp4 = exp(-x(7) * (t-x(10)) * (t-x(10)) );
-      jac(i,0)  = -temp1;
-      jac(i,1)  = -temp2;
-      jac(i,2)  = -temp3;
-      jac(i,3)  = -temp4;
-      jac(i,4)  = x(0)*temp1*t;
-      jac(i,5)  = x(1) * (t-x(8))  * (t-x(8))  * temp2;
-      jac(i,6)  = x(2) * (t-x(9))  * (t-x(9))  * temp3;
-      jac(i,7)  = x(3) * (t-x(10)) * (t-x(10)) * temp4;
-      jac(i,8)  = -2.*x(1)*x(5)*(t-x(8))*temp2;
-      jac(i,9)  = -2.*x(2)*x(6)*(t-x(9))*temp3;
-      jac(i,10) = -2.*x(3)*x(7)*(t-x(10))*temp4;
+
+      r[i] = y_[i] - this->model(x, t);
+
+      if (jac){
+	(*jac)(i,0)  = -temp1;
+	(*jac)(i,1)  = -temp2;
+	(*jac)(i,2)  = -temp3;
+	(*jac)(i,3)  = -temp4;
+	(*jac)(i,4)  = x(0)*temp1*t;
+	(*jac)(i,5)  = x(1) * (t-x(8))  * (t-x(8))  * temp2;
+	(*jac)(i,6)  = x(2) * (t-x(9))  * (t-x(9))  * temp3;
+	(*jac)(i,7)  = x(3) * (t-x(10)) * (t-x(10)) * temp4;
+	(*jac)(i,8)  = -2.*x(1)*x(5)*(t-x(8))*temp2;
+	(*jac)(i,9)  = -2.*x(2)*x(6)*(t-x(9))*temp3;
+	(*jac)(i,10) = -2.*x(3)*x(7)*(t-x(10))*temp4;
+      }
     }
   }
 };

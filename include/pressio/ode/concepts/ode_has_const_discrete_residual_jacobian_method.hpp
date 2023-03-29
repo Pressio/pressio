@@ -49,6 +49,8 @@
 #ifndef ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
 #define ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
 
+#include <optional>
+
 namespace pressio{ namespace ode{
 
 template <
@@ -76,8 +78,7 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
-	std::declval<JacobianType &>(),
-	std::declval<bool>(),
+        std::declval< std::optional<JacobianType*> >(),
 	std::declval<state_t const&>()
 	)
        )
@@ -101,8 +102,7 @@ struct has_const_discrete_residual_jacobian_method<
 	 std::declval<IndVarType const &>(),
 	 std::declval<IndVarType const &>(),
 	 std::declval<ResidualType &>(),
-	 std::declval<JacobianType &>(),
-         std::declval<bool>(),
+         std::declval< std::optional<JacobianType*> >(),
 	 std::declval<state_t const&>(),
 	 std::declval<state_t const&>()
 	)
@@ -126,8 +126,7 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
-        std::declval<JacobianType &>(),
-	  std::declval<bool>(),
+        std::declval< std::optional<JacobianType*> >(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>()
@@ -153,8 +152,7 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
-        std::declval<JacobianType &>(),
-	  std::declval<bool>(),
+        std::declval< std::optional<JacobianType*> >(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),

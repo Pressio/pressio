@@ -30,8 +30,7 @@ public:
 				   const independent_variable_type & /*unused*/,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & R,
-				   discrete_jacobian_type & J,
-				   bool computeJacobian,
+				   std::optional<discrete_jacobian_type*> J,
 				   const state_type & yn,
 				   const state_type & ynm1) const
   {
@@ -109,7 +108,7 @@ struct MyFakeSolver
     {
       std::cout << i << "\n";
       try{
-	sys.residualAndJacobian(state, R, J, true);
+	sys.residualAndJacobian(state, R, &J);
 	state(0) += 0.1;
 	state(1) += 0.2;
 	state(2) += 0.3;
