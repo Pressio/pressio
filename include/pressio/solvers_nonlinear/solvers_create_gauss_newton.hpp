@@ -66,10 +66,10 @@ template<class SystemType, class LinearSolverType>
 #ifdef PRESSIO_ENABLE_CXX20
   requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
   && nonlinearsolvers::valid_state_for_least_squares<typename SystemType::state_type>::value
-  && (Traits<typename SystemType::state_type>::rank == 1)
+  && (Traits<typename SystemType::state_type>::rank    == 1)
   && (Traits<typename SystemType::residual_type>::rank == 1)
   && (Traits<typename SystemType::jacobian_type>::rank == 2)
-  && requires(typename SystemType::state_type & x,
+  && requires(      typename SystemType::state_type    & x,
 	      const typename SystemType::jacobian_type & J,
 	      const typename SystemType::residual_type & r,
 	      nonlinearsolvers::normal_eqs_default_hessian_t<typename SystemType::state_type>  & H,
@@ -85,6 +85,7 @@ template<class SystemType, class LinearSolverType>
 auto create_gauss_newton_solver(const SystemType & system,           /*(1)*/
 				LinearSolverType && linSolver)
 {
+
   using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
   using state_t    = typename SystemType::state_type;
   using r_t        = typename SystemType::residual_type;
@@ -143,23 +144,23 @@ template<class SystemType, class LinearSolverType, class WeightingOpType>
 #ifdef PRESSIO_ENABLE_CXX20
   requires nonlinearsolvers::RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
   && nonlinearsolvers::valid_state_for_least_squares<typename SystemType::state_type>::value
-  && (Traits<typename SystemType::state_type>::rank == 1)
+  && (Traits<typename SystemType::state_type>::rank    == 1)
   && (Traits<typename SystemType::residual_type>::rank == 1)
   && (Traits<typename SystemType::jacobian_type>::rank == 2)
-  && requires(typename SystemType::state_type & x,
-	      const typename SystemType::jacobian_type & J,
+  && requires(      typename SystemType::state_type    & x,
 	      const typename SystemType::residual_type & r,
-	      typename SystemType::jacobian_type & WJ,
+	      const typename SystemType::jacobian_type & J,
 	      typename SystemType::residual_type & Wr,
+	      typename SystemType::jacobian_type & WJ,
 	      nonlinearsolvers::normal_eqs_default_hessian_t<typename SystemType::state_type>  & H,
 	      nonlinearsolvers::normal_eqs_default_gradient_t<typename SystemType::state_type> & g,
 	      WeightingOpType && W,
 	      LinearSolverType && linSolver)
   {
-    { ::pressio::ops::norm2(r) }
-	-> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+    { ::pressio::ops::norm2(std::as_const(r)) }
+      -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
     { ::pressio::ops::dot(std::as_const(r), std::as_const(Wr)) }
-	-> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
+      -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
 
     { W(r, Wr) };
     { W(J, WJ) };
@@ -173,6 +174,7 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
 				LinearSolverType && linSolver,
 				WeightingOpType && weigher)
 {
+
   using scalar_t   = nonlinearsolvers::scalar_of_t<SystemType>;
   using state_t    = typename SystemType::state_type;
   using r_t        = typename SystemType::residual_type;
@@ -247,7 +249,7 @@ template<class SystemType, class QRSolverType>
   && (Traits<typename SystemType::state_type>::rank    == 1)
   && (Traits<typename SystemType::residual_type>::rank == 1)
   && (Traits<typename SystemType::jacobian_type>::rank == 2)
-  && requires(typename SystemType::state_type & x,
+  && requires(      typename SystemType::state_type    & x,
 	      const typename SystemType::jacobian_type & J,
 	      const typename SystemType::residual_type & r,
 	      typename SystemType::state_type & QTr,
@@ -261,8 +263,9 @@ template<class SystemType, class QRSolverType>
   }
 #endif
 auto create_gauss_newton_qr_solver(const SystemType & system,
-				   QRSolverType && linSolver)
+				   QRSolverType && qrSolver)
 {
+
   using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
   using state_t    = typename SystemType::state_type;
   using r_t        = typename SystemType::residual_type;
@@ -291,7 +294,7 @@ auto create_gauss_newton_qr_solver(const SystemType & system,
 		 system.createResidual(), system.createJacobian(),
 		 system.createState(), // gradient is same extent as state
 		 system.createState(), //Q^T*r has same extent as state
-		 std::forward<QRSolverType>(linSolver),
+		 std::forward<QRSolverType>(qrSolver),
 		 &system);
 
   using nonlinearsolvers::Diagnostic;

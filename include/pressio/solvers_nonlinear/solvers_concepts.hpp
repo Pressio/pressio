@@ -236,6 +236,6 @@ struct scalar_of<
 
 template <class T> using scalar_of_t = typename scalar_of<T>::type;
 
-}} // end namespace pressio::nonlinearsolvers
 
+}} // end namespace pressio::nonlinearsolvers
 #endif  // SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_

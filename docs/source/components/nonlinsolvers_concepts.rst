@@ -8,4 +8,4 @@ Concepts
 
 .. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_concepts.hpp
    :language: cpp
-   :lines: 57-98
+   :lines: 54-98, 212, 240

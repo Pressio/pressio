@@ -11,6 +11,10 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(name newton_problem2_eigen)
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+
+  set(name newton_custom_types_compile_only)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 endif()
 
 # -----------------------------
@@ -26,7 +30,13 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(name gaussnewton_normaleqs_problem9_eigen)
   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 
+  set(name gaussnewton_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
   set(name levmar_normaleqs_problem9_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name levmar_normaleqs_custom_types_compile_only)
   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 endif()
 
@@ -35,6 +45,9 @@ endif()
 # -----------------------------
 if (PRESSIO_ENABLE_TPL_EIGEN)
   set(name weighted_gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name weighted_gaussnewton_normaleqs_custom_types_compile_only)
   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 endif()
 

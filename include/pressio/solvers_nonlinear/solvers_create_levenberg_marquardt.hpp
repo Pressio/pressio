@@ -88,6 +88,7 @@ template<class SystemType, class LinearSolverType>
 auto create_levenberg_marquardt_solver(const SystemType & system,
 				       LinearSolverType && linSolver)
 {
+
   using scalar_t   = nonlinearsolvers::scalar_of_t<SystemType>;
   using state_t    = typename SystemType::state_type;
   using r_t        = typename SystemType::residual_type;
