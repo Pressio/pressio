@@ -53,21 +53,14 @@
 
 namespace pressio{ namespace ode{
 
-#if not defined PRESSIO_ENABLE_CXX20
-template<
-  class SystemType,
-  mpl::enable_if_t<
-    RealValuedOdeSystemFusingRhsAndJacobian<mpl::remove_cvref_t<SystemType>>::value,
-    int > = 0
-  >
-#else
+#if defined PRESSIO_ENABLE_CXX20
 template<class SystemType>
-     requires RealValuedOdeSystemFusingRhsAndJacobian<mpl::remove_cvref_t<SystemType>>
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank == 1)
+  requires RealValuedOdeSystemFusingRhsAndJacobian<mpl::remove_cvref_t<SystemType>>
+  && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank    == 1)
+  && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank      == 1)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::jacobian_type>::rank == 2)
-  && requires(      typename mpl::remove_cvref_t<SystemType>::state_type & s,
-	            typename mpl::remove_cvref_t<SystemType>::rhs_type & r,
+  && requires(      typename mpl::remove_cvref_t<SystemType>::state_type    & s,
+	            typename mpl::remove_cvref_t<SystemType>::rhs_type      & r,
 	            typename mpl::remove_cvref_t<SystemType>::jacobian_type & J,
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s1,
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s2,
@@ -85,8 +78,15 @@ template<class SystemType>
     { ::pressio::ops::scale(J, a) };
     { ::pressio::ops::add_to_diagonal(J, a) };
   }
+#else
+template<
+  class SystemType,
+  mpl::enable_if_t<
+    RealValuedOdeSystemFusingRhsAndJacobian<mpl::remove_cvref_t<SystemType>>::value,
+    int > = 0
+  >
 #endif
-auto create_implicit_stepper(StepScheme name,
+auto create_implicit_stepper(StepScheme schemeName,                     // (1)
 			     SystemType && system)
 {
 
@@ -105,28 +105,21 @@ auto create_implicit_stepper(StepScheme name,
     ind_var_type, state_type, residual_type,
     jacobian_type, policy_type>;
   return impl::create_implicit_stepper_impl<
-    impl_type>(name, policy_type(std::forward<SystemType>(system)));
+    impl_type>(schemeName, policy_type(std::forward<SystemType>(system)));
 }
 
 
 
-#if not defined PRESSIO_ENABLE_CXX20
-template<
-  class SystemType,
-  mpl::enable_if_t<
-    RealValuedCompleteOdeSystem<mpl::remove_cvref_t<SystemType>>::value,
-    int > = 0
-  >
-#else
+#if defined PRESSIO_ENABLE_CXX20
 template<class SystemType>
-     requires RealValuedCompleteOdeSystem<mpl::remove_cvref_t<SystemType>>
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank == 1)
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::jacobian_type>::rank == 2)
+  requires RealValuedCompleteOdeSystem<mpl::remove_cvref_t<SystemType>>
+  && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank       == 1)
+  && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank         == 1)
+  && (Traits<typename mpl::remove_cvref_t<SystemType>::jacobian_type>::rank    == 2)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::mass_matrix_type>::rank == 2)
-  && requires(      typename mpl::remove_cvref_t<SystemType>::state_type & s,
-	            typename mpl::remove_cvref_t<SystemType>::rhs_type & r,
-	            typename mpl::remove_cvref_t<SystemType>::jacobian_type & J,
+  && requires(      typename mpl::remove_cvref_t<SystemType>::state_type       & s,
+	            typename mpl::remove_cvref_t<SystemType>::rhs_type         & r,
+	            typename mpl::remove_cvref_t<SystemType>::jacobian_type    & J,
 	      const typename mpl::remove_cvref_t<SystemType>::mass_matrix_type & M,
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s1,
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s2,
@@ -146,8 +139,15 @@ template<class SystemType>
     { ::pressio::ops::update(r, a, r1, b) };
     { ::pressio::ops::update(J, a, M, b)  };
   }
+#else
+template<
+  class SystemType,
+  mpl::enable_if_t<
+    RealValuedCompleteOdeSystem<mpl::remove_cvref_t<SystemType>>::value,
+    int > = 0
+  >
 #endif
-auto create_implicit_stepper(StepScheme name,
+auto create_implicit_stepper(StepScheme schemeName,                     // (2)
 			     SystemType && system)
 {
 
@@ -168,7 +168,7 @@ auto create_implicit_stepper(StepScheme name,
     ind_var_type, state_type, residual_type,
     jacobian_type, policy_type>;
   return impl::create_implicit_stepper_impl<
-    impl_type>(name, policy_type(std::forward<SystemType>(system)));
+    impl_type>(schemeName, policy_type(std::forward<SystemType>(system)));
 }
 
 
@@ -186,7 +186,7 @@ requires ::pressio::ode::ImplicitResidualJacobianPolicy<
   mpl::remove_cvref_t<ResidualJacobianPolicyType>
   >
 #endif
-auto create_implicit_stepper(StepScheme name,
+auto create_implicit_stepper(StepScheme schemeName,
 			     ResidualJacobianPolicyType && policy)
 {
 
@@ -201,7 +201,7 @@ auto create_implicit_stepper(StepScheme name,
     jacobian_type, ResidualJacobianPolicyType>;
 
   return impl::create_implicit_stepper_impl<
-    impl_type>(name, std::forward<ResidualJacobianPolicyType>(policy));
+    impl_type>(schemeName, std::forward<ResidualJacobianPolicyType>(policy));
 }
 
 //
@@ -231,8 +231,8 @@ auto create_cranknicolson_stepper(Args && ... args){
 //
 template<int TotalNumberOfDesiredStates, class SystemType>
 #if defined PRESSIO_ENABLE_CXX20
-     requires RealValuedFullyDiscreteSystemWithJacobian<
-          mpl::remove_cvref_t<SystemType>, TotalNumberOfDesiredStates>
+  requires RealValuedFullyDiscreteSystemWithJacobian<
+     mpl::remove_cvref_t<SystemType>, TotalNumberOfDesiredStates>
   && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::discrete_residual_type>::rank == 1)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::discrete_jacobian_type>::rank == 2)

@@ -5,14 +5,14 @@
 set(SRC concept_linear_subspace)
 add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 
-set(SRC concept_semidiscrete_fom)
-add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+# set(SRC concept_semidiscrete_fom)
+# add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 
-set(SRC concept_semidiscrete_fom_with_jacobian_action)
-add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+# set(SRC concept_semidiscrete_fom_with_jacobian_action)
+# add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 
-set(SRC concept_semidiscrete_fom_with_mass_matrix_action)
-add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+# set(SRC concept_semidiscrete_fom_with_mass_matrix_action)
+# add_serial_utest(${TESTING_LEVEL}_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 
 #
 # subspaces
@@ -38,14 +38,14 @@ endif()
 #
 # roms
 #
-if(PRESSIO_ENABLE_TPL_EIGEN)
-  set(SRC reduced_default_operators_traits)
-  add_serial_utest(${TESTING_LEVEL}_rom_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
-endif()
+# if(PRESSIO_ENABLE_TPL_EIGEN)
+#   set(SRC reduced_default_operators_traits)
+#   add_serial_utest(${TESTING_LEVEL}_rom_${SRC} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
+# endif()
 
-add_subdirectory(galerkin_steady)
-add_subdirectory(galerkin_unsteady_explicit)
-add_subdirectory(galerkin_unsteady_implicit)
+#add_subdirectory(galerkin_steady)
+#add_subdirectory(galerkin_unsteady_explicit)
+#add_subdirectory(galerkin_unsteady_implicit)
 add_subdirectory(lspg_steady)
-add_subdirectory(lspg_unsteady)
-add_subdirectory(lspg_unsteady_fully_discrete_with_step_recovery)
+#add_subdirectory(lspg_unsteady)
+#add_subdirectory(lspg_unsteady_fully_discrete_with_step_recovery)

@@ -175,6 +175,8 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    :maxdepth: 1
    :hidden:
 
+   ./components/rom
+   ./components/ode
    ./components/nonlinsolvers
    ./components/linsolvers
    ./components/qr

@@ -2,8 +2,6 @@
 #ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
 #define ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
 
-#include "./lspg_nonop_preconditioner.hpp"
-
 namespace pressio{ namespace rom{ namespace impl{
 
 /*
@@ -19,7 +17,7 @@ template <
   class TrialSubspaceType,
   class FomSystemType,
   class MaskerType,
-  class PreconditionerType = NoOpPreconditionerSteadyLspg
+  class PossiblyRefWrapperOperatorScalerType
   >
 class LspgSteadyMaskedSystem
 {
@@ -45,37 +43,20 @@ public:
   using residual_type = masked_fom_residual_type;
   using jacobian_type = masked_fom_jac_action_result_type;
 
-  template<
-    class _PreconditionerType = PreconditionerType,
-    mpl::enable_if_t< std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
-    >
-  LspgSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
-			 const FomSystemType & fomSystem,
-			 const MaskerType & masker)
-    : trialSubspace_(trialSubspace),
-      fomSystem_(fomSystem),
-      fomState_(trialSubspace.createFullState()),
-      masker_(masker),
-      unMaskedFomResidual_(fomSystem.createResidual()),
-      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
-      prec_{}
-  {}
-
-  template<
-    class _PreconditionerType = PreconditionerType,
-    mpl::enable_if_t< !std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
-    >
+  // here _RawScalerType must be a template because it is the raw scaler type
+  // which can be forwarded to the reference wrapper potentially
+  template<class _RawScalerType>
   LspgSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
 			 const FomSystemType & fomSystem,
 			 const MaskerType & masker,
-			 const _PreconditionerType & precIn)
+			 _RawScalerType && scaler)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
       unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
-      prec_(precIn)
+      scaler_(std::forward<_RawScalerType>(scaler))
   {}
 
 public:
@@ -95,24 +76,29 @@ public:
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & lspgResidual,
-			   jacobian_type & lspgJacobian,
-			   bool computeJacobian) const
+			   std::optional<jacobian_type *> lspgJacobian) const
   {
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    fomSystem_.get().residualAndJacobianAction(fomState_,
-					       unMaskedFomResidual_,
-					       phi, unMaskedFomJacAction_,
-					       computeJacobian);
-    // do masking
-    masker_(unMaskedFomResidual_, lspgResidual);
-    if (computeJacobian){
-      masker_(unMaskedFomJacAction_, lspgJacobian);
+    if (lspgJacobian){
+      auto ja = std::optional<unmasked_fom_jac_action_result_type*>(&unMaskedFomJacAction_);
+      fomSystem_.get().residualAndJacobianAction(fomState_,
+						 unMaskedFomResidual_,
+						 phi, ja);
+    }else{
+      fomSystem_.get().residualAndJacobianAction(fomState_,
+						 unMaskedFomResidual_,
+						 phi, {});
     }
 
-    // apply preconditioner
-    prec_(fomState_, lspgResidual, lspgJacobian);
+    // do masking
+    masker_(unMaskedFomResidual_, lspgResidual);
+    if (lspgJacobian){
+      masker_(unMaskedFomJacAction_, *lspgJacobian.value());
+    }
+
+    scaler_(fomState_, lspgResidual, lspgJacobian);
   }
 
 protected:
@@ -122,12 +108,7 @@ protected:
   std::reference_wrapper<const MaskerType> masker_;
   mutable unmasked_fom_residual_type unMaskedFomResidual_;
   mutable unmasked_fom_jac_action_result_type unMaskedFomJacAction_;
-
-  std::conditional_t<
-    std::is_same<PreconditionerType, NoOpPreconditionerSteadyLspg>::value,
-    const NoOpPreconditionerSteadyLspg,
-    std::reference_wrapper<const PreconditionerType>
-    > prec_;
+  PossiblyRefWrapperOperatorScalerType scaler_;
 };
 
 }}} // end pressio::rom::impl

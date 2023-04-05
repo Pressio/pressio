@@ -85,5 +85,5 @@ concept StepSizePolicyWithReductionScheme =
     A(stepNumber, startAt, dt, minDt, scalingFactor);
   };
 
-}}
+}}// end namespace pressio::ode
 #endif

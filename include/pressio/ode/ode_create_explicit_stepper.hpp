@@ -56,16 +56,9 @@ namespace pressio{ namespace ode{
 //
 // basic, no mass matrix
 //
-#if not defined PRESSIO_ENABLE_CXX20
-template<
-  class SystemType,
-  mpl::enable_if_t<
-    RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>::value,
-    int > = 0
-  >
-#else
+#if defined PRESSIO_ENABLE_CXX20
 template<class SystemType>
-     requires RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>
+  requires RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>
   && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank == 1)
   && requires(      typename mpl::remove_cvref_t<SystemType>::state_type & s1,
@@ -82,8 +75,15 @@ template<class SystemType>
     { ::pressio::ops::update(s1, alpha, f1, alpha, f2, alpha) };
     { ::pressio::ops::update(s1, alpha, f1, alpha, f2, alpha, f3, alpha, f4, alpha) };
   }
+#else
+template<
+  class SystemType,
+  mpl::enable_if_t<
+    RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>::value,
+    int > = 0
+  >
 #endif
-auto create_explicit_stepper(StepScheme name,                     // (1)
+auto create_explicit_stepper(StepScheme schemeName,                     // (1)
 			     SystemType && odeSystem)
 {
 
@@ -105,22 +105,15 @@ auto create_explicit_stepper(StepScheme name,                     // (1)
   using impl_type = impl::ExplicitStepperNoMassMatrixImpl<
     state_type, ind_var_type, SystemType, rhs_type>;
   return impl::create_explicit_stepper<impl_type>
-    (name, std::forward<SystemType>(odeSystem));
+    (schemeName, std::forward<SystemType>(odeSystem));
 }
 
 //
 // WITH mass matrix
 //
-#if not defined PRESSIO_ENABLE_CXX20
-template<
-  class SystemType,
-  mpl::enable_if_t<
-    OdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>::value,
-    int > = 0
-  >
-#else
+#if defined PRESSIO_ENABLE_CXX20
 template<class SystemType>
-     requires OdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>
+  requires RealValuedOdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>
   && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank == 1)
   && (Traits<typename mpl::remove_cvref_t<SystemType>::mass_matrix_type>::rank == 2)
@@ -136,8 +129,15 @@ template<class SystemType>
     { ::pressio::ops::update(s1, alpha, s2, alpha, s3, alpha) };
     { ::pressio::ops::update(s1, alpha, s2, alpha, s3, alpha, s4, alpha, s5, alpha) };
   }
+#else
+template<
+  class SystemType,
+  mpl::enable_if_t<
+    RealValuedOdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>::value,
+    int > = 0
+  >
 #endif
-auto create_explicit_stepper(StepScheme name,                     // (2)
+auto create_explicit_stepper(StepScheme schemeName,                     // (2)
 			     SystemType && odeSystem)
 {
 
@@ -150,11 +150,11 @@ auto create_explicit_stepper(StepScheme name,                     // (2)
   using impl_type = impl::ExplicitStepperWithMassMatrixImpl<
     state_type, ind_var_type, SystemType, rhs_type>;
   return impl::create_explicit_stepper<impl_type>
-    (name, std::forward<SystemType>(odeSystem));
+    (schemeName, std::forward<SystemType>(odeSystem));
 }
 
 //
-// auxiliary functions that spell out scheme in the name
+// auxiliary scheme-specific functions
 //
 template<class ...Args>
 auto create_forward_euler_stepper(Args && ...args){

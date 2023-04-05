@@ -60,21 +60,19 @@ namespace pressio{ namespace ode{
 // const dt
 //
 template<
-  class StepperType,
-  class StateType,
-  class IndVarType
-  >
+  class StepperType, class StateType, class IndVarType
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t< Steppable<StepperType>::value >
-#else
-  requires Steppable<StepperType>
-  void
+  , mpl::enable_if_t< Steppable<StepperType>::value, int = 0 >
 #endif
-advance_n_steps(StepperType & stepper,
-		StateType & state,
-		const IndVarType & startVal,
-		const IndVarType & stepSize,
-		StepCount numSteps)
+  >
+#if defined PRESSIO_ENABLE_CXX20
+  requires Steppable<StepperType>
+#endif
+void advance_n_steps(StepperType & stepper,
+		     StateType & state,
+		     const IndVarType & startVal,
+		     const IndVarType & stepSize,
+		     StepCount numSteps)
 {
 
   impl::mandate_on_ind_var_and_state_types(stepper, state, startVal);

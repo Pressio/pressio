@@ -97,5 +97,6 @@
 
 #include "./utils/logger/utils_logger_enums.hpp"
 #include "./utils/logger/utils_logger.hpp"
+#include "./utils/utils_noop.hpp"
 
 #endif
