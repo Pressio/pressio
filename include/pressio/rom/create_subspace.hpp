@@ -12,6 +12,10 @@ template<
   class BasisMatrixType,
   class FullStateType
 >
+#ifdef PRESSIO_ENABLE_CXX20
+requires ReducedState<ReducedStateType>
+&& VectorSubspace< LinearSubspace<mpl::remove_cvref_t<BasisMatrixType>> >
+#endif
 auto create_trial_column_subspace(BasisMatrixType && basisMatrix,
 				  FullStateType && offset,
 				  bool isAffine)
@@ -19,7 +23,7 @@ auto create_trial_column_subspace(BasisMatrixType && basisMatrix,
   using basis_matrix_type = mpl::remove_cvref_t<BasisMatrixType>;
   using full_state_type = mpl::remove_cvref_t<FullStateType>;
 
-  // static_assert(ValidReducedState<ReducedStateType>::value,
+  // static_assert(ReducedState<ReducedStateType>::value,
   // 		"Invalid type for the reduced state");
   // static_assert( ::pressio::mpl::all_of_t<
   // 		 std::is_copy_constructible, full_state_type, basis_matrix_type>::value,
