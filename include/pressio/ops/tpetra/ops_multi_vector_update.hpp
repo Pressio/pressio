@@ -56,27 +56,54 @@ namespace pressio{ namespace ops{
 // where MV is an tpetra multivector wrapper
 //----------------------------------------------------------------------
 
-template<typename T, class T2, typename a_t, class b_t>
+template<typename T, typename T1, typename a_t, typename b_t>
 ::pressio::mpl::enable_if_t<
-  is_multi_vector_tpetra<T>::value
-  && is_multi_vector_tpetra<T2>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_tpetra<T>::value
+  && ::pressio::is_multi_vector_tpetra<T1>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<a_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & mv, const a_t &a,
-       const T2 & mv1, const b_t &b)
+       const T1 & mv1, const b_t &b)
 {
-  mv.update(b, mv1, a);
+  assert(::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0));
+  assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
+
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  const scalar_t a_{a};
+  const scalar_t b_{b};
+
+  mv.update(b_, mv1, a_);
 }
 
-template<typename T, class T2, typename scalar_t>
+template<typename T, typename T1, typename b_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_multi_vector_tpetra<T>::value
-  && ::pressio::is_multi_vector_tpetra<T2>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
+  && ::pressio::is_multi_vector_tpetra<T>::value
+  && ::pressio::is_multi_vector_tpetra<T1>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<b_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & mv, const T & mv1, const scalar_t & b)
+update(T & mv, const T1 & mv1, const b_t & b)
 {
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  mv.update(b, mv1, zero);
+  ::pressio::ops::update(mv, zero, mv1, b);
 }
 
-}}//end namespace pressio::ops
+}}//end namespace ::pressio::ops
 #endif  // OPS_TPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_

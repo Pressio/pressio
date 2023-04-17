@@ -53,11 +53,14 @@ namespace pressio{ namespace ops{
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
+  // TPL/container specific
   ::pressio::is_vector_tpetra_block<T>::value or
   ::pressio::is_multi_vector_tpetra_block<T>::value
   >
 deep_copy(T & dest, const T & src)
 {
+  assert((matching_extents<T, T>::compare(dest, src)));
+
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   dest.update(::pressio::utils::Constants<sc_t>::one(),
 	      src,

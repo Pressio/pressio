@@ -11,8 +11,9 @@ TEST(ops_eigen, subspan_extent)
   std::pair<int,int> c(2,5);
 
   auto ex = pressio::subspan(A,r,c);
-  ASSERT_TRUE(pressio::ops::extent(ex,0)==2);
-  ASSERT_TRUE(pressio::ops::extent(ex,1)==3);
+  ASSERT_EQ(2, pressio::ops::extent(ex, 0));
+  ASSERT_EQ(3, pressio::ops::extent(ex, 1));
+  ASSERT_EQ(1, pressio::ops::extent(ex, 2)); // check extent over the rank
 }
 
 TEST(ops_eigen, subspan_scale)
@@ -121,4 +122,22 @@ TEST(ops_eigen, subspan_fill)
   ASSERT_DOUBLE_EQ(a(3,2),1.);
   ASSERT_DOUBLE_EQ(a(3,3),1.);
   ASSERT_DOUBLE_EQ(a(3,4),1.);
+}
+
+TEST(ops_eigen, subspan_min_max)
+{
+  using T = Eigen::MatrixXd;
+  T a(5, 5);
+  for (int i=0; i<5; ++i){
+    for (int j=0; j<5; ++j){
+      a(i, j)= (double)(i * 5 + j);
+    }
+  }
+
+  std::pair<int,int> r(1,3);
+  std::pair<int,int> c(2,4);
+  auto sp = pressio::subspan(a,r,c);
+
+  ASSERT_DOUBLE_EQ(pressio::ops::min(sp), 7.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(sp), 13.);
 }

@@ -107,8 +107,7 @@ product(::pressio::nontranspose /*unused*/,
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
   if (alpha_ == zero) {
-    if (has_beta) { ::pressio::ops::scale(y_n, beta_); }
-    else { ::pressio::ops::set_zero(y_n); }
+    ::pressio::ops::scale(y_n, beta_);
   } else {
     if (has_beta) { y_n = beta_ * y_n + alpha_ * A_n * x_n; }
     else { y_n = alpha_ * A_n * x_n; }
@@ -201,8 +200,7 @@ product(::pressio::transpose /*unused*/,
   const auto & A_n = impl::get_native(A);
   const auto & x_n = impl::get_native(x);
   if (alpha_ == zero) {
-    if (has_beta) { ::pressio::ops::scale(y_n, beta_); }
-    else { ::pressio::ops::set_zero(y_n); }
+    ::pressio::ops::scale(y_n, beta_);
   } else {
     if (has_beta) { y_n = beta_ * y_n + alpha_ * A_n.transpose() * x_n; }
     else { y_n = alpha_ * A_n.transpose() * x_n; }

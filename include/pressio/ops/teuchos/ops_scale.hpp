@@ -53,13 +53,26 @@ namespace pressio{ namespace ops{
 
 template<class T, class ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_vector_teuchos<T>::value
+  // rank-1 update common constraints
+    (::pressio::Traits<T>::rank == 1
+  || ::pressio::Traits<T>::rank == 2)
+  // TPL/container specific
+  && ::pressio::is_dense_vector_teuchos<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
 scale(T & objectIn, ScalarType value)
 {
-  const typename ::pressio::Traits<T>::scalar_type v(value);
-  objectIn *= v;
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t v{value};
+  sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
+  if (v == zero) {
+    ::pressio::ops::set_zero(objectIn);
+  } else {
+    objectIn *= v;
+  }
 }
 
 }} // namespace pressio::ops

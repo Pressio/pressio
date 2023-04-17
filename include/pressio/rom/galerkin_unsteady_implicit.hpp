@@ -9,6 +9,7 @@
 #include "impl/galerkin_unsteady_system_hypred_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_masked_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_fully_discrete_fom.hpp"
+#include "impl/galerkin_unsteady_system_hypred_fully_discrete_fom.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 

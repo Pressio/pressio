@@ -3,6 +3,7 @@
 #include "pressio/ops.hpp"
 
 using T = Eigen::VectorXd;
+using V_t = Eigen::Matrix<double,3,1>;
 
 TEST(ops_eigen, vector_clone)
 {
@@ -13,16 +14,20 @@ TEST(ops_eigen, vector_clone)
 
   auto b = pressio::ops::clone(a);
   ASSERT_EQ(b.size(), 6);
-  ASSERT_FALSE( b.data()==a.data());
   for (int i=0; i<6; ++i){
     ASSERT_DOUBLE_EQ(b(i),a(i));
   }
+
+  // check if b.data() == ex.data()
+  b(0) = a(0) + 1.;
+  ASSERT_FALSE(b(0) == a(0));
 }
 
 TEST(ops_eigen, vector_extent)
 {
   T x(6);
   ASSERT_TRUE(pressio::ops::extent(x,0)== 6);
+  ASSERT_TRUE(pressio::ops::extent(x,1)== 1); // check extent over the rank
 }
 
 TEST(ops_eigen, vector_abs)
@@ -50,14 +55,22 @@ TEST(ops_eigen, vector_abs)
 
 TEST(ops_eigen, vector_scale)
 {
-  T a(6);
-  a.setConstant(1.);
+  const size_t n = 6;
+  T a(n);
+  a.setConstant(2.);
 
   pressio::ops::scale(a, 3.);
-  for (int i=0; i<6; ++i){
-    ASSERT_DOUBLE_EQ(a(i),3.);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(a(i), 6.);
+  }
+
+  a.setConstant(std::nan("0"));
+  pressio::ops::scale(a, 0.);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(a(i), 0.);
   }
 }
+
 TEST(ops_eigen, vector_setzero)
 {
   T a(6);
@@ -210,7 +223,6 @@ TEST(ops_eigen, vector_absPowNeg)
 
 TEST(ops_eigen, vector_update1)
 {
-  using V_t = Eigen::Matrix<double,3,1>;
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
 
@@ -227,7 +239,6 @@ TEST(ops_eigen, vector_update1)
 
 TEST(ops_eigen, vector_update2)
 {
-  using V_t = Eigen::Matrix<double,3,1>;
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
   V_t b; b << 1.,2.,3.;
@@ -245,7 +256,6 @@ TEST(ops_eigen, vector_update2)
 
 TEST(ops_eigen, vector_update3)
 {
-  using V_t = Eigen::Matrix<double,3,1>;
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
   V_t b; b << 1.,2.,3.;
@@ -264,7 +274,6 @@ TEST(ops_eigen, vector_update3)
 
 TEST(ops_eigen, vector_update4)
 {
-  using V_t = Eigen::Matrix<double,3,1>;
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
   V_t b; b << 1.,2.,3.;
@@ -282,9 +291,113 @@ TEST(ops_eigen, vector_update4)
   EXPECT_DOUBLE_EQ( v(2), 12.0);
 }
 
+TEST(ops_eigen, vector_update_nan1)
+{
+  V_t v, a, vecOfNans;
+  pressio::ops::fill(v, 1.);
+  pressio::ops::fill(a, 1.);
+  pressio::ops::fill(vecOfNans, std::nan("0"));
+
+  // Note: this test covers just enough nan/non-nan combinations
+  // to trigger and verify all execution paths in our update()
+  // implementations, which include anti-NaN-injection variants
+  pressio::ops::update(v, 1., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 1.0);
+
+  pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 1.0);
+  pressio::ops::update(v, 1., a, 1., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 2.);
+
+  pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 2.0);
+  pressio::ops::update(v, 1., a, 1., vecOfNans, 0., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 4.);
+  pressio::ops::update(v, 1., a, 1., a, 1., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 6.);
+
+  pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 6.0);
+  pressio::ops::update(v, 1., a, 1., vecOfNans, 0., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 9.);
+  pressio::ops::update(v, 1., a, 1., a, 1., vecOfNans, 0., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 12.);
+  pressio::ops::update(v, 1., a, 1., a, 1., a, 1., vecOfNans, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 15.);
+}
+
+// injects NaN through the updated vector
+TEST(ops_eigen, vector_update_nan2)
+{
+  const auto nan = std::nan("0");
+  V_t v, a;
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 1.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 0.);
+  EXPECT_DOUBLE_EQ(v(0), 0.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 2.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 3.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1., a, 1., a, 1.);
+  EXPECT_DOUBLE_EQ(v(0), 4.0);
+}
+
+TEST(ops_eigen, vector_update_expr_span)
+{
+  T v0(5);
+  T a0(5);
+  auto v = pressio::span(v0, 1, 3);
+  auto a = pressio::span(a0, 1, 3);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  EXPECT_DOUBLE_EQ(v(0), 30.0);
+  EXPECT_DOUBLE_EQ(v(1), 30.0);
+  EXPECT_DOUBLE_EQ(v(2), 30.0);
+}
+
+TEST(ops_eigen, vector_update_expr_diag)
+{
+  Eigen::Matrix<double, 3, 3> v0;
+  Eigen::Matrix<double, 3, 3> a0;
+  auto v = pressio::diag(v0);
+  auto a = pressio::diag(a0);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  EXPECT_DOUBLE_EQ(v(0), 30.0);
+  EXPECT_DOUBLE_EQ(v(1), 30.0);
+  EXPECT_DOUBLE_EQ(v(2), 30.0);
+}
+
 TEST(ops_eigen, vector_elementwiseMultiply)
 {
-  using V_t = Eigen::Matrix<double,3,1>;
   V_t y; y << 1.,2.,3.;
   V_t x; x << 2.,3.,4.;
   V_t z; z << 3.,4.,5.;

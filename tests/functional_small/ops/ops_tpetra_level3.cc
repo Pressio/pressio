@@ -26,14 +26,19 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, mv_T_mv_storein_eigen_C)
       pressio::nontranspose(),
       1.5, A, B, 1.0, C);
 
+  auto C2 = pressio::ops::product<Eigen::MatrixXd>(
+        pressio::transpose(), pressio::nontranspose(), 1.5, A, B);
+
   if(rank_==0){
     std::cout << C << std::endl;
+    std::cout << C2 << std::endl;
   }
 
   for (auto i=0; i<C.rows(); i++){
     for (auto j=0; j<C.cols(); j++){
       const auto gold = ac[i]*A.getGlobalLength()*1.5*bc[j];
       EXPECT_NEAR( C(i,j), gold, 1e-12);
+      EXPECT_NEAR( C2(i,j), gold, 1e-12);
     }
   }
 }

@@ -56,13 +56,28 @@ namespace pressio{ namespace ops{
    coefficients to be convertible to scalar types of the vector/matrix operand */
 template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
-    (::pressio::is_native_container_eigen<T>::value
+  // rank-1 update common constraints
+    (::pressio::Traits<T>::rank == 1
+  || ::pressio::Traits<T>::rank == 2)
+  // TPL/container specific
+  && (::pressio::is_native_container_eigen<T>::value
   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
 scale(T & o, const ScalarType & value)
 {
-  impl::get_native(o) *= value;
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t value_{value};
+  if (value_ == zero) {
+    ::pressio::ops::set_zero(o);
+  } else {
+    auto && on = impl::get_native(o);
+    on *= value_;
+  }
 }
 
 }}//end namespace pressio::ops

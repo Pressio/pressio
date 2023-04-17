@@ -17,8 +17,7 @@ API
 ..
    API
    ---
-
-   .. code-block:: cpp
+    .. code-block:: cpp
 
      namespace pressio { namespace rom{ namespace galerkin{
 

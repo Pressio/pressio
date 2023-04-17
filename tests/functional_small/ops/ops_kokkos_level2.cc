@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
+#include "ops_shared_level2.hpp"
 
 //-------------------------------------------
 // Test implementation and utilities
@@ -165,24 +166,6 @@ private:
 };
 
 using ops_kokkos = kokkosFixture; // alias for nicer test naming
-
-// Note: all structures must be accessible from host
-template <typename TransMode, typename AType, typename XType, typename YType,typename ScalarType>
-void vanilla_gemv(TransMode /* trans */, ScalarType alpha, AType A, XType x, ScalarType beta, YType y) {
-  const bool trans = std::is_same<TransMode, ::pressio::transpose>::value;
-  const auto y_size = ::pressio::ops::extent(A, trans ? 1 : 0);
-  const auto x_size = ::pressio::ops::extent(A, trans ? 0 : 1);
-  if (beta == 0.) ::pressio::ops::set_zero(y);
-  else ::pressio::ops::scale(y, beta);
-  if (alpha != 0.) {
-    for (size_t i = 0; i < y_size; ++i) {
-      for (size_t j = 0; j < x_size; ++j) {
-        const auto a = trans ? A(j, i) : A(i, j);
-        y(i) += a * x(j);
-      }
-    }
-  }
-}
 
 template <typename TransMode, typename AType, typename XType, typename YType, typename ScalarType>
 void test_impl(TransMode trans, ScalarType alpha, AType A, XType x, ScalarType beta, YType y) {

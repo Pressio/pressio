@@ -110,6 +110,17 @@ using mat_t = Kokkos::View<double**>;
   EXPECT_DOUBLE_EQ(myR_h(2,0), 12.0); \
   EXPECT_DOUBLE_EQ(myR_h(2,1), 7.0); \
   EXPECT_DOUBLE_EQ(myR_h(2,2), 18.0); \
+  auto myR1 = pressio::ops::product<mat_t>(pressio::transpose(), pressio::nontranspose(), alpha, M); \
+  auto myR1_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR1); \
+  EXPECT_DOUBLE_EQ(myR1_h(0,0), 9.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(0,1), 6.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(0,2), 12.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(1,0), 6.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(1,1), 5.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(1,2), 7.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(2,0), 12.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(2,1), 7.0); \
+  EXPECT_DOUBLE_EQ(myR1_h(2,2), 18.0); \
 
 namespace {
 template<class T>

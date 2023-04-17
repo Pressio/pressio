@@ -53,8 +53,12 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  (::pressio::is_native_container_eigen<T>::value
-  || ::pressio::is_expression_acting_on_eigen<T>::value),
+  // TPL/container specific
+    (::pressio::is_native_container_eigen<T>::value
+  || ::pressio::is_expression_acting_on_eigen<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   decltype( impl::get_native(std::declval<const T>()).maxCoeff() )
   >
 max(const T & obj)
@@ -64,8 +68,12 @@ max(const T & obj)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  (::pressio::is_native_container_eigen<T>::value
-  || ::pressio::is_expression_acting_on_eigen<T>::value),
+  // TPL/container specific
+    (::pressio::is_native_container_eigen<T>::value
+  || ::pressio::is_expression_acting_on_eigen<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   decltype( impl::get_native(std::declval<const T>()).minCoeff() )
   >
 min(const T & obj)

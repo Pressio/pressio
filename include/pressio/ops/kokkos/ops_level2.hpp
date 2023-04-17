@@ -105,11 +105,7 @@ product(::pressio::nontranspose /*unused*/,
   // so we can use it here
   const auto zero = Kokkos::Details::ArithTraits<sc_t>::zero();
   if (static_cast<sc_t>(alpha_) == zero) {
-    if (beta_ == zero) {
-      ::pressio::ops::set_zero(y);
-    } else {
-      ::pressio::ops::scale(y, beta_);
-    }
+    ::pressio::ops::scale(y, beta_);
     return;
   }
 
@@ -166,11 +162,7 @@ product(::pressio::transpose /*unused*/,
   // so we can use it here
   const auto zero = Kokkos::Details::ArithTraits<sc_t>::zero();
   if (static_cast<sc_t>(alpha_) == zero) {
-    if (beta_ == zero) {
-      ::pressio::ops::set_zero(y);
-    } else {
-      ::pressio::ops::scale(y, beta_);
-    }
+    ::pressio::ops::scale(y, beta_);
     return;
   }
 
