@@ -54,6 +54,7 @@
 #include "./type_traits.hpp"
 #include "./expressions.hpp"
 #include "./ops.hpp"
+#include "./solvers_linear.hpp"
 
 #include "./solvers_nonlinear_concepts.hpp"
 #include "solvers_nonlinear/solvers_exceptions.hpp"

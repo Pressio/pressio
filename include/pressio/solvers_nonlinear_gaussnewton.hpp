@@ -55,6 +55,7 @@
 #include "./expressions.hpp"
 #include "./ops.hpp"
 #include "./qr.hpp"
+#include "./solvers_linear.hpp"
 
 #include "./solvers_nonlinear_concepts.hpp"
 #include "solvers_nonlinear/solvers_exceptions.hpp"
