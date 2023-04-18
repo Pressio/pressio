@@ -178,7 +178,7 @@ struct has_const_residualandjacobian_method_accept_state_result_return_void<
             (
               std::declval<StateType const &>(),
               std::declval<ResidualType &>(),
-              std::declval<JacobianType &>()
+	      std::declval<std::optional<JacobianType*>>()
             )
          )
       >::value

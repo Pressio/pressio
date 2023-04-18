@@ -139,52 +139,6 @@ struct System9{
 				   const state_type &        /*unused*/) const{}
 };
 
-// template<typename StateType, typename ResidualType>
-// class ResidualPolicy1
-// {
-// public:
-//   using independent_variable_type = double;
-//   using state_type = StateType;
-//   using residual_type = ResidualType;
-
-//   state_type createState() const{ return state_type(); }
-//   residual_type createResidual() const{ return residual_type(); }
-
-//   template <typename prev_states_type, class rhs_container>
-//   void operator()(pressio::ode::StepScheme          /*unused*/,
-// 		  const StateType &		    /*unused*/,
-// 		  const prev_states_type &	    /*unused*/,
-// 		  rhs_container &		    /*unused*/,
-// 		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
-// 		  ::pressio::ode::StepCount /*unused*/,
-// 		  const ::pressio::ode::StepSize<double> & /*unused*/,
-// 		  residual_type &		    /*unused*/) const
-//   {}
-// };
-
-// template<typename StateType, typename JacobianType>
-// class JacobianPolicy1
-// {
-// public:
-//   using independent_variable_type = double;
-//   using state_type = StateType;
-//   using jacobian_type = JacobianType;
-
-//   state_type createState() const{ return state_type(); }
-//   jacobian_type createJacobian()   const{ return jacobian_type(); }
-
-//   template <typename prev_states_type>
-//   void operator()(pressio::ode::StepScheme          /*unused*/,
-// 		  const StateType &		    /*unused*/,
-// 		  const prev_states_type &	    /*unused*/,
-// 		  const ::pressio::ode::StepEndAt<double> & /*unused*/,
-// 		  ::pressio::ode::StepCount /*unused*/,
-// 		  const ::pressio::ode::StepSize<double> & /*unused*/,
-// 		  jacobian_type &		    /*unused*/) const
-//   {}
-// };
-
-
 TEST(ode, concepts)
 {
   using namespace pressio::ode;
@@ -214,13 +168,17 @@ TEST(ode, concepts)
 
   static_assert(OdeSystem<System1>::value, "");
   static_assert(!CompleteOdeSystem<System1>::value, "");
+
   static_assert(!OdeSystem<System2>::value, "");
   static_assert(!CompleteOdeSystem<System2>::value, "");
+
   static_assert(!OdeSystem<System3>::value, "");
   static_assert(!CompleteOdeSystem<System3>::value, "");
+
   static_assert(OdeSystemFusingMassMatrixAndRhs<System4>::value, "");
-  static_assert(CompleteOdeSystem<System6>::value, "");
-  static_assert(CompleteOdeSystem<System7>::value, "");
+
+  static_assert( !CompleteOdeSystem<System6>::value, "");
+  static_assert( CompleteOdeSystem<System7>::value, "");
 
   static_assert(FullyDiscreteSystemWithJacobian<System9,  1>::value, "");
   static_assert(FullyDiscreteSystemWithJacobian<System9,  2>::value, "");

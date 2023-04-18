@@ -4,6 +4,7 @@
 
 #include <typeinfo>
 #include <optional>
+#include "solvers_tagbased_registry.hpp"
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -54,172 +55,6 @@ struct valid_state_for_least_squares<
 // ====================================================================
 
 namespace impl{
-
-template<class, class> struct TagBasedStaticRegistry;
-
-template<class ...Tags, class ...DataTypes>
-struct TagBasedStaticRegistry< std::tuple<Tags...>, std::tuple<DataTypes...> >
-{
-  std::tuple<DataTypes...> d_;
-
-  template<class ...CArgs>
-  TagBasedStaticRegistry(CArgs && ... cargs) : d_(std::forward<CArgs>(cargs)...){}
-
-  template<class TagToFind>
-  static constexpr bool contains(){
-    return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same, Tags...>::value)
-      < mpl::size<Tags...>::value;
-  }
-
-  template<class TagToFind, class T>
-  void set(T && o){
-    constexpr int i = mpl::variadic::find_if_binary_pred_t<
-      TagToFind, std::is_same, Tags...>::value;
-    std::get<i>(d_) = std::forward<T>(o);
-  }
-
-  template<class TagToFind>
-  auto & get(){
-    constexpr int i = mpl::variadic::find_if_binary_pred_t<
-      TagToFind, std::is_same, Tags...>::value;
-    return std::get<i>(d_);
-  }
-
-  template<class TagToFind>
-  const auto & get() const {
-    constexpr int i = mpl::variadic::find_if_binary_pred_t<
-      TagToFind, std::is_same, Tags...>::value;
-    return std::get<i>(d_);
-  }
-};
-
-template<class, class, class> struct TagBasedStaticRegistryExtension;
-
-template<class Extendable, class ...ETags, class ...EDataTypes>
-struct TagBasedStaticRegistryExtension<
-  Extendable, std::tuple<ETags...>, std::tuple<EDataTypes...>
-  >
-{
-  Extendable & reg_;
-  using extension_registry_type = TagBasedStaticRegistry<
-    std::tuple<ETags...>, std::tuple<EDataTypes...> >;
-  extension_registry_type newReg_;
-
-  template<class ...CArgs>
-  TagBasedStaticRegistryExtension(Extendable & reg, CArgs && ... cargs)
-    : reg_(reg), newReg_(std::forward<CArgs>(cargs)...){}
-
-  template<class TagToFind>
-  static constexpr bool contains(){
-    return Extendable::template contains<TagToFind>() ||
-      extension_registry_type::template contains<TagToFind>();
-  }
-
-  template<class TagToFind, class T>
-  void set(T && o){
-    if constexpr(Extendable::template contains<TagToFind>()){
-      reg_.template set<TagToFind>(std::forward<T>(o));
-    }
-    else{
-      newReg_.template set<TagToFind>(std::forward<T>(o));
-    }
-  }
-
-  template<class TagToFind>
-  auto & get(){
-    if constexpr(Extendable::template contains<TagToFind>()){
-      return reg_.template get<TagToFind>();
-    }
-    else{
-      return newReg_.template get<TagToFind>();
-    }
-  }
-
-  template<class TagToFind>
-  const auto & get() const {
-    if constexpr(Extendable::template contains<TagToFind>()){
-      return reg_.template get<TagToFind>();
-    }
-    else{
-      return newReg_.template get<TagToFind>();
-    }
-  }
-};
-
-template<
-  class Tag, class DataType,
-  class Extendable, class ...CArgs
-  >
-auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
-{
-  static_assert(!Extendable::template contains<Tag>(),
-		"Registry not extendable: already contains tag");
-
-  using ret_t = TagBasedStaticRegistryExtension<
-    Extendable, std::tuple<Tag>, std::tuple<DataType>
-    >;
-  return ret_t(reg, std::forward<CArgs>(cargs)...);
-}
-
-template<
-  class T1, class T2,
-  class D1, class D2,
-  class Extendable, class ...CArgs
-  >
-auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
-{
-  static_assert(!Extendable::template contains<T1>(),
-		"Registry not extendable: already contains tag");
-  static_assert(!Extendable::template contains<T2>(),
-		"Registry not extendable: already contains tag");
-
-  using ret_t = TagBasedStaticRegistryExtension<
-    Extendable, std::tuple<T1,T2>, std::tuple<D1,D2>
-    >;
-  return ret_t(reg, std::forward<CArgs>(cargs)...);
-}
-
-template<
-  class T1, class T2, class T3,
-  class D1, class D2, class D3,
-  class Extendable, class ...CArgs
-  >
-auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
-{
-  static_assert(!Extendable::template contains<T1>(),
-		"Registry not extendable: already contains tag");
-  static_assert(!Extendable::template contains<T2>(),
-		"Registry not extendable: already contains tag");
-  static_assert(!Extendable::template contains<T3>(),
-		"Registry not extendable: already contains tag");
-
-  using ret_t = TagBasedStaticRegistryExtension<
-    Extendable, std::tuple<T1,T2,T3>, std::tuple<D1,D2,D3>
-    >;
-  return ret_t(reg, std::forward<CArgs>(cargs)...);
-}
-
-template<
-  class T1, class T2, class T3, class T4,
-  class D1, class D2, class D3, class D4,
-  class Extendable, class ...CArgs
-  >
-auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... cargs)
-{
-  static_assert(!Extendable::template contains<T1>(),
-		"Registry not extendable: already contains tag");
-  static_assert(!Extendable::template contains<T2>(),
-		"Registry not extendable: already contains tag");
-  static_assert(!Extendable::template contains<T3>(),
-		"Registry not extendable: already contains tag");
-  static_assert(!Extendable::template contains<T4>(),
-		"Registry not extendable: already contains tag");
-
-  using ret_t = TagBasedStaticRegistryExtension<
-    Extendable, std::tuple<T1,T2,T3,T4>, std::tuple<D1,D2,D3,D4>
-    >;
-  return ret_t(reg, std::forward<CArgs>(cargs)...);
-}
 
 // this tag is inside the impl namespace because we do NOT want
 // to expose it outside, this is an impl detail
@@ -575,12 +410,12 @@ public:
 
 
 #ifdef PRESSIO_ENABLE_CXX20
-template<class RegistryType, class StateType, class SystemType>
-requires NonlinearSystemFusingResidualAndJacobian<SystemType>
+  template<class RegistryType, class StateType, class SystemType>
+  requires NonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
-template<
-  class RegistryType, class SystemType,
-  mpl::enable_if_t<NonlinearSystemFusingResidualAndJacobian<SystemType>::value, int> = 0
+  template<
+    class RegistryType, class StateType, class SystemType,
+    mpl::enable_if_t<NonlinearSystemFusingResidualAndJacobian<SystemType>::value, int> = 0
   >
 #endif
 void compute_residual(RegistryType & reg,
@@ -596,7 +431,7 @@ template<class RegistryType, class StateType, class SystemType>
 requires NonlinearSystem<SystemType>
 #else
 template<
-  class RegistryType, class SystemType,
+  class RegistryType, class StateType, class SystemType,
   mpl::enable_if_t< NonlinearSystem<SystemType>::value, int> = 0
   >
 #endif

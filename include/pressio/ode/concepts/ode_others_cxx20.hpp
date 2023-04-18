@@ -1,6 +1,6 @@
 
-#ifndef ODE_CONCEPTS_OTHERS_CXX20_HPP_
-#define ODE_CONCEPTS_OTHERS_CXX20_HPP_
+#ifndef ODE_CONCEPTS_OTHERS_HPP_
+#define ODE_CONCEPTS_OTHERS_HPP_
 
 namespace pressio{ namespace ode{
 

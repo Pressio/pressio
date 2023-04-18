@@ -62,10 +62,12 @@
 #include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_stencil_containers.hpp"
 
-#include "./ode/concepts/ode_system.hpp"
-#include "./ode/concepts/policy_residual_jacobian.hpp"
 #ifdef PRESSIO_ENABLE_CXX20
+#include "./ode/concepts/ode_system_cxx20.hpp"
 #include "./ode/concepts/ode_others_cxx20.hpp"
+#else
+#include "./ode/concepts/ode_system.hpp"
+#include "./ode/concepts/ode_others.hpp"
 #endif
 
 #endif

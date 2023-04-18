@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_const_create_discrete_time_residual_method_return_result.hpp
+// ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_states_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,84 @@
 //@HEADER
 */
 
-#ifndef ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
-#define ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+#ifndef ODE_CONCEPTS_PREDICATES_HPP_
+#define ODE_CONCEPTS_PREDICATES_HPP_
+
+#include <optional>
 
 namespace pressio{ namespace ode{
+
+template <class T, class StateType, class = void>
+struct has_const_create_state_method_return_result : std::false_type{};
+
+template <class T, class StateType>
+struct has_const_create_state_method_return_result<
+  T, StateType,
+  ::pressio::mpl::enable_if_t<
+    mpl::is_same<
+      StateType,
+      decltype(std::declval<T const>().createState())
+      >::value
+    >
+  > : std::true_type{};
+
+
+template <class T, class RhsType, class = void>
+struct has_const_create_rhs_method_return_result
+  : std::false_type{};
+
+template <class T, class RhsType>
+struct has_const_create_rhs_method_return_result<
+  T, RhsType,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<RhsType>::value and
+    mpl::is_same<
+      RhsType,
+      decltype(
+	       std::declval<T const>().createRhs()
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+template <class T, class MMType, class = void>
+struct has_const_create_mass_matrix_method_return_result
+  : std::false_type{};
+
+template <class T, class MMType>
+struct has_const_create_mass_matrix_method_return_result<
+  T, MMType,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<MMType>::value and
+    mpl::is_same<
+      MMType,
+      decltype(
+	       std::declval<T const>().createMassMatrix()
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+template <class T, class JacobianType, class = void>
+struct has_const_create_jacobian_method_return_result
+  : std::false_type{};
+
+template <class T, class JacobianType>
+struct has_const_create_jacobian_method_return_result<
+  T, JacobianType,
+  mpl::enable_if_t<
+    !std::is_void<JacobianType>::value and
+    std::is_same<
+      JacobianType,
+      decltype(
+         std::declval<T const>().createJacobian()
+         )
+      >::value
+    >
+  > : std::true_type{};
+
 
 template <class T, class ResultType, class = void>
 struct has_const_create_discrete_residual_method_return_result
@@ -70,5 +144,24 @@ struct has_const_create_discrete_residual_method_return_result<
     >
   > : std::true_type{};
 
-}} // namespace pressio::ode::predicates
-#endif  // ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_CREATE_DISCRETE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+
+template <class T, class JacobianType, class = void>
+struct has_const_create_discrete_jacobian_method_return_result
+  : std::false_type{};
+
+template <class T, class JacobianType>
+struct has_const_create_discrete_jacobian_method_return_result<
+  T, JacobianType,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<JacobianType>::value and
+    mpl::is_same<
+      JacobianType,
+      decltype(
+         std::declval<T const>().createDiscreteJacobian()
+         )
+      >::value
+    >
+  > : std::true_type{};  
+
+}}
+#endif  // ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
