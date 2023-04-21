@@ -336,10 +336,10 @@ template <class T, int n>
 struct scalar_of<
   T, n, mpl::enable_if_t<
           RealValuedOdeSystem<T>::value
-       //|| RealValuedOdeSystemFusingRhsAndJacobian<T>::value
-       // || RealValuedOdeSystemFusingMassMatrixAndRhs<T>::value
-       // || RealValuedCompleteOdeSystem<T>::value
-       // || RealValuedFullyDiscreteSystemWithJacobian<T, n>::value
+	  || RealValuedOdeSystemFusingRhsAndJacobian<T>::value
+	  || RealValuedOdeSystemFusingMassMatrixAndRhs<T>::value
+	  || RealValuedCompleteOdeSystem<T>::value
+	  || RealValuedFullyDiscreteSystemWithJacobian<T, n>::value
        > >
 {
   using type = scalar_trait_t< typename T::state_type >;

@@ -12,16 +12,26 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
+
 // -------------------------------------------------------------
 // default
 // -------------------------------------------------------------
-template<
-  class TrialSubspaceType,
-  class FomSystemType>
+
 #ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFom<FomSystemType>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+template<class TrialSubspaceType, class FomSystemType>
+  requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+  && RealValuedSemiDiscreteFom<FomSystemType>
+  && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+#else
+template<
+ class TrialSubspaceType, class FomSystemType,
+ mpl::enable_if_t<
+  PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
+   && RealValuedSemiDiscreteFom<FomSystemType>::value
+   && !RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+   && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+   , int> = 0
+ >
 #endif
 auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(1)*/
 				      const TrialSubspaceType & trialSpace,
@@ -44,6 +54,42 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 }
 
 // -------------------------------------------------------------
+// default with mass matrix
+// -------------------------------------------------------------
+#ifdef PRESSIO_ENABLE_CXX20
+template<class TrialSubspaceType, class FomSystemType>
+  requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+  && RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+  && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+#else
+template<
+  class TrialSubspaceType, class FomSystemType,
+  mpl::enable_if_t<
+    PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
+    && RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
+    && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+    , int > = 0
+  >
+#endif
+auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(2)*/
+				      const TrialSubspaceType & trialSpace,
+				      const FomSystemType & fomSystem)
+{
+
+  impl::valid_scheme_for_explicit_galerkin_else_throw(schemeName, "galerkin_default_explicit");
+  using ind_var_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+  using reduced_rhs_type = impl::explicit_galerkin_default_reduced_rhs_t<TrialSubspaceType>;
+  using reduced_mm_type = impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType>;
+  using galerkin_system = impl::GalerkinDefaultOdeSystemOnlyRhsAndMassMatrix<
+    ind_var_type, reduced_state_type, reduced_rhs_type,
+    reduced_mm_type, TrialSubspaceType, FomSystemType>;
+
+  using return_type = impl::GalerkinUnsteadyWithMassMatrixExplicitProblem<galerkin_system>;
+  return return_type(schemeName, trialSpace, fomSystem);
+}
+
+// -------------------------------------------------------------
 // hyper-reduced
 // -------------------------------------------------------------
 template<
@@ -55,7 +101,7 @@ requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
 && RealValuedSemiDiscreteFom<FomSystemType>
 && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
 #endif
-auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(2)*/
+auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(3)*/
 				      const TrialSubspaceType & trialSpace,
 				      const FomSystemType & fomSystem,
 				      const HyperReducerType & hyperReducer)
@@ -89,7 +135,7 @@ requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
 && RealValuedSemiDiscreteFom<FomSystemType>
 && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
 #endif
-auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(3)*/
+auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(4)*/
 				      const TrialSubspaceType & trialSpace,
 				      const FomSystemType & fomSystem,
 				      const MaskerType & masker,
@@ -107,35 +153,6 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 
   using return_type = impl::GalerkinUnsteadyExplicitProblem<galerkin_system>;
   return return_type(schemeName, trialSpace, fomSystem, masker, hyperReducer);
-}
-
-// -------------------------------------------------------------
-// default with mass matrix
-// -------------------------------------------------------------
-template<
-  class TrialSubspaceType,
-  class FomSystemType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
-auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(4)*/
-				      const TrialSubspaceType & trialSpace,
-				      const FomSystemType & fomSystem)
-{
-
-  impl::valid_scheme_for_explicit_galerkin_else_throw(schemeName, "galerkin_default_explicit");
-  using ind_var_type = typename FomSystemType::time_type;
-  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
-  using reduced_rhs_type = impl::explicit_galerkin_default_reduced_rhs_t<TrialSubspaceType>;
-  using reduced_mm_type = impl::explicit_galerkin_default_reduced_mass_matrix_t<TrialSubspaceType>;
-  using galerkin_system = impl::GalerkinDefaultOdeSystemOnlyRhsAndMassMatrix<
-    ind_var_type, reduced_state_type, reduced_rhs_type,
-    reduced_mm_type, TrialSubspaceType, FomSystemType>;
-
-  using return_type = impl::GalerkinUnsteadyWithMassMatrixExplicitProblem<galerkin_system>;
-  return return_type(schemeName, trialSpace, fomSystem);
 }
 
 }}} // end pressio::rom::galerkin

@@ -54,7 +54,6 @@
 
 namespace pressio{ namespace rom{
 
-// ----------------------------------------------------------------------------
 template<class T>
 concept ReducedState = ::pressio::is_vector_eigen<T>::value;
 
@@ -64,9 +63,9 @@ concept ReducedState = ::pressio::is_vector_eigen<T>::value;
 template <class T>
 concept VectorSubspace =
   requires(){ typename T::basis_matrix_type; }
+  && std::copy_constructible<T>
   && std::copy_constructible<typename T::basis_matrix_type>
   && Traits<typename T::basis_matrix_type>::rank == 2
-  && std::copy_constructible<T>
   && !std::assignable_from<T&, T>
   && !std::assignable_from<T&, T&>
   //
@@ -243,8 +242,6 @@ concept FullyDiscreteSystemWithJacobianAction =
       JacobianActionOperandType,
       impl::fully_discrete_fom_jac_action_t<T, JacobianActionOperandType>
     >::value;
-#endif // PRESSIO_ENABLE_CXX20
-
 
 // ----------------------------------------------------------------------------
 // SYSTEMS REFINEMENTS FOR REAL VALUED
@@ -295,33 +292,29 @@ concept RealValuedFullyDiscreteSystemWithJacobianAction =
        scalar_trait_t< impl::fully_discrete_fom_jac_action_t<T, JacobianActionOperandType> >
      >;
 
-// ----------------------------------------------------------------------------
-//
-// auxiliary stuff
-//
-// ----------------------------------------------------------------------------
-template <class T, class ...> struct scalar_of;
+// // ----------------------------------------------------------------------------
+// //
+// // auxiliary stuff
+// //
+// // ----------------------------------------------------------------------------
+// template <class T, class ...> struct scalar_of;
 
-template <class T>
-requires RealValuedSemiDiscreteFom<T>
-struct scalar_of<T>{
-  using type = scalar_trait_t< typename T::state_type >;
-};
+// template <class T>
+// requires RealValuedSemiDiscreteFom<T>
+// struct scalar_of<T>{
+//   using type = scalar_trait_t< typename T::state_type >;
+// };
 
-template <class T, class ActionOperandType>
-requires (RealValuedSteadyFomWithJacobianAction<T, ActionOperandType>
-       || RealValuedSemiDiscreteFomWithMassMatrixAction<T, ActionOperandType>)
-struct scalar_of<T,ActionOperandType> {
-  using type = scalar_trait_t< typename T::state_type >;
-};
+// template <class T, class ActionOperandType>
+// requires (RealValuedSteadyFomWithJacobianAction<T, ActionOperandType>
+//        || RealValuedSemiDiscreteFomWithMassMatrixAction<T, ActionOperandType>)
+// struct scalar_of<T,ActionOperandType> {
+//   using type = scalar_trait_t< typename T::state_type >;
+// };
 
-template <class T, class ... ActionOperandTypeOrEmpty>
-using scalar_of_t = typename scalar_of<T, ActionOperandTypeOrEmpty...>::type;
+// template <class T, class ... ActionOperandTypeOrEmpty>
+// using scalar_of_t = typename scalar_of<T, ActionOperandTypeOrEmpty...>::type;
 
 }} // end namespace pressio::rom
 
-
-//
-// REVISE
-//
-// ----------------------------------------------------------------------------
+#endif
