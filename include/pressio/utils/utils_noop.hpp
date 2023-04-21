@@ -57,20 +57,25 @@ public:
   explicit NoOperation(ReturnType return_value = ReturnType())
     : value_(return_value) { }
 
-  ReturnType operator () (...) const noexcept { return value_; }
-  ReturnType operator () (...) noexcept { return value_; }
+  template<class ...Types>
+  ReturnType operator () (Types && ... /*args*/) const noexcept { return value_; }
+
+  template<class ...Types>
+  ReturnType operator () (Types && ... /*args*/) noexcept { return value_; }
 
 private:
   ReturnType value_;
 };
 
-
 //! Specialized noop functor which returns a void.
 template <>
 class NoOperation<void>{
 public:
-  void operator () (...) const noexcept { }
-  void operator () (...) noexcept { }
+  template<class ...Types>
+  void operator () (Types && ... /*args*/) const noexcept{}
+
+  template<class ...Types>
+  void operator () (Types && ... /*args*/) noexcept{}
 };
 
 }} // end namespace pressio::utils
