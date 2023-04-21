@@ -87,8 +87,8 @@ update(T & mv, const alpha_t &a,
   assert(::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const scalar_t a_(a);
-  const scalar_t b_(b);
+  const sc_t a_(a);
+  const sc_t b_(b);
 
   auto & mv_n = impl::get_native(mv);
   const auto & mv1_n = impl::get_native(mv1);
