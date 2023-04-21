@@ -10,9 +10,6 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_scaling_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
-#if defined PRESSIO_ENABLE_TPL_TRILINOS
-#include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
-#endif
 
 namespace pressio{ namespace rom{ namespace lspg{
 

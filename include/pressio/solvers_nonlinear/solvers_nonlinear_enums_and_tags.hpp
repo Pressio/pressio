@@ -99,6 +99,69 @@ std::string diagnostic_to_string(Diagnostic d){
     };
 };
 
+bool is_absolute_diagnostic(Diagnostic d){
+  switch(d)
+    {
+    case Diagnostic::correctionRelativel2Norm: return false;
+    case Diagnostic::correctionAbsolutel2Norm: return true;
+    case Diagnostic::residualRelativel2Norm:   return false;
+    case Diagnostic::residualAbsolutel2Norm:   return true;
+    case Diagnostic::gradientRelativel2Norm:   return false;
+    case Diagnostic::gradientAbsolutel2Norm:   return true;
+    case Diagnostic::objectiveAbsolute:   return true;
+    case Diagnostic::objectiveRelative:   return false;
+    default: return true;
+    };
+};
+
+std::string diagnostic_to_log_symbol(Diagnostic d){
+  switch(d)
+    {
+    case Diagnostic::correctionRelativel2Norm: return "||delta||(r)";
+    case Diagnostic::correctionAbsolutel2Norm: return "||delta||(a)";
+    case Diagnostic::residualRelativel2Norm:   return "||R||(r)";
+    case Diagnostic::residualAbsolutel2Norm:   return "||R||(a)";
+    case Diagnostic::gradientRelativel2Norm:   return "||g||(r)";
+    case Diagnostic::gradientAbsolutel2Norm:   return "||g||(a)";
+    case Diagnostic::objectiveAbsolute:   return "obj(a)";
+    case Diagnostic::objectiveRelative:   return "obj(r)";
+    default:  return "invalid";
+    };
+};
+
+std::string diagnostic_to_log_format(Diagnostic d){
+  switch(d)
+    {
+    case Diagnostic::correctionRelativel2Norm:
+    case Diagnostic::correctionAbsolutel2Norm:
+    case Diagnostic::residualRelativel2Norm:
+    case Diagnostic::residualAbsolutel2Norm:
+    case Diagnostic::gradientRelativel2Norm:
+    case Diagnostic::gradientAbsolutel2Norm:
+    case Diagnostic::objectiveAbsolute:
+    case Diagnostic::objectiveRelative:
+      return "{:.6e}";
+
+    default:
+      return "invalid";
+    };
+};
+
+Diagnostic stop_criterion_to_public_diagnostic(const Stop & sc)
+{
+  switch (sc)
+    {
+    case Stop::WhenAbsolutel2NormOfCorrectionBelowTolerance: return Diagnostic::correctionAbsolutel2Norm;
+    case Stop::WhenRelativel2NormOfCorrectionBelowTolerance: return Diagnostic::correctionRelativel2Norm;
+    case Stop::WhenAbsolutel2NormOfResidualBelowTolerance: return Diagnostic::residualAbsolutel2Norm;
+    case Stop::WhenRelativel2NormOfResidualBelowTolerance: return Diagnostic::residualRelativel2Norm;
+    case Stop::WhenAbsolutel2NormOfGradientBelowTolerance: return Diagnostic::gradientAbsolutel2Norm;
+    case Stop::WhenRelativel2NormOfGradientBelowTolerance: return Diagnostic::gradientRelativel2Norm;
+    case Stop::WhenAbsoluteObjectiveBelowTolerance: return Diagnostic::objectiveAbsolute;
+    case Stop::WhenRelativeObjectiveBelowTolerance: return Diagnostic::objectiveRelative;
+    default: return Diagnostic::invalid;
+    };
+}
 
 /*
   List of tags used to label data in

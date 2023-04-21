@@ -49,7 +49,6 @@
 #ifndef SOLVERS_NONLINEAR_TAG_BASED_REGISTRY_HPP_
 #define SOLVERS_NONLINEAR_TAG_BASED_REGISTRY_HPP_
 
-
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template<class, class> struct TagBasedStaticRegistry;

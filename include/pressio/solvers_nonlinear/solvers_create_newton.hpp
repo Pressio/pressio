@@ -49,7 +49,12 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 
-#include "solver_impl.hpp"
+#include "./impl/solvers_tagbased_registry.hpp"
+#include "./impl/internal_tags.hpp"
+#include "./impl/diagnostics.hpp"
+#include "./impl/functions.hpp"
+#include "./impl/updaters.hpp"
+#include "./impl/root_finder.cpp"
 
 namespace pressio{
 

@@ -49,6 +49,8 @@
 #ifndef ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
 #define ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
 
+#include "./impl/ode_explicit_stepper_without_mass_matrix.hpp"
+#include "./impl/ode_explicit_stepper_with_mass_matrix.hpp"
 #include "./impl/ode_explicit_create_impl.hpp"
 
 namespace pressio{ namespace ode{

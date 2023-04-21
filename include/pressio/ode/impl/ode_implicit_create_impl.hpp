@@ -49,13 +49,6 @@
 #ifndef ODE_IMPL_ODE_IMPLICIT_CREATE_IMPL_HPP_
 #define ODE_IMPL_ODE_IMPLICIT_CREATE_IMPL_HPP_
 
-#include "ode_implicit_discrete_residual.hpp"
-#include "ode_implicit_discrete_jacobian.hpp"
-#include "ode_implicit_policy_residual_jacobian_without_mass_matrix.hpp"
-#include "ode_implicit_policy_residual_jacobian_with_mass_matrix.hpp"
-#include "ode_implicit_stepper_standard.hpp"
-#include "ode_implicit_stepper_arbitrary.hpp"
-
 namespace pressio{ namespace ode{ namespace impl{
 
 template<class ImplType, class ... Args>

@@ -49,7 +49,13 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
 
-#include "solver_impl.hpp"
+#include "solvers_default_types.hpp"
+#include "./impl/solvers_tagbased_registry.hpp"
+#include "./impl/internal_tags.hpp"
+#include "./impl/diagnostics.hpp"
+#include "./impl/functions.hpp"
+#include "./impl/updaters.hpp"
+#include "./impl/nonlinear_least_squares.hpp"
 
 namespace pressio{
 
