@@ -54,10 +54,6 @@
 #include "./type_traits.hpp"
 #include "./ops.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
-#endif
-
 #include "./ode/ode_strong_types.hpp"
 #include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_stencil_containers.hpp"

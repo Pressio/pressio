@@ -2,6 +2,7 @@
 #ifndef ODE_CONCEPTS_SYSTEM_ALL_HPP_
 #define ODE_CONCEPTS_SYSTEM_ALL_HPP_
 
+#include <concepts>
 #include "ode_has_const_discrete_residual_jacobian_method.hpp"
 
 namespace pressio{ namespace ode{
@@ -192,8 +193,6 @@ concept ImplicitResidualJacobianPolicy =
     A(schemeName, predictedState, stencilStatesManager,
       stencilVelocities, rhsEvaluationTime, stepNumber, dt, R, J);
   };
-
-
 
 //
 // auxiliary stuff

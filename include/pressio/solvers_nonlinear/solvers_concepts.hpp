@@ -129,10 +129,9 @@ template <class T, class = void> struct scalar_of;
 
 template <class T>
 struct scalar_of<
-  T,
-  mpl::enable_if_t<
-    RealValuedNonlinearSystem<T>::value
-    || RealValuedNonlinearSystemFusingResidualAndJacobian<T>::value>
+  T, mpl::enable_if_t<
+       RealValuedNonlinearSystem<T>::value
+       || RealValuedNonlinearSystemFusingResidualAndJacobian<T>::value>
   >
 {
   using type = scalar_trait_t< typename T::state_type >;

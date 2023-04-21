@@ -2,7 +2,6 @@
 #ifndef ROM_CREATE_SUBSPACE_HPP_
 #define ROM_CREATE_SUBSPACE_HPP_
 
-#include "./linear_subspace.hpp"
 #include "./impl/linear_trial_column_subspace.hpp"
 
 namespace pressio{ namespace rom{

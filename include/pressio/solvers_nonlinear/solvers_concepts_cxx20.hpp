@@ -50,6 +50,7 @@
 #define SOLVERS_NONLINEAR_CONCEPTS_CXX20_HPP_
 
 #include <optional>
+#include <concepts>
 
 namespace pressio{ namespace nonlinearsolvers{
 

@@ -49,6 +49,7 @@
 #ifndef ROM_CONCEPTS_CXX20_ALL_HPP_
 #define ROM_CONCEPTS_CXX20_ALL_HPP_
 
+#include <concepts>
 #include "concepts_helpers.hpp"
 #include "./impl/ode_has_const_discrete_residual_jacobian_action_method.hpp"
 

@@ -59,6 +59,7 @@
 #include "./ode.hpp"
 
 #include "rom_concepts.hpp"
+#include "rom/reduced_operators_traits.hpp"
 #include "rom/lspg_unsteady.hpp"
 
 #endif

@@ -56,7 +56,7 @@
 #include "./ops.hpp"
 #include "./solvers_linear.hpp"
 
-#include "./solvers_nonlinear_concepts.hpp"
+#include "solvers_nonlinear_concepts.hpp"
 #include "solvers_nonlinear/solvers_exceptions.hpp"
 #include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
 #include "solvers_nonlinear/solvers_create_levenberg_marquardt.hpp"

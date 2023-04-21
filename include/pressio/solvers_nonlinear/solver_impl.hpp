@@ -2,8 +2,6 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 
-#include <typeinfo>
-#include <optional>
 #include "solvers_tagbased_registry.hpp"
 
 namespace pressio{

@@ -54,10 +54,6 @@
 #include "./type_traits.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
-#endif
-
-#ifdef PRESSIO_ENABLE_CXX20
 #include "solvers_nonlinear/solvers_concepts_cxx20.hpp"
 #else
 #include "solvers_nonlinear/solvers_concepts.hpp"

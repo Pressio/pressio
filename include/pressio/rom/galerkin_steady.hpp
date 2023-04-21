@@ -2,7 +2,6 @@
 #ifndef ROM_GALERKIN_STEADY_HPP_
 #define ROM_GALERKIN_STEADY_HPP_
 
-#include "./reduced_operators_traits.hpp"
 #include "./impl/galerkin_helpers.hpp"
 #include "./impl/galerkin_steady_system_default.hpp"
 #include "./impl/galerkin_steady_system_hypred.hpp"

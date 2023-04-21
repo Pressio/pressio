@@ -2,7 +2,6 @@
 #ifndef ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
 #define ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
 
-#include "./reduced_operators_traits.hpp"
 #include "impl/galerkin_helpers.hpp"
 #include "impl/galerkin_unsteady_system_default_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_default_rhs_and_jacobian_and_mm.hpp"

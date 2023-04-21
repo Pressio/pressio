@@ -2,7 +2,7 @@
 #ifndef ODE_CONCEPTS_SYSTEM_ALL_HPP_
 #define ODE_CONCEPTS_SYSTEM_ALL_HPP_
 
-#include "./ode_predicates.hpp"
+#include "ode_predicates_for_system.hpp"
 #include "ode_has_const_discrete_residual_jacobian_method.hpp"
 
 namespace pressio{ namespace ode{
@@ -325,27 +325,6 @@ struct ImplicitResidualJacobianPolicy<
       >::value
     >
   > : std::true_type{};
-
-
-//
-// auxiliary stuff
-//
-template <class T, int n = 0, class = void> struct scalar_of;
-
-template <class T, int n>
-struct scalar_of<
-  T, n, mpl::enable_if_t<
-          RealValuedOdeSystem<T>::value
-	  || RealValuedOdeSystemFusingRhsAndJacobian<T>::value
-	  || RealValuedOdeSystemFusingMassMatrixAndRhs<T>::value
-	  || RealValuedCompleteOdeSystem<T>::value
-	  || RealValuedFullyDiscreteSystemWithJacobian<T, n>::value
-       > >
-{
-  using type = scalar_trait_t< typename T::state_type >;
-};
-
-template <class T, int n=0> using scalar_of_t = typename scalar_of<T,n>::type;
 
 }}
 #endif

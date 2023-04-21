@@ -2,6 +2,8 @@
 #ifndef ODE_CONCEPTS_OTHERS_HPP_
 #define ODE_CONCEPTS_OTHERS_HPP_
 
+#include <concepts>
+
 namespace pressio{ namespace ode{
 
 template <class T>

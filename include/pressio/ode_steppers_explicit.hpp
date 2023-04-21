@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_EXPLICIT_HPP_
-#define PRESSIO_ODE_EXPLICIT_HPP_
+#ifndef PRESSIO_ODE_STEPPERS_EXPLICIT_HPP_
+#define PRESSIO_ODE_STEPPERS_EXPLICIT_HPP_
 
 #include "./mpl.hpp"
 #include "./utils.hpp"
@@ -59,7 +59,6 @@
 #include "./ode/exceptions.hpp"
 #include "./ode/ode_strong_types.hpp"
 #include "./ode/ode_constants.hpp"
-
 #include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_create_explicit_stepper.hpp"
 

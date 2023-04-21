@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace ode{
 
-inline constexpr typename StepCount::value_type first_step_value = 1;
+constexpr typename StepCount::value_type first_step_value = 1;
 
 namespace constants{
 
