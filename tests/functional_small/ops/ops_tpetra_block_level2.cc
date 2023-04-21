@@ -61,60 +61,60 @@ auto get_global_host_view<vec_t>(vec_t &v, const tpetraBlockMultiVectorGlobSize1
 }
 
 template <
-    typename FixtureType,
-    typename TransMode,
-    typename AType,
-    typename XType,
-    typename YType,
-    typename ScalarType
-    >
+  typename FixtureType,
+  typename TransMode,
+  typename AType,
+  typename XType,
+  typename YType,
+  typename ScalarType
+  >
 void test_impl(FixtureType &test, TransMode trans, ScalarType alpha, AType A, XType x, ScalarType beta, YType &y) {
-    Kokkos::Profiling::pushRegion("test_impl");
-    // copy original values, fetch whole vector (from all ranks) to do the verification locally
-    auto y_ref_h = get_global_host_view(y, test);
+  Kokkos::Profiling::pushRegion("test_impl");
+  // copy original values, fetch whole vector (from all ranks) to do the verification locally
+  auto y_ref_h = get_global_host_view(y, test);
 
-    // call tested routine on device
-    ::pressio::ops::product(trans, alpha, A, x, beta, y);
+  // call tested routine on device
+  ::pressio::ops::product(trans, alpha, A, x, beta, y);
 
-    // Note: trick here is to fetch whole data (from all ranks)
-    // and run the simplified reference routine locally
-    auto A_h = get_global_host_view(A, test);
-    auto x_h = get_global_host_view(x, test);
-    auto y_h = get_global_host_view(y, test);
-    if (test.rank_ == 0) {
-        vanilla_gemv(trans, alpha, A_h, x_h, beta, y_ref_h);
-        const size_t y_size = ::pressio::ops::extent(y_h, 0);
-        for (size_t i = 0; i < y_size; ++i) {
-          EXPECT_DOUBLE_EQ(y_h(i), y_ref_h(i));
-        }
+  // Note: trick here is to fetch whole data (from all ranks)
+  // and run the simplified reference routine locally
+  auto A_h = get_global_host_view(A, test);
+  auto x_h = get_global_host_view(x, test);
+  auto y_h = get_global_host_view(y, test);
+  if (test.rank_ == 0) {
+    vanilla_gemv(trans, alpha, A_h, x_h, beta, y_ref_h);
+    const size_t y_size = ::pressio::ops::extent(y_h, 0);
+    for (size_t i = 0; i < y_size; ++i) {
+      EXPECT_DOUBLE_EQ(y_h(i), y_ref_h(i));
     }
-    Kokkos::Profiling::popRegion();
+  }
+  Kokkos::Profiling::popRegion();
 }
 
 template <
-    typename FixtureType,
-    typename TransMode,
-    typename AType,
-    typename XType,
-    typename YType
-    >
+  typename FixtureType,
+  typename TransMode,
+  typename AType,
+  typename XType,
+  typename YType
+  >
 void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
-    // non-zero alpha and beta
-    test_impl(test, trans, 2., A, x, -1., y);
-    // simulate beta=0 with uninitialized y containing NaN
-    const auto nan = std::nan("0");
-    ::pressio::ops::fill(y, nan);
-    test_impl(test, trans, 2., A, x, 0., y);
-    // simulate alpha=0 with NaN in input matrix
-    auto A_h = A.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWrite);
-    auto a00 = A_h(0, 0);
-    A_h(0, 0) = nan;
-    test_impl(test, trans, 0., A, x, 0., y);
-    // alpha=0, beta=1
-    ::pressio::ops::fill(y, 2.);
-    test_impl(test, trans, 0., A, x, 1., y);
-    // restore original value
-    A_h(0, 0) = a00;
+  // non-zero alpha and beta
+  test_impl(test, trans, 2., A, x, -1., y);
+  // simulate beta=0 with uninitialized y containing NaN
+  const auto nan = std::nan("0");
+  ::pressio::ops::fill(y, nan);
+  test_impl(test, trans, 2., A, x, 0., y);
+  // simulate alpha=0 with NaN in input matrix
+  auto A_h = A.getMultiVectorView().getLocalViewHost(Tpetra::Access::ReadWrite);
+  auto a00 = A_h(0, 0);
+  A_h(0, 0) = nan;
+  test_impl(test, trans, 0., A, x, 0., y);
+  // alpha=0, beta=1
+  ::pressio::ops::fill(y, 2.);
+  test_impl(test, trans, 0., A, x, 1., y);
+  // restore original value
+  A_h(0, 0) = a00;
 }
 
 //-------------------------------------------
@@ -124,11 +124,11 @@ void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
 TEST_F(ops_tpetra_block,
        mv_prod_teuchos_vector)
 {
-    Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
-    for (size_t i = 0; i < numVecs_; ++i) {
-      x_teuchos(i) = (double)(i + 1.);
-    }
-    test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
+  Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
+  for (size_t i = 0; i < numVecs_; ++i) {
+    x_teuchos(i) = (double)(i + 1.);
+  }
+  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
 }
 
 //-------------------------------------------
@@ -168,9 +168,9 @@ TEST_F(ops_tpetra_block,
   Kokkos::View<double**> x0{ "x_diag", (size_t)numVecs_, (size_t)numVecs_ };
   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
   for (size_t i = 0; i < numVecs_; ++i) {
-      for (size_t j = 0; j < numVecs_; ++j) {
-          x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
-      }
+    for (size_t j = 0; j < numVecs_; ++j) {
+      x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
+    }
   }
   Kokkos::deep_copy(x0, x_h);
   auto x_kokkos_diag = ::pressio::diag(x0);
@@ -194,31 +194,31 @@ TEST_F(ops_tpetra_block,
 TEST_F(ops_tpetra_block,
        mv_T_vector_storein_kokkos_span)
 {
-    Kokkos::View<double*> y0{ "y_span", numVecs_ + 2 };
-    auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
-    for (int i = 0; i < numVecs_ + 2; ++i) {
-      y_h(i) = (double)(i + 1.); // unique int values
-    }
-    Kokkos::deep_copy(y0, y_h);
-    auto y_kokkos_span = ::pressio::span(y0, 1, numVecs_);
+  Kokkos::View<double*> y0{ "y_span", std::size_t(numVecs_ + 2) };
+  auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
+  for (int i = 0; i < numVecs_ + 2; ++i) {
+    y_h(i) = (double)(i + 1.); // unique int values
+  }
+  Kokkos::deep_copy(y0, y_h);
+  auto y_kokkos_span = ::pressio::span(y0, 1, numVecs_);
 
-    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_span);
+  test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_span);
 }
 
 TEST_F(ops_tpetra_block,
        mv_T_vector_storein_kokkos_diag)
 {
-    Kokkos::View<double**> y0{ "y_diag", numVecs_, numVecs_ };
-    auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
-    for (size_t i = 0; i < numVecs_; ++i) {
-        for (size_t j = 0; j < numVecs_; ++j) {
-            y_h(i, j) = (double)(i * numVecs_ + j + 1.0);
-        }
+  Kokkos::View<double**> y0{ "y_diag", std::size_t(numVecs_), std::size_t(numVecs_) };
+  auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
+  for (size_t i = 0; i < numVecs_; ++i) {
+    for (size_t j = 0; j < numVecs_; ++j) {
+      y_h(i, j) = (double)(i * numVecs_ + j + 1.0);
     }
-    Kokkos::deep_copy(y0, y_h);
-    auto y_kokkos_diag = ::pressio::diag(y0);
+  }
+  Kokkos::deep_copy(y0, y_h);
+  auto y_kokkos_diag = ::pressio::diag(y0);
 
-    test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_diag);
+  test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_diag);
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -251,7 +251,7 @@ TEST_F(ops_tpetra_block,
 {
   Eigen::MatrixXd M0(numVecs_, numVecs_);
   for (int i = 0; i < numVecs_; ++i) {
-      M0(i, i) = 1.;
+    M0(i, i) = 1.;
   }
   auto x_eigen_diag = ::pressio::diag(M0);
 
@@ -286,7 +286,7 @@ TEST_F(ops_tpetra_block,
 {
   Eigen::MatrixXd M0(numVecs_, numVecs_);
   for (int i = 0; i < numVecs_; ++i) {
-      M0(i, i) = 1.;
+    M0(i, i) = 1.;
   }
   auto y_eigen_diag = ::pressio::diag(M0);
 
