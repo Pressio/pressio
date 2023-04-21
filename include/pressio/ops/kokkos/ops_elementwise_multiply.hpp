@@ -86,8 +86,8 @@ elementwise_multiply(alpha_t alpha,
   assert(z.extent(0) == y.extent(0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  sc_t alpha_{alpha};
-  sc_t beta_{beta};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
 
   KokkosBlas::mult(beta_, impl::get_native(y),
     alpha_, impl::get_native(x), impl::get_native(z) );

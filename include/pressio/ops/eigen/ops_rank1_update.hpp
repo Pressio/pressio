@@ -85,8 +85,8 @@ update(T & v,         const a_Type & a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
-  sc_t a_{a};
-  sc_t b_{b};
+  const sc_t a_(a);
+  const sc_t b_(b);
 
   if (b_ == zero) {
     ::pressio::ops::scale(v, a_);
@@ -138,9 +138,9 @@ update(T & v,         const a_Type &a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
-  sc_t a_{a};
-  sc_t b_{b};
-  sc_t c_{c};
+  const sc_t a_(a);
+  const sc_t b_(b);
+  const sc_t c_(c);
 
   if (b_ == zero) {
     ::pressio::ops::update(v, a, v2, c);
@@ -201,10 +201,10 @@ update(T & v,         const a_Type &a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
-  sc_t a_{a};
-  sc_t b_{b};
-  sc_t c_{c};
-  sc_t d_{d};
+  const sc_t a_(a);
+  const sc_t b_(b);
+  const sc_t c_(c);
+  const sc_t d_(d);
 
   if (b_ == zero) {
     ::pressio::ops::update(v, a, v2, c, v3, d);
@@ -274,11 +274,11 @@ update(T & v,         const a_Type &a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
-  sc_t a_{a};
-  sc_t b_{b};
-  sc_t c_{c};
-  sc_t d_{d};
-  sc_t e_{e};
+  const sc_t a_(a);
+  const sc_t b_(b);
+  const sc_t c_(c);
+  const sc_t d_(d);
+  const sc_t e_(e);
 
   if (b_ == zero) {
     ::pressio::ops::update(v, a, v2, c, v3, d, v4, e);

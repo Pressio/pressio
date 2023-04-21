@@ -76,8 +76,8 @@ elementwise_multiply(const alpha_t & alpha,
   assert(extent(z,0)==extent(y,0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const sc_t alpha_{alpha};
-  const sc_t beta_{beta};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
 
   auto x_tpetraview = const_cast<T &>(x).getVectorView();
   auto z_tpetraview = const_cast<T1 &>(z).getVectorView();

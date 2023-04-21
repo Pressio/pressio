@@ -67,7 +67,7 @@ template <typename T, class ScalarType>
 scale(T & objectIn, const ScalarType value)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  sc_t v{value};
+  const sc_t v(value);
   objectIn.scale(v);
 }
 

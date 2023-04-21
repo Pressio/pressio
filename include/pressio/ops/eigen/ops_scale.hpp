@@ -71,7 +71,7 @@ scale(T & o, const ScalarType & value)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
-  sc_t value_{value};
+  sc_t value_(value);
   if (value_ == zero) {
     ::pressio::ops::set_zero(o);
   } else {
