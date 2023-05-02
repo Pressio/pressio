@@ -106,24 +106,33 @@ public:
   {
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
-      (*this).template compute_impl_bdf1
+      (*this).template compute_impl_bdf<ode::BDF1>
 	(predictedReducedState, reducedStatesStencilManager,
 	 rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
     }
-    // else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2){
-    //   (*this).template compute_impl_bdf
-    // 	<ode::BDF2>(predictedReducedState, reducedStatesStencilManager,
-    // 		    fomRhsStencilManger, rhsEvaluationTime.get(),
-    // 		    dt.get(), step.get(), R, J, computeJacobian);
-    // }
+
+    else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2)
+    {
+      if (step.get() == ::pressio::ode::first_step_value){
+	(*this).template compute_impl_bdf<ode::BDF1>
+	  (predictedReducedState, reducedStatesStencilManager,
+	   rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+      }
+      else{
+	(*this).template compute_impl_bdf<ode::BDF2>
+	  (predictedReducedState, reducedStatesStencilManager,
+	   rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+      }
+    }
+
     else{
-      throw std::runtime_error("Only BDF1 currently impl for default unstedy LSPG");
+      throw std::runtime_error("Invalid choice of StepScheme for default unstedy LSPG");
     }
   }
 
 private:
-  template <class StencilStatesContainerType>
-  void compute_impl_bdf1(const state_type & predictedReducedState,
+  template <class OdeTag, class StencilStatesContainerType>
+  void compute_impl_bdf(const state_type & predictedReducedState,
 			 const StencilStatesContainerType & reducedStatesStencilManager,
 			 const IndVarType & rhsEvaluationTime,
 			 const IndVarType & dt,
@@ -131,6 +140,8 @@ private:
 			 residual_type & R,
 			 std::optional<jacobian_type *> & Jo) const
   {
+    static_assert( std::is_same<OdeTag, ode::BDF1>::value ||
+		   std::is_same<OdeTag, ode::BDF2>::value);
 
     /* the FOM state for the prediction has to be always recomputed
        regardless of whether the currentStepNumber changes since
@@ -148,7 +159,8 @@ private:
     if (stepTracker_ != step){
       const auto & lspgStateAt_n = reducedStatesStencilManager(::pressio::ode::n());
       fomStatesManager_.get().reconstructAtWithStencilUpdate(lspgStateAt_n,
-							     ::pressio::ode::n());
+								::pressio::ode::n());
+
       stepTracker_ = step;
     }
 
@@ -156,14 +168,11 @@ private:
     fomSystem_.get().rhs(fomStateAt_np1, rhsEvaluationTime, R);
     // default lspg does not do anything special, so we can use the
     // available ode functions for computing the discrete residual
-    ::pressio::ode::impl::discrete_residual(::pressio::ode::BDF1(), fomStateAt_np1,
+    ::pressio::ode::impl::discrete_residual(OdeTag(), fomStateAt_np1,
 					    R, fomStatesManager_.get(), dt);
 
-    //
     // deal with jacobian if needed
-    //
     if (Jo){
-
       // lspg Jac looks something like: lspgJac = decoderJac + dt*coeff*d(fomrhs)/dy*phi
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
@@ -176,7 +185,14 @@ private:
       using basis_sc_t = typename ::pressio::Traits<
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
       const auto one = ::pressio::utils::Constants<basis_sc_t>::one();
-      const IndVarType factor = dt*::pressio::ode::constants::bdf1<IndVarType>::c_f_;
+      IndVarType factor = {};
+      if constexpr(std::is_same<OdeTag, ode::BDF1>::value){
+	factor = dt*::pressio::ode::constants::bdf1<IndVarType>::c_f_;
+      }
+      else{
+	// goes to bdf2
+	factor = dt*::pressio::ode::constants::bdf2<IndVarType>::c_f_;
+      }
       ::pressio::ops::update(J, factor, phi, one);
     }
   }
@@ -196,77 +212,4 @@ private:
 
 }}}
 
-
-  // template <
-  //   class LspgStateType,
-  //   class LspgStencilStatesContainerType,
-  //   class LspgStencilVelocitiesContainerType,
-  //   class ScalarType>
-  // void operator()(::pressio::ode::StepScheme name,
-  // 		  const LspgStateType & lspgState,
-  // 		  const LspgStencilStatesContainerType & lspgStencilStates,
-  // 		  LspgStencilVelocitiesContainerType & lspgStencilVelocities,
-  // 		  const ScalarType & t_np1,
-  // 		  const ScalarType & dt,
-  // 		  const ::pressio::ode::step_count_type & currentStepNumber,
-  // 		  residual_type & lspgResidual) const
-  // {
-
-  //   if (name == ::pressio::ode::StepScheme::BDF1){
-  //     (*this).template compute_impl_bdf<ode::BDF1>
-  // 	(lspgState, lspgStencilStates, lspgStencilVelocities,
-  // 	 t_np1, dt, currentStepNumber, lspgResidual);
-  //   }
-  //   else if (name == ::pressio::ode::StepScheme::BDF2){
-  //     (*this).template compute_impl_bdf<ode::BDF2>
-  // 	(lspgState, lspgStencilStates, lspgStencilVelocities,
-  // 	 t_np1, dt, currentStepNumber, lspgResidual);
-  //   }
-  //   else if (name == ::pressio::ode::StepScheme::CrankNicolson){
-  //     (*this).compute_impl_cn(lspgState, lspgStencilStates,lspgStencilVelocities,
-  // 			      t_np1, dt, currentStepNumber, lspgResidual);
-  //   }
-  // }
-
-//   template <
-//     class LspgStateType,
-//     class LspgStencilStatesContainerType,
-//     class LspgStencilVelocitiesContainerType,
-//     class ScalarType
-//     >
-//   void compute_impl_cn(const LspgStateType & lspgState,
-// 		       const LspgStencilStatesContainerType & lspgStencilStates,
-// 		       // for CN, stencilVelocities holds f_n+1 and f_n
-// 		       LspgStencilVelocitiesContainerType & lspgStencilVelocities,
-// 		       const ScalarType & t_np1,
-// 		       const ScalarType & dt,
-// 		       const ::pressio::ode::step_count_type & currentStepNumber,
-// 		       residual_type & lspgResidual) const
-//   {
-//     PRESSIOLOG_DEBUG("residual policy with compute_cn_impl");
-
-//     fomStatesMngr_.get().reconstructAt(lspgState, ::pressio::ode::nPlusOne());
-
-//     if (storedStep_ != currentStepNumber){
-//       const auto & lspgStateAt_n = lspgStencilStates(::pressio::ode::n());
-//       fomStatesMngr_.get().reconstructAtAndUpdatePrevious(lspgStateAt_n,
-// 							  ::pressio::ode::n());
-//       storedStep_ = currentStepNumber;
-
-//       // if the step changed, I need to compute f(y_n, t_n)
-//       const auto tn = t_np1-dt;
-//       auto & f_n = lspgStencilVelocities(::pressio::ode::n());
-//       const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
-//       fomSystem_.get().velocity(fomState_n, tn, f_n);
-//     }
-
-//     // always compute f(y_n+1, t_n+1)
-//     const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-//     auto & f_np1 = lspgStencilVelocities(::pressio::ode::nPlusOne());
-//     fomSystem_.get().velocity(fomState_np1, t_np1, f_np1);
-
-//     ::pressio::ode::impl::discrete_time_residual
-// 	(fomState_np1, lspgResidual, fomStatesMngr_.get(),
-// 	 lspgStencilVelocities, dt, ::pressio::ode::CrankNicolson());
-//   }
 #endif  // ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
