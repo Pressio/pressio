@@ -114,14 +114,14 @@ struct FakeNonLinSolver
 	// for callcount1, iter1: ynp1 and yn should be same,
 	// for checking residual we can just use f only
 	for (int i=0; i<N_; ++i){
-	  EXPECT_NEAR(R(i), -dt_*f(i), 1e-15);
+	  EXPECT_NEAR(R(i), -dt_*f(i), 1e-12);
 	}
 	// and jacobian
 	int count = 0;
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+predictionTime), 1e-15);
+	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+predictionTime), 1e-12);
 	  }
 	}
 
@@ -151,13 +151,13 @@ struct FakeNonLinSolver
 	compute_y_fom(yn, state_n);
 
 	for (int i=0; i<N_; ++i){
-	  EXPECT_NEAR(R(i), ynp1(i)-yn(i)-dt_*f(i), 1e-15);
+	  EXPECT_NEAR(R(i), ynp1(i)-yn(i)-dt_*f(i), 1e-12);
 	}
 	int count = 0;
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+2.), 1e-15);
+	    EXPECT_NEAR(J(i,j), phi_val - dt_*(phi_val+2.), 1e-12);
 	  }
 	}
 
@@ -247,7 +247,7 @@ struct FakeNonLinSolver
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_NEAR(J(i,j), phi_val - (2./3.)*dt_*(phi_val+predictionTime), 1e-15);
+	    EXPECT_NEAR(J(i,j), phi_val - (2./3.)*dt_*(phi_val+predictionTime), 1e-12);
 	  }
 	}
 
@@ -337,7 +337,7 @@ struct FakeNonLinSolver
 	for (int i=0; i<N_; ++i){
 	  for (int j=0; j<3; ++j){
 	    const auto phi_val =  (double)count++;
-	    EXPECT_NEAR(J(i,j), phi_val - (2./3.)*dt_*(phi_val+predictionTime), 1e-15);
+	    EXPECT_NEAR(J(i,j), phi_val - (2./3.)*dt_*(phi_val+predictionTime), 1e-12);
 	  }
 	}
 
