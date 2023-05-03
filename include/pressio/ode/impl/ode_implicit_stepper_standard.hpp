@@ -294,27 +294,28 @@ private:
 		  SolverArgs&& ...argsForSolver)
   {
 
-    // /*
-    //   y_n+1 = y_n + 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
-    // */
+    /*
+      y_n+1 = y_n + 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
+    */
 
-    // dt_ = dt;
-    // t_np1_ = currentTime + dt_;
-    // step_number_ = stepNumber;
+    dt_ = dt;
+    t_np1_ = currentTime + dt_;
+    step_number_ = stepNumber;
 
-    // // current solution becomes y_n
-    // auto & odeState_n = stencil_states_(ode::n());
-    // ::pressio::ops::deep_copy(odeState_n, odeState);
+    // current solution becomes y_n
+    auto & odeState_n = stencil_states_(ode::n());
+    ::pressio::ops::deep_copy(odeState_n, odeState);
 
-    // try{
-    //   solver.solve(*this, odeState, std::forward<SolverArgs>(argsForSolver)...);
-    // }
-    // catch (::pressio::eh::NonlinearSolveFailure const & e)
-    // {
-    //   auto & rollBackState = stencil_states_(ode::n());
-    //   ::pressio::ops::deep_copy(odeState, rollBackState);
-    //   throw ::pressio::eh::TimeStepFailure();
-    // }
+    try{
+      solver.solve(*this, odeState, std::forward<SolverArgs>(argsForSolver)...);
+    }
+    catch (::pressio::eh::NonlinearSolveFailure const & e)
+    {
+      // if failure, then revert odeState to what it was before
+      // attempting the solve, which was stored into y_n,
+      ::pressio::ops::deep_copy(odeState, odeState_n);
+      throw ::pressio::eh::TimeStepFailure();
+    }
   }
 
 };

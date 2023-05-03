@@ -109,10 +109,10 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
-  #   # cn
-  #   set(FILENAME ode_crank_nicolson_simple_correctness_eigen)
-  #   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-  #   add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
+  # cn
+  set(FILENAME ode_crank_nicolson_simple_correctness_eigen)
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+  add_serial_utest(${TESTING_LEVEL}_${FILENAME} ${SRC})
 
   # with mass matrix, all implicit schemes in single exe
   set(FILENAME ode_all_implicit_schemes_varying_mass_matrix_correctness_eigen)
@@ -164,8 +164,8 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 
-# if(PRESSIO_ENABLE_TPL_KOKKOS)
-#   set(FILENAME ode_implicit_stencil_data_kokkos)
-#   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
-#   add_serial_utest_kokkos(${TESTING_LEVEL}_${FILENAME} ${SRC})
-# endif()
+if(PRESSIO_ENABLE_TPL_KOKKOS)
+  set(FILENAME ode_implicit_stencil_data_kokkos)
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cc)
+  add_serial_utest_kokkos(${TESTING_LEVEL}_${FILENAME} ${SRC})
+endif()

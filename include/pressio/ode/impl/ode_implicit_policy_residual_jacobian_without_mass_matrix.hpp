@@ -1,5 +1,3 @@
-
-
 /*
 //@HEADER
 // ************************************************************************
@@ -128,8 +126,7 @@ private:
     }
 
     else if (name == StepScheme::CrankNicolson){
-      throw std::runtime_error("CrankNicolson not yet implemented");
-      //this->compute_impl_cn(std::forward<Args>(args)...);
+      this->compute_impl_cn(std::forward<Args>(args)...);
     }
 
     else{
@@ -236,25 +233,26 @@ private:
 		       std::optional<JacobianType *> & Jo) const
   {
 
-    // if (stepTracker_ != step){
-    //   auto & f_n = stencilVelocities(::pressio::ode::n());
-    //   auto & state_n = stencilStates(::pressio::ode::n());
-    //   const auto tn = t_np1-dt;
-    //   systemObj_.get()(state_n, tn, f_n, &J, false);
-    // }
+    if (stepTracker_ != step){
+      auto & f_n = stencilVelocities(::pressio::ode::n());
+      auto & state_n = stencilStates(::pressio::ode::n());
+      const auto tn = t_np1-dt;
+      systemObj_.get().rhsAndJacobian(state_n, tn, f_n, {});
+    }
 
-    // auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
-    // systemObj_.get()(predictedState, t_np1, f_np1, J, computeJacobian);
-    // ::pressio::ode::impl::discrete_residual
-    // 	(ode::CrankNicolson(), predictedState, R, stencilStates,
-    // 	 stencilVelocities, dt);
+    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+    if (Jo){
+      systemObj_.get().rhsAndJacobian(predictedState, t_np1, f_np1, Jo);
+      ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), *(Jo.value()), dt);
+    }
+    else{
+      systemObj_.get().rhsAndJacobian(predictedState, t_np1, f_np1, {});
+    }
 
-    //   if (J != nullptr){
-    //   //systemObj_.get().jacobian(predictedState, t_np1, J);
-    //   ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), J, dt);
-    // }
+    ::pressio::ode::impl::discrete_residual
+	(ode::CrankNicolson(), predictedState, R, stencilStates, stencilVelocities, dt);
 
-    // stepTracker_ = step;
+    stepTracker_ = step;
   }
 
 private:
