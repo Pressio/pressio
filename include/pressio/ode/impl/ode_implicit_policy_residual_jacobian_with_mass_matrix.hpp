@@ -66,6 +66,7 @@ public:
   using independent_variable_type = IndVarType;
   using state_type    = StateType;
   using residual_type = ResidualType;
+  using jacobian_type = JacobianType;
 
 public:
   ResidualJacobianWithMassMatrixStandardPolicy() = delete;
@@ -113,7 +114,11 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  ResidualType & R,
-		  std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type*> Jo) const
+#else
+                  jacobian_type* Jo) const
+#endif
   {
 
     if (name == StepScheme::BDF1){
@@ -147,7 +152,11 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-			 std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+			 std::optional<jacobian_type*> & Jo) const
+#else
+                         jacobian_type* Jo) const
+#endif
   {
 
     try{
@@ -158,7 +167,12 @@ private:
 			massMatrix_, R, stencilStatesManager, dt);
 
       if (Jo){
-	discrete_jacobian(BDF1(), *(Jo.value()), massMatrix_, dt);
+#ifdef PRESSIO_ENABLE_CXX17
+	auto & Jv = *(Jo.value());
+#else
+	auto & Jv = *Jo;
+#endif
+	discrete_jacobian(BDF1(), Jv, massMatrix_, dt);
       }
     }
     catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
@@ -177,7 +191,11 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-			 std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		         std::optional<jacobian_type*> Jo) const
+#else
+                         jacobian_type* Jo) const
+#endif
   {
 
     stepTracker_ = step;
@@ -189,12 +207,27 @@ private:
       if (cond()){
 	discrete_residual(BDF1(), predictedState, scratchState_, rhs_,
 			  massMatrix_, R, stencilStatesManager, dt);
-	if (Jo){ discrete_jacobian(BDF1(), *(Jo.value()), massMatrix_, dt); }
+
+	if (Jo){
+#ifdef PRESSIO_ENABLE_CXX17
+	  auto & Jv = *(Jo.value());
+#else
+	  auto & Jv = *Jo;
+#endif
+	  discrete_jacobian(BDF1(), Jv, massMatrix_, dt);
+	}
       }
       else{
 	discrete_residual(BDF2(), predictedState, scratchState_, rhs_,
 			  massMatrix_, R, stencilStatesManager, dt);
-	if (Jo){ discrete_jacobian(BDF2(), *(Jo.value()), massMatrix_, dt); }
+	if (Jo){
+#ifdef PRESSIO_ENABLE_CXX17
+	  auto & Jv = *(Jo.value());
+#else
+	  auto & Jv = *Jo;
+#endif
+	  discrete_jacobian(BDF2(), Jv, massMatrix_, dt);
+	}
       }
     }
     catch (::pressio::eh::VelocityFailureUnrecoverable const & e){

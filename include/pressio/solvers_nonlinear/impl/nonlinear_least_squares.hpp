@@ -19,14 +19,20 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
 				 RegistryType & reg,
 				 Stop stopEnumValue,
 				 ToleranceType stopTolerance,
-				 DiagnosticsContainerType & diagnostics,
+				 DiagnosticsContainerType & normDiagnostics,
 				 const DiagnosticsLoggerType & logger,
 				 int maxIters,
 				 UpdaterType && updater)
 {
 
-  auto mustStop = [&normDiag = std::as_const(diagnostics),
-		   stopEnumValue, maxIters, stopTolerance](int stepCount){
+  auto mustStop = [
+#ifdef PRESSIO_ENABLE_CXX17
+		   &normDiag = std::as_const(normDiagnostics),
+#else
+		   &normDiag = normDiagnostics,
+#endif
+		   stopEnumValue, maxIters, stopTolerance](int stepCount)
+  {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);
     switch (stopEnumValue){
     case Stop::AfterMaxIters:
@@ -47,7 +53,7 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
     // 1. compute operators
     try{
       auto objValue = compute_nonlinearls_operators_and_objective(problemTag, reg, system);
-      diagnostics[InternalDiagnostic::objectiveAbsoluteRelative].update(objValue, isFirstIteration);
+      normDiagnostics[InternalDiagnostic::objectiveAbsoluteRelative].update(objValue, isFirstIteration);
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
       PRESSIOLOG_CRITICAL(e.what());
@@ -62,11 +68,11 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
     compute_correction(problemTag, reg);
 
     /* stage 3 */
-    std::for_each(diagnostics.begin(), diagnostics.end(),
+    std::for_each(normDiagnostics.begin(), normDiagnostics.end(),
 		  [&reg, isFirstIteration](auto & v){
 		    compute_norm_internal_diagnostics(reg, isFirstIteration, v);
 		  });
-    logger(iStep, diagnostics);
+    logger(iStep, normDiagnostics);
 
     /* stage 4*/
     if (mustStop(iStep)){
@@ -80,7 +86,8 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
       auto objective = [&reg, &system, problemTag](const state_type & stateIn){
 	return compute_nonlinearls_objective(problemTag, reg, stateIn, system);
       };
-      const auto currObjValue = diagnostics[InternalDiagnostic::objectiveAbsoluteRelative].getAbsolute();
+      const auto currObjValue =
+	normDiagnostics[InternalDiagnostic::objectiveAbsoluteRelative].getAbsolute();
       updater(reg, objective, currObjValue);
 
     }
@@ -101,7 +108,7 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
 template<class Tag, class StateType, class RegistryType, class ScalarType>
 class NonLinLeastSquares
 {
-  static_assert(std::is_floating_point_v<ScalarType>,
+  static_assert(std::is_floating_point<ScalarType>::value,
 		"Impl currently only supporting floating point");
 
   Tag tag_;
@@ -178,13 +185,8 @@ public:
 
       case Update::LMSchedule1:
       case Update::LMSchedule2:{
-	if constexpr(std::is_same_v<Tag, LevenbergMarquardtNormalEqTag>){
-	  solve_lm_impl(system, solutionInOut);
-	  break;
-	}
-	else{
-	  throw std::runtime_error("invalid Update value");
-	}
+	solve_lm_impl(system, solutionInOut);
+	break;
       }
 
       default:
@@ -247,9 +249,10 @@ private:
     }
   }
 
-  template<class SystemType>
-  void solve_lm_impl(const SystemType & system,
-		     StateType & solutionInOut)
+  template<class SystemType, class _Tag = Tag>
+  mpl::enable_if_t< std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
+  solve_lm_impl(const SystemType & system,
+		StateType & solutionInOut)
   {
     auto extReg = reference_capture_registry_and_extend_with<
       StateTag, LineSearchTrialStateTag,
@@ -270,6 +273,14 @@ private:
 				  maxIters_,
 				  up_t(solutionInOut));
     }
+  }
+
+  template<class SystemType, class _Tag = Tag>
+  mpl::enable_if_t< !std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
+  solve_lm_impl(const SystemType & /*system*/,
+		StateType & /*solutionInOut*/)
+  {
+    throw std::runtime_error("invalid Update value");
   }
 };
 

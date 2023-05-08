@@ -83,13 +83,22 @@ public:
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & reducedResidual,
-			   std::optional<jacobian_type *> reducedJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type*> reducedJacobian) const
+#else
+                           jacobian_type* reducedJacobian) const
+#endif
   {
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     if (reducedJacobian){
+
+#ifdef PRESSIO_ENABLE_CXX17
       auto ja = std::optional<unmasked_fom_jac_action_result_type*>(&unMaskedFomJacAction_);
+#else
+      auto ja = &unMaskedFomJacAction_;
+#endif
       fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_,
 						 phi, ja);
     }
@@ -103,7 +112,11 @@ public:
     hyperReducer_(maskedFomResidual_, reducedResidual);
     if (reducedJacobian){
       masker_(unMaskedFomJacAction_, maskedFomJacAction_);
+#ifdef PRESSIO_ENABLE_CXX17
       hyperReducer_(maskedFomJacAction_, *reducedJacobian.value());
+#else
+      hyperReducer_(maskedFomJacAction_, *reducedJacobian);
+#endif
     }
   }
 

@@ -15,7 +15,11 @@ struct MyProblem{
   jacobian_type createJacobian() const { return jacobian_type{}; }
   void residualAndJacobian(const state_type& /*x*/,
 			   residual_type& /*r*/,
+#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> /*Jo*/) const{}
+#else
+			   jacobian_type* /*Jo*/) const{}
+#endif
 };
 
 using my_hessian_type  = Eigen::MatrixXd;

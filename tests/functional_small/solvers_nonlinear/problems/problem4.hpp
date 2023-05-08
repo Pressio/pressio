@@ -32,7 +32,11 @@ struct Problem4
 
   void residualAndJacobian(const state_type& x,
 			   residual_type& res,
+#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> Jin) const
+#else
+                           jacobian_type* Jin) const
+#endif
   {
     auto x1 = x(0);
     auto x2 = x(1);
@@ -43,7 +47,12 @@ struct Problem4
     res(3) = (1.-x2);
 
     if (Jin){
+#ifdef PRESSIO_ENABLE_CXX17
       auto & JJ = *Jin.value();
+#else
+      auto & JJ = *Jin;
+#endif
+
       JJ.setZero();
       JJ(0,1) = -20.*x2;
       JJ(0,2) = 10.;

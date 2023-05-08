@@ -46,12 +46,20 @@ struct MyApp2WithMM
 				   independent_variable_type /*unused*/,
 				   mass_matrix_type & M,
 				   rhs_type & rhs,
+#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<jacobian_type*> JJ) const
+#else
+                                   jacobian_type* JJ) const
+#endif
   {
     rhs = rhs_.at(count1++);
     M = MM_;
     if (JJ){
+#ifdef PRESSIO_ENABLE_CXX17
       *(JJ.value()) = jacobians_.at(count3++);
+#else
+      *(JJ) = jacobians_.at(count3++);
+#endif
     }
   };
 
@@ -93,14 +101,22 @@ struct MyApp2NoMM
   void rhsAndJacobian(const state_type & y,
 		      independent_variable_type evaltime,
 		      rhs_type & rhs,
+#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> JJ) const
+#else
+                      jacobian_type* JJ) const
+#endif
   {
 
     auto tmprhs = rhs_.at(count1++);
     rhs = MM_.inverse()*tmprhs;
     if(JJ){
       auto tmpJ = jacobians_.at(count3++);
+#ifdef PRESSIO_ENABLE_CXX17
       *(JJ.value()) = MM_.inverse()*tmpJ;
+#else
+      *(JJ) = MM_.inverse()*tmpJ;
+#endif
     }
   }
 };
@@ -131,7 +147,11 @@ struct FakeNonLinearSolver1{
     for (int i=0; i<numFakeSolverIterations_; ++i){
       count_++;
 
+#ifdef PRESSIO_ENABLE_CXX17
       S.residualAndJacobian(y, R, std::optional<decltype(J)*>(&J));
+#else
+      S.residualAndJacobian(y, R, &J);
+#endif
 
       auto MMinv = MM_.inverse();
       Eigen::VectorXd tmp = MMinv*R;
@@ -165,7 +185,11 @@ struct FakeNonLinearSolver2{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
+#ifdef PRESSIO_ENABLE_CXX17
       S.residualAndJacobian(y, R, std::optional<decltype(J)*>(&J));
+#else
+      S.residualAndJacobian(y, R, &J);
+#endif
       EXPECT_TRUE( R.isApprox(residuals_[count_]) );
       EXPECT_TRUE( J.isApprox(jacobians_[count_++]) );
 

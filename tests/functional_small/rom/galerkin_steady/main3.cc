@@ -26,7 +26,11 @@ struct MyFom
   void residualAndJacobianAction(const state_type & u,
 				 residual_type & r,
 				 const Eigen::MatrixXd & B,
+#ifdef PRESSIO_ENABLE_CXX17
 				 std::optional<Eigen::MatrixXd *> Ain) const
+#else
+				 Eigen::MatrixXd * Ain) const
+#endif
   {
     EXPECT_TRUE(u.size()!=r.size());
     EXPECT_TRUE(u.size()==nStencil_);
@@ -36,8 +40,12 @@ struct MyFom
       r(i) = u(validStateIndices_[i]) + 1.;
     }
 
-    if (Ain.value()){
+    if (Ain){
+#ifdef PRESSIO_ENABLE_CXX17
       auto & A = *Ain.value();
+#else
+      auto & A = *Ain;
+#endif
       for (std::size_t i=0; i<validStateIndices_.size(); ++i){
 	for (int j=0; j< A.cols(); ++j){
 	  A(i,j) = B(validStateIndices_[i], j);
@@ -63,12 +71,11 @@ struct FakeNonLinSolverSteady
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)3);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)3);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
-    using Jo_t = std::optional<decltype(J) *>;
 
     if(call_count_==1)
     {
       // mimic solver iterator 1
-      system.residualAndJacobian(state, R, Jo_t(&J));
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -87,7 +94,7 @@ struct FakeNonLinSolverSteady
 
     {
       // mimic solver iterator 2
-      system.residualAndJacobian(state, R, Jo_t(&J));
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 

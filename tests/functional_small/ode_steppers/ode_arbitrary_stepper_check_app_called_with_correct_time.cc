@@ -32,7 +32,11 @@ public:
 				   const independent_variable_type & time,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & /*unused*/,
-				   std::optional<discrete_jacobian_type *> /*unused*/,
+#ifdef PRESSIO_ENABLE_CXX17
+				   std::optional<discrete_jacobian_type*> /*J*/,
+#else
+                                   discrete_jacobian_type* /*J*/,
+#endif
 				   const state_type & /*unused*/,
 				   const state_type & /*unused*/) const
   {

@@ -49,6 +49,10 @@
 #ifndef SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_PREDICATES_HPP_
 #define SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_PREDICATES_HPP_
 
+#ifdef PRESSIO_ENABLE_CXX17
+#include <optional>
+#endif
+
 namespace pressio{ namespace nonlinearsolvers{
 
 template <class T, class StateType, class = void>
@@ -178,7 +182,11 @@ struct has_const_residualandjacobian_method_accept_state_result_return_void<
             (
               std::declval<StateType const &>(),
               std::declval<ResidualType &>(),
+#ifdef PRESSIO_ENABLE_CXX17
 	      std::declval<std::optional<JacobianType*>>()
+#else
+	      std::declval<JacobianType*>()
+#endif
             )
          )
       >::value

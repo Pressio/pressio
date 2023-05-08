@@ -107,7 +107,11 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  residual_type & R,
-		  std::optional<jacobian_type *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type *> Jo) const
+#else
+		  jacobian_type * Jo) const
+#endif
   {
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1)
@@ -144,10 +148,14 @@ private:
 			 const IndVarType & dt,
 			 const typename ::pressio::ode::StepCount::value_type & step,
 			 residual_type & R,
-			 std::optional<jacobian_type *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+			std::optional<jacobian_type *> & Jo) const
+#else
+		        jacobian_type * Jo) const
+#endif
   {
     static_assert( std::is_same<OdeTag, ode::BDF1>::value ||
-		   std::is_same<OdeTag, ode::BDF2>::value);
+		   std::is_same<OdeTag, ode::BDF2>::value, "");
 
     /* the FOM state for the prediction has to be always recomputed
        regardless of whether the currentStepNumber changes since
@@ -169,7 +177,7 @@ private:
       stepTracker_ = step;
     }
 
-    if constexpr(std::is_same<OdeTag, ode::BDF1>::value){
+    if (std::is_same<OdeTag, ode::BDF1>::value){
 
       /* BDF1 residual : R(y_n+1) = cnp1*y_n+1 + cn*y_n + cf*f(t_n+1, y_n+1)
 	 which we do follows:
@@ -230,8 +238,11 @@ private:
 
     // deal with jacobian if needed
     if (Jo){
+#ifdef PRESSIO_ENABLE_CXX17
       auto & J = *Jo.value();
-
+#else
+      auto & J = *Jo;
+#endif
       // lspgJac = decoderJac + dt*coeff*J*decoderJac
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
@@ -243,7 +254,7 @@ private:
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
       const auto one = ::pressio::utils::Constants<sc_t>::one();
       IndVarType cf = {};
-      if constexpr(std::is_same<OdeTag, ode::BDF1>::value){
+      if (std::is_same<OdeTag, ode::BDF1>::value){
 	cf = dt * ::pressio::ode::constants::bdf1<sc_t>::c_f_;
       }
       else{

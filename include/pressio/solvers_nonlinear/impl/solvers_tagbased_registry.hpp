@@ -112,33 +112,47 @@ struct TagBasedStaticRegistryExtension<
   }
 
   template<class TagToFind, class T>
-  void set(T && o){
-    if constexpr(Extendable::template contains<TagToFind>()){
-      reg_.template set<TagToFind>(std::forward<T>(o));
-    }
-    else{
-      newReg_.template set<TagToFind>(std::forward<T>(o));
-    }
+  mpl::enable_if_t< Extendable::template contains<TagToFind>() >
+  set(T && o){
+    reg_.template set<TagToFind>(std::forward<T>(o));
   }
 
-  template<class TagToFind>
+  template<class TagToFind, class T>
+  mpl::enable_if_t< !Extendable::template contains<TagToFind>() >
+  set(T && o){
+    newReg_.template set<TagToFind>(std::forward<T>(o));
+  }
+
+  template<
+    class TagToFind,
+    mpl::enable_if_t< Extendable::template contains<TagToFind>(), int> * = nullptr
+    >
   auto & get(){
-    if constexpr(Extendable::template contains<TagToFind>()){
-      return reg_.template get<TagToFind>();
-    }
-    else{
-      return newReg_.template get<TagToFind>();
-    }
+    return reg_.template get<TagToFind>();
   }
 
-  template<class TagToFind>
+  template<
+    class TagToFind,
+    mpl::enable_if_t< !Extendable::template contains<TagToFind>(), int> * = nullptr
+    >
+  auto & get(){
+    return newReg_.template get<TagToFind>();
+  }
+
+  template<
+    class TagToFind,
+    mpl::enable_if_t< Extendable::template contains<TagToFind>(), int> * = nullptr
+    >
   const auto & get() const {
-    if constexpr(Extendable::template contains<TagToFind>()){
-      return reg_.template get<TagToFind>();
-    }
-    else{
-      return newReg_.template get<TagToFind>();
-    }
+    return reg_.template get<TagToFind>();
+  }
+
+  template<
+    class TagToFind,
+    mpl::enable_if_t< !Extendable::template contains<TagToFind>(), int> * = nullptr
+    >
+  const auto & get() const {
+    return newReg_.template get<TagToFind>();
   }
 };
 

@@ -65,7 +65,7 @@ struct FakeNonLinSolver
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
-    using Jo_t = std::optional<decltype(J) *>;
+    //using Jo_t = std::optional<decltype(J) *>;
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
@@ -81,7 +81,7 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	//std::cout << "S " << call_count_ << " \n" << R << std::endl;
 	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -126,7 +126,7 @@ struct FakeNonLinSolver
       // do solver iterator 2
       //-----------------------
       {
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
         //std::cout << "S " << call_count_ << " \n" << R << std::endl;
 	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -179,7 +179,7 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	//std::cout << "S " << call_count_ << " \n" << R << std::endl;
 	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -224,7 +224,7 @@ struct FakeNonLinSolver
       // do solver iterator 2
       //-----------------------
       {
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
         //std::cout << "S " << call_count_ << " \n" << R << std::endl;
 	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
 

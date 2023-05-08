@@ -114,7 +114,7 @@ struct NonLinSolver
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
-    using Jo_t = std::optional<decltype(J) *>;
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // call_count == 1
@@ -122,7 +122,7 @@ struct NonLinSolver
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, Jo_t(&J));
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
       EXPECT_DOUBLE_EQ(R[0], 0.);
@@ -142,7 +142,7 @@ struct NonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, Jo_t(&J));
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0], 1.);
       EXPECT_DOUBLE_EQ(R[1], -199.);
       EXPECT_DOUBLE_EQ(R[2], -399.);
@@ -166,7 +166,7 @@ struct NonLinSolver
     if(call_count_==2)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, Jo_t(&J));
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0],    0.);
       EXPECT_DOUBLE_EQ(R[1], -300.);
       EXPECT_DOUBLE_EQ(R[2], -600.);
@@ -184,7 +184,7 @@ struct NonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, Jo_t(&J));
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0],    1.);
       EXPECT_DOUBLE_EQ(R[1], -359.);
       EXPECT_DOUBLE_EQ(R[2], -719.);

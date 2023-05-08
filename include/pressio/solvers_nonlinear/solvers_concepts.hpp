@@ -49,7 +49,6 @@
 #ifndef SOLVERS_NONLINEAR_CONCEPTS_HPP_
 #define SOLVERS_NONLINEAR_CONCEPTS_HPP_
 
-#include <optional>
 #include "./solvers_predicates.hpp"
 
 namespace pressio{ namespace nonlinearsolvers{

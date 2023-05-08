@@ -29,7 +29,7 @@ template<
   PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
    && RealValuedSemiDiscreteFom<FomSystemType>::value
    && !RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-   && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+   && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
    , int> = 0
  >
 #endif
@@ -67,7 +67,7 @@ template<
   mpl::enable_if_t<
     PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
     && RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-    && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+    && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
     , int > = 0
   >
 #endif

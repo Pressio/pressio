@@ -105,7 +105,11 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  ResidualType & R,
-		  std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type*> Jo) const
+#else
+                  jacobian_type* Jo) const
+#endif
   {
 
     trampoline(name, predictedState, stencilStatesManager,
@@ -149,7 +153,11 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-			 std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		         std::optional<jacobian_type*> Jo) const
+#else
+                         jacobian_type* Jo) const
+#endif
   {
 
     try{
@@ -160,7 +168,12 @@ private:
 					      R, stencilStatesManager, dt);
 
       if (Jo){
-       	::pressio::ode::impl::discrete_jacobian(BDF1(), *(Jo.value()), dt);
+#ifdef PRESSIO_ENABLE_CXX17
+	auto & Jv = *(Jo.value());
+#else
+	auto & Jv = *Jo;
+#endif
+       	::pressio::ode::impl::discrete_jacobian(BDF1(), Jv, dt);
       }
     }
     catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
@@ -183,7 +196,11 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-			 std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		         std::optional<jacobian_type*> Jo) const
+#else
+                         jacobian_type* Jo) const
+#endif
   {
 
     stepTracker_ = step;
@@ -194,7 +211,15 @@ private:
 	systemObj_.get().rhsAndJacobian(predictedState, rhsEvaluationTime, R, Jo);
 	::pressio::ode::impl::discrete_residual(BDF1(), predictedState,
 						R, stencilStatesManager, dt);
-	if (Jo){ ::pressio::ode::impl::discrete_jacobian(BDF1(), *(Jo.value()), dt); }
+
+	if (Jo){
+#ifdef PRESSIO_ENABLE_CXX17
+	  auto & Jv = *(Jo.value());
+#else
+	  auto & Jv = *Jo;
+#endif
+	  ::pressio::ode::impl::discrete_jacobian(BDF1(), Jv, dt);
+	}
       }
       catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
 	throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -206,7 +231,15 @@ private:
 	systemObj_.get().rhsAndJacobian(predictedState, rhsEvaluationTime, R, Jo);
 	::pressio::ode::impl::discrete_residual(BDF2(), predictedState,
 						R, stencilStatesManager, dt);
-	if (Jo){ ::pressio::ode::impl::discrete_jacobian(BDF2(), *(Jo.value()), dt); }
+
+	if (Jo){
+#ifdef PRESSIO_ENABLE_CXX17
+	  auto & Jv = *(Jo.value());
+#else
+	  auto & Jv = *Jo;
+#endif
+	  ::pressio::ode::impl::discrete_jacobian(BDF2(), Jv, dt);
+	}
       }
       catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
 	throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -230,7 +263,11 @@ private:
 		       const IndVarType & dt,
 		       const StepType & step,
 		       ResidualType & R,
-		       std::optional<JacobianType *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		       std::optional<jacobian_type*> Jo) const
+#else
+                       jacobian_type* Jo) const
+#endif
   {
 
     if (stepTracker_ != step){
@@ -243,7 +280,13 @@ private:
     auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
     if (Jo){
       systemObj_.get().rhsAndJacobian(predictedState, t_np1, f_np1, Jo);
-      ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), *(Jo.value()), dt);
+
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & Jv = *(Jo.value());
+#else
+      auto & Jv = *Jo;
+#endif
+      ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), Jv, dt);
     }
     else{
       systemObj_.get().rhsAndJacobian(predictedState, t_np1, f_np1, {});

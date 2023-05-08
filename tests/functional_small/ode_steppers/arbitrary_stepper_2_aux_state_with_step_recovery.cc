@@ -30,7 +30,11 @@ public:
 				   const independent_variable_type & /*unused*/,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<discrete_jacobian_type*> J,
+#else
+                                   discrete_jacobian_type* J,
+#endif
 				   const state_type & yn,
 				   const state_type & ynm1,
 				   const state_type & ynm2) const
@@ -120,7 +124,7 @@ struct MyFakeSolver
     {
       std::cout << i << "\n";
       try{
-	sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
+	sys.residualAndJacobian(state, R, &J);
 	state(0) += 0.1;
 	state(1) += 0.2;
 	state(2) += 0.3;

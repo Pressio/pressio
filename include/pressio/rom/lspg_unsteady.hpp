@@ -67,7 +67,7 @@ template<
   mpl::enable_if_t<
     PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
     && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-    && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+    && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
     && MaskableWith<typename FomSystemType::rhs_type, MaskerType>::value
     && MaskableWith<impl::fom_jac_action_on_trial_space_t<FomSystemType, TrialSubspaceType>, MaskerType>::value
     , int> = 0
@@ -121,7 +121,7 @@ template<class TrialSubspaceType, class FomSystemType, class HypRedUpdaterType,
   mpl::enable_if_t<
     PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
     && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-    && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+    && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
     && !MaskableWith<typename FomSystemType::rhs_type, HypRedUpdaterType>::value
     , int> = 0
   >

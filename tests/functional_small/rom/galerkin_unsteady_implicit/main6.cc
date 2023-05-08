@@ -75,10 +75,10 @@ struct NonLinSolver
     count_++;
     auto R = system.createResidual();
     auto J = system.createJacobian();
-    using Jo_t = std::optional<decltype(J) *>;
+    //using Jo_t = std::optional<decltype(J) *>;
 
     // mimic iteration 1
-    system.residualAndJacobian(state, R, Jo_t(&J));
+    system.residualAndJacobian(state, R, &J);
 
     if (count_ == 1)
     {
@@ -92,7 +92,7 @@ struct NonLinSolver
     for (int i=0; i<state.size(); ++i){ state[i] += 1.; }
 
     // mimic iteration 2
-    system.residualAndJacobian(state, R, Jo_t(&J));
+    system.residualAndJacobian(state, R, &J);
     if (count_ == 1)
     {
       Eigen::VectorXd goldR(3); goldR << 0.,80.,160.;

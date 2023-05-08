@@ -4,10 +4,10 @@
 #include "pressio/solvers_nonlinear_newton.hpp"
 #include "./problems/problem1.hpp"
 
-template<class SystemType, bool logOn = false>
-void run_impl(int reps, bool callSolveWithJustState = true)
+template<class SystemType>
+void run_impl(int reps, bool logOn = false, bool callSolveWithJustState = true)
 {
-  if constexpr(logOn){
+  if (logOn){
     pressio::log::initialize(pressio::logto::terminal);
     pressio::log::setVerbosity({pressio::log::level::debug});
   }
@@ -55,24 +55,23 @@ void run_impl(int reps, bool callSolveWithJustState = true)
     }
   }
 
-  if constexpr(logOn){
+  if (logOn){
     pressio::log::finalize();
   }
 }
 
 TEST(solvers_nonlinear, problem1){
-  run_impl<pressio::solvers::test::Problem1, true>(1, false);
+  run_impl<pressio::solvers::test::Problem1>(1, true, false);
 }
 
 TEST(solvers_nonlinear, problem1_repeated_solve){
-  run_impl<pressio::solvers::test::Problem1>(100, false);
+  run_impl<pressio::solvers::test::Problem1>(100, false, false);
 }
 
 TEST(solvers_nonlinear, problem1_call_solve_with_only_state){
-  run_impl<pressio::solvers::test::Problem1, true>(1, true);
+  run_impl<pressio::solvers::test::Problem1>(1, true, true);
 }
 
 TEST(solvers_nonlinear, problem1_repeated_solve_call_solve_with_only_state){
-  run_impl<pressio::solvers::test::Problem1>(100, true);
+  run_impl<pressio::solvers::test::Problem1>(100, false, true);
 }
-

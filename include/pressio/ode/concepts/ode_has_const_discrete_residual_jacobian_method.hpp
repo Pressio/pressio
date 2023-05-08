@@ -49,7 +49,9 @@
 #ifndef ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
 #define ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
 
+#ifdef PRESSIO_ENABLE_CXX17
 #include <optional>
+#endif
 
 namespace pressio{ namespace ode{
 
@@ -78,7 +80,11 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
+#ifdef PRESSIO_ENABLE_CXX17
         std::declval< std::optional<JacobianType*> >(),
+#else
+	std::declval<JacobianType*>(),
+#endif
 	std::declval<state_t const&>()
 	)
        )
@@ -102,7 +108,11 @@ struct has_const_discrete_residual_jacobian_method<
 	 std::declval<IndVarType const &>(),
 	 std::declval<IndVarType const &>(),
 	 std::declval<ResidualType &>(),
-         std::declval< std::optional<JacobianType*> >(),
+#ifdef PRESSIO_ENABLE_CXX17
+        std::declval< std::optional<JacobianType*> >(),
+#else
+	std::declval<JacobianType*>(),
+#endif
 	 std::declval<state_t const&>(),
 	 std::declval<state_t const&>()
 	)
@@ -126,7 +136,11 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
+#ifdef PRESSIO_ENABLE_CXX17
         std::declval< std::optional<JacobianType*> >(),
+#else
+	std::declval<JacobianType*>(),
+#endif
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>()
@@ -152,7 +166,11 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
+#ifdef PRESSIO_ENABLE_CXX17
         std::declval< std::optional<JacobianType*> >(),
+#else
+	std::declval<JacobianType*>(),
+#endif
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),

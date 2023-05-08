@@ -106,7 +106,11 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-			      std::optional<discrete_jacobian_type *> Jo,
+#ifdef PRESSIO_ENABLE_CXX17
+			      std::optional<discrete_jacobian_type*> Jo,
+#else
+			      discrete_jacobian_type* Jo,
+#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n) const
   {
@@ -114,12 +118,17 @@ public:
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = Jo.has_value();
+    const bool computeJacobian = bool(Jo);
 
     try
     {
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
-							     R, phi, computeJacobian, *Jo.value(),
+							     R, phi, computeJacobian,
+#ifdef PRESSIO_ENABLE_CXX17
+							     *Jo.value(),
+#else
+							     *Jo,
+#endif
 							     ynp1, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
@@ -133,7 +142,11 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-			      std::optional<discrete_jacobian_type *> Jo,
+#ifdef PRESSIO_ENABLE_CXX17
+			      std::optional<discrete_jacobian_type*> Jo,
+#else
+			      discrete_jacobian_type* Jo,
+#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n,
 			      const state_type & lspg_state_nm1) const
@@ -144,11 +157,16 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = Jo.has_value();
+    const bool computeJacobian = Jo;
 
     try{
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
-							     R, phi, computeJacobian, *Jo.value(),
+							     R, phi, computeJacobian,
+#ifdef PRESSIO_ENABLE_CXX17
+							     *Jo.value(),
+#else
+							     *Jo,
+#endif
 							     ynp1, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){

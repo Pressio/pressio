@@ -92,7 +92,11 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<independent_variable_type> & dt,
 		  residual_type & R,
-		  std::optional<jacobian_type *> & Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type *> Jo) const
+#else
+		  jacobian_type * Jo) const
+#endif
   {
     ToDecorate::operator()(odeSchemeName, predictedReducedState,
 			   reducedStatesStencilManager, fomRhsStencilManger,
@@ -100,7 +104,11 @@ public:
 
     // fomStateAt_np1 is only valid IF already reconstructed in the base class
     const auto & fomStateAt_np1 = fomStatesManager_(::pressio::ode::nPlusOne());
+#ifdef PRESSIO_ENABLE_CXX17
     scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, *Jo.value());
+#else
+    scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, *Jo);
+#endif
   }
 
 private:

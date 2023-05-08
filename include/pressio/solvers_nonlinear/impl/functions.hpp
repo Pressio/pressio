@@ -31,7 +31,11 @@ void compute_residual(RegistryType & reg,
 		      const SystemType & system)
 {
   auto & r = reg.template get<ResidualTag>();
+#ifdef PRESSIO_ENABLE_CXX17
   system.residualAndJacobian(state, r, {});
+#else
+  system.residualAndJacobian(state, r, nullptr);
+#endif
 }
 
 #ifdef PRESSIO_ENABLE_CXX20
@@ -58,8 +62,12 @@ void compute_residual_and_jacobian(RegistryType & reg,
   const auto & state = reg.template get<StateTag>();
   auto & r = reg.template get<ResidualTag>();
   auto & j = reg.template get<JacobianTag>();
+#ifdef PRESSIO_ENABLE_CXX17
   using j_t = typename SystemType::jacobian_type;
   system.residualAndJacobian(state, r, std::optional<j_t*>{&j});
+#else
+  system.residualAndJacobian(state, r, &j);
+#endif
 }
 
 template<class RegistryType>
@@ -406,6 +414,26 @@ void reset_for_new_solve_loop(LevenbergMarquardtNormalEqTag /*tagJ*/,
 
 // =====================================================
 
+template<class Tag, class T, class RegistryType>
+mpl::enable_if_t< !RegistryType::template contains<Tag>() >
+compute_norm2_if_tag_if_present(Tag /*t*/,
+				const RegistryType & reg,
+				bool isInitial,
+				InternalDiagnosticDataWithAbsoluteRelativeTracking<T> & metric)
+{ /* noop */ }
+
+template<class Tag, class T, class RegistryType>
+mpl::enable_if_t< RegistryType::template contains<Tag>() >
+compute_norm2_if_tag_if_present(Tag /*t*/,
+				const RegistryType & reg,
+				bool isInitial,
+				InternalDiagnosticDataWithAbsoluteRelativeTracking<T> & metric)
+{
+  const auto & operand = reg.template get<Tag>();
+  const auto value = ops::norm2(operand);
+  metric.update(value, isInitial);
+}
+
 template<class T, class RegistryType>
 void compute_norm_internal_diagnostics(const RegistryType & reg,
 				       bool isInitial,
@@ -415,28 +443,16 @@ void compute_norm_internal_diagnostics(const RegistryType & reg,
   switch(metric.name())
   {
     case InternalDiagnostic::residualAbsoluteRelativel2Norm:
-      if constexpr(RegistryType::template contains<ResidualTag>()){
-	const auto & operand = reg.template get<ResidualTag>();
-	const auto value = ops::norm2(operand);
-	metric.update(value, isInitial);
-      }
-    break;
+      compute_norm2_if_tag_if_present(ResidualTag{}, reg, isInitial, metric);
+      break;
 
     case InternalDiagnostic::correctionAbsoluteRelativel2Norm:
-      if constexpr(RegistryType::template contains<CorrectionTag>()){
-	const auto & operand = reg.template get<CorrectionTag>();
-	const auto value = ops::norm2(operand);
-	metric.update(value, isInitial);
-      }
-    break;
+      compute_norm2_if_tag_if_present(CorrectionTag{}, reg, isInitial, metric);
+      break;
 
     case InternalDiagnostic::gradientAbsoluteRelativel2Norm:
-      if constexpr(RegistryType::template contains<GradientTag>()){
-	const auto & operand = reg.template get<GradientTag>();
-	const auto value = ops::norm2(operand);
-	metric.update(value, isInitial);
-      }
-    break;
+      compute_norm2_if_tag_if_present(GradientTag{}, reg, isInitial, metric);
+      break;
 
     default: return;
   };//end switch

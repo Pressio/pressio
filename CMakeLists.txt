@@ -47,31 +47,50 @@ endif()
 #=====================================================================
 # c++ standard
 #=====================================================================
+SET(PRESSIO_ENABLE_CXX14 OFF)
 SET(PRESSIO_ENABLE_CXX17 OFF)
 SET(PRESSIO_ENABLE_CXX20 OFF)
 
 IF (NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 14)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
 ENDIF()
-MESSAGE(STATUS "Setting CXX standard to ${CMAKE_CXX_STANDARD}")
 
-IF(CMAKE_CXX_STANDARD STREQUAL "17")
+include(CheckCXXCompilerFlag)
+IF(CMAKE_CXX_STANDARD STREQUAL "14")
+  SET(PRESSIO_ENABLE_CXX14 ON)
+  check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_TARGET_CPP14)
+  if(NOT COMPILER_SUPPORT_TARGET_CPP14)
+    message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
+  endif()
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX14=ON")
+
+ELSEIF(CMAKE_CXX_STANDARD STREQUAL "17")
+  SET(PRESSIO_ENABLE_CXX14 ON)
   SET(PRESSIO_ENABLE_CXX17 ON)
+  check_cxx_compiler_flag("-std=c++17" COMPILER_SUPPORT_TARGET_CPP17)
+  if(NOT COMPILER_SUPPORT_TARGET_CPP17)
+    message(FATAL_ERROR "Compiler does not support -std=c++17. This is required.")
+  endif()
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX14=ON")
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX17=ON")
+
 ELSEIF(CMAKE_CXX_STANDARD STREQUAL "20")
+  SET(PRESSIO_ENABLE_CXX14 ON)
+  SET(PRESSIO_ENABLE_CXX17 ON)
   SET(PRESSIO_ENABLE_CXX20 ON)
+  check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORT_TARGET_CPP20)
+  if(NOT COMPILER_SUPPORT_TARGET_CPP20)
+    message(FATAL_ERROR "Compiler does not support -std=c++20. This is required.")
+  endif()
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX14=ON")
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX17=ON")
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX20=ON")
+
 ENDIF()
 
-# commands to test if compiler supports standard
-#include(CheckCXXCompilerFlag)
-#check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_CPP14)
-#if(NOT COMPILER_SUPPORT_CPP14)
-#  message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
-#endif()
-#set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_EXTENSIONS OFF)
+MESSAGE("${Magenta}>> Setting CXX standard to ${CMAKE_CXX_STANDARD} ${ColourReset}")
 
 #=====================================================================
 # do processing

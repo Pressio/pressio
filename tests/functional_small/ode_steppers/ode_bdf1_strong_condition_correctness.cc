@@ -18,7 +18,11 @@ public:
   void rhsAndJacobian(const state_type & /*unused*/,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-		      std::optional<jacobian_type *> /*unsued*/) const{}
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> /*J*/) const{}
+#else
+                      jacobian_type* /*J*/) const{}
+#endif
 };
 
 struct MyFakeSolver

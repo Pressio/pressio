@@ -42,12 +42,12 @@ struct FakeNonLinSolver
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)3);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)3);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
-    using Jo_t = std::optional<decltype(J) *>;
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //-----------------------
     // fake a solver iterator 1
     //-----------------------
-    system.residualAndJacobian(state, R, Jo_t(&J));
+    system.residualAndJacobian(state, R, &J);
 
     if (call_count_ == 1){
       const double predictionTime = 2.;
@@ -106,7 +106,7 @@ struct FakeNonLinSolver
     //-----------------------
     // fake a solver iterator 2
     //-----------------------
-    system.residualAndJacobian(state, R, Jo_t(&J));
+    system.residualAndJacobian(state, R, &J);
 
     if (call_count_ == 1){
       const double predictionTime = 2.;

@@ -72,7 +72,11 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & galerkinResidual,
+#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type *> galerkinJacobian,
+#else
+			      discrete_jacobian_type * galerkinJacobian,
+#endif
 			      const state_type & galerkin_state_np1,
 			      const state_type & galerkin_state_n) const
   {
@@ -81,7 +85,7 @@ public:
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = galerkinJacobian.has_value();
+    const bool computeJacobian = (bool) galerkinJacobian;
     try
     {
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
@@ -102,7 +106,11 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & galerkinResidual,
+#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type *> galerkinJacobian,
+#else
+			      discrete_jacobian_type * galerkinJacobian,
+#endif
 			      const state_type & galerkin_state_np1,
 			      const state_type & galerkin_state_n,
 			      const state_type & galerkin_state_nm1) const
@@ -114,7 +122,7 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = galerkinJacobian.has_value();
+    const bool computeJacobian = galerkinJacobian;
     try{
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
 							     dt, fomResidual_,
@@ -131,7 +139,11 @@ public:
 private:
 
   void computeReducedOperators(discrete_residual_type & galerkinResidual,
-			       std::optional<discrete_jacobian_type *> galerkinJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+			      std::optional<discrete_jacobian_type *> galerkinJacobian) const
+#else
+			      discrete_jacobian_type * galerkinJacobian) const
+#endif
   {
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
@@ -148,7 +160,12 @@ private:
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,
-			      beta, *galerkinJacobian.value());
+			      beta,
+#ifdef PRESSIO_ENABLE_CXX17
+			      *galerkinJacobian.value());
+#else
+			      *galerkinJacobian);
+#endif
     }
   }
 

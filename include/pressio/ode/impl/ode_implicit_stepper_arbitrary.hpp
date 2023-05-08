@@ -138,7 +138,11 @@ public:
   mpl::enable_if_t< _numAuxStates==1 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-		      std::optional<JacobianType *> Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jo) const
+#else
+                      jacobian_type* Jo) const
+#endif
   {
     const auto & yn = stencilStates_(ode::n());
 
@@ -156,7 +160,11 @@ public:
   mpl::enable_if_t< _numAuxStates==2 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-		      std::optional<JacobianType *> Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jo) const
+#else
+                      jacobian_type* Jo) const
+#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
@@ -176,7 +184,11 @@ public:
   mpl::enable_if_t< _numAuxStates==3 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-		      std::optional<JacobianType *> Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jo) const
+#else
+                      jacobian_type* Jo) const
+#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());

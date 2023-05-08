@@ -30,13 +30,22 @@ struct Problem2
 
   void residualAndJacobian(const state_type& x,
 			   residual_type& res,
+#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> Jin) const
+#else
+                           jacobian_type* Jin) const
+#endif
   {
     res(0) = x(0)*x(0) + x(1)*x(1) - 4.0;
     res(1) = x(0)*x(1) - 1.0;
 
     if (Jin){
-     auto & jac = *Jin.value();
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & jac = *Jin.value();
+#else
+      auto & jac = *Jin;
+#endif
+
       jac.coeffRef(0, 0) = 2*x(0);
       jac.coeffRef(0, 1) = 2*x(1);
       // Have incorrect entries so that line search is required

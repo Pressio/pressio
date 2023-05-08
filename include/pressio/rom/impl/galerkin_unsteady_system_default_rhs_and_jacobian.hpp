@@ -68,7 +68,11 @@ public:
   void rhsAndJacobian(const state_type & reducedState,
 		      const IndVarType & rhsEvaluationTime,
 		      rhs_type & reducedRhs,
-		      std::optional<jacobian_type *> reducedJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> reducedJacobian) const
+#else
+                      jacobian_type* reducedJacobian) const
+#endif
   {
 
     // reconstruct fom state fomState = phi*reducedState
@@ -95,7 +99,12 @@ public:
       constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
       ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,
-			      beta, *reducedJacobian.value());
+			      beta,
+#ifdef PRESSIO_ENABLE_CXX17
+			      *reducedJacobian.value());
+#else
+                              *reducedJacobian);
+#endif
     }
   }
 

@@ -80,7 +80,11 @@ struct System6{
   void rhsAndJacobian(const state_type &        /*unused*/,
 		      independent_variable_type /*unused*/,
 		      rhs_type &    /*unused*/,
+#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*unused*/) const{}
+#else
+		      jacobian_type* /*unused*/) const{}
+#endif
 };
 
 //
@@ -102,7 +106,11 @@ struct System7{
 				   independent_variable_type /*unused*/,
 				   mass_matrix_type &        /*unused*/,
 				   rhs_type &    /*unused*/,
+#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<jacobian_type*> /*unused*/) const{}
+#else
+				   jacobian_type* /*unused*/) const{}
+#endif
 };
 
 //
@@ -126,7 +134,11 @@ struct System9{
 				   independent_variable_type /*unused*/,
 				   independent_variable_type /*unused*/,
 				   discrete_residual_type &  /*unused*/,
-				   std::optional<discrete_jacobian_type*>, /*unused*/
+#ifdef PRESSIO_ENABLE_CXX17
+		                   std::optional<discrete_jacobian_type*> /*unused*/,
+#else
+		                   discrete_jacobian_type* /*unused*/,
+#endif
 				   const state_type &        /*unused*/) const{}
 
   template<class StepCountType>
@@ -134,7 +146,11 @@ struct System9{
 				   independent_variable_type /*unused*/,
 				   independent_variable_type /*unused*/,
 				   discrete_residual_type &  /*unused*/,
-				   std::optional<discrete_jacobian_type*>, /*unused*/
+#ifdef PRESSIO_ENABLE_CXX17
+		                   std::optional<discrete_jacobian_type*> /*unused*/,
+#else
+		                   discrete_jacobian_type* /*unused*/,
+#endif
 				   const state_type &        /*unused*/,
 				   const state_type &        /*unused*/) const{}
 };

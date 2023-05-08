@@ -166,7 +166,11 @@ public:
 
   void residualAndJacobian(const StateType & odeState,
 			   ResidualType & R,
-			   std::optional<JacobianType *> Jo) const
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type*> Jo) const
+#else
+                           jacobian_type* Jo) const
+#endif
   {
     rj_policy_.get()(name_, odeState, stencil_states_, stencil_rhs_,
 		     ::pressio::ode::StepEndAt<IndVarType>(t_np1_),

@@ -52,7 +52,11 @@ public:
 				   const independent_variable_type & /*unused*/,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<discrete_jacobian_type*> J,
+#else
+				   discrete_jacobian_type* J,
+#endif
 				   const state_type & x_n,
 				   const state_type & x_nm1) const
   {
@@ -68,7 +72,13 @@ public:
     auto A = B_mats_[index];
     ::pressio::ops::add_to_diagonal(A, dt);
     R = x_n - A * x_nm1;
-    if (J){ J.value()->setIdentity(); }
+    if (J){
+#ifdef PRESSIO_ENABLE_CXX17
+      J.value()->setIdentity();
+#else
+      J->setIdentity();
+#endif
+    }
   }
 };
 
@@ -91,7 +101,11 @@ public:
 				   const independent_variable_type & /*unused*/,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<discrete_jacobian_type*> J,
+#else
+				   discrete_jacobian_type* J,
+#endif
 				   const state_type & w_n,
 				   const state_type & w_nm1) const
   {
@@ -112,7 +126,13 @@ public:
     auto A = B_mats_[index];
     ::pressio::ops::add_to_diagonal(A, dtToUse);
     R = w_n - A.transpose() * w_nm1;
-    if (J){ J.value()->setIdentity(); }
+    if (J){
+#ifdef PRESSIO_ENABLE_CXX17
+      J.value()->setIdentity();
+#else
+      J->setIdentity();
+#endif
+    }
   }
 };
 
@@ -123,7 +143,7 @@ struct MyFakeSolver{
     auto R = sys.createResidual();
     auto J = sys.createJacobian();
 
-    sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
+    sys.residualAndJacobian(state, R, &J);
     assert(J == _mat_type::Identity(J.rows(), J.cols()));
     Eigen::VectorXd correction = R;
     state -= correction;

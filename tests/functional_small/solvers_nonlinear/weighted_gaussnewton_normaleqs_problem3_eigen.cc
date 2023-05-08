@@ -3,7 +3,7 @@
 #include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem3.hpp"
 
-template<class scalar_t = double>
+template<class scalar_t>
 struct IdentityWeigher{
 
   template<class T>
@@ -86,7 +86,7 @@ int main()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = create_gauss_newton_solver(problem, linSolver, IdentityWeigher{});
+  auto GNSolver = create_gauss_newton_solver(problem, linSolver, IdentityWeigher<double>{});
 
   x(0) = 2.0; x(1) = 0.25;
   testC1(sentinel, problem, x, GNSolver);

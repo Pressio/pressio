@@ -34,18 +34,25 @@ void root_solving_loop_impl(ProblemTag /*problemTag*/,
     return ::pressio::ops::norm2(r);
   };
 
-  auto mustStop = [&normDiag = std::as_const(normDiagnostics),
-       stopEnumValue, maxIters, stopTolerance](int stepCount){
+  auto mustStop = [
+#ifdef PRESSIO_ENABLE_CXX17
+		   &normDiag = std::as_const(normDiagnostics),
+#else
+		   &normDiag = normDiagnostics,
+#endif
+		   stopEnumValue, maxIters, stopTolerance]
+    (int stepCount)
+  {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);
     switch (stopEnumValue){
-      case Stop::AfterMaxIters:
-  return stepCount == maxIters;
-      default:
-  if (is_absolute_diagnostic(stopDiag)){
-    return normDiag[stopDiag].getAbsolute() < stopTolerance;
-  }else{
-    return normDiag[stopDiag].getRelative() < stopTolerance;
-  }
+    case Stop::AfterMaxIters:
+      return stepCount == maxIters;
+    default:
+      if (is_absolute_diagnostic(stopDiag)){
+	return normDiag[stopDiag].getAbsolute() < stopTolerance;
+      }else{
+	return normDiag[stopDiag].getRelative() < stopTolerance;
+      }
     };
   };
 

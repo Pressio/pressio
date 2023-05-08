@@ -82,7 +82,7 @@ struct FakeNonLinSolver
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
-    using Jo_t = std::optional<decltype(J) *>;
+    //using Jo_t = std::optional<decltype(J) *>;
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
@@ -103,7 +103,7 @@ struct FakeNonLinSolver
 	EXPECT_NEAR(state(1), 1., 1e-15);
 	EXPECT_NEAR(state(2), 2., 1e-15);
 
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -136,7 +136,7 @@ struct FakeNonLinSolver
 	EXPECT_NEAR(state(1), 2., 1e-15);
 	EXPECT_NEAR(state(2), 3., 1e-15);
 
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -180,7 +180,7 @@ struct FakeNonLinSolver
 	EXPECT_NEAR(state(1), 3., 1e-15);
 	EXPECT_NEAR(state(2), 4., 1e-15);
 
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -219,7 +219,7 @@ struct FakeNonLinSolver
 	EXPECT_NEAR(state(1), 4., 1e-15);
 	EXPECT_NEAR(state(2), 5., 1e-15);
 
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -270,7 +270,7 @@ struct FakeNonLinSolver
 	EXPECT_NEAR(state(1), 5., 1e-15);
 	EXPECT_NEAR(state(2), 6., 1e-15);
 
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -309,7 +309,7 @@ struct FakeNonLinSolver
 	EXPECT_NEAR(state(1), 6., 1e-15);
 	EXPECT_NEAR(state(2), 7., 1e-15);
 
-	system.residualAndJacobian(state, R, Jo_t(&J));
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 

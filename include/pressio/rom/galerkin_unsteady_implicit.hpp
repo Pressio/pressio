@@ -27,7 +27,7 @@ template<
    PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
    && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
    && !RealValuedSemiDiscreteFomWithJacobianAndMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-   && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+   && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
    , int > = 0
   >
 #endif
@@ -69,7 +69,7 @@ template<
     PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
     && RealValuedSemiDiscreteFomWithJacobianAndMassMatrixAction<
          FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
-    && std::is_same_v<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+    && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
     , int > = 0
   >
 #endif

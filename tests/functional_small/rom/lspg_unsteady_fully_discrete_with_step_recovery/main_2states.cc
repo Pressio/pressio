@@ -147,7 +147,7 @@ struct MyFakeSolver
 
     for (int k=1; k<=5; ++k){
       try{
-	sys.residualAndJacobian(state, R, J, true);
+	sys.residualAndJacobian(state, R, &J);
       }
       catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
 	__this_test_failureHappended = true;

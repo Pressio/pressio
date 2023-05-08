@@ -82,12 +82,12 @@ struct NonLinearSolver
 
     auto R = system.createResidual();
     auto J = system.createJacobian();
-    using Jo_t = std::optional<decltype(J) *>;
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // do fake first iteration
     //
-    system.residualAndJacobian(state, R, Jo_t(&J));
+    system.residualAndJacobian(state, R, &J);
     std::cout << R << "\n";
     std::cout << J << "\n";
     if (stepTracker == 1){
@@ -100,7 +100,7 @@ struct NonLinearSolver
     //
     // do fake second iteration
     //
-    system.residualAndJacobian(state, R, Jo_t(&J));
+    system.residualAndJacobian(state, R, &J);
     std::cout << R << "\n";
     if (stepTracker == 1){
       EXPECT_TRUE( R.isApprox(gold.R_Step1i2) );

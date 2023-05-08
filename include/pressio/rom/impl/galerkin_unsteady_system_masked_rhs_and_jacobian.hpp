@@ -87,7 +87,11 @@ public:
   void rhsAndJacobian(const state_type & reducedState,
 		      const IndVarType & rhsEvaluationTime,
 		      rhs_type & reducedRhs,
-		      std::optional<jacobian_type *> reducedJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> reducedJacobian) const
+#else
+                      jacobian_type* reducedJacobian) const
+#endif
   {
 
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
@@ -99,7 +103,11 @@ public:
       const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, unMaskedFomJacAction_);
       masker_(unMaskedFomJacAction_, maskedFomJacAction_);
+#ifdef PRESSIO_ENABLE_CXX17
       hyperReducer_(maskedFomJacAction_, rhsEvaluationTime, *reducedJacobian.value());
+#else
+      hyperReducer_(maskedFomJacAction_, rhsEvaluationTime, *reducedJacobian);
+#endif
     }
   }
 

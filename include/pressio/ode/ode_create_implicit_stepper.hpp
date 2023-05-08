@@ -72,16 +72,23 @@ template<class SystemType>
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s1,
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s2,
 	      const typename mpl::remove_cvref_t<SystemType>::state_type & s3,
+	      const typename mpl::remove_cvref_t<SystemType>::rhs_type   & r1,
+	      const typename mpl::remove_cvref_t<SystemType>::rhs_type   & r2,
 	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > a,
 	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > b,
 	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > c,
-	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > d)
+  	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > d,
+	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > e)
   {
     { ::pressio::ops::deep_copy(s, s1) };
 
     // bdf1, bdf2
     { ::pressio::ops::update(r, a, s1, b, s2, c) };
     { ::pressio::ops::update(r, a, s1, b, s2, c, s3, d) };
+    // cn
+    { ::pressio::ops::update(r, a, s1, b, s2, c, r1, d, r2, e) };
+
+    // all
     { ::pressio::ops::scale(J, a) };
     { ::pressio::ops::add_to_diagonal(J, a) };
   }
@@ -96,6 +103,10 @@ template<
 auto create_implicit_stepper(StepScheme schemeName,                     // (1)
 			     SystemType && system)
 {
+
+  assert(schemeName == StepScheme::BDF1 ||
+	 schemeName == StepScheme::BDF2 ||
+	 schemeName == StepScheme::CrankNicolson);
 
   using system_type   = mpl::remove_cvref_t<SystemType>;
   using ind_var_type  = typename system_type::independent_variable_type;
@@ -158,6 +169,9 @@ auto create_implicit_stepper(StepScheme schemeName,                     // (2)
 			     SystemType && system)
 {
 
+  assert(schemeName == StepScheme::BDF1 ||
+	 schemeName == StepScheme::BDF2);
+
   using system_type   = mpl::remove_cvref_t<SystemType>;
   using ind_var_type  = typename system_type::independent_variable_type;
   using state_type    = typename system_type::state_type;
@@ -196,6 +210,10 @@ requires ::pressio::ode::ImplicitResidualJacobianPolicy<
 auto create_implicit_stepper(StepScheme schemeName,
 			     ResidualJacobianPolicyType && policy)
 {
+
+  assert(schemeName == StepScheme::BDF1 ||
+	 schemeName == StepScheme::BDF2 ||
+	 schemeName == StepScheme::CrankNicolson);
 
   using policy_type   = mpl::remove_cvref_t<ResidualJacobianPolicyType>;
   using ind_var_type  = typename policy_type::independent_variable_type;
