@@ -12,7 +12,6 @@ int main()
   using namespace pressio;
 
   using problem_t = solvers::test::Problem9<double>;
-  using state_t   = typename problem_t::state_type;
   using hessian_t = Eigen::MatrixXd;
 
   problem_t problem;

@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type = double;
@@ -71,8 +73,9 @@ struct FakeLinearSolver1
     EXPECT_TRUE( gold_b.isApprox(b) );
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test5)
+TEST(rom_galerkin_explicit, test5)
 {
   /* default galerkin explicit with euler forward
 

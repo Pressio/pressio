@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type       = double;
@@ -98,8 +100,9 @@ struct MyMasker
     }
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test3)
+TEST(rom_galerkin_explicit, masked_velo_euler_forward)
 {
   /*
     check correctness of masked Galerkin explicit

@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 constexpr int N = 7;
 
 using FomStateType = Eigen::VectorXd;
@@ -110,8 +112,9 @@ struct NonLinearSolver
     for (int i=0; i<state.size(); ++i){ state[i] += 1.; }
   }
 };
+}
 
-TEST(rom_galerkin, test5)
+TEST(rom_galerkin_implicit, default_bdf1)
 {
   // test for default implicit galerkin using BDF1
   // all numbers have been computed manually

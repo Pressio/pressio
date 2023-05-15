@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 using phi_t = Eigen::Matrix<double, -1,-1>;
 constexpr double dt = 2.;
 constexpr int numModes = 3;
@@ -236,8 +238,9 @@ public:
     }
   }
 };
+}
 
-TEST(rom_galerkin, test4)
+TEST(rom_galerkin_implicit, default_fullydiscrete_n2)
 {
   /* default galerkin impliacit eigen with fully discrete API */
 

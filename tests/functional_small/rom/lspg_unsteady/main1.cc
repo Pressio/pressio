@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type    = double;
@@ -259,6 +261,7 @@ struct Observer
     }
   }
 };
+}
 
 TEST(rom_lspg_unsteady, test1)
 {

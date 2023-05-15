@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type    = double;
@@ -371,8 +373,9 @@ struct Prec{
     std::cout << "PRECONDITIONING\n";
   }
 };
+}
 
-TEST(rom_lspg_unsteady, test)
+TEST(rom_lspg_unsteady, test6)
 {
   /* hyper-reduced lspg eigen for bdf1 with a trivial preconditioner,
    should be identical to main1.cc.

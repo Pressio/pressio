@@ -22,12 +22,12 @@ public:
   const diagexpr_t &expr_;
 };
 
-namespace pressio::ops {
+namespace pressio{ namespace ops {
   template <typename VecType>
   size_t extent(const ExprAdapter<VecType> &e, size_t rank) {
     return e.expr_.extent(rank);
   }
-}
+}}
 
 template <typename T, typename enabled=void>
 auto adapter(const T &v) {

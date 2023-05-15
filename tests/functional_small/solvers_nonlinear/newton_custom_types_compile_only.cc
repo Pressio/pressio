@@ -67,7 +67,6 @@ TEST(solvers_nonlinear, newton_compile_only)
     using namespace pressio;
     using problem_t  = MyProblem;
     using state_t    = typename problem_t::state_type;
-    using jacobian_t = typename problem_t::jacobian_type;
 
     problem_t sys;
     state_t y;

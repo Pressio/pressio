@@ -2,9 +2,11 @@
 #include <gtest/gtest.h>
 #include "pressio/rom_subspaces.hpp"
 
+namespace{
 struct FakeType1{};
 struct FakeType2{};
 struct FakeType3{};
+}
 
 namespace pressio{
 template<> struct Traits<FakeType1>{
@@ -21,6 +23,7 @@ template<> struct Traits<FakeType3>{
 };
 }
 
+namespace{
 #define NT1() using reduced_state_type = Eigen::VectorXd;
 #define NT2() using basis_matrix_type  = FakeType2;
 #define NT3() using full_state_type    = FakeType3;
@@ -50,9 +53,9 @@ struct S3{
   S3& operator=(const S3 &) = delete;
   NT1() /*NT2()*/ NT3() M1() M2() M3() M4() M5() M6() M7() M8() M9() M10()
 };
+}
 
-
-TEST(rom, concept_possibly_affine_trial_subspace1)
+TEST(rom_concepts, possibly_affine_trial_subspace1)
 {
   using namespace pressio::rom;
 
@@ -67,7 +70,7 @@ TEST(rom, concept_possibly_affine_trial_subspace1)
 #endif
 }
 
-TEST(rom, concept_possibly_affine_trial_subspace2)
+TEST(rom_concepts, possibly_affine_trial_subspace2)
 {
   using namespace pressio::rom;
 

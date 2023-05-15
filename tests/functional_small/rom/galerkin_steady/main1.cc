@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type        = Eigen::VectorXd;
@@ -111,7 +113,9 @@ struct FakeNonLinSolverSteady
   }
 };
 
-TEST(rom_galerkin_steady, test1)
+}
+
+TEST(rom_galerkin_steady, default)
 {
 
   pressio::log::initialize(pressio::logto::terminal);

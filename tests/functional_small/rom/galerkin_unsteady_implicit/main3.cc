@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type       = double;
@@ -203,8 +205,9 @@ struct NonLinSolver
     }
   }
 };
+}
 
-TEST(rom_galerkin, test7)
+TEST(rom_galerkin_implicit, masked_bdf1)
 {
   // test for masked implicit galerkin using BDF1
   // all numbers have been computed manually

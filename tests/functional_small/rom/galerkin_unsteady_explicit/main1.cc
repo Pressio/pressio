@@ -3,6 +3,7 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
 struct Observer
 {
   void operator()(pressio::ode::StepCount stepIn,
@@ -55,8 +56,9 @@ struct MyFom
     }
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test1)
+TEST(rom_galerkin_explicit, default)
 {
   /*
     default Galerkin, Euler forward

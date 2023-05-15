@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_unsteady.hpp"
 
+namespace{
+
 template<class phi_t>
 struct FakeNonLinSolver
 {
@@ -260,6 +262,7 @@ public:
     }
   }
 };
+}
 
 TEST(rom_lspg_unsteady, test4)
 {

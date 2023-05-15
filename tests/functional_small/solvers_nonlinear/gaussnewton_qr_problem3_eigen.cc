@@ -40,8 +40,6 @@ int main()
   using namespace pressio;
   using problem_t   = solvers::test::Problem3<double>;
   using state_t	    = typename problem_t::state_type;
-  using mat_t   = typename problem_t::jacobian_type;
-  using hessian_t = mat_t;
 
   problem_t problem;
   state_t x(2); x(0) = 2.0; x(1) = 0.25;

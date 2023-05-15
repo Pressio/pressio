@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 using phi_t = Eigen::Matrix<double, -1,-1>;
 constexpr double dt = 2.;
 constexpr int numModes = 3;
@@ -46,7 +48,7 @@ struct FakeNonLinSolver
     //-----------------------
     // fake a solver iterator 1
     //-----------------------
-    system.residualAndJacobian(romState, R, J, true);
+    system.residualAndJacobian(romState, R, &J);
 
     if (call_count_ == 1){
       const double predictionTime = 2.;
@@ -138,7 +140,7 @@ struct FakeNonLinSolver
     //-----------------------
     // fake a solver iterator 2
     //-----------------------
-    system.residualAndJacobian(romState, R, J, true);
+    system.residualAndJacobian(romState, R, &J);
 
     if (call_count_ == 1){
       const double predictionTime = 2.;
@@ -311,8 +313,9 @@ public:
     }
   }
 };
+}
 
-TEST(rom_galerkin, test5)
+TEST(rom_galerkin_implicit, default_fullydiscrete_n3)
 {
   /* default galerkin impliacit eigen with fully discrete API */
 

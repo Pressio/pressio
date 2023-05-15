@@ -4,6 +4,8 @@
 #include "pressio/rom_lspg_unsteady.hpp"
 #include <random>
 
+namespace{
+
 constexpr int N = 5;
 using __this_test_phi_type = Eigen::MatrixXd;
 using __this_test_rom_state_type = Eigen::VectorXd;
@@ -97,17 +99,17 @@ public:
    const state_type & y_nm1) const
   {
     ++count_;
-    std::cout << "FOM: step = " << stepId
-	      << " , predictAtTime = " << time
-	      << ", dt = " << dt
-	      << ", count = " << count_
-	      << "\n";
+    // std::cout << "FOM: step = " << stepId
+    // 	      << " , predictAtTime = " << time
+    // 	      << ", dt = " << dt
+    // 	      << ", count = " << count_
+    // 	      << "\n";
 
     std::string sp("      ");
-    std::cout << "y_n+1, y_n, y_n-1: \n";
-    for (int i=0; i<N; ++i){
-      std::cout << y_np1(i) << sp << y_n(i) << sp << y_nm1(i) << "\n";
-    }
+    //std::cout << "y_n+1, y_n, y_n-1: \n";
+    // for (int i=0; i<N; ++i){
+    //   std::cout << y_np1(i) << sp << y_n(i) << sp << y_nm1(i) << "\n";
+    // }
 
     if (__this_test_failureHappended){
       auto phi = create_gold_phi();
@@ -129,7 +131,7 @@ public:
     // otherwise rnadomly inject failure
     if (dt/reductionFactor > minStepSize){
       const auto coin = m_dist(m_gen);
-      std::cout << coin << "\n";
+      //std::cout << coin << "\n";
       if (coin > 0.3){
 	throw pressio::eh::DiscreteTimeResidualFailureUnrecoverable();
       }
@@ -158,15 +160,16 @@ struct MyFakeSolver
 	throw ::pressio::eh::NonlinearSolveFailure();
       }
       add_one(state);
-      std::cout << "state = "
-		<< state(0) << " "
-		<< state(1) << " "
-		<< state(2) << "\n";
+      // std::cout << "state = "
+      // 		<< state(0) << " "
+      // 		<< state(1) << " "
+      // 		<< state(2) << "\n";
     }
   }
 };
+}
 
-TEST(rom_lspg_unsteady_fully_discrete_api_recovery, test)
+TEST(rom_lspg_unsteady, fully_discrete_with_recovery_n3)
 {
   /*
     purpose: for the fully discrete lspg API with 3 FOM stencil states
@@ -194,11 +197,11 @@ TEST(rom_lspg_unsteady_fully_discrete_api_recovery, test)
 
   fom_t fomSystem;
 
-  std::cout << "------------\n";
-  std::cout << "Filling phi \n";
+  // std::cout << "------------\n";
+  // std::cout << "Filling phi \n";
   auto phi = create_gold_phi();
-  std::cout << phi << "\n";
-  std::cout << "------------\n";
+  // std::cout << phi << "\n";
+  // std::cout << "------------\n";
 
   typename fom_t::state_type dummyFomState(N);
   constexpr bool isAffine = false;

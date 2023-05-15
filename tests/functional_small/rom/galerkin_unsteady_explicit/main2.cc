@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct Observer
 {
   void operator()(pressio::ode::StepCount stepIn,
@@ -81,8 +83,9 @@ public:
     result = matrix_.transpose() * operand;
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test2)
+TEST(rom_galerkin_explicit, hyperreduced_velo_euler_forward)
 {
   /*
     hypred velocity Galerkin, Euler forward:

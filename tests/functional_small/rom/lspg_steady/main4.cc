@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type        = Eigen::VectorXd;
@@ -160,6 +162,7 @@ public:
     }
   }
 };
+}
 
 TEST(rom_lspg_steady, test4)
 {

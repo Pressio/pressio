@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type = Eigen::VectorXd;
@@ -129,6 +131,7 @@ struct FakeNonLinSolverSteady
     }// end if call_count == 1
   }// end solve
 };
+}
 
 TEST(rom_lspg_steady, test3)
 {

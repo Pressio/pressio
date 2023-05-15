@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 constexpr int N = 5;
 
 using FomStateType = Eigen::VectorXd;
@@ -102,8 +104,9 @@ struct NonLinSolver
 
   }
 };
+}
 
-TEST(rom_galerkin, test)
+TEST(rom_galerkin_implicit, default_with_massmatrix_bdf1)
 {
   // implicit default galerkin with mass matrix
 
