@@ -157,7 +157,7 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = Jo;
+    const bool computeJacobian = bool(Jo);
 
     try{
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
