@@ -84,6 +84,7 @@ enum class Diagnostic{
   invalid
 };
 
+template<class T = void>
 std::string diagnostic_to_string(Diagnostic d){
   switch(d)
     {
@@ -99,6 +100,7 @@ std::string diagnostic_to_string(Diagnostic d){
     };
 };
 
+template<class T = void>
 bool is_absolute_diagnostic(Diagnostic d){
   switch(d)
     {
@@ -114,6 +116,7 @@ bool is_absolute_diagnostic(Diagnostic d){
     };
 };
 
+template<class T = void>
 std::string diagnostic_to_log_symbol(Diagnostic d){
   switch(d)
     {
@@ -129,6 +132,7 @@ std::string diagnostic_to_log_symbol(Diagnostic d){
     };
 };
 
+template<class T = void>
 std::string diagnostic_to_log_format(Diagnostic d){
   switch(d)
     {
@@ -147,6 +151,7 @@ std::string diagnostic_to_log_format(Diagnostic d){
     };
 };
 
+template<class T = void>
 Diagnostic stop_criterion_to_public_diagnostic(const Stop & sc)
 {
   switch (sc)

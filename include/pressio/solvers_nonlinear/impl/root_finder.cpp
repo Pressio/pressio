@@ -26,7 +26,6 @@ void root_solving_loop_impl(ProblemTag /*problemTag*/,
 {
 
   using state_type = typename UserDefinedSystemType::state_type;
-  using j_t = typename UserDefinedSystemType::jacobian_type;
 
   auto objective = [&reg, &system](const state_type & stateIn){
     auto & r = reg.template get<ResidualTag>();

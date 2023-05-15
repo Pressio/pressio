@@ -122,10 +122,10 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = galerkinJacobian;
+    const bool computeJacobian = bool(galerkinJacobian);
     try{
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_,
+							     dt, fomResidual_, phi,
 							     computeJacobian, fomJacAction_,
 							     ynp1, yn, ynm1);
     }

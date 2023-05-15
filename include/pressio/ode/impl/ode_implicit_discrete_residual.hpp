@@ -120,8 +120,6 @@ discrete_residual(::pressio::ode::BDF1,
   constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
   constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
 
-  // constexpr sc_t cnp1 = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
-  constexpr sc_t cn   = ::pressio::ode::constants::bdf1<sc_t>::c_n_;
   const sc_t cf	      = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
   const auto & y_n = stencilStates(::pressio::ode::n());
 

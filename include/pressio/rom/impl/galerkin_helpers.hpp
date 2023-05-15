@@ -4,6 +4,7 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
+template<class T = void>
 void valid_scheme_for_explicit_galerkin_else_throw(::pressio::ode::StepScheme name,
 						   const std::string & str){
   if (!::pressio::ode::is_explicit_scheme(name)){
@@ -11,6 +12,7 @@ void valid_scheme_for_explicit_galerkin_else_throw(::pressio::ode::StepScheme na
   }
 }
 
+template<class T = void>
 void valid_scheme_for_implicit_galerkin_else_throw(::pressio::ode::StepScheme name,
 						   const std::string & str){
   if (!::pressio::ode::is_implicit_scheme(name)){

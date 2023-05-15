@@ -68,7 +68,6 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 

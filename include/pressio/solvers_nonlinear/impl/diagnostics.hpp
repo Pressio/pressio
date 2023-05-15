@@ -14,6 +14,7 @@ enum class InternalDiagnostic{
   invalid
 };
 
+template<class T = void>
 std::string diagnostic_to_string(InternalDiagnostic d){
   switch(d)
     {
@@ -30,6 +31,7 @@ std::string diagnostic_to_string(InternalDiagnostic d){
     };
 };
 
+template<class T = void>
 InternalDiagnostic public_to_internal_diagnostic(Diagnostic d){
   switch(d)
     {

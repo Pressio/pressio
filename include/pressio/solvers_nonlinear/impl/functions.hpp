@@ -74,8 +74,6 @@ template<class RegistryType>
 void compute_gradient(RegistryType & reg)
 {
   constexpr auto pT  = ::pressio::transpose();
-  constexpr auto pnT = ::pressio::nontranspose();
-
   const auto & r = reg.template get<ResidualTag>();
   const auto & j = reg.template get<JacobianTag>();
   auto & g = reg.template get<GradientTag>();
