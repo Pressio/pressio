@@ -75,12 +75,13 @@ template<class SystemType, class LinearSolverType>
   && (Traits<typename SystemType::state_type>::rank    == 1)
   && (Traits<typename SystemType::residual_type>::rank == 1)
   && (Traits<typename SystemType::jacobian_type>::rank == 2)
-  && requires(      typename SystemType::state_type    & x,
-	      const typename SystemType::jacobian_type & J,
-	      const typename SystemType::residual_type & r,
-	      nonlinearsolvers::normal_eqs_default_hessian_t<typename SystemType::state_type>  & H,
-	      nonlinearsolvers::normal_eqs_default_gradient_t<typename SystemType::state_type> & g,
-	      LinearSolverType && linSolver)
+  && requires(
+	    typename SystemType::state_type    & x,
+      const typename SystemType::jacobian_type & J,
+      const typename SystemType::residual_type & r,
+      nonlinearsolvers::normal_eqs_default_hessian_t<typename SystemType::state_type>  & H,
+      nonlinearsolvers::normal_eqs_default_gradient_t<typename SystemType::state_type> & g,
+      LinearSolverType && linSolver)
   {
     { ::pressio::ops::norm2(r) } -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;
     { ::pressio::ops::product(transpose(), nontranspose(), 1, J, 0, H) };
@@ -153,15 +154,16 @@ template<class SystemType, class LinearSolverType, class WeightingOpType>
   && (Traits<typename SystemType::state_type>::rank    == 1)
   && (Traits<typename SystemType::residual_type>::rank == 1)
   && (Traits<typename SystemType::jacobian_type>::rank == 2)
-  && requires(      typename SystemType::state_type    & x,
-	      const typename SystemType::residual_type & r,
-	      const typename SystemType::jacobian_type & J,
-	      typename SystemType::residual_type & Wr,
-	      typename SystemType::jacobian_type & WJ,
-	      nonlinearsolvers::normal_eqs_default_hessian_t<typename SystemType::state_type>  & H,
-	      nonlinearsolvers::normal_eqs_default_gradient_t<typename SystemType::state_type> & g,
-	      WeightingOpType && W,
-	      LinearSolverType && linSolver)
+  && requires(
+	     typename SystemType::state_type    & x,
+       const typename SystemType::residual_type & r,
+       const typename SystemType::jacobian_type & J,
+       typename SystemType::residual_type & Wr,
+       typename SystemType::jacobian_type & WJ,
+       nonlinearsolvers::normal_eqs_default_hessian_t<typename SystemType::state_type>  & H,
+       nonlinearsolvers::normal_eqs_default_gradient_t<typename SystemType::state_type> & g,
+       WeightingOpType && W,
+       LinearSolverType && linSolver)
   {
     { ::pressio::ops::norm2(std::as_const(r)) }
       -> std::same_as< nonlinearsolvers::scalar_of_t<SystemType> >;

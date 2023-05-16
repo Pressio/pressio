@@ -8,24 +8,24 @@
 
 Header: ``<pressio/solvers_nonlinear.hpp>``
 
-Scope
------
+..
+   Scope
+   -----
 
-The pressio nonlinear solvers are meant to cover a (currrently) basic
-set of algorithms with the flexibility of adding more if needed, and support arbitrary data types.
-If you are interested in contributing or you need
-other methods, open an issue and/or PR.
+   The pressio nonlinear solvers are meant to cover a (currrently) basic
+   set of algorithms with the flexibility of adding more if needed, and support arbitrary data types.
+   If you are interested in contributing or you need
+   other methods, open an issue and/or PR.
 
-At a high-level, how does this work?
-------------------------------------
+   At a high-level, how does this work?
+   ------------------------------------
 
-You are responsible of:
+   You are responsible of:
 
-* A: defining your problem by creating a class with a specific API
-* B: instantiating a solver that is suitable to solve your problem
-* C: (optionally) setting the convergence criteria, tolerances and the update method
-* D: executing the solve
-
+   * A: defining your problem by creating a class with a specific API
+   * B: instantiating a solver that is suitable to solve your problem
+   * C: (optionally) setting the convergence criteria, tolerances and the update method
+   * D: executing the solve
 
 Content
 -------

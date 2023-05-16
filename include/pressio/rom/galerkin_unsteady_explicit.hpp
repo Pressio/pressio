@@ -56,6 +56,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 // -------------------------------------------------------------
 // default with mass matrix
 // -------------------------------------------------------------
+
 #ifdef PRESSIO_ENABLE_CXX20
 template<class TrialSubspaceType, class FomSystemType>
   requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
@@ -92,6 +93,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 // -------------------------------------------------------------
 // hyper-reduced
 // -------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -125,6 +127,7 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 // -------------------------------------------------------------
 // masked
 // -------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,

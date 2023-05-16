@@ -78,7 +78,6 @@ concept VectorSubspace =
     { A.isRowSpace()    } -> std::convertible_to<bool>;
   };
 
-// ----------------------------------------------------------------------------
 template <class T>
 concept PossiblyAffineTrialColumnSubspace =
   ReducedState<typename T::reduced_state_type>
@@ -114,7 +113,6 @@ concept PossiblyAffineTrialColumnSubspace =
     {A.isRowSpace()   } -> std::convertible_to<bool>;
   };
 
-// ----------------------------------------------------------------------------
 template <class T>
 concept PossiblyAffineRealValuedTrialColumnSubspace =
   PossiblyAffineTrialColumnSubspace<T>
@@ -292,29 +290,6 @@ concept RealValuedFullyDiscreteSystemWithJacobianAction =
   && std::floating_point<
        scalar_trait_t< impl::fully_discrete_fom_jac_action_t<T, JacobianActionOperandType> >
      >;
-
-// // ----------------------------------------------------------------------------
-// //
-// // auxiliary stuff
-// //
-// // ----------------------------------------------------------------------------
-// template <class T, class ...> struct scalar_of;
-
-// template <class T>
-// requires RealValuedSemiDiscreteFom<T>
-// struct scalar_of<T>{
-//   using type = scalar_trait_t< typename T::state_type >;
-// };
-
-// template <class T, class ActionOperandType>
-// requires (RealValuedSteadyFomWithJacobianAction<T, ActionOperandType>
-//        || RealValuedSemiDiscreteFomWithMassMatrixAction<T, ActionOperandType>)
-// struct scalar_of<T,ActionOperandType> {
-//   using type = scalar_trait_t< typename T::state_type >;
-// };
-
-// template <class T, class ... ActionOperandTypeOrEmpty>
-// using scalar_of_t = typename scalar_of<T, ActionOperandTypeOrEmpty...>::type;
 
 }} // end namespace pressio::rom
 

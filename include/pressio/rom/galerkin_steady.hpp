@@ -12,6 +12,7 @@ namespace pressio{ namespace rom{ namespace galerkin{
 // ------------------------------------------------------------------------
 // default
 // ------------------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType>
@@ -36,6 +37,7 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(1)*/
 // ------------------------------------------------------------------------
 // hyper-reduced
 // ------------------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -62,6 +64,7 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(2)*/
 // ------------------------------------------------------------------------
 // hyper-reduced masked
 // ------------------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,

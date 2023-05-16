@@ -50,7 +50,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/ode/ode_create_explicit_stepper.hpp
    :language: cpp
-   :lines: 54-55, 59-77, 85-87, 89, 114-131, 139-141, 155-183
+   :lines: 56-57, 61-79, 87-89, 112, 116-133, 141-143
 
 Parameters
 ~~~~~~~~~~
@@ -66,27 +66,23 @@ Parameters
    * - ``schemeName``
      - the target stepping scheme
 
-   * - ``system``
+   * - ``odeSystem``
      - problem instance
 
 
 Constraints
 ~~~~~~~~~~~
 
-With C++20, the constraints would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message) and/or SFINAE.
-
-The concepts are documented `here <ode_concepts.html>`__.
-
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
 Preconditions
 ~~~~~~~~~~~~~
 
 - ``schemeName`` must be one of ``pressio::ode::StepScheme::{ForwardEuler, RungeKutta4, AdamsBashforth2, SSPRungeKutta3}``.
 
-- if ``system`` does *not* bind to a temporary object,
+- if ``odeSystem`` does *not* bind to a temporary object,
   it must bind to an lvalue object whose lifetime is *longer* that that
   of the instantiated stepper, i.e., it is destructed *after* the stepper goes out of scope
 

@@ -34,7 +34,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/ode/ode_create_implicit_stepper.hpp
    :language: cpp
-   :lines: 54-55, 232-250,270-271
+   :lines: 61-62, 257-275, 295-296
 
 Parameters and templates
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,14 +51,11 @@ Parameters and templates
 Constraints
 ~~~~~~~~~~~
 
-With C++20, the constraints would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message) and/or SFINAE.
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
-The concepts are documented `here <ode_concepts.html>`__.
-
-* ``TotalNumberOfDesiredStates``: currently must be set to one of `{2, 3, 4}`
+* ``TotalNumberOfDesiredStates``: currently must be set to one of `{2, 3}`
 
 Preconditions
 ~~~~~~~~~~~~~

@@ -11,7 +11,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/rom/galerkin_unsteady_implicit.hpp
    :language: cpp
-   :lines: 18-28, 14, 51-63, 14, 86-100, 14, 124-135, 14, 158-168
+   :lines: 13-14, 19-37, 60-80, 104-117, 140-155, 179-190, 209-210
 
 
 ..

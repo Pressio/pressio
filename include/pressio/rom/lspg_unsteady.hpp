@@ -54,6 +54,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(1)*/
 // -------------------------------------------------------------
 // masked
 // -------------------------------------------------------------
+
 #ifdef PRESSIO_ENABLE_CXX20
 template<class TrialSubspaceType, class FomSystemType, class MaskerType>
   requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
@@ -110,12 +111,12 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(2)*/
 // -------------------------------------------------------------
 // hyp-red
 // -------------------------------------------------------------
+
 #ifdef PRESSIO_ENABLE_CXX20
 template<class TrialSubspaceType, class FomSystemType, class HypRedUpdaterType>
   requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
   && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
   && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-
 #else
 template<class TrialSubspaceType, class FomSystemType, class HypRedUpdaterType,
   mpl::enable_if_t<
@@ -153,9 +154,11 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(3)*/
 
 
 namespace experimental{
+
 // -------------------------------------------------------------
 // default with scaling
 // -------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -197,6 +200,7 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(4)*/
 // -------------------------------------------------------------
 // hyper-reduced with scaling
 // -------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -236,12 +240,15 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(5)*/
   using return_type = impl::LspgUnsteadyProblemSemiDiscreteAPI<TrialSubspaceType, rj_policy_type>;
   return return_type(schemeName, trialSpace, fomSystem, scaler, hypRedUpdater);
 }
+
+
 } //end namespace experimental
 
 
 // -------------------------------------------------------------
 // fully-discrete
 // -------------------------------------------------------------
+
 template<
   std::size_t TotalNumberOfDesiredStates,
   class TrialSubspaceType,

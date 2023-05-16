@@ -11,7 +11,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/rom/galerkin_steady.hpp
    :language: cpp
-   :lines: 16-25, 12, 40-51, 12, 66-79
+   :lines: 10-11, 16-25, 40-52, 67-81, 92-93
 
 ..
    API

@@ -8,4 +8,4 @@ Defined in ``<pressio/solvers_nonlinear.hpp>``
 
 .. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp
    :language: cpp
-   :lines: 52-85, 147-148
+   :lines: 52-86, 216-216

@@ -15,6 +15,7 @@ namespace pressio{ namespace rom{ namespace galerkin{
 // -------------------------------------------------------------
 // default
 // -------------------------------------------------------------
+
 #ifdef PRESSIO_ENABLE_CXX20
 template<class TrialSubspaceType, class FomSystemType>
   requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
@@ -56,6 +57,7 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,   /
 // -------------------------------------------------------------
 // default with mass matrix
 // -------------------------------------------------------------
+
 #ifdef PRESSIO_ENABLE_CXX20
 template<class TrialSubspaceType, class FomSystemType>
   requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
@@ -99,6 +101,7 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,   /
 // -------------------------------------------------------------
 // hyper-reduced
 // -------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -134,6 +137,7 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,   /
 // -------------------------------------------------------------
 // masked
 // -------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
@@ -172,6 +176,7 @@ auto create_unsteady_implicit_problem(::pressio::ode::StepScheme schemeName,   /
 // -------------------------------------------------------------
 // fully-discrete
 // -------------------------------------------------------------
+
 template<
   std::size_t TotalNumberOfDesiredStates,
   class TrialSubspaceType,

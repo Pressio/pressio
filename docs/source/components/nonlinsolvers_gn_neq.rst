@@ -11,7 +11,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_gauss_newton.hpp
    :language: cpp
-   :lines: 54-55, 65-86, 55-55, 142-175, 314-315
+   :lines: 60-61, 71-93, 149, 149-183, 322-323
 
 Parameters
 ~~~~~~~~~~
@@ -36,12 +36,18 @@ Parameters
 Constraints
 ~~~~~~~~~~~
 
-With C++20, the constraints would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message) and/or SFINAE.
+Concepts are documented `here <nonlinsolvers_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
-The concepts are documented `here <nonlinsolvers_concepts.html>`__.
+Examples
+--------
+
+.. admonition:: Demos
+   :class: tip
+
+   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers1.html>`__
+
 
 ..
    Return Value
@@ -68,11 +74,3 @@ The concepts are documented `here <nonlinsolvers_concepts.html>`__.
 
 	void solve(StateType & solutionInOut);
       };
-
-Examples
---------
-
-.. admonition:: Demos
-   :class: tip
-
-   1. `full demo for the Rosenbrock function <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers1.html>`__

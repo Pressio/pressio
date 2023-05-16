@@ -10,7 +10,6 @@ Header: ``<pressio/ode_steppers_implicit.hpp>``
 
 Public namespace: ``pressio::ode``
 
-
 Scope
 -----
 
@@ -45,7 +44,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/ode/ode_create_implicit_stepper.hpp
    :language: cpp
-   :lines: 54-55, 56-80, 88-90, 111, 114-141, 149-151, 206-221
+   :lines: 61-62, 63-89, 97-99, 130-159, 167-169, 295-296
 
 Parameters
 ~~~~~~~~~~
@@ -67,12 +66,9 @@ Parameters
 Constraints
 ~~~~~~~~~~~
 
-With C++20, the constraints would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message) and/or SFINAE.
-
-The concepts are documented `here <ode_concepts.html>`__.
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
 Preconditions
 ~~~~~~~~~~~~~
@@ -87,7 +83,11 @@ Preconditions
 Examples
 --------
 
-TBD
+.. admonition:: Full Demos
+   :class: tip
+
+   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/ode3.html>`__
+
 
 
 |

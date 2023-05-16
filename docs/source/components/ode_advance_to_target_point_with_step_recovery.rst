@@ -137,12 +137,9 @@ Parameters
 Constraints
 -----------
 
-With C++20, the constraints would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message) and/or SFINAE.
-
-The concepts are documented `here <ode_concepts.html>`__.
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
 Preconditions
 -------------

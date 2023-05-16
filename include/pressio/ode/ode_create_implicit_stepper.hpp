@@ -81,14 +81,9 @@ template<class SystemType>
 	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > e)
   {
     { ::pressio::ops::deep_copy(s, s1) };
-
-    // bdf1, bdf2
     { ::pressio::ops::update(r, a, s1, b, s2, c) };
     { ::pressio::ops::update(r, a, s1, b, s2, c, s3, d) };
-    // cn
     { ::pressio::ops::update(r, a, s1, b, s2, c, r1, d, r2, e) };
-
-    // all
     { ::pressio::ops::scale(J, a) };
     { ::pressio::ops::add_to_diagonal(J, a) };
   }
@@ -125,6 +120,11 @@ auto create_implicit_stepper(StepScheme schemeName,                     // (1)
   return impl::create_implicit_stepper_impl<
     impl_type>(schemeName, policy_type(std::forward<SystemType>(system)));
 }
+
+
+
+
+
 
 
 
