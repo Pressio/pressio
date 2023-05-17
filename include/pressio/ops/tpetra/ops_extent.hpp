@@ -55,7 +55,7 @@ template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
   ::pressio::is_vector_tpetra<T>::value,
-  decltype(std::declval<const T&>().getGlobalLength())
+  std::size_t
   >
 extent(const T & oIn, const IndexType i)
 {
@@ -66,7 +66,7 @@ template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
   ::pressio::is_multi_vector_tpetra<T>::value,
-  decltype(std::declval<const T&>().getGlobalLength())
+  std::size_t
   >
 extent(const T & oIn, const IndexType i)
 {

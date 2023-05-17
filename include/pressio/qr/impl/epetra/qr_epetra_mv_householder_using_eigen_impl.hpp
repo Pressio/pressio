@@ -101,20 +101,20 @@ public:
 
   void computeThinOutOfPlace(const MatrixType & A)
   {
-    auto rows = ::pressio::ops::extent(A,0);
-    auto cols = ::pressio::ops::extent(A,1);
+    std::size_t rows = ::pressio::ops::extent(A,0);
+    std::size_t cols = ::pressio::ops::extent(A,1);
     auto & ArowMap = A.Map();
 
     // convert it to replicated eptra matrix
-    Epetra_LocalMap locMap(rows, 0, A.Comm());
+    Epetra_LocalMap locMap((int)rows, (int)0, A.Comm());
     Epetra_Import importer(locMap, ArowMap);
     MatrixType A2(locMap, cols);
     A2.Import(A, importer, Insert);
 
     // store it into an Eigen matrix
     eig_dyn_mat eA2W(rows,cols);
-    for (int i=0;i<rows;i++){
-      for (int j=0;j<cols;j++){
+    for (int i=0;i<(int)rows;i++){
+      for (int j=0;j<(int)cols;j++){
     	 eA2W(i,j) = A2[j][i];
       }
     }
@@ -124,8 +124,8 @@ public:
     // store Q into replicated Epetra_Multivector
     const auto & Q2 = myImpl_.QFactor();
     Q_type locQ(locMap,Q2.cols());
-    for (int i=0;i<Q2.rows();i++){
-      for (int j=0;j<Q2.cols();j++){
+    for (int i=0;i<(int)Q2.rows();i++){
+      for (int j=0;j<(int)Q2.cols();j++){
     	 locQ[j][i] = Q2(i,j);
       }
     }

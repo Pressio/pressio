@@ -124,7 +124,7 @@ public:
       A.getMultiVectorView().getVectorNonConst(i)->putScalar(ac[i]);
     }
     B = std::make_shared<mvec_t>(*contigMap_, blockSize_, bc.size());
-    for (int i=0; i<bc.size(); ++i) {
+    for (int i=0; i<(int)bc.size(); ++i) {
       B->getMultiVectorView().getVectorNonConst(i)->putScalar(bc[i]);
     }
     C_eigen = Eigen::MatrixXd(A.getNumVectors(), A.getNumVectors());

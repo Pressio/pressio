@@ -39,9 +39,9 @@ struct MyFom
 		       Eigen::MatrixXd & result) const
   {
     Eigen::MatrixXd M(N_, N_);
-    for (std::size_t j=0; j<M.cols(); ++j){
+    for (std::size_t j=0; j<(size_t)M.cols(); ++j){
       M.col(j) = stateIn;
-      for (std::size_t i=0; i<M.rows(); ++i){
+      for (std::size_t i=0; i<(size_t)M.rows(); ++i){
 	M(i,j) += evalTime + (double) j;
       }
     }

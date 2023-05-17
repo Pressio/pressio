@@ -24,8 +24,8 @@ TEST_F(ops_tpetra, vector_clone)
 
 TEST_F(ops_tpetra, vector_extent)
 {
-    ASSERT_TRUE(pressio::ops::extent(*myVector_,0) == numProc_ * 5);
-    ASSERT_TRUE(pressio::ops::extent(*myVector_,1) == 1); // check extent over the rank
+    ASSERT_TRUE( (std::size_t)pressio::ops::extent(*myVector_,0) == (std::size_t)numProc_ * 5);
+    ASSERT_TRUE( (std::size_t)pressio::ops::extent(*myVector_,1) == (std::size_t)1); // check extent over the rank
 }
 
 TEST_F(ops_tpetra, vector_deep_copy)

@@ -133,7 +133,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 					y_type & y)
 {
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x, 0)));
-  const char ctA = 'N';
+  // const char ctA = 'N';
   const auto ALocalView_d = A.getLocalViewDevice(Tpetra::Access::ReadOnly);
 
   // Tpetra::Vector is implemented as a special case of MultiVector //

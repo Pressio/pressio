@@ -49,8 +49,6 @@
 #ifndef ODE_CONCEPTS_PREDICATES_HPP_
 #define ODE_CONCEPTS_PREDICATES_HPP_
 
-#include <optional>
-
 namespace pressio{ namespace ode{
 
 template <class T, class StateType, class = void>
@@ -161,7 +159,7 @@ struct has_const_create_discrete_jacobian_method_return_result<
          )
       >::value
     >
-  > : std::true_type{};  
+  > : std::true_type{};
 
 }}
 #endif  // ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_

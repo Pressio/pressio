@@ -6,18 +6,15 @@
 pressio C++ library
 ===================
 
-.. admonition:: :medium:`Advancing reduced order models for dynamical systems in science and engineering`
-    :class: note
-
-    This is the documentation of the `C++ library <https://github.com/Pressio/pressio>`__, one element of the `Pressio ecosystem <https://pressio.github.io/>`_.
+Documentation of the `C++ library <https://github.com/Pressio/pressio>`__, one element of the `Pressio ecosystem <https://pressio.github.io/>`_.
 
 This work was started with a focus on projection-based reduced-order models (ROMs),
 which is a strongly **multidisciplinary** topic.
 Working towards a production-level ROM capability inevitably means spanning
 multiple fields ranging from, e.g., linear algebra, nonlinear solvers
 and optimization, to time integration, distributed computing and HPC.
-In and of itself this constitutes a substantial challenge to tackle,
-but the complexity increases if the goal is to develop a **generic** library.
+This constitutes a substantial challenge to tackle, whose complexity
+increases if aiming to develop a **generic** library.
 
 To start such a project from the ground up, grow it and then being
 able to maintain it, we believe **modularity, abstractions
@@ -25,16 +22,15 @@ and well-defined APIs** to be fundamental design principles to rely on.
 This has been, and still is, at the core of our development effort,
 and has lead to a highly *modular* design of pressio (see table below):
 each component (level) of the stack covers a specific capability and depends,
-via *well-defined public APIs*, on the ones below it.
+via *well-defined public APIs*, on the ones below it. This has required (and still does)
+a considerable development effort, since each component needs "attention"
+and can easily be scoped into an independent, full-time project.
 
-This has required (and still does) a considerable development effort,
-since each component needs "attention" and can easily be scoped into
-an independent, full-time project.
-So why doing all this rather than adopting a different, simpler approach (for example,
-limiting and hiding as implementation some of the supporting functionalities)?
+So why doing all this rather than adopting a different, simpler approach, for example,
+limiting and hiding as implementation some of the supporting functionalities?
 Because we believe the current structure/design offers several major benefits
-that would be hard (and in some cases impossible) to obtain otherwise: **flexibility,
-extensibility, maintainability, and the possibility of using each component on its own.**
+that would be hard---and in some cases impossible---to obtain otherwise: **flexibility,
+extensibility, maintainability, and usability of each component on its own.**
 One drawback is that at any point in time, the various components might
 have different maturity levels, so reaching a comparable and solid maturity
 across the stack might take some time---our current goal is to obtain
@@ -116,24 +112,27 @@ concepts knowingly or not. This is because when you write a function or class
 template, you have some expectations of what a template needs to expose/do.
 C++20 concepts are, in some sense, a way to *explicitly* formalize those expectations.
 
-.. admonition:: To use the C++20 pressio concepts, you need to explicitly enable them
 
-   Until we can stably upgrade to C++20, we cannot by default use C++20 concepts,
-   so we currently guard the concepts in pressio inside a
-   preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``. This can be enabled by
-   using a C++20 compliant compiler and setting ``-DCMAKE_CXX_STANDARD=20`` at configure time.
+Until we can stably upgrade to C++20, we cannot by default use C++20 concepts,
+so we currently guard the concepts in pressio inside a
+preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``. This can be enabled by
+using a C++20 compliant compiler and setting ``-DCMAKE_CXX_STANDARD=20`` at configure time.
+The behavior is as follows:
 
-   The behavior is as follows:
+- if ``PRESSIO_ENABLE_CXX20`` is *enabled*: if you do this, the pressio concepts
+  are compiled and enforced *stricto sensu* on the pressio APIs as discussed by this documentation
 
-   - if ``PRESSIO_ENABLE_CXX20`` is *enabled*: if you do this, the pressio concepts
-     are compiled and enforced *stricto sensu* on the pressio APIs as discussed by this documentation
+- if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
+  default pressio C++ standard is currently C++17. In this case, the "C++20 concepts"
+  are not compiled but the constraints they represent are still valid and implemented
+  differently such that their enforcement is done via a combination of SFINAE and static asserts.
 
-   - if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
-     default pressio C++ standard is currently C++17. In this case, the "C++20 concepts"
-     are not compiled but the constraints they represent are still valid and implemented
-     differently such that their enforcement is done via a combination of SFINAE and static asserts.
+.. important::
 
-   `Read more about how we interpret C++ concepts and use them in pressio <concepts_note.html>`__.
+   Well-defined concepts are hard to design and it takes time. Concepts used in pressio are
+   still being developed. Some are more mature than others. The approach we adopt is to first
+   focus on the syntax, then then we will revise them with proper semantics. Keep this in mind
+   if some concepts seem incomplete.
 
 ..
    Here, the term concept does not necessarily
@@ -168,7 +167,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
 
    installation
    keywords
-   concepts_note
 
 .. toctree::
    :caption: API

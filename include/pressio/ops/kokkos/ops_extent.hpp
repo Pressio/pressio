@@ -56,7 +56,7 @@ mpl::enable_if_t<
   // TPL/container specific
   ::pressio::is_native_container_kokkos<T>::value
   || ::pressio::is_expression_acting_on_kokkos<T>::value,
-  decltype(std::declval<const T&>().extent(0))
+  std::size_t
   >
 extent(const T & objectIn, const IndexType i)
 {

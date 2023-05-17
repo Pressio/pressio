@@ -69,7 +69,7 @@ max(T & obj)
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   std::vector<sc_t> x(obj.NumVectors());
-  int ret = obj.MaxValue(x.data());
+  obj.MaxValue(x.data());
   const auto i = std::max_element(x.begin(), x.end());
   if (i == x.end()) {
     throw std::runtime_error("Can't take max() of no elements");
@@ -95,7 +95,7 @@ min(const T & obj)
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   std::vector<sc_t> x(obj.NumVectors());
-  int ret = obj.MinValue(x.data());
+  obj.MinValue(x.data());
   const auto i = std::min_element(x.begin(), x.end());
   if (i == x.end()) {
     throw std::runtime_error("Can't take min() of no elements");

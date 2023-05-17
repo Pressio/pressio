@@ -55,7 +55,7 @@ template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
   ::pressio::is_vector_tpetra_block<T>::value,
-  decltype(std::declval<const T&>().getMap()->getGlobalNumElements())
+  std::size_t
   >
 extent(const T & oIn, const IndexType i)
 {
@@ -70,7 +70,7 @@ template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
   ::pressio::is_multi_vector_tpetra_block<T>::value,
-  decltype(std::declval<const T&>().getMap()->getGlobalNumElements())
+  std::size_t
   >
 extent(const T & oIn, const IndexType i)
 {

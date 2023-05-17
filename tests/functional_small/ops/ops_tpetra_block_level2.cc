@@ -16,11 +16,11 @@ using ops_tpetra_block = tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture;
 template <typename MultiVectorType, typename CommType>
 auto create_importer(const MultiVectorType &mv_src, const CommType &comm) {
   using map_t = typename MultiVectorType::map_type;
-  using sc_t = typename MultiVectorType::scalar_type;
+  // using sc_t = typename MultiVectorType::scalar_type;
   using lo_t = typename MultiVectorType::local_ordinal_type;
   using go_t = typename MultiVectorType::global_ordinal_type;
   using node_t = typename MultiVectorType::node_type;
-  using mvec_t = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
+  // using mvec_t = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
   using importer_t = Tpetra::Import<lo_t, go_t, node_t>;
 
   const auto numEntries = mv_src.getGlobalLength();
@@ -125,7 +125,7 @@ TEST_F(ops_tpetra_block,
        mv_prod_teuchos_vector)
 {
   Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
-  for (size_t i = 0; i < numVecs_; ++i) {
+  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
     x_teuchos(i) = (double)(i + 1.);
   }
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
@@ -140,7 +140,7 @@ TEST_F(ops_tpetra_block,
 {
   Kokkos::View<double*> x_kokkos{"x", (size_t)numVecs_};
   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x_kokkos);
-  for (int j = 0; j < numVecs_; ++j) {
+  for (int j = 0; j < (int)numVecs_; ++j) {
     x_h(j) = (double)(j + 1.); // unique int values
   }
   Kokkos::deep_copy(x_kokkos, x_h);
@@ -153,7 +153,7 @@ TEST_F(ops_tpetra_block,
 {
   Kokkos::View<double*> x0{ "x_span", numVecs_ + (size_t)2 };
   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
-  for (int i = 0; i < numVecs_ + 2; ++i) {
+  for (int i = 0; i < (int)numVecs_ + 2; ++i) {
     x_h(i) = (double)(i + 1.); // unique int values
   }
   Kokkos::deep_copy(x0, x_h);
@@ -167,8 +167,8 @@ TEST_F(ops_tpetra_block,
 {
   Kokkos::View<double**> x0{ "x_diag", (size_t)numVecs_, (size_t)numVecs_ };
   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
-  for (size_t i = 0; i < numVecs_; ++i) {
-    for (size_t j = 0; j < numVecs_; ++j) {
+  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
+    for (size_t j = 0; j < (size_t)numVecs_; ++j) {
       x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
     }
   }
@@ -210,8 +210,8 @@ TEST_F(ops_tpetra_block,
 {
   Kokkos::View<double**> y0{ "y_diag", std::size_t(numVecs_), std::size_t(numVecs_) };
   auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
-  for (size_t i = 0; i < numVecs_; ++i) {
-    for (size_t j = 0; j < numVecs_; ++j) {
+  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
+    for (size_t j = 0; j < (size_t)numVecs_; ++j) {
       y_h(i, j) = (double)(i * numVecs_ + j + 1.0);
     }
   }

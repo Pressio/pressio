@@ -59,7 +59,7 @@ template <
 void test_kokkos_container_traits()
 {
   // traits and shared predicates
-  constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
+  // constexpr bool is_dynamic = T::traits::rank_dynamic != 0;
   test_container_traits<
     T,
     T::traits::rank,
@@ -127,10 +127,10 @@ void test_kokkos_matrix_type_traits()
   // traits and shared predicates
   test_kokkos_container_traits<T>();
 
-  constexpr bool is_row_major = std::is_same<
-        typename T::traits::array_layout,
-        Kokkos::LayoutLeft
-      >::value;
+  // static_assert(std::is_same<
+  //       typename T::traits::array_layout,
+  //       Kokkos::LayoutLeft
+  //     >::value, "");
 
   // dense matrix predicates
   constexpr bool is_dynamic = T::traits::rank_dynamic != 0;

@@ -95,8 +95,8 @@ product(::pressio::nontranspose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
-  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
+  assert( (std::size_t)::pressio::ops::extent(y, 0) == (std::size_t)::pressio::ops::extent(A, 0) );
+  assert( (std::size_t)::pressio::ops::extent(x, 0) == (std::size_t)::pressio::ops::extent(A, 1) );
 
   using sc_t = typename ::pressio::Traits<y_type>::scalar_type;
   constexpr sc_t zero{0};
@@ -188,8 +188,8 @@ product(::pressio::transpose /*unused*/,
 	y_type & y)
 {
 
-  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
-  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
+  assert( (std::size_t)::pressio::ops::extent(y, 0) == (std::size_t)::pressio::ops::extent(A, 1) );
+  assert( (std::size_t)::pressio::ops::extent(x, 0) == (std::size_t)::pressio::ops::extent(A, 0) );
 
   using sc_t = typename ::pressio::Traits<y_type>::scalar_type;
   constexpr sc_t zero{0};
@@ -236,7 +236,7 @@ product(::pressio::transpose mode,
 	const x_type & x)
 {
 
-  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
+  assert( (std::size_t)::pressio::ops::extent(x, 0) == (std::size_t)::pressio::ops::extent(A, 0) );
   y_type y(::pressio::ops::extent(A, 1));
 
   using sc_t = typename ::pressio::Traits<y_type>::scalar_type;

@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 template<class T, class IndexType>
 mpl::enable_if_t<
   ::pressio::is_dense_vector_teuchos<T>::value,
-  typename T::ordinalType
+  std::size_t
   >
 extent(const T & objectIn, IndexType i)
 {

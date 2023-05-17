@@ -99,10 +99,10 @@ void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
 TEST_F(ops_tpetra, mv_prod_teuchos_vector)
 {
   Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
-  for (size_t i = 0; i < numVecs_; ++i) {
+  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
     x_teuchos(i) = (double)(i + 1.);
   }
-  auto n = ::pressio::ops::extent(x_teuchos, 0);
+  // auto n = ::pressio::ops::extent(x_teuchos, 0);
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
 }
 
@@ -140,8 +140,8 @@ TEST_F(ops_tpetra, mv_prod_kokkos_diag)
 {
   Kokkos::View<double**> x0{ "x_diag", std::size_t(numVecs_), std::size_t(numVecs_)};
   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
-  for (size_t i = 0; i < numVecs_; ++i) {
-    for (size_t j = 0; j < numVecs_; ++j) {
+  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
+    for (size_t j = 0; j < (size_t)numVecs_; ++j) {
       x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
     }
   }
@@ -180,8 +180,8 @@ TEST_F(ops_tpetra, mv_T_vector_storein_kokkos_diag)
 {
   Kokkos::View<double**> y0{ "x_diag", std::size_t(numVecs_), std::size_t(numVecs_) };
   auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
-  for (size_t i = 0; i < numVecs_; ++i) {
-    for (size_t j = 0; j < numVecs_; ++j) {
+  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
+    for (size_t j = 0; j <  (size_t)numVecs_; ++j) {
       y_h(i, j) = (double)(i * numVecs_ + j + 1.0);
     }
   }

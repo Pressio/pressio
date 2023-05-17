@@ -57,7 +57,7 @@ auto create_gold_phi(){
 
 auto stdvec_to_eigen(const std::vector<double> & v){
   Eigen::VectorXd a(v.size());
-  for (int i=0; i<v.size(); ++i){ a(i) = v[i]; }
+  for (int i=0; i<(int)v.size(); ++i){ a(i) = v[i]; }
   return a;
 }
 
