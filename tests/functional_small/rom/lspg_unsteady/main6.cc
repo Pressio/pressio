@@ -364,22 +364,26 @@ struct HypRedUpdaterEigen
   }
 };
 
-struct Prec{
+struct Scaler{
   void operator()(const Eigen::VectorXd & statein,
 		  double evalTime,
 		  Eigen::VectorXd & residual,
-		  Eigen::MatrixXd & jacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<Eigen::MatrixXd *> jacobian) const
+#else
+		  Eigen::MatrixXd * jacobian) const
+#endif
   {
-    std::cout << "PRECONDITIONING\n";
+    std::cout << "SCALING\n";
   }
 };
 }
 
 TEST(rom_lspg_unsteady, test6)
 {
-  /* hyper-reduced lspg eigen for bdf1 with a trivial preconditioner,
+  /* hyper-reduced lspg eigen for bdf1 with a trivial scaler
    should be identical to main1.cc.
-   note that this WILL need to be changed to a non-trivial precondiotiner
+   note that this WILL need to be changed to a non-trivial scaler
   */
 
   pressio::log::initialize(pressio::logto::terminal);
@@ -406,7 +410,7 @@ TEST(rom_lspg_unsteady, test6)
   romState[2]=2.;
 
   namespace plspg = rom::lspg::experimental;
-  Prec p;
+  Scaler p;
   HypRedUpdaterEigen<double> comb(sample_indices);
   auto problem = plspg::create_unsteady_problem(ode::StepScheme::BDF1,
 						space, fomSystem, comb, p);

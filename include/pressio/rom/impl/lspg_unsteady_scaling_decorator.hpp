@@ -105,9 +105,9 @@ public:
     // fomStateAt_np1 is only valid IF already reconstructed in the base class
     const auto & fomStateAt_np1 = fomStatesManager_(::pressio::ode::nPlusOne());
 #ifdef PRESSIO_ENABLE_CXX17
-    scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, *Jo.value());
+    scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, Jo);
 #else
-    scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, *Jo);
+    scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, Jo);
 #endif
   }
 

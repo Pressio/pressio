@@ -265,7 +265,11 @@ struct Scaler{
   void operator()(const Eigen::VectorXd & statein,
 		  double evalTime,
 		  Eigen::VectorXd & residual,
-		  Eigen::MatrixXd & jacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<Eigen::MatrixXd *> jacobian) const
+#else
+		  Eigen::MatrixXd * jacobian) const
+#endif
   {
     std::cout << "SCALING\n";
   }
@@ -274,9 +278,9 @@ struct Scaler{
 
 TEST(rom_lspg_unsteady, test5)
 {
-  /* default lspg eigen for bdf1 with a trivial preconditioner,
+  /* default lspg eigen for bdf1 with a trivial scaler,
    should be identical to main1.cc.
-   note that this WILL need to be changed to a non-trivial precondiotiner
+   note that this WILL need to be changed to a non-trivial scale
   */
 
   pressio::log::initialize(pressio::logto::terminal);
