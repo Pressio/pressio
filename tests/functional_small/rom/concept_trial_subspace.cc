@@ -3,16 +3,11 @@
 #include "pressio/rom_subspaces.hpp"
 
 namespace{
-struct FakeType1{};
 struct FakeType2{};
 struct FakeType3{};
 }
 
 namespace pressio{
-template<> struct Traits<FakeType1>{
-  static constexpr int rank = 2;
-  using scalar_type = double;
-};
 template<> struct Traits<FakeType2>{
   static constexpr int rank = 2;
   using scalar_type = double;

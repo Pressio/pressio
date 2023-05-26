@@ -59,7 +59,7 @@ template <typename T, class IndexType>
   >
 extent(const T & oIn, const IndexType i)
 {
-  return (i == 0) ? oIn.GlobalLength() : 1;
+  return (i == 0) ? std::size_t(oIn.GlobalLength()) : std::size_t(1);
 }
 
 template <typename T, class IndexType>
@@ -71,11 +71,13 @@ template <typename T, class IndexType>
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {
-    return oIn.GlobalLength();
-  } else if (i == 1) {
-    return oIn.NumVectors();
-  } else {
-    return 1;
+    return std::size_t(oIn.GlobalLength());
+  }
+  else if (i == 1) {
+    return std::size_t(oIn.NumVectors());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 

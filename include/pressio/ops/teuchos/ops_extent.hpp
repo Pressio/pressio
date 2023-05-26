@@ -58,7 +58,7 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, IndexType i)
 {
-  return (i == 0) ? objectIn.length() : 1;
+  return (i == 0) ? std::size_t(objectIn.length()) : std::size_t(1);
 }
 
 }}

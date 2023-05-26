@@ -58,7 +58,7 @@ struct matching_extents<T1, T2>
   {
     for (int i=0; i<::pressio::Traits<T1>::rank; ++i)
       {
-	if( (std::size_t)::pressio::ops::extent(a, i) != (std::size_t)::pressio::ops::extent(b, i)){
+	if( ::pressio::ops::extent(a, i) != ::pressio::ops::extent(b, i)){
 	  return false;
 	}
       }

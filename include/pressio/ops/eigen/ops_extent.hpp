@@ -59,7 +59,7 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, const IndexType i)
 {
-  return (i == 0) ? objectIn.size() : 1;
+  return (i == 0) ? std::size_t(objectIn.size()) : std::size_t(1);
 }
 
 template<class T, class IndexType>
@@ -72,11 +72,13 @@ mpl::enable_if_t<
 extent(const T & objectIn, const IndexType i)
 {
   if (i == 0){
-    return objectIn.rows();
-  } else if (i == 1) {
-    return objectIn.cols();
-  } else {
-    return 1;
+    return std::size_t(objectIn.rows());
+  }
+  else if (i == 1) {
+    return std::size_t(objectIn.cols());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 
@@ -88,7 +90,7 @@ mpl::enable_if_t<
   >
 extent(const T & objectIn, const IndexType i)
 {
-  return objectIn.extent(i);
+  return std::size_t(objectIn.extent(i));
 }
 
 }}

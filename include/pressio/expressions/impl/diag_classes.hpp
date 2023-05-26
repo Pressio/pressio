@@ -94,7 +94,7 @@ public:
   }
 
   size_t extent(size_t i) const{
-    return (i < 1) ? extent_ : 1;
+    return (i < 1) ? extent_ : std::size_t(1);
   }
 
   native_expr_t const & native() const{
@@ -165,7 +165,7 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    return (i < 1) ? extent_ : 1;
+    return (i < 1) ? extent_ : std::size_t(1);
   }
 
   native_expr_t const & native() const{

@@ -114,11 +114,11 @@ public:
 public:
   size_t extent(size_t i) const{
     if (i == 0) {
-      return numRows_;
+      return std::size_t(numRows_);
     } else if (i == 1) {
-      return numCols_;
+      return std::size_t(numCols_);
     } else {
-      return 1;
+      return std::size_t(1);
     }
   }
 

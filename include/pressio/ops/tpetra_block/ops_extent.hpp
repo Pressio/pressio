@@ -60,9 +60,10 @@ template <typename T, class IndexType>
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {
-    return oIn.getMap()->getGlobalNumElements();
-  } else {
-    return 1;
+    return std::size_t(oIn.getMap()->getGlobalNumElements());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 
@@ -75,11 +76,13 @@ template <typename T, class IndexType>
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {
-    return oIn.getMap()->getGlobalNumElements();
-  } else if (i == 1) {
-    return oIn.getNumVectors();
-  } else {
-    return 1;
+    return std::size_t(oIn.getMap()->getGlobalNumElements());
+  }
+  else if (i == 1) {
+    return std::size_t(oIn.getNumVectors());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 
