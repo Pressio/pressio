@@ -166,11 +166,6 @@ public:
   template<class SystemType>
   void solve(const SystemType & system, StateType & solutionInOut)
   {
-    // the solve method potentially be called multiple times
-    // so we need to reset the data in the registry everytime
-    // if not applicable, this is a noop
-    reset_for_new_solve_loop(tag_, reg_);
-
     switch (updateEnValue_)
     {
       case Update::Standard:
@@ -257,6 +252,10 @@ private:
     auto extReg = reference_capture_registry_and_extend_with<
       StateTag, LineSearchTrialStateTag,
       StateType &, StateType>(reg_, solutionInOut, system.createState());
+
+    // the solve method potentially be called multiple times
+    // so we need to reset the data in the registry everytime
+    reset_for_new_solve_loop(tag_, extReg);
 
     if (updateEnValue_ == Update::LMSchedule1){
       using up_t = LMSchedule1Updater<ScalarType, StateType>;

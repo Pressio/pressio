@@ -117,7 +117,7 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(1)*/
     SystemType const *
     >;
 
-  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistry<tags, types>;
+  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistryTramp_t<tags, types>;
   registry_t reg(system.createState(), system.createState(),
 		 system.createResidual(), system.createJacobian(),
 		 gradient_t(system.createState()),
@@ -138,6 +138,7 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(1)*/
   return nonlinearsolvers::impl::NonLinLeastSquares<tag, state_t, registry_t, scalar_t>
     (tag{}, std::move(reg), defaultDiagnostics);
 }
+
 
 /*
   Weighted gauss-newton minimizes the weighted sum of squares:
@@ -212,8 +213,8 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
     utils::InstanceOrReferenceWrapper<WeightingOpType>,
     SystemType const *
     >;
-  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistry<tags, types>;
 
+  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistryTramp_t<tags, types>;
   registry_t reg(system.createState(), system.createState(),
 		 system.createResidual(), system.createJacobian(),
 		 system.createResidual(), system.createJacobian(),
@@ -297,7 +298,7 @@ auto create_gauss_newton_qr_solver(const SystemType & system,
     SystemType const *
     >;
 
-  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistry<tags, types>;
+  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistryTramp_t<tags, types>;
   registry_t reg(system.createState(), system.createState(),
 		 system.createResidual(), system.createJacobian(),
 		 system.createState(), // gradient is same extent as state

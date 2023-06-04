@@ -170,7 +170,6 @@ public:
 			     DefaultUpdater());
     }
     else if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
-
       auto extReg = reference_capture_registry_and_extend_with<
 	StateTag, LineSearchTrialStateTag,
 	StateType &, StateType>(reg_, solutionInOut, system.createState());

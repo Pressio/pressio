@@ -129,7 +129,7 @@ auto create_newton_solver(const SystemType & system,
     utils::InstanceOrReferenceWrapper<LinearSolverType>,
     SystemType const *
     >;
-  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistry<tags, types>;
+  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistryTramp_t<tags, types>;
   registry_t reg(system.createState(),
 		 system.createState(),
 		 system.createResidual(),
