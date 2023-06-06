@@ -53,12 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  // common clone constraints
-  ::pressio::Traits<T>::rank == 1
-  // TPL/container specific
-  && ::pressio::is_dense_vector_teuchos<T>::value,
-  T
-  >
+  ::pressio::is_dense_vector_teuchos<T>::value, T>
 clone(const T & clonable)
 {
   return T(Teuchos::Copy, clonable);

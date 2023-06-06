@@ -53,10 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_vector_epetra<T>::value,
-  std::size_t
-  >
+  ::pressio::is_vector_epetra<T>::value, std::size_t>
 extent(const T & oIn, const IndexType i)
 {
   return (i == 0) ? std::size_t(oIn.GlobalLength()) : std::size_t(1);
@@ -64,10 +61,7 @@ extent(const T & oIn, const IndexType i)
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_multi_vector_epetra<T>::value,
-  std::size_t
-  >
+  ::pressio::is_multi_vector_epetra<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {

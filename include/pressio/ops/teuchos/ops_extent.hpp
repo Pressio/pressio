@@ -53,9 +53,7 @@ namespace pressio{ namespace ops{
 
 template<class T, class IndexType>
 mpl::enable_if_t<
-  ::pressio::is_dense_vector_teuchos<T>::value,
-  std::size_t
-  >
+  ::pressio::is_dense_vector_teuchos<T>::value, std::size_t >
 extent(const T & objectIn, IndexType i)
 {
   return (i == 0) ? std::size_t(objectIn.length()) : std::size_t(1);
