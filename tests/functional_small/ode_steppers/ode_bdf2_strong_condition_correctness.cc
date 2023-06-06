@@ -44,7 +44,6 @@ struct MyFakeSolver
 
     auto J = sys.createJacobian();
 #ifdef PRESSIO_ENABLE_CXX17
-    using Jt = decltype(J);
     sys.residualAndJacobian(state, resCopy_, std::optional<decltype(J)*>(&J));
 #else
     sys.residualAndJacobian(state, resCopy_, &J);
