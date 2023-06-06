@@ -381,7 +381,6 @@ void compute_correction(GaussNewtonQrTag /*tag*/,
   auto & QTr = reg.template get<QTransposeResidualTag>();
   auto & solver = reg.template get<InnerSolverTag>();
 
-  auto QTResid = ::pressio::ops::clone(c);
   // factorize J = QR
   solver.get().computeThin(J);
 
