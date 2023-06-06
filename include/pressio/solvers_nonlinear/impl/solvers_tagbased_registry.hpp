@@ -68,13 +68,6 @@ struct TagBasedStaticRegistry< std::tuple<Tags...>, std::tuple<DataTypes...> >
       < mpl::size<Tags...>::value;
   }
 
-  template<class TagToFind, class T>
-  void set(T && o){
-    constexpr int i = mpl::variadic::find_if_binary_pred_t<
-      TagToFind, std::is_same, Tags...>::value;
-    std::get<i>(d_) = std::forward<T>(o);
-  }
-
   template<class TagToFind>
   auto & get(){
     constexpr int i = mpl::variadic::find_if_binary_pred_t<
@@ -327,17 +320,6 @@ struct TagBasedStaticRegistryExtension
     return Extendable::template contains<TagToFind>() ||
       extension_registry_type::template contains<TagToFind>();
   }
-
-  // template<class TagToFind, class T>
-  // mpl::enable_if_t< Extendable::template contains<TagToFind>() >
-  // set(T && o){
-  //   reg_.template set<TagToFind>(std::forward<T>(o));
-  // }
-  // template<class TagToFind, class T>
-  // mpl::enable_if_t< !Extendable::template contains<TagToFind>() >
-  // set(T && o){
-  //   newReg_.template set<TagToFind>(std::forward<T>(o));
-  // }
 
   template<
     class TagToFind,
