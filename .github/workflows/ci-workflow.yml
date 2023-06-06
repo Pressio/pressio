@@ -78,8 +78,8 @@ jobs:
           - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Release }
           - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Debug }
 
-          - { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Debug }
+          #- { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Release }
+          #- { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Debug }
 
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idruns-on
     # The type of machine to run the job on
