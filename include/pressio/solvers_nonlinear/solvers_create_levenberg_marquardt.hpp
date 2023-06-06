@@ -52,6 +52,7 @@
 #include "solvers_default_types.hpp"
 #include "./impl/solvers_tagbased_registry.hpp"
 #include "./impl/internal_tags.hpp"
+#include "./impl/registries.hpp"
 #include "./impl/diagnostics.hpp"
 #include "./impl/functions.hpp"
 #include "./impl/updaters.hpp"
@@ -95,43 +96,6 @@ auto create_levenberg_marquardt_solver(const SystemType & system,
 				       LinearSolverType && linSolver)
 {
 
-  using scalar_t   = nonlinearsolvers::scalar_of_t<SystemType>;
-  using state_t    = typename SystemType::state_type;
-  using r_t        = typename SystemType::residual_type;
-  using j_t        = typename SystemType::jacobian_type;
-  using hg_default = nonlinearsolvers::normal_eqs_default_types<state_t>;
-  using hessian_t  = typename hg_default::hessian_type;
-  using gradient_t = typename hg_default::gradient_type;
-  using lm_damp_t  = nonlinearsolvers::impl::LevenbergMarquardtDamping<scalar_t>;
-
-  using tags = std::tuple<
-    nonlinearsolvers::CorrectionTag,
-    nonlinearsolvers::InitialGuessTag,
-    nonlinearsolvers::ResidualTag,
-    nonlinearsolvers::JacobianTag,
-    nonlinearsolvers::GradientTag,
-    nonlinearsolvers::HessianTag,
-    nonlinearsolvers::LevenbergMarquardtUndampedHessianTag,
-    nonlinearsolvers::LevenbergMarquardtDampingTag,
-    nonlinearsolvers::InnerSolverTag,
-    nonlinearsolvers::impl::SystemTag
-    >;
-  using types = std::tuple<
-    state_t, state_t, r_t, j_t, gradient_t,
-    hessian_t, hessian_t, lm_damp_t,
-    utils::InstanceOrReferenceWrapper<LinearSolverType>,
-    SystemType const *
-    >;
-  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistryTramp_t<tags, types>;
-  registry_t reg(system.createState(), system.createState(),
-		 system.createResidual(), system.createJacobian(),
-		 gradient_t(system.createState()),
-		 hessian_t( hg_default::createHessian(system.createState()) ),
-		 hessian_t( hg_default::createHessian(system.createState()) ),
-		 lm_damp_t{},
-                 std::forward<LinearSolverType>(linSolver),
-		 &system);
-
   using nonlinearsolvers::Diagnostic;
   const std::vector<Diagnostic> defaultDiagnostics =
     {Diagnostic::objectiveAbsolute,
@@ -141,9 +105,13 @@ auto create_levenberg_marquardt_solver(const SystemType & system,
      Diagnostic::gradientAbsolutel2Norm,
      Diagnostic::gradientRelativel2Norm};
 
-  using tag = nonlinearsolvers::impl::LevenbergMarquardtNormalEqTag;
-  return nonlinearsolvers::impl::NonLinLeastSquares<tag, state_t, registry_t, scalar_t>
-    (tag{}, std::move(reg), defaultDiagnostics);
+
+  using tag      = nonlinearsolvers::impl::LevenbergMarquardtNormalEqTag;
+  using state_t  = typename SystemType::state_type;
+  using reg_t    = nonlinearsolvers::impl::RegistryLevMarNormalEqs<SystemType, LinearSolverType>;
+  using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
+  return nonlinearsolvers::impl::NonLinLeastSquares<tag, state_t, reg_t, scalar_t>
+    (tag{}, defaultDiagnostics, system, std::forward<LinearSolverType>(linSolver));
 }
 
 } // end namespace pressio

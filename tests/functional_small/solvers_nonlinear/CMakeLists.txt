@@ -1,55 +1,60 @@
 set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
 
-# # -----------------------------
-# # newton method
-# # -----------------------------
-# if (PRESSIO_ENABLE_TPL_EIGEN)
-#   set(name newton_problem1_eigen)
-#   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
-#   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+# -----------------------------
+# newton method
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name newton_problem1_eigen)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 
-#   set(name newton_problem2_eigen)
-#   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
-#   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+  set(name newton_problem2_eigen)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 
-#   set(name newton_custom_types_compile_only)
-#   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
-#   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
-# endif()
+  set(name newton_custom_types_compile_only)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+endif()
 
-# # -----------------------------
-# # gauss-newton or lev-mar with normal equations
-# # -----------------------------
-# if (PRESSIO_ENABLE_TPL_EIGEN)
-#   set(name gaussnewton_normaleqs_problem3_eigen)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+# -----------------------------
+# gauss-newton with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 
-#   set(name gaussnewton_normaleqs_problem5_eigen)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+  set(name gaussnewton_normaleqs_problem5_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 
-#   set(name gaussnewton_normaleqs_problem9_eigen)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+  set(name gaussnewton_normaleqs_problem9_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 
-#   set(name gaussnewton_normaleqs_custom_types_compile_only)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+  set(name gaussnewton_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
 
-#   set(name levmar_normaleqs_problem9_eigen)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+# -----------------------------
+# lev-mar with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name levmar_normaleqs_problem9_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 
-#   set(name levmar_normaleqs_custom_types_compile_only)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
-# endif()
+  set(name levmar_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
 
-# # -----------------------------
-# # weighted gauss-newton or weighted lev-mar with normal equations
-# # -----------------------------
-# if (PRESSIO_ENABLE_TPL_EIGEN)
-#   set(name weighted_gaussnewton_normaleqs_problem3_eigen)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+# -----------------------------
+# weighted gauss-newton or weighted lev-mar with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name weighted_gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 
-#   set(name weighted_gaussnewton_normaleqs_custom_types_compile_only)
-#   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
-# endif()
+  set(name weighted_gaussnewton_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
 
 # -----------------------------
 # gauss-newton via QR
@@ -61,34 +66,3 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(name gaussnewton_qr_problem8_eigen)
   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 endif()
-
-
-#if (PRESSIO_ENABLE_TPL_EIGEN)
-  #set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
-  #add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_concepts ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/tolerances.cc)
-  # add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_tolerances ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/operators.cc)
-  # add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_operators ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/correctors.cc)
-  # add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_correctors ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ls_weighted_gn_lm_gt.cc)
-  # set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_weighted_least_squares_gn)
-  # add_serial_utest(${TESTNAME} ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/iteratively_reweighted_gn.cc)
-  # set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_irwls_gn)
-  # add_serial_utest(${TESTNAME} ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/backtrack_strictly_decreasing_objective.cc)
-  # set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_backtrack_strictly_decreasing_objective)
-  # add_serial_utest(${TESTNAME} ${SRC1})
-
-  # set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/armijo.cc)
-  # set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_armijo)
-  # add_serial_utest(${TESTNAME} ${SRC1})
-#endif()

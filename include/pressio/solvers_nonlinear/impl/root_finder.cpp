@@ -108,24 +108,27 @@ void root_solving_loop_impl(ProblemTag /*problemTag*/,
 
 
 template<class Tag, class StateType, class RegistryType, class NormValueType>
-class RootFinder
+class RootFinder : public RegistryType
 {
   Tag tag_;
   int maxIters_ = 100;
   Stop stopEnValue_ = Stop::WhenAbsolutel2NormOfCorrectionBelowTolerance;
   NormValueType stopTolerance_ = 0.000001;
   Update updateEnValue_ = Update::Standard;
-  RegistryType reg_;
+
   using norm_diagnostics_container = DiagnosticsContainer<
     InternalDiagnosticDataWithAbsoluteRelativeTracking<NormValueType> >;
   norm_diagnostics_container normDiagnostics_;
   DiagnosticsLogger diagnosticsLogger_ = {};
 
 public:
+  template<class ...Args>
   RootFinder(Tag tagIn,
-	     RegistryType && reg,
-	     const std::vector<Diagnostic> & diags)
-    : tag_(tagIn), reg_(std::move(reg)), normDiagnostics_(diags)
+	     const std::vector<Diagnostic> & diags,
+	     Args && ...args)
+    : RegistryType(std::forward<Args>(args)...),
+      tag_(tagIn),
+      normDiagnostics_(diags)
   {
 
     // currently we don't have the diagonostics stuff all flushed out
@@ -158,27 +161,27 @@ public:
   void solve(const SystemType & system, StateType & solutionInOut)
   {
     // deep copy the initial guess
-    ::pressio::ops::deep_copy(reg_.template get<InitialGuessTag>(), solutionInOut);
+    ::pressio::ops::deep_copy(this->template get<InitialGuessTag>(), solutionInOut);
 
-    if (updateEnValue_ == Update::Standard){
+    if (updateEnValue_ == Update::Standard)
+    {
       auto extReg = reference_capture_registry_and_extend_with<
-	StateTag, StateType &>(reg_, solutionInOut);
-      root_solving_loop_impl(tag_, system, extReg,
-			     stopEnValue_, stopTolerance_,
-			     normDiagnostics_, diagnosticsLogger_,
-			     maxIters_,
+	StateTag, StateType &>(*this, solutionInOut);
+      root_solving_loop_impl(tag_, system, extReg, stopEnValue_, stopTolerance_,
+			     normDiagnostics_, diagnosticsLogger_, maxIters_,
 			     DefaultUpdater());
+
     }
-    else if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
+    else if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective)
+    {
       auto extReg = reference_capture_registry_and_extend_with<
 	StateTag, LineSearchTrialStateTag,
-	StateType &, StateType>(reg_, solutionInOut, system.createState());
+	StateType &, StateType>(*this, solutionInOut, system.createState());
 
-      root_solving_loop_impl(tag_, system, extReg,
-			     stopEnValue_, stopTolerance_,
-			     normDiagnostics_, diagnosticsLogger_,
-			     maxIters_,
+      root_solving_loop_impl(tag_, system, extReg, stopEnValue_, stopTolerance_,
+			     normDiagnostics_, diagnosticsLogger_, maxIters_,
 			     BacktrackStrictlyDecreasingObjectiveUpdater{});
+
     }
     else{
       throw std::runtime_error("Invalid criterion");
@@ -189,7 +192,7 @@ public:
   // to the same system used for constructing it
   void solve(StateType & solutionInOut)
   {
-    auto * system = reg_.template get<SystemTag>();
+    auto * system = this->template get<SystemTag>();
     assert(system != nullptr);
     this->solve(*system, solutionInOut);
   }

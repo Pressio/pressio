@@ -49,8 +49,10 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 
+#include "solvers_default_types.hpp"
 #include "./impl/solvers_tagbased_registry.hpp"
 #include "./impl/internal_tags.hpp"
+#include "./impl/registries.hpp"
 #include "./impl/diagnostics.hpp"
 #include "./impl/functions.hpp"
 #include "./impl/updaters.hpp"
@@ -107,37 +109,10 @@ template<class SystemType, class LinearSolverType>
 auto create_newton_solver(const SystemType & system,
 			  LinearSolverType && linSolver)
 {
-
-  using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
-  using state_t  = typename SystemType::state_type;
-  using r_t      = typename SystemType::residual_type;
-  using j_t      = typename SystemType::jacobian_type;
-
   // A newton iteration solves: J_k delta_k = - r_k,
   // where delta_k = x_k+1 - x_k and J_k is dr_k/dx
   // so the new approximation of the solution is: x_k+1 = x_k + delta_
-  using tags = std::tuple<
-    nonlinearsolvers::CorrectionTag,   /*delta_k*/
-    nonlinearsolvers::InitialGuessTag, /*x_0*/
-    nonlinearsolvers::ResidualTag,     /*r_k*/
-    nonlinearsolvers::JacobianTag,     /*J_k*/
-    nonlinearsolvers::InnerSolverTag,  /*linear solver for linearization*/
-    nonlinearsolvers::impl::SystemTag
-    >;
-  using types = std::tuple<
-    state_t, state_t, r_t, j_t,
-    utils::InstanceOrReferenceWrapper<LinearSolverType>,
-    SystemType const *
-    >;
-  using registry_t = nonlinearsolvers::impl::TagBasedStaticRegistryTramp_t<tags, types>;
-  registry_t reg(system.createState(),
-		 system.createState(),
-		 system.createResidual(),
-		 system.createJacobian(),
-                 std::forward<LinearSolverType>(linSolver),
-                 &system);
 
-  // this is what we want to output as diagnostics during the solve
   using nonlinearsolvers::Diagnostic;
   const std::vector<Diagnostic> diagnostics =
     {Diagnostic::residualAbsolutel2Norm,
@@ -145,9 +120,12 @@ auto create_newton_solver(const SystemType & system,
      Diagnostic::correctionAbsolutel2Norm,
      Diagnostic::correctionRelativel2Norm};
 
-  using tag = nonlinearsolvers::impl::NewtonTag;
-  return nonlinearsolvers::impl::RootFinder<tag, state_t, registry_t, scalar_t>
-    (tag{}, std::move(reg), diagnostics);
+  using tag      = nonlinearsolvers::impl::NewtonTag;
+  using state_t  = typename SystemType::state_type;
+  using reg_t    = nonlinearsolvers::impl::RegistryNewton<SystemType, LinearSolverType>;
+  using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
+  return nonlinearsolvers::impl::RootFinder<tag, state_t, reg_t, scalar_t>
+    (tag{}, diagnostics, system, std::forward<LinearSolverType>(linSolver));
 }
 
 } //end namespace pressio

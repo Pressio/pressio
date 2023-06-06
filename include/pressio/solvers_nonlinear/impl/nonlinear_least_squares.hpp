@@ -6,67 +6,6 @@ namespace pressio{
 namespace nonlinearsolvers{
 namespace impl{
 
-#define GETMETHOD2(N) \
-  template<class Tag, mpl::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
-  auto & get(){ return d##N##_; } \
-  template<class Tag, mpl::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
-  const auto & get() const { return d##N##_; }
-
-template<class SystemType, class QRSolverType>
-struct GNQRRegistry
-{
-  using state_t    = typename SystemType::state_type;
-  using r_t        = typename SystemType::residual_type;
-  using j_t        = typename SystemType::jacobian_type;
-  using QTr_t      = state_t; // type of Q^T*r
-  using gradient_t = state_t; // type of J^T r
-
-  using Tag1 = nonlinearsolvers::CorrectionTag;
-  using Tag2 = nonlinearsolvers::InitialGuessTag;
-  using Tag3 = nonlinearsolvers::ResidualTag;
-  using Tag4 = nonlinearsolvers::JacobianTag;
-  using Tag5 = nonlinearsolvers::GradientTag;
-  using Tag6 = nonlinearsolvers::impl::QTransposeResidualTag;
-  using Tag7 = nonlinearsolvers::InnerSolverTag;
-  using Tag8 = nonlinearsolvers::impl::SystemTag;
-
-  state_t d1_;
-  state_t d2_;
-  r_t d3_;
-  j_t d4_;
-  gradient_t d5_;
-  QTr_t d6_;
-  utils::InstanceOrReferenceWrapper<QRSolverType> d7_;
-  SystemType const * d8_;
-
-  template<class QRType>
-  GNQRRegistry(const SystemType & system, QRType && qrs)
-    : d1_(system.createState()),
-      d2_(system.createState()),
-      d3_(system.createResidual()),
-      d4_(system.createJacobian()),
-      d5_(system.createState()),
-      d6_(system.createState()),
-      d7_(std::forward<QRType>(qrs)),
-      d8_(&system){}
-
-  template<class TagToFind>
-  static constexpr bool contains(){
-    return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	   Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8>::value) < 8;
-  }
-
-  GETMETHOD(1)
-  GETMETHOD(2)
-  GETMETHOD(3)
-  GETMETHOD(4)
-  GETMETHOD(5)
-  GETMETHOD(6)
-  GETMETHOD(7)
-  GETMETHOD(8)
-};
-
-
 template<
   class ProblemTag,
   class UserDefinedSystemType,
@@ -178,8 +117,6 @@ class NonLinLeastSquares : public RegistryType
   ScalarType stopTolerance_ = static_cast<ScalarType>(0.000001);
   Update updateEnValue_ = Update::Standard;
 
-  //RegistryType reg_;
-
   using diagnostics_container = DiagnosticsContainer<
     InternalDiagnosticDataWithAbsoluteRelativeTracking<ScalarType> >;
   diagnostics_container diagnostics_;
@@ -188,11 +125,11 @@ class NonLinLeastSquares : public RegistryType
 public:
   template<class ...Args>
   NonLinLeastSquares(Tag tagIn,
-		     /*RegistryType && reg,*/
 		     const std::vector<Diagnostic> & diags,
 		     Args && ...args)
     : RegistryType(std::forward<Args>(args)...),
-      tag_(tagIn), /*reg_(std::move(reg)),*/ diagnostics_(diags)
+      tag_(tagIn),
+      diagnostics_(diags)
   {
 
     // currently we don't have the diagonostics stuff all flushed out
