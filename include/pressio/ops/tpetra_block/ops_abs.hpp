@@ -54,11 +54,7 @@ namespace pressio{ namespace ops{
 // y= abs(x)
 template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
-  // common abs constraints
-     ::pressio::Traits<T1>::rank == 1
-  && ::pressio::Traits<T2>::rank == 1
-  // TPL/container specific
-  && ::pressio::is_vector_tpetra_block<T1>::value
+     ::pressio::is_vector_tpetra_block<T1>::value
   && ::pressio::is_vector_tpetra_block<T2>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
