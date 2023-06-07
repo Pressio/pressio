@@ -49,7 +49,7 @@
 #ifndef OPS_KOKKOS_OPS_ABS_HPP_
 #define OPS_KOKKOS_OPS_ABS_HPP_
 
-#include<KokkosBlas1_abs.hpp>
+#include <KokkosBlas1_abs.hpp>
 
 namespace pressio{ namespace ops{
 
