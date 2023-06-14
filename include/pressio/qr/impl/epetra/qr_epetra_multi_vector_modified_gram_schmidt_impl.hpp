@@ -71,13 +71,13 @@ public:
   {
     auto & A = const_cast<MatrixType &>(Ain);
 
-    auto nVecs = ::pressio::ops::extent(A,1);
+    std::size_t nVecs = ::pressio::ops::extent(A,1);
     auto & ArowMap = A.Map();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
 
     sc_t rkkInv = zero_;
-    for (auto k=0; k<nVecs; k++)
+    for (std::size_t k=0; k<nVecs; k++)
     {
       auto & ak = A(k);
       ak->Norm2(&localR_(k,k));
@@ -86,7 +86,7 @@ public:
       auto & qk = (*Qmat_)(k);
       qk->Update( rkkInv, *ak, zero_ );
 
-      for (auto j=k+1; j<nVecs; j++){
+      for (std::size_t j=k+1; j<nVecs; j++){
 	     auto & aj = A(j);
 	     qk->Dot(*aj, &localR_(k,j));
 	     aj->Update(-localR_(k,j), *qk, one_);
@@ -113,9 +113,9 @@ public:
   }
 
 private:
-  void createLocalRIfNeeded(int newsize){
-    const auto locRext0 = ::pressio::ops::extent(localR_, 0);
-    const auto locRext1 = ::pressio::ops::extent(localR_, 1);   
+  void createLocalRIfNeeded(size_t newsize){
+    const std::size_t locRext0 = ::pressio::ops::extent(localR_, 0);
+    const std::size_t locRext1 = ::pressio::ops::extent(localR_, 1);   
     if (locRext0!=newsize or locRext1!=newsize){
       localR_ = R_nat_t(newsize, newsize);
       ::pressio::ops::set_zero(localR_);

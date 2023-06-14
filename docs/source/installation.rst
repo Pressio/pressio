@@ -13,7 +13,7 @@ Installation and Dependencies
 
 .. warning::
 
-    To use pressio, you need a C++14 compiler.
+    To use pressio, you need at least a C++14 compiler.
 
 Dependencies
 ------------

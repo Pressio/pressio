@@ -44,7 +44,7 @@ TEST(ops_kokkos, vector_clone)
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
   auto b_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), b);
   for (int i=0; i<6; ++i){
-    ASSERT_DOUBLE_EQ(b(i),a_h(i));
+    ASSERT_DOUBLE_EQ(b_h(i),a_h(i));
   }
 }
 
@@ -52,6 +52,7 @@ TEST(ops_kokkos, vector_extent)
 {
   Kokkos::View<double*> a("a", 6);
   ASSERT_TRUE(pressio::ops::extent(a,0)== 6);
+  ASSERT_TRUE(pressio::ops::extent(a,1)== 1); // check extent over the rank
 }
 
 TEST(ops_kokkos, vector_abs)
@@ -96,6 +97,17 @@ TEST(ops_kokkos, vector_scale)
   EXPECT_DOUBLE_EQ(x_h(3), 6.);
   EXPECT_DOUBLE_EQ(x_h(4), 8.);
   EXPECT_DOUBLE_EQ(x_h(5), 10.);
+
+  // check NaN injection with zero scaling
+  ::pressio::ops::fill(x, std::nan("0"));
+  pressio::ops::scale(x, 0.);
+  x_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), x);
+  EXPECT_DOUBLE_EQ(x_h(0), 0.);
+  EXPECT_DOUBLE_EQ(x_h(1), 0.);
+  EXPECT_DOUBLE_EQ(x_h(2), 0.);
+  EXPECT_DOUBLE_EQ(x_h(3), 0.);
+  EXPECT_DOUBLE_EQ(x_h(4), 0.);
+  EXPECT_DOUBLE_EQ(x_h(5), 0.);
 }
 
 TEST(ops_kokkos, vector_fill)
@@ -131,17 +143,18 @@ TEST(ops_kokkos, vector_deep_copy)
   }
 }
 
-// TEST(ops_kokkos, vector_min_max)
-// {
-//   using T = Eigen::VectorXd;
-//   T a(5);
-//   for (int i=0; i<5; ++i){
-//    a(i)= (double) i;
-//   }
+TEST(ops_kokkos, vector_min_max)
+{
+  Kokkos::View<double*> x("x", 6);
+  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x);
+  for (int i = 0; i < 6; ++i) {
+    x_h(i) = 100 - i * 5;
+  }
+  Kokkos::deep_copy(x, x_h);
 
-//   ASSERT_DOUBLE_EQ(pressio::ops::min(a), 0.);
-//   ASSERT_DOUBLE_EQ(pressio::ops::max(a), 4.);
-// }
+  ASSERT_DOUBLE_EQ(pressio::ops::min(x), 75.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(x), 100.);
+}
 
 TEST(ops_kokkos, vector_norm1)
 {
@@ -164,6 +177,9 @@ TEST(ops_kokkos, vector_dot)
   Kokkos::View<double*> b("b", 6);
   pressio::ops::fill(b, 2.);
   ASSERT_DOUBLE_EQ(pressio::ops::dot(a,b), 12.);
+  double result;
+  pressio::ops::dot(a,b,result);
+  ASSERT_DOUBLE_EQ(result,12.);
 }
 
 TEST(ops_kokkos, vector_pow)
@@ -304,6 +320,133 @@ TEST(ops_kokkos, vector_update4)
   EXPECT_DOUBLE_EQ( v_h2(0), 4.0);
   EXPECT_DOUBLE_EQ( v_h2(1), 8.0);
   EXPECT_DOUBLE_EQ( v_h2(2), 12.0);
+}
+
+TEST(ops_kokkos, vector_update_nan1)
+{
+  Kokkos::View<double*> v("v", 3);
+  Kokkos::View<double*> a("a", 3);
+  Kokkos::View<double*> vecOfNans("nan", 3);
+  pressio::ops::fill(v, 1.);
+  pressio::ops::fill(a, 1.);
+  pressio::ops::fill(vecOfNans, std::nan("0"));
+
+  // Note: this test covers just enough nan/non-nan combinations
+  // to trigger and verify all execution paths in our update()
+  // implementations, which include anti-NaN-injection variants
+  pressio::ops::update(v, 1., vecOfNans, 0.);
+  auto v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 1.0);
+
+  pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 1.0);
+  pressio::ops::update(v, 1., a, 1., vecOfNans, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 2.);
+
+  pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 2.0);
+  pressio::ops::update(v, 1., a, 1., vecOfNans, 0., a, 1.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 4.);
+  pressio::ops::update(v, 1., a, 1., a, 1., vecOfNans, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 6.);
+
+  pressio::ops::update(v, 1., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0., vecOfNans, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 6.0);
+  pressio::ops::update(v, 1., a, 1., vecOfNans, 0., a, 1., a, 1.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 9.);
+  pressio::ops::update(v, 1., a, 1., a, 1., vecOfNans, 0., a, 1.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 12.);
+  pressio::ops::update(v, 1., a, 1., a, 1., a, 1., vecOfNans, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 15.);
+}
+
+// injects NaN through the updated vector
+TEST(ops_kokkos, vector_update_nan2)
+{
+  const auto nan = std::nan("0");
+  Kokkos::View<double*> v("v", 3);
+  Kokkos::View<double*> a("a", 3);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1.);
+  auto v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 1.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 0.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 0.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 2.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1., a, 1.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 3.0);
+
+  pressio::ops::fill(v, nan);
+  pressio::ops::update(v, 0., a, 1., a, 1., a, 1., a, 1.);
+  v_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
+  EXPECT_DOUBLE_EQ(v_h(0), 4.0);
+}
+
+TEST(ops_kokkos, vector_update_expr_span)
+{
+  Kokkos::View<double*> v0("v_span", 5);
+  Kokkos::View<double*> a0("a_span", 5);
+  auto v = pressio::span(v0, 1, 3);
+  auto a = pressio::span(a0, 1, 3);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  auto v_h = Kokkos::create_mirror_view_and_copy(
+                Kokkos::HostSpace(), pressio::ops::impl::get_native(v));
+  EXPECT_DOUBLE_EQ( v_h(0), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(1), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(2), 30.0);
+}
+
+TEST(ops_kokkos, vector_update_expr_diag)
+{
+  Kokkos::View<double**> v0("v_diag", 3, 3);
+  Kokkos::View<double**> a0("a_diag", 3, 3);
+  auto v = pressio::diag(v0);
+  auto a = pressio::diag(a0);
+  pressio::ops::fill(v, 10.);
+  pressio::ops::fill(a, 1.);
+
+  pressio::ops::update(v, 1., a, 1.);
+  pressio::ops::update(v, 1., a, 1., a, 2.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3.);
+  pressio::ops::update(v, 1., a, 1., a, 2., a, 3., a, 4.);
+
+  // Note: just check the final result as this test is more about
+  //       whether expressions compile and work than computation itself
+  auto v_h = Kokkos::create_mirror_view_and_copy(
+                Kokkos::HostSpace(), pressio::ops::impl::get_native(v));
+  EXPECT_DOUBLE_EQ( v_h(0), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(1), 30.0);
+  EXPECT_DOUBLE_EQ( v_h(2), 30.0);
 }
 
 TEST(ops_kokkos, vector_elementwiseMultiply)

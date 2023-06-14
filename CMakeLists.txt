@@ -12,14 +12,15 @@ include(colors)
 #=====================================================================
 # versioning
 #=====================================================================
-set(Pressio_VERSION_MAJOR 0)
-set(Pressio_VERSION_MINOR 13)
-set(Pressio_VERSION_PATCH 0)
-set(Pressio_VERSION
-  "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
-math(EXPR PRESSIO_VERSION
-  "${Pressio_VERSION_MAJOR} * 10000 + ${Pressio_VERSION_MINOR} * 100 + ${Pressio_VERSION_PATCH}")
+file(READ "version.txt" tmpver)
+string(REGEX MATCH "VERSION_MAJOR ([0-9]*)" _ ${tmpver})
+set(Pressio_VERSION_MAJOR ${CMAKE_MATCH_1})
+string(REGEX MATCH "VERSION_MINOR ([0-9]*)" _ ${tmpver})
+set(Pressio_VERSION_MINOR ${CMAKE_MATCH_1})
+string(REGEX MATCH "VERSION_PATCH ([0-9]*)" _ ${tmpver})
+set(Pressio_VERSION_PATCH ${CMAKE_MATCH_1})
 
+set(Pressio_VERSION "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
 message("${Magenta}>> Pressio version = ${Pressio_VERSION} ${ColourReset}")
 
 #=====================================================================
@@ -47,6 +48,7 @@ endif()
 #=====================================================================
 # c++ standard
 #=====================================================================
+SET(PRESSIO_ENABLE_CXX14 OFF)
 SET(PRESSIO_ENABLE_CXX17 OFF)
 SET(PRESSIO_ENABLE_CXX20 OFF)
 
@@ -55,23 +57,41 @@ IF (NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
 ENDIF()
-MESSAGE(STATUS "Setting CXX standard to ${CMAKE_CXX_STANDARD}")
 
-IF(CMAKE_CXX_STANDARD STREQUAL "17")
+include(CheckCXXCompilerFlag)
+IF(CMAKE_CXX_STANDARD STREQUAL "14")
+  SET(PRESSIO_ENABLE_CXX14 ON)
+  check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_TARGET_CPP14)
+  if(NOT COMPILER_SUPPORT_TARGET_CPP14)
+    message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
+  endif()
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX14=ON")
+
+ELSEIF(CMAKE_CXX_STANDARD STREQUAL "17")
+  SET(PRESSIO_ENABLE_CXX14 ON)
   SET(PRESSIO_ENABLE_CXX17 ON)
+  check_cxx_compiler_flag("-std=c++17" COMPILER_SUPPORT_TARGET_CPP17)
+  if(NOT COMPILER_SUPPORT_TARGET_CPP17)
+    message(FATAL_ERROR "Compiler does not support -std=c++17. This is required.")
+  endif()
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX14=ON")
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX17=ON")
+
 ELSEIF(CMAKE_CXX_STANDARD STREQUAL "20")
+  SET(PRESSIO_ENABLE_CXX14 ON)
+  SET(PRESSIO_ENABLE_CXX17 ON)
   SET(PRESSIO_ENABLE_CXX20 ON)
+  check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORT_TARGET_CPP20)
+  if(NOT COMPILER_SUPPORT_TARGET_CPP20)
+    message(FATAL_ERROR "Compiler does not support -std=c++20. This is required.")
+  endif()
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX14=ON")
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX17=ON")
+  MESSAGE(STATUS "Setting PRESSIO_ENABLE_CXX20=ON")
+
 ENDIF()
 
-# commands to test if compiler supports standard
-#include(CheckCXXCompilerFlag)
-#check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORT_CPP14)
-#if(NOT COMPILER_SUPPORT_CPP14)
-#  message(FATAL_ERROR "Compiler does not support -std=c++14. This is required.")
-#endif()
-#set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_EXTENSIONS OFF)
+MESSAGE("${Magenta}>> Setting CXX standard to ${CMAKE_CXX_STANDARD} ${ColourReset}")
 
 #=====================================================================
 # do processing
@@ -137,7 +157,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h DESTINATION ${I
 file(GLOB include_helpers "${CMAKE_CURRENT_SOURCE_DIR}/include/pressio/*.hpp")
 install(FILES ${include_helpers} DESTINATION ${INC_INSTALL_DIR})
 
-foreach(X IN ITEMS mpl utils type_traits expressions ops qr solvers_linear solvers_nonlinear ode_advancers ode_steppers rom)
+foreach(X IN ITEMS mpl utils type_traits concepts expressions ops qr solvers_linear solvers_nonlinear ode rom)
   install(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/pressio/${X}
     DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")

@@ -110,5 +110,33 @@ public:
    }
 };
 
+class LineSearchStepTooSmall : public std::exception{
+  std::string myerr_ = "Line search step size too small";
+  std::string append_ = {};
+
+public:
+  LineSearchStepTooSmall() = default;
+  explicit LineSearchStepTooSmall(const std::string & append)
+    : append_{append}{ myerr_ += append_; }
+
+  virtual const char * what () const noexcept{
+    return myerr_.c_str();
+   }
+};
+
+class LineSearchObjFunctionChangeTooSmall : public std::exception{
+  std::string myerr_ = "Line serach objective function change too small";
+  std::string append_ = {};
+
+public:
+  LineSearchObjFunctionChangeTooSmall() = default;
+  explicit LineSearchObjFunctionChangeTooSmall(const std::string & append)
+    : append_{append}{ myerr_ += append_; }
+
+  virtual const char * what () const noexcept{
+    return myerr_.c_str();
+   }
+};
+
 }}//end namespace pressio::eh
 #endif  // SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_

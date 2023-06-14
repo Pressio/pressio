@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type = Eigen::VectorXd;
@@ -22,7 +24,14 @@ struct MyFom
     return A;
   }
 
-  void residual(const state_type & u, residual_type & r) const
+  void residualAndJacobianAction(const state_type & u,
+				 residual_type & r,
+				 const Eigen::MatrixXd & B,
+#ifdef PRESSIO_ENABLE_CXX17
+				 std::optional<Eigen::MatrixXd *> Ain) const
+#else
+				 Eigen::MatrixXd * Ain) const
+#endif
   {
     EXPECT_TRUE(u.size()!=r.size());
     EXPECT_TRUE(u.size()==nStencil_);
@@ -31,18 +40,13 @@ struct MyFom
     for (std::size_t i=0; i<indices_.size(); ++i){
       r(i) = u(indices_[i]) + 1.;
     }
-  }
 
-  void residualAndJacobianAction(const state_type & state,
-				 residual_type & r,
-				 const Eigen::MatrixXd & B,
-				 Eigen::MatrixXd & A,
-				 bool computeJac) const
-  {
-
-    residual(state, r);
-    if (computeJac)
-    {
+    if (Ain){
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & A = *Ain.value();
+#else
+      auto & A = *Ain;
+#endif
       for (std::size_t i=0; i<indices_.size(); ++i){
 	for (int j=0; j< A.cols(); ++j){
 	  A(i,j) = B(indices_[i], j);
@@ -69,6 +73,7 @@ struct FakeNonLinSolverSteady
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // call_count == 1
@@ -76,7 +81,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -93,14 +98,14 @@ struct FakeNonLinSolverSteady
       int count = 0;
       for (int i=0; i<N_; ++i){
         for (int j=0; j<3; ++j){
-          EXPECT_DOUBLE_EQ(J(i,j), start + (double)count++);
+          EXPECT_NEAR(J(i,j), start + (double)count++, 1e-15);
         }
       }
 
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -117,7 +122,7 @@ struct FakeNonLinSolverSteady
       count = 0;
       for (int i=0; i<N_; ++i){
         for (int j=0; j<3; ++j){
-          EXPECT_DOUBLE_EQ(J(i,j), start + (double)count++);
+          EXPECT_NEAR(J(i,j), start + (double)count++, 1e-15);
         }
       }
 
@@ -126,6 +131,7 @@ struct FakeNonLinSolverSteady
     }// end if call_count == 1
   }// end solve
 };
+}
 
 TEST(rom_lspg_steady, test3)
 {

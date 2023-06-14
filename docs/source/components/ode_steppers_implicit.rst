@@ -59,7 +59,6 @@ Usage
      :maxdepth: 1
 
      ode_steppers_implicit_standard_use
-     ode_steppers_implicit_policybased_use
 
 
 - if your problem is of the form :eq:`ode_implicit_system3`, then you can use this:

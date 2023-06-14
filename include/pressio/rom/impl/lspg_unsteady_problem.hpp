@@ -7,9 +7,7 @@ namespace pressio{ namespace rom{ namespace impl{
 template <int TotalNumberOfDesiredStates, class = void>
 struct DeducedStepperType;
 
-template <>
-struct DeducedStepperType<-1>
-{
+template <> struct DeducedStepperType<-1>{
   // note: to deduce the stepper_type it does not really matter
   // what scheme enum value we use, as long as it is an implicit one
   template<class T>
@@ -84,17 +82,17 @@ public:
 
   stepper_type & lspgStepper(){ return stepper_; }
 
-  // template<class SolverType, class ...ArgsOp>
-  // void operator()(state_type & reducedState,
-  // 		  pressio::ode::StepStartAt<independent_variable_type> sStart,
-  // 		  pressio::ode::StepCount sCount,
-  // 		  pressio::ode::StepSize<independent_variable_type> sSize,
-  // 		  SolverType & solver,
-  // 		  ArgsOp && ...argsop)
-  // {
-  //   stepper_(reducedState, sStart, sCount, sSize,
-  //    	     solver, std::forward<ArgsOp>(argsop)...);
-  // }
+  template<class SolverType, class ...ArgsOp>
+  void operator()(state_type & reducedState,
+		  pressio::ode::StepStartAt<independent_variable_type> sStart,
+		  pressio::ode::StepCount sCount,
+		  pressio::ode::StepSize<independent_variable_type> sSize,
+		  SolverType & solver,
+		  ArgsOp && ...argsop)
+  {
+    stepper_(reducedState, sStart, sCount, sSize,
+	     solver, std::forward<ArgsOp>(argsop)...);
+  }
 
 private:
   LspgFomStatesManager<TrialSubspaceType> fomStatesManager_;

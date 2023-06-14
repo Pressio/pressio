@@ -33,25 +33,22 @@ Constraints
     true ``pressio::is_vector_eigen<T>::value``, ``pressio::is_dense_matrix_eigen<T>::value``,
     ``pressio::is_sparse_matrix_eigen<T>::value`` or
 
-  - a pressio expression, e.g., span, diag, subspan, operating on an Eigen object or
-
   - a Kokkos rank-1 or rank-2 view, i.e. ``pressio::is_vector_kokkos<T>::value``, ``pressio::is_dense_matrix_kokkos<T>::value`` or
 
-  - a tpetra vector or multi-vector, i.e. ``pressio::is_vector_tpetra<T>::value``, ``pressio::is_multi_vector_tpetra<T>::value`` or
+  - a Tpetra vector or multi-vector, i.e. ``pressio::is_vector_tpetra<T>::value``, ``pressio::is_multi_vector_tpetra<T>::value`` or
 
-  - a tpetra block vector or multi-vector, i.e. ``pressio::is_vector_tpetra_block<T>::value``, ``pressio::is_multi_vector_tpetra_block<T>::value``
+  - a Tpetra block vector or multi-vector, i.e. ``pressio::is_vector_tpetra_block<T>::value``, ``pressio::is_multi_vector_tpetra_block<T>::value`` or
+
+  - a Epetra vector or multi-vector, i.e. ``pressio::is_vector_epetra<T>::value``, ``pressio::is_multi_vector_epetra<T>::value`` or
+
+  - a pressio expression, i.e. ``pressio::diag``, ``pressio::span``, ``pressio::subspan``, ``pressio::as_diagonal_matrix`` based on Eigen or Kokkkos container
 
 - ``ScalarType`` must be convertible to ``pressio::Traits<T>::scalar_type``
-
-Mandates
-~~~~~~~~
-
-:red:`finish`
 
 Preconditions
 ~~~~~~~~~~~~~
 
-:red:`finish`
+None
 
 Return value
 ~~~~~~~~~~~~
@@ -61,9 +58,9 @@ None
 Effects
 ~~~~~~~
 
-Overwrite each element of ``operand`` with ``value``.
+Overwrites each element of ``operand`` with ``value``.
 
 Postconditions
 ~~~~~~~~~~~~~~
 
-:red:`finish`
+Each element of ``operand`` is equal to ``value``.

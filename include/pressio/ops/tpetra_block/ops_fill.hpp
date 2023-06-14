@@ -53,12 +53,14 @@ namespace pressio{ namespace ops{
 
 template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra_block<T>::value or
-  ::pressio::is_multi_vector_tpetra_block<T>::value
+  (::pressio::is_vector_tpetra_block<T>::value ||
+   ::pressio::is_multi_vector_tpetra_block<T>::value)
+  && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-fill(T & v, const ScalarType & value)
+fill(T & o, const ScalarType & value)
 {
-  v.putScalar( value );
+  const typename ::pressio::Traits<T>::scalar_type v(value);
+  impl::get_native(o).putScalar(v);
 }
 
 }}//end namespace pressio::ops

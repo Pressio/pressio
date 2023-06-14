@@ -53,9 +53,14 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  (::pressio::is_vector_eigen<T>::value or
-  ::pressio::is_expression_acting_on_eigen<T>::value) and
-  ::pressio::Traits<T>::rank == 1,
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_vector_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   decltype( impl::get_native(std::declval<const T>()).template lpNorm<1>() )
   >
 norm1(const T & a)
@@ -65,9 +70,14 @@ norm1(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  (::pressio::is_vector_eigen<T>::value
-  or ::pressio::is_expression_acting_on_eigen<T>::value) and
-  ::pressio::Traits<T>::rank == 1,
+  // norm-2 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_vector_eigen<T>::value
+   || ::pressio::is_expression_acting_on_eigen<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   decltype( impl::get_native(std::declval<const T>()).template lpNorm<2>() )
   >
 norm2(const T & a)

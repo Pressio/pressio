@@ -45,150 +45,144 @@ Synopsis
    }} //end namespace
 
 
-Constraints
------------
-
-Let ``basis_matrix_type`` be equal to ``std::remove_cv_t<BasisMatrixType>``, then we must have:
-
-- :cpp:`std::is_class<basis_matrix_type>::value == true`
-
-- and :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true`
-
-- and :cpp:`std::is_pointer<basis_matrix_type>::value == false`
-
-- and :cpp:`pressio::mpl::is_std_shared_ptr<basis_matrix_type>::value == false`
-
-- and :cpp:`pressio::Traits::<basis_matrix_type>::rank == 2`
 
 
-Member types
-------------
 
-- ``basis_matrix_type``: same as ``std::remove_cv_t<BasisMatrixType>``
+..
+   Constraints
+   -----------
 
-Member functions
-----------------
+   Let ``basis_matrix_type`` be equal to ``std::remove_cv_t<BasisMatrixType>``, then we must have:
 
-Constructors
-^^^^^^^^^^^^
+   - :cpp:`std::is_class<basis_matrix_type>::value == true`
 
-:memberfunction:`(1)`: constructor accepting an lvalue
+   - and :cpp:`std::is_copy_constructible<basis_matrix_type>::value == true`
 
-  *Parameters*:
-
-  - ``basisMatrix``: the basis matrix object
-
-  - ``spanningSetValue``: value from ``SpanningSet`` to specify whether
-    ``basisMatrix`` is a row or column span
-
-  *Preconditions*:
-
-  - ``basisMatrix`` must *represent a linear basis* such that
-
-    - if ``spanningSetValue == SpanningSet::Columns``, ``basisMatrix`` should be *full column rank*
-
-    - if ``spanningSetValue == SpanningSet::Rows``, ``basisMatrix`` should be *full row rank*
-
-  - the following operation ``auto basisMatrixClone = pressio::ops::clone(basisMatrix)``
-    conforms to the requirements/semantics as `explained here <ops/clone.html>`__;
-    in brief, ``basisMatrixClone`` is an object independent of ``basisMatrix`` and if any
-    operation is applied to ``basisMatrixClone`` (or any data it references/uses), they
-    do not affect the original ``basisMatrix`` object (or any data it references/uses),
-    and viceversa
-
-  *Effects*:
-
-  - makes a new allocation to construct ``basis_`` by invoking the
-    copy-constructor as ``basis_(pressio::ops::clone(basisMatrix))``
-
-  *Postconditions*:
-
-  - the constructed object is immutable and ``basis_`` is an
-    identical (but distinct) copy of the object ``basisMatrix`` originally
-    passed to the constructor. Therefore, this class
-    has a clear invariant that is established upon construction.
+   - and :cpp:`pressio::Traits::<basis_matrix_type>::rank == 2`
 
 
-:memberfunction:`(2)`: constructor accepting an rvalue
+   Member types
+   ------------
 
-  *Parameters*:
+   - ``basis_matrix_type``: same as ``std::remove_cv_t<BasisMatrixType>``
 
-  - ``basisMatrix``: the basis matrix object
+   Member functions
+   ----------------
 
-  - ``spanningSetValue``: value from ``SpanningSet`` to specify whether
-    ``basisMatrix`` is a row or column span
+   Constructors
+   ^^^^^^^^^^^^
 
-  *Preconditions*:
+   :memberfunction:`(1)`: constructor accepting an lvalue
 
-  - ``basisMatrix`` must *represent a linear basis* such that
+     *Parameters*:
 
-    - if ``spanningSetValue == SpanningSet::Columns``, ``basisMatrix`` should be *full column rank*
+     - ``basisMatrix``: the basis matrix object
 
-    - if ``spanningSetValue == SpanningSet::Rows``, ``basisMatrix`` should be *full row rank*
+     - ``spanningSetValue``: value from ``SpanningSet`` to specify whether
+       ``basisMatrix`` is a row or column span
 
-  *Effects*:
+     *Preconditions*:
 
-  - tries to initialize ``basis_`` via move semantics by moving ``basisMatrix``.
-    If the type ``basis_matrix_type`` implements move semantics,
-    the temporary object is moved-constructed into ``basis_`` and no new
-    memory allocation should occur.
-    If move semantics are not implemented and the move operation
-    falls back to a copy, a new allocation (potentially) occurs.
+     - ``basisMatrix`` must *represent a linear basis* such that
 
-  *Postconditions*:
+       - if ``spanningSetValue == SpanningSet::Columns``, ``basisMatrix`` should be *full column rank*
 
-  - the constructed object is immutable and ``basis_`` is either
-    move constructed from the
-    original argument, or is just a copy. As in (1), this class
-    has a clear invariant that is established upon construction.
+       - if ``spanningSetValue == SpanningSet::Rows``, ``basisMatrix`` should be *full row rank*
 
-:memberfunction:`(3)`: copy constructor
+     - the following operation ``auto basisMatrixClone = pressio::ops::clone(basisMatrix)``
+       conforms to the requirements/semantics as `explained here <ops/clone.html>`__;
+       in brief, ``basisMatrixClone`` is an object independent of ``basisMatrix`` and if any
+       operation is applied to ``basisMatrixClone`` (or any data it references/uses), they
+       do not affect the original ``basisMatrix`` object (or any data it references/uses),
+       and viceversa
 
-  *Parameters*:
+     *Effects*:
 
-  - ``other``: another subspace object to be used as source to copy from
+     - makes a new allocation to construct ``basis_`` by invoking the
+       copy-constructor as ``basis_(pressio::ops::clone(basisMatrix))``
 
-  *Effects*:
+     *Postconditions*:
 
-  - initializes ``basis_`` by calling ``pressio::ops::clone(other.basis_)``,
-    therefore the semantics are similar to constructor (1)
+     - the constructed object is immutable and ``basis_`` is an
+       identical (but distinct) copy of the object ``basisMatrix`` originally
+       passed to the constructor. Therefore, this class
+       has a clear invariant that is established upon construction.
 
-  *Postconditions*:
 
-  - the new object will be identical to ``other``
+   :memberfunction:`(2)`: constructor accepting an rvalue
 
-Accessors
-^^^^^^^^^
+     *Parameters*:
 
-:memberfunction:`(4)`: returns a reference to the basis
+     - ``basisMatrix``: the basis matrix object
 
-   - Note: do NOT use ``const_cast`` on the returned value to modify
-     the referenced object, as doing so will break the invariant
-     and the immutability of the class.
-     If you need a different linear subspace, create a new object.
+     - ``spanningSetValue``: value from ``SpanningSet`` to specify whether
+       ``basisMatrix`` is a row or column span
 
-:memberfunction:`(5)`: returns the dimension of the subspace
+     *Preconditions*:
 
-  *Effects*: let ``S`` be an instance of the class and ``M`` be the basis matrix
-  stored in ``S``, then the method returns ``pressio::ops::extent(basisMatrix, i)``
-  where ``i==0`` for a row subspace, and ``i==1`` for a column subspace.
+     - ``basisMatrix`` must *represent a linear basis* such that
 
-:memberfunction:`(6)`: query if the spanning set is the set of columns
+       - if ``spanningSetValue == SpanningSet::Columns``, ``basisMatrix`` should be *full column rank*
 
-  *Effects*: ``true`` for a column subspace, ``false`` otherwise
+       - if ``spanningSetValue == SpanningSet::Rows``, ``basisMatrix`` should be *full row rank*
 
-:memberfunction:`(7)`: query if the spanning set is the set of rows
+     *Effects*:
 
-  *Effects*: ``true`` for a row subspace, ``false`` otherwise
+     - tries to initialize ``basis_`` via move semantics by moving ``basisMatrix``.
+       If the type ``basis_matrix_type`` implements move semantics,
+       the temporary object is moved-constructed into ``basis_`` and no new
+       memory allocation should occur.
+       If move semantics are not implemented and the move operation
+       falls back to a copy, a new allocation (potentially) occurs.
 
+     *Postconditions*:
+
+     - the constructed object is immutable and ``basis_`` is either
+       move constructed from the
+       original argument, or is just a copy. As in (1), this class
+       has a clear invariant that is established upon construction.
+
+   :memberfunction:`(3)`: copy constructor
+
+     *Parameters*:
+
+     - ``other``: another subspace object to be used as source to copy from
+
+     *Effects*:
+
+     - initializes ``basis_`` by calling ``pressio::ops::clone(other.basis_)``,
+       therefore the semantics are similar to constructor (1)
+
+     *Postconditions*:
+
+     - the new object will be identical to ``other``
+
+   Accessors
+   ^^^^^^^^^
+
+   :memberfunction:`(4)`: returns a reference to the basis
+
+      - Note: do NOT use ``const_cast`` on the returned value to modify
+	the referenced object, as doing so will break the invariant
+	and the immutability of the class.
+	If you need a different linear subspace, create a new object.
+
+   :memberfunction:`(5)`: returns the dimension of the subspace
+
+     *Effects*: let ``S`` be an instance of the class and ``M`` be the basis matrix
+     stored in ``S``, then the method returns ``pressio::ops::extent(basisMatrix, i)``
+     where ``i==0`` for a row subspace, and ``i==1`` for a column subspace.
+
+   :memberfunction:`(6)`: query if the spanning set is the set of columns
+
+     *Effects*: ``true`` for a column subspace, ``false`` otherwise
+
+   :memberfunction:`(7)`: query if the spanning set is the set of rows
+
+     *Effects*: ``true`` for a row subspace, ``false`` otherwise
 
 Notes
 ^^^^^
-
-.. Important::
-
-   The class models the `VectorSubspace concept <rom_concepts_various/linear_subspace.html>`__.
-
 
 - the semantics of the class are such that copy and move assignment
   are implicitly deleted by the compiler, so you cannot copy or move assign
@@ -211,6 +205,12 @@ Notes
   Therefore, in constructor (1) and in (3), we rely
   on ``pressio::ops::clone()``, to ensure the correct semantics
   and achieve the desired immutability.
+
+
+.. Important::
+
+   The class models the `VectorSubspace concept <rom_concepts.html>`__.
+
 
 Example
 ^^^^^^^

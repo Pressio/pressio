@@ -31,15 +31,18 @@ public:
 
   template <typename step_t, typename state_type>
   void discreteResidualAndJacobian(const step_t & step,
-				const independent_variable_type & /*unused*/,
-				const independent_variable_type & dt,
-				discrete_residual_type & R,
-				   discrete_jacobian_type & J,
-				   bool computeJacobian,
-				const state_type & yn,
-				const state_type & ynm1,
-				const state_type & ynm2,
-				const state_type & ynm3) const
+				   const independent_variable_type & /*unused*/,
+				   const independent_variable_type & dt,
+				   discrete_residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
+				   std::optional<discrete_jacobian_type*> J,
+#else
+				   discrete_jacobian_type* J,
+#endif
+				   const state_type & yn,
+				   const state_type & ynm1,
+				   const state_type & ynm2,
+				   const state_type & ynm3) const
   {
     std::cout << "-----------------\n";
     std::cout << step << "\n";
@@ -154,7 +157,7 @@ struct MyFakeSolver
     {
       std::cout << "solver iter = " << i << "\n";
       try{
-	sys.residualAndJacobian(state, R, J, true);
+	sys.residualAndJacobian(state, R, &J);
 	state(0) += 0.1;
 	state(1) += 0.2;
 	state(2) += 0.3;

@@ -83,23 +83,40 @@ public:
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & reducedResidual,
-			   jacobian_type & reducedJacobian,
-			   bool computeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type*> reducedJacobian) const
+#else
+                           jacobian_type* reducedJacobian) const
+#endif
   {
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    fomSystem_.get().residualAndJacobianAction(fomState_,
-					       unMaskedFomResidual_,
-					       phi, unMaskedFomJacAction_,
-					       computeJacobian);
+    if (reducedJacobian){
+
+#ifdef PRESSIO_ENABLE_CXX17
+      auto ja = std::optional<unmasked_fom_jac_action_result_type*>(&unMaskedFomJacAction_);
+#else
+      auto ja = &unMaskedFomJacAction_;
+#endif
+      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_,
+						 phi, ja);
+    }
+    else{
+      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_,
+						 phi, {});
+    }
 
     // then do the masking and hyp-red
     masker_(unMaskedFomResidual_, maskedFomResidual_);
     hyperReducer_(maskedFomResidual_, reducedResidual);
-    if (computeJacobian){
+    if (reducedJacobian){
       masker_(unMaskedFomJacAction_, maskedFomJacAction_);
-      hyperReducer_(maskedFomJacAction_, reducedJacobian);
+#ifdef PRESSIO_ENABLE_CXX17
+      hyperReducer_(maskedFomJacAction_, *reducedJacobian.value());
+#else
+      hyperReducer_(maskedFomJacAction_, *reducedJacobian);
+#endif
     }
   }
 

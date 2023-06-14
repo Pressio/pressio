@@ -7,7 +7,7 @@ struct MyApp
 {
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
@@ -21,8 +21,8 @@ struct MyApp
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3); ret.setZero();
+  rhs_type createRhs() const{
+    rhs_type ret(3); ret.setZero();
     return ret;
   };
 
@@ -31,10 +31,10 @@ struct MyApp
     return ret;
   };
 
-  void operator()(const state_type & y,
-		  independent_variable_type evaltime,
-		  right_hand_side_type & rhs,
-		  mass_matrix_type & M) const
+  void massMatrixAndRhs(const state_type & y,
+			independent_variable_type evaltime,
+			mass_matrix_type & M,
+			rhs_type & rhs) const
   {
     rhs = rhs_.at(count1++);
     M = Eigen::MatrixXd::Random(M.rows(), M.cols());

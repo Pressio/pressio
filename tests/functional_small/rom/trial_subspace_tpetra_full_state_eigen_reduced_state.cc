@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio/type_traits.hpp"
 #include "pressio/rom_subspaces.hpp"
-#include "fixtures/tpetra_only_fixtures.hpp"
+#include "./fixtures/tpetra_only_fixtures.hpp"
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, trial_subspace_construct_1)
 {

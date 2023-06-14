@@ -54,26 +54,16 @@
 #include "./type_traits.hpp"
 #include "./ops.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
-#endif
-
 #include "./ode/ode_strong_types.hpp"
 #include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_stencil_containers.hpp"
 
-#include "./ode/concepts/system_rhs.hpp"
-#include "./ode/concepts/system_rhs_massmatrix.hpp"
-#include "./ode/concepts/system_rhs_jacobian.hpp"
-#include "./ode/concepts/system_rhs_jacobian_massmatrix.hpp"
-#include "./ode/concepts/system_fully_discrete.hpp"
-#include "./ode/concepts/policy_residual_jacobian.hpp"
-
-#include "./ode/concepts/ode_observer.hpp"
-#include "./ode/concepts/ode_guesser.hpp"
-#include "./ode/concepts/ode_step_size_policy.hpp"
-#include "./ode/concepts/ode_step_size_policy_with_reduction.hpp"
-#include "./ode/concepts/ode_steppable.hpp"
-#include "./ode/concepts/ode_steppable_with_args.hpp"
+#ifdef PRESSIO_ENABLE_CXX20
+#include "./ode/concepts/ode_system_cxx20.hpp"
+#include "./ode/concepts/ode_others_cxx20.hpp"
+#else
+#include "./ode/concepts/ode_system.hpp"
+#include "./ode/concepts/ode_others.hpp"
+#endif
 
 #endif

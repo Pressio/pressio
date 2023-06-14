@@ -74,8 +74,8 @@ product(::pressio::nontranspose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-  assert( ::pressio::ops::extent(y,0) == A.numRows() );
-  assert( ::pressio::ops::extent(x,0) == A.numCols() );
+  assert( ::pressio::ops::extent(y,0) == (std::size_t) A.numRows() );
+  assert( ::pressio::ops::extent(x,0) == (std::size_t) A.numCols() );
 
   using ord_t = typename A_type::ordinalType;
   for (ord_t i=0;i<A.numRows(); ++i){
@@ -105,8 +105,8 @@ product(::pressio::transpose /*unused*/,
 	const beta_t & beta,
 	y_type & y)
 {
-  assert( ::pressio::ops::extent(y,0) == A.numCols() );
-  assert( ::pressio::ops::extent(x,0) == A.numRows() );
+  assert( ::pressio::ops::extent(y,0) == (std::size_t) A.numCols() );
+  assert( ::pressio::ops::extent(x,0) == (std::size_t) A.numRows() );
 
   using ord_t = typename A_type::ordinalType;
   for (ord_t j=0; j<A.numCols(); ++j){

@@ -56,9 +56,14 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-    (::pressio::is_native_container_kokkos<T>::value
-  or ::pressio::is_expression_acting_on_kokkos<T>::value)
-  and ::pressio::Traits<T>::rank == 1,
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   typename ::pressio::Traits<T>::scalar_type
 >
 norm1(const T & a)
@@ -68,9 +73,14 @@ norm1(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-    (::pressio::is_native_container_kokkos<T>::value
-  or ::pressio::is_expression_acting_on_kokkos<T>::value)
-  and ::pressio::Traits<T>::rank == 1,
+  // norm-2 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   typename ::pressio::Traits<T>::scalar_type
 >
 norm2(const T & a)

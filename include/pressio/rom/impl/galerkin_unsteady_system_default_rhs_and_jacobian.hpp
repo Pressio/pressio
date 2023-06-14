@@ -40,17 +40,15 @@ public:
   // required aliases
   using independent_variable_type = IndVarType;
   using state_type                = ReducedStateType;
-  using right_hand_side_type      = ReducedRhsType;
+  using rhs_type      = ReducedRhsType;
   using jacobian_type = ReducedJacobianType;
-
-  GalerkinDefaultOdeSystemRhsAndJacobian() = delete;
 
   GalerkinDefaultOdeSystemRhsAndJacobian(const TrialSubspaceType & trialSubspace,
 					 const FomSystemType & fomSystem)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
-      fomRhs_(fomSystem.createRightHandSide()),
+      fomRhs_(fomSystem.createRhs()),
       fomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
@@ -59,38 +57,40 @@ public:
     return trialSubspace_.get().createReducedState();
   }
 
-  right_hand_side_type createRightHandSide() const{
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
+  rhs_type createRhs() const{
+    return impl::CreateGalerkinRhs<rhs_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
-  void operator()(const state_type & reducedState,
-		  const IndVarType & rhsEvaluationTime,
-		  right_hand_side_type & reducedRhs,
-		  jacobian_type & reducedJacobian,
-		  bool computeJacobian) const
+  void rhsAndJacobian(const state_type & reducedState,
+		      const IndVarType & rhsEvaluationTime,
+		      rhs_type & reducedRhs,
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> reducedJacobian) const
+#else
+                      jacobian_type* reducedJacobian) const
+#endif
   {
 
     // reconstruct fom state fomState = phi*reducedState
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    // evaluate fomRhs
-    fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
+    fomSystem_.get().rhs(fomState_, rhsEvaluationTime, fomRhs_);
 
     // compute the reduced rhs
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
-    using rhs_scalar_t = typename ::pressio::Traits<right_hand_side_type>::scalar_type;
+    using rhs_scalar_t = typename ::pressio::Traits<rhs_type>::scalar_type;
     constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomRhs_,
 			    beta, reducedRhs);
 
-    if (computeJacobian){
+    if (reducedJacobian){
       // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
       fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
 
@@ -99,7 +99,12 @@ public:
       constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
       ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,
-			      beta, reducedJacobian);
+			      beta,
+#ifdef PRESSIO_ENABLE_CXX17
+			      *reducedJacobian.value());
+#else
+                              *reducedJacobian);
+#endif
     }
   }
 
@@ -107,7 +112,7 @@ private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  mutable typename FomSystemType::right_hand_side_type fomRhs_;
+  mutable typename FomSystemType::rhs_type fomRhs_;
   mutable fom_jac_action_result_type fomJacAction_;
 };
 

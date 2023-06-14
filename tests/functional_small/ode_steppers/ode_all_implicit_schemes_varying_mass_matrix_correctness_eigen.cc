@@ -7,18 +7,18 @@ struct MyApp2WithMM
 {
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   using jacobian_type        = Eigen::MatrixXd;
   using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
   mutable int count2 = 0;
   mutable int count3 = 0;
-  const std::map<int, right_hand_side_type> & rhs_;
+  const std::map<int, rhs_type> & rhs_;
   const std::map<int, mass_matrix_type> & massMatrices_;
   const std::map<int, jacobian_type> & jacobians_;
 
-  MyApp2WithMM(const std::map<int, right_hand_side_type> & rhs,
+  MyApp2WithMM(const std::map<int, rhs_type> & rhs,
 	       const std::map<int, mass_matrix_type> & matrices,
 	       const std::map<int, jacobian_type> & jacobians)
     : rhs_(rhs),
@@ -30,8 +30,8 @@ struct MyApp2WithMM
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3); ret.setZero();
+  rhs_type createRhs() const{
+    rhs_type ret(3); ret.setZero();
     return ret;
   };
 
@@ -45,17 +45,24 @@ struct MyApp2WithMM
     return ret;
   };
 
-  void operator()(const state_type & /*unused*/,
-		  independent_variable_type /*unused*/,
-		  right_hand_side_type & rhs,
-		  mass_matrix_type & M,
-		  jacobian_type & JJ,
-		  bool computeJac) const
+  void massMatrixAndRhsAndJacobian(const state_type & /*unused*/,
+				   independent_variable_type /*unused*/,
+				   mass_matrix_type & M,
+				   rhs_type & rhs,
+#ifdef PRESSIO_ENABLE_CXX17
+				   std::optional<jacobian_type*> JJ) const
+#else
+                                   jacobian_type* JJ) const
+#endif
   {
     rhs = rhs_.at(count1++);
     M = massMatrices_.at(count2++);
-    if (computeJac){
-      JJ = jacobians_.at(count3++);
+    if (JJ){
+#ifdef PRESSIO_ENABLE_CXX17
+      *(JJ.value()) = jacobians_.at(count3++);
+#else
+      *JJ = jacobians_.at(count3++);
+#endif
     }
   };
 };
@@ -64,7 +71,7 @@ struct MyApp2NoMM
 {
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   using jacobian_type        = Eigen::MatrixXd;
 
   mutable int count1 = 0;
@@ -84,8 +91,8 @@ struct MyApp2NoMM
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3); ret.setZero();
+  rhs_type createRhs() const{
+    rhs_type ret(3); ret.setZero();
     return ret;
   };
 
@@ -94,36 +101,44 @@ struct MyApp2NoMM
     return JJ;
   };
 
-  void operator()(const state_type & y,
-		  independent_variable_type evaltime,
-		  right_hand_side_type & rhs,
-		  jacobian_type & JJ,
-		  bool computeJac) const
+  void rhsAndJacobian(const state_type & y,
+		      independent_variable_type evaltime,
+		      rhs_type & rhs,
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> JJ) const
+#else
+                      jacobian_type* JJ) const
+#endif
   {
     auto tmprhs = rhs_.at(count1++);
     auto M = createMassMatrix();
     massMatrix(y, evaltime, M, false);
     rhs = M.inverse()*tmprhs;
 
-    if (computeJac){
+    if (JJ){
       auto tmpJ = jacobians_.at(count3++);
       auto M = createMassMatrix();
       massMatrix(y, evaltime, M, true);
-      JJ = M.inverse()*tmpJ;
+#ifdef PRESSIO_ENABLE_CXX17
+      *(JJ.value()) = M.inverse()*tmpJ;
+#else
+      *(JJ) = M.inverse()*tmpJ;
+#endif
+
     }
   };
 
 private:
-  using mass_matrix_type = Eigen::MatrixXd;
+  using my_mass_matrix_type = Eigen::MatrixXd;
 
-  mass_matrix_type createMassMatrix() const{
-    mass_matrix_type ret(3,3); ret.setZero();
+  my_mass_matrix_type createMassMatrix() const{
+    my_mass_matrix_type ret(3,3); ret.setZero();
     return ret;
   };
 
   void massMatrix(const state_type & /*unused*/,
 		  independent_variable_type /*unused*/,
-		  mass_matrix_type & M,
+		  my_mass_matrix_type & M,
 		  bool updateCounter) const
   {
     if (updateCounter){
@@ -158,7 +173,12 @@ struct FakeNonLinearSolver1{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
-      S.residualAndJacobian(y, R, J, true);
+
+#ifdef PRESSIO_ENABLE_CXX17
+      S.residualAndJacobian(y, R, std::optional<decltype(J)*>(&J));
+#else
+      S.residualAndJacobian(y, R, &J);
+#endif
 
       auto MMinv = massMatrices_.at(count_++).inverse();
       Eigen::VectorXd tmp = MMinv*R;
@@ -192,7 +212,13 @@ struct FakeNonLinearSolver2{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
-      S.residualAndJacobian(y, R, J, true);
+
+#ifdef PRESSIO_ENABLE_CXX17
+      S.residualAndJacobian(y, R, std::optional<decltype(J)*>(&J));
+#else
+      S.residualAndJacobian(y, R, &J);
+#endif
+
       EXPECT_TRUE( R.isApprox(residuals_[count_]) );
       EXPECT_TRUE( J.isApprox(jacobians_[count_++]) );
 

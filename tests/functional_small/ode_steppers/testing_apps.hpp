@@ -8,7 +8,7 @@ struct AppEigenA
 {
   using independent_variable_type = double;
   using state_type = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   state_type createState() const{
     state_type ret(3);
@@ -16,15 +16,15 @@ struct AppEigenA
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3);
+  rhs_type createRhs() const{
+    rhs_type ret(3);
     ret.setZero();
     return ret;
   };
 
-  void operator()(const state_type & y,
-		  independent_variable_type /*unused*/,
-		  right_hand_side_type & rhs) const
+  void rhs(const state_type & y,
+	   independent_variable_type /*unused*/,
+	   rhs_type & rhs) const
   {
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++){
@@ -58,7 +58,7 @@ struct AppEigenBImpl
    */
   using independent_variable_type = IndVarType;
   using state_type    = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
   state_type y0_;
@@ -81,8 +81,8 @@ public:
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type R(3);
+  rhs_type createRhs() const{
+    rhs_type R(3);
     R.setZero();
     return R;
   };
@@ -92,24 +92,33 @@ public:
     return JJ;
   };
 
-  void operator()(const state_type & yIn,
-		  independent_variable_type /*unused*/,
-		  right_hand_side_type & R) const
+  void rhs(const state_type & yIn,
+	   independent_variable_type /*unused*/,
+	   rhs_type & R) const
   {
     assert(yIn.size()==3);
     R = -10. * yIn;
   };
 
-  void operator()(const state_type & yIn,
-		  independent_variable_type /*unused*/,
-		  right_hand_side_type & R,
-		  jacobian_type & JJ,
-		  bool computeJac) const
+  void rhsAndJacobian(const state_type & yIn,
+		      independent_variable_type /*unused*/,
+		      rhs_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jin) const
+#else
+                      jacobian_type* Jin) const
+#endif
   {
     assert(yIn.size()==3);
     R = -10. * yIn;
 
-    if (computeJac){
+    if (Jin){
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & JJ = *Jin.value();
+#else
+      auto & JJ = *Jin;
+#endif
+
       assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
       typedef Eigen::Triplet<double> Tr;
       std::vector<Tr> tripletList;
@@ -154,7 +163,7 @@ public:
   {
     assert(dt==0.1);
     (void) dt;
-    right_hand_side_type k1(3), k2(3), k3(3), k4(3);
+    rhs_type k1(3), k2(3), k3(3), k4(3);
     //I did the math...
     k1 << -1., -2, -3.;
     k2 << -0.5, -1, -1.5;

@@ -350,7 +350,7 @@ struct has_const_rhs_method_accept_state_indvar_result_return_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T const>().rightHandSide(
+	       std::declval<T const>().rhs(
 					  std::declval<StateType const&>(),
 					  std::declval<IndVarType const &>(),
 					  std::declval<RhsType &>()

@@ -76,14 +76,6 @@ public:
   using residual_type = discrete_residual_type;
   using jacobian_type = discrete_jacobian_type;
 
-
-  LspgFullyDiscreteSystem() = delete;
-  LspgFullyDiscreteSystem(const LspgFullyDiscreteSystem &) = default;
-  LspgFullyDiscreteSystem & operator=(const LspgFullyDiscreteSystem &) = delete;
-  LspgFullyDiscreteSystem(LspgFullyDiscreteSystem &&) = default;
-  LspgFullyDiscreteSystem & operator=(LspgFullyDiscreteSystem &&) = delete;
-  ~LspgFullyDiscreteSystem() = default;
-
   LspgFullyDiscreteSystem(const TrialSubspaceType & trialSubspace,
 			  const FomSystemType & fomSystem,
 			  LspgFomStatesManager<TrialSubspaceType> & fomStatesManager)
@@ -114,20 +106,29 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-			      discrete_jacobian_type & J,
-			      bool computeJacobian,
+#ifdef PRESSIO_ENABLE_CXX17
+			      std::optional<discrete_jacobian_type*> Jo,
+#else
+			      discrete_jacobian_type* Jo,
+#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n) const
   {
     doFomStatesReconstruction(currentStepNumber, lspg_state_np1, lspg_state_n);
-
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
+    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
+    const bool computeJacobian = bool(Jo);
+
     try
     {
-      const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
-							     R, phi, computeJacobian, J,
+							     R, phi, computeJacobian,
+#ifdef PRESSIO_ENABLE_CXX17
+							     *Jo.value(),
+#else
+							     *Jo,
+#endif
 							     ynp1, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
@@ -141,23 +142,31 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-			      discrete_jacobian_type & J,
-			      bool computeJacobian,
+#ifdef PRESSIO_ENABLE_CXX17
+			      std::optional<discrete_jacobian_type*> Jo,
+#else
+			      discrete_jacobian_type* Jo,
+#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n,
 			      const state_type & lspg_state_nm1) const
   {
     doFomStatesReconstruction(currentStepNumber, lspg_state_np1,
 			      lspg_state_n, lspg_state_nm1);
-
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
+    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
+    const bool computeJacobian = bool(Jo);
 
     try{
-      const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
-							     R, phi, computeJacobian, J,
+							     R, phi, computeJacobian,
+#ifdef PRESSIO_ENABLE_CXX17
+							     *Jo.value(),
+#else
+							     *Jo,
+#endif
 							     ynp1, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){

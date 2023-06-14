@@ -3,11 +3,13 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type       = double;
   using state_type        = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   int N_ = {};
   int nStencil_ ={};
@@ -17,7 +19,7 @@ struct MyFom
     EXPECT_TRUE((std::size_t)N==(std::size_t)indices.size());
   }
 
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
+  rhs_type createRhs() const{ return rhs_type(N_); }
 
   template<class OperandType>
   OperandType createResultOfJacobianActionOn(const OperandType & B) const{
@@ -42,9 +44,9 @@ struct MyFom
     A.array() += timeIn;
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type timeIn,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type timeIn,
+	   rhs_type & f) const
   {
     EXPECT_TRUE((std::size_t)u.size()!=(std::size_t)f.size());
     EXPECT_TRUE((std::size_t)f.size()==(std::size_t)N_);
@@ -61,12 +63,12 @@ class HypRedOperator
 
 public:
   using time_type = double;
-  using right_hand_side_operand_type = typename MyFom::right_hand_side_type;
+  using rhs_operand_type = typename MyFom::rhs_type;
   using jacobian_action_operand_type = Eigen::MatrixXd;
 
   HypRedOperator(const operator_type & phi) : matrix_(phi){}
 
-  void operator()(const right_hand_side_operand_type & operand,
+  void operator()(const rhs_operand_type & operand,
 		  time_type timein,
 		  Eigen::VectorXd & result) const
   {
@@ -91,6 +93,7 @@ struct NonLinSolver
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // call_count == 1
@@ -98,7 +101,7 @@ struct NonLinSolver
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
       EXPECT_DOUBLE_EQ(R[0], 0.);
@@ -118,7 +121,7 @@ struct NonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0], 1.);
       EXPECT_DOUBLE_EQ(R[1], -199.);
       EXPECT_DOUBLE_EQ(R[2], -399.);
@@ -142,7 +145,7 @@ struct NonLinSolver
     if(call_count_==2)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0],    0.);
       EXPECT_DOUBLE_EQ(R[1], -300.);
       EXPECT_DOUBLE_EQ(R[2], -600.);
@@ -160,7 +163,7 @@ struct NonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0],    1.);
       EXPECT_DOUBLE_EQ(R[1], -359.);
       EXPECT_DOUBLE_EQ(R[2], -719.);
@@ -179,8 +182,9 @@ struct NonLinSolver
     }
   }
 };
+}
 
-TEST(rom_galerkin, test6)
+TEST(rom_galerkin_implicit, hyperreduced_bdf1)
 {
   // test for hypred implicit galerkin using BDF1
   // all numbers have been computed manually

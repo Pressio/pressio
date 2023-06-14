@@ -113,7 +113,13 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+    if (i == 0) {
+      return std::size_t(numRows_);
+    } else if (i == 1) {
+      return std::size_t(numCols_);
+    } else {
+      return std::size_t(1);
+    }
   }
 
   native_expr_t const & native() const{
@@ -203,7 +209,13 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+    if (i == 0) {
+      return numRows_;
+    } else if (i == 1) {
+      return numCols_;
+    } else {
+      return 1;
+    }
   }
 
   native_expr_t const & native() const{
@@ -229,7 +241,7 @@ public:
    */
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<
-    std::is_same<typename MatrixType::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename _MatrixType::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(const size_t & i, const size_t & j) const

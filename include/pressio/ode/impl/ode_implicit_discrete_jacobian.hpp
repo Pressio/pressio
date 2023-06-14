@@ -170,30 +170,5 @@ discrete_jacobian(::pressio::ode::CrankNicolson,
   ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
-/*
-  CRANK NICOLSON WITH MM: J(y_n+1) = M_n+1 - 0.5*dt*df_n+1/dy_n+1
-  - on input jac contains  df_n+1/dy_n+1
-  - on output, jac contains the discrete jacobian
-*/
-template <class JacobianType, class MassMatrixType, class StepSizeType>
-mpl::enable_if_t<
-  ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
-  && std::is_convertible<
-    StepSizeType, typename Traits<JacobianType>::scalar_type
-    >::value
-  >
-discrete_jacobian(::pressio::ode::CrankNicolson,
-		  JacobianType & jac,
-		  const MassMatrixType & M_np1,
-		  const StepSizeType & dt)
-{
-
-  using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
-  using cnst = ::pressio::ode::constants::cranknicolson<sc_t>;
-  constexpr sc_t cnp1  = cnst::c_np1_;
-  const sc_t cf = cnst::c_fnp1_ * dt;
-  ::pressio::ops::update(jac, cf, M_np1, cnp1);
-}
-
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_

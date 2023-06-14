@@ -3,6 +3,7 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
 struct Observer
 {
   void operator()(pressio::ode::StepCount stepIn,
@@ -35,28 +36,29 @@ struct MyFom
 {
   using time_type = double;
   using state_type = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   int N_ = {};
 
   MyFom(int N): N_(N){}
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type r(N_);
+  rhs_type createRhs() const{
+    rhs_type r(N_);
     r.setConstant(0);
     return r;
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type evalTime,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type evalTime,
+	   rhs_type & f) const
   {
     for (decltype(f.rows()) i=0; i<f.rows(); ++i){
       f(i) = u(i) + evalTime;
     }
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test1)
+TEST(rom_galerkin_explicit, default)
 {
   /*
     default Galerkin, Euler forward

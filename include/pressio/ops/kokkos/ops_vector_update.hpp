@@ -62,10 +62,7 @@ struct _kokkosUpdateAdmissibleOperands
      In kokkos it is legal to modify const views, not for pressio wrappers. */
   static_assert
     (!std::is_const<T1>::value,
-     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
-  static_assert
-    (::pressio::have_matching_execution_space<T1,Args...>::value,
-     "operands need to have same execution space" );
+     "ops:update: cannot modify a const-qualified wrapper of a Kokkos view");
 
   static constexpr auto value = true;
 };
@@ -75,173 +72,314 @@ struct _kokkosUpdateAdmissibleOperands
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T1, typename T2, typename scalar_t>
-::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
+template<
+  typename T, typename T1,
+  typename a_Type, typename b_Type
   >
-update(T1 & v,         const scalar_t & a,
-	     const T2 & v1,  const scalar_t & b)
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v, const a_Type &a,
+    const T1 & v1, const b_Type &b)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
-  ::KokkosBlas::axpby(b, impl::get_native(v1), a, impl::get_native(v));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  ::KokkosBlas::axpby(b_, impl::get_native(v1), a_, impl::get_native(v));
 }
 
-template<typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename b_Type>
 ::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T1 & v, const T2 & v1, const scalar_t & b)
+update(T & v, const T1 & v1, const b_Type &b)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
+  const scalar_t b_(b);
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  ::KokkosBlas::axpby(b, impl::get_native(v1), zero, impl::get_native(v));
+  ::KokkosBlas::axpby(b_, impl::get_native(v1), zero, impl::get_native(v));
 }
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T1, typename T2, typename T3, typename scalar_t>
-::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and (::pressio::is_native_container_kokkos<T3>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
-  and ::pressio::Traits<T3>::rank == 1
+template<
+  typename T, typename T1, typename T2,
+  typename a_Type, typename b_Type, typename c_Type
   >
-update(T1 & v,	   const scalar_t &a,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c)
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v, const a_Type &a,
+    const T1 & v1, const b_Type &b,
+    const T2 & v2, const c_Type &c)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T1,T2,T3>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
-  using v_t = typename impl::NativeType<T1>::type;
-  using v1_t = typename impl::NativeType<T2>::type;
-  using v2_t = typename impl::NativeType<T3>::type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2>::value,"");
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2), a, b, c);
-  Kokkos::parallel_for(v.extent(0), F);
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a_, v2, c_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+
+    using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2), a_, b_, c_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
-template<typename T1, typename T2, typename T3, typename scalar_t>
-::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and (::pressio::is_native_container_kokkos<T3>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
-  and ::pressio::Traits<T3>::rank == 1
+template<
+  typename T, typename T1, typename T2,
+  typename b_Type, typename c_Type
   >
-update(T1 & v,
-    const T2 & v1, const scalar_t &b,
-    const T3 & v2, const scalar_t &c)
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v,
+    const T1 & v1, const b_Type &b,
+    const T2 & v2, const c_Type &c)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T1,T2,T3>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
-  using v_t = typename impl::NativeType<T1>::type;
-  using v1_t = typename impl::NativeType<T2>::type;
-  using v2_t = typename impl::NativeType<T3>::type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2>::value,"");
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2), b, c);
-  Kokkos::parallel_for(v.extent(0), F);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, v2, c_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, v1, b_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+
+    using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<v_t,v1_t,v2_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2), b_, c_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 // //----------------------------------------------------------------------
 // //  overloads for computing:
 // //	V = a * V + b * V1 + c * V2 + d * V3
 // //----------------------------------------------------------------------
-template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
-::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and (::pressio::is_native_container_kokkos<T3>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
-  and (::pressio::is_native_container_kokkos<T4>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
-  and ::pressio::Traits<T3>::rank == 1
-  and ::pressio::Traits<T4>::rank == 1
+template<
+  typename T, typename T1, typename T2, typename T3,
+  typename a_Type, typename b_Type, typename c_Type, typename d_Type
   >
-update(T1 & v,  const scalar_t &a,
-    const T2 & v1, const scalar_t &b,
-    const T3 & v2, const scalar_t &c,
-    const T4 & v3, const scalar_t &d)
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  && (::pressio::is_native_container_kokkos<T3>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v, const a_Type &a,
+    const T1 & v1, const b_Type &b,
+    const T2 & v2, const c_Type &c,
+    const T3 & v3, const d_Type &d)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T1,T2,T3,T4>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
-  using v_t = typename impl::NativeType<T1>::type;
-  using v1_t = typename impl::NativeType<T2>::type;
-  using v2_t = typename impl::NativeType<T3>::type;
-  using v3_t = typename impl::NativeType<T4>::type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3>::value,"");
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            a, b, c, d);
-  Kokkos::parallel_for(v.extent(0), F);
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
+
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a_, v2, c_, v3, d_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v3, d_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v2, c_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
+
+    using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              a_, b_, c_, d_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
-template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
-::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and (::pressio::is_native_container_kokkos<T3>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
-  and (::pressio::is_native_container_kokkos<T4>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
-  and ::pressio::Traits<T3>::rank == 1
-  and ::pressio::Traits<T4>::rank == 1
+template<
+  typename T, typename T1, typename T2, typename T3,
+  typename b_Type, typename c_Type, typename d_Type
   >
-update(T1 & v,
-    const T2 & v1, const scalar_t &b,
-    const T3 & v2, const scalar_t &c,
-    const T4 & v3, const scalar_t &d)
+::pressio::mpl::enable_if_t<
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  && (::pressio::is_native_container_kokkos<T3>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  >
+update(T & v,
+    const T1 & v1, const b_Type &b,
+    const T2 & v2, const c_Type &c,
+    const T3 & v3, const d_Type &d)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T1,T2,T3,T4>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
-  using v_t = typename impl::NativeType<T1>::type;
-  using v1_t = typename impl::NativeType<T2>::type;
-  using v2_t = typename impl::NativeType<T3>::type;
-  using v3_t = typename impl::NativeType<T4>::type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3>::value,"");
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            b, c, d);
-  Kokkos::parallel_for(v.extent(0), F);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
+
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, v2, c_, v3, d_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v3, d_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v2, c_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
+
+    using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<v_t,v1_t,v2_t,v3_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              b_, c_, d_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 //----------------------------------------------------------------------
@@ -249,93 +387,159 @@ update(T1 & v,
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
 template<
-  typename T1, typename T2, typename T3, typename T4, typename T5,
-  typename scalar_t
+  typename T, typename T1, typename T2, typename T3, typename T4,
+  typename a_Type, typename b_Type, typename c_Type, typename d_Type, typename e_Type
   >
 ::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and (::pressio::is_native_container_kokkos<T3>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
-  and (::pressio::is_native_container_kokkos<T4>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
-  and (::pressio::is_native_container_kokkos<T5>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T5>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
-  and ::pressio::Traits<T3>::rank == 1
-  and ::pressio::Traits<T4>::rank == 1
-  and ::pressio::Traits<T5>::rank == 1
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  && ::pressio::Traits<T4>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  && (::pressio::is_native_container_kokkos<T3>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  && (::pressio::is_native_container_kokkos<T4>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T4>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<e_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T1 & v,	const scalar_t &a,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c,
-	  const T4 & v3, const scalar_t &d,
-	  const T5 & v4, const scalar_t &e)
+update(T & v, const a_Type &a,
+    const T1 & v1, const b_Type &b,
+    const T2 & v2, const c_Type &c,
+    const T3 & v3, const d_Type &d,
+    const T4 & v4, const e_Type &e)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T1,T2,T3,T4,T5>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
-  using v_t = typename impl::NativeType<T1>::type;
-  using v1_t = typename impl::NativeType<T2>::type;
-  using v2_t = typename impl::NativeType<T3>::type;
-  using v3_t = typename impl::NativeType<T4>::type;
-  using v4_t = typename impl::NativeType<T5>::type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl:: _kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3,T4>::value,"");
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            impl::get_native(v4),
-            a, b, c, d, e);
-  Kokkos::parallel_for(v.extent(0), F);
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
+  const scalar_t e_(e);
+
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, a_, v2, c_, v3, d_, v4, e_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v3, d_, v4, e_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v2, c_, v4, e_);
+  } else if (e_ == zero) {
+    ::pressio::ops::update(v, a_, v1, b_, v2, c_, v3, d_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
+    using v4_t = typename impl::NativeType<T4>::type;
+
+    using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              impl::get_native(v4),
+              a_, b_, c_, d_, e_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 template<
-  typename T1, typename T2, typename T3, typename T4, typename T5,
-  typename scalar_t
+  typename T, typename T1, typename T2, typename T3, typename T4,
+  typename b_Type, typename c_Type, typename d_Type, typename e_Type
   >
 ::pressio::mpl::enable_if_t<
-      (::pressio::is_native_container_kokkos<T1>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and (::pressio::is_native_container_kokkos<T3>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T3>::value)
-  and (::pressio::is_native_container_kokkos<T4>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T4>::value)
-  and (::pressio::is_native_container_kokkos<T5>::value
-  or   ::pressio::is_expression_acting_on_kokkos<T5>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
-  and ::pressio::Traits<T3>::rank == 1
-  and ::pressio::Traits<T4>::rank == 1
-  and ::pressio::Traits<T5>::rank == 1
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  && ::pressio::Traits<T3>::rank == 1
+  && ::pressio::Traits<T4>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+   || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  && (::pressio::is_native_container_kokkos<T1>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  && (::pressio::is_native_container_kokkos<T3>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T3>::value)
+  && (::pressio::is_native_container_kokkos<T4>::value
+   ||  ::pressio::is_expression_acting_on_kokkos<T4>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<e_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T1 & v,
-    const T2 & v1, const scalar_t &b,
-    const T3 & v2, const scalar_t &c,
-    const T4 & v3, const scalar_t &d,
-    const T5 & v4, const scalar_t &e)
+update(T & v,
+    const T1 & v1, const b_Type &b,
+    const T2 & v2, const c_Type &c,
+    const T3 & v3, const d_Type &d,
+    const T4 & v4, const e_Type &e)
 {
-  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T1,T2,T3,T4,T5>::value,"");
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
-  using v_t = typename impl::NativeType<T1>::type;
-  using v1_t = typename impl::NativeType<T2>::type;
-  using v2_t = typename impl::NativeType<T3>::type;
-  using v3_t = typename impl::NativeType<T4>::type;
-  using v4_t = typename impl::NativeType<T5>::type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
+  static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3,T4>::value,"");
 
-  using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
-  fnctr_t F(impl::get_native(v),
-            impl::get_native(v1),
-            impl::get_native(v2),
-            impl::get_native(v3),
-            impl::get_native(v4),
-            b, c, d, e);
-  Kokkos::parallel_for(v.extent(0), F);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
+  const scalar_t e_(e);
+
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::update(v, v2, c_, v3, d_, v4, e_);
+  } else if (c_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v3, d_, v4, e_);
+  } else if (d_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v2, c_, v4, e_);
+  } else if (e_ == zero) {
+    ::pressio::ops::update(v, v1, b_, v2, c_, v3, d_);
+  } else {
+    using v_t = typename impl::NativeType<T>::type;
+    using v1_t = typename impl::NativeType<T1>::type;
+    using v2_t = typename impl::NativeType<T2>::type;
+    using v3_t = typename impl::NativeType<T3>::type;
+    using v4_t = typename impl::NativeType<T4>::type;
+
+    using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<v_t,v1_t,v2_t,v3_t,v4_t,scalar_t>;
+    fnctr_t F(impl::get_native(v),
+              impl::get_native(v1),
+              impl::get_native(v2),
+              impl::get_native(v3),
+              impl::get_native(v4),
+              b_, c_, d_, e_);
+    Kokkos::parallel_for(v.extent(0), F);
+  }
 }
 
 }}//end namespace pressio::ops

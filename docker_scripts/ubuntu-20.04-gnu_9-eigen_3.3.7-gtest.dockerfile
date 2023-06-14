@@ -1,4 +1,5 @@
 FROM ubuntu:focal
+
 # Declaring build variables
 ARG TZ=Europe/Warsaw
 ARG CMAKE_VERSION=3.18.6
@@ -16,7 +17,7 @@ RUN mkdir /out
 # System update and packages installation
 RUN apt-get update && apt-get upgrade -y
 # Installing Utilities
-RUN apt-get install -y wget git make
+RUN apt-get install -y wget git make software-properties-common
 
 # CMake installation
 RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-Linux-x86_64.sh
@@ -24,17 +25,13 @@ RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
 RUN rm cmake.sh
 
 # Compilers installation
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
+RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y $CC $CXX
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/$CC 10
-RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/$CXX 10
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 20
-RUN update-alternatives --set cc /usr/bin/gcc
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 20
-RUN update-alternatives --set c++ /usr/bin/g++
 
 # Setting environment variables
-ENV CC=/usr/bin/gcc
-ENV CXX=/usr/bin/g++
+ENV CC=/usr/bin/gcc-$GNU_VER
+ENV CXX=/usr/bin/g++-$GNU_VER
 
 # Building TPLs
 RUN git clone https://github.com/Pressio/pressio-builder.git

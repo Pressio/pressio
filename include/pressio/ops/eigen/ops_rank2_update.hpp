@@ -63,21 +63,44 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename T1, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  // rank-1 update common constraints
+     ::pressio::Traits<T>::rank == 2
+  && ::pressio::Traits<T1>::rank == 2
+  // TPL/container specific
   && (::pressio::is_native_container_eigen<T>::value
    || ::pressio::is_expression_acting_on_eigen<T>::value)
   && (::pressio::is_native_container_eigen<T1>::value
    || ::pressio::is_expression_acting_on_eigen<T1>::value)
-  && ::pressio::Traits<T>::rank == 2
-  && ::pressio::Traits<T1>::rank == 2
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
+  && std::is_convertible<beta_t, typename ::pressio::Traits<T>::scalar_type>::value
   >
 update(T & M,         const alpha_t & a,
        const T1 & M1, const beta_t & b)
 {
+  assert(::pressio::ops::extent(M, 0) == ::pressio::ops::extent(M1, 0));
+  assert(::pressio::ops::extent(M, 1) == ::pressio::ops::extent(M1, 1));
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const sc_t a_(a);
+  const sc_t b_(b);
+
+  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  if (b_ == zero) {
+    ::pressio::ops::scale(M, a_);
+    return;
+  }
 
   auto & M_n = impl::get_native(M);
   const auto & M_n1 = impl::get_native(M1);
-  M_n = a*M_n + b*M_n1;
+  if (a_ == zero) {
+    M_n = b_*M_n1;
+  } else {
+    M_n = a_*M_n + b_*M_n1;
+  }
 }
 
 }}//end namespace pressio::ops

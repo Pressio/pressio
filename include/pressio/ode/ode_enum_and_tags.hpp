@@ -64,6 +64,21 @@ enum class StepScheme{
   ImplicitArbitrary
 };
 
+template<class T = bool>
+T is_explicit_scheme(StepScheme name)
+{
+  if (name == StepScheme::ForwardEuler){ return true; }
+  else if (name == StepScheme::RungeKutta4){ return true; }
+  else if (name == StepScheme::AdamsBashforth2){ return true; }
+  else if (name == StepScheme::SSPRungeKutta3){ return true; }
+  else{ return false; }
+}
+
+template<class T = bool>
+T is_implicit_scheme(StepScheme name){
+  return !is_explicit_scheme(name);
+}
+
 struct ForwardEuler{};
 struct RungeKutta4{};
 struct AdamsBashforth2{};

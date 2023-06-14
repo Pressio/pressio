@@ -66,6 +66,7 @@ public:
   using mvec_t = Tpetra::MultiVector<>;
   using map_t = Tpetra::Map<>;
   using vec_t = Tpetra::Vector<>;
+  using importer_t = Tpetra::Import<>;
   using ST = typename vec_t::scalar_type;
   using LO = typename vec_t::local_ordinal_type;
   using GO = typename vec_t::global_ordinal_type;
@@ -77,7 +78,12 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
+  Teuchos::RCP<const map_t> map0_;
+  Teuchos::RCP<const importer_t> importer_;
+
   std::shared_ptr<mvec_t> myMv_;
+  std::shared_ptr<vec_t> x_tpetra;
+  std::shared_ptr<vec_t> y_tpetra;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -87,8 +93,25 @@ public:
     EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
+    const auto numLocalEntries = rank_ == 0 ? numGlobalEntries_ : 0;
+    map0_ = Teuchos::rcp(new map_t(numGlobalEntries_, numLocalEntries, 0, comm_));
+    importer_ = Teuchos::rcp(new importer_t(contigMap_, map0_));
+    // initialize data for computations
     myMv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
-    myMv_->putScalar(0);
+    auto myMv_h = myMv_->getLocalViewHost(Tpetra::Access::ReadWrite);
+    for (int i = 0; i < localSize_; ++i){
+      for (int j = 0; j < numVecs_; ++j){
+        // generate rank-unique int values
+        myMv_h(i, j) = (double)((rank_ * localSize_ + i) * numVecs_ + j + 1.);
+      }
+    }
+    x_tpetra = std::make_shared<vec_t>(contigMap_);
+    auto x_tpetra_h = x_tpetra->getLocalViewHost(Tpetra::Access::ReadWrite);
+    for (int j = 0; j < localSize_; ++j) {
+      // generate rank-unique int values
+      x_tpetra_h(j, 0) = rank_ * localSize_ + (double)(j + 1.);
+    }
+    y_tpetra = std::make_shared<vec_t>(contigMap_);
   }
 
   virtual void TearDown(){}

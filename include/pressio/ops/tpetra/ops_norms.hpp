@@ -51,30 +51,42 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<vec_type>::value,
-  typename vec_type::mag_type
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_tpetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename T::mag_type
   >
-norm1(const vec_type & a)
+norm1(const T & a)
 {
   static_assert(
-    std::is_same<typename ::pressio::Traits<vec_type>::scalar_type, 
-    typename vec_type::mag_type>::value, "Scalar and mag not same");
+    std::is_same<typename ::pressio::Traits<T>::scalar_type,
+    typename T::mag_type>::value, "Scalar and mag not same");
 
   return a.norm1();
 }
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<vec_type>::value,  
-  typename vec_type::mag_type
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_tpetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename T::mag_type
   >
-norm2(const vec_type & a)
+norm2(const T & a)
 {
   static_assert(
-    std::is_same<typename ::pressio::Traits<vec_type>::scalar_type, 
-    typename vec_type::mag_type>::value, "Scalar and mag not same");
+    std::is_same<typename ::pressio::Traits<T>::scalar_type,
+    typename T::mag_type>::value, "Scalar and mag not same");
 
   return a.norm2();
 }

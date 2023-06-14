@@ -59,16 +59,12 @@ namespace pressio{ namespace ode{
 //
 // const dt
 //
-template<
-  class StepperType,
-  class StateType,
-  class IndVarType
-  >
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t< Steppable<StepperType>::value >
-#else
+template<class StepperType, class StateType, class IndVarType>
+#if defined PRESSIO_ENABLE_CXX20
   requires Steppable<StepperType>
   void
+#else
+  mpl::enable_if_t< Steppable<StepperType>::value >
 #endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,

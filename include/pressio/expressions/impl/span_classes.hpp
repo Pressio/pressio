@@ -96,9 +96,7 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    assert(i==0);
-    (void) i;
-    return extent_;
+    return (i == 0) ? std::size_t(extent_) : std::size_t(1);
   }
 
   native_expr_t const & native() const{
@@ -180,9 +178,7 @@ public:
 
 public:
   size_t extent(size_t i) const{
-    assert(i==0);
-    (void) i;
-    return extent_;
+    return (i == 0) ? std::size_t(extent_) : std::size_t(1);
   }
 
   native_expr_t const & native() const{
@@ -205,7 +201,7 @@ public:
 
   template<typename _VectorType = VectorType>
   mpl::enable_if_t<
-    std::is_same<typename VectorType::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename _VectorType::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(size_t i) const

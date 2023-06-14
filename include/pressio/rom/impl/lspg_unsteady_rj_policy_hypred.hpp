@@ -89,7 +89,7 @@ public:
   }
 
   residual_type createResidual() const{
-    residual_type R(fomSystem_.get().createRightHandSide());
+    residual_type R(fomSystem_.get().createRhs());
     return R;
   }
 
@@ -107,37 +107,55 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  residual_type & R,
-		  jacobian_type & J,
-		  bool computeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type *> Jo) const
+#else
+		  jacobian_type * Jo) const
+#endif
   {
 
-    if (odeSchemeName == ::pressio::ode::StepScheme::BDF1
-	|| odeSchemeName == ::pressio::ode::StepScheme::BDF2)
+    if (odeSchemeName == ::pressio::ode::StepScheme::BDF1)
     {
-      (*this).template compute_impl_bdf
-	(odeSchemeName, predictedReducedState, reducedStatesStencilManager,
-	 fomRhsStencilManger, rhsEvaluationTime.get(),
-	 dt.get(), step.get(), R, J, computeJacobian);
+      (*this).template compute_impl_bdf<ode::BDF1>
+	(predictedReducedState, reducedStatesStencilManager,
+	 rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+    }
+
+    else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2)
+    {
+      if (step.get() == ::pressio::ode::first_step_value){
+	(*this).template compute_impl_bdf<ode::BDF1>
+	  (predictedReducedState, reducedStatesStencilManager,
+	   rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+      }
+      else{
+	(*this).template compute_impl_bdf<ode::BDF2>
+	  (predictedReducedState, reducedStatesStencilManager,
+	   rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+      }
     }
 
     else{
-      throw std::runtime_error("Only BDF1 currently impl for default unstedy LSPG");
+      throw std::runtime_error("Invalid choice of StepScheme for hyp-red unstedy LSPG");
     }
   }
 
 private:
-  template <class StencilStatesContainerType, class StencilRhsContainerType>
-  void compute_impl_bdf(::pressio::ode::StepScheme odeSchemeName,
-			const state_type & predictedReducedState,
-			const StencilStatesContainerType & reducedStatesStencilManager,
-			StencilRhsContainerType & /*unused*/,
-			const IndVarType & rhsEvaluationTime,
-			const IndVarType & dt,
-			const typename ::pressio::ode::StepCount::value_type & step,
-			residual_type & R,
-			jacobian_type & J,
-			bool computeJacobian) const
+  template <class OdeTag, class StencilStatesContainerType>
+  void compute_impl_bdf(const state_type & predictedReducedState,
+			 const StencilStatesContainerType & reducedStatesStencilManager,
+			 const IndVarType & rhsEvaluationTime,
+			 const IndVarType & dt,
+			 const typename ::pressio::ode::StepCount::value_type & step,
+			 residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
+			std::optional<jacobian_type *> & Jo) const
+#else
+		        jacobian_type * Jo) const
+#endif
   {
+    static_assert( std::is_same<OdeTag, ode::BDF1>::value ||
+		   std::is_same<OdeTag, ode::BDF2>::value, "");
 
     /* the FOM state for the prediction has to be always recomputed
        regardless of whether the currentStepNumber changes since
@@ -159,24 +177,18 @@ private:
       stepTracker_ = step;
     }
 
-    if (odeSchemeName == ::pressio::ode::StepScheme::BDF1)
-    {
-      /* BDF1 residual :
+    if (std::is_same<OdeTag, ode::BDF1>::value){
 
-	   R(y_n+1) = cnp1*y_n+1 + cn*y_n + cf*f(t_n+1, y_n+1)
-
-	which we do follows:
-	1. R = f(t_n+1, y_n+1)
-	2. fomStateHelpInstance_ = cnp1*y_np1 + cn*y_n
-	3. call the hypRedUpdater to handle the rest
+      /* BDF1 residual : R(y_n+1) = cnp1*y_n+1 + cn*y_n + cf*f(t_n+1, y_n+1)
+	 which we do follows:
+	 1. R = f(t_n+1, y_n+1)
+	 2. fomStateHelpInstance_ = cnp1*y_np1 + cn*y_n
+	 3. call the hypRedUpdater to handle the rest
       */
-
       // step 1
-      fomSystem_.get().rightHandSide(fomStateAt_np1, rhsEvaluationTime, R);
-
+      fomSystem_.get().rhs(fomStateAt_np1, rhsEvaluationTime, R);
       // step 2
       const auto & fomStateAt_n = fomStatesManager_(::pressio::ode::n());
-
       using fom_state_type = typename FomSystemType::state_type;
       using sc_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
       constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
@@ -192,21 +204,19 @@ private:
       hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
 	(R, cf, fomStateHelperInstance_, one);
     }
-    else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2)
-    {
-      /*R(y_n+1) = cnp1*y_n+1 + cn*y_n + cnm1*y_n-1 + cf*f(t_n+1, y_n+1)
+    else{
 
-	so we do:
-	1. lspgResidual = f(t_n+1, y_n+1) (see call to fom velocity above)
-	2. fomStateHelpInstance_ = cnp1*y_np1 + cn*y_n + cnm1*y_n-1
-	3. we call the combiner to handle the rest
+      /* BDF2 residual : R(y_n+1) = cnp1*y_n+1 + cn*y_n + cnm1*y_nm1 + cf*f(t_n+1, y_n+1)
+	 which we do follows:
+	 1. R = f(t_n+1, y_n+1)
+	 2. fomStateHelpInstance_ = cnp1*y_np1 + cn*y_n + cnm1*y_nm1
+	 3. call the hypRedUpdater to handle the rest
       */
-
       // step 1
-      fomSystem_.get().rightHandSide(fomStateAt_np1, rhsEvaluationTime, R);
-
+      fomSystem_.get().rhs(fomStateAt_np1, rhsEvaluationTime, R);
       // step 2
       const auto & fomStateAt_n = fomStatesManager_(::pressio::ode::n());
+      const auto & fomStateAt_nm1 = fomStatesManager_(::pressio::ode::nMinusOne());
 
       using fom_state_type = typename FomSystemType::state_type;
       using sc_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
@@ -214,9 +224,6 @@ private:
       constexpr auto cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
       constexpr auto cn   = ::pressio::ode::constants::bdf2<sc_t>::c_n_;
       constexpr auto cnm1 = ::pressio::ode::constants::bdf2<sc_t>::c_nm1_;
-
-
-      const auto & fomStateAt_nm1 = fomStatesManager_(::pressio::ode::nMinusOne());
       ::pressio::ops::update(fomStateHelperInstance_, zero,
 			     fomStateAt_np1, cnp1,
 			     fomStateAt_n, cn,
@@ -229,10 +236,13 @@ private:
 	(R, cf, fomStateHelperInstance_, one);
     }
 
-    //
     // deal with jacobian if needed
-    //
-    if (computeJacobian){
+    if (Jo){
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & J = *Jo.value();
+#else
+      auto & J = *Jo;
+#endif
       // lspgJac = decoderJac + dt*coeff*J*decoderJac
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
@@ -243,12 +253,12 @@ private:
       using sc_t = typename ::pressio::Traits<
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
       const auto one = ::pressio::utils::Constants<sc_t>::one();
-      IndVarType cf = dt;
-      if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
-	cf *= ::pressio::ode::constants::bdf1<sc_t>::c_f_;
+      IndVarType cf = {};
+      if (std::is_same<OdeTag, ode::BDF1>::value){
+	cf = dt * ::pressio::ode::constants::bdf1<sc_t>::c_f_;
       }
-      else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2){
-	cf *= ::pressio::ode::constants::bdf2<sc_t>::c_f_;
+      else{
+	cf = dt * ::pressio::ode::constants::bdf2<sc_t>::c_f_;
       }
 
       hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(J, cf, phi, one);
@@ -272,77 +282,4 @@ private:
 
 }}}
 
-
-  // template <
-  //   class LspgStateType,
-  //   class LspgStencilStatesContainerType,
-  //   class LspgStencilVelocitiesContainerType,
-  //   class ScalarType>
-  // void operator()(::pressio::ode::StepScheme name,
-  // 		  const LspgStateType & lspgState,
-  // 		  const LspgStencilStatesContainerType & lspgStencilStates,
-  // 		  LspgStencilVelocitiesContainerType & lspgStencilVelocities,
-  // 		  const ScalarType & t_np1,
-  // 		  const ScalarType & dt,
-  // 		  const ::pressio::ode::step_count_type & currentStepNumber,
-  // 		  residual_type & lspgResidual) const
-  // {
-
-  //   if (name == ::pressio::ode::StepScheme::BDF1){
-  //     (*this).template compute_impl_bdf<ode::BDF1>
-  // 	(lspgState, lspgStencilStates, lspgStencilVelocities,
-  // 	 t_np1, dt, currentStepNumber, lspgResidual);
-  //   }
-  //   else if (name == ::pressio::ode::StepScheme::BDF2){
-  //     (*this).template compute_impl_bdf<ode::BDF2>
-  // 	(lspgState, lspgStencilStates, lspgStencilVelocities,
-  // 	 t_np1, dt, currentStepNumber, lspgResidual);
-  //   }
-  //   else if (name == ::pressio::ode::StepScheme::CrankNicolson){
-  //     (*this).compute_impl_cn(lspgState, lspgStencilStates,lspgStencilVelocities,
-  // 			      t_np1, dt, currentStepNumber, lspgResidual);
-  //   }
-  // }
-
-//   template <
-//     class LspgStateType,
-//     class LspgStencilStatesContainerType,
-//     class LspgStencilVelocitiesContainerType,
-//     class ScalarType
-//     >
-//   void compute_impl_cn(const LspgStateType & lspgState,
-// 		       const LspgStencilStatesContainerType & lspgStencilStates,
-// 		       // for CN, stencilVelocities holds f_n+1 and f_n
-// 		       LspgStencilVelocitiesContainerType & lspgStencilVelocities,
-// 		       const ScalarType & t_np1,
-// 		       const ScalarType & dt,
-// 		       const ::pressio::ode::step_count_type & currentStepNumber,
-// 		       residual_type & lspgResidual) const
-//   {
-//     PRESSIOLOG_DEBUG("residual policy with compute_cn_impl");
-
-//     fomStatesMngr_.get().reconstructAt(lspgState, ::pressio::ode::nPlusOne());
-
-//     if (storedStep_ != currentStepNumber){
-//       const auto & lspgStateAt_n = lspgStencilStates(::pressio::ode::n());
-//       fomStatesMngr_.get().reconstructAtAndUpdatePrevious(lspgStateAt_n,
-// 							  ::pressio::ode::n());
-//       storedStep_ = currentStepNumber;
-
-//       // if the step changed, I need to compute f(y_n, t_n)
-//       const auto tn = t_np1-dt;
-//       auto & f_n = lspgStencilVelocities(::pressio::ode::n());
-//       const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
-//       fomSystem_.get().velocity(fomState_n, tn, f_n);
-//     }
-
-//     // always compute f(y_n+1, t_n+1)
-//     const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-//     auto & f_np1 = lspgStencilVelocities(::pressio::ode::nPlusOne());
-//     fomSystem_.get().velocity(fomState_np1, t_np1, f_np1);
-
-//     ::pressio::ode::impl::discrete_time_residual
-// 	(fomState_np1, lspgResidual, fomStatesMngr_.get(),
-// 	 lspgStencilVelocities, dt, ::pressio::ode::CrankNicolson());
-//   }
 #endif  // ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_

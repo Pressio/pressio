@@ -53,14 +53,30 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template <typename T, typename ScalarType>
 ::pressio::mpl::enable_if_t<
-    (::pressio::is_native_container_kokkos<T>::value
-  or ::pressio::is_expression_acting_on_kokkos<T>::value)
+  // rank-1 update common constraints
+    (::pressio::Traits<T>::rank == 1
+  || ::pressio::Traits<T>::rank == 2)
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T>::value
+  || ::pressio::is_expression_acting_on_kokkos<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
+  && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-scale(const T & v, typename ::pressio::Traits<T>::scalar_type value)
+scale(const T & v, ScalarType value)
 {
-  ::KokkosBlas::scal(impl::get_native(v), value, impl::get_native(v));
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  const sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t value_(value);
+  if (value_ == zero) {
+    ::pressio::ops::set_zero(v);
+  } else {
+    auto vn = impl::get_native(v);
+    ::KokkosBlas::scal(vn, value_, vn);
+  }
 }
 
 }}//end namespace pressio::ops

@@ -1,73 +1,43 @@
+.. role:: raw-html-m2r(raw)
+   :format: html
 
-concepts: shared
-================
+.. include:: ../mydefs.rst
 
-.. toctree::
-    :maxdepth: 1
+Concepts
+========
 
-    rom_concepts_various/linear_subspace
-    rom_concepts_various/possibly_affine_trial_column_subspace
-    rom_concepts_various/maskable_with
+Reduced State
+-------------
 
-concepts: fom
-=============
-
-.. toctree::
-    :maxdepth: 1
-
-    rom_concepts_foms/semidiscrete_fom
-    rom_concepts_foms/semidiscrete_fom_with_mass_matrix_action
-    rom_concepts_foms/semidiscrete_fom_with_jac_action
-    rom_concepts_foms/steady_fom_with_jac_action
-    rom_concepts_foms/fully_discrete_with_jac_action
-
-concepts: steady galerkin
-=========================
-
-.. toctree::
-    :maxdepth: 1
-
-    rom_concepts_steady_galerkin/default
-    rom_concepts_steady_galerkin/hr
-    rom_concepts_steady_galerkin/masked
-
-concepts: explicit galerkin
-===========================
-
-.. toctree::
-    :maxdepth: 1
-
-    rom_concepts_explicit_galerkin/default
-    rom_concepts_explicit_galerkin/default_with_mm
-    rom_concepts_explicit_galerkin/hr
-    rom_concepts_explicit_galerkin/masked
-
-concepts: implicit galerkin
-===========================
-
-.. toctree::
-    :maxdepth: 1
-
-    rom_concepts_implicit_galerkin/default
-    rom_concepts_implicit_galerkin/hr
-    rom_concepts_implicit_galerkin/masked
-
-concepts: steady lspg
-=====================
-
-.. toctree::
-    :maxdepth: 1
-
-    rom_concepts_steady_lspg/default
-    rom_concepts_steady_lspg/masked
+.. literalinclude:: ../../../include/pressio/rom/rom_concepts_cxx20.hpp
+   :language: cpp
+   :lines: 56-57, 58-59, 293-294
 
 
-concepts: unsteady lspg
-=======================
+Subspaces
+---------
 
-.. toctree::
-    :maxdepth: 1
+.. literalinclude:: ../../../include/pressio/rom/rom_concepts_cxx20.hpp
+   :language: cpp
+   :lines: 56-57, 64-122, 293-294
 
-    rom_concepts_unsteady_lspg/default
-    rom_concepts_unsteady_lspg/hyperreduced
-    rom_concepts_unsteady_lspg/masked
+FOM Systems
+-----------
+
+.. literalinclude:: ../../../include/pressio/rom/rom_concepts_cxx20.hpp
+   :language: cpp
+   :lines: 56-57, 140-244, 293-294
+
+Real-valued FOM Systems Refinements
+-----------------------------------
+
+.. literalinclude:: ../../../include/pressio/rom/rom_concepts_cxx20.hpp
+   :language: cpp
+   :lines: 56-57, 248-293, 293-294
+
+Others
+------
+
+.. literalinclude:: ../../../include/pressio/rom/rom_concepts_cxx20.hpp
+   :language: cpp
+   :lines: 56-57, 127-136, 293-294

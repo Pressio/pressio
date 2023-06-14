@@ -7,7 +7,7 @@ struct MyApp2WithMM
 {
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   using mass_matrix_type     = Eigen::MatrixXd;
 
   mutable int count1 = 0;
@@ -24,8 +24,8 @@ struct MyApp2WithMM
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3); ret.setZero();
+  rhs_type createRhs() const{
+    rhs_type ret(3); ret.setZero();
     return ret;
   };
 
@@ -34,10 +34,10 @@ struct MyApp2WithMM
     return ret;
   };
 
-  void operator()(const state_type & /*unused*/,
-		  independent_variable_type evaltime,
-		  right_hand_side_type & rhs,
-		  mass_matrix_type & M) const
+  void massMatrixAndRhs(const state_type & /*unused*/,
+			independent_variable_type evaltime,
+			mass_matrix_type & M,
+			rhs_type & rhs) const
   {
     rhs = Eigen::VectorXd::Random(rhs.rows());
     for (int i=0; i<rhs.size(); ++i){
@@ -59,7 +59,7 @@ struct MyApp2NoMM
 {
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   mutable int count1 = 0;
   const std::map<int, Eigen::VectorXd> & rhs_;
@@ -74,19 +74,19 @@ struct MyApp2NoMM
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3); ret.setZero();
+  rhs_type createRhs() const{
+    rhs_type ret(3); ret.setZero();
     return ret;
   };
 
-  void operator()(const state_type & /*unused*/,
-		  independent_variable_type evaltime,
-		  right_hand_side_type & rhs) const
+  void rhs(const state_type & /*unused*/,
+	   independent_variable_type evaltime,
+	   rhs_type & rhs) const
   {
     rhs = rhs_.at(++count1);
     // we want to make sure we have the correct time
     for (int i=0; i<rhs.size(); ++i){
-      EXPECT_DOUBLE_EQ(rhs(i), evaltime);
+      EXPECT_NEAR(rhs(i), evaltime, 1e-15);
     }
 
     rhs = uniqueMM_.inverse()*rhs;

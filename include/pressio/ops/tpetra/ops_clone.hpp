@@ -53,9 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
-  >
+  (::pressio::is_vector_tpetra<T>::value
+  || ::pressio::is_multi_vector_tpetra<T>::value), T>
 clone(const T & clonable)
 {
  return T(clonable, Teuchos::Copy);

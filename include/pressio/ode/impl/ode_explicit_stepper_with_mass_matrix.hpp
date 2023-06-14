@@ -65,6 +65,7 @@ template<
   >
 class ExplicitStepperWithMassMatrixImpl
 {
+  using mass_matrix_type = typename mpl::remove_cvref_t<SystemType>::mass_matrix_type;
 
 public:
   using independent_variable_type  = IndVarType;
@@ -79,7 +80,7 @@ private:
   // that are used in the solve M x = b
   std::vector<StateType> xInstances_;
 
-  typename mpl::remove_cvref_t<SystemType>::mass_matrix_type massMatrix_;
+  mass_matrix_type massMatrix_;
 
 public:
   ExplicitStepperWithMassMatrixImpl() = delete;
@@ -91,7 +92,7 @@ public:
 				    SystemType && systemObj)
     : name_(StepScheme::ForwardEuler),
       systemObj_(std::forward<SystemType>(systemObj)),
-      rhsInstance_{systemObj.createRightHandSide()},
+      rhsInstance_{systemObj.createRhs()},
       xInstances_{systemObj.createState()},
       massMatrix_(systemObj.createMassMatrix())
   {}
@@ -100,7 +101,7 @@ public:
 				    SystemType && systemObj)
     : name_(StepScheme::RungeKutta4),
       systemObj_(std::forward<SystemType>(systemObj)),
-      rhsInstance_{systemObj.createRightHandSide()},
+      rhsInstance_{systemObj.createRhs()},
       xInstances_{systemObj.createState(),
 		  systemObj.createState(),
 		  systemObj.createState(),
@@ -113,7 +114,7 @@ public:
 				    SystemType && systemObj)
     : name_(StepScheme::AdamsBashforth2),
       systemObj_(std::forward<SystemType>(systemObj)),
-      rhsInstance_{systemObj.createRightHandSide()},
+      rhsInstance_{systemObj.createRhs()},
       xInstances_{systemObj.createState(),
                   systemObj.createState()},
       massMatrix_(systemObj.createMassMatrix())
@@ -123,19 +124,38 @@ public:
 				    SystemType && systemObj)
     : name_(StepScheme::SSPRungeKutta3),
       systemObj_(std::forward<SystemType>(systemObj)),
-      rhsInstance_{systemObj.createRightHandSide()},
+      rhsInstance_{systemObj.createRhs()},
       xInstances_{systemObj.createState(),
                   systemObj.createState()},
       massMatrix_(systemObj.createMassMatrix())
   {}
 
 public:
+
   template<class LinearSolverType>
+// // #if defined PRESSIO_ENABLE_CXX20
+//   requires requires (LinearSolverType & solver,
+// 		     StateType & x,
+// 		     const mass_matrix_type & M,
+// 		     const RightHandSideType & b){ { solver.solve(M, x, b) }; }
+// #else
+  // mpl::enable_if_t<
+  //   std::is_void<
+  //     decltype(
+  //       std::declval<LinearSolverType &>().solve(
+  //        std::declval<mass_matrix_type const &>(),
+  // 	    std::declval<StateType &>(),
+  // 	    std::declval<RightHandSideType const &>()
+  // 	)
+  //     )
+  //     >::value, void
+  //   >
+  //#endif
   void operator()(StateType & odeState,
-		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
-		  ::pressio::ode::StepCount step,
-		  ::pressio::ode::StepSize<independent_variable_type> stepSize,
-		  LinearSolverType & solver)
+	     const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
+	     ::pressio::ode::StepCount step,
+	     ::pressio::ode::StepSize<independent_variable_type> stepSize,
+	     LinearSolverType & solver)
   {
     auto dummyRhsObserver = [](::pressio::ode::StepCount /*unused*/,
 			       ::pressio::ode::IntermediateStepCount /*unused*/,
@@ -203,7 +223,7 @@ private:
     auto & fn = rhsInstance_;
     auto & x  = xInstances_[0];
 
-    systemObj_.get()(odeState, stepStartVal, fn, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(odeState, stepStartVal, massMatrix_, fn);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
     solver.solve(massMatrix_, x, fn);
 
@@ -237,7 +257,7 @@ private:
       // start up with Euler forward
 
       auto & x  = xInstances_[0];
-      systemObj_.get()(odeState, stepStartVal, fn, massMatrix_);
+      systemObj_.get().massMatrixAndRhs(odeState, stepStartVal, massMatrix_, fn);
       rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
       solver.solve(massMatrix_, x, fn);
 
@@ -249,7 +269,7 @@ private:
       auto & xnm1 = xInstances_[1];
       ::pressio::ops::deep_copy(xnm1, xn);
 
-      systemObj_.get()(odeState, stepStartVal, fn, massMatrix_);
+      systemObj_.get().massMatrixAndRhs(odeState, stepStartVal, massMatrix_, fn);
       rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
       solver.solve(massMatrix_, xn, fn);
 
@@ -293,21 +313,21 @@ private:
     const independent_variable_type t_next{stepStartTime + stepSize};
 
     // rhs(u_n, t_n)
-    systemObj_.get()(odeState, stepStartTime, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(odeState, stepStartTime, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
     solver.solve(massMatrix_, x, rhs);
     // u_1 = u_n + stepSize * x
     ::pressio::ops::update(auxState, zero, odeState, one, x, stepSize);
 
     // rhs(u_1, t_n+stepSize)
-    systemObj_.get()(auxState, t_next, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(auxState, t_next, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_next, rhs);
     solver.solve(massMatrix_, x, rhs);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*stepSize*x
     ::pressio::ops::update(auxState, fourInv, odeState, threeOvFour, x, fourInv*stepSize);
 
     // rhs(u_2, t_n + 0.5*stepSize)
-    systemObj_.get()(auxState, t_phalf, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(auxState, t_phalf, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs);
     solver.solve(massMatrix_, x, rhs);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*stepSize*rhs(u_2, t_n+0.5*stepSize)
@@ -347,7 +367,7 @@ private:
 
     // stage 1:
     // rhs1 = rhs(y_n, t_n)
-    systemObj_.get()(odeState, stepStartTime, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(odeState, stepStartTime, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
     solver.solve(massMatrix_, x1, rhs);
 
@@ -355,7 +375,7 @@ private:
     // ytmp = y + rhs1*stepSize_half;
     this->rk4_stage_update_impl(auxState, odeState, x1, stepSize_half);
     // rhs2 = rhs(y_tmp, t_n+stepSize/2)
-    systemObj_.get()(auxState, t_phalf, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(auxState, t_phalf, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_phalf, rhs);
     solver.solve(massMatrix_, x2, rhs);
 
@@ -363,7 +383,7 @@ private:
     // ytmp = y + rhs2*stepSize_half;
     this->rk4_stage_update_impl(auxState, odeState, x2, stepSize_half);
     // rhs3 = rhs(y_tmp)
-    systemObj_.get()(auxState, t_phalf, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(auxState, t_phalf, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs);
     solver.solve(massMatrix_, x3, rhs);
 
@@ -371,7 +391,7 @@ private:
     // ytmp = y + rhs3*stepSize;
     this->rk4_stage_update_impl(auxState, odeState, x3, stepSize);
     // rhs3 = rhs(y_tmp)
-    systemObj_.get()(auxState, t_next, rhs, massMatrix_);
+    systemObj_.get().massMatrixAndRhs(auxState, t_next, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(3), t_next, rhs);
     solver.solve(massMatrix_, x4, rhs);
 

@@ -49,22 +49,30 @@
 #ifndef OPS_KOKKOS_OPS_ABS_HPP_
 #define OPS_KOKKOS_OPS_ABS_HPP_
 
-#include<KokkosBlas1_abs.hpp>
+#include <KokkosBlas1_abs.hpp>
 
 namespace pressio{ namespace ops{
 
 // y = abs(x)
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  (::pressio::is_native_container_kokkos<T1>::value
-  or ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or ::pressio::is_expression_acting_on_kokkos<T2>::value)
-  and ::pressio::Traits<T1>::rank == 1
-  and ::pressio::Traits<T2>::rank == 1
+  // common abs constraints
+     ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T1>::value
+   || ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   || ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
   >
 abs(T1 & y, const T2 & x)
 {
+  assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
+
   KokkosBlas::abs(impl::get_native(y), impl::get_native(x));
 }
 

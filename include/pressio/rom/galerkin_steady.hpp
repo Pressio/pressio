@@ -12,99 +12,82 @@ namespace pressio{ namespace rom{ namespace galerkin{
 // ------------------------------------------------------------------------
 // default
 // ------------------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType>
 #ifdef PRESSIO_ENABLE_CXX20
-  requires steady::ComposableIntoDefaultProblem<TrialSubspaceType, FomSystemType>
+requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
 #endif
-auto create_steady_problem(const TrialSubspaceType & trialSubspace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(1)*/
 			   const FomSystemType & fomSystem)
 {
 
-#if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::ComposableIntoDefaultProblem<
-		TrialSubspaceType, FomSystemType>::value,
-		"steady::ComposableIntoDefaultProblem not satisfied");
-#endif
-
-  using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
-  using default_types         = SteadyGalerkinDefaultOperatorsTraits<reduced_state_type>;
-  using reduced_residual_type = typename default_types::reduced_residual_type;
-  using reduced_jac_type      = typename default_types::reduced_jacobian_type;
-
+  using reduced_state_t    = typename TrialSubspaceType::reduced_state_type;
+  using reduced_r_t = impl::steady_galerkin_default_reduced_residual_t<TrialSubspaceType>;
+  using reduced_j_t = impl::steady_galerkin_default_reduced_jacobian_t<TrialSubspaceType>;
   using return_type = impl::GalerkinSteadyDefaultSystem<
-    reduced_state_type, reduced_residual_type, reduced_jac_type,
+    reduced_state_t, reduced_r_t, reduced_j_t,
     TrialSubspaceType, FomSystemType>;
-  return return_type(trialSubspace, fomSystem);
+  return return_type(trialSpace, fomSystem);
 }
 
 // ------------------------------------------------------------------------
 // hyper-reduced
 // ------------------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
   class HyperReducerType>
 #ifdef PRESSIO_ENABLE_CXX20
-  requires steady::ComposableIntoHyperReducedProblem<
-	TrialSubspaceType, FomSystemType, HyperReducerType>
+requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
 #endif
-auto create_steady_problem(const TrialSubspaceType & trialSubspace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(2)*/
 			   const FomSystemType & fomSystem,
 			   const HyperReducerType & hyperReducer)
 {
 
-#if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::ComposableIntoHyperReducedProblem<
-		TrialSubspaceType, FomSystemType, HyperReducerType>::value,
-		"steady::ComposableIntoHyperReducedProblem not satisfied");
-#endif
-
-  using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
-  using default_types         = SteadyGalerkinDefaultOperatorsTraits<reduced_state_type>;
-  using reduced_residual_type = typename default_types::reduced_residual_type;
-  using reduced_jac_type      = typename default_types::reduced_jacobian_type;
-
+  using reduced_state_t = typename TrialSubspaceType::reduced_state_type;
+  using reduced_r_t = impl::steady_galerkin_default_reduced_residual_t<TrialSubspaceType>;
+  using reduced_j_t = impl::steady_galerkin_default_reduced_jacobian_t<TrialSubspaceType>;
   using return_type = impl::GalerkinSteadyHypRedSystem<
-    reduced_state_type, reduced_residual_type, reduced_jac_type,
+    reduced_state_t, reduced_r_t, reduced_j_t,
     TrialSubspaceType, FomSystemType, HyperReducerType>;
-  return return_type(trialSubspace, fomSystem, hyperReducer);
+  return return_type(trialSpace, fomSystem, hyperReducer);
 }
 
 // ------------------------------------------------------------------------
 // hyper-reduced masked
 // ------------------------------------------------------------------------
+
 template<
   class TrialSubspaceType,
   class FomSystemType,
   class MaskerType,
   class HyperReducerType>
 #ifdef PRESSIO_ENABLE_CXX20
-  requires steady::ComposableIntoHyperReducedMaskedProblem<
-	TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>
+requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
 #endif
-auto create_steady_problem(const TrialSubspaceType & trialSubspace,
+auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(3)*/
 			   const FomSystemType & fomSystem,
 			   const MaskerType & masker,
 			   const HyperReducerType & hyperReducer)
 {
 
-#if not defined PRESSIO_ENABLE_CXX20
-  static_assert(steady::ComposableIntoHyperReducedMaskedProblem<
-		TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>::value,
-		"steady::ComposableIntoHyperReducedMaskedProblem not satisfied");
-#endif
-
-  using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
-  using default_types         = SteadyGalerkinDefaultOperatorsTraits<reduced_state_type>;
-  using reduced_residual_type = typename default_types::reduced_residual_type;
-  using reduced_jac_type      = typename default_types::reduced_jacobian_type;
-
+  using reduced_state_t = typename TrialSubspaceType::reduced_state_type;
+  using reduced_r_t = impl::steady_galerkin_default_reduced_residual_t<TrialSubspaceType>;
+  using reduced_j_t = impl::steady_galerkin_default_reduced_jacobian_t<TrialSubspaceType>;
   using return_type = impl::GalerkinSteadyMaskedSystem<
-    reduced_state_type, reduced_residual_type, reduced_jac_type,
+    reduced_state_t, reduced_r_t, reduced_j_t,
     TrialSubspaceType, FomSystemType, MaskerType, HyperReducerType>;
-  return return_type(trialSubspace, fomSystem, masker, hyperReducer);
+  return return_type(trialSpace, fomSystem, masker, hyperReducer);
 }
 
 }}} // end pressio::rom::galerkin

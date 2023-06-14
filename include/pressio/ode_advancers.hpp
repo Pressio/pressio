@@ -53,10 +53,11 @@
 #include "./utils.hpp"
 #include "./type_traits.hpp"
 
+#include "./ode_concepts.hpp"
 #include "./ode/exceptions.hpp"
 #include "./ode/ode_strong_types.hpp"
+#include "./ode/ode_constants.hpp"
 
-#include "./ode_concepts.hpp"
 #include "./ode/ode_advance_n_steps.hpp"
 #include "./ode/ode_advance_n_steps_variadic.hpp"
 #include "./ode/ode_advance_n_steps_with_guesser.hpp"

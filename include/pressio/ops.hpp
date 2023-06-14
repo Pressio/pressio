@@ -72,12 +72,12 @@ template<class ...> struct matching_extents;
 
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "ops/eigen/ops_clone.hpp"
 #include "ops/eigen/ops_extent.hpp"
+#include "ops/eigen/ops_clone.hpp"
 #include "ops/eigen/ops_deep_copy.hpp"
 #include "ops/eigen/ops_abs.hpp"
-#include "ops/eigen/ops_scale.hpp"
 #include "ops/eigen/ops_set_zero.hpp"
+#include "ops/eigen/ops_scale.hpp"
 #include "ops/eigen/ops_fill.hpp"
 #include "ops/eigen/ops_resize.hpp"
 #include "ops/eigen/ops_add_to_diagonal.hpp"
@@ -102,24 +102,37 @@ template<class ...> struct matching_extents;
 #include "ops/kokkos/ops_fill.hpp"
 #include "ops/kokkos/ops_resize.hpp"
 #include "ops/kokkos/ops_abs.hpp"
+#include "ops/kokkos/ops_min_max.hpp"
 #include "ops/kokkos/ops_norms_vector.hpp"
 #include "ops/kokkos/ops_dot.hpp"
 #include "ops/kokkos/ops_pow.hpp"
 #include "ops/kokkos/ops_vector_update.hpp"
+#include "ops/kokkos/ops_rank2_update.hpp"
 #include "ops/kokkos/ops_elementwise_multiply.hpp"
 #include "ops/kokkos/ops_level2.hpp"
 #include "ops/kokkos/ops_level3.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// Teuchos
+#include "ops/teuchos/ops_extent.hpp"
+#include "ops/teuchos/ops_clone.hpp"
+#include "ops/teuchos/ops_set_zero.hpp"
+#include "ops/teuchos/ops_scale.hpp"
+#include "ops/teuchos/ops_fill.hpp"
+#include "ops/teuchos/ops_norms.hpp"
+#include "ops/teuchos/ops_level2.hpp"
+
 // Tpetra
 #include "ops/tpetra/ops_clone.hpp"
 #include "ops/tpetra/ops_extent.hpp"
 #include "ops/tpetra/ops_deep_copy.hpp"
 #include "ops/tpetra/ops_set_zero.hpp"
+#include "ops/tpetra/ops_scale.hpp"
 #include "ops/tpetra/ops_fill.hpp"
 #include "ops/tpetra/ops_abs.hpp"
 #include "ops/tpetra/ops_dot.hpp"
+#include "ops/tpetra/ops_min_max.hpp"
 #include "ops/tpetra/ops_norms.hpp"
 #include "ops/tpetra/ops_pow.hpp"
 #include "ops/tpetra/ops_rank1_update.hpp"
@@ -133,9 +146,11 @@ template<class ...> struct matching_extents;
 #include "ops/tpetra_block/ops_extent.hpp"
 #include "ops/tpetra_block/ops_deep_copy.hpp"
 #include "ops/tpetra_block/ops_set_zero.hpp"
+#include "ops/tpetra_block/ops_scale.hpp"
 #include "ops/tpetra_block/ops_fill.hpp"
 #include "ops/tpetra_block/ops_abs.hpp"
 #include "ops/tpetra_block/ops_dot.hpp"
+#include "ops/tpetra_block/ops_min_max.hpp"
 #include "ops/tpetra_block/ops_norms.hpp"
 #include "ops/tpetra_block/ops_pow.hpp"
 #include "ops/tpetra_block/ops_rank1_update.hpp"
@@ -149,9 +164,11 @@ template<class ...> struct matching_extents;
 #include "ops/epetra/ops_extent.hpp"
 #include "ops/epetra/ops_deep_copy.hpp"
 #include "ops/epetra/ops_set_zero.hpp"
+#include "ops/epetra/ops_scale.hpp"
 #include "ops/epetra/ops_fill.hpp"
 #include "ops/epetra/ops_abs.hpp"
 #include "ops/epetra/ops_dot.hpp"
+#include "ops/epetra/ops_min_max.hpp"
 #include "ops/epetra/ops_norms.hpp"
 #include "ops/epetra/ops_pow.hpp"
 #include "ops/epetra/ops_rank1_update.hpp"
@@ -159,9 +176,6 @@ template<class ...> struct matching_extents;
 #include "ops/epetra/ops_multi_vector_update.hpp"
 #include "ops/epetra/ops_level2.hpp"
 #include "ops/epetra/ops_level3.hpp"
-
-// teuchos
-#include "ops/teuchos/ops_level2.hpp"
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 // keep this last

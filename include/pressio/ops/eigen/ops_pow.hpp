@@ -62,7 +62,7 @@ pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
   using ord_t = pressio::ops::impl::ordinal_t<T>;
-  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
+  for (ord_t i=0; i< (ord_t)::pressio::ops::extent(x, 0); ++i){
     x(i) = std::pow(x(i), exponent);
   }
 }
@@ -83,7 +83,7 @@ pow(T1 & y,
   using ord_t = pressio::ops::impl::ordinal_t<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
-  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
+  for (ord_t i=0; i< (ord_t)::pressio::ops::extent(x, 0); ++i){
     y(i) = std::pow(x(i), exponent);
   }
 }
@@ -103,7 +103,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = pressio::ops::impl::ordinal_t<T1>;
+  // using ord_t = pressio::ops::impl::ordinal_t<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
@@ -111,7 +111,7 @@ abs_pow(T1 & y,
     throw std::runtime_error("This overload only supports exponent > 0");
   }
 
-  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
+  for (std::size_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = std::pow(std::abs(x(i)), exponent);
   }
 }
@@ -132,7 +132,7 @@ abs_pow(T1 & y,
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = pressio::ops::impl::ordinal_t<T1>;
+  // using ord_t = pressio::ops::impl::ordinal_t<T1>;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
@@ -141,7 +141,7 @@ abs_pow(T1 & y,
   }
 
   constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
-  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
+  for (std::size_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = one/std::max(eps, std::pow(std::abs(x(i)), -exponent));
   }
 }

@@ -144,7 +144,7 @@ public:
   bool isColumnSpace() const{ return true; }
   bool isRowSpace() const{ return false; }
   const full_state_type & translationVector() const{ return translation_; }
-  const std::size_t dimension() const{ return linSpace_.dimension(); }
+  std::size_t dimension() const{ return linSpace_.dimension(); }
 
   const basis_matrix_type & basisOfTranslatedSpace() const{
     return linSpace_.basis();

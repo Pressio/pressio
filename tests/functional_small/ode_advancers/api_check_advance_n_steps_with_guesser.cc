@@ -321,7 +321,7 @@ TEST(ode, test)
   }
 
   {
-    Stepper3a stepper; AuxClass aux; AuxClass2 aux2;
+    Stepper3a stepper; AuxClass2 aux2;
 
     advance_n_steps_with_pre_step_guesser(stepper, odeState, t0, dt, numSteps, guess, AuxClass{}, std::move(aux2));
     check_state_and_reset(odeState, -18.0+3.1+2.0+10.0);
@@ -354,7 +354,7 @@ TEST(ode, test)
   }
 
   {
-    Stepper3b stepper; AuxClass aux; AuxClass2 aux2;
+    Stepper3b stepper; AuxClass2 aux2;
 
     advance_n_steps_with_pre_step_guesser(stepper, odeState, t0, dt, numSteps, guess, AuxClass{}, aux2);
     check_state_and_reset(odeState, -18.0+3.2+2.0+10.0);
@@ -376,7 +376,7 @@ TEST(ode, test)
   }
 
   {
-    Stepper3c stepper; AuxClass aux; const AuxClass2 aux2;
+    Stepper3c stepper; const AuxClass2 aux2;
 
     advance_n_steps_with_pre_step_guesser(stepper, odeState, t0, dt, numSteps, guess, AuxClass{}, aux2);
     check_state_and_reset(odeState, -20.0+3.3+2.0+10.0);

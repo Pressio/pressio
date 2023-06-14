@@ -62,7 +62,8 @@ template <typename T, class ScalarType>
   >
 fill(T & o, const ScalarType & value)
 {
-  impl::get_native(o).setConstant(value);
+  const typename ::pressio::Traits<T>::scalar_type v(value);
+  impl::get_native(o).setConstant(v);
 }
 
 }}//end namespace pressio::ops

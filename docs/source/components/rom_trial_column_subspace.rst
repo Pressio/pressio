@@ -40,11 +40,9 @@ then all of the following must hold:
 
 - :cpp:`pressio::is_vector_eigen<ReducedStateType>::value == true`
 
-
 - ``basis_matrix_type`` is a rank-2 matrix data type already supported
   in pressio, i.e. an Eigen Matrix, a Kokkos rank-2 View, a Trilinos Tpetra multivector,
   Tpetra block multivector, or Epetra multivector
-
 
 - ``full_state_type`` is an Eigen vector, a Kokkos rank-1 View, a Trilinos Tpetra vector,
   Tpetra block vector, or Epetra vector
@@ -68,11 +66,12 @@ then all of the following must hold:
    - ``pressio::ops::extent(M, /*int*/)``
 
 
-Mandates
---------
+..
+   Mandates
+   --------
 
-- :cpp:`pressio::all_have_traits_and_same_scalar<
-  reduced_state_type, full_state_type, basis_matrix_type>::value == true`
+   - :cpp:`pressio::all_have_traits_and_same_scalar<
+     reduced_state_type, full_state_type, basis_matrix_type>::value == true`
 
 Preconditions
 -------------
@@ -94,18 +93,17 @@ Preconditions
 Return value and effects
 ------------------------
 
-Creates an instance of a trial subspace. If passing lvalue arguments,
-the implementation will "clone" the arguments so new allocations will occur.
+Creates an instance of a trial subspace. The return type is implementation defined,
+so just use `auto`. If passing lvalue arguments, the implementation will "clone" the
+arguments so new allocations will occur.
 If passing rvalues (temporaries), the code will use move semantics,
 so the temporary objects are moved-constructed and no new memory allocation should occur.
-
-:red:`finish description of semantics if isAffine==true, and if translation vector has all zeros`
 
 Postconditions
 --------------
 
-The return type is implementation defined but guaranteed to model
-the `PossiblyAffineTrialColumnSubspace concept <rom_concepts_various/possibly_affine_trial_column_subspace.html>`__.
+The return type is guaranteed to model
+the `PossiblyAffineTrialColumnSubspace concept <rom_concepts.html>`__.
 
 
 Example

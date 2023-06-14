@@ -42,7 +42,7 @@ public:
   // required aliases
   using independent_variable_type = IndVarType;
   using state_type                = ReducedStateType;
-  using right_hand_side_type      = ReducedRhsType;
+  using rhs_type      = ReducedRhsType;
   using jacobian_type = ReducedJacobianType;
 
   GalerkinHypRedOdeSystemRhsAndJacobian() = delete;
@@ -54,7 +54,7 @@ public:
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
       hyperReducer_(hyperReducer),
-      fomRhs_(fomSystem.createRightHandSide()),
+      fomRhs_(fomSystem.createRhs()),
       fomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
   {}
 
@@ -63,37 +63,35 @@ public:
     return trialSubspace_.get().createReducedState();
   }
 
-  right_hand_side_type createRightHandSide() const{
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
+  rhs_type createRhs() const{
+    return impl::CreateGalerkinRhs<rhs_type>()(trialSubspace_.get().dimension());
   }
 
   jacobian_type createJacobian() const{
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
-  void operator()(const state_type & reducedState,
-		  const IndVarType & rhsEvaluationTime,
-		  right_hand_side_type & reducedRhs,
-		  jacobian_type & reducedJacobian,
-		  bool computeJacobian) const
+  void rhsAndJacobian(const state_type & reducedState,
+		      const IndVarType & rhsEvaluationTime,
+		      rhs_type & reducedRhs,
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> reducedJacobian) const
+#else
+                      jacobian_type* reducedJacobian) const
+#endif
   {
 
-    // reconstruct fom state fomState = phi*reducedState
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
-
-    // evaluate fomRhs and apply hyperReducer
-    fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, fomRhs_);
-
-    // compute the reduced rhs
+    fomSystem_.get().rhs(fomState_, rhsEvaluationTime, fomRhs_);
     hyperReducer_(fomRhs_, rhsEvaluationTime, reducedRhs);
-
-    if (computeJacobian){
+    if (reducedJacobian){
       const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-      // evaluate fom jacobian action: fomJacAction_ = fom_J * phi
       fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
-      // compute the reduced jacobian
-      hyperReducer_(fomJacAction_, rhsEvaluationTime, reducedJacobian);
+#ifdef PRESSIO_ENABLE_CXX17
+      hyperReducer_(fomJacAction_, rhsEvaluationTime, *reducedJacobian.value());
+#else
+      hyperReducer_(fomJacAction_, rhsEvaluationTime, *reducedJacobian);
+#endif
     }
   }
 
@@ -102,7 +100,7 @@ private:
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   std::reference_wrapper<const HyperReducerType> hyperReducer_;
-  mutable typename FomSystemType::right_hand_side_type fomRhs_;
+  mutable typename FomSystemType::rhs_type fomRhs_;
   mutable fom_jac_action_result_type fomJacAction_;
 };
 

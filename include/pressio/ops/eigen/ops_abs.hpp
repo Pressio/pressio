@@ -53,20 +53,27 @@ namespace pressio{ namespace ops{
 
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  /* a bit restrictive but fine for now */
-  ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
-  && (::pressio::is_vector_eigen<T1>::value
-  || ::pressio::is_expression_acting_on_eigen<T1>::value)
-  && (::pressio::is_vector_eigen<T1>::value
-  || ::pressio::is_expression_acting_on_eigen<T1>::value)
-  && ::pressio::Traits<T1>::rank == 1
+  // common abs constraints
+     ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && (::pressio::is_vector_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  && (::pressio::is_vector_eigen<T1>::value
+   || ::pressio::is_expression_acting_on_eigen<T1>::value)
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
   >
 abs(T1 & y, const T2 & x)
 {
+  const std::size_t size = ::pressio::ops::extent(x, 0);
 
-  using ord_t = decltype( ::pressio::ops::extent(x, 0) );
-  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
+  assert((std::size_t)::pressio::ops::extent(y, 0) == size);
+
+  using ord_t = typename std::remove_const<decltype(size)>::type;
+  for (ord_t i = 0; i < size; ++i) {
     y(i) = std::abs(x(i));
   }
 }

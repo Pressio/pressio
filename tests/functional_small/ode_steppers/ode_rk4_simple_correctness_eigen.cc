@@ -9,9 +9,9 @@
   double dt = 0.1;				    \
   ode::advance_n_steps(stepperObj, y, 0.0, dt, pressio::ode::StepCount(1));  \
   appObj.analyticAdvanceRK4(dt);		    \
-  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));		    \
-  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));		    \
-  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));		    \
+  EXPECT_NEAR(y(0), appObj.y(0), 1e-15); \
+  EXPECT_NEAR(y(1), appObj.y(1), 1e-15); \
+  EXPECT_NEAR(y(2), appObj.y(2), 1e-15); \
 
 TEST(ode_explicit_steppers, rk4_system_reference)
 {

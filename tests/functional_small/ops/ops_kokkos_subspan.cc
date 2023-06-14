@@ -14,6 +14,7 @@ TEST(ops_kokkos, subspan_extent)
   auto ex = pressio::subspan(A,r,c);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==2);
   ASSERT_TRUE(pressio::ops::extent(ex,1)==3);
+  ASSERT_TRUE(pressio::ops::extent(ex,2)==1); // check extent over the rank
 }
 
 TEST(ops_kokkos, subspan_scale)
@@ -122,4 +123,20 @@ TEST(ops_kokkos, subspan_fill)
   ASSERT_DOUBLE_EQ(A_h(3,2),1.);
   ASSERT_DOUBLE_EQ(A_h(3,3),1.);
   ASSERT_DOUBLE_EQ(A_h(3,4),1.);
+}
+
+TEST(ops_kokkos, subspan_min_max)
+{
+  mat_t A("A", 6, 6);
+  auto A_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), A);
+  for (int i = 0; i < 6; ++i) {
+    for (int j = 0; j < 6; ++j) {
+      A_h(i, j) = 100 - i * 6 - j;
+    }
+  }
+  Kokkos::deep_copy(A, A_h);
+  auto A1 = pressio::subspan(A, {1, 3}, {2, 4});
+
+  ASSERT_DOUBLE_EQ(pressio::ops::min(A1), 85.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(A1), 92.);
 }

@@ -2,7 +2,9 @@
 #include <gtest/gtest.h>
 #include "pressio/type_traits.hpp"
 
+namespace{
 struct FakeType1{};
+}
 
 namespace pressio{
 template<>
@@ -13,6 +15,7 @@ struct Traits<FakeType1>
 };
 }
 
+namespace{
 #define NT1() using basis_matrix_type  = FakeType1;
 
 #define M1() const basis_matrix_type & basis() const;
@@ -56,11 +59,12 @@ public:
   S1& operator=(const S1 &) = delete;
   NT1() M1() M2() M3() /*M4()*/
 };
+}
 
 #include "pressio/rom_concepts.hpp"
 #include "pressio/rom_subspaces.hpp"
 
-TEST(rom, concept_vector_subspace1)
+TEST(rom_concepts, vector_subspace1)
 {
   using namespace pressio::rom;
 
@@ -81,7 +85,7 @@ TEST(rom, concept_vector_subspace1)
 #endif
 }
 
-TEST(rom, concept_vector_subspace2)
+TEST(rom_concepts, vector_subspace2)
 {
   using namespace pressio::rom;
 

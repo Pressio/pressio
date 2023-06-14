@@ -7,7 +7,7 @@
 struct MyApp{
   using independent_variable_type = MyCustomTime;
   using state_type = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   state_type createState() const{
     state_type ret(3);
@@ -15,15 +15,15 @@ struct MyApp{
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3);
+  rhs_type createRhs() const{
+    rhs_type ret(3);
     ret.setZero();
     return ret;
   };
 
-  void operator()(const state_type & y,
-		  independent_variable_type /*unused*/,
-		  right_hand_side_type & f) const
+  void rhs(const state_type & y,
+	   independent_variable_type /*unused*/,
+	   rhs_type & f) const
   {
     f[0] = -10. * y[0];
     f[1] = -10. * y[1];

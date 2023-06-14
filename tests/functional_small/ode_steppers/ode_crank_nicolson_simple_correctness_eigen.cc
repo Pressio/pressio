@@ -7,19 +7,22 @@ struct MyApp
 {
   using independent_variable_type   = double;
   using state_type    = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
 public:
   state_type createState() const{ return state_type(3); }
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(3); }
+  rhs_type createRhs() const{ return rhs_type(3); }
   jacobian_type createJacobian() const{return jacobian_type(3,3);}
 
-  void operator()(const state_type & y,
-		  const independent_variable_type& evaltime,
-		  right_hand_side_type & f,
-		  jacobian_type & /*j*/,
-		  bool computeJac) const
+  void rhsAndJacobian(const state_type & y,
+		      const independent_variable_type& evaltime,
+		      rhs_type & f,
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> /*J*/) const
+#else
+                      jacobian_type* /*J*/) const
+#endif
   {
     std::cout << "velo: t=" << evaltime << "\n";
     f[0] = y(0)+evaltime;
@@ -45,7 +48,12 @@ struct MyFakeSolver
     for (int i=0; i<2; ++i)
     {
       std::cout << "i = "  << i << std::endl;
-      sys.residualAndJacobian(state, R, J, true);
+#ifdef PRESSIO_ENABLE_CXX17
+	sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
+#else
+	sys.residualAndJacobian(state, R, &J);
+#endif
+
       std::cout << "state = "  << *state.data() << std::endl;
       std::cout << "R = " << *R.data() << std::endl;
 
@@ -249,7 +257,7 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
-  using res_t  = typename app_t::right_hand_side_type;
+  using res_t  = typename app_t::rhs_type;
   using jac_t  = typename app_t::jacobian_type;
   using time_type = typename app_t::independent_variable_type;
   using pol_t = pressio::ode::impl::ResidualJacobianStandardPolicy<app_t&, time_type,

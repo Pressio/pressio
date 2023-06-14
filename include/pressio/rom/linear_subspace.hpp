@@ -47,7 +47,7 @@ public:
      move assign operator and copy assign.
      Since we have const members, the compiler defines all those as deleted.
      And since we have a copy constructor, the move constructor does not
-     particupare in OR so the copy constructor is always called.
+     particupate in OR so the copy constructor is always called.
   */
 
   ~LinearSubspace() = default;
@@ -56,7 +56,7 @@ public:
     return basisMatrix_;
   }
 
-  const std::size_t dimension() const{
+  std::size_t dimension() const{
     switch(spanningSetValue_){
     case SpanningSet::Columns:
       return ::pressio::ops::extent(basisMatrix_, 1);

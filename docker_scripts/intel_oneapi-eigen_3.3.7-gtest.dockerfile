@@ -11,6 +11,11 @@ RUN apt-get update && apt-get upgrade -y
 # Installing Utilities
 RUN apt-get install -y wget git make gnupg2 software-properties-common
 
+# NOTE: clang-12 installs libstdc++-9-dev on focal
+#       ending up without c++20 headers like <concepts>
+#       so request libstdc++-10-dev explicitly
+RUN apt-get install -y libstdc++-10-dev
+
 # CMake installation
 RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-Linux-x86_64.sh
 RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/

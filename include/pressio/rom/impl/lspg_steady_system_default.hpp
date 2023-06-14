@@ -15,7 +15,8 @@ LSPG steady default represents:
 template <
   class ReducedStateType,
   class TrialSubspaceType,
-  class FomSystemType
+  class FomSystemType,
+  class PossiblyRefWrapperOperatorScalerType
   >
 class LspgSteadyDefaultSystem
 {
@@ -33,11 +34,16 @@ public:
   using residual_type = typename FomSystemType::residual_type;
   using jacobian_type = fom_jac_action_result_type;
 
+  // here _RawScalerType must be a template because it is the raw scaler type
+  // which can be forwarded to the reference wrapper potentially
+  template<class _RawScalerType>
   LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
-			  const FomSystemType & fomSystem)
+			  const FomSystemType & fomSystem,
+			  _RawScalerType && scaler)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
-      fomState_(trialSubspace.createFullState())
+      fomState_(trialSubspace.createFullState()),
+      scaler_(std::forward<_RawScalerType>(scaler))
   {}
 
 public:
@@ -50,27 +56,32 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    return fomSystem_.get().createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace());
+    return fomSystem_.get().createResultOfJacobianActionOn
+      (trialSubspace_.get().basisOfTranslatedSpace());
   }
 
   void residualAndJacobian(const state_type & lspgState,
-			   residual_type & lsgpResidual,
-			   jacobian_type & lspgJacobian,
-			   bool computeJacobian) const
+			   residual_type & lspgResidual,
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type *> lspgJacobian) const
+#else
+			   jacobian_type * lspgJacobian) const
+#endif
   {
     trialSubspace_.get().mapFromReducedState(lspgState, fomState_);
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     fomSystem_.get().residualAndJacobianAction(fomState_,
-					       lsgpResidual,
-					       phi, lspgJacobian,
-					       computeJacobian);
+					       lspgResidual,
+					       phi, lspgJacobian);
+    scaler_(fomState_, lspgResidual, lspgJacobian);
   }
 
 private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
+  PossiblyRefWrapperOperatorScalerType scaler_;
 };
 
 

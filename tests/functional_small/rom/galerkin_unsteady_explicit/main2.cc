@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct Observer
 {
   void operator()(pressio::ode::StepCount stepIn,
@@ -35,7 +37,7 @@ struct MyFom
 {
   using time_type       = double;
   using state_type        = Eigen::VectorXd;
-  using right_hand_side_type     = state_type;
+  using rhs_type     = state_type;
 
   std::vector<int> sampleMeshIndices_;
   int nstencil_ = {};
@@ -46,13 +48,13 @@ struct MyFom
       nstencil_(nstencil),
       nsample_(sampleMeshIndices.size()){}
 
-  right_hand_side_type createRightHandSide() const{
-    return right_hand_side_type(nsample_);
+  rhs_type createRhs() const{
+    return rhs_type(nsample_);
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type timeIn,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type timeIn,
+	   rhs_type & f) const
   {
     EXPECT_TRUE((std::size_t)u.size()!=(std::size_t)f.size());
     EXPECT_TRUE((std::size_t)f.size()==(std::size_t) nsample_);
@@ -70,19 +72,20 @@ class HypRedOperator
 
 public:
   using time_type = double;
-  using right_hand_side_operand_type = Eigen::VectorXd;
+  using rhs_operand_type = Eigen::VectorXd;
 
   HypRedOperator(const operator_type & phi) : matrix_(phi){}
 
-  void operator()(const right_hand_side_operand_type & operand,
+  void operator()(const rhs_operand_type & operand,
 		  time_type timein,
 		  Eigen::VectorXd & result) const
   {
     result = matrix_.transpose() * operand;
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test2)
+TEST(rom_galerkin_explicit, hyperreduced_velo_euler_forward)
 {
   /*
     hypred velocity Galerkin, Euler forward:

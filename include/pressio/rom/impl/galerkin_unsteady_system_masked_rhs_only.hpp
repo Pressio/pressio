@@ -26,7 +26,7 @@ template <
 class GalerkinMaskedOdeSystemOnlyRhs
 {
   // deduce types
-  using unmasked_fom_rhs_type = typename FomSystemType::right_hand_side_type;
+  using unmasked_fom_rhs_type = typename FomSystemType::rhs_type;
   using masked_fom_rhs_type =
     decltype(std::declval<MaskerType const>().createResultOfMaskActionOn
 	     (std::declval<unmasked_fom_rhs_type const &>()));
@@ -35,9 +35,7 @@ public:
   // required aliases
   using independent_variable_type = IndVarType;
   using state_type                = ReducedStateType;
-  using right_hand_side_type      = ReducedRhsType;
-
-  GalerkinMaskedOdeSystemOnlyRhs() = delete;
+  using rhs_type      = ReducedRhsType;
 
   GalerkinMaskedOdeSystemOnlyRhs(const TrialSubspaceType & trialSubspace,
 				 const FomSystemType & fomSystem,
@@ -48,7 +46,7 @@ public:
       fomState_(trialSubspace.createFullState()),
       hyperReducer_(hyperReducer),
       masker_(masker),
-      unMaskedFomRhs_(fomSystem.createRightHandSide()),
+      unMaskedFomRhs_(fomSystem.createRhs()),
       maskedFomRhs_(masker.createResultOfMaskActionOn(unMaskedFomRhs_))
   {}
 
@@ -57,22 +55,21 @@ public:
     return trialSubspace_.get().createReducedState();
   }
 
-  right_hand_side_type createRightHandSide() const{
-    return impl::CreateGalerkinRhs<right_hand_side_type>()(trialSubspace_.get().dimension());
+  rhs_type createRhs() const{
+    return impl::CreateGalerkinRhs<rhs_type>()(trialSubspace_.get().dimension());
   }
 
-  void operator()(const state_type & reducedState,
-		  const IndVarType & rhsEvaluationTime,
-		  right_hand_side_type & reducedRhs) const
+  void rhs(const state_type & reducedState,
+	   const IndVarType & rhsEvaluationTime,
+	   rhs_type & reducedRhs) const
   {
 
     // reconstruct fom state fomState = phi*reducedState
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
-
-    // evaluate fomRhs and mask it
-    fomSystem_.get().rightHandSide(fomState_, rhsEvaluationTime, unMaskedFomRhs_);
+    // evaluate fomRhs
+    fomSystem_.get().rhs(fomState_, rhsEvaluationTime, unMaskedFomRhs_);
+    // mask it
     masker_(unMaskedFomRhs_, maskedFomRhs_);
-
     // evaluate reduced rhs
     hyperReducer_(maskedFomRhs_, rhsEvaluationTime, reducedRhs);
   }

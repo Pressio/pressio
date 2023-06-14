@@ -16,7 +16,8 @@ template <
   class ReducedStateType,
   class TrialSubspaceType,
   class FomSystemType,
-  class MaskerType
+  class MaskerType,
+  class PossiblyRefWrapperOperatorScalerType
   >
 class LspgSteadyMaskedSystem
 {
@@ -42,15 +43,20 @@ public:
   using residual_type = masked_fom_residual_type;
   using jacobian_type = masked_fom_jac_action_result_type;
 
-  LspgSteadyMaskedSystem(TrialSubspaceType & trialSubspace,
+  // here _RawScalerType must be a template because it is the raw scaler type
+  // which can be forwarded to the reference wrapper potentially
+  template<class _RawScalerType>
+  LspgSteadyMaskedSystem(const TrialSubspaceType & trialSubspace,
 			 const FomSystemType & fomSystem,
-			 const MaskerType & masker)
+			 const MaskerType & masker,
+			 _RawScalerType && scaler)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
       masker_(masker),
       unMaskedFomResidual_(fomSystem.createResidual()),
-      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace()))
+      unMaskedFomJacAction_(fomSystem.createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace())),
+      scaler_(std::forward<_RawScalerType>(scaler))
   {}
 
 public:
@@ -69,30 +75,54 @@ public:
   }
 
   void residualAndJacobian(const state_type & reducedState,
-			   residual_type & lsgpResidual,
-			   jacobian_type & lspgJacobian,
-			   bool computeJacobian) const
+			   residual_type & lspgResidual,
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type *> lspgJacobian) const
+#else
+			   jacobian_type * lspgJacobian) const
+#endif
   {
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
-    fomSystem_.get().residualAndJacobianAction(fomState_,
-					       unMaskedFomResidual_,
-					       phi, unMaskedFomJacAction_,
-					       computeJacobian);
-    masker_(unMaskedFomResidual_, lsgpResidual);
-    if (computeJacobian){
-      masker_(unMaskedFomJacAction_, lspgJacobian);
+
+#ifdef PRESSIO_ENABLE_CXX17
+    if (lspgJacobian){
+      auto ja = std::optional<unmasked_fom_jac_action_result_type*>(&unMaskedFomJacAction_);
+      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, ja);
+    }else{
+      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, {});
     }
+#else
+    if (lspgJacobian){
+      auto ja = &unMaskedFomJacAction_;
+      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, ja);
+    }else{
+      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, nullptr);
+    }
+#endif
+
+    // do masking
+    masker_(unMaskedFomResidual_, lspgResidual);
+    if (lspgJacobian){
+#ifdef PRESSIO_ENABLE_CXX17
+      masker_(unMaskedFomJacAction_, *lspgJacobian.value());
+#else
+      masker_(unMaskedFomJacAction_, *lspgJacobian);
+#endif
+    }
+
+    scaler_(fomState_, lspgResidual, lspgJacobian);
   }
 
 protected:
-  std::reference_wrapper<TrialSubspaceType> trialSubspace_;
+  std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
   std::reference_wrapper<const MaskerType> masker_;
   mutable unmasked_fom_residual_type unMaskedFomResidual_;
   mutable unmasked_fom_jac_action_result_type unMaskedFomJacAction_;
+  PossiblyRefWrapperOperatorScalerType scaler_;
 };
 
 }}} // end pressio::rom::impl

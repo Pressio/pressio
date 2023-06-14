@@ -9,175 +9,127 @@ Header: ``<pressio/rom_lspg_unsteady.hpp>``
 API
 ---
 
-.. code-block:: cpp
+.. literalinclude:: ../../../include/pressio/rom/lspg_unsteady.hpp
+   :language: cpp
+   :lines: 13-15, 19-29, 57-64, 76-80, 114-119, 129-132, 155-157, 162-174, 204-218, 244-246, 252-262, 283-284
 
-  namespace pressio { namespace rom{ namespace lspg{
 
-  template<
-    class TrialSubspaceType,
-    class FomSystemType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires unsteady::ComposableIntoDefaultProblem<
-               TrialSubspaceType, FomSystemType>
-  #endif
-  /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,         (1)
-					   const TrialSubspaceType & trialSubspace,
-					   const FomSystemType & fomSystem);
+..
+   Description
+   ~~~~~~~~~~~
 
-  template<
-    class TrialSubspaceType,
-    class FomSystemType,
-    class HyperReductionOperatorType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires unsteady::ComposableIntoHyperReducedProblem<
-               TrialSubspaceType, FomSystemType, HyperReductionOperatorType>
-  #endif
-  /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,          (2)
-					   const TrialSubspaceType & trialSubspace,
-					   const FomSystemType & fomSystem,
-					   const HyperReductionOperatorType & hrOp);
+   Overload set to instantiate a default (1), hyper-reduced (2), masked (3) or "user-defined" (4) problem.
 
-  template<
-    class TrialSubspaceType,
-    class FomSystemType,
-    class MaskerType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires unsteady::ComposableIntoMaskedProblem<
-               TrialSubspaceType, FomSystemType, MaskerType>
-  #endif
-  /*impl defined*/ create_unsteady_problem(ode::StepScheme schemeName,          (3)
-					   const TrialSubspaceType & trialSubspace,
-					   const FomSystemType & fomSystem,
-					   const MaskerType & masker);
+   Non-type Template Parameters
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  template<
-    std::size_t TotalNumberOfStencilStates,
-    class TrialSubspaceType,
-    class FomSystemType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires FullyDiscreteSystemWithJacobianAction<
-                FomSystemType, TotalNumberOfDesiredStates, TrialSubspaceType>
-  #endif
-  /*impl defined*/ create_unsteady_problem(const TrialSubspaceType & trialSubspace,   (4)
-					   const FomSystemType & fomSystem);
+   * ``TotalNumberOfStencilStates``: total number of desired states needed
+     to define your scheme. Applicable only to overload 4.
 
-  }}} // end namespace pressio::rom::lspg
+   Parameters
+   ~~~~~~~~~~
 
-Description
-~~~~~~~~~~~
+   .. list-table::
+      :widths: 18 82
+      :header-rows: 1
+      :align: left
 
-Overload set to instantiate a default (1), hyper-reduced (2), masked (3) or "user-defined" (4) problem.
+      * -
+	-
 
-Non-type Template Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      * - ``schemeName``
+	- enum value to set the desired *implicit* scheme to use
 
-* ``TotalNumberOfStencilStates``: total number of desired states needed
-  to define your scheme. Applicable only to overload 4.
+      * - ``trialSubspace``
+	- trial subspace approximating the FOM state space
 
-Parameters
-~~~~~~~~~~
+      * - ``fomSystem``
+	- full-order model instance
 
-.. list-table::
-   :widths: 18 82
-   :header-rows: 1
-   :align: left
+      * - ``hyperReducer``
+	- hyper-reduction operator
 
-   * -
-     -
+      * - ``masker``
+	- masking operator
 
-   * - ``schemeName``
-     - enum value to set the desired *implicit* scheme to use
+   Constraints
+   ~~~~~~~~~~~
 
-   * - ``trialSubspace``
-     - trial subspace approximating the FOM state space
+   Each overload is associated with a set of constraints.
+   If we could use C++20, these would be enforced via concepts using
+   the *requires-clause* shown in the API synopsis above.
+   Since we cannot yet use C++20, the constraints are
+   currently enforced via static asserts (to provide a decent error message)
+   and/or SFINAE. The concepts used are:
 
-   * - ``fomSystem``
-     - full-order model instance
+   - `rom::lspg::unsteady::DefaultProblem <rom_concepts_unsteady_lspg/default.html>`__
 
-   * - ``hyperReducer``
-     - hyper-reduction operator
+   - `rom::lspg::unsteady::HyperReducedProblem <rom_concepts_unsteady_lspg/hyperreduced.html>`__
 
-   * - ``masker``
-     - masking operator
+   - `rom::lspg::unsteady::MaskedProblem <rom_concepts_unsteady_lspg/masked.html>`__
 
-Constraints
-~~~~~~~~~~~
+   - `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
 
-Each overload is associated with a set of constraints.
-If we could use C++20, these would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet use C++20, the constraints are
-currently enforced via static asserts (to provide a decent error message)
-and/or SFINAE. The concepts used are:
+   Preconditions
+   ~~~~~~~~~~~~~
 
-- `rom::lspg::unsteady::DefaultProblem <rom_concepts_unsteady_lspg/default.html>`__
+   .. _unsteadyLspgPreconditions:
 
-- `rom::lspg::unsteady::HyperReducedProblem <rom_concepts_unsteady_lspg/hyperreduced.html>`__
+   1. ``schemeName`` must be one of ``pressio::ode::StepScheme::{BDF1, BDF2}``
 
-- `rom::lspg::unsteady::MaskedProblem <rom_concepts_unsteady_lspg/masked.html>`__
+   2. all arguments passed to ``create_steady_problem`` must have a
+      lifetime *longer* that that of the instantiated problem, i.e., they must be
+      destructed *after* the problem instantiated goes out of scope
 
-- `rom::FullyDiscreteSystemWithJacobianAction <rom_concepts_foms/fully_discrete_with_jac_action.html>`__
+   2. the trial subspace must be an admissible approximation
+      of the specific full state/problem represented by the ``fomSystem`` instance
 
-Preconditions
-~~~~~~~~~~~~~
+   Return value, Postconditions and Side Effects
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _unsteadyLspgPreconditions:
+   - the return value is an instance of class representing an unsteady LSPG problem.
 
-1. ``schemeName`` must be one of ``pressio::ode::StepScheme::{BDF1, BDF2}``
+       The return type is implementation defined, but guaranteed to
+       model the ``SteppableWithAuxiliaryArgs`` concept
+       discussed `here <ode_concepts/c7.html>`__.
 
-2. all arguments passed to ``create_steady_problem`` must have a
-   lifetime *longer* that that of the instantiated problem, i.e., they must be
-   destructed *after* the problem instantiated goes out of scope
+     This means that the purely syntactical API of the problem class is:
 
-2. the trial subspace must be an admissible approximation
-   of the specific full state/problem represented by the ``fomSystem`` instance
+     .. code-block:: cpp
 
-Return value, Postconditions and Side Effects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 // This is not the actual class, it just describes the API
+	 class UnsteadyLspgProblemExpositionOnly
+	 {
+	   public:
+	     using independent_variable_type = /*see description below*/;
+	     using state_type                = /*see description below*/;
+	     using residual_type = /*see description below*/;
+	     using jacobian_type = /*see description below*/;
 
-- the return value is an instance of class representing an unsteady LSPG problem.
+	     /*impl defined*/ & lspgStepper();
+	 };
 
-    The return type is implementation defined, but guaranteed to
-    model the ``SteppableWithAuxiliaryArgs`` concept
-    discussed `here <ode_concepts/c7.html>`__.
+     where:
 
-  This means that the purely syntactical API of the problem class is:
+     - ``state_type`` aliases the reduced state type of your trial subspace class
 
-  .. code-block:: cpp
+     - ``independent_variable_type`` same as the nested type alias in ``FomSystemType``
 
-      // This is not the actual class, it just describes the API
-      class UnsteadyLspgProblemExpositionOnly
-      {
-	public:
-	  using independent_variable_type = /*see description below*/;
-	  using state_type                = /*see description below*/;
-	  using residual_type = /*see description below*/;
-	  using jacobian_type = /*see description below*/;
+     - :red:`finish`
 
-	  /*impl defined*/ & lspgStepper();
-      };
+   - any necessary memory allocation needed for the implementation
+     occurs when the constructor of the class is called. However, we
+     guarantee (for now) that the implementation only uses via *const references*
+     (as opposed to copying) the arguments passed to the ``create_steady_problem``.
+     This is why it is critical to ensure :ref:`precondition 2 <unsteadyLspgPreconditions>`
+     is satisfied.
 
-  where:
+   Solve the problem
+   -------------------------
 
-  - ``state_type`` aliases the reduced state type of your trial subspace class
+   To solve the problem, you need a non-linear least squares solver
+   from the nonlinear_solvers and the "advance" functions to step forward.
+   Or you can use/implement your own loop.
+   A representative snippet is below:
 
-  - ``independent_variable_type`` same as the nested type alias in ``FomSystemType``
-
-  - :red:`finish`
-
-- any necessary memory allocation needed for the implementation
-  occurs when the constructor of the class is called. However, we
-  guarantee (for now) that the implementation only uses via *const references*
-  (as opposed to copying) the arguments passed to the ``create_steady_problem``.
-  This is why it is critical to ensure :ref:`precondition 2 <unsteadyLspgPreconditions>`
-  is satisfied.
-
-Solve the problem
--------------------------
-
-To solve the problem, you need a non-linear least squares solver
-from the nonlinear_solvers and the "advance" functions to step forward.
-Or you can use/implement your own loop.
-A representative snippet is below:
-
-:red:`finish`
+   :red:`finish`

@@ -72,13 +72,13 @@ public:
   {
     auto & A = const_cast<MatrixType &>(Ain);
 
-    auto nVecs = ::pressio::ops::extent(A,1);
+    size_t nVecs = ::pressio::ops::extent(A,1);
     auto ArowMap = A.getMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
 
     sc_t rkkInv = {};
-    for (auto k=0; k<nVecs; k++)
+    for (size_t k=0; k<nVecs; k++)
     {
       auto ak = A.getVector(k);
       localR_(k,k) = ak->norm2();
@@ -87,7 +87,7 @@ public:
       auto qk = Qmat_->getVectorNonConst(k);
       qk->update( rkkInv, *ak, utils::Constants<sc_t>::zero() );
 
-      for (auto j=k+1; j<nVecs; j++){
+      for (size_t j=k+1; j<nVecs; j++){
       	auto aj = A.getVectorNonConst(j);
       	localR_(k,j) = qk->dot(*aj);
       	aj->update(-localR_(k,j), *qk, utils::Constants<sc_t>::one());
@@ -115,9 +115,9 @@ public:
   }
 
 private:
-  void createLocalRIfNeeded(int newsize){
-    const auto locRext0 = ::pressio::ops::extent(localR_, 0);
-    const auto locRext1 = ::pressio::ops::extent(localR_, 1);   
+  void createLocalRIfNeeded(std::size_t newsize){
+    const std::size_t locRext0 = ::pressio::ops::extent(localR_, 0);
+    const std::size_t locRext1 = ::pressio::ops::extent(localR_, 1);   
     if (locRext0!=newsize or locRext1!=newsize){
       localR_ = R_nat_t(newsize, newsize);
       ::pressio::ops::set_zero(localR_);
@@ -125,7 +125,7 @@ private:
   }
 
   template <typename MapType>
-  void createQIfNeeded(const MapType & map, int cols){
+  void createQIfNeeded(const MapType & map, std::size_t cols){
     if (!Qmat_ or !Qmat_->getMap()->isSameAs(*map) )
       Qmat_ = std::make_shared<Q_type>(map, cols);
   }
