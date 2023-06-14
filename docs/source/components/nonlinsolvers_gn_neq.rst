@@ -46,7 +46,7 @@ Examples
 .. admonition:: Demos
    :class: tip
 
-   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers1.html>`__
+   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers2.html>`__
 
 
 ..
