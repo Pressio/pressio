@@ -73,9 +73,8 @@ elementwise_multiply(alpha_t alpha, const T & x, const T1 & z, beta_t beta, T2 &
   assert(x.MyLength()==z.MyLength());
   assert(z.MyLength()==y.MyLength());
 
-  double alpha_{alpha};
-  double beta_{beta};
-
+  const double alpha_(alpha);
+  const double beta_(beta);
   const auto has_beta = beta_ != 0.0;
   for (int i=0; i<x.MyLength(); ++i){
     y[i] = has_beta ? (beta_*y[i] + alpha_*x[i]*z[i]) : alpha_*x[i]*z[i];

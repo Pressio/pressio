@@ -137,21 +137,10 @@ Parameters
 Constraints
 -----------
 
-Each overload is associated with a set of constraints.
-With C++20, these would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message)
-and/or SFINAE. The concepts used are:
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
-
-* `Steppable <ode_concepts_various/steppable.html>`_
-
-* `SteppableWithAuxiliaryArgs <ode_concepts_various/steppable_args.html>`_
-
-* `StepSizePolicy <ode_concepts_various/step_size_pol.html>`_
-
-* `StateObserver <ode_concepts_various/state_observer.html>`_
 
 Preconditions
 -------------

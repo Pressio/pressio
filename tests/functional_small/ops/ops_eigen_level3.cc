@@ -22,12 +22,12 @@ public:
   const diagexpr_t &expr_;
 };
 
-namespace pressio::ops {
+namespace pressio{ namespace ops {
   template <typename VecType>
   size_t extent(const ExprAdapter<VecType> &e, size_t rank) {
     return e.expr_.extent(rank);
   }
-}
+}}
 
 template <typename T, typename enabled=void>
 auto adapter(const T &v) {
@@ -84,10 +84,10 @@ private:
 
   void fillOperand(mat_t & M, double v0 = 1.0)
   {
-    const auto num_rows = ::pressio::ops::extent(M, 0);
-    const auto num_cols = ::pressio::ops::extent(M, 1);
-    for (int i = 0; i < num_rows; ++i){
-      for (int j = 0; j < num_cols; ++j){
+    const std::size_t num_rows = ::pressio::ops::extent(M, 0);
+    const std::size_t num_cols = ::pressio::ops::extent(M, 1);
+    for (std::size_t i = 0; i < num_rows; ++i){
+      for (std::size_t j = 0; j < num_cols; ++j){
         M(i, j) = (double)(i * num_cols + j + v0);
       }
     }
@@ -95,8 +95,8 @@ private:
 
   void fillOperand(vec_t & v, double v0 = 1.0)
   {
-    const auto size = ::pressio::ops::extent(v, 0);
-    for (int i = 0; i < size; ++i){
+    const std::size_t size = ::pressio::ops::extent(v, 0);
+    for (std::size_t i = 0; i < size; ++i){
       v(i) = (double)(i + v0);
     }
   }
@@ -113,9 +113,9 @@ void vanilla_gemm(TransModeA /* tA */, ScalarType alpha,
                   const AType &A, const BType &B,
                   ScalarType beta, CType &C) {
   const bool trans_a = std::is_same<TransModeA, ::pressio::transpose>::value;
-  const auto num_rows = ::pressio::ops::extent(C, 0);
-  const auto num_cols = ::pressio::ops::extent(C, 1);
-  const auto b_rows = ::pressio::ops::extent(B, 0);
+  const std::size_t num_rows = ::pressio::ops::extent(C, 0);
+  const std::size_t num_cols = ::pressio::ops::extent(C, 1);
+  const std::size_t b_rows = ::pressio::ops::extent(B, 0);
   EXPECT_EQ(::pressio::ops::extent(A, trans_a ? 1 : 0), num_rows);
   EXPECT_EQ(::pressio::ops::extent(A, trans_a ? 0 : 1), b_rows);
   EXPECT_EQ(::pressio::ops::extent(B, 1), num_cols);
@@ -136,8 +136,8 @@ void vanilla_gemm(TransModeA /* tA */, ScalarType alpha,
 
 template <typename CType, typename CRefType>
 void compare_results(const CType &C, const CRefType &C0) {
-  const auto num_rows = ::pressio::ops::extent(C, 0);
-  const auto num_cols = ::pressio::ops::extent(C, 1);
+  const std::size_t num_rows = ::pressio::ops::extent(C, 0);
+  const std::size_t num_cols = ::pressio::ops::extent(C, 1);
   ASSERT_EQ(num_rows, ::pressio::ops::extent(C0, 0));
   ASSERT_EQ(num_cols, ::pressio::ops::extent(C0, 1));
   for (size_t i = 0; i < num_rows; ++i) {

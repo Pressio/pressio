@@ -83,7 +83,7 @@ void advance_n_steps_with_dt_policy(StepperType & stepper,
 
   // default construct
   ::pressio::ode::StepSize<IndVarType> dt;
-  step_t step = 1;
+  step_t step = ::pressio::ode::first_step_value;
   PRESSIOLOG_DEBUG("impl: advance_n_steps_with_dt_policy");
   for( ; step <= numSteps.get(); ++step)
     {

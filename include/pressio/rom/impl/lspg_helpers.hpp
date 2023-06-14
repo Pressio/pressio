@@ -4,6 +4,7 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
+template<class T= void>
 void valid_scheme_for_lspg_else_throw(::pressio::ode::StepScheme name){
   if (   name != ::pressio::ode::StepScheme::BDF1
       && name != ::pressio::ode::StepScheme::BDF2)

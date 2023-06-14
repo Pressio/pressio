@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 constexpr int N = 7;
 
 using FomStateType = Eigen::VectorXd;
@@ -36,19 +38,19 @@ struct MyFom
 {
   using time_type = double;
   using state_type = FomStateType;
-  using right_hand_side_type = FomRhsType;
+  using rhs_type = FomRhsType;
 
   MyFom(){}
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type r(N);
+  rhs_type createRhs() const{
+    rhs_type r(N);
     r.setConstant(0);
     return r;
   }
 
-  void rightHandSide(const state_type & u,
-         const time_type evalTime,
-         right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type evalTime,
+	   rhs_type & f) const
   {
     for (decltype(f.rows()) i=0; i<f.rows(); ++i){
       f(i) = u(i) + evalTime;
@@ -82,11 +84,12 @@ struct NonLinearSolver
 
     auto R = system.createResidual();
     auto J = system.createJacobian();
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // do fake first iteration
     //
-    system.residualAndJacobian(state, R, J, true);
+    system.residualAndJacobian(state, R, &J);
     std::cout << R << "\n";
     std::cout << J << "\n";
     if (stepTracker == 1){
@@ -99,7 +102,7 @@ struct NonLinearSolver
     //
     // do fake second iteration
     //
-    system.residualAndJacobian(state, R, J, true);
+    system.residualAndJacobian(state, R, &J);
     std::cout << R << "\n";
     if (stepTracker == 1){
       EXPECT_TRUE( R.isApprox(gold.R_Step1i2) );
@@ -109,8 +112,9 @@ struct NonLinearSolver
     for (int i=0; i<state.size(); ++i){ state[i] += 1.; }
   }
 };
+}
 
-TEST(rom_galerkin, test5)
+TEST(rom_galerkin_implicit, default_bdf1)
 {
   // test for default implicit galerkin using BDF1
   // all numbers have been computed manually
@@ -142,7 +146,6 @@ TEST(rom_galerkin, test5)
   const auto odeScheme = pressio::ode::StepScheme::BDF1;
   namespace gal = pressio::rom::galerkin;
   auto problem = gal::create_unsteady_implicit_problem(odeScheme, space, fomSystem);
-  //auto & galStepper = problem.galerkinStepper();
 
   using time_type = typename fom_t::time_type;
   const time_type dt = 2.;

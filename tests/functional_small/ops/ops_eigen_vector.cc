@@ -60,13 +60,13 @@ TEST(ops_eigen, vector_scale)
   a.setConstant(2.);
 
   pressio::ops::scale(a, 3.);
-  for (int i = 0; i < n; ++i){
+  for (int i = 0; i < (int)n; ++i){
     ASSERT_DOUBLE_EQ(a(i), 6.);
   }
 
   a.setConstant(std::nan("0"));
   pressio::ops::scale(a, 0.);
-  for (int i = 0; i < n; ++i){
+  for (int i = 0; i < (int)n; ++i){
     ASSERT_DOUBLE_EQ(a(i), 0.);
   }
 }

@@ -59,6 +59,7 @@
 #include "./ode.hpp"
 
 #include "rom_concepts.hpp"
+#include "rom/reduced_operators_traits.hpp"
 #include "rom/galerkin_unsteady_explicit.hpp"
 #include "rom/galerkin_unsteady_implicit.hpp"
 

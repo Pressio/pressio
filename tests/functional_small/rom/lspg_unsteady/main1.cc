@@ -3,17 +3,19 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type    = double;
   using state_type     = Eigen::VectorXd;
-  using right_hand_side_type  = state_type;
+  using rhs_type  = state_type;
   int N_ = {};
 
   MyFom(int N): N_(N){}
 
-  right_hand_side_type createRightHandSide() const{
-    auto R = right_hand_side_type(N_);
+  rhs_type createRhs() const{
+    auto R = rhs_type(N_);
     R.setConstant(0.);
     return R;
   }
@@ -26,9 +28,9 @@ struct MyFom
     return A;
   }
 
-  void rightHandSide(const state_type & u,
-		     time_type timeIn,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   time_type timeIn,
+	   rhs_type & f) const
   {
     EXPECT_TRUE((std::size_t)u.size()==(std::size_t)f.size());
     EXPECT_TRUE((std::size_t)u.size()==(std::size_t)N_);
@@ -80,11 +82,12 @@ struct FakeNonLinSolver
   }
 
   template<class SystemType, class StateType>
-  void solve(const SystemType & system, StateType & romState)
+  void solve(const SystemType & system, StateType & state)
   {
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
+    //using Jo_t = std::optional<decltype(J) *>;
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
@@ -103,12 +106,12 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
 	auto ynp1 = ::pressio::ops::clone(R);
-	compute_y(ynp1, romState);
+	compute_y(ynp1, state);
 	auto f = ::pressio::ops::clone(R);
 	compute_f(ynp1, f, mytime);
 	// for callcount1, iter1: ynp1 and yn should be same, so use f only
@@ -123,24 +126,24 @@ struct FakeNonLinSolver
 	  }
 	}
 
-	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+	for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
       }
 
       //-----------------------
       // do solver iterator 2
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
 	auto ynp1 = ::pressio::ops::clone(R);
-	compute_y(ynp1, romState);
+	compute_y(ynp1, state);
 
-	StateType romState_n(3);
-	romState_n(0) = 0; romState_n(1) = 1; romState_n(2) = 2;
+	StateType state_n(3);
+	state_n(0) = 0; state_n(1) = 1; state_n(2) = 2;
 	auto yn = ::pressio::ops::clone(R);
-	compute_y(yn, romState_n);
+	compute_y(yn, state_n);
 
 	auto f = ::pressio::ops::clone(R);
 	compute_f(ynp1, f, mytime);
@@ -156,7 +159,7 @@ struct FakeNonLinSolver
 	  }
 	}
 
-	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+	for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
       }
     }
 
@@ -172,12 +175,12 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
 	auto ynp1 = ::pressio::ops::clone(R);
-	compute_y(ynp1, romState);
+	compute_y(ynp1, state);
 	auto f = ::pressio::ops::clone(R);
 	compute_f(ynp1, f, mytime);
 	// for callcount2, iter1: ynp1 and yn should be same, so use f only
@@ -192,24 +195,24 @@ struct FakeNonLinSolver
 	  }
 	}
 
-	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+	for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
       }
 
       //-----------------------
       // do solver iterator 2
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(state, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
 	auto ynp1 = ::pressio::ops::clone(R);
-	compute_y(ynp1, romState);
+	compute_y(ynp1, state);
 
-	StateType romState_n(3);
-	romState_n(0) = 2; romState_n(1) = 3; romState_n(2) = 4.;
+	StateType state_n(3);
+	state_n(0) = 2; state_n(1) = 3; state_n(2) = 4.;
 	auto yn = ::pressio::ops::clone(R);
-	compute_y(yn, romState_n);
+	compute_y(yn, state_n);
 
 	auto f = ::pressio::ops::clone(R);
 	compute_f(ynp1, f, mytime);
@@ -225,7 +228,7 @@ struct FakeNonLinSolver
 	  }
 	}
 
-	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+	for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
       }
     }
 
@@ -258,6 +261,7 @@ struct Observer
     }
   }
 };
+}
 
 TEST(rom_lspg_unsteady, test1)
 {
@@ -280,26 +284,29 @@ TEST(rom_lspg_unsteady, test1)
   }
   std::cout << phi << "\n";
 
+  using namespace pressio;
+
   using reduced_state_type = Eigen::VectorXd;
   typename fom_t::state_type dummyFomState(N);
   constexpr bool isAffine = false;
-  auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi, dummyFomState, isAffine);
+  auto space = rom::create_trial_column_subspace<
+    reduced_state_type>(phi, dummyFomState, isAffine);
 
   auto romState = space.createReducedState();
   romState[0]=0.;
   romState[1]=1.;
   romState[2]=2.;
 
-  auto problem = pressio::rom::lspg::create_unsteady_problem(pressio::ode::StepScheme::BDF1,
-							     space, fomSystem);
-  auto & stepper = problem.lspgStepper();
+  auto problem = rom::lspg::create_unsteady_problem(ode::StepScheme::BDF1,
+						    space, fomSystem);
+  auto & stepper = problem; //problem.lspgStepper();
 
   const double dt = 2.;
   FakeNonLinSolver<phi_t> nonLinSolver(N, phi, dt);
   Observer obs;
-  pressio::ode::advance_n_steps(stepper, romState, 0., dt,
-				::pressio::ode::StepCount(2),
-				obs, nonLinSolver);
+  ode::advance_n_steps(stepper, romState, 0., dt,
+		       ode::StepCount(2),
+		       obs, nonLinSolver);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 4.);
   EXPECT_DOUBLE_EQ(romState[1], 5.);

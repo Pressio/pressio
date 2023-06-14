@@ -24,9 +24,9 @@ API
     requires Steppable<StepperType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (1)
-                       StateType & state,
-                       const IndVarType & startVal,
-                       const IndVarType & stepSize,
+		       StateType & state,
+		       const IndVarType & startVal,
+		       const IndVarType & stepSize,
 		       ::pressio::ode::StepCount numSteps);
 
   template<
@@ -36,13 +36,13 @@ API
     class StepSizePolicyType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires Steppable<StepperType>
-          && StepSizePolicy<StepSizePolicyType, IndVarType>
+	  && StepSizePolicy<StepSizePolicyType, IndVarType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (2)
-                       StateType & state,
-                       const IndVarType & startVal,
-                       const StepSizePolicyType & stepSizePolicy,
-                       ::pressio::ode::StepCount numSteps);
+		       StateType & state,
+		       const IndVarType & startVal,
+		       const StepSizePolicyType & stepSizePolicy,
+		       ::pressio::ode::StepCount numSteps);
 
   template<
     class StepperType,
@@ -51,13 +51,13 @@ API
     class ObserverType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires Steppable<StepperType>
-          && StateObserver<ObserverType,IndVarType, StateType>
+	  && StateObserver<ObserverType,IndVarType, StateType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (3)
-                       StateType & state,
-                       const IndVarType & startVal,
-                       const IndVarType & stepSize,
-                       ::pressio::ode::StepCount numSteps,
+		       StateType & state,
+		       const IndVarType & startVal,
+		       const IndVarType & stepSize,
+		       ::pressio::ode::StepCount numSteps,
 		       ObserverType && observer);
 
 
@@ -68,14 +68,14 @@ API
     class ObserverType>
   #ifdef PRESSIO_ENABLE_CXX20
     requires Steppable<StepperType>
-          && StepSizePolicy<StepSizePolicyType, IndVarType>
-          && StateObserver<ObserverType, IndVarType, StateType>
+	  && StepSizePolicy<StepSizePolicyType, IndVarType>
+	  && StateObserver<ObserverType, IndVarType, StateType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (4)
-                       StateType & state,
-                       const IndVarType & startVal,
-                       const StepSizePolicyType & stepSizePolicy,
-                       ::pressio::ode::StepCount numSteps,
+		       StateType & state,
+		       const IndVarType & startVal,
+		       const StepSizePolicyType & stepSizePolicy,
+		       ::pressio::ode::StepCount numSteps,
 		       ObserverType && observer);
 
   template<
@@ -104,7 +104,7 @@ API
     class ...Args>
   #ifdef PRESSIO_ENABLE_CXX20
     requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-          && StepSizePolicy<StepSizePolicyType, IndVarType>
+	  && StepSizePolicy<StepSizePolicyType, IndVarType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (6)
 		       StateType & state,
@@ -123,7 +123,7 @@ API
     class ...Args>
   #ifdef PRESSIO_ENABLE_CXX20
     requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-          && StateObserver<ObserverType, IndVarType, StateType>
+	  && StateObserver<ObserverType, IndVarType, StateType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (7)
 		       StateType & state,
@@ -144,7 +144,7 @@ API
     class ...Args>
   #ifdef PRESSIO_ENABLE_CXX20
     requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-          && StepSizePolicy<StepSizePolicyType, IndVarType>
+	  && StepSizePolicy<StepSizePolicyType, IndVarType>
 	  && StateObserver<ObserverType, IndVarType, StateType>
   #endif
   void advance_n_steps(StepperType & stepper,                        (8)
@@ -205,22 +205,9 @@ Parameters
 Constraints
 -----------
 
-Each overload is associated with a set of constraints.
-With C++20, these would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message)
-and/or SFINAE. The concepts used are:
-
-
-* `Steppable <ode_concepts_various/steppable.html>`_
-
-* `SteppableWithAuxiliaryArgs <ode_concepts_various/steppable_args.html>`_
-
-* `StepSizePolicy <ode_concepts_various/step_size_pol.html>`_
-
-* `StateObserver <ode_concepts_various/state_observer.html>`_
-
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
 Preconditions
 -------------

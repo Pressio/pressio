@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 using phi_t = Eigen::Matrix<double, -1,-1>;
 constexpr double dt = 2.;
 constexpr int numModes = 3;
@@ -30,7 +32,7 @@ struct FakeNonLinSolver
     : N_(N), phi_(phi), dt_(dt){}
 
   template<class SystemType, class StateType>
-  void solve(const SystemType & system, StateType & romState)
+  void solve(const SystemType & system, StateType & state)
   {
     const auto phi= create_basis(N_);
 
@@ -42,11 +44,12 @@ struct FakeNonLinSolver
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)3);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)3);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //-----------------------
     // fake a solver iterator 1
     //-----------------------
-    system.residualAndJacobian(romState, R, J, true);
+    system.residualAndJacobian(state, R, &J);
 
     if (call_count_ == 1){
       const double predictionTime = 2.;
@@ -100,12 +103,12 @@ struct FakeNonLinSolver
       }
     }
 
-    for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+    for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
     //-----------------------
     // fake a solver iterator 2
     //-----------------------
-    system.residualAndJacobian(romState, R, J, true);
+    system.residualAndJacobian(state, R, &J);
 
     if (call_count_ == 1){
       const double predictionTime = 2.;
@@ -157,7 +160,7 @@ struct FakeNonLinSolver
       }
     }
 
-    for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+    for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
   }
 };
 
@@ -211,14 +214,14 @@ public:
 
   template<class StepCountType>
   void discreteTimeResidualAndJacobianAction(StepCountType,
-                              double time,
-                              double dt,
-                              discrete_residual_type & R,
-                              const phi_type & B,
-                              bool computeJac,
-                              phi_type & JA,
-                              const state_type & y_np1,
-                              const state_type & y_n ) const
+					     double time,
+					     double dt,
+					     discrete_residual_type & R,
+					     const phi_type & B,
+					     bool computeJacobian,
+					     phi_type & JA,
+					     const state_type & y_np1,
+					     const state_type & y_n ) const
   {
     discrete_residual_type f(R.size());
     f.setZero();
@@ -228,15 +231,16 @@ public:
 
     R = y_np1 - y_n - dt*f;
 
-    if (computeJac){
+    if (computeJacobian){
       auto appJac = B;
       appJac.array() += time;
       JA = (B - dt*appJac);
     }
   }
 };
+}
 
-TEST(rom_galerkin, test4)
+TEST(rom_galerkin_implicit, default_fullydiscrete_n2)
 {
   /* default galerkin impliacit eigen with fully discrete API */
 

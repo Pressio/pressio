@@ -3,18 +3,20 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type       = double;
   using state_type        = Eigen::VectorXd;
-  using right_hand_side_type     = state_type;
+  using rhs_type     = state_type;
   int N_ = {};
   const std::vector<int> indices_to_corrupt_ = {};
 
   MyFom(int N, std::vector<int> ind)
     : N_(N), indices_to_corrupt_(ind){}
 
-  right_hand_side_type createRightHandSide() const{ return right_hand_side_type(N_); }
+  rhs_type createRhs() const{ return rhs_type(N_); }
 
   template<class OperandType>
   OperandType createResultOfJacobianActionOn(const OperandType & B) const
@@ -37,9 +39,9 @@ struct MyFom
     }
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type timeIn,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type timeIn,
+	   rhs_type & f) const
   {
     for (auto i=0; i<f.rows(); ++i){
      f(i) = u(i) + timeIn;
@@ -114,6 +116,7 @@ struct NonLinSolver
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // call_count == 1
@@ -121,7 +124,7 @@ struct NonLinSolver
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
       EXPECT_DOUBLE_EQ(R[0], 0.);
@@ -141,7 +144,7 @@ struct NonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0], 1.);
       EXPECT_DOUBLE_EQ(R[1], -199.);
       EXPECT_DOUBLE_EQ(R[2], -399.);
@@ -165,7 +168,7 @@ struct NonLinSolver
     if(call_count_==2)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0],    0.);
       EXPECT_DOUBLE_EQ(R[1], -300.);
       EXPECT_DOUBLE_EQ(R[2], -600.);
@@ -183,7 +186,7 @@ struct NonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       EXPECT_DOUBLE_EQ(R[0],    1.);
       EXPECT_DOUBLE_EQ(R[1], -359.);
       EXPECT_DOUBLE_EQ(R[2], -719.);
@@ -202,8 +205,9 @@ struct NonLinSolver
     }
   }
 };
+}
 
-TEST(rom_galerkin, test7)
+TEST(rom_galerkin_implicit, masked_bdf1)
 {
   // test for masked implicit galerkin using BDF1
   // all numbers have been computed manually

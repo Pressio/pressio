@@ -128,13 +128,13 @@ public:
   {}
 
 public:
-  template<class SolverType, class ...Args>
+  template<class SolverType, class ...SolverArgs>
   void operator()(StateType & odeState,
 		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
 		  ::pressio::ode::StepCount stepNumber,
 		  const ::pressio::ode::StepSize<independent_variable_type> & stepSize,
 		  SolverType & solver,
-		  Args && ...args)
+		  SolverArgs && ...argsForSolver)
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step");
 
@@ -142,72 +142,67 @@ public:
       doStepImpl(::pressio::ode::BDF1(),
 		 odeState, stepStartVal.get(), stepSize.get(),
 		 stepNumber.get(), solver,
-		 std::forward<Args>(args)...);
+		 std::forward<SolverArgs>(argsForSolver)...);
     }
 
     else if (name_==::pressio::ode::StepScheme::BDF2){
       doStepImpl(::pressio::ode::BDF2(),
 		 odeState, stepStartVal.get(), stepSize.get(),
 		 stepNumber.get(), solver,
-		 std::forward<Args>(args)...);
+		 std::forward<SolverArgs>(argsForSolver)...);
     }
 
     else if (name_==::pressio::ode::StepScheme::CrankNicolson){
       doStepImpl(::pressio::ode::CrankNicolson(),
 		 odeState, stepStartVal.get(), stepSize.get(),
 		 stepNumber.get(), solver,
-		 std::forward<Args>(args)...);
+		 std::forward<SolverArgs>(argsForSolver)...);
     }
   }
 
-  auto createState() const{
-    return rj_policy_.get().createState();
-  }
-
-  ResidualType createResidual() const{
-    return rj_policy_.get().createResidual();
-  }
-
-  JacobianType createJacobian() const{
-    return rj_policy_.get().createJacobian();
-  }
+  StateType createState() const{ return rj_policy_.get().createState(); }
+  ResidualType createResidual() const{ return rj_policy_.get().createResidual(); }
+  JacobianType createJacobian() const{ return rj_policy_.get().createJacobian(); }
 
   void residualAndJacobian(const StateType & odeState,
 			   ResidualType & R,
-			   JacobianType & J,
-			   bool recomputeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type*> Jo) const
+#else
+                           jacobian_type* Jo) const
+#endif
   {
-
-    rj_policy_.get()(name_, odeState, stencil_states_,
-		     stencil_rhs_,
+    rj_policy_.get()(name_, odeState, stencil_states_, stencil_rhs_,
 		     ::pressio::ode::StepEndAt<IndVarType>(t_np1_),
 		     ::pressio::ode::StepCount(step_number_),
 		     ::pressio::ode::StepSize<IndVarType>(dt_),
-		     R, J, recomputeJacobian);
+		     R, Jo);
   }
 
 private:
-  template<class solver_type, class ...Args>
+  template<class solver_type, class ...SolverArgs>
   void doStepImpl(::pressio::ode::BDF1,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
 		  const IndVarType & dt,
 		  const int32_t & stepNumber,
 		  solver_type & solver,
-		  Args&& ...args)
+		  SolverArgs&& ...argsForSolver)
   {
 
     /*
-      here, we are at step = stepNumber.
-      The current step starts at time = currentTime and
-      we need to use timestep size = dt.
+      - we are at step = stepNumber
+      - the step to take starts at time = currentTime
+      - we need to use timestep size = dt.
 
       bdf1 predicts next state y_n+1 by solving:
-          R = y_n+1 - y_n - dt*f(t_n+1, y_n+1) = 0
-      predict/compute the solution at the next step: stepNumber+1
-      and store that into odeState.
-     */
+          R = y_n+1 - y_n - dt*f(t_n+1, y_n+1)
 
+      predict/compute the solution at the next step: stepNumber+1
+    */
+
+    // store info about where we are which is needed for later
+    // when we compute residual and jacobian
     dt_ = dt;
     t_np1_ = currentTime + dt_;
     step_number_ = stepNumber;
@@ -217,103 +212,90 @@ private:
     ::pressio::ops::deep_copy(odeState_n, odeState);
 
     try{
-      solver.solve(*this, odeState, std::forward<Args>(args)...);
+      solver.solve(*this, odeState, std::forward<SolverArgs>(argsForSolver)...);
     }
     catch (::pressio::eh::NonlinearSolveFailure const & e)
     {
-      // the state before attempting solution was stored in y_n-1,
-      // so revert odeState to that
-      auto & rollBackState = stencil_states_(ode::n());
-      ::pressio::ops::deep_copy(odeState, rollBackState);
+      // if failure, then revert odeState to what it was before
+      // attempting the solve, which was stored into y_n,
+      auto & stateBeforeTryingSolve = stencil_states_(ode::n());
+      ::pressio::ops::deep_copy(odeState, stateBeforeTryingSolve);
 
-      // now throw
       throw ::pressio::eh::TimeStepFailure();
     }
   }
 
-  template<class solver_type, class ...Args>
+  template<class solver_type, class ...SolverArgs>
   void doStepImpl(::pressio::ode::BDF2,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
 		  const IndVarType & dt,
 		  const int32_t & stepNumber,
 		  solver_type & solver,
-		  Args&& ...args)
+		  SolverArgs&& ...argsForSolver)
   {
 
     dt_ = dt;
     t_np1_ = currentTime + dt;
     step_number_ = stepNumber;
 
-    // first step, use auxiliary stepper
-    if (stepNumber == 1){
-        using aux_type = ImplicitStepperStandardImpl<
-	  IndVarType, StateType, ResidualType, JacobianType,
-	  const ResidualJacobianPolicyType &>;
+    /*
+      step#:     1       2       3       4
+      times: t0      t1     t2      t3      t4
+	     |-------|-------|-------|-------|
+     */
 
-	aux_type auxStepper(::pressio::ode::BDF1(), rj_policy_.get());
+    if (stepNumber == ::pressio::ode::first_step_value){
 
-	// step ==1 means that we are going from y_0 to y_1
-	// copy y_0 into stencil_states_(0)
-	::pressio::ops::deep_copy(stencil_states_(ode::n()), odeState);
-	::pressio::ops::deep_copy(stencil_states_(ode::nMinusOne()), odeState);
-	auxStepper(odeState, StepStartAt<independent_variable_type>(currentTime),
-		   StepCount(stepNumber),
-		   StepSize<independent_variable_type>(dt),
-		   solver, std::forward<Args>(args)...);
+      /* from t_0 to t_1 and have:
+	 odeState = the initial condition (y0)
+	 so we need to copy odeState -> yn
+      */
+      auto & odeState_n = stencil_states_(ode::n());
+      ::pressio::ops::deep_copy(odeState_n, odeState);
     }
+    else{
 
-    if (stepNumber >= 2)
-    {
-      /*
-	at step == 2 we are going from t_1 to t_2, so
-	 we want to compute:
-	 y_2 = (4/3)*y_1 - (1/3)*y_0 + (2/3)*dt*f(y_2, t_2)
+      /* for step == 2, we are going from t_1 to t_2 and:
+	 odeState = the state at t1
 
-	 upon entering step=2, we have:
-	 odeState	contains y_1 computed from auxiliary stepper
-	 auxStates(n()) contains y_0
-
-	 so we need to update data such that
-	 n becomes nm1 and odeState becomes n
-
-	step == 3 means that we are going from t_2 to t_3, so
-	we want to compute:
-	y_3 = (4/3)*y_2 - (1/3)*y_1 + (2/3)*dt*f(y_3, t_3)
-	so this means that: y_n = y_2 and y_n-1 = y_1
-
-	and so on...
+	 for step >= 3, copy y_n -> y_n-1, and then odeState -> y_n
       */
 
       auto & odeState_n   = stencil_states_(ode::n());
       auto & odeState_nm1 = stencil_states_(ode::nMinusOne());
-      ::pressio::ops::deep_copy(recovery_state_, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState_n);
       ::pressio::ops::deep_copy(odeState_n, odeState);
+    }
 
-      try{
-	solver.solve(*this, odeState, std::forward<Args>(args)...);
+    try{
+      solver.solve(*this, odeState, std::forward<SolverArgs>(argsForSolver)...);
+    }
+    catch (::pressio::eh::NonlinearSolveFailure const & e)
+    {
+      auto & odeState_n = stencil_states_(ode::n());
+      auto & odeState_nm1 = stencil_states_(ode::nMinusOne());
+
+      if (stepNumber == ::pressio::ode::first_step_value){
+	::pressio::ops::deep_copy(odeState, odeState_n);
       }
-      catch (::pressio::eh::NonlinearSolveFailure const & e)
-	{
-	  ::pressio::ops::deep_copy(odeState, odeState_n);
-	  ::pressio::ops::deep_copy(odeState_n, odeState_nm1);
-	  ::pressio::ops::deep_copy(odeState_nm1, recovery_state_);
+      else{
+	::pressio::ops::deep_copy(odeState, odeState_n);
+	::pressio::ops::deep_copy(odeState_n, odeState_nm1);
+      }
 
-	  // now throw
-	  throw ::pressio::eh::TimeStepFailure();
-	}
+      throw ::pressio::eh::TimeStepFailure();
     }
   }
 
-  template<class solver_type, class ...Args>
+  template<class solver_type, class ...SolverArgs>
   void doStepImpl(::pressio::ode::CrankNicolson,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
 		  const IndVarType & dt,
 		  const int32_t & stepNumber,
 		  solver_type & solver,
-		  Args&& ...args)
+		  SolverArgs&& ...argsForSolver)
   {
 
     /*
@@ -329,12 +311,13 @@ private:
     ::pressio::ops::deep_copy(odeState_n, odeState);
 
     try{
-      solver.solve(*this, odeState, std::forward<Args>(args)...);
+      solver.solve(*this, odeState, std::forward<SolverArgs>(argsForSolver)...);
     }
     catch (::pressio::eh::NonlinearSolveFailure const & e)
     {
-      auto & rollBackState = stencil_states_(ode::n());
-      ::pressio::ops::deep_copy(odeState, rollBackState);
+      // if failure, then revert odeState to what it was before
+      // attempting the solve, which was stored into y_n,
+      ::pressio::ops::deep_copy(odeState, odeState_n);
       throw ::pressio::eh::TimeStepFailure();
     }
   }

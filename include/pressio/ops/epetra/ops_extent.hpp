@@ -53,29 +53,25 @@ namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_vector_epetra<T>::value,
-  decltype(std::declval<const T&>().GlobalLength())
-  >
+  ::pressio::is_vector_epetra<T>::value, std::size_t>
 extent(const T & oIn, const IndexType i)
 {
-  return (i == 0) ? oIn.GlobalLength() : 1;
+  return (i == 0) ? std::size_t(oIn.GlobalLength()) : std::size_t(1);
 }
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_multi_vector_epetra<T>::value,
-  decltype(std::declval<const T&>().GlobalLength())
-  >
+  ::pressio::is_multi_vector_epetra<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {
-    return oIn.GlobalLength();
-  } else if (i == 1) {
-    return oIn.NumVectors();
-  } else {
-    return 1;
+    return std::size_t(oIn.GlobalLength());
+  }
+  else if (i == 1) {
+    return std::size_t(oIn.NumVectors());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 

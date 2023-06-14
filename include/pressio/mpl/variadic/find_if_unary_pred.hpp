@@ -83,6 +83,6 @@ struct find_if_unary_pred<UnaryPredicate, Head, Tail...>
 template <template <class... T> class UnaryPredicate, class... Args>
 using find_if_unary_pred_t = typename find_if_unary_pred<UnaryPredicate, Args...>::type;
 
-}}} // namespace 
+}}} // namespace
 
 #endif  // MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_

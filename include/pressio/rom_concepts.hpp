@@ -59,46 +59,9 @@
 #include "./ode.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
-#include <concepts>
+#include "./rom/rom_concepts_cxx20.hpp"
+#else
+#include "./rom/rom_concepts.hpp"
 #endif
-
-#include "./rom/predicates.hpp"
-#include "./rom/reduced_operators_traits.hpp"
-#include "./rom/concepts/valid_reduced_state.hpp"
-
-#include "./rom/concepts/maskable_with.hpp"
-
-// subspaces
-#include "./rom/concepts/linear_subspace.hpp"
-#include "./rom/concepts/possibly_affine_trial_column_subspace.hpp"
-
-// fom
-#include "./rom/concepts/fom_steady_with_jac_action.hpp"
-#include "./rom/concepts/fom_semi_discrete.hpp"
-#include "./rom/concepts/fom_semi_discrete_with_mm_action.hpp"
-#include "./rom/concepts/fom_semi_discrete_with_jac_action.hpp"
-#include "./rom/concepts/fom_fully_discrete_with_jac_action.hpp"
-#include "./rom/concepts/fom_semi_discrete_with_jac_and_mm_action.hpp"
-
-// galerkin
-#include "./rom/concepts/galerkin_steady_default.hpp"
-#include "./rom/concepts/galerkin_steady_hyperreduced.hpp"
-#include "./rom/concepts/galerkin_steady_masked.hpp"
-#include "./rom/concepts/galerkin_explicit_default.hpp"
-#include "./rom/concepts/galerkin_explicit_default_with_varying_mm.hpp"
-#include "./rom/concepts/galerkin_explicit_hyperreduced.hpp"
-#include "./rom/concepts/galerkin_explicit_masked.hpp"
-#include "./rom/concepts/galerkin_implicit_default.hpp"
-#include "./rom/concepts/galerkin_implicit_default_with_varying_mm.hpp"
-#include "./rom/concepts/galerkin_implicit_hyperreduced.hpp"
-#include "./rom/concepts/galerkin_implicit_masked.hpp"
-
-
-// lspg
-#include "./rom/concepts/lspg_steady_default.hpp"
-#include "./rom/concepts/lspg_steady_masked.hpp"
-#include "./rom/concepts/lspg_unsteady_default.hpp"
-#include "./rom/concepts/lspg_unsteady_hyperreduced.hpp"
-#include "./rom/concepts/lspg_unsteady_masked.hpp"
 
 #endif

@@ -49,8 +49,6 @@
 #ifndef ODE_IMPL_ODE_ADVANCE_MANDATES_HPP_
 #define ODE_IMPL_ODE_ADVANCE_MANDATES_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace ode{ namespace impl{
 
 template<class StepperType, class StateType, class IndVarType>

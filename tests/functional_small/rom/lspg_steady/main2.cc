@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type        = Eigen::VectorXd;
@@ -18,25 +20,27 @@ struct MyFom
     return A;
   }
 
-  void residual(const state_type & u, residual_type & r) const
+  void residualAndJacobianAction(const state_type & u,
+				 residual_type & r,
+				 const Eigen::MatrixXd & B,
+#ifdef PRESSIO_ENABLE_CXX17
+				 std::optional<Eigen::MatrixXd *> Ain) const
+#else
+				 Eigen::MatrixXd * Ain) const
+#endif
   {
     EXPECT_TRUE(u.size()==r.size());
     EXPECT_TRUE(u.size()==N_);
-
     for (auto i=0; i<r.rows(); ++i){
-     r(i) = u(i);
+      r(i) = u(i);
     }
-  }
 
-  void residualAndJacobianAction(const state_type & state,
-				 residual_type & r,
-				 const Eigen::MatrixXd & B,
-				 Eigen::MatrixXd & A,
-				 bool computeJac) const
-  {
-
-    residual(state, r);
-    if (computeJac){
+    if (Ain){
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & A = *Ain.value();
+#else
+      auto & A = *Ain;
+#endif
       A = B;
     }
   }
@@ -58,6 +62,7 @@ struct FakeNonLinSolver
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
+    //using Jo_t = std::optional<decltype(J) *>;
 
     //
     // call_count == 1
@@ -65,7 +70,7 @@ struct FakeNonLinSolver
     if(call_count_==1)
     {
       // do solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -89,7 +94,7 @@ struct FakeNonLinSolver
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
       // do solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
 
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
@@ -115,7 +120,7 @@ struct FakeNonLinSolver
   }
 };
 
-class MyPreconditioner
+class Scaler
 {
   using state_type = Eigen::VectorXd;
   using vec_operand_type = Eigen::VectorXd;
@@ -124,12 +129,23 @@ class MyPreconditioner
 public:
   void operator()(const state_type &,
 		  vec_operand_type & a,
-		  mat_operand_type & b) const
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<mat_operand_type *> b) const
+#else
+		  mat_operand_type * b) const
+#endif
   {
     a.array() += 1.;
-    b.array() += 1.;
+    if (b){
+#ifdef PRESSIO_ENABLE_CXX17
+      b.value()->array() += 1.;
+#else
+      b->array() += 1.;
+#endif
+    }
   }
 };
+}
 
 TEST(rom_lspg_steady, test2)
 {
@@ -165,8 +181,8 @@ TEST(rom_lspg_steady, test2)
   romState[1]=1.;
   romState[2]=2.;
 
-  MyPreconditioner prec;
-  auto problem = plspg::experimental::create_steady_problem(space,fomSystem, prec);
+  Scaler scaler;
+  auto problem = plspg::experimental::create_steady_problem(space,fomSystem, scaler);
 
   FakeNonLinSolver nonLinSolver(N);
   nonLinSolver.solve(problem, romState);

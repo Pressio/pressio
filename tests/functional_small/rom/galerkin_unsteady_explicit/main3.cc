@@ -3,24 +3,26 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using time_type       = double;
   using state_type        = Eigen::VectorXd;
-  using right_hand_side_type     = state_type;
+  using rhs_type     = state_type;
   int N_ = {};
   const std::vector<int> indices_to_corrupt_ = {};
 
   MyFom(int N, std::vector<int> ind)
     : N_(N), indices_to_corrupt_(ind){}
 
-  right_hand_side_type createRightHandSide() const{
-    return right_hand_side_type(N_);
+  rhs_type createRhs() const{
+    return rhs_type(N_);
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type timeIn,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type timeIn,
+	   rhs_type & f) const
   {
     for (auto i=0; i<f.rows(); ++i){
      f(i) = u(i) + timeIn;
@@ -67,11 +69,11 @@ class HypRedOperator
 
 public:
   using time_type = double;
-  using right_hand_side_operand_type = Eigen::VectorXd;
+  using rhs_operand_type = Eigen::VectorXd;
 
   HypRedOperator(const operator_type & phi) : matrix_(phi){}
 
-  void operator()(const right_hand_side_operand_type & operand,
+  void operator()(const rhs_operand_type & operand,
 		  time_type timein,
 		  Eigen::VectorXd & result) const
   {
@@ -82,7 +84,7 @@ public:
 struct MyMasker
 {
   const std::vector<int> sample_indices_ = {};
-  using operand_type = typename MyFom::right_hand_side_type;
+  using operand_type = typename MyFom::rhs_type;
   using result_type = Eigen::VectorXd;
 
   MyMasker(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
@@ -98,8 +100,9 @@ struct MyMasker
     }
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test3)
+TEST(rom_galerkin_explicit, masked_velo_euler_forward)
 {
   /*
     check correctness of masked Galerkin explicit

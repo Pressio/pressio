@@ -53,33 +53,30 @@ namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_vector_tpetra_block<T>::value,
-  decltype(std::declval<const T&>().getMap()->getGlobalNumElements())
-  >
+  ::pressio::is_vector_tpetra_block<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {
-    return oIn.getMap()->getGlobalNumElements();
-  } else {
-    return 1;
+    return std::size_t(oIn.getMap()->getGlobalNumElements());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 
 template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_multi_vector_tpetra_block<T>::value,
-  decltype(std::declval<const T&>().getMap()->getGlobalNumElements())
-  >
+  ::pressio::is_multi_vector_tpetra_block<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {
   if (i == 0) {
-    return oIn.getMap()->getGlobalNumElements();
-  } else if (i == 1) {
-    return oIn.getNumVectors();
-  } else {
-    return 1;
+    return std::size_t(oIn.getMap()->getGlobalNumElements());
+  }
+  else if (i == 1) {
+    return std::size_t(oIn.getNumVectors());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 

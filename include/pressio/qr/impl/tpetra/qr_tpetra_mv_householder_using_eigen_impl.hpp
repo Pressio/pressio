@@ -96,8 +96,8 @@ public:
   {
     auto & A = const_cast<MatrixType &>(Ain);
 
-    auto rows = ::pressio::ops::extent(A,0);
-    auto cols = ::pressio::ops::extent(A,1);
+    size_t rows = ::pressio::ops::extent(A,0);
+    size_t cols = ::pressio::ops::extent(A,1);
     auto ArowMap = A.getMap();
     Teuchos::RCP<const Teuchos::Comm<int> > comm =
       Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
@@ -114,10 +114,10 @@ public:
 
     // store it into an Eigen matrix
     Eigen::Matrix<sc_t, -1, -1> eA2W(rows,cols);
-    for (int j=0;j<cols;j++)
+    for (size_t j=0;j<cols;j++)
     {
       auto colData = A2.getData(j);
-      for (int i=0;i<rows;i++){
+      for (size_t i=0;i<rows;i++){
     	 eA2W(i,j) = colData[i];
       }
     }
@@ -134,8 +134,8 @@ public:
     auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
     // // //we are going to change the host view
     // locQ.template modify<Kokkos::HostSpace>();
-    for (int i=0;i<Q2.rows();i++)
-      for (int j=0;j<Q2.cols();j++)
+    for (size_t i=0;i< (size_t)Q2.rows();i++)
+      for (size_t j=0;j< (size_t)Q2.cols();j++)
     	v2d(i,j) = Q2(i,j);
 
     // import from local to distributed

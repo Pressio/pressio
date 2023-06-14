@@ -53,14 +53,11 @@ namespace pressio{ namespace ops{
 
 template<class T, class IndexType>
 mpl::enable_if_t<
-  // TPL/container specific
   ::pressio::is_native_container_kokkos<T>::value
-  || ::pressio::is_expression_acting_on_kokkos<T>::value,
-  decltype(std::declval<const T&>().extent(0))
-  >
+  || ::pressio::is_expression_acting_on_kokkos<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
 {
-  return (i < ::pressio::Traits<T>::rank) ? objectIn.extent(i) : 1;
+  return (i < ::pressio::Traits<T>::rank) ? objectIn.extent(i) : std::size_t(1);
 }
 
 }}

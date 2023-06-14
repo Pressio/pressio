@@ -75,8 +75,8 @@ update(T & v,         const a_Type & a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  sc_t a_{a};
-  sc_t b_{b};
+  const sc_t a_(a);
+  const sc_t b_(b);
   v.update(b_, v1, a_);
 }
 
@@ -113,9 +113,9 @@ update(T & v,         const a_Type &a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  sc_t a_{a};
-  sc_t b_{b};
-  sc_t c_{c};
+  const sc_t a_(a);
+  const sc_t b_(b);
+  const sc_t c_(c);
   v.update(b_, v1, a_); // v = v*a + b * v1
   v.update(c_, v2, one); // add c*v2
 }
@@ -159,10 +159,10 @@ update(T & v,         const a_Type &a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  sc_t a_{a};
-  sc_t b_{b};
-  sc_t c_{c};
-  sc_t d_{d};
+  const sc_t a_(a);
+  const sc_t b_(b);
+  const sc_t c_(c);
+  const sc_t d_(d);
   v.update(b_, v1, a_); // v = a*v + b*v1
   v.update(c_, v2, one); // add c*v2
   v.update(d_, v3, one); // add d*v3
@@ -212,11 +212,11 @@ update(T & v,         const a_Type &a,
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  sc_t a_{a};
-  sc_t b_{b};
-  sc_t c_{c};
-  sc_t d_{d};
-  sc_t e_{e};
+  const sc_t a_(a);
+  const sc_t b_(b);
+  const sc_t c_(c);
+  const sc_t d_(d);
+  const sc_t e_(e);
   v.update(b_, v1, a_); // v = a*v + b*v1
   v.update(c_, v2, one); // add c*v2
   v.update(d_, v3, one); // add d*v3

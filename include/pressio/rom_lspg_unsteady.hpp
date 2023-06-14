@@ -59,6 +59,10 @@
 #include "./ode.hpp"
 
 #include "rom_concepts.hpp"
+#include "rom/reduced_operators_traits.hpp"
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
+#include "./rom/rom_lspg_unsteady_hypred_updater_trilinos.hpp"
+#endif
 #include "rom/lspg_unsteady.hpp"
 
 #endif

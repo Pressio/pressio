@@ -49,8 +49,17 @@
 #define TYPE_TRAITS_SCALAR_TRAIT_T_HPP_
 
 namespace pressio{ namespace impl{
+
+template<class T, class = void> struct _scalar_trait
+{
+  using type = void;
+};
+
 template<class T>
-struct _scalar_trait{
+struct _scalar_trait<
+  T, mpl::enable_if_t< has_traits<T>::value >
+  >
+{
   using type = typename ::pressio::Traits<T>::scalar_type;
 };
 }//end namespace impl

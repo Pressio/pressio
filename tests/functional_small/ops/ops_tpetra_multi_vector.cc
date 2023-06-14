@@ -25,9 +25,9 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_clone)
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_extent)
 {
-    ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == numProc_ * localSize_);
-    ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == numVecs_);
-    ASSERT_TRUE(pressio::ops::extent(*myMv_,2) == 1); // check extent over the rank
+    ASSERT_TRUE(pressio::ops::extent(*myMv_,0) == (std::size_t)numProc_ * localSize_);
+    ASSERT_TRUE(pressio::ops::extent(*myMv_,1) == (std::size_t)numVecs_);
+    ASSERT_TRUE(pressio::ops::extent(*myMv_,2) == (std::size_t)1); // check extent over the rank
 }
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_setzero)

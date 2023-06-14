@@ -63,6 +63,7 @@ PRESSIO_IMPL_HAS_NESTED_TYPEDEF(scalar)            // usage: generic concepts
 PRESSIO_IMPL_HAS_NESTED_TYPEDEF(jacobian)          // usage: ode,      solvers_nonlinear
 PRESSIO_IMPL_HAS_NESTED_TYPEDEF(residual)          // usage: ode, rom, solvers_nonlinear
 PRESSIO_IMPL_HAS_NESTED_TYPEDEF(right_hand_side)   // usage: ode, rom
+PRESSIO_IMPL_HAS_NESTED_TYPEDEF(rhs)		   // usage: ode, rom
 PRESSIO_IMPL_HAS_NESTED_TYPEDEF(discrete_residual) // usage: ode, rom
 PRESSIO_IMPL_HAS_NESTED_TYPEDEF(state)             // usage: ode, rom, solvers_nonlinear
 // usage: ode

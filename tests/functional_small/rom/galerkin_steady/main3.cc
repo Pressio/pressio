@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type = Eigen::VectorXd;
@@ -23,7 +25,14 @@ struct MyFom
     return A;
   }
 
-  void residual(const state_type & u, residual_type & r) const
+  void residualAndJacobianAction(const state_type & u,
+				 residual_type & r,
+				 const Eigen::MatrixXd & B,
+#ifdef PRESSIO_ENABLE_CXX17
+				 std::optional<Eigen::MatrixXd *> Ain) const
+#else
+				 Eigen::MatrixXd * Ain) const
+#endif
   {
     EXPECT_TRUE(u.size()!=r.size());
     EXPECT_TRUE(u.size()==nStencil_);
@@ -32,26 +41,21 @@ struct MyFom
     for (std::size_t i=0; i<validStateIndices_.size(); ++i){
       r(i) = u(validStateIndices_[i]) + 1.;
     }
-  }
 
-  void residualAndJacobianAction(const state_type & state,
-				 residual_type & r,
-				 const Eigen::MatrixXd & B,
-				 Eigen::MatrixXd & A,
-				 bool computeJac) const
-  {
-
-    residual(state, r);
-    if (computeJac){
+    if (Ain){
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & A = *Ain.value();
+#else
+      auto & A = *Ain;
+#endif
       for (std::size_t i=0; i<validStateIndices_.size(); ++i){
 	for (int j=0; j< A.cols(); ++j){
 	  A(i,j) = B(validStateIndices_[i], j);
-	  A(i,j) += state(validStateIndices_[i]);
+	  A(i,j) += u(validStateIndices_[i]);
 	}
       }
     }
   }
-
 };
 
 struct FakeNonLinSolverSteady
@@ -73,7 +77,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // mimic solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -92,7 +96,7 @@ struct FakeNonLinSolverSteady
 
     {
       // mimic solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -128,7 +132,9 @@ public:
   }
 };
 
-TEST(rom_galerkin_steady, test3)
+}
+
+TEST(rom_galerkin_steady, hyperreduced)
 {
   /*
     this test is numerically equivalent to main1

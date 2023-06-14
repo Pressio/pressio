@@ -52,43 +52,35 @@
 namespace pressio{ namespace ops{
 
 template<class T, class IndexType>
-mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_vector_eigen<T>::value,
-  decltype(std::declval<const T&>().size())
-  >
+mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
 {
-  return (i == 0) ? objectIn.size() : 1;
+  return (i == 0) ? std::size_t(objectIn.size()) : std::size_t(1);
 }
 
 template<class T, class IndexType>
 mpl::enable_if_t<
-  // TPL/container specific
   ::pressio::is_dense_matrix_eigen<T>::value or
-  ::pressio::is_sparse_matrix_eigen<T>::value,
-  decltype(std::declval<const T&>().rows())
-  >
+  ::pressio::is_sparse_matrix_eigen<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
 {
   if (i == 0){
-    return objectIn.rows();
-  } else if (i == 1) {
-    return objectIn.cols();
-  } else {
-    return 1;
+    return std::size_t(objectIn.rows());
+  }
+  else if (i == 1) {
+    return std::size_t(objectIn.cols());
+  }
+  else {
+    return std::size_t(1);
   }
 }
 
 template<class T, class IndexType>
 mpl::enable_if_t<
-  // TPL/container specific
-  ::pressio::is_expression_acting_on_eigen<T>::value,
-  decltype(std::declval<const T&>().extent(0))
-  >
+  ::pressio::is_expression_acting_on_eigen<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
 {
-  return objectIn.extent(i);
+  return std::size_t(objectIn.extent(i));
 }
 
 }}

@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_steady.hpp"
 
+namespace{
+
 struct MyFom
 {
   using state_type        = Eigen::VectorXd;
@@ -19,7 +21,16 @@ struct MyFom
     return A;
   }
 
-  void residual(const state_type & u, residual_type & r) const{
+  void residualAndJacobianAction(const state_type & u,
+				 residual_type & r,
+				 const Eigen::MatrixXd & B,
+#ifdef PRESSIO_ENABLE_CXX17
+				 std::optional<Eigen::MatrixXd *> Ain) const
+#else
+				 Eigen::MatrixXd * Ain) const
+#endif
+  {
+
     EXPECT_TRUE(u.size()==r.size());
     EXPECT_TRUE(u.size()==N_);
     for (auto i=0; i<r.rows(); ++i){
@@ -29,30 +40,25 @@ struct MyFom
     for (auto & it : indices_to_corrupt_){
      r(it) = -1114;
     }
-  }
 
-  void residualAndJacobianAction(const state_type & state,
-				 residual_type & r,
-				 const Eigen::MatrixXd & B,
-				 Eigen::MatrixXd & A,
-				 bool computeJac) const
-  {
-
-    residual(state, r);
-    if (computeJac)
-      {
-	A = B;
-	for (int i=0; i<A.rows(); ++i){
-	  for (int j=0; j<A.cols(); ++j){
-	    A(i,j) += state(i);
-	  }
-	}
-	for (auto & it : indices_to_corrupt_){
-	  for (int j=0; j< A.cols(); ++j){
-	    A(it,j) = -4232;
-	  }
+    if (Ain){
+#ifdef PRESSIO_ENABLE_CXX17
+      auto & A = *Ain.value();
+#else
+      auto & A = *Ain;
+#endif
+      A = B;
+      for (int i=0; i<A.rows(); ++i){
+	for (int j=0; j<A.cols(); ++j){
+	  A(i,j) += u(i);
 	}
       }
+      for (auto & it : indices_to_corrupt_){
+	for (int j=0; j< A.cols(); ++j){
+	  A(it,j) = -4232;
+	}
+      }
+    }
   }
 
 };
@@ -80,7 +86,7 @@ struct FakeNonLinSolverSteady
     if(call_count_==1)
     {
       // mimic solver iterator 1
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -99,7 +105,7 @@ struct FakeNonLinSolverSteady
 
     {
       // mimic solver iterator 2
-      system.residualAndJacobian(state, R, J, true);
+      system.residualAndJacobian(state, R, &J);
       // std::cout << "S " << call_count_ << " \n" << R << std::endl;
       // std::cout << "S " << call_count_ << " \n" << J << std::endl;
 
@@ -161,8 +167,9 @@ public:
     }
   }
 };
+}
 
-TEST(rom_galerkin_steady, test4)
+TEST(rom_galerkin_steady, masked)
 {
   /* steady galerkin masked */
 

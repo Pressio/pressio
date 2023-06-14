@@ -99,8 +99,8 @@ update(T & v, const a_Type &a,
 
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
-  scalar_t a_{a};
-  scalar_t b_{b};
+  const scalar_t a_(a);
+  const scalar_t b_(b);
   ::KokkosBlas::axpby(b_, impl::get_native(v1), a_, impl::get_native(v));
 }
 
@@ -126,7 +126,7 @@ update(T & v, const T1 & v1, const b_Type &b)
 
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
-  scalar_t b_{b};
+  const scalar_t b_(b);
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   ::KokkosBlas::axpby(b_, impl::get_native(v1), zero, impl::get_native(v));
 }
@@ -168,9 +168,9 @@ update(T & v, const a_Type &a,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2>::value,"");
 
-  scalar_t a_{a};
-  scalar_t b_{b};
-  scalar_t c_{c};
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (b_ == zero) {
@@ -223,8 +223,8 @@ update(T & v,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2>::value,"");
 
-  scalar_t b_{b};
-  scalar_t c_{c};
+  const scalar_t b_(b);
+  const scalar_t c_(c);
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (b_ == zero) {
@@ -288,10 +288,10 @@ update(T & v, const a_Type &a,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3>::value,"");
 
-  scalar_t a_{a};
-  scalar_t b_{b};
-  scalar_t c_{c};
-  scalar_t d_{d};
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (b_ == zero) {
@@ -355,9 +355,9 @@ update(T & v,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3>::value,"");
 
-  scalar_t b_{b};
-  scalar_t c_{c};
-  scalar_t d_{d};
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (b_ == zero) {
@@ -432,11 +432,11 @@ update(T & v, const a_Type &a,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl:: _kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3,T4>::value,"");
 
-  scalar_t a_{a};
-  scalar_t b_{b};
-  scalar_t c_{c};
-  scalar_t d_{d};
-  scalar_t e_{e};
+  const scalar_t a_(a);
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
+  const scalar_t e_(e);
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (b_ == zero) {
@@ -510,10 +510,10 @@ update(T & v,
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1,T2,T3,T4>::value,"");
 
-  scalar_t b_{b};
-  scalar_t c_{c};
-  scalar_t d_{d};
-  scalar_t e_{e};
+  const scalar_t b_(b);
+  const scalar_t c_(c);
+  const scalar_t d_(d);
+  const scalar_t e_(e);
 
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   if (b_ == zero) {

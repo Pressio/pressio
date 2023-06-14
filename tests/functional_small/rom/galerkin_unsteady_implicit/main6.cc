@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
+namespace{
+
 constexpr int N = 5;
 
 using FomStateType = Eigen::VectorXd;
@@ -15,20 +17,20 @@ struct MyFom
 {
   using time_type = double;
   using state_type = FomStateType;
-  using right_hand_side_type = FomRhsType;
+  using rhs_type = FomRhsType;
 
   MyFom(){}
 
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type r(N);
+  rhs_type createRhs() const{
+    rhs_type r(N);
     r.setConstant(0);
     return r;
   }
 
-  void rightHandSide(const state_type & u,
-		     const time_type evalTime,
-		     right_hand_side_type & f) const
+  void rhs(const state_type & u,
+	   const time_type evalTime,
+	   rhs_type & f) const
   {
     for (decltype(f.rows()) i=0; i<f.rows(); ++i){
       f(i) = u(i) + evalTime;
@@ -75,9 +77,10 @@ struct NonLinSolver
     count_++;
     auto R = system.createResidual();
     auto J = system.createJacobian();
+    //using Jo_t = std::optional<decltype(J) *>;
 
     // mimic iteration 1
-    system.residualAndJacobian(state, R, J, true);
+    system.residualAndJacobian(state, R, &J);
 
     if (count_ == 1)
     {
@@ -91,7 +94,7 @@ struct NonLinSolver
     for (int i=0; i<state.size(); ++i){ state[i] += 1.; }
 
     // mimic iteration 2
-    system.residualAndJacobian(state, R, J, true);
+    system.residualAndJacobian(state, R, &J);
     if (count_ == 1)
     {
       Eigen::VectorXd goldR(3); goldR << 0.,80.,160.;
@@ -101,9 +104,12 @@ struct NonLinSolver
 
   }
 };
+}
 
-TEST(rom_galerkin, test)
+TEST(rom_galerkin_implicit, default_with_massmatrix_bdf1)
 {
+  // implicit default galerkin with mass matrix
+
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 

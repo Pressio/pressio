@@ -1,37 +1,68 @@
+set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
 
+# -----------------------------
+# newton method
+# -----------------------------
 if (PRESSIO_ENABLE_TPL_EIGEN)
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/concepts.cc)
-  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_concepts ${SRC1})
+  set(name newton_problem1_eigen)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/tolerances.cc)
-  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_tolerances ${SRC1})
+  set(name newton_problem2_eigen)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/operators.cc)
-  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_operators ${SRC1})
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/correctors.cc)
-  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_correctors ${SRC1})
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ls_weighted_gn_lm_gt.cc)
-  set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_weighted_least_squares_gn)
-  add_serial_utest(${TESTNAME} ${SRC1})
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/iteratively_reweighted_gn.cc)
-  set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_irwls_gn)
-  add_serial_utest(${TESTNAME} ${SRC1})
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/backtrack_strictly_decreasing_objective.cc)
-  set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_backtrack_strictly_decreasing_objective)
-  add_serial_utest(${TESTNAME} ${SRC1})
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/armijo.cc)
-  set(TESTNAME ${TESTING_LEVEL}_solvers_nonlinear_armijo)
-  add_serial_utest(${TESTNAME} ${SRC1})
+  set(name newton_custom_types_compile_only)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 endif()
 
-set(ROOTNAME ${TESTING_LEVEL}_solvers_nonlinear)
-add_subdirectory(newton_raphson)
-add_subdirectory(standard_gauss_newton_normal_equations)
-add_subdirectory(standard_gauss_newton_qr)
-add_subdirectory(levenberg_marquardt)
-add_subdirectory(ls_frozen_jacobian_gn_lm)
+# -----------------------------
+# gauss-newton with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name gaussnewton_normaleqs_problem5_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name gaussnewton_normaleqs_problem9_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name gaussnewton_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
+
+# -----------------------------
+# lev-mar with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name levmar_normaleqs_problem9_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name levmar_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
+
+# -----------------------------
+# weighted gauss-newton or weighted lev-mar with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name weighted_gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name weighted_gaussnewton_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
+
+# -----------------------------
+# gauss-newton via QR
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name gaussnewton_qr_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name gaussnewton_qr_problem8_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()

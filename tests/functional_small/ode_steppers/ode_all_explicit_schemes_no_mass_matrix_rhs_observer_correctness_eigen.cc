@@ -7,7 +7,7 @@ struct MyApp
 {
   using independent_variable_type = double;
   using state_type           = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   mutable int count1 = 0;
   const std::map<int, Eigen::VectorXd> & rhs_;
@@ -20,14 +20,14 @@ struct MyApp
     return ret;
   }
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type ret(3); ret.setZero();
+  rhs_type createRhs() const{
+    rhs_type ret(3); ret.setZero();
     return ret;
   };
 
-  void operator()(const state_type & y,
-		  independent_variable_type evaltime,
-		  right_hand_side_type & rhs) const
+  void rhs(const state_type & y,
+	   independent_variable_type evaltime,
+	   rhs_type & rhs) const
   {
     rhs = rhs_.at(count1++);
   };

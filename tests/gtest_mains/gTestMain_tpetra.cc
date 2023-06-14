@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
     MPI_Comm_size(MPI_COMM_WORLD, &ws_);
-    assert(ws_ > 1);
+    assert(ws_ >= 1);
     err = RUN_ALL_TESTS();
   }
   return err;

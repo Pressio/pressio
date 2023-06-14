@@ -46,20 +46,20 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_IMPLICIT_HPP_
-#define PRESSIO_ODE_IMPLICIT_HPP_
+#ifndef PRESSIO_ODE_STEPPERS_IMPLICIT_HPP_
+#define PRESSIO_ODE_STEPPERS_IMPLICIT_HPP_
 
 #include "./mpl.hpp"
 #include "./utils.hpp"
 #include "./type_traits.hpp"
-#include "./concepts.hpp"
 #include "./ops.hpp"
 #include "./solvers.hpp"
 
 #include "./ode_concepts.hpp"
 #include "./ode/exceptions.hpp"
-#include "./ode/ode_is_explicit_or_implicit.hpp"
-#include "./ode/ode_public_constants.hpp"
+#include "./ode/ode_strong_types.hpp"
+#include "./ode/ode_constants.hpp"
+#include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_create_implicit_stepper.hpp"
 
 #endif

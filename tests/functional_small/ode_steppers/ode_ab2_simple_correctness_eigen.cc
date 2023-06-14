@@ -10,19 +10,19 @@ struct AB2MyApp
 {
   using independent_variable_type = double;
   using state_type = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
 
   state_type createState() const{ return state_type(3); }
 
-  right_hand_side_type createRightHandSide() const
+  rhs_type createRhs() const
   {
-    right_hand_side_type R(3);
+    rhs_type R(3);
     return R;
   };
 
-  void operator()(const state_type & /*unused*/,
-		  independent_variable_type evaltime,
-		  right_hand_side_type & f) const
+  void rhs(const state_type & /*unused*/,
+	   independent_variable_type evaltime,
+	   rhs_type & f) const
   {
     f.setConstant(evaltime);
   };

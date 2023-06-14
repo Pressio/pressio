@@ -138,15 +138,17 @@ public:
   mpl::enable_if_t< _numAuxStates==1 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-		      jacobian_type & J,
-		      bool computeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jo) const
+#else
+                      jacobian_type* Jo) const
+#endif
   {
     const auto & yn = stencilStates_(ode::n());
 
     try{
       systemObj_.get().discreteResidualAndJacobian
-	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
-	 odeState, yn);
+	(stepNumber_, rhsEvaluationTime_, dt_, R, Jo, odeState, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -158,15 +160,18 @@ public:
   mpl::enable_if_t< _numAuxStates==2 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-		      jacobian_type & J,
-		      bool computeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jo) const
+#else
+                      jacobian_type* Jo) const
+#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
 
     try{
       systemObj_.get().discreteResidualAndJacobian
-	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
+	(stepNumber_, rhsEvaluationTime_, dt_, R, Jo,
 	 odeState, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
@@ -179,8 +184,11 @@ public:
   mpl::enable_if_t< _numAuxStates==3 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-		      jacobian_type & J,
-		      bool computeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+		      std::optional<jacobian_type*> Jo) const
+#else
+                      jacobian_type* Jo) const
+#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
@@ -188,7 +196,7 @@ public:
 
     try{
       systemObj_.get().discreteResidualAndJacobian
-	(stepNumber_, rhsEvaluationTime_, dt_, R, J, computeJacobian,
+	(stepNumber_, rhsEvaluationTime_, dt_, R, Jo,
 	 odeState, yn, ynm1, ynm2);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){

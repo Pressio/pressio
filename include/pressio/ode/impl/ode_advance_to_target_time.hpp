@@ -122,7 +122,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
   // observe initial condition
   observer(StepCount{0}, time, odeState);
 
-  step_t step = 1;
+  step_t step = ::pressio::ode::first_step_value;
   PRESSIOLOG_DEBUG("impl: advance_to_target_time_with_dt_policy");
   constexpr auto eps = std::numeric_limits<IndVarType>::epsilon();
   bool condition = true;
@@ -132,8 +132,8 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 
       PRESSIOLOG_DEBUG("callback dt policy");
       impl::call_dt_policy<enableTimeStepRecovery>(dtPolicy, stepWrap,
-						    ::pressio::ode::StepStartAt<IndVarType>(time),
-						    dt, minDt, dtScalingFactor);
+					   ::pressio::ode::StepStartAt<IndVarType>(time),
+					   dt, minDt, dtScalingFactor);
 
       if (dt.get() < minDt.get()){
 	throw std::runtime_error("The time step size cannot be smaller than the minimum value.");

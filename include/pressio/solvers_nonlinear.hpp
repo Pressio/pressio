@@ -49,30 +49,9 @@
 #ifndef PRESSIO_NONLINEAR_SOLVERS_HPP_
 #define PRESSIO_NONLINEAR_SOLVERS_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./expressions.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
-
-#include "solvers_nonlinear/solvers_exceptions.hpp"
-
-#include "solvers_nonlinear/solvers_nonlinear_enums_and_tags.hpp"
-
-#include "solvers_nonlinear/concepts/solvers_predicates.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_residual_jacobian.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_system_fused_hessian_gradient.hpp"
-#include "solvers_nonlinear/concepts/solvers_least_squares_weighting_operator.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_newton_raphson.hpp"
-#include "solvers_nonlinear/concepts/solvers_linear_solver_for_nonlinear_least_squares.hpp"
-#include "solvers_nonlinear/concepts/solvers_qr_solver_for_gn_qr.hpp"
-
-#include "solvers_nonlinear/impl/updaters/solvers_create_updater.hpp"
-#include "solvers_nonlinear/impl/solvers_observer.hpp"
-#include "solvers_nonlinear/impl/solvers_printer.hpp"
-#include "solvers_nonlinear/solvers_create_public_api.hpp"
+#include "./solvers_nonlinear_concepts.hpp"
+#include "./solvers_nonlinear_newton.hpp"
+#include "./solvers_nonlinear_gaussnewton.hpp"
+#include "./solvers_nonlinear_levmarq.hpp"
 
 #endif

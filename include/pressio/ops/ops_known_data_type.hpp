@@ -87,5 +87,12 @@ struct is_known_data_type
   static constexpr bool value = v1 || v2 || v3;
 };
 
+template<class ... Args>
+struct are_known_data_types
+{
+  static constexpr bool value = ::pressio::mpl::all_of<
+    is_known_data_type, Args...>::value;
+};
+
 }}
 #endif  // OPS_OPS_KNOWN_DATA_TYPE_HPP_

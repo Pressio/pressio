@@ -88,8 +88,8 @@ elementwise_multiply(const alpha_t & alpha,
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  sc_t alpha_{alpha};
-  sc_t beta_{beta};
+  const sc_t alpha_(alpha);
+  const sc_t beta_(beta);
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);

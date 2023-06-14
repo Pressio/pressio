@@ -89,8 +89,8 @@ public:
   {}
 
 public:
-  size_t extent(size_t i) const{
-    return (i < 2) ? extent_ : 1;
+  std::size_t extent(size_t i) const{
+    return (i < 2) ? extent_ : std::size_t(1);
   }
 
   native_expr_t const & native() const{

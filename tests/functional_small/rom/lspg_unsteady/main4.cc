@@ -3,6 +3,8 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_lspg_unsteady.hpp"
 
+namespace{
+
 template<class phi_t>
 struct FakeNonLinSolver
 {
@@ -39,6 +41,7 @@ struct FakeNonLinSolver
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
+    //using Jo_t = std::optional<decltype(J) *>;
     EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
     EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
@@ -57,7 +60,7 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(romState, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -84,7 +87,7 @@ struct FakeNonLinSolver
       // do solver iterator 2
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(romState, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -126,7 +129,7 @@ struct FakeNonLinSolver
       // do solver iterator 1
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(romState, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -153,7 +156,7 @@ struct FakeNonLinSolver
       // do solver iterator 2
       //-----------------------
       {
-	system.residualAndJacobian(romState, R, J, true);
+	system.residualAndJacobian(romState, R, &J);
 	// std::cout << "R = \n" << R << std::endl;
 	// std::cout << "J = \n" << J << std::endl;
 
@@ -235,14 +238,14 @@ public:
 
   template<class StepCountType>
   void discreteTimeResidualAndJacobianAction(StepCountType,
-                              double time,
-                              double dt,
-                              discrete_residual_type & R,
-                              const phi_type & B,
-                              bool computeJac,
-                              phi_type & JA,
-                              const state_type & y_np1,
-                              const state_type & y_n ) const
+					     double time,
+					     double dt,
+					     discrete_residual_type & R,
+					     const phi_type & B,
+					     bool computeJac,
+					     phi_type & JA,
+					     const state_type & y_np1,
+					     const state_type & y_n ) const
   {
     discrete_residual_type f(R.size());
     f.setZero();
@@ -259,6 +262,7 @@ public:
     }
   }
 };
+}
 
 TEST(rom_lspg_unsteady, test4)
 {
@@ -280,26 +284,28 @@ TEST(rom_lspg_unsteady, test4)
     }
   }
   std::cout << phi << "\n";
+  using namespace pressio;
 
   using reduced_state_type = Eigen::VectorXd;
   typename fom_t::state_type dummyFomState(N);
   constexpr bool isAffine = false;
-  auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi, dummyFomState, isAffine);
+  auto space = rom::create_trial_column_subspace<
+    reduced_state_type>(phi, dummyFomState, isAffine);
 
   auto romState = space.createReducedState();
   romState[0]=0.;
   romState[1]=1.;
   romState[2]=2.;
 
-  auto problem = pressio::rom::lspg::create_unsteady_problem<2>(space, fomSystem);
-  auto & stepper = problem.lspgStepper();
+  auto problem = rom::lspg::create_unsteady_problem<2>(space, fomSystem);
+  auto & stepper = problem; //lspgStepper();
 
   const double dt = 2.;
   FakeNonLinSolver<phi_t> nonLinSolver(N, phi, dt);
   Observer obs;
-  pressio::ode::advance_n_steps(stepper, romState, 0., dt,
-				::pressio::ode::StepCount(2),
-				obs, nonLinSolver);
+  ode::advance_n_steps(stepper, romState, 0., dt,
+		       ode::StepCount(2),
+		       obs, nonLinSolver);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 4.);
   EXPECT_DOUBLE_EQ(romState[1], 5.);

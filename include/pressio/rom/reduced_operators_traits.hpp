@@ -8,7 +8,7 @@ namespace pressio{ namespace rom{
   steady galerkin
 */
 template<class T, class = void>
-struct SteadyGalerkinDefaultOperatorsTraits
+struct SteadyGalerkinDefaultReducedOperatorsTraits
 {
   using reduced_state_type    = void;
   using reduced_residual_type = void;
@@ -17,7 +17,7 @@ struct SteadyGalerkinDefaultOperatorsTraits
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
-struct SteadyGalerkinDefaultOperatorsTraits<
+struct SteadyGalerkinDefaultReducedOperatorsTraits<
   T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type    = T;
@@ -34,39 +34,38 @@ struct SteadyGalerkinDefaultOperatorsTraits<
 namespace impl{
 template<class SubspaceType>
 using steady_galerkin_default_reduced_state_t =
-  typename SteadyGalerkinDefaultOperatorsTraits<
+  typename SteadyGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_state_type;
 
 template<class SubspaceType>
 using steady_galerkin_default_reduced_residual_t =
-  typename SteadyGalerkinDefaultOperatorsTraits<
+  typename SteadyGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_residual_type;
 
 template<class SubspaceType>
 using steady_galerkin_default_reduced_jacobian_t =
-  typename SteadyGalerkinDefaultOperatorsTraits<
+  typename SteadyGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_jacobian_type;
 } //end namespace pressio:rom::impl
-
 
 /*
   unsteady explicit galerkin
 */
 template<class T, class = void>
-struct ExplicitGalerkinDefaultOperatorsTraits
+struct ExplicitGalerkinDefaultReducedOperatorsTraits
 {
   using reduced_state_type    = void;
-  using reduced_right_hand_side_type = void;
+  using reduced_rhs_type = void;
   using reduced_mass_matrix_type = void;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
-struct ExplicitGalerkinDefaultOperatorsTraits<
+struct ExplicitGalerkinDefaultReducedOperatorsTraits<
   T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type    = T;
-  using reduced_right_hand_side_type = T;
+  using reduced_rhs_type = T;
   using reduced_mass_matrix_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
 };
 #endif
@@ -74,17 +73,17 @@ struct ExplicitGalerkinDefaultOperatorsTraits<
 namespace impl{
 template<class SubspaceType>
 using explicit_galerkin_default_reduced_state_t =
-  typename ExplicitGalerkinDefaultOperatorsTraits<
+  typename ExplicitGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_state_type;
 
 template<class SubspaceType>
-using explicit_galerkin_default_reduced_right_hand_side_t =
-  typename ExplicitGalerkinDefaultOperatorsTraits<
-    typename SubspaceType::reduced_state_type>::reduced_right_hand_side_type;
+using explicit_galerkin_default_reduced_rhs_t =
+  typename ExplicitGalerkinDefaultReducedOperatorsTraits<
+    typename SubspaceType::reduced_state_type>::reduced_rhs_type;
 
 template<class SubspaceType>
 using explicit_galerkin_default_reduced_mass_matrix_t =
-  typename ExplicitGalerkinDefaultOperatorsTraits<
+  typename ExplicitGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_mass_matrix_type;
 } //end namespace pressio:rom::impl
 
@@ -93,7 +92,7 @@ using explicit_galerkin_default_reduced_mass_matrix_t =
   unsteady implicit galerkin
 */
 template<class T, class = void>
-struct ImplicitGalerkinDefaultOperatorsTraits
+struct ImplicitGalerkinDefaultReducedOperatorsTraits
 {
   using reduced_state_type    = void;
   using reduced_residual_type = void;
@@ -103,7 +102,7 @@ struct ImplicitGalerkinDefaultOperatorsTraits
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
-struct ImplicitGalerkinDefaultOperatorsTraits<
+struct ImplicitGalerkinDefaultReducedOperatorsTraits<
   T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type    = T;
@@ -116,22 +115,22 @@ struct ImplicitGalerkinDefaultOperatorsTraits<
 namespace impl{
 template<class SubspaceType>
 using implicit_galerkin_default_reduced_state_t =
-  typename ImplicitGalerkinDefaultOperatorsTraits<
+  typename ImplicitGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_state_type;
 
 template<class SubspaceType>
 using implicit_galerkin_default_reduced_residual_t =
-  typename ImplicitGalerkinDefaultOperatorsTraits<
+  typename ImplicitGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_residual_type;
 
 template<class SubspaceType>
 using implicit_galerkin_default_reduced_jacobian_t =
-  typename ImplicitGalerkinDefaultOperatorsTraits<
+  typename ImplicitGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_jacobian_type;
 
 template<class SubspaceType>
 using implicit_galerkin_default_reduced_mass_matrix_t =
-  typename ImplicitGalerkinDefaultOperatorsTraits<
+  typename ImplicitGalerkinDefaultReducedOperatorsTraits<
     typename SubspaceType::reduced_state_type>::reduced_mass_matrix_type;
 } //end namespace pressio:rom::impl
 
@@ -140,7 +139,7 @@ using implicit_galerkin_default_reduced_mass_matrix_t =
   steady LSPG
 */
 template<class T, class = void>
-struct SteadyLspgDefaultOperatorsTraits
+struct SteadyLspgDefaultReducedOperatorsTraits
 {
   using reduced_state_type = void;
   using hessian_type    = void;
@@ -149,7 +148,7 @@ struct SteadyLspgDefaultOperatorsTraits
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
-struct SteadyLspgDefaultOperatorsTraits<
+struct SteadyLspgDefaultReducedOperatorsTraits<
   T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type = T;
@@ -162,7 +161,7 @@ struct SteadyLspgDefaultOperatorsTraits<
   unsteady LSPG
 */
 template<class T, class = void>
-struct UnsteadyLspgDefaultOperatorsTraits
+struct UnsteadyLspgDefaultReducedOperatorsTraits
 {
   using reduced_state_type = void;
   using hessian_type    = void;
@@ -171,7 +170,7 @@ struct UnsteadyLspgDefaultOperatorsTraits
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
-struct UnsteadyLspgDefaultOperatorsTraits<
+struct UnsteadyLspgDefaultReducedOperatorsTraits<
   T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type = T;

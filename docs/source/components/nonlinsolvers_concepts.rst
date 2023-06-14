@@ -3,18 +3,9 @@
 
 .. include:: ../mydefs.rst
 
-concepts
-========
+Concepts
+--------
 
-.. toctree::
-   :maxdepth: 1
-
-   nonlinearsolvers_concepts/rj
-   nonlinearsolvers_concepts/rj_det
-   nonlinearsolvers_concepts/rj_ovdet
-   nonlinearsolvers_concepts/rj_fused
-   nonlinearsolvers_concepts/rj_fused_det
-   nonlinearsolvers_concepts/rj_fused_ovdet
-   nonlinearsolvers_concepts/hg
-   nonlinearsolvers_concepts/hg_fused
-   nonlinearsolvers_concepts/c4
+.. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_concepts_cxx20.hpp
+   :language: cpp
+   :lines: 55-98, 111-112

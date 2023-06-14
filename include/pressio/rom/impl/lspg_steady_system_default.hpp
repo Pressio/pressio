@@ -2,8 +2,6 @@
 #ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
 #define ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
 
-#include "./lspg_nonop_preconditioner.hpp"
-
 namespace pressio{ namespace rom{ namespace impl{
 
 /*
@@ -18,7 +16,7 @@ template <
   class ReducedStateType,
   class TrialSubspaceType,
   class FomSystemType,
-  class PreconditionerType = NoOpPreconditionerSteadyLspg
+  class PossiblyRefWrapperOperatorScalerType
   >
 class LspgSteadyDefaultSystem
 {
@@ -36,29 +34,16 @@ public:
   using residual_type = typename FomSystemType::residual_type;
   using jacobian_type = fom_jac_action_result_type;
 
-  template<
-    class _PreconditionerType = PreconditionerType,
-    mpl::enable_if_t< std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
-    >
-  LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
-			  const FomSystemType & fomSystem)
-    : trialSubspace_(trialSubspace),
-      fomSystem_(fomSystem),
-      fomState_(trialSubspace.createFullState()),
-      prec_{}
-  {}
-
-  template<
-    class _PreconditionerType = PreconditionerType,
-    mpl::enable_if_t< !std::is_same<_PreconditionerType, NoOpPreconditionerSteadyLspg>::value > * = nullptr
-    >
+  // here _RawScalerType must be a template because it is the raw scaler type
+  // which can be forwarded to the reference wrapper potentially
+  template<class _RawScalerType>
   LspgSteadyDefaultSystem(const TrialSubspaceType & trialSubspace,
 			  const FomSystemType & fomSystem,
-			  const _PreconditionerType & precIn)
+			  _RawScalerType && scaler)
     : trialSubspace_(trialSubspace),
       fomSystem_(fomSystem),
       fomState_(trialSubspace.createFullState()),
-      prec_(precIn)
+      scaler_(std::forward<_RawScalerType>(scaler))
   {}
 
 public:
@@ -71,34 +56,32 @@ public:
   }
 
   jacobian_type createJacobian() const{
-    return fomSystem_.get().createResultOfJacobianActionOn(trialSubspace_.get().basisOfTranslatedSpace());
+    return fomSystem_.get().createResultOfJacobianActionOn
+      (trialSubspace_.get().basisOfTranslatedSpace());
   }
 
   void residualAndJacobian(const state_type & lspgState,
 			   residual_type & lspgResidual,
-			   jacobian_type & lspgJacobian,
-			   bool computeJacobian) const
+#ifdef PRESSIO_ENABLE_CXX17
+			   std::optional<jacobian_type *> lspgJacobian) const
+#else
+			   jacobian_type * lspgJacobian) const
+#endif
   {
     trialSubspace_.get().mapFromReducedState(lspgState, fomState_);
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     fomSystem_.get().residualAndJacobianAction(fomState_,
 					       lspgResidual,
-					       phi, lspgJacobian,
-					       computeJacobian);
-    prec_(fomState_, lspgResidual, lspgJacobian);
+					       phi, lspgJacobian);
+    scaler_(fomState_, lspgResidual, lspgJacobian);
   }
 
 private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-
-  std::conditional_t<
-    std::is_same<PreconditionerType, NoOpPreconditionerSteadyLspg>::value,
-    const NoOpPreconditionerSteadyLspg,
-    std::reference_wrapper<const PreconditionerType>
-    > prec_;
+  PossiblyRefWrapperOperatorScalerType scaler_;
 };
 
 

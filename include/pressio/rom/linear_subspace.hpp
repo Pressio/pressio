@@ -47,7 +47,7 @@ public:
      move assign operator and copy assign.
      Since we have const members, the compiler defines all those as deleted.
      And since we have a copy constructor, the move constructor does not
-     particupare in OR so the copy constructor is always called.
+     particupate in OR so the copy constructor is always called.
   */
 
   ~LinearSubspace() = default;

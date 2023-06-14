@@ -85,8 +85,8 @@ update(T & M,         const alpha_t & a,
   assert(::pressio::ops::extent(M, 1) == ::pressio::ops::extent(M1, 1));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const sc_t a_{a};
-  const sc_t b_{b};
+  const sc_t a_(a);
+  const sc_t b_(b);
 
   const auto zero = ::pressio::utils::Constants<sc_t>::zero();
   if (b_ == zero) {

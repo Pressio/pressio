@@ -3,47 +3,30 @@
 #include "pressio/rom_subspaces.hpp"
 #include "pressio/rom_galerkin_unsteady.hpp"
 
-struct Observer
-{
-  void operator()(pressio::ode::StepCount stepIn,
-		  double /*time*/,
-		  const Eigen::VectorXd & state) const
-  {
-    const auto step = stepIn.get();
-
-    // EXPECT_TRUE(step<=2);
-
-    // if (step==0){
-    //   EXPECT_DOUBLE_EQ(state[0], 0.);
-    //   EXPECT_DOUBLE_EQ(state[1], 1.);
-    //   EXPECT_DOUBLE_EQ(state[2], 2.);
-    // }
-    // if (step==1){
-    //   EXPECT_DOUBLE_EQ(state[0], 0.);
-    //   EXPECT_DOUBLE_EQ(state[1], 51.);
-    //   EXPECT_DOUBLE_EQ(state[2], 102.);
-    // }
-    // if (step==2){
-    //   EXPECT_DOUBLE_EQ(state[0], 0.);
-    //   EXPECT_DOUBLE_EQ(state[1], 2611.);
-    //   EXPECT_DOUBLE_EQ(state[2], 5222.);
-    // }
-  }
-};
+namespace{
 
 struct MyFom
 {
   using time_type = double;
   using state_type = Eigen::VectorXd;
-  using right_hand_side_type = state_type;
+  using rhs_type = state_type;
   int N_ = {};
 
   MyFom(int N): N_(N){}
 
-  right_hand_side_type createRightHandSide() const{
-    right_hand_side_type r(N_);
+  rhs_type createRhs() const{
+    rhs_type r(N_);
     r.setConstant(0);
     return r;
+  }
+
+  void rhs(const state_type & u,
+	   const time_type evalTime,
+	   rhs_type & f) const
+  {
+    for (decltype(f.rows()) i=0; i<f.rows(); ++i){
+      f(i) = u(i) + evalTime;
+    }
   }
 
   Eigen::MatrixXd createResultOfMassMatrixActionOn(const Eigen::MatrixXd & operand) const{
@@ -56,22 +39,13 @@ struct MyFom
 		       Eigen::MatrixXd & result) const
   {
     Eigen::MatrixXd M(N_, N_);
-    for (std::size_t j=0; j<M.cols(); ++j){
+    for (std::size_t j=0; j<(size_t)M.cols(); ++j){
       M.col(j) = stateIn;
-      for (std::size_t i=0; i<M.rows(); ++i){
+      for (std::size_t i=0; i<(size_t)M.rows(); ++i){
 	M(i,j) += evalTime + (double) j;
       }
     }
     result = M * operand;
-  }
-
-  void rightHandSide(const state_type & u,
-		     const time_type evalTime,
-		     right_hand_side_type & f) const
-  {
-    for (decltype(f.rows()) i=0; i<f.rows(); ++i){
-      f(i) = u(i) + evalTime;
-    }
   }
 };
 
@@ -99,8 +73,9 @@ struct FakeLinearSolver1
     EXPECT_TRUE( gold_b.isApprox(b) );
   }
 };
+}
 
-TEST(rom_galerkin_unsteady, test5)
+TEST(rom_galerkin_explicit, test5)
 {
   /* default galerkin explicit with euler forward
 
@@ -154,10 +129,8 @@ TEST(rom_galerkin_unsteady, test5)
 
   using time_type = typename fom_t::time_type;
   const time_type dt = 2.;
-  Observer obs;
   pressio::ode::advance_n_steps(problem, romState, time_type{0}, dt,
-				::pressio::ode::StepCount(1), obs,
-				linSolver);
+				::pressio::ode::StepCount(1), linSolver);
   std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 784001.);
   EXPECT_DOUBLE_EQ(romState[1], 1568002.);
