@@ -82,13 +82,9 @@ Other Options
      - to enable debugging print statements
      - ``OFF``
 
-   * - ``PRESSIO_ENABLE_CXX14``
-     - enables C++14 standard
-     - ``ON``, this is currently the minimum standard
-
    * - ``PRESSIO_ENABLE_CXX17``
      - enables C++17 standard
-     - ``OFF``; turned on if ``CMAKE_CXX_STANDARD`` is set to 17
+     - ``ON`` since min standard is 17
 
    * - ``PRESSIO_ENABLE_CXX20``
      - enables C++20 standard
