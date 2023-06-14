@@ -46,11 +46,6 @@ Constraints
   - or a tpetra block vector or multi-vector: ``pressio::is_vector_tpetra_block<T>::value ||
     pressio::is_multi_vector_tpetra_block<T>::value``
 
-Mandates
-~~~~~~~~
-
-None
-
 Preconditions
 ~~~~~~~~~~~~~
 

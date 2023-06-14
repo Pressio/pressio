@@ -1,15 +1,15 @@
+Newton-Raphson
+==============
 
-Levenberg-Marquardt
-===================
-
-Header: ``<pressio/solvers_nonlinear_levmarq.hpp>``
+Header: ``<pressio/solvers_nonlinear_newton.hpp>``
 
 API
 ---
 
-.. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_levenberg_marquardt.hpp
+.. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_newton.hpp
    :language: cpp
-   :lines: 60-62, 75-96, 116, 116-117
+   :lines: 60-62, 80-110, 130-131
+
 
 Parameters
 ~~~~~~~~~~
@@ -23,10 +23,10 @@ Parameters
      -
 
    * - ``system``
-     - your problem instance
+     - instance of your problem
 
    * - ``linSolver``
-     - linear solver to solve the normal equations at each nonlinear iteration
+     - linear solver to use within each nonlinear iteration
 
 Constraints
 ~~~~~~~~~~~
@@ -41,4 +41,4 @@ Examples
 .. admonition:: Demos
    :class: tip
 
-   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers2.html>`__
+   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers1.html>`__

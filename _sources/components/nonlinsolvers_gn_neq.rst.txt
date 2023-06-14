@@ -1,53 +1,17 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
-Gauss-Newton via normal-equations
-=================================
+Gauss-Newton (via normal eqs)
+=============================
 
-Defined in header ``<pressio/solvers_nonlinear.hpp>``
+Header: ``<pressio/solvers_nonlinear_gaussnewton.hpp>``
 
 API
 ---
 
-.. code-block:: cpp
-
-   namespace pressio{ namespace nonlinearsolvers{
-
-   template<class SystemType, class LinearSolverType>
-   #ifdef PRESSIO_ENABLE_CXX20
-     requires
-	  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
-	|| OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>
-	|| SystemWithHessianAndGradient<SystemType>
-	|| SystemWithFusedHessianAndGradient<SystemType>)
-       && LinearSolverForNonlinearLeastSquares<
-	    mpl::remove_cvref_t<LinearSolverType>,
-	    typename SystemType::state_type>
-   #endif
-   auto create_gauss_newton(const SystemType & system,          (1)
-                            LinearSolverType && lsolver);
-
-   template<
-     class SystemType,
-     class LinearSolverType,
-     class WeightingOpType>
-   #ifdef PRESSIO_ENABLE_CXX20
-     requires
-	  (OverdeterminedSystemWithResidualAndJacobian<SystemType>
-	|| OverdeterminedSystemWithFusedResidualAndJacobian<SystemType>)
-       && LinearSolverForNonlinearLeastSquares<
-	    mpl::remove_cvref_t<LinearSolverType>,
-	    typename SystemType::state_type>
-       && LeastSquaresWeightingOperator<
-	    mpl::remove_cvref_t<WeightingOpType>,
-	    typename SystemType::residual_type,
-	    typename SystemType::jacobian_type>
-   #endif
-   auto create_gauss_newton(const SystemType & system,          (2)
-                            LinearSolverType && lsolver,
-                            WeightingOpType && weightOperator);
-
-   }}
+.. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_gauss_newton.hpp
+   :language: cpp
+   :lines: 60-62, 72-94, 121, 121-155, 233-234
 
 Parameters
 ~~~~~~~~~~
@@ -63,34 +27,50 @@ Parameters
    * - ``system``
      - your problem instance
 
-   * - ``lsolver``
-     - linear solver to use within each nonlinear iteration
+   * - ``linSolver``
+     - linear solver to solve the normal equations at each nonlinear iteration
 
-   * - ``weightOperator``
-     - the weighting operator for doing weighted least-squares.
+   * - ``weigher``
+     - the weighting operator for doing weighted least-squares
 
 Constraints
 ~~~~~~~~~~~
 
-Each overload is associated with a set of constraints.
-With C++20, these would be enforced via concepts using
-the *requires-clause* shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message)
-and/or SFINAE. The concepts used are:
+Concepts are documented `here <nonlinsolvers_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
-- `nonlinearsolvers::OverDeterminedSystemWithResidualAndJacobian <nonlinearsolvers_concepts/rj_ovdet.html>`__
+Examples
+--------
 
-- `nonlinearsolvers::OverDeterminedSystemWithFusedResidualAndJacobian <nonlinearsolvers_concepts/rj_fused_ovdet.html>`__
+.. admonition:: Demos
+   :class: tip
 
-- `nonlinearsolvers::SystemWithHessianAndGradient <nonlinearsolvers_concepts/hg.html>`__
-
-- `nonlinearsolvers::SystemWithFusedHessianAndGradient <nonlinearsolvers_concepts/hg_fused.html>`__
-
-- `nonlinearsolvers::LinearSolverForNonlinearLeastSquares <nonlinearsolvers_concepts/c4.html>`__
+   1. `full demo <https://pressio.github.io/pressio-tutorials/using_eigen/nonlinsolvers2.html>`__
 
 
-Example usage
-^^^^^^^^^^^^^
+..
+   Return Value
+   ~~~~~~~~~~~~
 
-bla blas
+   Returns a solver object exposing the following public API:
+
+   .. code-block:: cpp
+
+      // This is not the actual class, it just describes the API
+      class Solver
+      {
+
+      public:
+	// query/set update criterion
+	Update currentUpdateCriterion() const;
+	void setUpdateCriterion(Update value);
+
+	// query/set stop criterion, tolerance
+	Stop currentStopCriterion() const;
+	void setStopCriterion(Stop value);
+	void setStopTolerance(ScalarType value);
+	void setMaxIterations(int newMax);
+
+	void solve(StateType & solutionInOut);
+      };

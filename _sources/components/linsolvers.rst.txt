@@ -93,8 +93,8 @@ might not be applicable or might not be efficient.
      - Uses QR fatorization
      - Kokkos
 
-Class Synopsis
---------------
+Synopsis
+--------
 
 .. code-block:: cpp
 

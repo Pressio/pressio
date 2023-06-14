@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="type_traits" href="type_traits.html" /><link rel="prev" title="ops" href="ops.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Concepts" href="nonlinsolvers_concepts.html" /><link rel="prev" title="Levenberg-Marquardt" href="nonlinsolvers_lm.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>expressions - Pressio-0.14.0</title>
+        <title>Enums - Pressio-0.14.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -199,19 +199,19 @@
 <li class="toctree-l2"><a class="reference internal" href="ode_concepts.html">Concepts</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear_solvers</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear_solvers</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_newton.html">Newton-Raphson</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn_neq.html">Gauss-Newton (via normal eqs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn_qr.html">Gauss-Newton (via QR)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_lm.html">Levenberg-Marquardt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_enums.html">Enums</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_concepts.html">Concepts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear_solvers</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
@@ -254,10 +254,47 @@
           </label>
         </div>
         <article role="main">
-          <section id="expressions">
-<h1><code class="docutils literal notranslate"><span class="pre">expressions</span></code><a class="headerlink" href="#expressions" title="Permalink to this heading">#</a></h1>
-<p>Defined in header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/expressions.hpp&gt;</span></code></p>
-<p>Public namespace: <code class="docutils literal notranslate"><span class="pre">pressio</span></code></p>
+          <section id="enums">
+<h1>Enums<a class="headerlink" href="#enums" title="Permalink to this heading">#</a></h1>
+<p>Defined in <code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_nonlinear.hpp&gt;</span></code></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">pressio</span><span class="p">{</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">nonlinearsolvers</span><span class="p">{</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Stop</span><span class="p">{</span>
+<span class="w">  </span><span class="n">WhenAbsolutel2NormOfCorrectionBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenRelativel2NormOfCorrectionBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenAbsolutel2NormOfResidualBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenRelativel2NormOfResidualBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenAbsolutel2NormOfGradientBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenRelativel2NormOfGradientBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenAbsoluteObjectiveBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">WhenRelativeObjectiveBelowTolerance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">AfterMaxIters</span>
+<span class="p">};</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Update</span><span class="p">{</span>
+<span class="w">  </span><span class="n">Standard</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Armijo</span><span class="p">,</span>
+<span class="w">  </span><span class="n">BacktrackStrictlyDecreasingObjective</span><span class="p">,</span>
+<span class="w">  </span><span class="n">LMSchedule1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">LMSchedule2</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Custom</span>
+<span class="p">};</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Diagnostic</span><span class="p">{</span>
+<span class="w">  </span><span class="n">correctionAbsolutel2Norm</span><span class="p">,</span>
+<span class="w">  </span><span class="n">correctionRelativel2Norm</span><span class="p">,</span>
+<span class="w">  </span><span class="n">residualAbsolutel2Norm</span><span class="p">,</span>
+<span class="w">  </span><span class="n">residualRelativel2Norm</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gradientAbsolutel2Norm</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gradientRelativel2Norm</span><span class="p">,</span>
+<span class="w">  </span><span class="n">objectiveAbsolute</span><span class="p">,</span>
+<span class="w">  </span><span class="n">objectiveRelative</span><span class="p">,</span>
+<span class="w">  </span><span class="n">invalid</span>
+<span class="p">};</span>
+
+<span class="p">}}</span><span class="w"> </span><span class="c1">//end namespace pressio::nonlinearsolvers</span>
+</pre></div>
+</div>
 </section>
 
         </article>
@@ -265,23 +302,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="type_traits.html">
+          <a class="next-page" href="nonlinsolvers_concepts.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></div>
+                <div class="title">Concepts</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="ops.html">
+          <a class="prev-page" href="nonlinsolvers_lm.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><code class="docutils literal notranslate"><span class="pre">ops</span></code></div>
+                <div class="title">Levenberg-Marquardt</div>
                 
               </div>
             </a>

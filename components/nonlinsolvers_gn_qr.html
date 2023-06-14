@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Levenberg-Marquardt" href="nonlinsolvers_lm.html" /><link rel="prev" title="Gauss-Newton via normal-equations" href="nonlinsolvers_gn_neq.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Levenberg-Marquardt" href="nonlinsolvers_lm.html" /><link rel="prev" title="Gauss-Newton (via normal eqs)" href="nonlinsolvers_gn_neq.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>Gauss-Newton via QR factorization - Pressio-0.13.0</title>
+        <title>Gauss-Newton (via QR) - Pressio-0.14.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -131,7 +131,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Pressio-0.13.0</div></a>
+      <a href="../index.html"><div class="brand">Pressio-0.14.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
     <img class="sidebar-logo" src="../_static/logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Pressio-0.13.0</span>
+  <span class="sidebar-brand-text">Pressio-0.14.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -168,136 +168,50 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../keywords.html">CMake Keywords</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts_note.html">pressio concepts: more info</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="rom.html"><code class="docutils literal notranslate"><span class="pre">rom</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="rom_linear_subspace.html">Linear Subspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rom_trial_column_subspace.html">Trial Subspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_lspg_steady.html">LSPG: Steady</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_lspg_unsteady.html">LSPG: Unsteady</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rom_galerkin_steady.html">Galerkin: Steady</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rom_galerkin_unsteady_explicit.html">Galerkin: Unsteady (explicit)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rom_galerkin_unsteady_implicit.html">Galerkin: Unsteady (implicit)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rom_lspg_steady.html">LSPG: Steady</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rom_lspg_unsteady.html">LSPG: Unsteady</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html">concepts: shared</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_various/linear_subspace.html"><code class="docutils literal notranslate"><span class="pre">VectorSubspace</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_various/possibly_affine_trial_column_subspace.html"><code class="docutils literal notranslate"><span class="pre">PossiblyAffineTrialColumnSubspace</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_various/maskable_with.html"><code class="docutils literal notranslate"><span class="pre">MaskableWith</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rom_concepts.html">Concepts</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html#concepts-fom">concepts: fom</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_foms/semidiscrete_fom.html"><code class="docutils literal notranslate"><span class="pre">SemiDiscreteFom</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_foms/semidiscrete_fom_with_mass_matrix_action.html"><code class="docutils literal notranslate"><span class="pre">SemiDiscreteFomWithMassMatrixAction</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_foms/semidiscrete_fom_with_jac_action.html"><code class="docutils literal notranslate"><span class="pre">SemiDiscreteFomWithJacobianAction</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_foms/steady_fom_with_jac_action.html"><code class="docutils literal notranslate"><span class="pre">SteadyFomWithJacobianAction</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_foms/fully_discrete_with_jac_action.html"><code class="docutils literal notranslate"><span class="pre">FullyDiscreteFomWithJacobianAction</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html#concepts-steady-galerkin">concepts: steady galerkin</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_steady_galerkin/default.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoDefaultProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_steady_galerkin/hr.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_steady_galerkin/masked.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedMaskedProblem</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html#concepts-explicit-galerkin">concepts: explicit galerkin</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_explicit_galerkin/default.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoDefaultProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_explicit_galerkin/default_with_mm.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoDefaultWithMassMatrixProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_explicit_galerkin/hr.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_explicit_galerkin/masked.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedMaskedProblem</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html#concepts-implicit-galerkin">concepts: implicit galerkin</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_implicit_galerkin/default.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoDefaultProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_implicit_galerkin/hr.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_implicit_galerkin/masked.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedAndMasked</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html#concepts-steady-lspg">concepts: steady lspg</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_steady_lspg/default.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoDefaultOrHyperReducedProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_steady_lspg/masked.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoMaskedProblem</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="rom_concepts.html#concepts-unsteady-lspg">concepts: unsteady lspg</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_unsteady_lspg/default.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoDefaultProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_unsteady_lspg/hyperreduced.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoHyperReducedProblem</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rom_concepts_unsteady_lspg/masked.html"><code class="docutils literal notranslate"><span class="pre">ComposableIntoMaskedProblem</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ode.html"><code class="docutils literal notranslate"><span class="pre">ode</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="ode_steppers_explicit.html">Explicit steppers</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="ode_steppers_implicit.html">Implicit steppers</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ode_steppers_implicit.html">Implicit steppers</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="ode_steppers_implicit_standard_use.html">Standard Use</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_steppers_implicit_policybased_use.html">Policy-based Customization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ode_steppers_implicit_fullydiscrete.html">Fully-discrete systems</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="ode_advancers.html"><code class="docutils literal notranslate"><span class="pre">advance_*</span></code> functions</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ode_advancers.html"><code class="docutils literal notranslate"><span class="pre">advance_*</span></code> functions</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="ode_advance_n_steps.html"><code class="docutils literal notranslate"><span class="pre">advance_n_steps</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="ode_advance_n_steps_with_pre_step_guesser.html"><code class="docutils literal notranslate"><span class="pre">advance_n_steps_with_pre_step_guesser</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="ode_advance_to_target_point.html"><code class="docutils literal notranslate"><span class="pre">advance_to_target_point</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="ode_advance_to_target_point_with_step_recovery.html"><code class="docutils literal notranslate"><span class="pre">advance_to_target_point_with_step_recovery</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="ode_concepts.html">concepts: system</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_system/rhs.html"><code class="docutils literal notranslate"><span class="pre">SystemWithRhs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_system/rhs_jac.html"><code class="docutils literal notranslate"><span class="pre">SystemWithRhsAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_system/rhs_massmatrix.html"><code class="docutils literal notranslate"><span class="pre">SystemWithRhsAndMassMatrix</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_system/rhs_jac_massmatrix.html"><code class="docutils literal notranslate"><span class="pre">SystemWithRhsJacobianMassMatrix</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_system/fully_discrete.html"><code class="docutils literal notranslate"><span class="pre">FullyDiscreteSystemWithJacobian</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode_concepts.html">Concepts</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="ode_concepts.html#concepts-various">concepts: various</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/steppable.html"><code class="docutils literal notranslate"><span class="pre">Steppable</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/steppable.html#stronglysteppable"><code class="docutils literal notranslate"><span class="pre">StronglySteppable</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/steppable_args.html"><code class="docutils literal notranslate"><span class="pre">SteppableWithAuxiliaryArgs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/steppable_args.html#stronglysteppablewithauxiliaryargs"><code class="docutils literal notranslate"><span class="pre">StronglySteppableWithAuxiliaryArgs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/step_size_pol.html"><code class="docutils literal notranslate"><span class="pre">StepSizePolicy</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/step_size_pol_with_scaling.html"><code class="docutils literal notranslate"><span class="pre">StepSizePolicyWithScalingFactor</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/state_observer.html"><code class="docutils literal notranslate"><span class="pre">StateObserver</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ode_concepts_various/state_guesser.html"><code class="docutils literal notranslate"><span class="pre">StateGuesser</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear_solvers</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_nr.html">Newton-Raphson</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn_neq.html">Gauss-Newton via normal-equations</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Gauss-Newton via QR factorization</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="nonlinsolvers.html"><code class="docutils literal notranslate"><span class="pre">nonlinear_solvers</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_newton.html">Newton-Raphson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_gn_neq.html">Gauss-Newton (via normal eqs)</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Gauss-Newton (via QR)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_lm.html">Levenberg-Marquardt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_irls.html">Iteratively reweighted least squares</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="nonlinsolvers_concepts.html">concepts</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/rj.html"><code class="docutils literal notranslate"><span class="pre">SystemWithResidualAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/rj_det.html"><code class="docutils literal notranslate"><span class="pre">DeterminedSystemWithResidualAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/rj_ovdet.html"><code class="docutils literal notranslate"><span class="pre">OverdeterminedSystemWithResidualAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/rj_fused.html"><code class="docutils literal notranslate"><span class="pre">SystemWithFusedResidualAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/rj_fused_det.html"><code class="docutils literal notranslate"><span class="pre">DeterminedSystemWithFusedResidualAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/rj_fused_ovdet.html"><code class="docutils literal notranslate"><span class="pre">OverdeterminedSystemWithFusedResidualAndJacobian</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/hg.html"><code class="docutils literal notranslate"><span class="pre">SystemWithHessianAndGradient</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/hg_fused.html"><code class="docutils literal notranslate"><span class="pre">SystemWithFusedHessianAndGradient</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/c4.html"><code class="docutils literal notranslate"><span class="pre">LinearSolverForNewtonRaphson</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/c4.html#linearsolverfornonlinearleastsquares"><code class="docutils literal notranslate"><span class="pre">LinearSolverForNonlinearLeastSquares</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/c4.html#qrsolverforgnqr"><code class="docutils literal notranslate"><span class="pre">QRSolverForGnQr</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearsolvers_concepts/c4.html#leastsquaresweightingoperator"><code class="docutils literal notranslate"><span class="pre">LeastSquaresWeightingOperator</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_enums.html">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinsolvers_concepts.html">Concepts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear_solvers</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="ops/clone.html"><code class="docutils literal notranslate"><span class="pre">clone</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ops/fill.html"><code class="docutils literal notranslate"><span class="pre">fill</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="expressions/span.html"><code class="docutils literal notranslate"><span class="pre">span</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="expressions/subspan.html"><code class="docutils literal notranslate"><span class="pre">subspan</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="expressions/diag.html"><code class="docutils literal notranslate"><span class="pre">diag</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
@@ -340,75 +254,12 @@
           </label>
         </div>
         <article role="main">
-          <section id="gauss-newton-via-qr-factorization">
-<h1>Gauss-Newton via QR factorization<a class="headerlink" href="#gauss-newton-via-qr-factorization" title="Permalink to this heading">#</a></h1>
-<p>Defined in header <code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_nonlinear.hpp&gt;</span></code></p>
-<section id="api-parameters-and-requirements">
-<h2>API, Parameters and Requirements<a class="headerlink" href="#api-parameters-and-requirements" title="Permalink to this heading">#</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">pressio</span><span class="p">{</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">nonlinearsolvers</span><span class="p">{</span><span class="w"></span>
-
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">SystemType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">QRSolverType</span><span class="o">&gt;</span><span class="w"></span>
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="w">  </span><span class="k">requires</span><span class="w"></span>
-<span class="w">       </span><span class="p">(</span><span class="n">OverdeterminedSystemWithResidualAndJacobian</span><span class="o">&lt;</span><span class="n">SystemType</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">     </span><span class="o">||</span><span class="w"> </span><span class="n">OverdeterminedSystemWithFusedResidualAndJacobian</span><span class="o">&lt;</span><span class="n">SystemType</span><span class="o">&gt;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">QRSolverForGnQr</span><span class="o">&lt;</span><span class="w"></span>
-<span class="w">         </span><span class="n">mpl</span><span class="o">::</span><span class="n">remove_cvref_t</span><span class="o">&lt;</span><span class="n">LinearSolverType</span><span class="o">&gt;</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="k">typename</span><span class="w"> </span><span class="nc">SystemType</span><span class="o">::</span><span class="n">state_type</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="k">typename</span><span class="w"> </span><span class="nc">SystemType</span><span class="o">::</span><span class="n">jacobian_type</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="k">typename</span><span class="w"> </span><span class="nc">SystemType</span><span class="o">::</span><span class="n">residual_type</span><span class="o">&gt;</span><span class="w"></span>
-<span class="cp">#endif</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">create_gauss_newtonQR</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">system</span><span class="p">,</span><span class="w"></span>
-<span class="w">                           </span><span class="n">QRSolverType</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">qrsolver</span><span class="p">);</span><span class="w"></span>
-
-<span class="p">}}</span><span class="w"></span>
-</pre></div>
-</div>
-<section id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">#</a></h3>
-<div class="table-wrapper colwidths-given docutils container">
-<table class="docutils align-left">
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 82%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"></th>
-<th class="head"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">system</span></code></p></td>
-<td><p>your problem instance</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">qrsolver</span></code></p></td>
-<td><p>solver to use within each nonlinear iteration</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">weightOperator</span></code></p></td>
-<td><p>the weighting operator for doing weighted least-squares.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="constraints">
-<h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this heading">#</a></h3>
-<p>Each overload is associated with a set of constraints.
-With C++20, these would be enforced via concepts using
-the <em>requires-clause</em> shown in the API synopsis above.
-Since we cannot yet officially upgrade to C++20, the constraints
-are currently enforced via static asserts (to provide a decent error message)
-and/or SFINAE. The concepts used are:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="nonlinearsolvers_concepts/rj_ovdet.html">nonlinearsolvers::OverDeterminedSystemWithResidualAndJacobian</a></p></li>
-<li><p><a class="reference external" href="nonlinearsolvers_concepts/rj_fused_ovdet.html">nonlinearsolvers::OverDeterminedSystemWithFusedResidualAndJacobian</a></p></li>
-<li><p><a class="reference external" href="nonlinearsolvers_concepts/c4.html">nonlinearsolvers::QRSolverForGnQr</a></p></li>
-</ul>
-</section>
-</section>
-<section id="example-usage">
-<h2>Example usage<a class="headerlink" href="#example-usage" title="Permalink to this heading">#</a></h2>
-<p>bla</p>
+          <section id="gauss-newton-via-qr">
+<h1>Gauss-Newton (via QR)<a class="headerlink" href="#gauss-newton-via-qr" title="Permalink to this heading">#</a></h1>
+<p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_nonlinear_gaussnewton.hpp&gt;</span></code></p>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this heading">#</a></h2>
+<p>TODO</p>
 </section>
 </section>
 
@@ -433,7 +284,7 @@ and/or SFINAE. The concepts used are:</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Gauss-Newton via normal-equations</div>
+                <div class="title">Gauss-Newton (via normal eqs)</div>
                 
               </div>
             </a>
@@ -447,7 +298,7 @@ and/or SFINAE. The concepts used are:</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Oct 19, 2022</div>
+              Last updated on Jun 14, 2023</div>
           </div>
           <div class="right-details">
             <div class="icons">
@@ -470,13 +321,8 @@ and/or SFINAE. The concepts used are:</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Gauss-Newton via QR factorization</a><ul>
-<li><a class="reference internal" href="#api-parameters-and-requirements">API, Parameters and Requirements</a><ul>
-<li><a class="reference internal" href="#parameters">Parameters</a></li>
-<li><a class="reference internal" href="#constraints">Constraints</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#example-usage">Example usage</a></li>
+<li><a class="reference internal" href="#">Gauss-Newton (via QR)</a><ul>
+<li><a class="reference internal" href="#api">API</a></li>
 </ul>
 </li>
 </ul>

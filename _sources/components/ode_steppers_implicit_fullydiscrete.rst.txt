@@ -10,7 +10,6 @@ Header: ``<pressio/ode_steppers_implicit.hpp>``
 
 Public namespace: ``pressio::ode``
 
-
 Scope
 -----
 
@@ -33,18 +32,9 @@ Here, :math:`y_{n}` is the state at the n-th step,
 API
 ---
 
-.. code-block:: cpp
-
-   namespace pressio{ namespace ode{
-
-   template<std::size_t TotalNumberOfDesiredStates, class SystemType>
-  #ifdef PRESSIO_ENABLE_CXX20
-    requires FullyDiscreteSystemWithJacobian<FomSystemType, TotalNumberOfDesiredStates>
-  #endif
-   /*impl defined*/ create_implicit_stepper(const SystemType & system);
-
-   }} //end namespace pressio::ode
-
+.. literalinclude:: ../../../include/pressio/ode/ode_create_implicit_stepper.hpp
+   :language: cpp
+   :lines: 61-62, 257-275, 295-296
 
 Parameters and templates
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,13 +47,15 @@ Parameters and templates
 
 * ``system``: problem instance to evaluate the discrete residual and jacobian
 
+
 Constraints
 ~~~~~~~~~~~
 
-* ``TotalNumberOfDesiredStates``: currently must be set to one of `{2, 3, 4}`
+Concepts are documented `here <ode_concepts.html>`__.
+Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
+otherwise via SFINAE and static asserts.
 
-- ``SystemType`` must model the ``FullyDiscreteSystemWithJacobian`` `concept <ode_concepts_system/fully_discrete.html>`__.
-
+* ``TotalNumberOfDesiredStates``: currently must be set to one of `{2, 3}`
 
 Preconditions
 ~~~~~~~~~~~~~
@@ -72,53 +64,64 @@ Preconditions
   longer that that of the instantiated stepper, i.e., it is destructed
   *after* the stepper goes out of scope
 
+Examples
+--------
 
-Return value
-~~~~~~~~~~~~
-
-An instance of a pressio implicit stepper for doing this "arbitrary scheme".
-The return type is implementation defined.
-
-Postconditions and side effects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The returned stepper object is guaranteed to expose this API:
-
-.. code-block:: cpp
-
-    // This is not the actual class, it just describes the API
-    class ImplicitStepper
-    {
-      public:
-        // these nested type aliases must be here
-        using independent_variable_type = /* same as in your system class */;
-        using state_type                = /* same as in your system class */;
-        using residual_type             = /* equal to right_hand_side_type in your system class */;
-        using jacobian_type	        = /* same as in your system class */;
-
-        template<class SolverType>
-        void operator()(StateType & /**/,
-			const pressio::ode::StepStartAt<independent_variable_type> & /**/,
-			pressio::ode::StepCount /**/,
-			pressio::ode::StepSize<independent_variable_type> /**/,
-			SolverType & /**/)
-
-        residual_type createResidual() const;
-        jacobian_type createJacobian() const;
-        void residualAndJacobian(const state_type & odeState,
-	                         residual_type & R,
-				 jacobian_type & J,
-				 bool computeJacobian) const;
-    };
+TBD
 
 
-:red:`describe here what is going on`
+|
+|
+|
+|
 
-Use the stepper
----------------
+..
+   Return value
+   ~~~~~~~~~~~~
 
-The stepper created using the functions satisfies two concepts:
+   An instance of a pressio implicit stepper for doing this "arbitrary scheme".
+   The return type is implementation defined.
 
-- the ``SteppableWithAuxiliaryArgs`` concept discussed `here <ode_concepts_various/steppable_args.html>`__.
+   Postconditions and side effects
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- the ``SystemWithFusedResidualAndJacobian`` concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
+   The returned stepper object is guaranteed to expose this API:
+
+   .. code-block:: cpp
+
+       // This is not the actual class, it just describes the API
+       class ImplicitStepper
+       {
+	 public:
+	   // these nested type aliases must be here
+	   using independent_variable_type = /* same as in your system class */;
+	   using state_type                = /* same as in your system class */;
+	   using residual_type             = /* equal to right_hand_side_type in your system class */;
+	   using jacobian_type	        = /* same as in your system class */;
+
+	   template<class SolverType>
+	   void operator()(StateType & /**/,
+			   const pressio::ode::StepStartAt<independent_variable_type> & /**/,
+			   pressio::ode::StepCount /**/,
+			   pressio::ode::StepSize<independent_variable_type> /**/,
+			   SolverType & /**/)
+
+	   residual_type createResidual() const;
+	   jacobian_type createJacobian() const;
+	   void residualAndJacobian(const state_type & odeState,
+				    residual_type & R,
+				    jacobian_type & J,
+				    bool computeJacobian) const;
+       };
+
+
+   :red:`describe here what is going on`
+
+   Use the stepper
+   ---------------
+
+   The stepper created using the functions satisfies two concepts:
+
+   - the ``SteppableWithAuxiliaryArgs`` concept discussed `here <ode_concepts_various/steppable_args.html>`__.
+
+   - the ``SystemWithFusedResidualAndJacobian`` concept discussed `here <nonlinearsolvers_concepts/c2.html>`__.
