@@ -8,7 +8,8 @@ API
 
 .. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_newton.hpp
    :language: cpp
-   :lines: 59-60, 78-108, 152-153
+   :lines: 60-62, 80-110, 130-131
+
 
 Parameters
 ~~~~~~~~~~
@@ -27,14 +28,12 @@ Parameters
    * - ``linSolver``
      - linear solver to use within each nonlinear iteration
 
-
 Constraints
 ~~~~~~~~~~~
 
 Concepts are documented `here <nonlinsolvers_concepts.html>`__.
 Note: constraints are enforced via proper C++20 concepts when ``PRESSIO_ENABLE_CXX20`` is enabled,
 otherwise via SFINAE and static asserts.
-
 
 Examples
 --------

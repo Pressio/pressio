@@ -13,11 +13,6 @@ API
   namespace pressio { namespace ops{
 
   template<class T, class ScalarType>
-  #ifdef PRESSIO_ENABLE_CXX20
-  requires (::pressio::is_native_container_eigen<T>::value
-         || ::pressio::is_expression_acting_on_eigen<T>::value)
-         && std::convertible_to<ScalarType, typename ::pressio::Traits<T>::scalar_type>
-  #endif
   void fill(T & operand, ScalarType const & value);
 
   }} // end namespace pressio::ops
@@ -49,11 +44,6 @@ Constraints
   - a pressio expression, i.e. ``pressio::diag``, ``pressio::span``, ``pressio::subspan``, ``pressio::as_diagonal_matrix`` based on Eigen or Kokkkos container
 
 - ``ScalarType`` must be convertible to ``pressio::Traits<T>::scalar_type``
-
-Mandates
-~~~~~~~~
-
-None
 
 Preconditions
 ~~~~~~~~~~~~~

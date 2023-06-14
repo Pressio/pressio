@@ -119,11 +119,11 @@ preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``. This can be enabled by
 using a C++20 compliant compiler and setting ``-DCMAKE_CXX_STANDARD=20`` at configure time.
 The behavior is as follows:
 
-- if ``PRESSIO_ENABLE_CXX20`` is *enabled*: if you do this, the pressio concepts
-  are compiled and enforced *stricto sensu* on the pressio APIs as discussed by this documentation
+- if ``PRESSIO_ENABLE_CXX20`` is *enabled*: concepts are compiled and
+  enforced *stricto sensu* on the pressio APIs as discussed by this documentation
 
 - if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
-  default pressio C++ standard is currently C++17. In this case, the "C++20 concepts"
+  default pressio C++ standard is currently C++14. In this case, the "C++20 concepts"
   are not compiled but the constraints they represent are still valid and implemented
   differently such that their enforcement is done via a combination of SFINAE and static asserts.
 

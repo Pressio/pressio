@@ -11,7 +11,7 @@ API
 
 .. literalinclude:: ../../../include/pressio/solvers_nonlinear/solvers_create_gauss_newton.hpp
    :language: cpp
-   :lines: 60-61, 71-93, 149, 149-183, 322-323
+   :lines: 60-62, 72-94, 121, 121-155, 233-234
 
 Parameters
 ~~~~~~~~~~
@@ -28,7 +28,7 @@ Parameters
      - your problem instance
 
    * - ``linSolver``
-     - linear solver to use within each nonlinear iteration
+     - linear solver to solve the normal equations at each nonlinear iteration
 
    * - ``weigher``
      - the weighting operator for doing weighted least-squares
