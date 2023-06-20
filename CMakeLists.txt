@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 project(pressio C CXX)
 
@@ -9,17 +8,15 @@ set(CMAKE_MODULE_PATH
 # include commands for coloring prints
 include(colors)
 
+# include
+include(version_parse)
+
 #=====================================================================
 # versioning
 #=====================================================================
-file(READ "version.txt" tmpver)
-string(REGEX MATCH "VERSION_MAJOR ([0-9]*)" _ ${tmpver})
-set(Pressio_VERSION_MAJOR ${CMAKE_MATCH_1})
-string(REGEX MATCH "VERSION_MINOR ([0-9]*)" _ ${tmpver})
-set(Pressio_VERSION_MINOR ${CMAKE_MATCH_1})
-string(REGEX MATCH "VERSION_PATCH ([0-9]*)" _ ${tmpver})
-set(Pressio_VERSION_PATCH ${CMAKE_MATCH_1})
-
+get_version_number("version.txt" Pressio_VERSION_MAJOR)
+get_version_number("version.txt" Pressio_VERSION_MINOR)
+get_version_number("version.txt" Pressio_VERSION_PATCH)
 set(Pressio_VERSION "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
 message("${Magenta}>> Pressio version = ${Pressio_VERSION} ${ColourReset}")
 
