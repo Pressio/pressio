@@ -25,9 +25,17 @@ project = 'Pressio'
 copyright = u"2021, National Technology & Engineering Solutions of Sandia, LLC (NTESS)"
 author = 'Francesco Rizzi'
 
-# The full version, including alpha/beta/rc tags
-release = '0.14.0'
+# The default replacements for |version| and |release|, also used in various
+# other places throughout the built documents.
+def get_version():
+  local_version = ''
+  with open("../../version.txt") as version_file:
+    for line in version_file.read().strip().split("\n"):
+      local_version = local_version + line.split(" ")[1] + '.'
+    return local_version[:-1]
 
+# The full version, including alpha/beta/rc tags
+release = get_version()
 
 # -- General configuration ---------------------------------------------------
 
