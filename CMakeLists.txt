@@ -8,12 +8,10 @@ set(CMAKE_MODULE_PATH
 # include commands for coloring prints
 include(colors)
 
-# include
-include(version_parse)
-
 #=====================================================================
 # versioning
 #=====================================================================
+include(version_parse)
 get_version_number("version.txt" Pressio_VERSION_MAJOR)
 get_version_number("version.txt" Pressio_VERSION_MINOR)
 get_version_number("version.txt" Pressio_VERSION_PATCH)
