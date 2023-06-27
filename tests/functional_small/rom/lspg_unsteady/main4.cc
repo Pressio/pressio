@@ -242,8 +242,11 @@ public:
 					     double dt,
 					     discrete_residual_type & R,
 					     const phi_type & B,
-					     bool computeJac,
-					     phi_type & JA,
+#ifdef PRESSIO_ENABLE_CXX17
+               std::optional<phi_type*> JA,
+#else
+               phi_type* JA,
+#endif
 					     const state_type & y_np1,
 					     const state_type & y_n ) const
   {
@@ -255,11 +258,20 @@ public:
 
     R = y_np1 -y_n - dt*f;
 
-    if (computeJac){
+#ifdef PRESSIO_ENABLE_CXX17
+    if (bool(JA)){
       auto appJac = B;
       appJac.array() += time;
-      JA = (B - dt*appJac);
+      *JA.value() = (B - dt*appJac);
     }
+#else
+    if (JA){
+      auto appJac = B;
+      appJac.array() += time;
+      *JA = (B - dt*appJac);
+    }
+#endif
+
   }
 };
 }

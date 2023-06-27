@@ -28,14 +28,17 @@ struct has_const_discrete_residual_jacobian_action_method<
       (
        std::declval<T const>().discreteTimeResidualAndJacobianAction
        (
-	std::declval<StepType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<IndVarType const &>(),
-	std::declval<ResidualType &>(),
-	std::declval<ManifoldJacobian const &>(),
-	std::declval<bool>(),
-	std::declval<JacobianType &>(),
-	std::declval<StateType const&>()
+	  std::declval<StepType const &>(),
+	  std::declval<IndVarType const &>(),
+	  std::declval<IndVarType const &>(),
+	  std::declval<ResidualType &>(),
+	  std::declval<ManifoldJacobian const &>(),
+#ifdef PRESSIO_ENABLE_CXX17
+    std::declval< std::optional<JacobianType*> >(),
+#else
+    std::declval<JacobianType*>(),
+#endif
+	  std::declval<StateType const&>()
 	)
        )
       >::value
@@ -58,8 +61,11 @@ struct has_const_discrete_residual_jacobian_action_method<
        std::declval<IndVarType const &>(),
        std::declval<ResidualType &>(),
        std::declval<ManifoldJacobian const &>(),
-       std::declval<bool>(),
-       std::declval<JacobianType &>(),
+#ifdef PRESSIO_ENABLE_CXX17
+    std::declval< std::optional<JacobianType*> >(),
+#else
+    std::declval<JacobianType*>(),
+#endif
        std::declval<StateType const&>(),
        std::declval<StateType const&>()
        )
@@ -84,8 +90,11 @@ struct has_const_discrete_residual_jacobian_action_method<
        std::declval<IndVarType const &>(),
        std::declval<ResidualType &>(),
        std::declval<ManifoldJacobian const &>(),
-       std::declval<bool>(),
-       std::declval<JacobianType &>(),
+#ifdef PRESSIO_ENABLE_CXX17
+    std::declval< std::optional<JacobianType*> >(),
+#else
+    std::declval<JacobianType*>(),
+#endif
        std::declval<StateType const&>(),
        std::declval<StateType const&>(),
        std::declval<StateType const&>()
@@ -94,7 +103,6 @@ struct has_const_discrete_residual_jacobian_action_method<
   >::value
   >
   > : std::true_type{};
-
 
 }}
 #endif  // ROM_PREDICATES_HPP_

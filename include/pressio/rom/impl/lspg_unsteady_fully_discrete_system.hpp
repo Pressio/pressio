@@ -118,18 +118,11 @@ public:
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = bool(Jo);
 
     try
     {
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
-							     R, phi, computeJacobian,
-#ifdef PRESSIO_ENABLE_CXX17
-							     *Jo.value(),
-#else
-							     *Jo,
-#endif
-							     ynp1, yn);
+							     R, phi, Jo, ynp1, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -157,17 +150,10 @@ public:
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-    const bool computeJacobian = bool(Jo);
 
     try{
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1, dt,
-							     R, phi, computeJacobian,
-#ifdef PRESSIO_ENABLE_CXX17
-							     *Jo.value(),
-#else
-							     *Jo,
-#endif
-							     ynp1, yn, ynm1);
+							     R, phi, Jo, ynp1, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
