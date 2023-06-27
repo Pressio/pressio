@@ -214,7 +214,7 @@ product(::pressio::transpose /*unused*/,
   const sc_t alpha_(alpha);
   const sc_t beta_(beta);
   const auto has_beta = beta_ != zero;
-  beta_t tmp = zero;
+  sc_t tmp = zero;
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
