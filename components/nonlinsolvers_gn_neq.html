@@ -284,7 +284,9 @@
 <span class="cp">#endif</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">create_gauss_newton_solver</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">system</span><span class="p">,</span><span class="w">           </span><span class="cm">/*(1)*/</span>
 <span class="w">				</span><span class="n">LinearSolverType</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">linSolver</span><span class="p">)</span>
-
+<span class="w">  </span><span class="nl">where</span><span class="p">:</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_k</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x_k</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="o">^</span><span class="n">T_r</span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J_r</span><span class="p">,</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="o">^</span><span class="n">T_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">r</span>
+<span class="w">  </span><span class="nl">where</span><span class="p">:</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_k</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x_k</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="o">^</span><span class="n">T_r</span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J_r</span><span class="p">,</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="o">^</span><span class="n">T_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">r</span>
+<span class="o">*/</span>
 
 <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">SystemType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">LinearSolverType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">WeightingOpType</span><span class="o">&gt;</span>
 <span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
@@ -318,10 +320,8 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="cp">#endif</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">create_gauss_newton_solver</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">system</span><span class="p">,</span><span class="w">           </span><span class="cm">/*(2)*/</span>
-<span class="w">				</span><span class="n">LinearSolverType</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">linSolver</span><span class="p">,</span>
-<span class="w">				</span><span class="n">WeightingOpType</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">weigher</span><span class="p">)</span>
-
-<span class="p">}</span><span class="w"> </span><span class="c1">// end namespace pressio</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">reg_t</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">nonlinearsolvers</span><span class="o">::</span><span class="n">impl</span><span class="o">::</span><span class="n">RegistryGaussNewtonQr</span><span class="o">&lt;</span><span class="n">SystemType</span><span class="p">,</span><span class="w"> </span><span class="n">QRSolverType</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">scalar_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonlinearsolvers</span><span class="o">::</span><span class="n">scalar_of_t</span><span class="o">&lt;</span><span class="n">SystemType</span><span class="o">&gt;</span><span class="p">;</span>
 </pre></div>
 </div>
 <section id="parameters">
@@ -404,7 +404,7 @@ otherwise via SFINAE and static asserts.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Jun 14, 2023</div>
+              Last updated on Jun 27, 2023</div>
           </div>
           <div class="right-details">
             <div class="icons">
