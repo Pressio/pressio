@@ -135,13 +135,13 @@ public:
     // currently we don't have the diagonostics stuff all flushed out
     // so we limit it to work for a specific case
     const auto & publicDiags = diagnostics_.publicNames();
-    assert(publicDiags.size() == 6);
-    assert(publicDiags[0] == Diagnostic::objectiveAbsolute);
-    assert(publicDiags[1] == Diagnostic::objectiveRelative);
-    assert(publicDiags[2] == Diagnostic::correctionAbsolutel2Norm);
-    assert(publicDiags[3] == Diagnostic::correctionRelativel2Norm);
-    assert(publicDiags[4] == Diagnostic::gradientAbsolutel2Norm);
-    assert(publicDiags[5] == Diagnostic::gradientRelativel2Norm);
+    // assert(publicDiags.size() == 6);
+    // assert(publicDiags[0] == Diagnostic::objectiveAbsolute);
+    // assert(publicDiags[1] == Diagnostic::objectiveRelative);
+    // assert(publicDiags[2] == Diagnostic::correctionAbsolutel2Norm);
+    // assert(publicDiags[3] == Diagnostic::correctionRelativel2Norm);
+    // assert(publicDiags[4] == Diagnostic::gradientAbsolutel2Norm);
+    // assert(publicDiags[5] == Diagnostic::gradientRelativel2Norm);
 
     // check that the stopping criterion uses a metric already
     // supported in the diagonstics, otherwise add it

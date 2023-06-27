@@ -84,14 +84,10 @@ public:
 
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
-    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
     const bool computeJacobian = (bool) galerkinJacobian;
-    try
-    {
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_, phi,
-							     computeJacobian, fomJacAction_,
-							     ynp1, yn);
+
+    try{
+      queryFomOperators(currentStepNumber, time_np1, dt, computeJacobian, ynp1, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -121,13 +117,10 @@ public:
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
-    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
     const bool computeJacobian = bool(galerkinJacobian);
+
     try{
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_, phi,
-							     computeJacobian, fomJacAction_,
-							     ynp1, yn, ynm1);
+      queryFomOperators(currentStepNumber, time_np1, dt, computeJacobian, ynp1, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -136,7 +129,45 @@ public:
     computeReducedOperators(galerkinResidual, galerkinJacobian);
   }
 
+
 private:
+  template<typename step_t, class ...States>
+  void queryFomOperators(const step_t & currentStepNumber,
+			 const independent_variable_type & time_np1,
+			 const independent_variable_type & dt,
+			 bool computeJacobian,
+			 States && ... states) const
+  {
+    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
+
+#ifdef PRESSIO_ENABLE_CXX17
+    if (computeJacobian){
+      using op_ja_t = std::optional<fom_jac_action_result_type*>;
+      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
+							     dt, fomResidual_, phi,
+							     op_ja_t{&fomJacAction_},
+							     std::forward<States>(states)...);
+    }
+    else{
+      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
+							     dt, fomResidual_, phi, {},
+							     std::forward<States>(states)...);
+    }
+#else
+    if (computeJacobian){
+      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
+							     dt, fomResidual_, phi, &fomJacAction_,
+							     std::forward<States>(states)...);
+    }
+    else{
+      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
+							     dt, fomResidual_, phi, nullptr,
+							     std::forward<States>(states)...);
+    }
+#endif
+
+  }
+
 
   void computeReducedOperators(discrete_residual_type & galerkinResidual,
 #ifdef PRESSIO_ENABLE_CXX17

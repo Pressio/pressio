@@ -98,6 +98,8 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(1)*/
   const std::vector<Diagnostic> defaultDiagnostics =
     {Diagnostic::objectiveAbsolute,
      Diagnostic::objectiveRelative,
+     Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
      Diagnostic::correctionAbsolutel2Norm,
      Diagnostic::correctionRelativel2Norm,
      Diagnostic::gradientAbsolutel2Norm,
@@ -159,6 +161,8 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
   const std::vector<Diagnostic> defaultDiagnostics =
     {Diagnostic::objectiveAbsolute,
      Diagnostic::objectiveRelative,
+     Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
      Diagnostic::correctionAbsolutel2Norm,
      Diagnostic::correctionRelativel2Norm,
      Diagnostic::gradientAbsolutel2Norm,
@@ -217,6 +221,8 @@ auto create_gauss_newton_qr_solver(const SystemType & system,
   const std::vector<Diagnostic> defaultDiagnostics =
     {Diagnostic::objectiveAbsolute,
      Diagnostic::objectiveRelative,
+     Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
      Diagnostic::correctionAbsolutel2Norm,
      Diagnostic::correctionRelativel2Norm,
      Diagnostic::gradientAbsolutel2Norm,

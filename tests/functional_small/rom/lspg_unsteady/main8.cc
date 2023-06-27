@@ -87,14 +87,16 @@ public:
   }
 
   template<class StepCountType>
-  void discreteTimeResidualAndJacobianAction
-  (StepCountType stepId,
+  void discreteTimeResidualAndJacobianAction(StepCountType stepId,
    double time,
    double dt,
    discrete_residual_type & R,
    const __this_test_phi_type & B,
-   bool computeJac,
-   __this_test_phi_type & JA,
+#ifdef PRESSIO_ENABLE_CXX17
+               std::optional<__this_test_phi_type*> /*JA*/,
+#else
+               __this_test_phi_type* /*JA*/,
+#endif
    const state_type & y_np1,
    const state_type & y_n ) const
   {
