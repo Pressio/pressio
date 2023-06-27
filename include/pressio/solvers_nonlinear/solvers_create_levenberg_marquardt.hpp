@@ -100,11 +100,12 @@ auto create_levenberg_marquardt_solver(const SystemType & system,
   const std::vector<Diagnostic> defaultDiagnostics =
     {Diagnostic::objectiveAbsolute,
      Diagnostic::objectiveRelative,
+     Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
      Diagnostic::correctionAbsolutel2Norm,
      Diagnostic::correctionRelativel2Norm,
      Diagnostic::gradientAbsolutel2Norm,
      Diagnostic::gradientRelativel2Norm};
-
 
   using tag      = nonlinearsolvers::impl::LevenbergMarquardtNormalEqTag;
   using state_t  = typename SystemType::state_type;
