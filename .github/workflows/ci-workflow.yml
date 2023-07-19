@@ -97,8 +97,6 @@ jobs:
       target_dir: /out
       eigen_inc_dir: '/usr/local/eigen/install;/usr/local/eigen/install/include/eigen3'
       gtest_dir: /usr/local/gtest/install
-      GCC: /usr/bin/gcc
-      GPP: /usr/bin/g++
       small: small
       medium: medium
       large: large
@@ -122,8 +120,8 @@ jobs:
           cmake -S $pressio_src -B $pressio_build \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=TRUE \
-          -D CMAKE_C_COMPILER:FILEPATH=$GCC \
-          -D CMAKE_CXX_COMPILER:FILEPATH=$GPP \
+          -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
+          -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
           -D PRESSIO_ENABLE_TPL_EIGEN=ON \
           -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           -D GTEST_ROOT=$gtest_dir \
