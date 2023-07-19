@@ -19,6 +19,7 @@ on:
     branches:
       - 'main'
       - 'develop'
+      - 'ci-remove-pressio-builder'
     paths-ignore:
     - 'logos/**'
     - 'helper_scripts/**'
