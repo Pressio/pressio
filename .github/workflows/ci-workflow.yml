@@ -92,10 +92,13 @@ jobs:
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idenv
     # A map of environment variables that are available to all steps in the job
     env:
-      pressio_dir: /__w/pressio/pressio
+      pressio_src: /__w/pressio/pressio
+      pressio_build: /home/pressio_builds
       target_dir: /out
-      eigen_path: /usr/local/eigen/install
-      gtest_path: /usr/local/gtest/install
+      eigen_inc_dir: '/usr/local/eigen/install;/usr/local/eigen/install/include/eigen3'
+      gtest_dir: /usr/local/gtest/install
+      GCC: /usr/bin/gcc
+      G++: /usr/bin/g++
       small: small
       medium: medium
       large: large
@@ -111,23 +114,23 @@ jobs:
 
       # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsname
       # A name for your step to display on GitHub.
-      - name: configure
+      - name: Configure
 
         # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsrun
         # Runs command-line programs using the operating system's shell.
-
-        # In this stage pressio-builder script is used for configuration purposes
         run: |
-          cd /pressio-builder
-          git pull
-          git status
-
-          sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_pressio.sh
-
-          ./main_pressio.sh -dryrun=no -build-mode=${{ matrix.config.mode }} \
-          -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} \
-          -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests \
-          -pressio-src=${{env.pressio_dir}} -ncpu-for-make=4 --config-only=yes
+          cmake -S $pressio_src -B $pressio_build \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
+          -D CMAKE_VERBOSE_MAKEFILE:BOOL=TRUE \
+          -D CMAKE_C_COMPILER:FILEPATH=$GCC \
+          -D CMAKE_CXX_COMPILER:FILEPATH=$G++ \
+          -D PRESSIO_ENABLE_TPL_EIGEN=ON \
+          -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
+          -D GTEST_ROOT=$gtest_dir \
+          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+          -D CMAKE_INSTALL_PREFIX:PATH=../install \
+          -D CMAKE_CXX_FLAGS=''
 
       # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
