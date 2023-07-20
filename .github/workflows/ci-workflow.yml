@@ -19,7 +19,6 @@ on:
     branches:
       - 'main'
       - 'develop'
-      - 'ci-remove-pressio-builder'
     paths-ignore:
     - 'logos/**'
     - 'helper_scripts/**'
@@ -67,17 +66,17 @@ jobs:
           # os: Stands for OS on GitHub Runner (Ubuntu / MacOS / Windows)
           # image: Stands for used Docker Image
           # mode: Stands for build mode inside Pressio (Debug / Release)
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Debug }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release, c: gcc, cxx: g++ }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Debug, c: gcc, cxx: g++ }
 
-          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Debug }
+          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release, c: clang-9, cxx: clang++-9 }
+          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Debug, c: clang-9, cxx: clang++-9 }
 
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Debug }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Release, c: gcc, cxx: g++ }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Debug, c: gcc, cxx: g++ }
 
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Debug }
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Release, c: clang-9, cxx: clang++-9 }
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Debug, c: clang-9, cxx: clang++-9 }
 
           #- { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Release }
           #- { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Debug }
@@ -93,11 +92,11 @@ jobs:
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idenv
     # A map of environment variables that are available to all steps in the job
     env:
-      pressio_src: /__w/pressio/pressio
+      pressio_dir: /home/antoine/Documents/pressio/ # TOCHANGE FOR MERGE
       pressio_build: /home/pressio_builds
       target_dir: /out
-      eigen_inc_dir: '/usr/local/eigen/install;/usr/local/eigen/install/include/eigen3'
-      gtest_dir: /usr/local/gtest/install
+      #eigen_path: /usr/local/eigen/install
+      gtest_path: /usr/local/gtest/install
       small: small
       medium: medium
       large: large
@@ -113,23 +112,27 @@ jobs:
 
       # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsname
       # A name for your step to display on GitHub.
-      - name: Configure
+      - name: configure
 
         # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsrun
         # Runs command-line programs using the operating system's shell.
+
+        # In this stage pressio-builder script is used for configuration purposes
+        # ==========AM================
         run: |
-          cmake -S $pressio_src -B $pressio_build \
-          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
-          -D CMAKE_VERBOSE_MAKEFILE:BOOL=TRUE \
-          -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-          -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-          -D PRESSIO_ENABLE_TPL_EIGEN=ON \
-          -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
-          -D GTEST_ROOT=$gtest_dir \
-          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
-          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
-          -D CMAKE_INSTALL_PREFIX:PATH=../install \
-          -D CMAKE_CXX_FLAGS=''
+          cmake -S $pressio_dir -B $pressio_build \
+            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
+            -D CMAKE_VERBOSE_MAKEFILE:BOOL=TRUE \
+            -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/${{ matrix.config.c }} \
+            -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/${{ matrix.config.cxx }} \
+            -D PRESSIO_ENABLE_TPL_EIGEN=ON \
+            -D EIGEN_INCLUDE_DIR='/usr/local/eigen/install;/usr/local/eigen/install/include/eigen3' \
+            -D GTEST_ROOT=$gtest_path \
+            -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+            -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+            -D CMAKE_INSTALL_PREFIX:PATH=../install \
+            -D CMAKE_CXX_FLAGS=''
+        # ==========AM================
 
       # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
