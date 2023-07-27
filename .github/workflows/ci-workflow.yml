@@ -236,7 +236,7 @@ jobs:
           - ubuntu-20.04_clang-12_eigen-3.3.7_gtest
           - fedora-34-gnu_11-eigen_3.3.7-gtest
           - fedora-34-clang_12-eigen_3.3.7-gtest
-          - intel-oneapi-2022.2.0_eigen-3.3.7_gtest
+          #- intel-oneapi-2022.2.0_eigen-3.3.7_gtest
         build_type:
           - Release
           # - Debug # disable to reduce number of jobs
