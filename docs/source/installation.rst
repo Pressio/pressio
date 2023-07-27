@@ -108,7 +108,7 @@ For example, suppose we want to enable support for Trilinos and the debug prints
 Note that this step does **not** build anything because ``pressio`` is header-only,
 but only processes the cmake arguments and copies the pressio headers to the
 install prefix ``<where-you-cloned-pressio>/install``.
-If you want, inspect the file ``<where-you-cloned-pressio>/install/presssio_cmake_config.h``
+If you want, inspect the file ``<where-you-cloned-pressio>/install/pressio_cmake_config.h``
 which contains the cmake variables configuration.
 
 We also remark that during the configuration step above pressio
