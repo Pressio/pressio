@@ -254,7 +254,6 @@ jobs:
       pressio_build: /home/pressio_builds
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install/
-      ll /usr/local/gtest/install/
 
     steps:
     - uses: actions/checkout@v3
