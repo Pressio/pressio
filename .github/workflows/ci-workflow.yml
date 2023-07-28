@@ -260,6 +260,7 @@ jobs:
 
     - name: Configure
       run: |
+        ll ${gtest_dir}/lib
         cmake -S $pressio_src -B $pressio_build \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
           -D CMAKE_CXX_STANDARD=20 \
