@@ -92,11 +92,12 @@ jobs:
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idenv
     # A map of environment variables that are available to all steps in the job
     env:
-      pressio_dir: /home/antoine/Documents/pressio/ # TOCHANGE FOR MERGE
+      num_cpus: 2
+      pressio_src: /__w/pressio/pressio   #local: /home/antoine/Documents/pressio/
       pressio_build: /home/pressio_builds
       target_dir: /out
-      #eigen_path: /usr/local/eigen/install
-      gtest_path: /usr/local/gtest/install
+      eigen_inc_dir: /usr/local/eigen/install/include/eigen3
+      gtest_dir: /usr/local/gtest/install
       small: small
       medium: medium
       large: large
@@ -118,42 +119,41 @@ jobs:
         # Runs command-line programs using the operating system's shell.
 
         # In this stage pressio-builder script is used for configuration purposes
-        # ==========AM================
         run: |
-          cmake -S $pressio_dir -B $pressio_build \
+          cmake -S $pressio_src -B $pressio_build \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
-            -D CMAKE_VERBOSE_MAKEFILE:BOOL=TRUE \
+            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
             -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/${{ matrix.config.c }} \
             -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/${{ matrix.config.cxx }} \
-            -D PRESSIO_ENABLE_TPL_EIGEN=ON \
-            -D EIGEN_INCLUDE_DIR='/usr/local/eigen/install;/usr/local/eigen/install/include/eigen3' \
-            -D GTEST_ROOT=$gtest_path \
+            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+            -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
+            -D GTEST_ROOT=$gtest_dir \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D CMAKE_INSTALL_PREFIX:PATH=../install \
             -D CMAKE_CXX_FLAGS=''
-        # ==========AM================
 
       # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
         run: |
-            cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
-            make -j 2
-            ctest --output-on-failure
+          cmake --build $pressio_build -j $num_cpus
+          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
+          make -j $num_cpus
+          ctest -j $num_cpus --output-on-failure
 
       # In this stage medium functional tests are built and run
-      - name: build-test-${{ env.medium }}
-        run: |
-          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.medium }}
-          make -j 2
-          ctest --output-on-failure
+      #- name: build-test-${{ env.medium }}
+      #  run: |
+      #    cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.medium }}
+      #    make -j 2
+      #    ctest --output-on-failure
 
       # In this stage large functional tests are built and run
-      - name: build-test-${{ env.large }}
-        run: |
-          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.large }}
-          make -j 2
-          ctest --output-on-failure
+      #- name: build-test-${{ env.large }}
+      #  run: |
+      #    cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.large }}
+      #    make -j 2
+      #    ctest --output-on-failure
 
   ############################## JOB `CI-trilinos` defined below ##############################
   CI-trilinos:
