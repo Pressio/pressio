@@ -126,7 +126,7 @@ jobs:
             -D CMAKE_CXX_COMPILER=$CXX \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
             -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
-            -D GTEST_ROOT=$gtest_dir \
+            -D GTest_DIR=$gtest_dir \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D CMAKE_INSTALL_PREFIX:PATH=../install \
