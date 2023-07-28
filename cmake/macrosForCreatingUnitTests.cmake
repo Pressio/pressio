@@ -7,9 +7,9 @@ macro(add_serial_utest TESTNAME)
   add_executable(${testNameFinal}
     ${ARGN} ${GTESTMAINSDIR}/gTestMain_serial.cc)
 
-  #find_library(GMOCKLIB NAMES gmock PATHS ${GTEST_ROOT}/lib/ NO_DEFAULT_PATH)
+  find_library(GMOCKLIB NAMES gmock PATHS ${GTEST_ROOT}/lib/ NO_DEFAULT_PATH)
   target_link_libraries(${testNameFinal}
-    GTest::gtest GTest::gmock GTest::Main)
+    GTest::gtest ${GMOCKLIB} GTest::Main)
 
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
 endmacro()
@@ -23,7 +23,7 @@ macro(add_serial_utest_kokkos TESTNAME TESTSRCS)
     ${TESTSRCS} ${GTESTMAINSDIR}/gTestMain_kokkos.cc)
 
   target_link_libraries(${testNameFinal}
-    GTest::gtest GTest::gmock GTest::Main)
+    GTest::GTest GTest::Main)
 
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
 endmacro()
@@ -38,7 +38,7 @@ macro(add_utest_mpi TESTNAME TESTSRCS gMAIN nRANKS)
 
   target_link_libraries(${testNameFinal}
     ${MPI_CXX_LIBRARIES}
-    GTest::gtest GTest::gmock GTest::Main)
+    GTest::GTest GTest::Main)
 
   add_test(
     NAME ${testNameFinal}
