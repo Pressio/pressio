@@ -94,7 +94,6 @@ jobs:
     env:
       num_cpus: 2
       pressio_src: /__w/pressio/pressio   #local: /home/antoine/Documents/pressio/
-      pressio_build: /home/pressio_builds
       target_dir: /out
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install
@@ -120,7 +119,7 @@ jobs:
 
         # In this stage pressio-builder script is used for configuration purposes
         run: |
-          cmake -S $pressio_src \
+          cmake -S $pressio_src -B $target_dir \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
             -D CMAKE_C_COMPILER:FILEPATH=${{ matrix.config.c }} \
