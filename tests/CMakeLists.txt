@@ -6,7 +6,7 @@ set(GTESTMAINSDIR "${CMAKE_CURRENT_SOURCE_DIR}/gtest_mains")
 message(">> Google tests main files are in: " ${GTESTMAINSDIR})
 
 # we need Gtest for unit tests
-find_package(GTest REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 if (NOT GTEST_FOUND)
 message(FATAL_ERROR
 	"Trying to build unit_tests but I cannot find GTest.
