@@ -94,7 +94,7 @@ jobs:
     env:
       num_cpus: 2
       pressio_src: /__w/pressio/pressio   #local: /home/antoine/Documents/pressio/
-      target_dir: /out
+      pressio_build: /out/pressio/build
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install
       small: small
@@ -119,7 +119,7 @@ jobs:
 
         # In this stage pressio-builder script is used for configuration purposes
         run: |
-          cmake -S $pressio_src -B $target_dir \
+          cmake -S $pressio_src -B $pressio_build \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
             -D CMAKE_C_COMPILER:FILEPATH=${{ matrix.config.c }} \
@@ -135,7 +135,7 @@ jobs:
       # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
         run: |
-          cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
+          cd ${{ env.pressio_build }}/pressio/build/tests/functional_${{ env.small }}
           make -j $num_cpus
           ctest --output-on-failure
 
