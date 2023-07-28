@@ -260,11 +260,13 @@ jobs:
 
     - name: Configure
       run: |
+        ls $gtest_dir
+
         cmake -S $pressio_src -B $pressio_build \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
           -D CMAKE_CXX_STANDARD=20 \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-          -D GTEST_ROOT=$gtest_dir \
+          -D GTEST_ROOT=$gtest_dir/lib/cmake/GTest \
           -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
           -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
