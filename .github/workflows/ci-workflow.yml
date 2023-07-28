@@ -183,7 +183,7 @@ jobs:
       pressio_src: /__w/pressio/pressio
       pressio_build: /out/pressio/build
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
-      gtest_dir: /usr/local/gtest/install
+      gtest_dir: /out/pressio/build/gtest/install
       trilinos_dir: /usr/local/trilinos/install
 
     steps:
