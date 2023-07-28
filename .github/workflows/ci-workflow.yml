@@ -126,7 +126,7 @@ jobs:
             -D CMAKE_CXX_COMPILER=$CXX \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
             -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
-            -D GTest_DIR=$gtest_dir/lib/cmake/GTest \
+            -D GTest_DIR=${gtest_dir}/lib/cmake/GTest \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D CMAKE_INSTALL_PREFIX:PATH=../install \
@@ -266,7 +266,7 @@ jobs:
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
           -D CMAKE_CXX_STANDARD=20 \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-          -D GTest_DIR=$gtest_dir/lib/cmake/GTest \
+          -D GTest_DIR=${gtest_dir}/lib/cmake/GTest \
           -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
           -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
