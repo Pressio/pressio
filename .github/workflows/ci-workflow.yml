@@ -66,7 +66,7 @@ jobs:
           # os: Stands for OS on GitHub Runner (Ubuntu / MacOS / Windows)
           # image: Stands for used Docker Image
           # mode: Stands for build mode inside Pressio (Debug / Release)
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release, c: gcc, cxx: g++ }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release, c: /usr/bin/gcc, cxx: /usr/bin/g++ }
           - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Debug, c: gcc, cxx: g++ }
 
           - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release, c: clang-9, cxx: clang++-9 }
@@ -120,11 +120,11 @@ jobs:
 
         # In this stage pressio-builder script is used for configuration purposes
         run: |
-          cmake -S $pressio_src -B $pressio_build \
+          cmake -S $pressio_src \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-            -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/${{ matrix.config.c }} \
-            -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/${{ matrix.config.cxx }} \
+            -D CMAKE_C_COMPILER:FILEPATH=${{ matrix.config.c }} \
+            -D CMAKE_CXX_COMPILER:FILEPATH=${{ matrix.config.cxx }} \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
             -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
             -D GTEST_ROOT=$gtest_dir \
@@ -136,10 +136,9 @@ jobs:
       # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
         run: |
-          cmake --build $pressio_build -j $num_cpus
           cd ${{ env.target_dir }}/pressio/build/tests/functional_${{ env.small }}
           make -j $num_cpus
-          ctest -j $num_cpus --output-on-failure
+          ctest --output-on-failure
 
       # In this stage medium functional tests are built and run
       #- name: build-test-${{ env.medium }}
