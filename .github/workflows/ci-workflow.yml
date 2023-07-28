@@ -135,7 +135,7 @@ jobs:
       # In this stage small functional tests are built and run
       - name: build-test-${{ env.small }}
         run: |
-          cd ${{ env.pressio_build }}/pressio/build/tests/functional_${{ env.small }}
+          cd ${{ env.pressio_build }}/tests/functional_${{ env.small }}
           make -j $num_cpus
           ctest --output-on-failure
 
