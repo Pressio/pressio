@@ -1,13 +1,11 @@
 
 #include <gtest/gtest.h>
-//#include <gmock/gmock.h>
 #include <mpi.h>
 #include <Tpetra_Core.hpp>
 
 int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
-  //  ::testing::InitGoogleMock(&argc,argv);
   int ws_ = 0;
   int err = 0;
 
