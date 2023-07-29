@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-//#include <gmock/gmock.h>
 #include <Kokkos_Core.hpp>
 #include <memory>
 
