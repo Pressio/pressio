@@ -6,7 +6,6 @@
 int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
-  //  ::testing::InitGoogleMock(&argc,argv);
   int ws_ = 0;
   int err = 0;
 
