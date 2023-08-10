@@ -218,8 +218,8 @@ jobs:
           -D CMAKE_INSTALL_PREFIX:PATH=../install \
           -D CMAKE_CXX_FLAGS=''
 
-    #- name: Build
-    #  run: cmake --build $pressio_build -j $num_cpus
+    - name: Build
+      run: cmake --build $pressio_build -j $num_cpus
 
     - name: Test
       run: |
