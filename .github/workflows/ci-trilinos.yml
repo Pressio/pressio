@@ -1,0 +1,105 @@
+############################## WORKFLOW #################################
+name: github-linux-ci-trilinos
+
+############################## TRIGGERS #################################
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+  push: # for direct quick fixes
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+
+############################## CONCURRENCY ##############################
+concurrency:
+  group: CI-${{ github.head_ref }}
+  cancel-in-progress: true
+
+############################## JOBS #####################################
+jobs:
+
+  ############################## JOB `CI-trilinos` ######################
+  CI-trilinos:
+    strategy:
+      matrix:
+          config:
+          - {
+              os: ubuntu-latest,
+              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
+              build_type: "Release", cc: "mpicc", cxx: "mpicxx",
+              requirements: "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
+            }
+
+          - {
+              os: ubuntu-latest,
+              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
+              build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
+              requirements: "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
+            }
+
+    runs-on: ${{ matrix.config.os }}
+
+    container: pressiomodelreduction/${{ matrix.config.image }}
+
+    env:
+      num_cpus: 4
+      pressio_src: /__w/pressio/pressio
+      pressio_build: /home/pressio_builds
+      eigen_inc_dir: /home/pressio_builds/eigen/install/include/eigen3
+      gtest_dir: /home/pressio_builds/gtest/install
+      trilinos_dir: /home/pressio_builds/trilinos/install
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Creating environnement
+      run: |
+        apt-get update -y
+        ${{ matrix.config.requirements }}
+
+    - name: Configure
+      run: |
+        cmake -S $pressio_src -B $pressio_build \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+          -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+          -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc \
+          -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
+          -D MPI_Fortran_COMPILER:FILEPATH=/usr/bin/mpif90 \
+          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_MPI:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_TRILINOS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_BLAS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
+          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+          -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
+          -D GTEST_ROOT=$gtest_dir \
+          -D TRILINOS_ROOT=$trilinos_dir \
+          -D CMAKE_INSTALL_PREFIX:PATH=../install \
+          -D CMAKE_CXX_FLAGS=''
+
+    - name: Build
+      run: cmake --build $pressio_build -j $num_cpus
+
+    - name: Test
+      run: |
+        cd ${{ env.pressio_build }}
+        export LD_LIBRARY_PATH=${{ env.pressio_build }}/trilinos/install/lib
+        export OMPI_ALLOW_RUN_AS_ROOT=1
+        export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+        ctest -j $num_cpus --output-on-failure
+
+

@@ -1,0 +1,80 @@
+############################## WORKFLOW #################################
+name: github-linux-ci-cxx20
+
+############################## TRIGGERS #################################
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+  push: # for direct quick fixes
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+
+############################## CONCURRENCY ##############################
+concurrency:
+  group: CI-${{ github.head_ref }}
+  cancel-in-progress: true
+
+############################## JOBS #####################################
+jobs:
+
+  ############################ JOB: c++ 20 ##############################
+  CI-cxx20:
+    strategy:
+      matrix:
+        image:
+          - ubuntu-20.04_gnu-11_eigen-3.3.7_gtest
+          - ubuntu-20.04_clang-12_eigen-3.3.7_gtest
+          - fedora-34-gnu_11-eigen_3.3.7-gtest
+          - fedora-34-clang_12-eigen_3.3.7-gtest
+          #- intel-oneapi-2022.2.0_eigen-3.3.7_gtest
+        build_type:
+          - Release
+          # - Debug # disable to reduce number of jobs
+
+    runs-on: ubuntu-latest
+
+    container: pressiomodelreduction/${{ matrix.image }}
+
+    env:
+      num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
+      pressio_src: /__w/pressio/pressio
+      pressio_build: /home/pressio_builds
+      eigen_inc_dir: /usr/local/eigen/install/include/eigen3
+      gtest_dir: /usr/local/gtest/install/
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure
+      run: |
+        cmake -S $pressio_src -B $pressio_build \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+          -D CMAKE_CXX_STANDARD=20 \
+          -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+          -D GTEST_ROOT=$gtest_dir \
+          -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
+          -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+          -D PRESSIO_ENABLE_CXX17:BOOL=OFF \
+          -D PRESSIO_ENABLE_CXX20:BOOL=ON
+
+    - name: Build
+      run: cmake --build $pressio_build -j $num_cpus
+
+    - name: Test
+      # working-directory: $pressio_build # 2022-10-18: won't resolve
+      run: cd $pressio_build && ctest -j $num_cpus --output-on-failure
