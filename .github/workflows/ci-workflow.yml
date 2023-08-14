@@ -180,9 +180,9 @@ jobs:
       num_cpus: 4
       pressio_src: /__w/pressio/pressio
       pressio_build: /home/pressio_builds
-      eigen_inc_dir: /home/pressio_builds/eigen/install
+      eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /home/pressio_builds/gtest/install
-      trilinos_dir: /home/pressio_builds/trilinos/install/
+      trilinos_dir: /home/pressio_builds/trilinos/install
 
     steps:
     - uses: actions/checkout@v1
