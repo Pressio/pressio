@@ -211,8 +211,6 @@ jobs:
           -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           -D GTEST_ROOT=$gtest_dir \
           -D TRILINOS_ROOT=$trilinos_dir \
-          -D KOKKOS_ROOT= \
-          -D KOKKOS_KERNELS_ROOT= \
           -D CMAKE_INSTALL_PREFIX:PATH=../install \
           -D CMAKE_CXX_FLAGS=''
 
