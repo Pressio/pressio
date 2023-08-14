@@ -2658,17 +2658,17 @@ FMT_CONSTEXPR_DECL FMT_INLINE void parse_format_string(
     return;
   }
   struct writer {
-    FMT_CONSTEXPR void operator()(const Char* begin, const Char* end) {
-      if (begin == end) return;
+    FMT_CONSTEXPR void operator()(const Char* beginLocal, const Char* endLocal){
+      if (beginLocal == endLocal) return;
       for (;;) {
         const Char* p = nullptr;
-        if (!find<IS_CONSTEXPR>(begin, end, '}', p))
-          return handler_.on_text(begin, end);
+        if (!find<IS_CONSTEXPR>(beginLocal, endLocal, '}', p))
+          return handler_.on_text(beginLocal, endLocal);
         ++p;
-        if (p == end || *p != '}')
+        if (p == endLocal || *p != '}')
           return handler_.on_error("unmatched '}' in format string");
-        handler_.on_text(begin, p);
-        begin = p + 1;
+        handler_.on_text(beginLocal, p);
+        beginLocal = p + 1;
       }
     }
     Handler& handler_;
