@@ -42,14 +42,6 @@ The following options control enabling TPLs:
      - self-explanatory
      - ``OFF``  automatically ``ON`` if ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
 
-   * - ``PRESSIO_ENABLE_TPL_BLAS``
-     - self-explanatory
-     - ``OFF``\ ; automatically ``ON`` if ``PRESSIO_ENABLE_TPL_LAPACK=ON`` or ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-
-   * - ``PRESSIO_ENABLE_TPL_LAPACK``
-     - self-explanatory
-     - ``OFF``\ ; automatically ``ON`` if ``PRESSIO_ENABLE_TPL_BLAS=ON`` or ``PRESSIO_ENABLE_TPL_TRILINOS=ON``
-
 
 Obviously, the choice of which TPLs to enable is related to
 your application's dependency requirements.
