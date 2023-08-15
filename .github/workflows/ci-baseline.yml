@@ -1,9 +1,9 @@
-############################## WORKFLOW ##############################
+############################## WORKFLOW #################################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#name
 # This workflow will be visible in GitHun Aciton under the name, defined below.
-name: github-linux
+name: github-Linux-baseline
 
-############################## TRIGGERS ##############################
+############################## TRIGGERS #################################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
 # This workflow will be triggered on git action defined below e.g. push, pull_request.
 on:
@@ -31,15 +31,16 @@ on:
 # Concurrency is a new feature to GitHub Actions, currently in beta stage.
 # ${{ github.head_ref }} guarantees that the same job names are not cancelled on different branches.
 concurrency:
-  group: CI-${{ github.head_ref }}
-  cancel-in-progress: true
+  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
-############################## JOBS ##############################
+############################## JOBS #####################################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobs
 # A workflow run is made up of one or more jobs. Jobs run in parallel by default.
 jobs:
-  ############################## JOB `CI` ##############################
+  ############################## JOB `CI` ###############################
   CI:
+    name: baseline
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error
     # Prevents a workflow run from failing when a job fails. Set to true to allow a workflow run to pass when this job fails.
     continue-on-error: false
@@ -152,124 +153,3 @@ jobs:
           cd ${{ env.pressio_build }}/tests/functional_${{ env.large }}
           make -j $num_cpus
           ctest -j $num_cpus --output-on-failure
-
-  ############################## JOB `CI-trilinos` defined below ##############################
-  CI-trilinos:
-    strategy:
-      matrix:
-          config:
-          - {
-              os: ubuntu-latest,
-              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
-              build_type: "Release", cc: "mpicc", cxx: "mpicxx",
-              requirements: "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
-            }
-
-          - {
-              os: ubuntu-latest,
-              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
-              build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
-              requirements: "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
-            }
-
-    runs-on: ${{ matrix.config.os }}
-
-    container: pressiomodelreduction/${{ matrix.config.image }}
-
-    env:
-      num_cpus: 4
-      pressio_src: /__w/pressio/pressio
-      pressio_build: /home/pressio_builds
-      eigen_inc_dir: /home/pressio_builds/eigen/install/include/eigen3
-      gtest_dir: /home/pressio_builds/gtest/install
-      trilinos_dir: /home/pressio_builds/trilinos/install
-
-    steps:
-    - uses: actions/checkout@v1
-
-    - name: Creating environnement
-      run: |
-        apt-get update -y
-        ${{ matrix.config.requirements }}
-
-    - name: Configure
-      run: |
-        cmake -S $pressio_src -B $pressio_build \
-          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
-          -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-          -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc \
-          -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
-          -D MPI_Fortran_COMPILER:FILEPATH=/usr/bin/mpif90 \
-          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
-          -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-          -D PRESSIO_ENABLE_TPL_MPI:BOOL=ON \
-          -D PRESSIO_ENABLE_TPL_TRILINOS:BOOL=ON \
-          -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
-          -D PRESSIO_ENABLE_TPL_BLAS:BOOL=ON \
-          -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
-          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
-          -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
-          -D GTEST_ROOT=$gtest_dir \
-          -D TRILINOS_ROOT=$trilinos_dir \
-          -D CMAKE_INSTALL_PREFIX:PATH=../install \
-          -D CMAKE_CXX_FLAGS=''
-
-    - name: Build
-      run: cmake --build $pressio_build -j $num_cpus
-
-    - name: Test
-      run: |
-        cd ${{ env.pressio_build }}
-        export LD_LIBRARY_PATH=${{ env.pressio_build }}/trilinos/install/lib
-        export OMPI_ALLOW_RUN_AS_ROOT=1
-        export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
-        ctest -j $num_cpus --output-on-failure
-
-############################## JOB: c++ 20 ##############################
-  CI-cxx20:
-    strategy:
-      matrix:
-        image:
-          - ubuntu-20.04_gnu-11_eigen-3.3.7_gtest
-          - ubuntu-20.04_clang-12_eigen-3.3.7_gtest
-          - fedora-34-gnu_11-eigen_3.3.7-gtest
-          - fedora-34-clang_12-eigen_3.3.7-gtest
-          #- intel-oneapi-2022.2.0_eigen-3.3.7_gtest
-        build_type:
-          - Release
-          # - Debug # disable to reduce number of jobs
-
-    runs-on: ubuntu-latest
-
-    container: pressiomodelreduction/${{ matrix.image }}
-
-    env:
-      num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
-      pressio_src: /__w/pressio/pressio
-      pressio_build: /home/pressio_builds
-      eigen_inc_dir: /usr/local/eigen/install/include/eigen3
-      gtest_dir: /usr/local/gtest/install/
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Configure
-      run: |
-        cmake -S $pressio_src -B $pressio_build \
-          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
-          -D CMAKE_CXX_STANDARD=20 \
-          -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-          -D GTEST_ROOT=$gtest_dir \
-          -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
-          -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
-          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
-          -D PRESSIO_ENABLE_CXX17:BOOL=OFF \
-          -D PRESSIO_ENABLE_CXX20:BOOL=ON
-
-    - name: Build
-      run: cmake --build $pressio_build -j $num_cpus
-
-    - name: Test
-      # working-directory: $pressio_build # 2022-10-18: won't resolve
-      run: cd $pressio_build && ctest -j $num_cpus --output-on-failure
