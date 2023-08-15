@@ -1,7 +1,7 @@
 ############################## WORKFLOW #################################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#name
 # This workflow will be visible in GitHun Aciton under the name, defined below.
-name: github-linux-ci-baseline
+name: github-Linux-baseline
 
 ############################## TRIGGERS #################################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
@@ -31,8 +31,8 @@ on:
 # Concurrency is a new feature to GitHub Actions, currently in beta stage.
 # ${{ github.head_ref }} guarantees that the same job names are not cancelled on different branches.
 concurrency:
-  group: CI-${{ github.head_ref }}
-  cancel-in-progress: true
+  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 ############################## JOBS #####################################
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobs
@@ -40,6 +40,7 @@ concurrency:
 jobs:
   ############################## JOB `CI` ###############################
   CI:
+    name: baseline
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error
     # Prevents a workflow run from failing when a job fails. Set to true to allow a workflow run to pass when this job fails.
     continue-on-error: false

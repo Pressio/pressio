@@ -1,4 +1,4 @@
-name: github-linux-ci-trilinos
+name: github-Linux-trilinos
 
 on:
   pull_request:
@@ -21,12 +21,12 @@ on:
     - '**/*.md'
 
 concurrency:
-  group: CI-${{ github.head_ref }}
-  cancel-in-progress: true
+  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 jobs:
-
   CI-trilinos:
+    name: Trilinos
     strategy:
       matrix:
           config:
