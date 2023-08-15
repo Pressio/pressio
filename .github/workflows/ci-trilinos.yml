@@ -1,7 +1,5 @@
-############################## WORKFLOW #################################
 name: github-linux-ci-trilinos
 
-############################## TRIGGERS #################################
 on:
   pull_request:
     types: [ opened, reopened, synchronize ]
@@ -22,15 +20,12 @@ on:
     - 'docs/**'
     - '**/*.md'
 
-############################## CONCURRENCY ##############################
 concurrency:
   group: CI-${{ github.head_ref }}
   cancel-in-progress: true
 
-############################## JOBS #####################################
 jobs:
 
-  ############################## JOB `CI-trilinos` ######################
   CI-trilinos:
     strategy:
       matrix:
