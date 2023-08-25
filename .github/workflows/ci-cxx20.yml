@@ -45,8 +45,6 @@ jobs:
 
     env:
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
-      pressio_src: /__w/pressio/pressio
-      pressio_build: /home/pressio_builds
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install/
 
@@ -55,7 +53,7 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -S $pressio_src -B $pressio_build \
+        cmake -B builddir \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
           -D CMAKE_CXX_STANDARD=20 \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
@@ -68,8 +66,8 @@ jobs:
           -D PRESSIO_ENABLE_CXX20:BOOL=ON
 
     - name: Build
-      run: cmake --build $pressio_build -j $num_cpus
+      run: cmake --build builddir -j $num_cpus
 
     - name: Test
-      # working-directory: $pressio_build # 2022-10-18: won't resolve
-      run: cd $pressio_build && ctest -j $num_cpus --output-on-failure
+      working-directory: builddir
+      run: ctest -j $num_cpus --output-on-failure
