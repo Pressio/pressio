@@ -94,7 +94,7 @@ static_assert(_PRESSIO_CPLUSPLUS >= PRESSIO_CXX_STD_14, "PRESSIO requires C++14 
 #define PRESSIO_LOG_LEVEL_OFF	    6
 
 // if we are in debug mode, enable debug prints by default
-#if !defined NDEBUG
+#if !defined NDEBUG && !defined PRESSIO_ENABLE_DEBUG_PRINT
 #define PRESSIO_ENABLE_DEBUG_PRINT
 #endif
 
