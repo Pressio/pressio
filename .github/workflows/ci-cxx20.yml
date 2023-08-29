@@ -40,9 +40,7 @@ jobs:
           # - Debug # disable to reduce number of jobs
 
     runs-on: ubuntu-latest
-
     container: pressiomodelreduction/${{ matrix.image }}
-
     env:
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
