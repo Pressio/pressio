@@ -1,23 +1,22 @@
-option(PRESSIO_ENABLE_CXX14 "bla bla" OFF)
-option(PRESSIO_ENABLE_CXX17 "bla bla" OFF)
-option(PRESSIO_ENABLE_CXX20 "bla bla" OFF)
+include(CMakePrintHelpers)
 
-option(PRESSIO_ENABLE_DEBUG_PRINT "bla bla" OFF)
-option(PRESSIO_ENABLE_TPL_EIGEN "bla bla" OFF)
-option(PRESSIO_ENABLE_TPL_TRILINOS "bla bla" OFF)
+option(PRESSIO_ENABLE_CXX14 "Enable C++14" OFF)
+option(PRESSIO_ENABLE_CXX17 "Enable C++17" OFF)
+option(PRESSIO_ENABLE_CXX20 "Enable C++20" OFF)
+
+option(PRESSIO_ENABLE_DEBUG_PRINT "Enable debug printing" OFF)
+option(PRESSIO_ENABLE_TPL_EIGEN "Enable Eigen TPL" OFF)
+option(PRESSIO_ENABLE_TPL_TRILINOS "Enable Trilinos TPL" OFF)
 # option(PRESSIO_ENABLE_TEUCHOS_TIMERS "bla bla" OFF)
 # option(PRESSIO_ENABLE_TPL_KOKKOS "bla bla" OFF)
 # option(PRESSIO_ENABLE_TPL_MPI "bla bla" OFF)
 
 if (CMAKE_CXX_STANDARD EQUAL 14)
   add_definitions(-DPRESSIO_ENABLE_CXX14)
-  message(STATUS "cxx_std1 = ${CMAKE_CXX_STANDARD}")
 elseif(CMAKE_CXX_STANDARD EQUAL 17)
   add_definitions(-DPRESSIO_ENABLE_CXX17)
-  message(STATUS "cxx_std2 = ${CMAKE_CXX_STANDARD}")
 elseif(CMAKE_CXX_STANDARD EQUAL 20)
   add_definitions(-DPRESSIO_ENABLE_CXX20)
-  message(STATUS "cxx_std3 = ${CMAKE_CXX_STANDARD}")
 endif()
 
 if (PRESSIO_ENABLE_DEBUG_PRINT)
@@ -56,11 +55,13 @@ endif()
 # 1. find or get gtest
 # ---------------------------------
 # adapted from Kokkos
-find_package(GTest QUIET)
+find_package(GTest REQUIRED)
 if (GTEST_FOUND)
   add_library(gtest_main ALIAS GTest::gtest_main)
-  message(STATUS "GTest found at ${GTEST_INCLUDE_DIRS}")
+  cmake_print_variables(GTEST_INCLUDE_DIRS)
 else()
+  # FIXME: use FetchContent_MakeAvailable?
+  # don't forget to remove tests/cmake/googletest/CMakeLists.txt.in
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/googletest/CMakeLists.txt.in
     googletest-download/CMakeLists.txt)
@@ -154,10 +155,10 @@ if(PRESSIO_ENABLE_FUNCTIONAL_SMALL_TESTS OR PRESSIO_ENABLE_TESTS)
   add_subdirectory(functional_small)
 endif()
 
-# if(PRESSIO_ENABLE_FUNCTIONAL_MEDIUM_TESTS OR PRESSIO_ENABLE_TESTS)
-#   add_subdirectory(functional_medium)
-# endif()
+if(PRESSIO_ENABLE_FUNCTIONAL_MEDIUM_TESTS OR PRESSIO_ENABLE_TESTS)
+  add_subdirectory(functional_medium)
+endif()
 
-# if(PRESSIO_ENABLE_FUNCTIONAL_LARGE_TESTS OR PRESSIO_ENABLE_TESTS)
-#   add_subdirectory(functional_large)
-# endif()
+if(PRESSIO_ENABLE_FUNCTIONAL_LARGE_TESTS OR PRESSIO_ENABLE_TESTS)
+  add_subdirectory(functional_large)
+endif()
