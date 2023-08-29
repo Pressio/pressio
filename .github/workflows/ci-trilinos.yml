@@ -80,7 +80,7 @@ jobs:
           -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
           -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           -D GTEST_ROOT=$gtest_dir \
-          -D TRILINOS_ROOT=$trilinos_dir \
+          -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
           -D CMAKE_INSTALL_PREFIX:PATH=../install \
           -D CMAKE_CXX_FLAGS=''
 

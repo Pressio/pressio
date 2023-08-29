@@ -34,8 +34,13 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
-  find_package(trilinos REQUIRED)
+  find_package(Trilinos REQUIRED)
+  # Note: it is possible to use find_package(<PackageName>) for each (sub)package
+  # https://trilinos.github.io/pdfs/Finding_Trilinos.txt
   add_definitions(-DPRESSIO_ENABLE_TPL_TRILINOS)
+
+  include_directories(${Trilinos_INCLUDE_DIRS})
+  link_libraries(${Trilinos_LIBRARIES})
 
   # FINISH THIS
 endif()
@@ -98,16 +103,16 @@ macro(add_serial_utest_kokkos TESTNAME TESTSRCS)
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
 endmacro()
 
-# macro(add_utest_mpi TESTNAME TESTSRCS gMAIN nRANKS)
-#   set(testNameFinal ${TESTNAME}_np${nRANKS})
-#   add_executable(${testNameFinal} ${TESTSRCS} ${GTESTMAINSDIR}/${gMAIN}.cc)
-#   target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES} gtest_main)
-#   add_test(
-#     NAME ${testNameFinal}
-#     COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${nRANKS}
-#     ${MPIEXEC_PREFLAGS} ${testNameFinal} ${MPIEXEC_POSTFLAGS}
-#     )
-# endmacro()
+macro(add_utest_mpi TESTNAME TESTSRCS gMAIN nRANKS)
+  set(testNameFinal ${TESTNAME}_np${nRANKS})
+  add_executable(${testNameFinal} ${TESTSRCS} ${GTESTMAINSDIR}/${gMAIN}.cc)
+  target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES} gtest_main)
+  add_test(
+    NAME ${testNameFinal}
+    COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${nRANKS}
+    ${MPIEXEC_PREFLAGS} ${testNameFinal} ${MPIEXEC_POSTFLAGS}
+    )
+endmacro()
 #=====================================================================
 
 # # macro to create and add an individual SERIAL test
