@@ -68,18 +68,11 @@
 #define PRESSIO_CXX_STD_20 202002L
 static_assert(_PRESSIO_CPLUSPLUS >= PRESSIO_CXX_STD_14, "PRESSIO requires C++14 or greater.");
 
-// #if !defined PRESSIO_ENABLE_CXX11
-// #define PRESSIO_ENABLE_CXX11 (_PRESSIO_CPLUSPLUS >= PRESSIO_CXX_STD_11)
-// #endif
-
 #if defined PRESSIO_ENABLE_CXX20
 #define PRESSIO_ENABLE_CXX17
 #endif
 #if defined PRESSIO_ENABLE_CXX17
 #define PRESSIO_ENABLE_CXX14
-#endif
-#if defined PRESSIO_ENABLE_CXX14
-#define PRESSIO_ENABLE_CXX11
 #endif
 
 // ----------------------------------------

@@ -1,4 +1,3 @@
-option(PRESSIO_ENABLE_CXX11 "bla bla" OFF)
 option(PRESSIO_ENABLE_CXX14 "bla bla" OFF)
 option(PRESSIO_ENABLE_CXX17 "bla bla" OFF)
 option(PRESSIO_ENABLE_CXX20 "bla bla" OFF)
