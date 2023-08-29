@@ -55,37 +55,24 @@ endif()
 # 1. find or get gtest
 # ---------------------------------
 # adapted from Kokkos
-find_package(GTest REQUIRED)
+find_package(GTest)
 if (GTEST_FOUND)
   add_library(gtest_main ALIAS GTest::gtest_main)
   cmake_print_variables(GTEST_INCLUDE_DIRS)
 else()
-  # FIXME: use FetchContent_MakeAvailable?
-  # don't forget to remove tests/cmake/googletest/CMakeLists.txt.in
-  configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/googletest/CMakeLists.txt.in
-    googletest-download/CMakeLists.txt)
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download
-  )
-  if(result)
-    message(FATAL_ERROR "Configure step for googletest failed: ${result}")
-  endif()
+  set(GTEST_VERSION "v1.14.0")
+  message(STATUS "GTest not found, fetching version ${GTEST_VERSION}")
 
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} --build .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download
+  list(APPEND CMAKE_MESSAGE_INDENT "[GTest] ")
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
+    URL_HASH MD5=c8340a482851ef6a3fe618a082304cfc
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
   )
-  if(result)
-    message(FATAL_ERROR "Build step for googletest failed: ${result}")
-  endif()
-
-  # Add googletest directly to our build. This defines the gtest and gtest_main targets.
-  add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-    ${CMAKE_CURRENT_BINARY_DIR}/googletest-build EXCLUDE_FROM_ALL)
+  FetchContent_MakeAvailable(googletest)
+  list(POP_BACK CMAKE_MESSAGE_INDENT)
 endif()
 
 # ---------------------------------
