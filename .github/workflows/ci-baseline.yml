@@ -29,7 +29,6 @@ jobs:
     name: baseline
     continue-on-error: false
     strategy:
-      max-parallel: 10
       fail-fast: false
       matrix:
         image:
@@ -41,11 +40,26 @@ jobs:
         build_type:
           - Release
           - Debug
+        cmake_extra_args:
+          - ''
+        include:
+          - image: ubuntu-20.04_gnu-11_eigen-3.3.7_gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+          - image: ubuntu-20.04_clang-12_eigen-3.3.7_gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+          - image: fedora-34-gnu_11-eigen_3.3.7-gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+          - image: fedora-34-clang_12-eigen_3.3.7-gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
     runs-on: ubuntu-latest
     container: pressiomodelreduction/${{ matrix.image }}
     env:
-      num_cpus: 2
+      num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install
 
@@ -61,6 +75,7 @@ jobs:
             -D CMAKE_CXX_FLAGS='' \
             -D CMAKE_INSTALL_PREFIX:PATH=../install \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            ${{ matrix.cmake_extra_args }} \
             -D GTEST_ROOT=$gtest_dir \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
