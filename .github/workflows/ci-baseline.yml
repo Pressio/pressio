@@ -58,9 +58,6 @@ jobs:
       num_cpus: 2
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install
-      small: small
-      medium: medium
-      large: large
 
     steps:
       - uses: actions/checkout@v3
@@ -81,22 +78,22 @@ jobs:
             -D CMAKE_CXX_FLAGS=''
 
       # In this stage small functional tests are built and run
-      - name: build-test-${{ env.small }}
+      - name: build-test-small
         run: |
-          cd builddir/tests/functional_${{ env.small }}
+          cd builddir/tests/functional_small
           make -j $num_cpus
           ctest -j $num_cpus --output-on-failure
 
       # In this stage medium functional tests are built and run
-      - name: build-test-${{ env.medium }}
+      - name: build-test-medium
         run: |
-          cd builddir/tests/functional_${{ env.medium }}
+          cd builddir/tests/functional_medium
           make -j $num_cpus
           ctest -j $num_cpus --output-on-failure
 
       # In this stage large functional tests are built and run
-      - name: build-test-${{ env.large }}
+      - name: build-test-large
         run: |
-          cd builddir/tests/functional_${{ env.large }}
+          cd builddir/tests/functional_large
           make -j $num_cpus
           ctest -j $num_cpus --output-on-failure
