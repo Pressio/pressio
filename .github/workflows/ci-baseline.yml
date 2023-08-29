@@ -77,23 +77,11 @@ jobs:
             -D CMAKE_INSTALL_PREFIX:PATH=../install \
             -D CMAKE_CXX_FLAGS=''
 
-      # In this stage small functional tests are built and run
-      - name: build-test-small
+      - name: build
         run: |
-          cd builddir/tests/functional_small
-          make -j $num_cpus
-          ctest -j $num_cpus --output-on-failure
+          cmake --build builddir
 
-      # In this stage medium functional tests are built and run
-      - name: build-test-medium
+      - name: test
+        working-directory: builddir
         run: |
-          cd builddir/tests/functional_medium
-          make -j $num_cpus
-          ctest -j $num_cpus --output-on-failure
-
-      # In this stage large functional tests are built and run
-      - name: build-test-large
-        run: |
-          cd builddir/tests/functional_large
-          make -j $num_cpus
           ctest -j $num_cpus --output-on-failure
