@@ -45,10 +45,10 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
   # FINISH THIS
 endif()
 
-# if(PRESSIO_ENABLE_TPL_MPI)
-#   find_package(MPI REQUIRED)
-#   include_directories(${MPI_CXX_INCLUDE_DIRS})
-# endif()
+if(PRESSIO_ENABLE_TPL_MPI)
+  find_package(MPI REQUIRED)
+  include_directories(${MPI_CXX_INCLUDE_DIRS})
+endif()
 
 # if(PRESSIO_ENABLE_TPL_KOKKOS AND NOT PRESSIO_ENABLE_TPL_TRILINOS)
 #   find_package(KokkosKernels REQUIRED)
