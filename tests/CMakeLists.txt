@@ -106,7 +106,7 @@ endmacro()
 macro(add_utest_mpi TESTNAME TESTSRCS gMAIN nRANKS)
   set(testNameFinal ${TESTNAME}_np${nRANKS})
   add_executable(${testNameFinal} ${TESTSRCS} ${GTESTMAINSDIR}/${gMAIN}.cc)
-  target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES} gtest_main)
+  target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES} pressio gtest_main)
   add_test(
     NAME ${testNameFinal}
     COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${nRANKS}
