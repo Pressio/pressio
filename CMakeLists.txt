@@ -3,6 +3,7 @@ project(pressio C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(colors)
+include(options)
 
 #=====================================================================
 # versioning
@@ -21,30 +22,21 @@ message("${Magenta}>> PRESSIO: version = ${PRESSIO_VERSION_NUMBER} ${ColourReset
 #=====================================================================
 # c++ standard
 #=====================================================================
-IF (NOT CMAKE_CXX_STANDARD)
+if (NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
-ENDIF()
+endif()
 
 message("${Magenta}>> PRESSIO: CMAKE_CXX_STANDARD is set to ${CMAKE_CXX_STANDARD} ${ColourReset}")
 
-IF(CMAKE_CXX_STANDARD STREQUAL "14")
-  if(NOT "cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-    message(FATAL_ERROR "Compiler does not support C++14. This is required.")
+if(CMAKE_CXX_STANDARD STREQUAL "14"
+    OR CMAKE_CXX_STANDARD STREQUAL "17"
+    OR CMAKE_CXX_STANDARD STREQUAL "20")
+  if(NOT "cxx_std_${CMAKE_CXX_STANDARD}" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+    message(FATAL_ERROR "Compiler does not support C++${CMAKE_CXX_STANDARD}. This is required.")
   endif()
-
-ELSEIF(CMAKE_CXX_STANDARD STREQUAL "17")
-  if(NOT "cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-    message(FATAL_ERROR "Compiler does not support C++17. This is required.")
-  endif()
-
-ELSEIF(CMAKE_CXX_STANDARD STREQUAL "20")
-  message("${Magenta}>> PRESSIO: CMAKE_CXX_STANDARD = 20 ${ColourReset}")
-  if(NOT "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-    message(FATAL_ERROR "Compiler does not support C++20. This is required.")
-  endif()
-ENDIF()
+endif()
 
 ################################################################################
 

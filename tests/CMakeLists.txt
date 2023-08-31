@@ -1,38 +1,4 @@
 include(CMakePrintHelpers)
-include(options)
-
-if(PRESSIO_ENABLE_TPL_EIGEN)
-  if(NOT EIGEN_INCLUDE_DIR)
-    message(FATAL_ERROR
-      "I cannot find the Eigen headers. "
-      "Please reconfigure with: -DEIGEN_INCLUDE_DIR=<full-path-to-headers>")
-  endif()
-  include_directories(${EIGEN_INCLUDE_DIR})
-  add_definitions(-DPRESSIO_ENABLE_TPL_EIGEN)
-endif()
-
-if(PRESSIO_ENABLE_TPL_TRILINOS)
-  find_package(Trilinos REQUIRED)
-  # Note: it is possible to use find_package(<PackageName>) for each (sub)package
-  # https://trilinos.github.io/pdfs/Finding_Trilinos.txt
-  add_definitions(-DPRESSIO_ENABLE_TPL_TRILINOS)
-
-  include_directories(${Trilinos_INCLUDE_DIRS})
-  link_libraries(${Trilinos_LIBRARIES})
-
-  # FINISH THIS
-endif()
-
-if(PRESSIO_ENABLE_TPL_MPI)
-  find_package(MPI REQUIRED)
-  include_directories(${MPI_CXX_INCLUDE_DIRS})
-endif()
-
-# if(PRESSIO_ENABLE_TPL_KOKKOS AND NOT PRESSIO_ENABLE_TPL_TRILINOS)
-#   find_package(KokkosKernels REQUIRED)
-#   set(KOKKOS_LIBS Kokkos::kokkoskernels)
-#   #Kokkos::BLAS Kokkos::LAPACK Kokkos::kokkos Kokkos::kokkoskernels)
-# endif()
 
 # ---------------------------------
 # 1. find or get gtest
