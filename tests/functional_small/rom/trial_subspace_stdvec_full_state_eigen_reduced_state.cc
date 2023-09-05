@@ -18,8 +18,8 @@ std::vector<T> clone(const std::vector<T> & o){
   return o;
 }
 
-template<class T>
-void fill(std::vector<T> & o, T value){
+template<class T, class ValT>
+void fill(std::vector<T> & o, ValT value){
   std::for_each(o.begin(), o.end(), [=](T & entry){ entry = value; });
 }
 
