@@ -58,7 +58,10 @@ public:
     : linSpace_(basisMatrix,
 		linear_subspace_t::SpanningSet::Columns),
       translation_(translation),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(basis_matrix_type && basisMatrix,
 		      full_state_type && translation,
@@ -66,7 +69,10 @@ public:
     : linSpace_(std::move(basisMatrix),
 		linear_subspace_t::SpanningSet::Columns),
       translation_(std::move(translation)),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(const basis_matrix_type & basisMatrix,
 		      full_state_type && translation,
@@ -74,7 +80,10 @@ public:
     : linSpace_(basisMatrix,
 		linear_subspace_t::SpanningSet::Columns),
       translation_(std::move(translation)),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(basis_matrix_type && basisMatrix,
 		      const full_state_type & translation,
@@ -82,12 +91,18 @@ public:
     : linSpace_(std::move(basisMatrix),
 		linear_subspace_t::SpanningSet::Columns),
       translation_(translation),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(const TrialColumnSubspace & other)
     : linSpace_(other.linSpace_),
       translation_(::pressio::ops::clone(other.translation_)),
-      isAffine_(other.isAffine_){}
+      isAffine_(other.isAffine_)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   /* For this class to be really immutable, we should not have a
      move assign operator and copy assign.
@@ -159,6 +174,12 @@ public:
   }
 
 private:
+  void setShiftToZeroIfNonAffine(){
+    if (!isAffine_){
+      ::pressio::ops::fill(translation_, 0);
+    }
+  }
+
   void mapFromReducedStateWithoutTranslation(const reduced_state_type & latState,
 					     full_state_type & fullState) const
   {

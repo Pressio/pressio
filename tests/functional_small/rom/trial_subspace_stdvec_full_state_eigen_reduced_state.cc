@@ -308,3 +308,18 @@ TEST(rom, affine_trial_subspace_view_basis)
   auto & J = space.basis();
   EXPECT_TRUE( J.isApprox(phi) );
 }
+
+
+TEST(rom, trial_subspace_shift_is_zero_if_nonaffine)
+{
+  using namespace pressio::rom;
+
+  using basis_t = Eigen::MatrixXd;
+  basis_t phi;
+  using reduced_state_type = Eigen::VectorXd;
+  const double fillvalueshift = 1145.4;
+  std::vector<double> shift(15, fillvalueshift);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, false);
+  const auto & shiftStored = space.translationVector();
+  ASSERT_TRUE( std::all_of(shiftStored.cbegin(), shiftStored.cend(), [](auto v){ return v==0; }) );
+}
