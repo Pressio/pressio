@@ -47,7 +47,7 @@ public:
 private:
   using linear_subspace_t = LinearSubspace<basis_matrix_type>;
   const linear_subspace_t linSpace_;
-  const full_state_type translation_;
+  full_state_type translation_;
   bool isAffine_;
   basis_matrix_type * dummy_ = nullptr;
 
