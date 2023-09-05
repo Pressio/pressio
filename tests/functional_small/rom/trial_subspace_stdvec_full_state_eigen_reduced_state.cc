@@ -18,8 +18,8 @@ std::vector<T> clone(const std::vector<T> & o){
   return o;
 }
 
-template<class T>
-void fill(std::vector<T> & o, T value){
+template<class T, class ValT>
+void fill(std::vector<T> & o, ValT value){
   std::for_each(o.begin(), o.end(), [=](T & entry){ entry = value; });
 }
 
@@ -307,4 +307,19 @@ TEST(rom, affine_trial_subspace_view_basis)
   reduced_state_type latState1 = reduced_state_type::Random(3);
   auto & J = space.basis();
   EXPECT_TRUE( J.isApprox(phi) );
+}
+
+
+TEST(rom, trial_subspace_shift_is_zero_if_nonaffine)
+{
+  using namespace pressio::rom;
+
+  using basis_t = Eigen::MatrixXd;
+  basis_t phi;
+  using reduced_state_type = Eigen::VectorXd;
+  const double fillvalueshift = 1145.4;
+  std::vector<double> shift(15, fillvalueshift);
+  auto space = create_trial_column_subspace<reduced_state_type>(phi, shift, false);
+  const auto & shiftStored = space.translationVector();
+  ASSERT_TRUE( std::all_of(shiftStored.cbegin(), shiftStored.cend(), [](auto v){ return v==0; }) );
 }
