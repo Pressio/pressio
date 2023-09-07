@@ -338,5 +338,42 @@ struct ImplicitResidualJacobianPolicy<
     >
   > : std::true_type{};
 
+
+template<class T>
+using policy_has_call_overload_for_userdefined_action_on_stencil_states_t =
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<StencilStatesPotentiallyOverwrittenByUser>(),
+	std::declval<StepScheme const &>(),
+	std::declval<typename T::state_type const &>(),
+	std::declval<ImplicitStencilStatesDynamicContainer<typename T::state_type> const & >(),
+	std::declval<ImplicitStencilRightHandSideDynamicContainer<typename T::residual_type> & >(),
+	std::declval< ::pressio::ode::StepEndAt<typename T::independent_variable_type> >(),
+	std::declval< ::pressio::ode::StepCount >(),
+	std::declval< ::pressio::ode::StepSize<typename T::independent_variable_type> >(),
+	std::declval<typename T::residual_type &>(),
+#ifdef PRESSIO_ENABLE_CXX17
+	std::declval< std::optional<typename T::jacobian_type*> >()
+#else
+	std::declval< typename T::jacobian_type* >()
+#endif
+	)
+       );
+
+template<class T, class = void>
+struct ImplicitResidualJacobianPolicyForUserDefinedStencilStatesAction
+  : std::false_type{};
+
+template<class T>
+struct ImplicitResidualJacobianPolicyForUserDefinedStencilStatesAction<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ImplicitResidualJacobianPolicy<T>::value &&
+    mpl::is_detected< policy_has_call_overload_for_userdefined_action_on_stencil_states_t >::value
+    >
+  > : std::true_type{};
+
 }}
 #endif
