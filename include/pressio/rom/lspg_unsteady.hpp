@@ -10,6 +10,7 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_scaling_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
+#include "./impl/lspg_unsteady_problem_mixed_fom.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
@@ -280,6 +281,55 @@ auto create_unsteady_problem(const TrialSubspaceType & trialSpace,     /*(6)*/
     TotalNumberOfDesiredStates, TrialSubspaceType, system_type>;
   return return_type(trialSpace, fomSystem);
 }
+
+
+// -------------------------------------------------------------
+// default
+// -------------------------------------------------------------
+namespace experimental{
+
+// because this is the mixed case FOM/ROM, we need to check that the FomSystem
+// meets the API needed for ROM but also that needed for doing ode stepping directly on it
+template<class TrialSubspaceType, class FomSystemType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+&& RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+&& ::presio::ode::RealValuedOdeSystemFusingRhsAndJacobian<FomSystemType>
+#endif
+auto create_unsteady_problem_mixed_fom(::pressio::ode::StepScheme schemeName,
+				       const TrialSubspaceType & trialSpace,
+				       const FomSystemType & fomSystem)
+{
+
+#if !defined PRESSIO_ENABLE_CXX20
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value);
+  static_assert(RealValuedSemiDiscreteFomWithJacobianAction<
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value);
+  static_assert(::pressio::ode::RealValuedOdeSystemFusingRhsAndJacobian<FomSystemType>::value);
+#endif
+
+  impl::valid_scheme_for_lspg_else_throw(schemeName);
+
+  using ind_var_type = typename FomSystemType::time_type;
+  using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
+  using lspg_residual_type = typename FomSystemType::rhs_type;
+  using lspg_jacobian_type =
+    decltype(fomSystem.createResultOfJacobianActionOn(trialSpace.basisOfTranslatedSpace()));
+
+  using fom_residual_type = typename FomSystemType::rhs_type;
+  using fom_jacobian_type = typename FomSystemType::jacobian_type;
+
+  using rom_rj_policy_type = impl::LspgUnsteadyResidualJacobianPolicy<
+    ind_var_type, reduced_state_type,
+    lspg_residual_type, lspg_jacobian_type,
+    TrialSubspaceType, FomSystemType>;
+
+  using return_type = impl::LspgUnsteadyProblemRomFom<
+    ind_var_type, FomSystemType, TrialSubspaceType, rom_rj_policy_type>;
+  return return_type(schemeName, trialSpace, fomSystem);
+}
+}//end namespace experimental
 
 }}} // end pressio::rom::lspg
 #endif  // ROM_LSPG_UNSTEADY_HPP_

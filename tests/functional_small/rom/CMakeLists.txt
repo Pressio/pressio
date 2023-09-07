@@ -67,4 +67,13 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady/main8.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady/main9.cc)
   add_serial_utest(${TESTING_LEVEL}_rom_lspg_unsteady ${SOURCES_LSPG_UNSTEADY})
+
+  set(SOURCES_MIXED_FOM_LSPG_UNSTEADY
+    ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady_mixed_fom/main1_bdf1.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady_mixed_fom/main1_bdf2.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady_mixed_fom/main2_bdf1.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady_mixed_fom/main2_bdf2.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady_mixed_fom/main3_bdf2.cc)
+  add_serial_utest(${TESTING_LEVEL}_rom_lspg_mixed_fom_unsteady ${SOURCES_MIXED_FOM_LSPG_UNSTEADY})
+
 endif()
