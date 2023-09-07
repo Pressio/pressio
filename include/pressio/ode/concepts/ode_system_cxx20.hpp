@@ -194,6 +194,25 @@ concept ImplicitResidualJacobianPolicy =
       stencilVelocities, rhsEvaluationTime, stepNumber, dt, R, J);
   };
 
+
+template <class T>
+concept ImplicitResidualJacobianPolicyForUserDefinedStencilStatesAction =
+     ImplicitResidualJacobianPolicy<T>
+  && requires(const T & A,
+	      StepScheme schemeName,
+	      const typename T::state_type & predictedState,
+	      const ImplicitStencilStatesDynamicContainer<typename T::state_type> & stencilStatesManager,
+	      ImplicitStencilRightHandSideDynamicContainer<typename T::residual_type> & stencilVelocities,
+	      const ::pressio::ode::StepEndAt<typename T::independent_variable_type> & rhsEvaluationTime,
+	      ::pressio::ode::StepCount stepNumber,
+	      const ::pressio::ode::StepSize<typename T::independent_variable_type> & dt,
+	      typename T::residual_type & R,
+	      std::optional<typename T::jacobian_type *> & J)
+  {
+    A(StencilStatesPotentiallyOverwrittenByUser(), schemeName, predictedState,
+      stencilStatesManager, stencilVelocities, rhsEvaluationTime, stepNumber, dt, R, J);
+  };
+
 //
 // auxiliary stuff
 //
