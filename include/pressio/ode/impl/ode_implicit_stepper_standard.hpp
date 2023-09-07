@@ -56,7 +56,7 @@ template<
   class StateType,
   class ResidualType,
   class JacobianType,
-  class ResidualJacobianPolicyType
+  class ResidualJacobianPolicyPossiblyRefType
   >
 class ImplicitStepperStandardImpl
 {
@@ -84,12 +84,14 @@ private:
   // for cn  : y_n
   ImplicitStencilStatesDynamicContainer<StateType> stencil_states_;
 
-  ::pressio::utils::InstanceOrReferenceWrapper<ResidualJacobianPolicyType> rj_policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<ResidualJacobianPolicyPossiblyRefType> rj_policy_;
 
   // stencilRightHandSide contains:
   // for bdf1,2: nothing
   // for cn:  f(y_n,t_n) and f(y_np1, t_np1)
   mutable ImplicitStencilRightHandSideDynamicContainer<ResidualType> stencil_rhs_;
+
+  mutable bool userActionCallback_ = false;
 
 public:
   ImplicitStepperStandardImpl() = delete;
@@ -99,35 +101,58 @@ public:
 
   // *** BDF1 ***//
   ImplicitStepperStandardImpl(::pressio::ode::BDF1,
-			      ResidualJacobianPolicyType && rjPolicyObj)
+			      ResidualJacobianPolicyPossiblyRefType && rjPolicyObj)
     : name_(StepScheme::BDF1),
       recovery_state_{rjPolicyObj.createState()},
       stencil_states_{rjPolicyObj.createState()},
-      rj_policy_(std::forward<ResidualJacobianPolicyType>(rjPolicyObj))
+      rj_policy_(std::forward<ResidualJacobianPolicyPossiblyRefType>(rjPolicyObj))
   {}
 
   // *** BDF2 ***//
   ImplicitStepperStandardImpl(::pressio::ode::BDF2,
-			      ResidualJacobianPolicyType && rjPolicyObj)
+			      ResidualJacobianPolicyPossiblyRefType && rjPolicyObj)
     : name_(StepScheme::BDF2),
       recovery_state_{rjPolicyObj.createState()},
       stencil_states_{rjPolicyObj.createState(),
 		      rjPolicyObj.createState()},
-      rj_policy_(std::forward<ResidualJacobianPolicyType>(rjPolicyObj))
+      rj_policy_(std::forward<ResidualJacobianPolicyPossiblyRefType>(rjPolicyObj))
   {}
 
   // *** CN ***//
   ImplicitStepperStandardImpl(::pressio::ode::CrankNicolson,
-			      ResidualJacobianPolicyType && rjPolicyObj)
+			      ResidualJacobianPolicyPossiblyRefType && rjPolicyObj)
     : name_(StepScheme::CrankNicolson),
       recovery_state_{rjPolicyObj.createState()},
       stencil_states_{rjPolicyObj.createState()},
-      rj_policy_(std::forward<ResidualJacobianPolicyType>(rjPolicyObj)),
+      rj_policy_(std::forward<ResidualJacobianPolicyPossiblyRefType>(rjPolicyObj)),
       stencil_rhs_{rj_policy_.get().createResidual(),
                    rj_policy_.get().createResidual()}
   {}
 
 public:
+
+  template<class SolverType, class UserDefinedActionOnStencilStates, class ...SolverArgs>
+  void operator()(StateType & odeState,
+		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
+		  ::pressio::ode::StepCount stepNumber,
+		  const ::pressio::ode::StepSize<independent_variable_type> & stepSize,
+		  UserDefinedActionOnStencilStates action,
+		  SolverType & solver,
+		  SolverArgs && ...argsForSolver)
+  {
+
+    if (name_ != ::pressio::ode::StepScheme::BDF2){
+      throw std::runtime_error("User-defined action on the stencil states currently only allowed for BDF2");
+    }
+
+    PRESSIOLOG_DEBUG("implicit stepper: do step, user-defined action on stencil states");
+    PRESSIOLOG_WARN("implicit stepper: overload accepting action on stencil states does not yet support strong guarantee");
+    userActionCallback_ = true;
+    doStepImpl(::pressio::ode::BDF2(), action, odeState,
+	       stepStartVal.get(), stepSize.get(), stepNumber.get(),
+	       solver, std::forward<SolverArgs>(argsForSolver)...);
+  }
+
   template<class SolverType, class ...SolverArgs>
   void operator()(StateType & odeState,
 		  const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
@@ -138,6 +163,8 @@ public:
   {
     PRESSIOLOG_DEBUG("implicit stepper: do step");
 
+    userActionCallback_ = false;
+
     if (name_==::pressio::ode::StepScheme::BDF1){
       doStepImpl(::pressio::ode::BDF1(),
 		 odeState, stepStartVal.get(), stepSize.get(),
@@ -147,6 +174,7 @@ public:
 
     else if (name_==::pressio::ode::StepScheme::BDF2){
       doStepImpl(::pressio::ode::BDF2(),
+		 utils::NoOperation<void>(),
 		 odeState, stepStartVal.get(), stepSize.get(),
 		 stepNumber.get(), solver,
 		 std::forward<SolverArgs>(argsForSolver)...);
@@ -172,11 +200,29 @@ public:
                            jacobian_type* Jo) const
 #endif
   {
-    rj_policy_.get()(name_, odeState, stencil_states_, stencil_rhs_,
-		     ::pressio::ode::StepEndAt<IndVarType>(t_np1_),
-		     ::pressio::ode::StepCount(step_number_),
-		     ::pressio::ode::StepSize<IndVarType>(dt_),
-		     R, Jo);
+    StepEndAt<IndVarType> endAt(t_np1_);
+    StepCount count(step_number_);
+    StepSize<IndVarType> stepsz(dt_);
+
+    if constexpr(mpl::is_detected<
+		 policy_has_call_overload_for_userdefined_action_on_stencil_states_t,
+		 std::remove_reference_t<ResidualJacobianPolicyPossiblyRefType>
+		 >::value)
+    {
+      if (userActionCallback_){
+	rj_policy_.get()(StencilStatesPotentiallyOverwrittenByUser(),
+			 name_, odeState, stencil_states_, stencil_rhs_,
+			 endAt, count, stepsz, R, Jo);
+      }
+      else{
+	rj_policy_.get()(name_, odeState, stencil_states_, stencil_rhs_,
+			 endAt, count, stepsz, R, Jo);
+      }
+    }
+    else{
+      rj_policy_.get()(name_, odeState, stencil_states_, stencil_rhs_,
+		       endAt, count, stepsz, R, Jo);
+    }
   }
 
 private:
@@ -189,6 +235,7 @@ private:
 		  solver_type & solver,
 		  SolverArgs&& ...argsForSolver)
   {
+    PRESSIOLOG_DEBUG("implicit BDF1 stepper");
 
     /*
       - we are at step = stepNumber
@@ -225,8 +272,9 @@ private:
     }
   }
 
-  template<class solver_type, class ...SolverArgs>
+  template<class solver_type, class UserDefinedActionOnStencilStates, class ...SolverArgs>
   void doStepImpl(::pressio::ode::BDF2,
+		  UserDefinedActionOnStencilStates action,
 		  state_type & odeState,
 		  const IndVarType & currentTime,
 		  const IndVarType & dt,
@@ -234,6 +282,7 @@ private:
 		  solver_type & solver,
 		  SolverArgs&& ...argsForSolver)
   {
+    PRESSIOLOG_DEBUG("implicit BDF2 stepper");
 
     dt_ = dt;
     t_np1_ = currentTime + dt;
@@ -246,6 +295,7 @@ private:
      */
 
     if (stepNumber == ::pressio::ode::first_step_value){
+      PRESSIOLOG_DEBUG("implicit BDF2 stepper: beginning/initial step is via BDF1");
 
       /* from t_0 to t_1 and have:
 	 odeState = the initial condition (y0)
@@ -255,6 +305,7 @@ private:
       ::pressio::ops::deep_copy(odeState_n, odeState);
     }
     else{
+      PRESSIOLOG_DEBUG("implicit BDF2 stepper: actual BDF2 step");
 
       /* for step == 2, we are going from t_1 to t_2 and:
 	 odeState = the state at t1
@@ -268,6 +319,7 @@ private:
       ::pressio::ops::deep_copy(odeState_n, odeState);
     }
 
+    action(stencil_states_);
     try{
       solver.solve(*this, odeState, std::forward<SolverArgs>(argsForSolver)...);
     }
