@@ -295,7 +295,7 @@ template<class TrialSubspaceType, class FomSystemType>
 requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
 && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
 && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-&& ::presio::ode::RealValuedOdeSystemFusingRhsAndJacobian<FomSystemType>
+&& ::pressio::ode::RealValuedOdeSystemFusingRhsAndJacobian<FomSystemType>
 #endif
 auto create_unsteady_problem_mixed_fom(::pressio::ode::StepScheme schemeName,
 				       const TrialSubspaceType & trialSpace,
