@@ -4,6 +4,7 @@
 
 #include <concepts>
 #include "ode_has_const_discrete_residual_jacobian_method.hpp"
+#include "ode_policy_has_call_overload_for_userdefined_action_on_stencil.hpp"
 
 namespace pressio{ namespace ode{
 
