@@ -284,7 +284,7 @@ auto create_unsteady_problem(const TrialSubspaceType & trialSpace,     /*(6)*/
 
 
 // -------------------------------------------------------------
-// default
+// mixed fom/rom
 // -------------------------------------------------------------
 namespace experimental{
 
