@@ -10,6 +10,7 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_scaling_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
+#include "./impl/mixed_fom_rom_unsteady_problem.hpp"
 #include "./impl/lspg_unsteady_problem_mixed_fom.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
@@ -326,7 +327,7 @@ auto create_unsteady_problem_mixed_fom(::pressio::ode::StepScheme schemeName,
     TrialSubspaceType, FomSystemType>;
 
   using return_type = impl::LspgUnsteadyProblemRomFom<
-    ind_var_type, FomSystemType, TrialSubspaceType, rom_rj_policy_type>;
+    ind_var_type, FomSystemType, TrialSubspaceType, rom_rj_policy_type, impl::MixedFomRomStepper>;
   return return_type(schemeName, trialSpace, fomSystem);
 }
 }//end namespace experimental
