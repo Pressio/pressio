@@ -39,8 +39,8 @@ public:
     , romStepper_(ode::create_implicit_stepper(odeSchemeName, GalerkinSystemType(trialSubspace, fomSystem)))
     , mixed_(odeSchemeName, fomSystem, trialSubspace, fomStepper_, romStepper_)
   {
-    assert(odeSchemeName_ == ode::StepScheme::BDF1 ||
-  	   odeSchemeName_ == ode::StepScheme::BDF2);
+    assert(odeSchemeName == ode::StepScheme::BDF1 ||
+  	   odeSchemeName == ode::StepScheme::BDF2);
   }
 
   template<class Tag, class StateType, class SolverType, class ...ArgsOp>
