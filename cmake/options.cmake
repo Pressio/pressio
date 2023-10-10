@@ -17,7 +17,7 @@ endif()
 
 option(PRESSIO_ENABLE_TPL_EIGEN		"Enable Eigen TPL"	ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
-option(PRESSIO_ENABLE_TPL_KOKKOS	"Enable Kokkos TPL"	OFF)
+option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_MPI		"Enable MPI"		OFF)
 option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
 # option(PRESSIO_ENABLE_TEUCHOS_TIMERS "bla bla" OFF)
