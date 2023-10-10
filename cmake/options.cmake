@@ -26,6 +26,7 @@ option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
 if(PRESSIO_ENABLE_TPL_EIGEN)
   message(">> Eigen is currently enabled by default via PRESSIO_ENABLE_TPL_EIGEN=ON")
   if(NOT EIGEN_INCLUDE_DIR)
+    # FIXME: use FetchContent_Declare instead of failing?
     message(FATAL_ERROR
       "I cannot find the Eigen headers. "
       "Please reconfigure with: -DEIGEN_INCLUDE_DIR=<full-path-to-headers>")
