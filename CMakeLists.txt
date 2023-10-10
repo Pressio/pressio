@@ -84,7 +84,7 @@ install(FILES
 
 ################################################################################
 
-if(PRESSIO_ENABLE_FUNCTIONAL_TESTS OR PRESSIO_ENABLE_TESTS)
+if(PRESSIO_ENABLE_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
