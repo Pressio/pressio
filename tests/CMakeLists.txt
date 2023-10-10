@@ -16,7 +16,7 @@ else()
   include(FetchContent)
   FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
+    URL https://github.com/google/googletest/archive/refs/tags/${GTEST_VERSION}.tar.gz
     URL_HASH MD5=c8340a482851ef6a3fe618a082304cfc
     DOWNLOAD_EXTRACT_TIMESTAMP FALSE
   )
