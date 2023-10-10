@@ -18,7 +18,7 @@ else()
     googletest
     URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
     URL_HASH MD5=c8340a482851ef6a3fe618a082304cfc
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    DOWNLOAD_EXTRACT_TIMESTAMP FALSE
   )
   FetchContent_MakeAvailable(googletest)
   list(POP_BACK CMAKE_MESSAGE_INDENT)
