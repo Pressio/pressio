@@ -1,7 +1,5 @@
 
-# macro to create and add an individual SERIAL test
 macro(add_serial_exe_and_test TESTNAME PKGNAME TESTSRCS REGEX)
-  # set name of the executable
   set(testNameFinal ${PKGNAME}_${TESTNAME})
   add_executable(${testNameFinal} ${TESTSRCS})
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
