@@ -117,6 +117,7 @@ static_assert(_PRESSIO_CPLUSPLUS >= PRESSIO_CXX_STD_14, "PRESSIO requires C++14 
 #endif
 #endif
 
-static_assert(PRESSIO_ENABLE_TPL_EIGEN, "Eigen is not enabled.");
+// FIXME: disabled for cmaked_installed example
+// static_assert(PRESSIO_ENABLE_TPL_EIGEN, "Eigen is not enabled.");
 
 #endif

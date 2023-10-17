@@ -84,9 +84,16 @@ jobs:
 
       - name: Build
         run: |
-          cmake --build builddir
+          cmake --build builddir --target install
 
       - name: Test
         working-directory: builddir
         run: |
           ctest -j $num_cpus --output-on-failure
+
+      - name: Examples
+        working-directory: examples/cmake_installed
+        run: |
+          cmake -B builddir \
+            -DCMAKE_PREFIX_PATH=../../install \
+          && cmake --build builddir
