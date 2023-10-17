@@ -25,15 +25,22 @@ option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
   message(">> Eigen is currently enabled by default via PRESSIO_ENABLE_TPL_EIGEN=ON")
-  if(NOT EIGEN_INCLUDE_DIR)
-    # FIXME: use FetchContent_Declare instead of failing?
-    message(FATAL_ERROR
+  add_definitions(-DPRESSIO_ENABLE_TPL_EIGEN)
+
+  if(EIGEN_INCLUDE_DIR)
+    include_directories(${EIGEN_INCLUDE_DIR})
+  else()
+    find_package(Eigen3)
+
+    if(NOT EIGEN3_FOUND)
+      # FIXME: use FetchContent_Declare instead of failing?
+      message(FATAL_ERROR
       "I cannot find the Eigen headers. "
       "Please reconfigure with: -DEIGEN_INCLUDE_DIR=<full-path-to-headers>")
-  endif()
+    endif()
 
-  include_directories(${EIGEN_INCLUDE_DIR})
-  add_definitions(-DPRESSIO_ENABLE_TPL_EIGEN)
+    include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+  endif()
 endif()
 
 # if trilinos is on, then also set MPI, BLAS, LAPACK and KOKKOS ON
