@@ -13,6 +13,8 @@ if (GTEST_FOUND)
   cmake_print_variables(GTEST_INCLUDE_DIRS)
 else()
   set(GTEST_VERSION "v1.14.0")
+  set(BUILD_GMOCK   OFF)
+  set(INSTALL_GTEST OFF)
   message(STATUS "GTest not found, fetching version ${GTEST_VERSION}")
 
   list(APPEND CMAKE_MESSAGE_INDENT "[GTest] ")
