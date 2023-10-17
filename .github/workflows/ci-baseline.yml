@@ -91,10 +91,18 @@ jobs:
         run: |
           ctest -j $num_cpus --output-on-failure
 
-      - name: Examples
+      - name: Example - installed
         working-directory: examples/cmake_installed
         run: |
           cmake -B builddir \
             -DCMAKE_PREFIX_PATH=../../install \
+          && cmake --build builddir \
+          && ./builddir/pressio-cmake-example
+
+      - name: Example - add_subdirectory
+        working-directory: examples/cmake_subdir
+        run: |
+          cmake -B builddir \
+            -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           && cmake --build builddir \
           && ./builddir/pressio-cmake-example
