@@ -19,9 +19,9 @@ else()
   include(FetchContent)
   FetchContent_Declare(
     googletest
+    DOWNLOAD_EXTRACT_TIMESTAMP FALSE
     URL https://github.com/google/googletest/archive/refs/tags/${GTEST_VERSION}.tar.gz
     URL_HASH MD5=c8340a482851ef6a3fe618a082304cfc
-    DOWNLOAD_EXTRACT_TIMESTAMP FALSE
   )
   FetchContent_MakeAvailable(googletest)
   list(POP_BACK CMAKE_MESSAGE_INDENT)
