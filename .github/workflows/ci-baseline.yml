@@ -91,7 +91,7 @@ jobs:
         run: |
           ctest -j $num_cpus --output-on-failure
 
-      - name: Example - installed
+      - name: Example - CMake installed
         working-directory: examples/cmake_installed
         run: |
           cmake -B builddir \
@@ -99,10 +99,21 @@ jobs:
           && cmake --build builddir           \
           && ./builddir/pressio-cmake-example
 
-      - name: Example - add_subdirectory
+      - name: Example - CMake add_subdirectory
         working-directory: examples/cmake_subdir
         run: |
           cmake -B builddir \
             -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
           && cmake --build builddir            \
           && ./builddir/pressio-cmake-example
+
+      - name: Example - include only
+        working-directory: examples/include_only
+        run: |
+          $CXX \
+            -DPRESSIO_ENABLE_TPL_EIGEN \
+            -I$eigen_inc_dir           \
+            -I../../include            \
+            -c main.cpp                \
+          && $CXX -o pressio-example main.o \
+          && ./pressio-example
