@@ -77,7 +77,7 @@ jobs:
           -D CMAKE_CXX_FLAGS=''
 
     - name: Build
-      run: cmake --build builddir -j $num_cpus
+      run: cmake --build builddir -j $num_cpus --target install
 
     - name: Test
       working-directory: builddir
@@ -87,4 +87,29 @@ jobs:
         export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
         ctest -j $num_cpus --output-on-failure
 
+    - name: Example - CMake installed
+      working-directory: examples/cmake_installed
+      run: |
+        cmake -B builddir \
+          -DCMAKE_PREFIX_PATH=../../install \
+        && cmake --build builddir           \
+        && ./builddir/pressio-cmake-example
 
+    - name: Example - CMake add_subdirectory
+      working-directory: examples/cmake_subdir
+      run: |
+        cmake -B builddir \
+          -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+        && cmake --build builddir            \
+        && ./builddir/pressio-cmake-example
+
+    - name: Example - include only
+      working-directory: examples/include_only
+      run: |
+        $CXX \
+          -DPRESSIO_ENABLE_TPL_EIGEN \
+          -I$eigen_inc_dir           \
+          -I../../include            \
+          -c ../main.cpp                \
+        && $CXX -o pressio-example main.o \
+        && ./pressio-example

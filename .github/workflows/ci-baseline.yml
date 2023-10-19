@@ -114,6 +114,6 @@ jobs:
             -DPRESSIO_ENABLE_TPL_EIGEN \
             -I$eigen_inc_dir           \
             -I../../include            \
-            -c main.cpp                \
+            -c ../main.cpp             \
           && $CXX -o pressio-example main.o \
           && ./pressio-example

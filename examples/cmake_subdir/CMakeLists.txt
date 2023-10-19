@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.18.0)
-project(Example)
+set(example pressio-example)
+project(${example})
 
-add_subdirectory(${Example_SOURCE_DIR}/../.. ${Example_BINARY_DIR}/pressio)
+add_subdirectory(${${example}_SOURCE_DIR}/../.. ${${example}_BINARY_DIR}/pressio)
 
-add_executable(pressio-cmake-example main.cpp)
-target_link_libraries(pressio-cmake-example PUBLIC pressio)
-target_compile_definitions(pressio-cmake-example PUBLIC PRESSIO_ENABLE_TPL_EIGEN)
+add_executable(${example} ${CMAKE_CURRENT_SOURCE_DIR}/../main.cpp)
+target_link_libraries(${example} PUBLIC pressio)
+target_compile_definitions(${example} PUBLIC PRESSIO_ENABLE_TPL_EIGEN)
