@@ -93,7 +93,7 @@ jobs:
         cmake -B builddir \
           -DCMAKE_PREFIX_PATH=../../install \
         && cmake --build builddir           \
-        && ./builddir/pressio-cmake-example
+        && ./builddir/pressio-example
 
     - name: Example - CMake add_subdirectory
       working-directory: examples/cmake_subdir
@@ -101,15 +101,15 @@ jobs:
         cmake -B builddir \
           -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
         && cmake --build builddir            \
-        && ./builddir/pressio-cmake-example
+        && ./builddir/pressio-example
 
     - name: Example - include only
-      working-directory: examples/include_only
+      working-directory: examples
       run: |
         $CXX \
           -DPRESSIO_ENABLE_TPL_EIGEN \
           -I$eigen_inc_dir           \
-          -I../../include            \
-          -c ../main.cpp                \
+          -I../include            \
+          -c main.cpp                \
         && $CXX -o pressio-example main.o \
         && ./pressio-example

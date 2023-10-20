@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.18.0)
 set(example pressio-example)
+project(${example})
 
 find_package(pressio REQUIRED)
 
