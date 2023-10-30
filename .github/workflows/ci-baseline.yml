@@ -86,6 +86,12 @@ jobs:
         run: |
           cmake --build builddir --target install
 
+      - name: Checkout pressio examples
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-templates-usage-as-library
+          path: pressio-templates-usage-as-library
+
       - name: Example - CMake installed
         working-directory: examples/cmake_installed
         run: |
