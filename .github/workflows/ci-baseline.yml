@@ -86,11 +86,6 @@ jobs:
         run: |
           cmake --build builddir --target install
 
-      - name: Test
-        working-directory: builddir
-        run: |
-          ctest -j $num_cpus --output-on-failure
-
       - name: Example - CMake installed
         working-directory: examples/cmake_installed
         run: |
@@ -118,17 +113,6 @@ jobs:
           && $CXX -o pressio-example main.o \
           && ./pressio-example
 
-      - name: Example - include only
-        working-directory: examples
-        run: |
-          $CXX \
-            -DPRESSIO_ENABLE_TPL_EIGEN \
-            -I$eigen_inc_dir           \
-            -I../include               \
-            -c main.cpp                \
-          && $CXX -o pressio-example main.o \
-          && ./pressio-example
-
       - name: Example - include only with embedded definitions
         working-directory: examples
         run: |
@@ -138,3 +122,8 @@ jobs:
             -c main_with_defines.cpp   \
           && $CXX -o pressio-example main.o \
           && ./pressio-example
+
+      - name: Test
+        working-directory: builddir
+        run: |
+          ctest -j $num_cpus --output-on-failure
