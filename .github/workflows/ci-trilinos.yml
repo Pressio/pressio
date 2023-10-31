@@ -93,6 +93,14 @@ jobs:
         && cmake --build builddir           \
         && ./builddir/pressio-example
 
+    - name: Example - CMake include_directories
+      working-directory: examples/cmake_include_directories
+      run: |
+        cmake -B builddir \
+          -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+        && cmake --build builddir            \
+        && ./builddir/pressio-example
+
     - name: Example - CMake add_subdirectory
       working-directory: examples/cmake_add_subdirectory
       run: |
@@ -105,10 +113,11 @@ jobs:
       working-directory: examples
       run: |
         $CXX \
-          -DPRESSIO_ENABLE_TPL_EIGEN \
-          -I$eigen_inc_dir           \
-          -I../include            \
-          -c main.cpp                \
+          -DPRESSIO_ENABLE_TPL_EIGEN    \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I$eigen_inc_dir              \
+          -I../include                  \
+          -c main.cpp                   \
         && $CXX -o pressio-example main.o \
         && ./pressio-example
 
@@ -117,9 +126,10 @@ jobs:
       working-directory: examples
       run: |
         $CXX \
-          -I$eigen_inc_dir           \
-          -I../include               \
-          -c main_with_defines.cpp   \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I$eigen_inc_dir              \
+          -I../include                  \
+          -c main_with_defines.cpp      \
         && $CXX -o pressio-example main.o \
         && ./pressio-example
 
