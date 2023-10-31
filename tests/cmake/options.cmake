@@ -57,8 +57,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
 
   include_directories(${Trilinos_INCLUDE_DIRS})
   link_libraries(${Trilinos_LIBRARIES})
-
-  # FINISH THIS
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)

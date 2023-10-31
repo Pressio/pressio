@@ -49,10 +49,37 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Checkout pressio examples
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-templates-usage-as-library
+        path: examples
+
     - name: Creating environnement
       run: |
         apt-get update -y
         ${{ matrix.requirements }}
+
+    - name: Example - include only
+      working-directory: examples
+      run: |
+        $CXX \
+          -DPRESSIO_ENABLE_TPL_EIGEN    \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I$eigen_inc_dir              \
+          -I$trilinos_dir/include       \
+          -I../include                  \
+          -c main.cpp
+
+    - name: Example - include only with embedded definitions
+      working-directory: examples
+      run: |
+        $CXX \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I$eigen_inc_dir              \
+          -I$trilinos_dir/include       \
+          -I../include                  \
+          -c main_with_defines.cpp
 
     - name: Configure
       run: |
@@ -79,12 +106,6 @@ jobs:
     - name: Build
       run: cmake --build builddir -j $num_cpus --target install
 
-    - name: Checkout pressio examples
-      uses: actions/checkout@v4
-      with:
-        repository: Pressio/pressio-templates-usage-as-library
-        path: examples
-
     - name: Example - CMake installed
       working-directory: examples/cmake_find_package
       run: |
@@ -108,30 +129,6 @@ jobs:
           -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
         && cmake --build builddir            \
         && ./builddir/pressio-example
-
-    - name: Example - include only
-      working-directory: examples
-      run: |
-        $CXX \
-          -DPRESSIO_ENABLE_TPL_EIGEN    \
-          -DPRESSIO_ENABLE_TPL_TRILINOS \
-          -I$eigen_inc_dir              \
-          -I../include                  \
-          -c main.cpp                   \
-        && $CXX -o pressio-example main.o \
-        && ./pressio-example
-
-
-    - name: Example - include only with embedded definitions
-      working-directory: examples
-      run: |
-        $CXX \
-          -DPRESSIO_ENABLE_TPL_TRILINOS \
-          -I$eigen_inc_dir              \
-          -I../include                  \
-          -c main_with_defines.cpp      \
-        && $CXX -o pressio-example main.o \
-        && ./pressio-example
 
     - name: Test
       working-directory: builddir
