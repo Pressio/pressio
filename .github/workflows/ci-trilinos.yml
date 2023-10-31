@@ -84,7 +84,6 @@ jobs:
       with:
         repository: Pressio/pressio-templates-usage-as-library
         path: examples
-        ref: ci
 
     - name: Example - CMake installed
       working-directory: examples/cmake_find_package
