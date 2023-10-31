@@ -137,7 +137,17 @@ jobs:
           && $CXX -o pressio-example main.o \
           && ./pressio-example
 
-      - name: Test
-        working-directory: builddir
+      - name: Run small tests
+        working-directory: builddir/tests/functional_small
+        run: |
+          ctest -j $num_cpus --output-on-failure
+
+      - name: Run medium tests
+        working-directory: builddir/tests/functional_medium
+        run: |
+          ctest -j $num_cpus --output-on-failure
+
+      - name: Run large tests
+        working-directory: builddir/tests/functional_large
         run: |
           ctest -j $num_cpus --output-on-failure
