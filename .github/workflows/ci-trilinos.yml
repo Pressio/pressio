@@ -47,7 +47,7 @@ jobs:
       trilinos_dir: /home/pressio_builds/trilinos/install
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Creating environnement
       run: |
