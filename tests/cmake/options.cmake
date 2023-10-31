@@ -51,7 +51,7 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
   set(PRESSIO_ENABLE_TPL_MPI ON)
 
   find_package(Trilinos REQUIRED)
-  # FIXME: it is possible to use find_package(<PackageName>) for each (sub)package
+  # TODO: it is possible to use find_package(<PackageName>) for each (sub)package
   # https://trilinos.github.io/pdfs/Finding_Trilinos.txt
   add_definitions(-DPRESSIO_ENABLE_TPL_TRILINOS)
 

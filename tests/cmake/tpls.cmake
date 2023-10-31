@@ -97,46 +97,13 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
-    if (NOT TRILINOS_ROOT)
+    if (NOT Trilinos_FOUND AND NOT TRILINOS_ROOT)
       message(FATAL_ERROR
 	"You enabled PRESSIO_ENABLE_TPL_TRILINOS but did not set TRILINOS_ROOT.
         Please reconfigure with:
           -D TRILINOS_ROOT=<full-path-to-trilinos-install>
           ")
     endif()
-
-    set(TRILINOS_LIB_NAMES kokkosalgorithms
-      kokkoscontainers
-      kokkoscore
-      teuchoskokkoscomm
-      teuchoskokkoscompat
-      teuchosremainder
-      teuchosnumerics
-      teuchoscomm
-      teuchosparameterlist
-      teuchosparser
-      teuchoscore
-      epetra
-      epetraext
-      ifpack
-      aztecoo
-      tpetraext
-      tpetrainout
-      tpetra
-      kokkostsqr
-      tpetraclassiclinalg
-      tpetraclassicnodeapi
-      tpetraclassic
-      kokkoskernels
-      ifpack2
-      triutils
-      # repeat to solve issue we have on linux
-      kokkosalgorithms
-      teuchosparameterlist)
-
-    include_directories(${TRILINOS_ROOT}/include)
-    link_directories(${TRILINOS_ROOT}/lib ${TRILINOS_ROOT}/lib64)
-    link_libraries(${TRILINOS_LIB_NAMES})
   endif()
 endif()
 
