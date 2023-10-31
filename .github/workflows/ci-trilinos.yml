@@ -79,16 +79,15 @@ jobs:
     - name: Build
       run: cmake --build builddir -j $num_cpus --target install
 
-    - name: Test
-      working-directory: builddir
-      run: |
-        export LD_LIBRARY_PATH=${{ env.trilinos_dir }}/lib
-        export OMPI_ALLOW_RUN_AS_ROOT=1
-        export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
-        ctest -j $num_cpus --output-on-failure
+    - name: Checkout pressio examples
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-templates-usage-as-library
+        path: examples
+        ref: ci
 
     - name: Example - CMake installed
-      working-directory: examples/cmake_installed
+      working-directory: examples/cmake_find_package
       run: |
         cmake -B builddir \
           -DCMAKE_PREFIX_PATH=../../install \
@@ -96,7 +95,7 @@ jobs:
         && ./builddir/pressio-example
 
     - name: Example - CMake add_subdirectory
-      working-directory: examples/cmake_subdir
+      working-directory: examples/cmake_add_subdirectory
       run: |
         cmake -B builddir \
           -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
@@ -113,3 +112,22 @@ jobs:
           -c main.cpp                \
         && $CXX -o pressio-example main.o \
         && ./pressio-example
+
+
+    - name: Example - include only with embedded definitions
+      working-directory: examples
+      run: |
+        $CXX \
+          -I$eigen_inc_dir           \
+          -I../include               \
+          -c main_with_defines.cpp   \
+        && $CXX -o pressio-example main.o \
+        && ./pressio-example
+
+    - name: Test
+      working-directory: builddir
+      run: |
+        export LD_LIBRARY_PATH=${{ env.trilinos_dir }}/lib
+        export OMPI_ALLOW_RUN_AS_ROOT=1
+        export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+        ctest -j $num_cpus --output-on-failure
