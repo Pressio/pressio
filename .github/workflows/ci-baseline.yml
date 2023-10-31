@@ -108,6 +108,14 @@ jobs:
           && cmake --build builddir            \
           && ./builddir/pressio-example
 
+      - name: Example - CMake include_directories
+        working-directory: examples/cmake_include_directories
+        run: |
+          cmake -B builddir \
+            -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+          && cmake --build builddir            \
+          && ./builddir/pressio-example
+
       - name: Example - include only
         working-directory: examples
         run: |
