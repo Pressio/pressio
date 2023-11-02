@@ -20,7 +20,6 @@ option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_MPI		"Enable MPI"		OFF)
 option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
-# option(PRESSIO_ENABLE_TEUCHOS_TIMERS "bla bla" OFF)
 
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
@@ -46,6 +45,7 @@ endif()
 # if trilinos is on, then also set MPI, BLAS, LAPACK and KOKKOS ON
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   message(">> PRESSIO_ENABLE_TPL_TRILINOS=ON ==> enabling also BLAS, LAPACK, MPI, KOKKOS")
+  add_definitions(-DPRESSIO_ENABLE_TPL_TRILINOS)
 
   set(PRESSIO_ENABLE_TPL_KOKKOS ON)
   set(PRESSIO_ENABLE_TPL_MPI ON)
@@ -53,7 +53,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
   find_package(Trilinos REQUIRED)
   # TODO: it is possible to use find_package(<PackageName>) for each (sub)package
   # https://trilinos.github.io/pdfs/Finding_Trilinos.txt
-  add_definitions(-DPRESSIO_ENABLE_TPL_TRILINOS)
 
   include_directories(${Trilinos_INCLUDE_DIRS})
   link_libraries(${Trilinos_LIBRARIES})
@@ -61,10 +60,12 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
   message(">> Enabling Kokkos since PRESSIO_ENABLE_TPL_KOKKOS=ON")
+  add_definitions(-DPRESSIO_ENABLE_TPL_KOKKOS)
 endif()
 
 if(PRESSIO_ENABLE_TPL_MPI)
   message(">> Enabling MPI since PRESSIO_ENABLE_TPL_MPI=ON")
+  add_definitions(-DPRESSIO_ENABLE_TPL_MPI)
 
   find_package(MPI REQUIRED)
   include_directories(${MPI_CXX_INCLUDE_DIRS})
@@ -72,11 +73,5 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_Pybind11)
   message(">> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
+  add_definitions(-DPRESSIO_ENABLE_TPL_Pybind11)
 endif()
-
-
-# if(PRESSIO_ENABLE_TPL_KOKKOS AND NOT PRESSIO_ENABLE_TPL_TRILINOS)
-#   find_package(KokkosKernels REQUIRED)
-#   set(KOKKOS_LIBS Kokkos::kokkoskernels)
-#   #Kokkos::BLAS Kokkos::LAPACK Kokkos::kokkos Kokkos::kokkoskernels)
-# endif()
