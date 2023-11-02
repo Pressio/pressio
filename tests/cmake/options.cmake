@@ -32,7 +32,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     find_package(Eigen3)
 
     if(NOT EIGEN3_FOUND)
-      # FIXME: use FetchContent_Declare instead of failing?
+      # TODO: use FetchContent_Declare instead of failing?
       message(FATAL_ERROR
       "I cannot find the Eigen headers. "
       "Please reconfigure with: -DEIGEN_INCLUDE_DIR=<full-path-to-headers>")
