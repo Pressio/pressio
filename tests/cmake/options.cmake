@@ -15,10 +15,10 @@ if (PRESSIO_ENABLE_DEBUG_PRINT)
   add_definitions(-DPRESSIO_ENABLE_DEBUG_PRINT)
 endif()
 
-option(PRESSIO_ENABLE_TPL_EIGEN		"Enable Eigen TPL"	ON)
+option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
-option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	OFF)
-option(PRESSIO_ENABLE_TPL_MPI		"Enable MPI"		OFF)
+option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	  OFF)
+option(PRESSIO_ENABLE_TPL_MPI		    "Enable MPI"	      	OFF)
 option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
 
 
@@ -49,6 +49,8 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
 
   set(PRESSIO_ENABLE_TPL_KOKKOS ON)
   set(PRESSIO_ENABLE_TPL_MPI ON)
+  set(PRESSIO_ENABLE_TPL_BLAS ON)
+  set(PRESSIO_ENABLE_TPL_LAPACK ON)
 
   find_package(Trilinos REQUIRED)
   # TODO: it is possible to use find_package(<PackageName>) for each (sub)package
@@ -61,6 +63,27 @@ endif()
 if(PRESSIO_ENABLE_TPL_KOKKOS)
   message(">> Enabling Kokkos since PRESSIO_ENABLE_TPL_KOKKOS=ON")
   add_definitions(-DPRESSIO_ENABLE_TPL_KOKKOS)
+
+  # when trilinos is enabled it links kokkos too
+  if(NOT PRESSIO_ENABLE_TPL_TRILINOS)
+    # if kokkos is used as standalone lib, then we are more specific
+    # user needs to define: KOKKOS_ROOT_DIR and KOKKOS_KERNELS_ROOT_DIR
+    if (NOT KOKKOS_ROOT OR NOT KOKKOS_KERNELS_ROOT)
+message(FATAL_ERROR "Missing KOKKOS_ROOT. KOKKOS needs:
+        -D KOKKOS_ROOT=<full-path-to-kokkos-installation>
+        -D KOKKOS_KERNELS_ROOT=<full-path-to-kokkos-kernels-installation>
+        ")
+    endif()
+
+    set(KOKKOS_LIB_NAMES kokkoscontainers kokkoscore kokkoskernels)
+
+    include_directories(${KOKKOS_ROOT}/include ${KOKKOS_KERNELS_ROOT}/include)
+
+    link_directories(${KOKKOS_ROOT}/lib ${KOKKOS_ROOT}/lib64
+${KOKKOS_KERNELS_ROOT}/lib ${KOKKOS_KERNELS_ROOT}/lib64)
+
+    link_libraries(${KOKKOS_LIB_NAMES})
+  endif()
 endif()
 
 if(PRESSIO_ENABLE_TPL_MPI)
@@ -74,4 +97,24 @@ endif()
 if(PRESSIO_ENABLE_TPL_Pybind11)
   message(">> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
   add_definitions(-DPRESSIO_ENABLE_TPL_Pybind11)
+endif()
+
+if(PRESSIO_ENABLE_TPL_BLAS)
+  message(">> Enabling BLAS since PRESSIO_ENABLE_TPL_BLAS=ON")
+  add_definitions(-DPRESSIO_ENABLE_TPL_BLAS)
+
+  cmake_policy(SET CMP0074 NEW)
+  find_package(BLAS REQUIRED)
+  link_libraries(${BLAS_LIBRARIES})
+  message("BLASLIBS=${BLAS_LIBRARIES}")
+endif()
+
+if(PRESSIO_ENABLE_TPL_LAPACK)
+  message(">> Enabling LAPACK since PRESSIO_ENABLE_TPL_LAPACK=ON")
+  add_definitions(-DPRESSIO_ENABLE_TPL_LAPACK)
+
+  cmake_policy(SET CMP0074 NEW)
+  find_package(LAPACK REQUIRED)
+  link_libraries(${LAPACK_LIBRARIES})
+  message("LAPLIBS=${LAPACK_LIBRARIES}")
 endif()
