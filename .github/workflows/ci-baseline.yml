@@ -28,75 +28,126 @@ jobs:
   CI:
     name: baseline
     continue-on-error: false
-
     strategy:
-      max-parallel: 10
       fail-fast: false
       matrix:
-        config:
-          # os: Stands for OS on GitHub Runner (Ubuntu / MacOS / Windows)
-          # image: Stands for used Docker Image
-          # mode: Stands for build mode inside Pressio (Debug / Release)
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Debug }
+        image:
+          - ubuntu-20.04-gnu_9-eigen_3.3.7-gtest
+          - ubuntu-20.04-clang_9-eigen_3.3.7-gtest
+          - fedora-34-gnu_11-eigen_3.3.7-gtest
+          - fedora-34-clang_12-eigen_3.3.7-gtest
+          #- intel_oneapi-eigen_3.3.7-gtest
+        build_type:
+          - Release
+          - Debug
+        cmake_extra_args:
+          - ''
+        include:
+          - image: ubuntu-20.04_gnu-11_eigen-3.3.7_gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+          - image: ubuntu-20.04_clang-12_eigen-3.3.7_gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+          - image: fedora-34-gnu_11-eigen_3.3.7-gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+          - image: fedora-34-clang_12-eigen_3.3.7-gtest
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
-          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Debug }
-
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Debug }
-
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Release }
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Debug }
-
-          #- { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Release }
-          #- { os: ubuntu-latest, image: intel_oneapi-eigen_3.3.7-gtest, mode: Debug }
-
-    runs-on: ${{ matrix.config.os }}
-    container: pressiomodelreduction/${{ matrix.config.image }}
+    runs-on: ubuntu-latest
+    container: pressiomodelreduction/${{ matrix.image }}
     env:
-      num_cpus: 2
+      num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
       eigen_inc_dir: /usr/local/eigen/install/include/eigen3
       gtest_dir: /usr/local/gtest/install
-      small: small
-      medium: medium
-      large: large
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: configure
+      - name: Checkout pressio examples
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-templates-usage-as-library
+          path: examples
+
+      - name: Example - include only
+        working-directory: examples
+        run: |
+          $CXX \
+            -DPRESSIO_ENABLE_TPL_EIGEN \
+            -I$eigen_inc_dir           \
+            -I../include            \
+            -c main.cpp                \
+          && $CXX -o pressio-example main.o \
+          && ./pressio-example
+
+      - name: Example - include only with embedded definitions
+        working-directory: examples
+        run: |
+          $CXX \
+            -I$eigen_inc_dir           \
+            -I../include               \
+            -c main_with_defines.cpp   \
+          && $CXX -o pressio-example main.o \
+          && ./pressio-example
+
+      - name: Configure
         run: |
           cmake -B builddir \
-            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.mode }} \
-            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
             -D CMAKE_C_COMPILER=$CC \
             -D CMAKE_CXX_COMPILER=$CXX \
-            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-            -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
+            -D CMAKE_CXX_FLAGS='' \
+            -D CMAKE_INSTALL_PREFIX:PATH=../install \
+            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            ${{ matrix.cmake_extra_args }} \
             -D GTEST_ROOT=$gtest_dir \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
-            -D CMAKE_INSTALL_PREFIX:PATH=../install \
-            -D CMAKE_CXX_FLAGS=''
+            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+            -D EIGEN_INCLUDE_DIR=$eigen_inc_dir
 
-      # In this stage small functional tests are built and run
-      - name: build-test-${{ env.small }}
+      - name: Build
         run: |
-          cd builddir/tests/functional_${{ env.small }}
-          make -j $num_cpus
+          cmake --build builddir --target install
+
+      - name: Example - CMake installed
+        working-directory: examples/cmake_find_package
+        run: |
+          cmake -B builddir \
+            -DCMAKE_PREFIX_PATH=../../install \
+          && cmake --build builddir           \
+          && ./builddir/pressio-example
+
+      - name: Example - CMake add_subdirectory
+        working-directory: examples/cmake_add_subdirectory
+        run: |
+          cmake -B builddir \
+            -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+          && cmake --build builddir            \
+          && ./builddir/pressio-example
+
+      - name: Example - CMake include_directories
+        working-directory: examples/cmake_include_directories
+        run: |
+          cmake -B builddir \
+            -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+          && cmake --build builddir            \
+          && ./builddir/pressio-example
+
+      - name: Run small tests
+        working-directory: builddir/tests/functional_small
+        run: |
           ctest -j $num_cpus --output-on-failure
 
-      # In this stage medium functional tests are built and run
-      - name: build-test-${{ env.medium }}
+      - name: Run medium tests
+        working-directory: builddir/tests/functional_medium
         run: |
-          cd builddir/tests/functional_${{ env.medium }}
-          make -j $num_cpus
           ctest -j $num_cpus --output-on-failure
 
-      # In this stage large functional tests are built and run
-      - name: build-test-${{ env.large }}
+      - name: Run large tests
+        working-directory: builddir/tests/functional_large
         run: |
-          cd builddir/tests/functional_${{ env.large }}
-          make -j $num_cpus
           ctest -j $num_cpus --output-on-failure

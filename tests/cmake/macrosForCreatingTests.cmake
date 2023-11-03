@@ -1,9 +1,8 @@
 
-# macro to create and add an individual SERIAL test
 macro(add_serial_exe_and_test TESTNAME PKGNAME TESTSRCS REGEX)
-  # set name of the executable
   set(testNameFinal ${PKGNAME}_${TESTNAME})
   add_executable(${testNameFinal} ${TESTSRCS})
+  target_link_libraries(${testNameFinal} pressio)
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
   set_tests_properties(
     ${testNameFinal}

@@ -29,43 +29,62 @@ jobs:
     name: Trilinos
     strategy:
       matrix:
-          config:
-          - {
-              os: ubuntu-latest,
-              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
-              build_type: "Release", cc: "mpicc", cxx: "mpicxx",
-              requirements: "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
-            }
+        image:
+          - ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b
+        build_type:
+          - Release
+          - Debug
+        requirements:
+          - "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile"
 
-          - {
-              os: ubuntu-latest,
-              image: ubuntu-20.04-gnu_10-eigen_3.3.7-gtest-trilinos_hash-ef73d14babf6e7556b0420add98cce257ccaa56b,
-              build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
-              requirements: "apt install -y openmpi-bin libopenmpi-dev;sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
-            }
-
-    runs-on: ${{ matrix.config.os }}
-    container: pressiomodelreduction/${{ matrix.config.image }}
+    runs-on: ubuntu-latest
+    container: pressiomodelreduction/${{ matrix.image }}
 
     env:
       num_cpus: 4
-      pressio_build: /home/pressio_builds
       eigen_inc_dir: /home/pressio_builds/eigen/install/include/eigen3
       gtest_dir: /home/pressio_builds/gtest/install
       trilinos_dir: /home/pressio_builds/trilinos/install
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
+    - name: Checkout pressio examples
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-templates-usage-as-library
+        path: examples
 
     - name: Creating environnement
       run: |
         apt-get update -y
-        ${{ matrix.config.requirements }}
+        ${{ matrix.requirements }}
+
+    - name: Example - include only
+      working-directory: examples
+      run: |
+        $CXX \
+          -DPRESSIO_ENABLE_TPL_EIGEN    \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I$eigen_inc_dir              \
+          -I$trilinos_dir/include       \
+          -I../include                  \
+          -c main.cpp
+
+    - name: Example - include only with embedded definitions
+      working-directory: examples
+      run: |
+        $CXX \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I$eigen_inc_dir              \
+          -I$trilinos_dir/include       \
+          -I../include                  \
+          -c main_with_defines.cpp
 
     - name: Configure
       run: |
-        cmake -B $pressio_build \
-          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.config.build_type }} \
+        cmake -B builddir \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
           -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc \
           -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
@@ -80,19 +99,41 @@ jobs:
           -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
           -D EIGEN_INCLUDE_DIR=$eigen_inc_dir \
           -D GTEST_ROOT=$gtest_dir \
-          -D TRILINOS_ROOT=$trilinos_dir \
+          -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
           -D CMAKE_INSTALL_PREFIX:PATH=../install \
           -D CMAKE_CXX_FLAGS=''
 
     - name: Build
-      run: cmake --build $pressio_build -j $num_cpus
+      run: cmake --build builddir -j $num_cpus --target install
+
+    - name: Example - CMake installed
+      working-directory: examples/cmake_find_package
+      run: |
+        cmake -B builddir \
+          -DCMAKE_PREFIX_PATH=../../install \
+        && cmake --build builddir           \
+        && ./builddir/pressio-example
+
+    - name: Example - CMake include_directories
+      working-directory: examples/cmake_include_directories
+      run: |
+        cmake -B builddir \
+          -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+        && cmake --build builddir            \
+        && ./builddir/pressio-example
+
+    - name: Example - CMake add_subdirectory
+      working-directory: examples/cmake_add_subdirectory
+      run: |
+        cmake -B builddir \
+          -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+        && cmake --build builddir            \
+        && ./builddir/pressio-example
 
     - name: Test
+      working-directory: builddir
       run: |
-        cd ${{ env.pressio_build }}
-        export LD_LIBRARY_PATH=${{ env.pressio_build }}/trilinos/install/lib
+        export LD_LIBRARY_PATH=${{ env.trilinos_dir }}/lib
         export OMPI_ALLOW_RUN_AS_ROOT=1
         export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
         ctest -j $num_cpus --output-on-failure
-
-
