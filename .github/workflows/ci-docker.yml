@@ -20,6 +20,7 @@ jobs:
           - {dockerfile: 'ubuntu-clang.dockerfile',         tag: 'latest'}
           - {dockerfile: 'ubuntu-gnu.dockerfile',           tag: 'latest'}
           - {dockerfile: 'ubuntu-gnu-trilinos.dockerfile',  tag: 'latest'}
+          - {dockerfile: 'fedora-clang.dockerfile',         tag: 'latest'}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout out code
