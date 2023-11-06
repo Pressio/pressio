@@ -2,7 +2,16 @@ ARG FEDORA_VERSION=latest
 FROM fedora:${FEDORA_VERSION}
 
 RUN dnf update -y && \
-    dnf install -y wget git make hostname cmake clang eigen3-devel gtest-devel
+    dnf install -y \
+        clang \
+        cmake \
+        eigen3-devel \
+        git \
+        gtest-devel \
+        hostname \
+        make \
+        wget && \
+    dnf clean all
 
 # Setting environment variables
 ENV CC=/usr/bin/clang
