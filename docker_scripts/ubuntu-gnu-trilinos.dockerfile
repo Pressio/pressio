@@ -15,9 +15,8 @@ RUN apt-get update -y -q && \
         libgtest-dev \
         liblapack-dev \
         libopenblas-dev \
+        libopenmpi-dev \
         make \
-        openmpi-bin \
-        openmpi-doc \
         python3 \
         python3-numpy \
         wget \
