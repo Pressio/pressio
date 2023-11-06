@@ -17,8 +17,9 @@ jobs:
     strategy:
       matrix:
         config:
-          - {dockerfile: 'ubuntu-clang.dockerfile', tag: 'latest'}
-          - {dockerfile: 'ubuntu-gnu.dockerfile',   tag: 'latest'}
+          - {dockerfile: 'ubuntu-clang.dockerfile',         tag: 'latest'}
+          - {dockerfile: 'ubuntu-gnu.dockerfile',           tag: 'latest'}
+          - {dockerfile: 'ubuntu-gnu-trilinos.dockerfile',  tag: 'latest'}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout out code
