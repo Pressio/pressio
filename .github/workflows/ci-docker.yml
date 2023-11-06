@@ -1,0 +1,40 @@
+name: pressio-containers
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths:
+      - 'docker_scripts/**'
+  schedule:
+    - cron:  '0 5 * * FRI'
+
+jobs:
+  CI:
+    strategy:
+      matrix:
+        config:
+          - {dockerfile: 'docker_scripts/ubuntu-clang.dockerfile',  tag: 'latest'}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout out code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        if: github.repository_owner == 'Pressio' && ( github.event_name == 'push' ||  github.event_name == 'schedule' )
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push Docker images for Github Container Registry
+        uses: docker/build-push-action@v4
+        with:
+          tags: ghcr.io/pressiomodelreduction/${{ matrix.config.dockerfile }}:${{ matrix.config.tag }}
+          file: ${{ matrix.config.dockerfile }}
+          pull: true
+          push: ${{ github.repository_owner == 'Pressio' && ( github.event_name == 'push' ||  github.event_name == 'schedule' ) }}
