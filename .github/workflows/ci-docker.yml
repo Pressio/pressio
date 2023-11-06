@@ -17,7 +17,8 @@ jobs:
     strategy:
       matrix:
         config:
-          - {dockerfile: 'docker_scripts/ubuntu-clang.dockerfile',  tag: 'latest'}
+          - {dockerfile: 'ubuntu-clang.dockerfile', tag: 'latest'}
+          - {dockerfile: 'ubuntu-gnu.dockerfile',   tag: 'latest'}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout out code
@@ -35,6 +36,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           tags: ghcr.io/pressiomodelreduction/${{ matrix.config.dockerfile }}:${{ matrix.config.tag }}
-          file: ${{ matrix.config.dockerfile }}
+          file: docker_scripts/${{ matrix.config.dockerfile }}
           pull: true
           push: ${{ github.repository_owner == 'Pressio' && ( github.event_name == 'push' ||  github.event_name == 'schedule' ) }}

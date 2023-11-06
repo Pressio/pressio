@@ -3,19 +3,21 @@ FROM ubuntu:${UBUNTU_VERSION}
 
 ARG CMAKE_VERSION=3.18.6
 
-ENV CC=/usr/bin/clang
-ENV CXX=/usr/bin/clang++
+ENV CC=/usr/bin/gcc
+ENV CXX=/usr/bin/g++
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y -q && \
     apt-get upgrade -y -q && \
     apt-get install -y -q --no-install-recommends \
         ca-certificates \
-        clang \
+        gcc \
+        g++ \
         git \
         libeigen3-dev \
         libgtest-dev \
         make \
+        software-properties-common \
         wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
