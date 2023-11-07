@@ -19,7 +19,7 @@ jobs:
         config:
           - {dockerfile: 'fedora-clang',         tag: 'latest'}
           - {dockerfile: 'fedora-gnu',           tag: 'latest'}
-          - {dockerfile: 'intel-oneapi',         tag: 'latest'}
+          # - {dockerfile: 'intel-oneapi',         tag: 'latest'}
           - {dockerfile: 'ubuntu-clang',         tag: 'latest'}
           - {dockerfile: 'ubuntu-gnu-trilinos',  tag: 'latest'}
           - {dockerfile: 'ubuntu-gnu',           tag: 'latest'}

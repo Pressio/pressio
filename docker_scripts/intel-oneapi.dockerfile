@@ -2,6 +2,8 @@ FROM intel/oneapi-hpckit:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | apt-key add -
+
 RUN apt-get update -y -q && \
     apt-get upgrade -y -q && \
     apt-get install -y -q --no-install-recommends \
