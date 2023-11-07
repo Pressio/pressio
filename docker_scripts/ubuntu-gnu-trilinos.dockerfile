@@ -5,6 +5,8 @@ ARG CC=gcc
 ARG CXX=g++
 ARG GFORTRAN=gfortran
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -y -q && \
     apt-get upgrade -y -q && \
     apt-get install -y -q --no-install-recommends \
@@ -45,17 +47,12 @@ RUN mkdir pressio_repos
 WORKDIR /home/pressio_repos
 RUN git clone https://github.com/Pressio/pressio-builder.git
 WORKDIR /home/pressio_repos/pressio-builder
-RUN git checkout main
 RUN sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_tpls.sh
 RUN sed -i 's/9fec35276d846a667bc668ff4cbdfd8be0dfea08/ef73d14babf6e7556b0420add98cce257ccaa56b/g' tpls/tpls_versions_details.sh
-RUN sed -i 's/GTESTBRANCH=master/GTESTBRANCH=main/g' tpls/tpls_versions_details.sh
 RUN chmod +x main_tpls.sh
 RUN ./main_tpls.sh -dryrun=no -build-mode=Release -target-dir=../../pressio_builds -tpls=trilinos -cmake-generator-names=default
 RUN git reset --hard origin/main
 
 # Cleaning after builds
 WORKDIR /home
-# RUN rm -rf pressio_builds/trilinos/build && rm -rf pressio_builds/trilinos/Trilinos
-
-# Setting workdir to /
-WORKDIR /
+RUN rm -rf pressio_builds/trilinos/build && rm -rf pressio_builds/trilinos/Trilinos

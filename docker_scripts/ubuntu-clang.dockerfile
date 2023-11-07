@@ -18,10 +18,3 @@ RUN apt-get update -y -q && \
 
 ENV CC=/usr/bin/clang
 ENV CXX=/usr/bin/clang++
-
-# Creating in and out directories
-RUN mkdir /in
-RUN mkdir /out
-
-# Setting workdir to /in
-WORKDIR /in

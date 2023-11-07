@@ -19,10 +19,3 @@ RUN apt-get update -y -q && \
 
 ENV CC=/opt/intel/oneapi/compiler/latest/linux/bin/icx
 ENV CXX=/opt/intel/oneapi/compiler/latest/linux/bin/icpx
-
-# Creating in and out directories
-RUN mkdir /in
-RUN mkdir /out
-
-# Setting workdir to /in
-WORKDIR /in

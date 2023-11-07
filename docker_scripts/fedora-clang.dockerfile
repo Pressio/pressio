@@ -12,13 +12,5 @@ RUN dnf update -y && \
         make && \
     dnf clean all
 
-# Setting environment variables
 ENV CC=/usr/bin/clang
 ENV CXX=/usr/bin/clang++
-
-# Creating in and out directories
-RUN mkdir /in
-RUN mkdir /out
-
-# Setting workdir to /in
-WORKDIR /in

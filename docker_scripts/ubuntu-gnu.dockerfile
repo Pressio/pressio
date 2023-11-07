@@ -20,10 +20,3 @@ RUN apt-get update -y -q && \
 
 ENV CC=/usr/bin/gcc
 ENV CXX=/usr/bin/g++
-
-# Creating in and out directories
-RUN mkdir /in
-RUN mkdir /out
-
-# Setting workdir to /in
-WORKDIR /in
