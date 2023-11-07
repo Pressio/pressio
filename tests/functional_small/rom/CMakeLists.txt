@@ -79,7 +79,8 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   add_serial_utest(${TESTING_LEVEL}_rom_lspg_mixed_fom_unsteady ${SOURCES_MIXED_FOM_LSPG_UNSTEADY})
 
   set(SOURCES_MIXED_FOM_GALERKIN_UNSTEADY
-    ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_unsteady_mixed_fom/main1_bdf1.cc)
+    ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_unsteady_mixed_fom/main1_bdf1.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_unsteady_mixed_fom/main2_bdf1.cc)    
   add_serial_utest(${TESTING_LEVEL}_rom_galerkin_mixed_fom_unsteady ${SOURCES_MIXED_FOM_GALERKIN_UNSTEADY})
 
 endif()
