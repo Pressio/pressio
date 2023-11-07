@@ -1,8 +1,6 @@
 ARG UBUNTU_VERSION=latest
 FROM ubuntu:${UBUNTU_VERSION}
 
-ENV CC=/usr/bin/gcc
-ENV CXX=/usr/bin/g++
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y -q && \
@@ -16,10 +14,12 @@ RUN apt-get update -y -q && \
         libeigen3-dev \
         libgtest-dev \
         make \
-        software-properties-common \
-        wget && \
+        software-properties-common && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+ENV CC=/usr/bin/gcc
+ENV CXX=/usr/bin/g++
 
 # Creating in and out directories
 RUN mkdir /in

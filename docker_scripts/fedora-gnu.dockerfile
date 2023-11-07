@@ -3,18 +3,18 @@ FROM fedora:${FEDORA_VERSION}
 
 RUN dnf update -y && \
     dnf install -y \
-        clang \
         cmake \
         eigen3-devel \
+        g++ \
+        gcc \
         git \
         gtest-devel \
         hostname \
         make && \
     dnf clean all
 
-# Setting environment variables
-ENV CC=/usr/bin/clang
-ENV CXX=/usr/bin/clang++
+ENV CC=/usr/bin/gcc
+ENV CXX=/usr/bin/g++
 
 # Creating in and out directories
 RUN mkdir /in
