@@ -40,19 +40,47 @@ ENV F77=/usr/bin/mpifort
 ENV F90=/usr/bin/mpifort
 ENV MPIRUNe=/usr/bin/mpirun
 
-# Building TPLs
+# Building Trilinos
 WORKDIR /home
-RUN mkdir pressio_builds
-RUN mkdir pressio_repos
-WORKDIR /home/pressio_repos
-RUN git clone https://github.com/Pressio/pressio-builder.git
-WORKDIR /home/pressio_repos/pressio-builder
-RUN sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_tpls.sh
-RUN sed -i 's/9fec35276d846a667bc668ff4cbdfd8be0dfea08/ef73d14babf6e7556b0420add98cce257ccaa56b/g' tpls/tpls_versions_details.sh
-RUN chmod +x main_tpls.sh
-RUN ./main_tpls.sh -dryrun=no -build-mode=Release -target-dir=../../pressio_builds -tpls=trilinos -cmake-generator-names=default
-RUN git reset --hard origin/main
+RUN git clone https://github.com/trilinos/Trilinos.git && \
+    cd Trilinos && \
+    git checkout ef73d14babf6e7556b0420add98cce257ccaa56b
+
+RUN cmake -B Trilinos/builddir \
+        -D CMAKE_BUILD_TYPE:STRING=Release \
+        -D BUILD_SHARED_LIBS:BOOL=ON \
+        -D TPL_FIND_SHARED_LIBS=ON \
+        -D Trilinos_LINK_SEARCH_START_STATIC=OFF \
+        -D CMAKE_VERBOSE_MAKEFILE:BOOL=TRUE \
+        -D TPL_ENABLE_MPI:BOOL=ON \
+        -D MPI_C_COMPILER:FILEPATH=/usr/bin/mpicc \
+        -D MPI_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
+        -D MPI_USE_COMPILER_WRAPPERS:BOOL=ON \
+        -D Trilinos_ENABLE_Fortran:BOOL=ON \
+        -D MPI_Fortran_COMPILER:FILEPATH=/usr/bin/mpifort \
+        -D Trilinos_ENABLE_TESTS:BOOL=OFF \
+        -D Trilinos_ENABLE_EXAMPLES:BOOL=OFF \
+        -D TPL_ENABLE_BLAS=ON \
+        -D TPL_ENABLE_LAPACK=ON \
+        -D Kokkos_ENABLE_SERIAL:BOOL=ON \
+        -D Kokkos_ENABLE_THREADS:BOOL=OFF \
+        -D Kokkos_ENABLE_OPENMP:BOOL=OFF \
+        -D Kokkos_ENABLE_DEPRECATED_CODE=OFF \
+        -D Trilinos_ENABLE_ALL_PACKAGES:BOOL=OFF \
+        -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
+        -D Trilinos_ENABLE_Teuchos:BOOL=ON \
+        -D Trilinos_ENABLE_Epetra:BOOL=ON \
+        -D Trilinos_ENABLE_Tpetra:BOOL=ON \
+        -D Tpetra_ENABLE_DEPRECATED_CODE:BOOL=OFF \
+        -D Tpetra_ENABLE_TSQR:BOOL=ON \
+        -D Trilinos_ENABLE_EpetraExt:BOOL=ON \
+        -D Trilinos_ENABLE_AztecOO:BOOL=ON \
+        -D Trilinos_ENABLE_Ifpack:BOOL=ON \
+        -D Trilinos_ENABLE_Ifpack2:BOOL=ON \
+        -D Trilinos_ENABLE_ROL:BOOL=ON \
+        -D CMAKE_INSTALL_PREFIX:PATH=/home/pressio_builds/trilinos/install \
+        -S Trilinos && \
+    cmake --build Trilinos/builddir --target install
 
 # Cleaning after builds
-WORKDIR /home
-RUN rm -rf pressio_builds/trilinos/build && rm -rf pressio_builds/trilinos/Trilinos
+RUN rm -rf Trilinos
