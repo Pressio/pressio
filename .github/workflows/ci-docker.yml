@@ -17,12 +17,12 @@ jobs:
     strategy:
       matrix:
         config:
-          - {dockerfile: 'fedora-clang',         tag: 'latest'}
-          - {dockerfile: 'fedora-gnu',           tag: 'latest'}
-          # - {dockerfile: 'intel-oneapi',         tag: 'latest'}
-          - {dockerfile: 'ubuntu-clang',         tag: 'latest'}
-          - {dockerfile: 'ubuntu-gnu-trilinos',  tag: 'latest'}
-          - {dockerfile: 'ubuntu-gnu',           tag: 'latest'}
+          - {dockerfile: 'fedora-clang',            compiler-version: 'latest'}
+          - {dockerfile: 'fedora-gnu',              compiler-version: 'latest'}
+          # - {dockerfile: 'intel-oneapi',            compiler-version: 'latest'}
+          - {dockerfile: 'ubuntu-clang',         compiler-version: '14'}
+          - {dockerfile: 'ubuntu-gnu-trilinos',  compiler-version: '11'}
+          - {dockerfile: 'ubuntu-gnu',           compiler-version: '11'}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,7 +42,9 @@ jobs:
       - name: Build and Push Docker images for Github Container Registry
         uses: docker/build-push-action@v4
         with:
-          tags: ghcr.io/pressio/${{ matrix.config.dockerfile }}:${{ matrix.config.tag }}
+          tags: ghcr.io/pressio/${{ matrix.config.dockerfile }}-${{ matrix.config.compiler-version }}:latest
           file: docker_scripts/${{ matrix.config.dockerfile }}.dockerfile
+          build-args: |
+            COMPILER_VERSION=${{ matrix.config.compiler-version }}
           pull: true
           push: ${{ github.repository == 'Pressio/pressio' && github.ref == 'refs/heads/develop' }}

@@ -1,9 +1,10 @@
 ARG UBUNTU_VERSION=22.04
 FROM ubuntu:${UBUNTU_VERSION}
 
-ARG CC=gcc
-ARG CXX=g++
-ARG GFORTRAN=gfortran
+ARG COMPILER_VERSION=11
+ARG CC=gcc-${COMPILER_VERSION}
+ARG CXX=g++-${COMPILER_VERSION}
+ARG GFORTRAN=gfortran-${COMPILER_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -25,6 +26,9 @@ RUN apt-get update -y -q && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/${CC} 10
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/${CXX} 10
+RUN update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/${GFORTRAN} 10
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 20
 RUN update-alternatives --set cc /usr/bin/gcc
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 20
