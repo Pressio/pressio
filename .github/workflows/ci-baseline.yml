@@ -32,27 +32,27 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - fedora-clang
-          - fedora-gnu
-          - ubuntu-clang
-          - ubuntu-gnu
-          #- intel-oneapi
+          - fedora-clang-latest
+          - fedora-gnu-latest
+          - ubuntu-clang-14
+          - ubuntu-gnu-11
+          #- intel-oneapi-latest
         build_type:
           - Release
           - Debug
         cmake_extra_args:
           - ''
         include:
-          - image: ubuntu-gnu
+          - image: ubuntu-gnu-11
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: ubuntu-clang
+          - image: ubuntu-clang-14
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-gnu
+          - image: fedora-gnu-latest
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-clang
+          - image: fedora-clang-latest
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
