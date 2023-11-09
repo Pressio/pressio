@@ -13,10 +13,10 @@ RUN apt-get update -y -q && \
         gcc-${COMPILER_VERSION} \
         g++-${COMPILER_VERSION} \
         git \
-        libeigen3-dev \
         libgtest-dev \
         make \
-        software-properties-common && \
+        software-properties-common \
+        wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

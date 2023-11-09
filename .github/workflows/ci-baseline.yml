@@ -63,6 +63,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
     env:
+      eigen_version: 3.4.0
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
 
     steps:
@@ -74,11 +75,18 @@ jobs:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
 
+      - name: Preparing environment
+        run: |
+          wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
+          && mkdir -p /eigen \
+          && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
+
       - name: Example - include only
         working-directory: examples
         run: |
           $CXX \
             -DPRESSIO_ENABLE_TPL_EIGEN \
+            -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main.cpp                \
           && $CXX -o pressio-example main.o \
@@ -88,6 +96,7 @@ jobs:
         working-directory: examples
         run: |
           $CXX \
+            -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main_with_defines.cpp   \
           && $CXX -o pressio-example main.o \
@@ -105,7 +114,8 @@ jobs:
             ${{ matrix.cmake_extra_args }} \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
-            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON
+            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }}
 
       - name: Build
         run: |
@@ -123,6 +133,7 @@ jobs:
         working-directory: examples/cmake_add_subdirectory
         run: |
           cmake -B builddir \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           && cmake --build builddir            \
           && ./builddir/pressio-example
 
@@ -130,6 +141,7 @@ jobs:
         working-directory: examples/cmake_include_directories
         run: |
           cmake -B builddir \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           && cmake --build builddir            \
           && ./builddir/pressio-example
 

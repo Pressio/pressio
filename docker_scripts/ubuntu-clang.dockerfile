@@ -12,9 +12,9 @@ RUN apt-get update -y -q && \
         clang-${COMPILER_VERSION} \
         cmake \
         git \
-        libeigen3-dev \
         libgtest-dev \
-        make && \
+        make \
+        wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

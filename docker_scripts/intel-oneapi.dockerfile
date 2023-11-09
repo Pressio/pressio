@@ -13,7 +13,8 @@ RUN apt-get update -y -q && \
         libeigen3-dev \
         libgtest-dev \
         make \
-        software-properties-common && \
+        software-properties-common \
+        wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

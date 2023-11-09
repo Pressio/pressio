@@ -4,13 +4,13 @@ FROM fedora:${FEDORA_VERSION}
 RUN dnf update -y && \
     dnf install -y \
         cmake \
-        eigen3-devel \
         g++ \
         gcc \
         git \
         gtest-devel \
         hostname \
-        make && \
+        make \
+        wget && \
     dnf clean all
 
 ENV CC=/usr/bin/gcc

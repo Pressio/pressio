@@ -39,6 +39,7 @@ jobs:
     container: ghcr.io/pressio/${{ matrix.image }}
 
     env:
+      eigen_version: 3.4.0
       num_cpus: 4
       trilinos_dir: /home/pressio_builds/trilinos/install
 
@@ -51,9 +52,12 @@ jobs:
         repository: Pressio/pressio-templates-usage-as-library
         path: examples
 
-    - name: Creating environnement
+    - name: Preparing environment
       run: |
-        sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile
+        sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile \
+        && wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
+        && mkdir -p /eigen \
+        && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
 
     - name: Example - include only
       working-directory: examples
@@ -61,6 +65,7 @@ jobs:
         $CXX \
           -DPRESSIO_ENABLE_TPL_EIGEN    \
           -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/eigen/eigen-${{ env.eigen_version }} \
           -I$trilinos_dir/include       \
           -I../include                  \
           -c main.cpp
@@ -70,6 +75,7 @@ jobs:
       run: |
         $CXX \
           -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/eigen/eigen-${{ env.eigen_version }} \
           -I$trilinos_dir/include       \
           -I../include                  \
           -c main_with_defines.cpp
@@ -90,6 +96,7 @@ jobs:
           -D PRESSIO_ENABLE_TPL_BLAS:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
           -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+          -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
           -D CMAKE_INSTALL_PREFIX:PATH=../install \
           -D CMAKE_CXX_FLAGS=''
@@ -109,6 +116,7 @@ jobs:
       working-directory: examples/cmake_include_directories
       run: |
         cmake -B builddir \
+          -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
         && cmake --build builddir            \
         && ./builddir/pressio-example
 
@@ -116,6 +124,7 @@ jobs:
       working-directory: examples/cmake_add_subdirectory
       run: |
         cmake -B builddir \
+          -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
         && cmake --build builddir            \
         && ./builddir/pressio-example
 

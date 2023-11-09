@@ -14,7 +14,6 @@ RUN apt-get update -y -q && \
         ca-certificates \
         cmake \
         git \
-        libeigen3-dev \
         libgtest-dev \
         liblapack-dev \
         libopenblas-dev \
@@ -22,6 +21,7 @@ RUN apt-get update -y -q && \
         make \
         python3 \
         python3-numpy \
+        wget \
         $CC $CXX $GFORTRAN && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
