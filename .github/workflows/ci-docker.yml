@@ -3,7 +3,6 @@ name: pressio-containers
 on:
   push:
     branches:
-      - 'main'
       - 'develop'
   pull_request:
     types: [ opened, reopened, synchronize ]
@@ -17,8 +16,8 @@ jobs:
     strategy:
       matrix:
         config:
-          - {dockerfile: 'fedora-clang',            compiler-version: 'latest'}
-          - {dockerfile: 'fedora-gnu',              compiler-version: 'latest'}
+          - {dockerfile: 'fedora-clang',            compiler-version: '17'}
+          - {dockerfile: 'fedora-gnu',              compiler-version: '13'}
           # - {dockerfile: 'intel-oneapi',            compiler-version: 'latest'}
           - {dockerfile: 'ubuntu-clang',         compiler-version: '14'}
           - {dockerfile: 'ubuntu-gnu-trilinos',  compiler-version: '11'}

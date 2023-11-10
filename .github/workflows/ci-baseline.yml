@@ -21,7 +21,7 @@ on:
     - '**/*.md'
 
 concurrency:
-  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 jobs:
@@ -32,8 +32,8 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - fedora-clang-latest
-          - fedora-gnu-latest
+          - fedora-clang-17
+          - fedora-gnu-13
           - ubuntu-clang-14
           - ubuntu-gnu-11
           #- intel-oneapi-latest
@@ -49,10 +49,10 @@ jobs:
           - image: ubuntu-clang-14
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-gnu-latest
+          - image: fedora-gnu-13
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-clang-latest
+          - image: fedora-clang-17
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
