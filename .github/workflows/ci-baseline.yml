@@ -21,7 +21,7 @@ on:
     - '**/*.md'
 
 concurrency:
-  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 jobs:
@@ -32,36 +32,39 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - ubuntu-20.04-gnu_9-eigen_3.3.7-gtest
-          - ubuntu-20.04-clang_9-eigen_3.3.7-gtest
-          - fedora-34-gnu_11-eigen_3.3.7-gtest
-          - fedora-34-clang_12-eigen_3.3.7-gtest
-          #- intel_oneapi-eigen_3.3.7-gtest
+          - fedora-clang-17
+          - fedora-gnu-13
+          - ubuntu-clang-14
+          - ubuntu-gnu-11
+          #- intel-oneapi-latest
         build_type:
           - Release
           - Debug
         cmake_extra_args:
           - ''
         include:
-          - image: ubuntu-20.04_gnu-11_eigen-3.3.7_gtest
+          - image: ubuntu-gnu-11
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: ubuntu-20.04_clang-12_eigen-3.3.7_gtest
+          - image: ubuntu-clang-14
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-34-gnu_11-eigen_3.3.7-gtest
+          - image: fedora-gnu-13
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-34-clang_12-eigen_3.3.7-gtest
+          - image: fedora-clang-17
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
     runs-on: ubuntu-latest
-    container: pressiomodelreduction/${{ matrix.image }}
+    container:
+      image: ghcr.io/pressio/${{ matrix.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
     env:
+      eigen_version: 3.4.0
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
-      eigen_inc_dir: /usr/local/eigen/install/include/eigen3
-      gtest_dir: /usr/local/gtest/install
 
     steps:
       - uses: actions/checkout@v4
@@ -72,13 +75,19 @@ jobs:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
 
+      - name: Preparing environment
+        run: |
+          wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
+          && mkdir -p /eigen \
+          && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
+
       - name: Example - include only
         working-directory: examples
         run: |
           $CXX \
             -DPRESSIO_ENABLE_TPL_EIGEN \
-            -I$eigen_inc_dir           \
-            -I../include            \
+            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I../include               \
             -c main.cpp                \
           && $CXX -o pressio-example main.o \
           && ./pressio-example
@@ -87,7 +96,7 @@ jobs:
         working-directory: examples
         run: |
           $CXX \
-            -I$eigen_inc_dir           \
+            -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main_with_defines.cpp   \
           && $CXX -o pressio-example main.o \
@@ -103,11 +112,10 @@ jobs:
             -D CMAKE_INSTALL_PREFIX:PATH=../install \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
             ${{ matrix.cmake_extra_args }} \
-            -D GTEST_ROOT=$gtest_dir \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-            -D EIGEN_INCLUDE_DIR=$eigen_inc_dir
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }}
 
       - name: Build
         run: |
@@ -125,7 +133,7 @@ jobs:
         working-directory: examples/cmake_add_subdirectory
         run: |
           cmake -B builddir \
-            -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           && cmake --build builddir            \
           && ./builddir/pressio-example
 
@@ -133,7 +141,7 @@ jobs:
         working-directory: examples/cmake_include_directories
         run: |
           cmake -B builddir \
-            -DEIGEN_INCLUDE_DIR=$eigen_inc_dir \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           && cmake --build builddir            \
           && ./builddir/pressio-example
 

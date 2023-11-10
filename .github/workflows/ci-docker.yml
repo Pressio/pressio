@@ -1,0 +1,49 @@
+name: pressio-containers
+
+on:
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths:
+      - 'docker_scripts/**'
+  schedule:
+    - cron:  '0 5 * * FRI'
+
+jobs:
+  CI:
+    strategy:
+      matrix:
+        config:
+          - {dockerfile: 'fedora-clang',            compiler-version: '17'}
+          - {dockerfile: 'fedora-gnu',              compiler-version: '13'}
+          # - {dockerfile: 'intel-oneapi',            compiler-version: 'latest'}
+          - {dockerfile: 'ubuntu-clang',         compiler-version: '14'}
+          - {dockerfile: 'ubuntu-gnu-trilinos',  compiler-version: '11'}
+          - {dockerfile: 'ubuntu-gnu',           compiler-version: '11'}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout out code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        if: github.repository == 'Pressio/pressio' && github.ref == 'refs/heads/develop'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push Docker images for Github Container Registry
+        uses: docker/build-push-action@v4
+        with:
+          tags: ghcr.io/pressio/${{ matrix.config.dockerfile }}-${{ matrix.config.compiler-version }}:latest
+          file: docker_scripts/${{ matrix.config.dockerfile }}.dockerfile
+          build-args: |
+            COMPILER_VERSION=${{ matrix.config.compiler-version }}
+          pull: true
+          push: ${{ github.repository == 'Pressio/pressio' && github.ref == 'refs/heads/develop' }}
