@@ -56,8 +56,6 @@ template <class T, class enable = void> struct SpanExpr;
 template <class T, class enable = void> struct SpanTraits;
 template <class T, class enable = void> struct SubspanExpr;
 template <class T, class enable = void> struct SubSpanTraits;
-template <class T, class enable = void> struct AsDiagonalMatrixExpr;
-template <class T, class enable = void> struct AsdiagmatrixTraits;
 template <class T, class enable = void> struct DiagExpr;
 template <class T, class enable = void> struct DiagTraits;
 }}//end namespace expressions::impl
@@ -73,12 +71,6 @@ struct Traits<::pressio::expressions::impl::SubspanExpr<T>>
   : ::pressio::expressions::impl::SubSpanTraits<
       ::pressio::expressions::impl::SubspanExpr<T>
       >{};
-
-template<class T>
-struct Traits<::pressio::expressions::impl::AsDiagonalMatrixExpr<T>>
-  : ::pressio::expressions::impl::AsdiagmatrixTraits<
-     ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
-     >{};
 
 template<class T>
 struct Traits<::pressio::expressions::impl::DiagExpr<T>>

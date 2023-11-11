@@ -234,59 +234,6 @@ product(::pressio::transpose modeA,
   return C;
 }
 
-//-------------------------------------------
-// C = beta * C + alpha*A*B
-// specialize for when A = asDiagonalMatrix expression
-//-------------------------------------------
-template <
-  class A_type, class B_type, class C_type,
-  class alpha_t, class beta_t
-  >
-::pressio::mpl::enable_if_t<
-  // level3 common constraints
-     ::pressio::Traits<A_type>::rank == 2
-  && ::pressio::Traits<B_type>::rank == 2
-  && ::pressio::Traits<C_type>::rank == 2
-  // TPL/container specific
-  && ::pressio::is_expression_asdiagonalmatrix<A_type>::value
-  && ::pressio::is_expression_acting_on_eigen<A_type>::value
-  && ::pressio::is_native_container_eigen<B_type>::value
-  && ::pressio::is_native_container_eigen<C_type>::value
-  // scalar compatibility
-  && ::pressio::all_have_traits_and_same_scalar<A_type, B_type, C_type>::value
-  && (std::is_floating_point<typename ::pressio::Traits<A_type>::scalar_type>::value
-   || std::is_integral<typename ::pressio::Traits<A_type>::scalar_type>::value)
-  /* constrained via is_convertible because the impl is using
-     native Eigen expression whcih only work if the scalars are
-     convertible to object scalar types*/
-  && std::is_convertible<alpha_t, typename ::pressio::Traits<A_type>::scalar_type>::value
-  && std::is_convertible<beta_t,  typename ::pressio::Traits<A_type>::scalar_type>::value
-  >
-product(::pressio::nontranspose /*unused*/,
-	::pressio::nontranspose /*unused*/,
-	const alpha_t & alpha,
-	const A_type & A,
-	const B_type & B,
-	const beta_t & beta,
-	C_type & C)
-{
-
-  assert( (std::size_t)::pressio::ops::extent(C, 0) == (std::size_t)::pressio::ops::extent(A, 0) );
-  assert( (std::size_t)::pressio::ops::extent(C, 1) == (std::size_t)::pressio::ops::extent(B, 1) );
-  assert( (std::size_t)::pressio::ops::extent(A, 1) == (std::size_t)::pressio::ops::extent(B, 0) );
-
-  using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  constexpr sc_t zero{0};
-  const sc_t alpha_(alpha);
-  const sc_t beta_(beta);
-
-  if (beta_ == zero) {
-    C = alpha_ * A.native() * B;
-  } else {
-    C = beta_ * C + alpha_ * A.native() * B;
-  }
-}
-
 }}//end namespace pressio::ops
 
 

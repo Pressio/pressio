@@ -11,9 +11,6 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/eigen_diag.cc)
   add_serial_utest(${TESTING_LEVEL}_expressions_eigen_diag ${SRC})
-
-  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/eigen_asdiagonalmatrix.cc)
-  add_serial_utest(${TESTING_LEVEL}_expressions_eigen_as_diagonal_matrix ${SRC})
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
