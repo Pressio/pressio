@@ -56,7 +56,6 @@
 #include "./expressions/span.hpp"
 #include "./expressions/subspan.hpp"
 #include "./expressions/diag.hpp"
-#include "./expressions/as_diagonal_matrix.hpp"
 
 #include "./expressions/is_expression.hpp"
 
