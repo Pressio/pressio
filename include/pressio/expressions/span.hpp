@@ -57,24 +57,28 @@ namespace pressio{
 // note that the following works also when T is const-qualified
 // because that qualification carries over to the impl
 
-template <class T>
+template <class T, class IndexType>
 auto span(T & operand,
-	  const std::pair<std::size_t, std::size_t> & spanRange)
+	  const std::pair<IndexType, IndexType> & spanRange)
 {
-  static_assert(::pressio::Traits< std::remove_const_t<T> >::rank==1,
+  static_assert(Traits< std::remove_const_t<T> >::rank==1,
 		"span can only be applied to a rank-1 object.");
-  return expressions::impl::SpanExpr<T> (operand, spanRange);
+  static_assert(std::is_integral<IndexType>);
+
+  const IndexType startIndex = std::get<0>(spanRange);
+  const IndexType endIndex   = std::get<1>(spanRange);
+  return expressions::impl::SpanExpr<T>(operand, startIndex, endIndex);
 }
 
-template <class T>
-auto span(T & operand,
-	  std::size_t startIndex,
-	  std::size_t extent)
+template <class T, class IndexType>
+auto span(T & operand, IndexType startIndex, IndexType extent)
 {
-  static_assert(::pressio::Traits< std::remove_const_t<T> >::rank==1,
+  static_assert(Traits< std::remove_const_t<T> >::rank==1,
 		"span can only be applied to a rank-1 object.");
-  std::pair<std::size_t, std::size_t> r(startIndex, startIndex + extent);
-  return expressions::impl::SpanExpr<T> (operand, r);
+  static_assert(std::is_integral<IndexType>);
+
+  const IndexType endIndex = startIndex + extent;
+  return expressions::impl::SpanExpr<T>(operand, startIndex, endIndex);
 }
 
 }
