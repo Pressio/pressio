@@ -41,7 +41,7 @@ Constraints
 
   - a Epetra vector or multi-vector, i.e. ``pressio::is_vector_epetra<T>::value``, ``pressio::is_multi_vector_epetra<T>::value`` or
 
-  - a pressio expression, i.e. ``pressio::diag``, ``pressio::span``, ``pressio::subspan``, ``pressio::as_diagonal_matrix`` based on Eigen or Kokkkos container
+  - a pressio expression, i.e. ``pressio::diag``, ``pressio::span``, ``pressio::subspan``, based on Eigen or Kokkkos container
 
 - ``ScalarType`` must be convertible to ``pressio::Traits<T>::scalar_type``
 
