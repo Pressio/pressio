@@ -99,7 +99,7 @@ jobs:
           -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
           -D CMAKE_INSTALL_PREFIX:PATH=../install \
-          -D CMAKE_CXX_FLAGS=''
+          -D CMAKE_CXX_FLAGS='-Wall -Werror'
 
     - name: Build
       run: cmake --build builddir -j $num_cpus --target install
