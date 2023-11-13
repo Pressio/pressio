@@ -27,7 +27,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   add_definitions(-DPRESSIO_ENABLE_TPL_EIGEN)
 
   if(EIGEN_INCLUDE_DIR)
-    include_directories(${EIGEN_INCLUDE_DIR})
+    include_directories(SYSTEM ${EIGEN_INCLUDE_DIR})
   else()
     find_package(Eigen3)
 
