@@ -41,7 +41,7 @@ TEST(ode_explicit_steppers, euler_custom_ind_var_type)
   auto stepperObj = ode::create_forward_euler_stepper(appObj);
 
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
-  MyCustomTime t0;
+  MyCustomTime t0{0.0};
   MyCustomTime dt{0.1};
   ode::advance_n_steps(stepperObj, y, t0,
 		       dt, pressio::ode::StepCount(1));
