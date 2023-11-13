@@ -62,26 +62,30 @@ struct SpanTraits<
   : public ::pressio::Traits<VectorType>
 {
   using ordinal_type = typename VectorType::StorageIndex;
+  using operand_type = VectorType;
+  using const_operand_type = std::add_const_t<VectorType>;
 
-  // type of the native expression
   using _native_expr_type =
     decltype(
-     std::declval<VectorType>().segment(ordinal_type{}, ordinal_type{})
+     std::declval<operand_type>().segment(ordinal_type{}, ordinal_type{})
      );
 
   using _const_native_expr_type =
     decltype(
-     std::declval<const VectorType>().segment(ordinal_type{}, ordinal_type{})
+     std::declval<const_operand_type>().segment(ordinal_type{}, ordinal_type{})
      );
 
-  using native_expr_type = typename std::conditional<
-    std::is_const<VectorType>::value,
+  using native_expr_type = std::conditional_t<
+    std::is_const_v<VectorType>,
     _const_native_expr_type,
     _native_expr_type
-    >::type;
+    >;
 
-  using reference_type = decltype( std::declval<_native_expr_type>()(0) );
-  using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0) );
+  using reference_type = std::conditional_t<
+    std::is_const_v<VectorType>,
+    const typename VectorType::Scalar &,
+    typename VectorType::Scalar &
+    >;
 };
 #endif
 

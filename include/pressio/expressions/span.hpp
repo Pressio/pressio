@@ -58,24 +58,11 @@ namespace pressio{
 // because that qualification carries over to the impl
 
 template <class T, class IndexType>
-auto span(T & operand,
-	  const std::pair<IndexType, IndexType> & spanRange)
-{
-  static_assert(Traits< std::remove_const_t<T> >::rank==1,
-		"span can only be applied to a rank-1 object.");
-  static_assert(std::is_integral<IndexType>);
-
-  const IndexType startIndex = std::get<0>(spanRange);
-  const IndexType endIndex   = std::get<1>(spanRange);
-  return expressions::impl::SpanExpr<T>(operand, startIndex, endIndex);
-}
-
-template <class T, class IndexType>
 auto span(T & operand, IndexType startIndex, IndexType extent)
 {
   static_assert(Traits< std::remove_const_t<T> >::rank==1,
 		"span can only be applied to a rank-1 object.");
-  static_assert(std::is_integral<IndexType>);
+  static_assert(std::is_integral_v<IndexType>);
 
   const IndexType endIndex = startIndex + extent;
   return expressions::impl::SpanExpr<T>(operand, startIndex, endIndex);

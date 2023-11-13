@@ -61,65 +61,48 @@ struct SpanExpr<
   >
 {
 
-  using this_t = SpanExpr<VectorType>;
-  using mytraits = SpanTraits<this_t>;
-  using ord_t = typename mytraits::ordinal_type;
-  using size_t = typename mytraits::ordinal_type;
-  using ref_t = typename mytraits::reference_type;
-  using const_ref_t = typename mytraits::const_reference_type;
+private:
+  using mytraits      = SpanTraits<SpanExpr<VectorType>>;
+  using reference_t   = typename mytraits::reference_type;
   using native_expr_t = typename mytraits::native_expr_type;
 
-private:
-  std::reference_wrapper<VectorType> operand_;
-  std::size_t startIndex_;
+  VectorType * operand_ = nullptr;
+  std::size_t startIndex_ = {};
   std::size_t extent_ = {};
   native_expr_t nativeExprObj_;
 
 public:
-  SpanExpr() = delete;
-  SpanExpr(const SpanExpr & other) = default;
-  SpanExpr & operator=(const SpanExpr & other) = delete;
-  SpanExpr(SpanExpr && other) = default;
-  SpanExpr & operator=(SpanExpr && other) = delete;
-  ~SpanExpr() = default;
-
   SpanExpr(VectorType & operand,
 	   std::size_t startIndex,
 	   std::size_t endIndex)
-    : operand_(operand),
+    : operand_(&operand),
       startIndex_(startIndex),
       extent_(endIndex-startIndex_),
-      nativeExprObj_(operand_.get().segment(startIndex_, extent_))
+      nativeExprObj_(operand_->segment(startIndex_, extent_))
   {
     assert( startIndex >= 0 && startIndex <= endIndex );
     assert( endIndex <= std::size_t(operand.size()) );
   }
 
 public:
-  size_t extent(size_t i) const{
-    return (i == 0) ? std::size_t(extent_) : std::size_t(1);
+  std::size_t extent(std::size_t i) const{
+    return (i == 0) ? extent_ : std::size_t(1);
   }
 
-  native_expr_t const & native() const{
-    return nativeExprObj_;
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
+
+  reference_t operator()(std::size_t i) const{
+    assert(i < extent_);
+    return (*operand_)(startIndex_ + i);
   }
 
-  native_expr_t & native(){
-    return nativeExprObj_;
+  reference_t operator[](std::size_t i) const{
+    assert(i < extent_);
+    return (*operand_)(startIndex_ + i);
   }
 
-  ref_t operator()(std::size_t i)
-  {
-    assert(i < (std::size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
-  const_ref_t operator()(std::size_t i) const
-  {
-    assert(i < (std::size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
+  auto data() const { return operand_; }
 };
 #endif
 
