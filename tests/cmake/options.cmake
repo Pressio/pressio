@@ -56,7 +56,7 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
   # TODO: it is possible to use find_package(<PackageName>) for each (sub)package
   # https://trilinos.github.io/pdfs/Finding_Trilinos.txt
 
-  include_directories(${Trilinos_INCLUDE_DIRS})
+  include_directories(SYSTEM ${Trilinos_INCLUDE_DIRS})
   link_libraries(${Trilinos_LIBRARIES})
 endif()
 
