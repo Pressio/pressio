@@ -77,7 +77,7 @@ message(FATAL_ERROR "Missing KOKKOS_ROOT. KOKKOS needs:
 
     set(KOKKOS_LIB_NAMES kokkoscontainers kokkoscore kokkoskernels)
 
-    include_directories(${KOKKOS_ROOT}/include ${KOKKOS_KERNELS_ROOT}/include)
+    include_directories(SYSTEM ${KOKKOS_ROOT}/include ${KOKKOS_KERNELS_ROOT}/include)
 
     link_directories(${KOKKOS_ROOT}/lib ${KOKKOS_ROOT}/lib64
 ${KOKKOS_KERNELS_ROOT}/lib ${KOKKOS_KERNELS_ROOT}/lib64)
@@ -91,7 +91,7 @@ if(PRESSIO_ENABLE_TPL_MPI)
   add_definitions(-DPRESSIO_ENABLE_TPL_MPI)
 
   find_package(MPI REQUIRED)
-  include_directories(${MPI_CXX_INCLUDE_DIRS})
+  include_directories(SYSTEM ${MPI_CXX_INCLUDE_DIRS})
 endif()
 
 if(PRESSIO_ENABLE_TPL_Pybind11)
