@@ -53,27 +53,28 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename VectorType>
-struct SpanTraits<
+class SpanTraits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
-  >
-  : public ::pressio::Traits<VectorType>
+  > : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename VectorType::StorageIndex;
-  using operand_type = VectorType;
-  using const_operand_type = std::add_const_t<VectorType>;
+private:
+  using _ordinal_type = typename VectorType::StorageIndex;
 
   using _native_expr_type =
     decltype(
-     std::declval<operand_type>().segment(ordinal_type{}, ordinal_type{})
+     std::declval<VectorType>().segment(_ordinal_type{}, _ordinal_type{})
      );
 
   using _const_native_expr_type =
     decltype(
-     std::declval<const_operand_type>().segment(ordinal_type{}, ordinal_type{})
+     std::declval<std::add_const_t<VectorType>>().segment(_ordinal_type{}, _ordinal_type{})
      );
+
+public:
+  using ordinal_type = _ordinal_type;
 
   using native_expr_type = std::conditional_t<
     std::is_const_v<VectorType>,
@@ -92,17 +93,19 @@ struct SpanTraits<
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename VectorType>
-struct SpanTraits<
+class SpanTraits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
-  >
-  : public ::pressio::Traits<VectorType>
+  > : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename VectorType::traits::size_type;
-  using _pair_type = std::pair<ordinal_type, ordinal_type>;
+private:
+  using _ordinal_type = typename VectorType::traits::size_type;
+  using _pair_type = std::pair<_ordinal_type, _ordinal_type>;
 
+public:
+  using ordinal_type = _ordinal_type;
   using native_expr_type =
     decltype(
       Kokkos::subview(std::declval<VectorType>(), std::declval<_pair_type>())
