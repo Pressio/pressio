@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct DiagExpr<
+class DiagExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
