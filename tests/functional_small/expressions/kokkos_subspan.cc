@@ -19,8 +19,8 @@ TEST(expressions_kokkos, subspan0)
   using n_t  = Kokkos::View<double**, Kokkos::HostSpace>;
   const n_t A("A",5,4);
   auto ss = pressio::subspan(A,
-					 std::make_pair(0,2),
-					 std::make_pair(1,2) );
+			     std::make_pair(0,2),
+			     std::make_pair(1,2) );
   static_assert
     (!std::is_const<
      typename std::remove_reference<decltype(ss(0,0))>::type
@@ -34,8 +34,8 @@ TEST(expressions_kokkos, subspan1)
   fillMatrix(A);
 
   const auto ss = pressio::subspan(A,
-					       std::make_pair(0,2),
-					       std::make_pair(2,4) );
+				   std::make_pair(0,2),
+				   std::make_pair(2,4) );
   EXPECT_EQ( ss.extent(0), 2 );
   EXPECT_EQ( ss.extent(1), 2 );
 
@@ -55,23 +55,57 @@ TEST(expressions_kokkos, subspan2)
   fillMatrix(A);
 
   auto ss = pressio::subspan(A,
-                 std::make_pair(2,4),
-                 std::make_pair(2,4) );
+			     std::make_pair(2,4),
+			     std::make_pair(2,4) );
   EXPECT_EQ( ss.extent(0), 2 );
   EXPECT_EQ( ss.extent(1), 2 );
   ss(0,0) = -1.;
   ss(1,1) = -2.;
-  EXPECT_DOUBLE_EQ( A(2,2), -1.); 
-  EXPECT_DOUBLE_EQ( A(3,3), -2.);  
+  EXPECT_DOUBLE_EQ( A(2,2), -1.);
+  EXPECT_DOUBLE_EQ( A(3,3), -2.);
 
   const auto ss2 = pressio::subspan(A,
-                 std::make_pair(2,3),
-                 std::make_pair(2,4) );
+				    std::make_pair(2,3),
+				    std::make_pair(2,4) );
   EXPECT_EQ( ss2.extent(0), 1);
   EXPECT_EQ( ss2.extent(1), 2);
   ss2(0,0) = -3.;
   ss2(0,1) = -4.;
-  EXPECT_DOUBLE_EQ( A(2,2), -3.); 
-  EXPECT_DOUBLE_EQ( A(2,3), -4.); 
-  EXPECT_DOUBLE_EQ( A(3,3), -2.); 
+  EXPECT_DOUBLE_EQ( A(2,2), -3.);
+  EXPECT_DOUBLE_EQ( A(2,3), -4.);
+  EXPECT_DOUBLE_EQ( A(3,3), -2.);
+}
+
+
+TEST(expressions_kokkos, span_traits)
+{
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+  {
+    using T = Kokkos::View<double**, Kokkos::HostSpace>;
+    T o("o", 10, 10);
+    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
+    static_assert(pressio::Traits<expr_t>::rank == 2);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Kokkos::View<double[4][4], Kokkos::HostSpace>;
+    T o("o");
+    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
+    static_assert(pressio::Traits<expr_t>::rank == 2);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Kokkos::View<double**, Kokkos::HostSpace>;
+    T o("o",10, 10);
+    typename T::const_type o2 = o;
+    using expr_t = decltype(pressio::subspan(o2, pair_t{0, 1}, pair_t{0,1}));
+    static_assert(pressio::Traits<expr_t>::rank == 2);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, const double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);
+  }
 }

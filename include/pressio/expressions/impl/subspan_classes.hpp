@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct SubspanExpr<
+class SubspanExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
@@ -61,49 +61,41 @@ struct SubspanExpr<
   >
 {
 
-  using this_t = SubspanExpr<MatrixType>;
-  using traits = SubSpanTraits<this_t>;
-  using ord_t = typename traits::ordinal_type;
+  using traits = SubSpanTraits<SubspanExpr<MatrixType>>;
+  //using ord_t = typename traits::ordinal_type;
   using native_expr_t = typename traits::native_expr_type;
-  using const_native_expr_t = typename traits::_const_native_expr_type;
+  //using const_native_expr_t = typename traits::_const_native_expr_type;
   using ref_t = decltype( std::declval<native_expr_t>()(0) );
-  using const_ref_t = decltype( std::declval<const_native_expr_t>()(0) );
+  //using const_ref_t = decltype( std::declval<const_native_expr_t>()(0) );
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
-  std::reference_wrapper<MatrixType> matObj_;
-  ord_t rowStart_;
-  ord_t colStart_;
-  ord_t endRow_;
-  ord_t endCol_;
-  ord_t numRows_ = {};
-  ord_t numCols_ = {};
+  MatrixType * operand_;
+  std::size_t rowStart_;
+  std::size_t colStart_;
+  std::size_t endRow_;
+  std::size_t endCol_;
+  std::size_t numRows_ = {};
+  std::size_t numCols_ = {};
   native_expr_t nativeExprObj_;
 
 public:
-  SubspanExpr() = delete;
-  SubspanExpr(const SubspanExpr & other) = default;
-  SubspanExpr & operator=(const SubspanExpr & other) = delete;
-  SubspanExpr(SubspanExpr && other) = default;
-  SubspanExpr & operator=(SubspanExpr && other) = delete;
-  ~SubspanExpr() = default;
-
   SubspanExpr(MatrixType & matObjIn,
 	      const pair_t rowRangeIn,
 	      const pair_t colRangeIn)
-    : matObj_(matObjIn),
-    rowStart_(std::get<0>(rowRangeIn)),
-    colStart_(std::get<0>(colRangeIn)),
-    endRow_(std::get<1>(rowRangeIn)-1),
-    endCol_(std::get<1>(colRangeIn)-1),
-    numRows_(endRow_ - rowStart_ + 1),
-    numCols_(endCol_ - colStart_ + 1),
-    nativeExprObj_(matObj_.get().block(rowStart_, colStart_, numRows_, numCols_))
+    : operand_(&matObjIn),
+      rowStart_(std::get<0>(rowRangeIn)),
+      colStart_(std::get<0>(colRangeIn)),
+      endRow_(std::get<1>(rowRangeIn)-1),
+      endCol_(std::get<1>(colRangeIn)-1),
+      numRows_(endRow_ - rowStart_ + 1),
+      numCols_(endCol_ - colStart_ + 1),
+      nativeExprObj_(operand_->block(rowStart_, colStart_, numRows_, numCols_))
   {
-    assert( rowStart_ >= 0 and rowStart_ < matObjIn.rows() );
-    assert( (int)std::get<1>(rowRangeIn) <= matObjIn.rows() );
-    assert( colStart_ >= 0 and colStart_ < matObjIn.cols() );
-    assert( (int)std::get<1>(colRangeIn) <= matObjIn.cols() );
+    assert( rowStart_ >= 0 and rowStart_ < std::size_t(matObjIn.rows()) );
+    assert( std::get<1>(rowRangeIn) <= std::size_t(matObjIn.rows()) );
+    assert( colStart_ >= 0 and colStart_ < std::size_t(matObjIn.cols()) );
+    assert( std::get<1>(colRangeIn) <= std::size_t(matObjIn.cols()) );
 
     // here the ranges are exclusive of the last index (like Kokkos and Python)
     // so the indices of the last row and col included are:
@@ -112,36 +104,31 @@ public:
   }
 
 public:
-  size_t extent(size_t i) const{
+  auto data() const { return operand_; }
+
+  std::size_t extent(std::size_t i) const{
     if (i == 0) {
-      return std::size_t(numRows_);
+      return numRows_;
     } else if (i == 1) {
-      return std::size_t(numCols_);
+      return numCols_;
     } else {
       return std::size_t(1);
     }
   }
 
-  native_expr_t const & native() const{
-    return nativeExprObj_;
-  }
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
 
-  native_expr_t & native(){
-    return nativeExprObj_;
-  }
-
-  ref_t operator()(const ord_t & i, const ord_t & j)
-  {
+  ref_t operator()(const std::size_t & i, const std::size_t & j){
     assert(i < numRows_);
     assert(j < numCols_);
-    return nativeExprObj_(i, j);
+    return (*operand_)(rowStart_+i, colStart_+j);
   }
 
-  const_ref_t operator()(const ord_t & i, const ord_t & j) const
-  {
+  ref_t operator()(const std::size_t & i, const std::size_t & j) const{
     assert(i < numRows_);
     assert(j < numCols_);
-    return nativeExprObj_(i, j);
+    return (*operand_)(rowStart_+i, colStart_+j);
   }
 };
 #endif
@@ -157,48 +144,39 @@ struct SubspanExpr<
   >
 {
 
-  using this_t = SubspanExpr<MatrixType>;
-  using traits = SubSpanTraits<this_t>;
-  using size_t = typename MatrixType::traits::size_type;
+  using traits = SubSpanTraits<SubspanExpr<MatrixType>>;
   using pair_t = typename traits::pair_type;
   using native_expr_t = typename traits::native_expr_type;
-  using ref_t = decltype( std::declval<native_expr_t>()(size_t{}, size_t{}) );
+  using reference_t   = typename traits::reference_type;
 
 private:
-  std::reference_wrapper<MatrixType> matObj_;
-  std::size_t rowStart_;
-  std::size_t colStart_;
-  std::size_t endRow_;
-  std::size_t endCol_;
+  MatrixType * operand_;
+  std::size_t rowStart_ = {};
+  std::size_t colStart_ = {};
+  std::size_t endRow_ = {};
+  std::size_t endCol_ = {};
   std::size_t numRows_ = {};
   std::size_t numCols_ = {};
   native_expr_t nativeExprObj_;
 
 public:
-  SubspanExpr() = delete;
-  SubspanExpr(const SubspanExpr & other) = default;
-  SubspanExpr & operator=(const SubspanExpr & other) = delete;
-  SubspanExpr(SubspanExpr && other) = default;
-  SubspanExpr & operator=(SubspanExpr && other) = delete;
-  ~SubspanExpr() = default;
-
   SubspanExpr(MatrixType & matObjIn,
 	      const pair_t rowRangeIn,
 	      const pair_t colRangeIn)
-    : matObj_(matObjIn),
-    rowStart_(std::get<0>(rowRangeIn)),
-    colStart_(std::get<0>(colRangeIn)),
-    endRow_(std::get<1>(rowRangeIn)-1),
-    endCol_(std::get<1>(colRangeIn)-1),
-    numRows_(endRow_ - rowStart_ + 1),
-    numCols_(endCol_ - colStart_ + 1),
-    nativeExprObj_(Kokkos::subview(matObj_.get(),
-                   std::make_pair(rowStart_, rowStart_+numRows_),
-                   std::make_pair(colStart_, colStart_+numCols_)))
+    : operand_(&matObjIn),
+      rowStart_(std::get<0>(rowRangeIn)),
+      colStart_(std::get<0>(colRangeIn)),
+      endRow_(std::get<1>(rowRangeIn)-1),
+      endCol_(std::get<1>(colRangeIn)-1),
+      numRows_(endRow_ - rowStart_ + 1),
+      numCols_(endCol_ - colStart_ + 1),
+      nativeExprObj_(Kokkos::subview(*operand_,
+				     std::make_pair(rowStart_, rowStart_+numRows_),
+				     std::make_pair(colStart_, colStart_+numCols_)))
   {
-    assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
+    assert( rowStart_ >= 0 && rowStart_ < matObjIn.extent(0) );
     assert( std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
-    assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
+    assert( colStart_ >= 0 && colStart_ < matObjIn.extent(1) );
     assert( std::get<1>(colRangeIn) <= matObjIn.extent(1) );
 
     // here the ranges are exclusive of the last index (like Kokkos and Python)
@@ -208,7 +186,9 @@ public:
   }
 
 public:
-  size_t extent(size_t i) const{
+  auto data() const { return operand_; }
+
+  std::size_t extent(std::size_t i) const{
     if (i == 0) {
       return numRows_;
     } else if (i == 1) {
@@ -218,34 +198,11 @@ public:
     }
   }
 
-  native_expr_t const & native() const{
-    return nativeExprObj_;
-  }
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
 
-  native_expr_t & native(){
-    return nativeExprObj_;
-  }
-
-  /*
-    need to be careful with subscripting
-    because for kokkos the following would be legal:
-
-    using kv_t	      = Kokkos::View<double **>;
-    using w_t = pressio::containers::DenseMatrix<kv_t>;
-    kv_t a(..);
-    const w_t aw(a);
-    auto s = pressio::containers::subspan(aw,...);
-    s(0,0) = 1.1;
-
-    which works because for kokkos we can assign a const view.
-   */
-  template<typename _MatrixType = MatrixType>
-  mpl::enable_if_t<
-    std::is_same<typename _MatrixType::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
-  operator()(const size_t & i, const size_t & j) const
-  {
+  reference_t operator()(const std::size_t & i,
+			 const std::size_t & j) const{
     assert(i < numRows_);
     assert(j < numCols_);
     return nativeExprObj_(i, j);

@@ -83,6 +83,8 @@ public:
     assert( endIndex <= std::size_t(operand.size()) );
   }
 
+  auto data() const { return operand_; }
+
   std::size_t extent(std::size_t i) const{
     return (i == 0) ? extent_ : std::size_t(1);
   }
@@ -99,8 +101,6 @@ public:
     assert(i < extent_);
     return (*operand_)(startIndex_ + i);
   }
-
-  auto data() const { return operand_; }
 };
 #endif
 
@@ -121,7 +121,7 @@ class SpanExpr<
 
   using traits = SpanTraits<SpanExpr<VectorType>>;
   using native_expr_t = typename traits::native_expr_type;
-  using ref_t = typename traits::reference_type; //decltype( std::declval<native_expr_t>()(0) );
+  using ref_t = typename traits::reference_type;
 
   VectorType * operand_;
   std::size_t startIndex_ = {};

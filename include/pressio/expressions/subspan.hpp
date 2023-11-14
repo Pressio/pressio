@@ -54,17 +54,28 @@
 
 namespace pressio{
 
-// note that the following works also when T is const-qualified
-// because that qualification carries over to the impl
-
 template <class T>
 auto subspan(T & operand,
 	     const std::pair<std::size_t, std::size_t> & rowRange,
 	     const std::pair<std::size_t, std::size_t> & colRange)
 {
-  static_assert(::pressio::Traits< std::remove_const_t<T> >::rank==2,
+  // note that this works also when T is const-qualified
+  // because that qualification carries over to the impl
+
+  constexpr bool constraint = false
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    || is_dense_matrix_kokkos<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    || is_dense_matrix_eigen<T>::value
+#endif
+    ;
+  static_assert(constraint, "pressio::subspan() currently supported only for an Eigen dynamic matrix"
+		" or a Kokkos rank-2 View.");
+  static_assert(Traits<T>::rank==2,
 		"subspan can only be applied to a rank-2 object.");
-  return expressions::impl::SubspanExpr<T> (operand, rowRange, colRange);
+
+  return expressions::impl::SubspanExpr<T>(operand, rowRange, colRange);
 }
 
 }

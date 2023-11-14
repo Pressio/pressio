@@ -85,7 +85,17 @@ template <typename T>
 >
 norm2(const T & a)
 {
-  return ::KokkosBlas::nrm2(impl::get_native(a));
+  auto & native = impl::get_native(a);
+  using sc_t = typename Traits<T>::scalar_type;
+  using reducer_t = Kokkos::Sum<sc_t>;
+  sc_t sum = {};
+  Kokkos::parallel_reduce(native.extent(0),
+			  KOKKOS_LAMBDA(std::size_t i, sc_t & upd){
+			    upd += native(i)*native(i);
+			  },
+			  reducer_t(sum));
+  return Kokkos::sqrt(sum);
+//return ::KokkosBlas::nrm2(impl::get_native(a));
 }
 
 }}//end namespace pressio::ops

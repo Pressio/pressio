@@ -54,10 +54,10 @@ namespace pressio{
 namespace expressions{ namespace impl{
 template <class T, class enable = void> class SpanExpr;
 template <class T, class enable = void> class SpanTraits;
-template <class T, class enable = void> struct SubspanExpr;
-template <class T, class enable = void> struct SubSpanTraits;
-template <class T, class enable = void> struct DiagExpr;
-template <class T, class enable = void> struct DiagTraits;
+template <class T, class enable = void> class SubspanExpr;
+template <class T, class enable = void> class SubSpanTraits;
+template <class T, class enable = void> class DiagExpr;
+template <class T, class enable = void> class DiagTraits;
 }}//end namespace expressions::impl
 
 template<class T>

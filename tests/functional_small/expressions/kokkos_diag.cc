@@ -59,3 +59,35 @@ TEST(expressions_kokkos, diag2)
      typename std::remove_reference<decltype(d(0))>::type
      >::value, "");
 }
+
+
+TEST(expressions_kokkos, span_traits)
+{
+  {
+    using T = Kokkos::View<double**, Kokkos::HostSpace>;
+    T o("o", 10, 10);
+    using expr_t = decltype(pressio::diag(o));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Kokkos::View<double[4][4], Kokkos::HostSpace>;
+    T o("o");
+    using expr_t = decltype(pressio::diag(o));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Kokkos::View<double**, Kokkos::HostSpace>;
+    T o("o", 10, 10);
+    typename T::const_type o2 = o;
+    using expr_t = decltype(pressio::diag(o2));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, const double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);
+  }
+}

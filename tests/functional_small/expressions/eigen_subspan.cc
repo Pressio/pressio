@@ -10,16 +10,16 @@ void test1(T & A)
 {
   {
     const auto sspan = pressio::subspan(A,
-						    std::make_pair(0,2),
-						    std::make_pair(1,2) );
+					std::make_pair(0,2),
+					std::make_pair(1,2) );
     EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 1 );
     EXPECT_DOUBLE_EQ( sspan(0,0), 2. );
     EXPECT_DOUBLE_EQ( sspan(1,0), 6. );
   }
   {
     const auto sspan = pressio::subspan(A,
-						    std::make_pair(0,3),
-						    std::make_pair(1,3) );
+					std::make_pair(0,3),
+					std::make_pair(1,3) );
     EXPECT_EQ( sspan.extent(0), 3 ); EXPECT_EQ( sspan.extent(1), 2 );
     EXPECT_DOUBLE_EQ( sspan(0,0), 2. );  EXPECT_DOUBLE_EQ( sspan(0,1), 3. );
     EXPECT_DOUBLE_EQ( sspan(1,0), 6. );  EXPECT_DOUBLE_EQ( sspan(1,1), 7. );
@@ -28,16 +28,16 @@ void test1(T & A)
 
   {
     const auto sspan = pressio::subspan(A,
-						    std::make_pair(2,4),
-						    std::make_pair(1,3) );
+					std::make_pair(2,4),
+					std::make_pair(1,3) );
     EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
     EXPECT_DOUBLE_EQ( sspan(0,0), 10. );  EXPECT_DOUBLE_EQ( sspan(0,1), 11. );
     EXPECT_DOUBLE_EQ( sspan(1,0), 14. );  EXPECT_DOUBLE_EQ( sspan(1,1), 15. );
   }
   {
     const auto sspan = pressio::subspan(A,
-						    std::make_pair(2,3),
-						    std::make_pair(0,1) );
+					std::make_pair(2,3),
+					std::make_pair(0,1) );
     EXPECT_EQ( sspan.extent(0), 1 ); EXPECT_EQ( sspan.extent(1), 1 );
     EXPECT_DOUBLE_EQ( sspan(0,0), 9. );
   }
@@ -49,8 +49,8 @@ void test2(T & A)
   {
     // change some entries
     auto sspan = pressio::subspan(A,
-					      std::make_pair(2,4),
-					      std::make_pair(1,3) );
+				  std::make_pair(2,4),
+				  std::make_pair(1,3) );
     EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
 
     // before changing it
@@ -66,8 +66,8 @@ void test2(T & A)
   {
     // get the native expression
     const auto sspan = pressio::subspan(A,
-						    std::make_pair(2,4),
-						    std::make_pair(1,3) );
+					std::make_pair(2,4),
+					std::make_pair(1,3) );
     auto &natEx = sspan.native();
     EXPECT_EQ( natEx.rows(), 2 ); EXPECT_EQ( natEx.cols(), 2 );
     EXPECT_DOUBLE_EQ( natEx(0,0), 44. );  EXPECT_DOUBLE_EQ( natEx(0,1), 33. );
@@ -79,8 +79,8 @@ template <typename T>
 void testConst(const T & A)
 {
   const auto sspan = pressio::subspan(A,
-						  std::make_pair(2,4),
-						  std::make_pair(1,3) );
+				      std::make_pair(2,4),
+				      std::make_pair(1,3) );
   EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
   EXPECT_DOUBLE_EQ( sspan(0,0), 44. );  EXPECT_DOUBLE_EQ( sspan(0,1), 33. );
   EXPECT_DOUBLE_EQ( sspan(1,0), 14. );  EXPECT_DOUBLE_EQ( sspan(1,1), 15. );
@@ -127,4 +127,36 @@ TEST(expressions_eigen, subspanRowMajor)
   test1(A);
   test2(A);
   testConst(A);
+}
+
+TEST(expressions_eigen, subspan_traits)
+{
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+  {
+    using T = Eigen::MatrixXd;
+    T o(10,10);
+    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
+    static_assert(pressio::Traits<expr_t>::rank == 2);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Eigen::Matrix<int,-1,-1>;
+    T o(10,10);
+    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
+    static_assert(pressio::Traits<expr_t>::rank == 2);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, int>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int &>);
+  }
+
+  {
+    using T = Eigen::Matrix<int,-1,-1>;
+    const T o(10,10);
+    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
+    static_assert(pressio::Traits<expr_t>::rank == 2);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, int>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int const &>);
+  }
 }

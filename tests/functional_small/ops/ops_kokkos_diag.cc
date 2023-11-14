@@ -141,8 +141,9 @@ TEST(ops_kokkos, diag_min_max)
     }
   }
   Kokkos::deep_copy(A, A_h);
-  ASSERT_DOUBLE_EQ(pressio::ops::min(A), 76.);
-  ASSERT_DOUBLE_EQ(pressio::ops::max(A), 100.);
+  auto d = pressio::diag(A_h);
+  ASSERT_DOUBLE_EQ(pressio::ops::min(d), 76.);
+  ASSERT_DOUBLE_EQ(pressio::ops::max(d), 100.);
 }
 
 TEST(ops_kokkos, diag_norms)
@@ -161,9 +162,9 @@ TEST(ops_kokkos, diag_norms)
   Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
-  auto exp = pressio::diag(a);
-  ASSERT_DOUBLE_EQ(pressio::ops::norm1(exp), gold.lpNorm<1>());
-  ASSERT_DOUBLE_EQ(pressio::ops::norm2(exp), gold.lpNorm<2>());
+  auto e = pressio::diag(a);
+  ASSERT_DOUBLE_EQ(pressio::ops::norm1(e), gold.lpNorm<1>());
+  ASSERT_DOUBLE_EQ(pressio::ops::norm2(e), gold.lpNorm<2>());
 }
 
 TEST(ops_kokkos, diag_dot_vector)

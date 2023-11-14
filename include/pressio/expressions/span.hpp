@@ -54,12 +54,12 @@
 
 namespace pressio{
 
-// note that the following works also when T is const-qualified
-// because that qualification carries over to the impl
-
 template <class T, class IndexType>
 auto span(T & operand, IndexType startIndex, IndexType extent)
 {
+  // note that this works also when T is const-qualified
+  // because that qualification carries over to the impl
+
   constexpr bool constraint = false
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     || is_vector_kokkos<T>::value
