@@ -101,28 +101,14 @@ struct SpanTraits<
   : public ::pressio::Traits<VectorType>
 {
   using ordinal_type = typename VectorType::traits::size_type;
-  using pair_type = std::pair<ordinal_type, ordinal_type>;
+  using _pair_type = std::pair<ordinal_type, ordinal_type>;
 
   using native_expr_type =
     decltype(
-      Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
-     );
-  using const_native_expr_type =
-    decltype(
-      Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
+      Kokkos::subview(std::declval<VectorType>(), std::declval<_pair_type>())
      );
 
-  // using _const_native_expr_type =
-  //   decltype(
-  //    Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
-  //    );
-  // using native_expr_type = typename std::conditional<
-  //   std::is_const<VectorType>::value,
-  //   _const_native_expr_type,
-  //   _native_expr_type
-  //   >::type;
-  // using const_data_return_type = native_expr_type const *;
-  // using data_return_type = native_expr_type *;
+  using reference_type = typename VectorType::reference_type;
 };
 #endif
 

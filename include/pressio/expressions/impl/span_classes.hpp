@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename VectorType>
-struct SpanExpr<
+class SpanExpr<
   VectorType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
@@ -61,7 +61,6 @@ struct SpanExpr<
   >
 {
 
-private:
   using mytraits      = SpanTraits<SpanExpr<VectorType>>;
   using reference_t   = typename mytraits::reference_type;
   using native_expr_t = typename mytraits::native_expr_type;
@@ -84,7 +83,6 @@ public:
     assert( endIndex <= std::size_t(operand.size()) );
   }
 
-public:
   std::size_t extent(std::size_t i) const{
     return (i == 0) ? extent_ : std::size_t(1);
   }
@@ -109,76 +107,54 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename VectorType>
-struct SpanExpr<
+class SpanExpr<
   VectorType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
 {
-  using this_t = SpanExpr<VectorType>;
-  using traits = SpanTraits<this_t>;
-  using size_t = typename VectorType::traits::size_type;
-  using pair_t = typename traits::pair_type;
-  using native_expr_t = typename traits::native_expr_type;
-  using ref_t = decltype( std::declval<native_expr_t>()(0) );
+  static_assert(Kokkos::SpaceAccessibility<
+		typename VectorType::execution_space,
+		Kokkos::HostSpace>::accessible,
+		"span is currently only valid for a host-accessible Kokkos View");
 
-private:
-  std::reference_wrapper<VectorType> operand_;
-  std::size_t startIndex_;
+  using traits = SpanTraits<SpanExpr<VectorType>>;
+  using native_expr_t = typename traits::native_expr_type;
+  using ref_t = typename traits::reference_type; //decltype( std::declval<native_expr_t>()(0) );
+
+  VectorType * operand_;
+  std::size_t startIndex_ = {};
   std::size_t extent_ = {};
   native_expr_t nativeExprObj_;
 
 public:
-  SpanExpr() = delete;
-  SpanExpr(const SpanExpr & other) = default;
-  SpanExpr & operator=(const SpanExpr & other) = delete;
-  SpanExpr(SpanExpr && other) = default;
-  SpanExpr & operator=(SpanExpr && other) = delete;
-  ~SpanExpr() = default;
-
   SpanExpr(VectorType & operand,
 	   std::size_t startIndex,
 	   std::size_t endIndex)
-    : operand_(operand),
+    : operand_(&operand),
       startIndex_(startIndex),
       extent_(endIndex-startIndex_),
-      nativeExprObj_(Kokkos::subview(operand_.get(), std::make_pair(startIndex_, startIndex_+extent_)))
+      nativeExprObj_(Kokkos::subview(*operand_, std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex >= 0 && startIndex <= endIndex );
     assert( endIndex <= operand.extent(0) );
   }
 
-public:
-  size_t extent(size_t i) const{
-    return (i == 0) ? std::size_t(extent_) : std::size_t(1);
+  auto data() const { return operand_; }
+
+  std::size_t extent(std::size_t i) const{
+    return (i == 0) ? extent_ : std::size_t(1);
   }
 
-  native_expr_t const & native() const{
-    return nativeExprObj_;
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
+
+  ref_t operator()(std::size_t i) const{
+    assert(i < extent_);
+    return nativeExprObj_(i);
   }
-
-  native_expr_t & native(){
-    return nativeExprObj_;
-  }
-
-  // I need to be careful with subscripting
-  // because for kokkos the following would be legal:
-
-  // using kv_t	      = Kokkos::View<double *>;
-  // using pressio_v_t = pressio::containers::Vector<kv_t>;
-  // kv_t a(..);
-  // const pressio_v_t aw(a);
-  // auto s = pressio::containers::span(aw,...);
-  // s(0) = 1.1;
-
-  template<typename _VectorType = VectorType>
-  mpl::enable_if_t<
-    std::is_same<typename _VectorType::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
-  operator()(size_t i) const
-  {
+  ref_t operator[](std::size_t i) const{
     assert(i < extent_);
     return nativeExprObj_(i);
   }
