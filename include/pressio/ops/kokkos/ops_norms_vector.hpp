@@ -94,8 +94,8 @@ norm2(const T & a)
 			    upd += native(i)*native(i);
 			  },
 			  reducer_t(sum));
-  return Kokkos::sqrt(sum);
-//return ::KokkosBlas::nrm2(impl::get_native(a));
+  return std::sqrt(sum);
+  //return ::KokkosBlas::nrm2(impl::get_native(a));
 }
 
 }}//end namespace pressio::ops
