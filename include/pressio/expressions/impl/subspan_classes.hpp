@@ -62,11 +62,8 @@ class SubspanExpr<
 {
 
   using traits = SubSpanTraits<SubspanExpr<MatrixType>>;
-  //using ord_t = typename traits::ordinal_type;
   using native_expr_t = typename traits::native_expr_type;
-  //using const_native_expr_t = typename traits::_const_native_expr_type;
-  using ref_t = decltype( std::declval<native_expr_t>()(0) );
-  //using const_ref_t = decltype( std::declval<const_native_expr_t>()(0) );
+  using reference_t   = typename traits::reference_type;
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -119,13 +116,13 @@ public:
   native_expr_t const & native() const{ return nativeExprObj_; }
   native_expr_t & native(){ return nativeExprObj_; }
 
-  ref_t operator()(const std::size_t & i, const std::size_t & j){
+  reference_t operator()(const std::size_t & i, const std::size_t & j){
     assert(i < numRows_);
     assert(j < numCols_);
     return (*operand_)(rowStart_+i, colStart_+j);
   }
 
-  ref_t operator()(const std::size_t & i, const std::size_t & j) const{
+  reference_t operator()(const std::size_t & i, const std::size_t & j) const{
     assert(i < numRows_);
     assert(j < numCols_);
     return (*operand_)(rowStart_+i, colStart_+j);

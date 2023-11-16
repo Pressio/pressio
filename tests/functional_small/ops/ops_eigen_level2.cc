@@ -98,7 +98,6 @@ TEST(ops_eigen, dense_matrix_span_prod)
   OPS_EIGEN_DENSEMATRIX_VEC_PROD(sp);
 }
 
-
 TEST(ops_eigen, dense_matrix_T_span_prod)
 {
   using V_t = Eigen::VectorXd;
@@ -109,6 +108,28 @@ TEST(ops_eigen, dense_matrix_T_span_prod)
   a(6)=3.;
 
   const auto sp = pressio::span(a, 3, 4);
+  OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(sp);
+}
+
+TEST(ops_eigen, dense_matrix_column_prod){
+  using T = Eigen::MatrixXd;
+  T a(3,6);
+  a.row(0).setConstant(4.);
+  a.row(1).setConstant(2.);
+  a.row(2).setConstant(6.);
+  const auto sp = pressio::column(a, 0);
+  OPS_EIGEN_DENSEMATRIX_VEC_PROD(sp);
+}
+
+TEST(ops_eigen, dense_matrix_T_column_prod)
+{
+  using T = Eigen::MatrixXd;
+  T a(4,6);
+  a.row(0).setConstant(4.);
+  a.row(1).setConstant(2.);
+  a.row(2).setConstant(6.);
+  a.row(3).setConstant(3.);
+  const auto sp = pressio::column(a, 0);
   OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(sp);
 }
 
@@ -136,4 +157,3 @@ TEST(ops_eigen, dense_matrix_T_diag_prod)
   const auto exp = pressio::diag(M0);
   OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(exp);
 }
-

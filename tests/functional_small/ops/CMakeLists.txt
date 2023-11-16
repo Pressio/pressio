@@ -12,6 +12,9 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_diag.cc)
   add_serial_utest(${TESTING_LEVEL}_ops_diag_eigen "${SRC1}")
 
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_column.cc)
+  add_serial_utest(${TESTING_LEVEL}_ops_column_eigen "${SRC1}")
+
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_span.cc)
   add_serial_utest(${TESTING_LEVEL}_ops_span_eigen "${SRC1}")
 

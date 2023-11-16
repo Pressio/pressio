@@ -126,6 +126,31 @@ struct is_expression_subspan<
   > : std::true_type{};
 
 
+/* is_expression_column */
+template <typename T>
+struct is_expression_column : std::false_type{};
+
+template <typename T>
+struct is_expression_column<
+  ::pressio::expressions::impl::ColumnExpr<T>
+  > : std::true_type{};
+
+template <typename T>
+struct is_expression_column<
+  const ::pressio::expressions::impl::ColumnExpr<T>
+  > : is_expression_column<T>{};
+
+template <typename T>
+struct is_expression_column<
+  ::pressio::expressions::impl::ColumnExpr<const T>
+  > : std::true_type{};
+
+template <typename T>
+struct is_expression_column<
+  const ::pressio::expressions::impl::ColumnExpr<const T>
+  > : std::true_type{};
+
+
 /* detect any expression */
 template <typename T, typename enable = void>
 struct is_expression : std::false_type{};
@@ -134,9 +159,10 @@ template <typename T>
 struct is_expression<
   T,
   mpl::enable_if_t<
-    is_expression_span<T>::value or
-    is_expression_diag<T>::value or
-    is_expression_subspan<T>::value
+    is_expression_span<T>::value
+    || is_expression_diag<T>::value
+    || is_expression_subspan<T>::value
+    || is_expression_column<T>::value
     >
   > : std::true_type{};
 
@@ -163,6 +189,14 @@ struct is_expression_acting_on_eigen<
 template <typename T>
 struct is_expression_acting_on_eigen<
   ::pressio::expressions::impl::SubspanExpr<T>
+  >
+{
+  static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_eigen<
+  ::pressio::expressions::impl::ColumnExpr<T>
   >
 {
   static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;

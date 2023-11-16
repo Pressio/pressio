@@ -46,15 +46,15 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
-#define EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
+#ifndef EXPRESSIONS_IMPL_COLUMN_TRAITS_HPP_
+#define EXPRESSIONS_IMPL_COLUMN_TRAITS_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-class SubSpanTraits<
-  SubspanExpr<MatrixType>,
+class ColumnTraits<
+  ColumnExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
@@ -63,13 +63,15 @@ class SubSpanTraits<
 private:
   using _ord_t = typename MatrixType::StorageIndex;
   using _native_expr_type = decltype(
-    std::declval<MatrixType>().block(_ord_t{},_ord_t{},_ord_t{},_ord_t{} )
+    std::declval<MatrixType>().col(_ord_t{})
     );
   using _const_native_expr_type = decltype(
-    std::declval<const MatrixType>().block(_ord_t{},_ord_t{},_ord_t{},_ord_t{} )
+    std::declval<const MatrixType>().col(_ord_t{})
   );
 
 public:
+  static constexpr int rank = 1; // a column is a rank-1 object
+
   using ordinal_type = _ord_t;
 
   using native_expr_type = std::conditional_t<
@@ -83,47 +85,6 @@ public:
     const typename MatrixType::Scalar &,
     typename MatrixType::Scalar &
     >;
-};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename MatrixType>
-class SubSpanTraits<
-  SubspanExpr<MatrixType>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_kokkos<MatrixType>::value
-    >
-  > : public ::pressio::Traits<MatrixType>
-{
-
-private:
-  using _ordinal_type = typename MatrixType::traits::size_type;
-  using _pair_type = std::pair<_ordinal_type, _ordinal_type>;
-
-  using _native_expr_type = decltype
-    (
-     Kokkos::subview(std::declval<MatrixType>(),
-		     std::declval<_pair_type>(),
-		     std::declval<_pair_type>())
-    );
-  using _const_native_expr_type = decltype
-    (
-     Kokkos::subview(std::declval<const MatrixType>(),
-		     std::declval<_pair_type>(),
-		     std::declval<_pair_type>())
-     );
-
-public:
-  using ordinal_type = _ordinal_type;
-  using pair_type = _pair_type;
-
-  using native_expr_type = typename std::conditional<
-    std::is_const<MatrixType>::value,
-    _const_native_expr_type,
-    _native_expr_type
-  >::type;
-
-  using reference_type = typename MatrixType::reference_type;
 };
 #endif
 

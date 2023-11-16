@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// expressions.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,33 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_EXPRESSIONS_HPP_
-#define PRESSIO_EXPRESSIONS_HPP_
+#ifndef EXPRESSIONS_COLUMN_HPP_
+#define EXPRESSIONS_COLUMN_HPP_
 
-#include "./mpl.hpp"
-#include "./type_traits.hpp"
+#include "impl/column_traits.hpp"
+#include "impl/column_classes.hpp"
 
-#include "./expressions/fwd.hpp"
-#include "./expressions/span.hpp"
-#include "./expressions/subspan.hpp"
-#include "./expressions/diag.hpp"
-#include "./expressions/column.hpp"
+namespace pressio{
 
-#include "./expressions/is_expression.hpp"
+template <class T, class IndexType>
+auto column(T & operand, IndexType colIndex)
+{
+  // note that this works also when T is const-qualified
+  // because that qualification carries over to the impl
 
+  constexpr bool constraint = false
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    || is_dense_matrix_eigen<T>::value
 #endif
+    ;
+  static_assert(constraint, "pressio::column() currently supported only for an Eigen dynamic matrix");
+
+  static_assert(Traits< std::remove_const_t<T> >::rank==2,
+		"column can only be applied to a rank-2 object.");
+  static_assert(std::is_integral_v<IndexType>);
+
+  return expressions::impl::ColumnExpr<T>(operand, colIndex);
+}
+
+}
+#endif  // EXPRESSIONS_SPAN_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// subspan_traits.hpp
+// subspan_classes.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,86 +46,66 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
-#define EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
+#ifndef EXPRESSIONS_IMPL_COLUMN_CLASSES_HPP_
+#define EXPRESSIONS_IMPL_COLUMN_CLASSES_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-class SubSpanTraits<
-  SubspanExpr<MatrixType>,
+class ColumnExpr<
+  MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
-  > : public ::pressio::Traits<MatrixType>
-{
-private:
-  using _ord_t = typename MatrixType::StorageIndex;
-  using _native_expr_type = decltype(
-    std::declval<MatrixType>().block(_ord_t{},_ord_t{},_ord_t{},_ord_t{} )
-    );
-  using _const_native_expr_type = decltype(
-    std::declval<const MatrixType>().block(_ord_t{},_ord_t{},_ord_t{},_ord_t{} )
-  );
-
-public:
-  using ordinal_type = _ord_t;
-
-  using native_expr_type = std::conditional_t<
-    std::is_const<MatrixType>::value,
-    _const_native_expr_type,
-    _native_expr_type
-  >;
-
-  using reference_type = std::conditional_t<
-    std::is_const_v<MatrixType>,
-    const typename MatrixType::Scalar &,
-    typename MatrixType::Scalar &
-    >;
-};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename MatrixType>
-class SubSpanTraits<
-  SubspanExpr<MatrixType>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_kokkos<MatrixType>::value
-    >
-  > : public ::pressio::Traits<MatrixType>
+  >
 {
 
-private:
-  using _ordinal_type = typename MatrixType::traits::size_type;
-  using _pair_type = std::pair<_ordinal_type, _ordinal_type>;
+  using traits = ColumnTraits<ColumnExpr<MatrixType>>;
+  using native_expr_t = typename traits::native_expr_type;
+  using reference_t   = typename traits::reference_type;
 
-  using _native_expr_type = decltype
-    (
-     Kokkos::subview(std::declval<MatrixType>(),
-		     std::declval<_pair_type>(),
-		     std::declval<_pair_type>())
-    );
-  using _const_native_expr_type = decltype
-    (
-     Kokkos::subview(std::declval<const MatrixType>(),
-		     std::declval<_pair_type>(),
-		     std::declval<_pair_type>())
-     );
+private:
+  MatrixType * operand_;
+  std::size_t colIndex_;
+  std::size_t numRows_;
+  native_expr_t nativeExprObj_;
 
 public:
-  using ordinal_type = _ordinal_type;
-  using pair_type = _pair_type;
+  ColumnExpr(MatrixType & matObjIn, std::size_t colIndex)
+    : operand_(&matObjIn),
+      colIndex_(colIndex),
+      numRows_(matObjIn.rows()),
+      nativeExprObj_(operand_->col(colIndex))
+  {
+    assert( colIndex_ >= 0 and colIndex_ < std::size_t(matObjIn.cols()) );
+  }
 
-  using native_expr_type = typename std::conditional<
-    std::is_const<MatrixType>::value,
-    _const_native_expr_type,
-    _native_expr_type
-  >::type;
+public:
+  auto data() const { return operand_; }
 
-  using reference_type = typename MatrixType::reference_type;
+  std::size_t extent(std::size_t i) const{
+    if (i == 0) {
+      return numRows_;
+    } else {
+      return std::size_t(1);
+    }
+  }
+
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
+
+  reference_t operator()(std::size_t i) const{
+    assert(i < numRows_);
+    return (*operand_)(i, colIndex_);
+  }
+
+  reference_t operator[](std::size_t i) const{
+    assert(i < numRows_);
+    return (*operand_)(i, colIndex_);
+  }
 };
 #endif
 
 }}}
-#endif  // EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
+#endif  // EXPRESSIONS_IMPL_COLUMN_CLASSES_HPP_
