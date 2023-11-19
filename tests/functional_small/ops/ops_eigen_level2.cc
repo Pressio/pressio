@@ -141,7 +141,7 @@ TEST(ops_eigen, dense_matrix_diag_prod)
   M0(1,1)=2.;
   M0(2,2)=6.;
 
-  const auto exp = pressio::diag(M0);
+  const auto exp = pressio::diagonal(M0);
   OPS_EIGEN_DENSEMATRIX_VEC_PROD(exp);
 }
 
@@ -154,6 +154,6 @@ TEST(ops_eigen, dense_matrix_T_diag_prod)
   M0(2,2)=6.;
   M0(3,3)=3.;
 
-  const auto exp = pressio::diag(M0);
+  const auto exp = pressio::diagonal(M0);
   OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(exp);
 }

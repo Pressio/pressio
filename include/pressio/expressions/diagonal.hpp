@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// diag_traits.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,62 +46,37 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_
-#define EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_
+#ifndef EXPRESSIONS_DIAGONAL_HPP_
+#define EXPRESSIONS_DIAGONAL_HPP_
 
-namespace pressio{ namespace expressions{ namespace impl{
+#include "impl/diagonal_traits.hpp"
+#include "impl/diagonal_classes.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename MatrixType>
-class DiagTraits<
-  DiagExpr<MatrixType>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<MatrixType>::value
-    >
-  > : public ::pressio::Traits<MatrixType>
+namespace pressio{
+
+template <typename T>
+auto diagonal(T & operand)
 {
-private:
-  using _ordinal_type = typename MatrixType::StorageIndex;
-  using _native_expr_type = decltype(std::declval<MatrixType>().diagonal());
-  using _const_native_expr_type=decltype(std::declval<std::add_const_t<MatrixType>>().diagonal());
+  // note that this works also when T is const-qualified
+  // because that qualification carries over to the impl
 
-public:
-  static constexpr int rank = 1; // the result of diag() is a rank-1 object
-
-  using native_expr_type = std::conditional_t<
-    std::is_const_v<MatrixType>,
-    _const_native_expr_type,
-    _native_expr_type
-  >;
-
-  using reference_type = std::conditional_t<
-    std::is_const_v<MatrixType>,
-    const typename MatrixType::Scalar &,
-    typename MatrixType::Scalar &
-    >;
-};
-#endif
-
+  constexpr bool constraint = false
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename MatrixType>
-class DiagTraits<
-  DiagExpr<MatrixType>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_kokkos<MatrixType>::value
-    >
-  > : public ::pressio::Traits<MatrixType>
-{
-public:
-  static constexpr int rank = 1; // the result of diag() is a rank-1 object
-
-  using native_expr_type = Kokkos::View<
-    typename ::pressio::mpl::remove_cvref_t<MatrixType>::traits::value_type*,
-    Kokkos::LayoutStride
-  >;
-
-  using reference_type = typename MatrixType::reference_type;
-};
+    || is_dense_matrix_kokkos<T>::value
 #endif
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    || is_dense_matrix_eigen<T>::value
+#endif
+    ;
+  static_assert(constraint, "pressio::diagonal() currently supported only for an Eigen dynamic matrix"
+		" or a Kokkos rank-2 View.");
+  static_assert(Traits<T>::rank==2,
+		"diagonal can only be applied to a rank-2 object.");
 
-}}} // pressio::expressions::impl
-#endif  // EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_
+  // the operand must be a square matrix: precondition checked internally
+
+  return expressions::impl::DiagonalExpr<T>(operand);
+}
+
+}
+#endif  // EXPRESSIONS_DIAGONAL_HPP_

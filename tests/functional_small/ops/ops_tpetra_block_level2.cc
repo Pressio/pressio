@@ -173,7 +173,7 @@ TEST_F(ops_tpetra_block,
     }
   }
   Kokkos::deep_copy(x0, x_h);
-  auto x_kokkos_diag = ::pressio::diag(x0);
+  auto x_kokkos_diag = ::pressio::diagonal(x0);
 
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_diag, *y_tpetra);
 }
@@ -216,7 +216,7 @@ TEST_F(ops_tpetra_block,
     }
   }
   Kokkos::deep_copy(y0, y_h);
-  auto y_kokkos_diag = ::pressio::diag(y0);
+  auto y_kokkos_diag = ::pressio::diagonal(y0);
 
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_diag);
 }
@@ -253,7 +253,7 @@ TEST_F(ops_tpetra_block,
   for (int i = 0; i < numVecs_; ++i) {
     M0(i, i) = 1.;
   }
-  auto x_eigen_diag = ::pressio::diag(M0);
+  auto x_eigen_diag = ::pressio::diagonal(M0);
 
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_diag, *y_tpetra);
 }
@@ -288,7 +288,7 @@ TEST_F(ops_tpetra_block,
   for (int i = 0; i < numVecs_; ++i) {
     M0(i, i) = 1.;
   }
-  auto y_eigen_diag = ::pressio::diag(M0);
+  auto y_eigen_diag = ::pressio::diagonal(M0);
 
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen_diag);
 }

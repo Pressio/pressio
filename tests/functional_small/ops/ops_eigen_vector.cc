@@ -379,8 +379,8 @@ TEST(ops_eigen, vector_update_expr_diag)
 {
   Eigen::Matrix<double, 3, 3> v0;
   Eigen::Matrix<double, 3, 3> a0;
-  auto v = pressio::diag(v0);
-  auto a = pressio::diag(a0);
+  auto v = pressio::diagonal(v0);
+  auto a = pressio::diagonal(a0);
   pressio::ops::fill(v, 10.);
   pressio::ops::fill(a, 1.);
 

@@ -164,7 +164,7 @@ auto lm_gain_factor(RegistryType & reg,
   const auto num = objective(trialState) - objectiveValueAtCurrentNewtonStep;
 
   // denominator
-  const auto diagH = ::pressio::diag(H);
+  const auto diagH = ::pressio::diagonal(H);
   ::pressio::ops::elementwise_multiply(one, correction, diagH, zero, cDiagH);
   const auto den1 = ::pressio::ops::dot(correction, cDiagH);
   const auto den2 = ::pressio::ops::dot(correction, g);

@@ -62,7 +62,7 @@ auto span_adapter(DView dual_view, std::size_t index, std::size_t size) {
 template <typename DView2D>
 auto diag_adapter(DView2D matrix) {
   return make_adapter(matrix, [](auto mtx) {
-    return pressio::diag(mtx);
+    return pressio::diagonal(mtx);
   });
 }
 
@@ -105,10 +105,10 @@ struct kokkosFixture
   auto xt_span() { return span_adapter(x_span_base, 1, y_size); }
   auto y_span()  { return span_adapter(y_span_base, 1, y_size); }
   auto yt_span() { return span_adapter(y_span_base, 1, x_size); }
-  auto x_diag()  { return diag_adapter(x_diag_base); }
-  auto xt_diag() { return diag_adapter(xt_diag_base); }
-  auto y_diag()  { return diag_adapter(y_diag_base); }
-  auto yt_diag() { return diag_adapter(yt_diag_base); }
+  auto x_diagonal()  { return diag_adapter(x_diag_base); }
+  auto xt_diagonal() { return diag_adapter(xt_diag_base); }
+  auto y_diagonal()  { return diag_adapter(y_diag_base); }
+  auto yt_diagonal() { return diag_adapter(yt_diag_base); }
   auto A_subspan() { return subspan_adapter(A_subspan_base, 1, y_size, 1, x_size); }
 
   virtual void SetUp(){
@@ -257,12 +257,12 @@ TEST_F(ops_kokkos, dense_mat_span_vec_T)
 
 TEST_F(ops_kokkos, dense_mat_diag_vec_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A, x_diag(), y);
+  test_impl(*this, pressio::nontranspose(), A, x_diagonal(), y);
 }
 
 TEST_F(ops_kokkos, dense_mat_diag_vec_T)
 {
-  test_impl(*this, pressio::transpose(), A, xt_diag(), yt);
+  test_impl(*this, pressio::transpose(), A, xt_diagonal(), yt);
 }
 
 //-------------------------------------------
@@ -281,12 +281,12 @@ TEST_F(ops_kokkos, dense_mat_vec_span_T)
 
 TEST_F(ops_kokkos, dense_mat_vec_diag_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A, x, y_diag());
+  test_impl(*this, pressio::nontranspose(), A, x, y_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_mat_vec_diag_T)
 {
-  test_impl(*this, pressio::transpose(), A, xt, yt_diag());
+  test_impl(*this, pressio::transpose(), A, xt, yt_diagonal());
 }
 
 //-------------------------------------------
@@ -305,32 +305,32 @@ TEST_F(ops_kokkos, dense_mat_span_span_T)
 
 TEST_F(ops_kokkos, dense_mat_span_diag_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A, x_span(), y_diag());
+  test_impl(*this, pressio::nontranspose(), A, x_span(), y_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_mat_span_diag_T)
 {
-  test_impl(*this, pressio::transpose(), A, xt_span(), yt_diag());
+  test_impl(*this, pressio::transpose(), A, xt_span(), yt_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_mat_diag_span_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A, x_diag(), y_span());
+  test_impl(*this, pressio::nontranspose(), A, x_diagonal(), y_span());
 }
 
 TEST_F(ops_kokkos, dense_mat_diag_span_T)
 {
-  test_impl(*this, pressio::transpose(), A, xt_diag(), yt_span());
+  test_impl(*this, pressio::transpose(), A, xt_diagonal(), yt_span());
 }
 
 TEST_F(ops_kokkos, dense_mat_diag_diag_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A, x_diag(), y_diag());
+  test_impl(*this, pressio::nontranspose(), A, x_diagonal(), y_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_mat_diag_diag_T)
 {
-  test_impl(*this, pressio::transpose(), A, xt_diag(), yt_diag());
+  test_impl(*this, pressio::transpose(), A, xt_diagonal(), yt_diagonal());
 }
 
 //-------------------------------------------
@@ -363,12 +363,12 @@ TEST_F(ops_kokkos, dense_submat_span_vec_T)
 
 TEST_F(ops_kokkos, dense_submat_diag_vec_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A_subspan(), x_diag(), y);
+  test_impl(*this, pressio::nontranspose(), A_subspan(), x_diagonal(), y);
 }
 
 TEST_F(ops_kokkos, dense_submat_diag_vec_T)
 {
-  test_impl(*this, pressio::transpose(), A_subspan(), xt_diag(), yt);
+  test_impl(*this, pressio::transpose(), A_subspan(), xt_diagonal(), yt);
 }
 
 //-------------------------------------------
@@ -387,12 +387,12 @@ TEST_F(ops_kokkos, dense_submat_vec_span_T)
 
 TEST_F(ops_kokkos, dense_submat_vec_diag_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A_subspan(), x, y_diag());
+  test_impl(*this, pressio::nontranspose(), A_subspan(), x, y_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_submat_vec_diag_T)
 {
-  test_impl(*this, pressio::transpose(), A_subspan(), xt, yt_diag());
+  test_impl(*this, pressio::transpose(), A_subspan(), xt, yt_diagonal());
 }
 
 //-------------------------------------------
@@ -411,30 +411,30 @@ TEST_F(ops_kokkos, dense_submat_span_span_T)
 
 TEST_F(ops_kokkos, dense_submat_span_diag_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A_subspan(), x_span(), y_diag());
+  test_impl(*this, pressio::nontranspose(), A_subspan(), x_span(), y_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_submat_span_diag_T)
 {
-  test_impl(*this, pressio::transpose(), A_subspan(), xt_span(), yt_diag());
+  test_impl(*this, pressio::transpose(), A_subspan(), xt_span(), yt_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_submat_diag_span_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A_subspan(), x_diag(), y_span());
+  test_impl(*this, pressio::nontranspose(), A_subspan(), x_diagonal(), y_span());
 }
 
 TEST_F(ops_kokkos, dense_submat_diag_span_T)
 {
-  test_impl(*this, pressio::transpose(), A_subspan(), xt_diag(), yt_span());
+  test_impl(*this, pressio::transpose(), A_subspan(), xt_diagonal(), yt_span());
 }
 
 TEST_F(ops_kokkos, dense_submat_diag_diag_NT)
 {
-  test_impl(*this, pressio::nontranspose(), A_subspan(), x_diag(), y_diag());
+  test_impl(*this, pressio::nontranspose(), A_subspan(), x_diagonal(), y_diagonal());
 }
 
 TEST_F(ops_kokkos, dense_submat_diag_diag_T)
 {
-  test_impl(*this, pressio::transpose(), A_subspan(), xt_diag(), yt_diag());
+  test_impl(*this, pressio::transpose(), A_subspan(), xt_diagonal(), yt_diagonal());
 }

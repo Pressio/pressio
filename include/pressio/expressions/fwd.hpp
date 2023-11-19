@@ -56,8 +56,8 @@ template <class T, class enable = void> class SpanExpr;
 template <class T, class enable = void> class SpanTraits;
 template <class T, class enable = void> class SubspanExpr;
 template <class T, class enable = void> class SubSpanTraits;
-template <class T, class enable = void> class DiagExpr;
-template <class T, class enable = void> class DiagTraits;
+template <class T, class enable = void> class DiagonalExpr;
+template <class T, class enable = void> class DiagonalTraits;
 template <class T, class enable = void> class ColumnExpr;
 template <class T, class enable = void> class ColumnTraits;
 }}//end namespace expressions::impl
@@ -71,8 +71,8 @@ struct Traits<expressions::impl::SubspanExpr<T>>
   : expressions::impl::SubSpanTraits< expressions::impl::SubspanExpr<T> >{};
 
 template<class T>
-struct Traits<expressions::impl::DiagExpr<T>>
-  : expressions::impl::DiagTraits< expressions::impl::DiagExpr<T> >{};
+struct Traits<expressions::impl::DiagonalExpr<T>>
+  : expressions::impl::DiagonalTraits< expressions::impl::DiagonalExpr<T> >{};
 
 template<class T>
 struct Traits<expressions::impl::ColumnExpr<T>>

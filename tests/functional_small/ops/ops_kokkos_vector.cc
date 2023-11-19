@@ -430,8 +430,8 @@ TEST(ops_kokkos, vector_update_expr_diag)
 {
   Kokkos::View<double**> v0("v_diag", 3, 3);
   Kokkos::View<double**> a0("a_diag", 3, 3);
-  auto v = pressio::diag(v0);
-  auto a = pressio::diag(a0);
+  auto v = pressio::diagonal(v0);
+  auto a = pressio::diagonal(a0);
   pressio::ops::fill(v, 10.);
   pressio::ops::fill(a, 1.);
 

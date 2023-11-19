@@ -8,7 +8,7 @@ using mat_t = Kokkos::View<double**>;
 TEST(ops_kokkos, diag_extent)
 {
   mat_t a("a", 5,5);
-  auto ex = pressio::diag(a);
+  auto ex = pressio::diagonal(a);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==5);
   ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
@@ -17,7 +17,7 @@ TEST(ops_kokkos, diag_abs)
 {
   mat_t a("a",5,5);
   KokkosBlas::fill(a, -1.);
-  auto ex = pressio::diag(a);
+  auto ex = pressio::diagonal(a);
   vec_t y("y", 5);
   pressio::ops::abs(y,ex);
 
@@ -33,7 +33,7 @@ TEST(ops_kokkos, diag_scale)
 {
   mat_t a("a",5,5);
   KokkosBlas::fill(a, 1.);
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
   pressio::ops::scale(exp, 3.);
   ASSERT_DOUBLE_EQ(a_h(0,0),3.);
@@ -67,7 +67,7 @@ TEST(ops_kokkos, diag_set_zero)
 {
   mat_t a("a",5,5);
   KokkosBlas::fill(a, 1.);
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   pressio::ops::set_zero(exp);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
   ASSERT_DOUBLE_EQ(a_h(0,0),0.);
@@ -101,7 +101,7 @@ TEST(ops_kokkos, diag_fill)
 {
   mat_t a("a",5,5);
   KokkosBlas::fill(a, 1.);
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
   pressio::ops::fill(exp, 44.);
   ASSERT_DOUBLE_EQ(a_h(0,0),44.);
@@ -141,7 +141,7 @@ TEST(ops_kokkos, diag_min_max)
     }
   }
   Kokkos::deep_copy(A, A_h);
-  auto d = pressio::diag(A_h);
+  auto d = pressio::diagonal(A_h);
   ASSERT_DOUBLE_EQ(pressio::ops::min(d), 76.);
   ASSERT_DOUBLE_EQ(pressio::ops::max(d), 100.);
 }
@@ -162,7 +162,7 @@ TEST(ops_kokkos, diag_norms)
   Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
-  auto e = pressio::diag(a);
+  auto e = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::norm1(e), gold.lpNorm<1>());
   ASSERT_DOUBLE_EQ(pressio::ops::norm2(e), gold.lpNorm<2>());
 }
@@ -183,7 +183,7 @@ TEST(ops_kokkos, diag_dot_vector)
   vec_t b("b", 5);
   KokkosBlas::fill(b,2.);
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::dot(exp,b), 120.);
 }
 
@@ -205,7 +205,7 @@ TEST(ops_kokkos, diag_dot_diag)
   }
   Kokkos::deep_copy(a, a_h);
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::dot(exp,exp), 1080.);
 }
 
@@ -225,7 +225,7 @@ TEST(ops_kokkos, diag_pow)
   Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   pressio::ops::pow(exp, 2.);
 
   Kokkos::deep_copy(a,a_h);
@@ -251,9 +251,9 @@ mat_t createMatrixForUpdate(){
 TEST(ops_kokkos, diag_update1)
 {
   auto M1 = createMatrixForUpdate();
-  auto d1 = pressio::diag(M1);
+  auto d1 = pressio::diagonal(M1);
   auto M2 = createMatrixForUpdate();
-  auto d2 = pressio::diag(M2);
+  auto d2 = pressio::diagonal(M2);
 
   pressio::ops::update(d1, 1., d2, 1.);
   auto M1_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M1);
@@ -271,11 +271,11 @@ TEST(ops_kokkos, diag_update1)
 TEST(ops_kokkos, diag_update2)
 {
   auto M1 = createMatrixForUpdate();
-  auto v = pressio::diag(M1);
+  auto v = pressio::diagonal(M1);
   auto M2 = createMatrixForUpdate();
-  auto a = pressio::diag(M2);
+  auto a = pressio::diagonal(M2);
   auto M3 = createMatrixForUpdate();
-  auto b = pressio::diag(M3);
+  auto b = pressio::diagonal(M3);
 
   pressio::ops::update(v, 1., a, 1., b, 1.);
   auto M1_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M1);
@@ -293,13 +293,13 @@ TEST(ops_kokkos, diag_update2)
 TEST(ops_kokkos, diag_update3)
 {
   auto M1 = createMatrixForUpdate();
-  auto v = pressio::diag(M1);
+  auto v = pressio::diagonal(M1);
   auto M2 = createMatrixForUpdate();
-  auto a = pressio::diag(M2);
+  auto a = pressio::diagonal(M2);
   auto M3 = createMatrixForUpdate();
-  auto b = pressio::diag(M3);
+  auto b = pressio::diagonal(M3);
   auto M4 = createMatrixForUpdate();
-  auto c = pressio::diag(M4);
+  auto c = pressio::diagonal(M4);
 
   pressio::ops::update(v, 1., a, 1., b, 1., c, 1.);
   auto M1_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M1);
@@ -317,15 +317,15 @@ TEST(ops_kokkos, diag_update3)
 TEST(ops_kokkos, diag_update4)
 {
   auto M1 = createMatrixForUpdate();
-  auto v = pressio::diag(M1);
+  auto v = pressio::diagonal(M1);
   auto M2 = createMatrixForUpdate();
-  auto a = pressio::diag(M2);
+  auto a = pressio::diagonal(M2);
   auto M3 = createMatrixForUpdate();
-  auto b = pressio::diag(M3);
+  auto b = pressio::diagonal(M3);
   auto M4 = createMatrixForUpdate();
-  auto c = pressio::diag(M4);
+  auto c = pressio::diagonal(M4);
   auto M5 = createMatrixForUpdate();
-  auto d = pressio::diag(M5);
+  auto d = pressio::diagonal(M5);
 
   pressio::ops::update(v, 1., a, 1., b, 1., c, 1., d, 1.);
   auto M1_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), M1);
@@ -356,9 +356,9 @@ TEST(ops_kokkos, diag_elementwiseMultiply)
   Kokkos::deep_copy(M2, M2_h);
   Kokkos::deep_copy(M3, M3_h);
 
-  auto y = pressio::diag(M1);
-  const auto x = pressio::diag(M2);
-  const auto z = pressio::diag(M3);
+  auto y = pressio::diagonal(M1);
+  const auto x = pressio::diagonal(M2);
+  const auto z = pressio::diagonal(M3);
 
   pressio::ops::elementwise_multiply(1., x, z, 1., y);
   Kokkos::deep_copy(M1_h, M1);

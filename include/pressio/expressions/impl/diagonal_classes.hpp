@@ -46,21 +46,21 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
-#define EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
+#ifndef EXPRESSIONS_IMPL_DIAGONAL_CLASSES_HPP_
+#define EXPRESSIONS_IMPL_DIAGONAL_CLASSES_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-class DiagExpr<
+class DiagonalExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
 {
-  using traits = DiagTraits<DiagExpr<MatrixType>>;
+  using traits = DiagonalTraits<DiagonalExpr<MatrixType>>;
   using reference_t = typename traits::reference_type;
   using native_expr_t = typename traits::native_expr_type;
 
@@ -72,7 +72,7 @@ private:
   std::size_t extent_ = {};
 
 public:
-  explicit DiagExpr(MatrixType & matObjIn)
+  explicit DiagonalExpr(MatrixType & matObjIn)
     : operand_(&matObjIn),
       nativeExprObj_(operand_->diagonal()),
       numRows_(operand_->rows()),
@@ -113,7 +113,7 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-class DiagExpr<
+class DiagonalExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
@@ -123,9 +123,9 @@ class DiagExpr<
   static_assert(Kokkos::SpaceAccessibility<
 		typename MatrixType::execution_space,
 		Kokkos::HostSpace>::accessible,
-		"diag is currently only valid for a host-accessible Kokkos View");
+		"diagonal is currently only valid for a host-accessible Kokkos View");
 
-  using traits	= DiagTraits<DiagExpr<MatrixType>>;
+  using traits	= DiagonalTraits<DiagonalExpr<MatrixType>>;
   using native_expr_t	= typename traits::native_expr_type;
   using ref_t = typename traits::reference_type;
 
@@ -141,7 +141,7 @@ private:
    "The layout for the native type of the diagonal kokkos expression does not match the strided layout expected");
 
 public:
-  explicit DiagExpr(MatrixType & M)
+  explicit DiagonalExpr(MatrixType & M)
     : matObj_(&M),
       nativeExprObj_(M.data(), natexpr_layout(M.extent(0), M.stride(0)+M.stride(1))),
       extent_(M.extent(0))
@@ -170,4 +170,4 @@ public:
 #endif
 
 }}}
-#endif  // EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
+#endif  // EXPRESSIONS_IMPL_DIAGONAL_CLASSES_HPP_

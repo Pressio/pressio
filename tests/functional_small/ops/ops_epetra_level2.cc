@@ -193,7 +193,7 @@ TEST_F(ops_epetra, mv_prod_eigen_diag)
     for (int i = 0; i < numVecs_; ++i) {
         M0(i, i) = 1.;
     }
-    auto x_eigen_diag = pressio::diag(M0);
+    auto x_eigen_diag = pressio::diagonal(M0);
 
     test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_diag, *y_epetra);
 }
@@ -225,7 +225,7 @@ TEST_F(ops_epetra, mv_T_vector_storein_eigen_diag)
     for (int i = 0; i < numVecs_; ++i) {
         M0(i, i) = 1.;
     }
-    auto y_eigen_diag = pressio::diag(M0);
+    auto y_eigen_diag = pressio::diagonal(M0);
 
     test_impl(*this, ::pressio::transpose{}, *myMv_, *x_epetra, y_eigen_diag);
 }

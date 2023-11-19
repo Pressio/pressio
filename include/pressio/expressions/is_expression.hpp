@@ -51,28 +51,28 @@
 
 namespace pressio{
 
-/* is_expression_diag */
+/* is_expression_diagonal */
 template <typename T>
-struct is_expression_diag : std::false_type{};
+struct is_expression_diagonal : std::false_type{};
 
 template <typename T>
-struct is_expression_diag<
-  ::pressio::expressions::impl::DiagExpr<T>
+struct is_expression_diagonal<
+  ::pressio::expressions::impl::DiagonalExpr<T>
   > : std::true_type{};
 
 template <typename T>
-struct is_expression_diag<
-  const ::pressio::expressions::impl::DiagExpr<T>
-  > : is_expression_diag<T>{};
+struct is_expression_diagonal<
+  const ::pressio::expressions::impl::DiagonalExpr<T>
+  > : is_expression_diagonal<T>{};
 
 template <typename T>
-struct is_expression_diag<
-  ::pressio::expressions::impl::DiagExpr<const T>
+struct is_expression_diagonal<
+  ::pressio::expressions::impl::DiagonalExpr<const T>
   > : std::true_type{};
 
 template <typename T>
-struct is_expression_diag<
-  const ::pressio::expressions::impl::DiagExpr<const T>
+struct is_expression_diagonal<
+  const ::pressio::expressions::impl::DiagonalExpr<const T>
   > : std::true_type{};
 
 
@@ -160,7 +160,7 @@ struct is_expression<
   T,
   mpl::enable_if_t<
     is_expression_span<T>::value
-    || is_expression_diag<T>::value
+    || is_expression_diagonal<T>::value
     || is_expression_subspan<T>::value
     || is_expression_column<T>::value
     >
@@ -172,7 +172,7 @@ struct is_expression_acting_on_eigen: public std::false_type {};
 
 template <typename T>
 struct is_expression_acting_on_eigen<
-  ::pressio::expressions::impl::DiagExpr<T>
+  ::pressio::expressions::impl::DiagonalExpr<T>
   >
 {
   static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
@@ -210,7 +210,7 @@ struct is_expression_acting_on_kokkos: public std::false_type {};
 
 template <typename T>
 struct is_expression_acting_on_kokkos<
-  ::pressio::expressions::impl::DiagExpr<T>
+  ::pressio::expressions::impl::DiagonalExpr<T>
   >
 {
   static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
