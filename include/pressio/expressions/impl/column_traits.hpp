@@ -101,9 +101,22 @@ public:
   static constexpr int rank = 1; // a column is a rank-1 object
 
   using native_expr_type =
-    decltype(
-	std::declval<T>().getVectorNonConst(0)
-     );
+    decltype( std::declval<T>().getVectorNonConst(0) );
+};
+
+template <typename T>
+class ColumnTraits<
+  ColumnExpr<T>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra_block<T>::value
+    >
+  > : public ::pressio::Traits<T>
+{
+public:
+  static constexpr int rank = 1; // a column is a rank-1 object
+
+  // the native thing is also a block mv with a single column
+  using native_expr_type = T;
 };
 #endif
 

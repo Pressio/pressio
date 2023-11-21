@@ -66,10 +66,11 @@ auto column(T & operand, IndexType colIndex)
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     || is_multi_vector_tpetra<T>::value
+    || is_multi_vector_tpetra_block<T>::value
 #endif
     ;
   static_assert(constraint, "pressio::column() currently supported only for "
-		"an Eigen dynamic matrix or a tpetra multivector");
+		"an Eigen dynamic matrix, a tpetra or tpetra-block multivector");
 
   static_assert(Traits< std::remove_const_t<T> >::rank==2,
 		"column can only be applied to a rank-2 object.");

@@ -65,7 +65,6 @@ class ColumnExpr<
   using native_expr_t = typename traits::native_expr_type;
   using reference_t   = typename traits::reference_type;
 
-private:
   T * operand_;
   std::size_t colIndex_;
   std::size_t numRows_;
@@ -122,7 +121,6 @@ class ColumnExpr<
   using node_t = typename T::node_type;
   using vec_t  = Tpetra::Vector<sc_t, lo_t, go_t, node_t>;
 
-private:
   T * operand_;
   std::size_t colIndex_;
   std::size_t numRowsLocal_;
@@ -155,6 +153,49 @@ public:
   vec_t native() const{ return colVec_; }
   vec_t native(){ return colVec_; }
 };
+
+template <typename T>
+class ColumnExpr<
+  T, ::pressio::mpl::enable_if_t<
+       ::pressio::is_multi_vector_tpetra_block<T>::value > >
+{
+  using traits = ColumnTraits<ColumnExpr<T>>;
+
+  T * operand_;
+  std::size_t colIndex_;
+  std::size_t numRowsLocal_;
+  std::size_t numRowsGlobal_;
+  typename T::mv_type tpetraMv_;
+  typename traits::native_expr_type colVec_;
+
+public:
+  explicit ColumnExpr(T & matObjIn, std::size_t colIndex)
+    : operand_(&matObjIn)
+    , colIndex_(colIndex)
+    , numRowsLocal_(matObjIn.getMap()->getLocalNumElements())
+    , numRowsGlobal_(matObjIn.getMap()->getGlobalNumElements())
+    , tpetraMv_(*matObjIn.getMultiVectorView().getVectorNonConst(colIndex))
+    , colVec_(tpetraMv_, *(matObjIn.getMap()), matObjIn.getBlockSize())
+  {
+    assert( colIndex_ >= 0 &&
+	    colIndex_ < std::size_t(matObjIn.getNumVectors()) );
+  }
+
+public:
+  auto data() const { return operand_; }
+
+  std::size_t extentLocal(std::size_t i) const{
+    if (i == 0) { return numRowsLocal_; } else { return std::size_t(1); }
+  }
+
+  std::size_t extentGlobal(std::size_t i) const{
+    if (i == 0) { return numRowsGlobal_; } else { return std::size_t(1); }
+  }
+
+  typename traits::native_expr_type native() const{ return colVec_; }
+  typename traits::native_expr_type native(){ return colVec_; }
+};
+
 #endif
 
 }}}
