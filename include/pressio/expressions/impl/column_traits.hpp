@@ -88,5 +88,25 @@ public:
 };
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+class ColumnTraits<
+  ColumnExpr<T>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra<T>::value
+    >
+  > : public ::pressio::Traits<T>
+{
+public:
+  static constexpr int rank = 1; // a column is a rank-1 object
+
+  using native_expr_type =
+    decltype(
+	std::declval<T>().getVectorNonConst(0)
+     );
+};
+#endif
+
+
 }}}
 #endif  // EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_

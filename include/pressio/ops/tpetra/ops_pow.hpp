@@ -54,16 +54,20 @@ namespace pressio{ namespace ops{
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T1>::value and
-  ::pressio::is_vector_tpetra<T2>::value
+  (::pressio::is_vector_tpetra<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (::pressio::is_vector_tpetra<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
   >
-abs_pow(T1 & y,
-	const T2 & x,
+abs_pow(T1 & y_in,
+	const T2 & x_in,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = ::pressio::ops::impl::local_ordinal_t<T1>;
+
+  auto x = impl::get_native(x_in);
+  auto y = impl::get_native(y_in);
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
@@ -75,9 +79,9 @@ abs_pow(T1 & y,
   auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
   auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
-		       KOKKOS_LAMBDA (const ord_t& i){
-			 using std::pow;
-			 using std::abs;
+		       KOKKOS_LAMBDA (const std::size_t& i){
+			 using Kokkos::pow;
+			 using Kokkos::abs;
 			 y_kv(i,0) = pow( abs(x_kv(i,0)), exponent);
 		       });
 }
@@ -85,17 +89,21 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra<T1>::value and
-  ::pressio::is_vector_tpetra<T2>::value
+  (::pressio::is_vector_tpetra<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (::pressio::is_vector_tpetra<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
   >
-abs_pow(T1 & y,
-	const T2 & x,
+abs_pow(T1 & y_in,
+	const T2 & x_in,
 	const typename ::pressio::Traits<T1>::scalar_type & exponent,
 	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
 
   using sc_t = typename ::pressio::Traits<T1>::scalar_type;
-  using ord_t = ::pressio::ops::impl::local_ordinal_t<T1>;
+
+  auto x = impl::get_native(x_in);
+  auto y = impl::get_native(y_in);
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
@@ -109,10 +117,10 @@ abs_pow(T1 & y,
   auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
   auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
-		       KOKKOS_LAMBDA (const ord_t& i){
-			 using std::pow;
-			 using std::abs;
-			 using std::max;
+		       KOKKOS_LAMBDA (const std::size_t& i){
+			 using Kokkos::pow;
+			 using Kokkos::abs;
+			 using Kokkos::max;
 			 y_kv(i,0) = one/max(eps, pow(abs(x_kv(i,0)), expo));
 		       });
 }
@@ -120,17 +128,17 @@ abs_pow(T1 & y,
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<T>::value
+  || ::pressio::is_expression_column_acting_on_tpetra<T>::value
   >
-pow(T & x,
+pow(T & x_in,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
-  using ord_t = ::pressio::ops::impl::local_ordinal_t<T>;
+  auto x = impl::get_native(x_in);
+
   auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   Kokkos::parallel_for(x.getLocalLength(),
-		       KOKKOS_LAMBDA (const ord_t& i)
-		       {
-			 using std::pow;
-			 x_kv(i,0) = pow(x_kv(i,0), exponent);
+		       KOKKOS_LAMBDA (const std::size_t& i){
+			 x_kv(i,0) = Kokkos::pow(x_kv(i,0), exponent);
 		       });
 }
 

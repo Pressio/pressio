@@ -1,3 +1,5 @@
+# to include google test fixtures
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/fixtures)
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/eigen_span.cc)
@@ -25,4 +27,9 @@ if(PRESSIO_ENABLE_TPL_KOKKOS)
 
   add_serial_utest_kokkos(${TESTING_LEVEL}_kokkos_strided_subview
     ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_strided_subview.cc )
+endif()
+
+if(PRESSIO_ENABLE_TPL_TRILINOS)
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/tpetra_column.cc)
+  add_utest_mpi(${TESTING_LEVEL}_expressions_tpetra_column "${SRC}" gTestMain_tpetra 3)
 endif()

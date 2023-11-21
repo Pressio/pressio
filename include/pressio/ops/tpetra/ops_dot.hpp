@@ -51,28 +51,37 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+template <
+  typename T1, typename T2,
+ ::pressio::mpl::enable_if_t<
   // TPL/container specific
-     ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
+  (   ::pressio::is_vector_tpetra<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (::pressio::is_vector_tpetra<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
+  && Traits<T1>::rank == 1
+  && Traits<T2>::rank == 1
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value),
-  decltype( std::declval<const T1>().dot(std::declval<const T2>()) )
+   int > = 0
   >
-dot(const T1 & a, const T2 & b){
-
+auto dot(const T1 & a, const T2 & b)
+{
   assert(::pressio::ops::extent(a, 0) == ::pressio::ops::extent(b, 0));
-  return a.dot(b);
+  return impl::get_native(a).dot( impl::get_native(b) );
 }
 
 template <typename T1, typename T2, class DotResult>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
-     ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
+  (   ::pressio::is_vector_tpetra<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (::pressio::is_vector_tpetra<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
+  && Traits<T1>::rank == 1
+  && Traits<T2>::rank == 1
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value

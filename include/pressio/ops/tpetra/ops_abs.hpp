@@ -53,8 +53,13 @@ namespace pressio{ namespace ops{
 
 template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
-     ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
+  (   ::pressio::is_vector_tpetra<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (::pressio::is_vector_tpetra<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
+  // rank constraint needed for the expression
+  && Traits<T1>::rank == 1
+  && Traits<T2>::rank == 1
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
@@ -63,7 +68,9 @@ template <typename T1, class T2>
 abs(T1 & y, const T2 & x)
 {
   assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
-  y.abs(x);
+  auto y_native = impl::get_native(y);
+  auto x_native = impl::get_native(x);
+  y_native.abs(x_native);
 }
 
 }}//end namespace pressio::ops

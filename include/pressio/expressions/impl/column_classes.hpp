@@ -52,27 +52,27 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename MatrixType>
+template <typename T>
 class ColumnExpr<
-  MatrixType,
+  T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<MatrixType>::value
+    ::pressio::is_dense_matrix_eigen<T>::value
     >
   >
 {
 
-  using traits = ColumnTraits<ColumnExpr<MatrixType>>;
+  using traits = ColumnTraits<ColumnExpr<T>>;
   using native_expr_t = typename traits::native_expr_type;
   using reference_t   = typename traits::reference_type;
 
 private:
-  MatrixType * operand_;
+  T * operand_;
   std::size_t colIndex_;
   std::size_t numRows_;
   native_expr_t nativeExprObj_;
 
 public:
-  ColumnExpr(MatrixType & matObjIn, std::size_t colIndex)
+  ColumnExpr(T & matObjIn, std::size_t colIndex)
     : operand_(&matObjIn),
       colIndex_(colIndex),
       numRows_(matObjIn.rows()),
@@ -104,6 +104,56 @@ public:
     assert(i < numRows_);
     return (*operand_)(i, colIndex_);
   }
+};
+#endif
+
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+class ColumnExpr<
+  T, ::pressio::mpl::enable_if_t<
+       ::pressio::is_multi_vector_tpetra<T>::value > >
+{
+
+  using traits = ColumnTraits<ColumnExpr<T>>;
+  using sc_t   = typename T::scalar_type;
+  using go_t   = typename T::global_ordinal_type;
+  using lo_t   = typename T::local_ordinal_type;
+  using node_t = typename T::node_type;
+  using vec_t  = Tpetra::Vector<sc_t, lo_t, go_t, node_t>;
+
+private:
+  T * operand_;
+  std::size_t colIndex_;
+  std::size_t numRowsLocal_;
+  std::size_t numRowsGlobal_;
+  vec_t colVec_;
+
+public:
+  explicit ColumnExpr(T & matObjIn, std::size_t colIndex)
+    : operand_(&matObjIn)
+    , colIndex_(colIndex)
+    , numRowsLocal_(matObjIn.getLocalLength())
+    , numRowsGlobal_(matObjIn.getGlobalLength())
+    , colVec_(*matObjIn.getVectorNonConst(colIndex))
+  {
+    assert( colIndex_ >= 0 &&
+	    colIndex_ < std::size_t(matObjIn.getNumVectors()) );
+  }
+
+public:
+  auto data() const { return operand_; }
+
+  std::size_t extentLocal(std::size_t i) const{
+    if (i == 0) { return numRowsLocal_; } else { return std::size_t(1); }
+  }
+
+  std::size_t extentGlobal(std::size_t i) const{
+    if (i == 0) { return numRowsGlobal_; } else { return std::size_t(1); }
+  }
+
+  vec_t native() const{ return colVec_; }
+  vec_t native(){ return colVec_; }
 };
 #endif
 

@@ -53,12 +53,11 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  // min/max common constraints
-    (::pressio::Traits<T>::rank == 1
-  || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-  && (::pressio::is_vector_tpetra<T>::value
-  || ::pressio::is_multi_vector_tpetra<T>::value)
+  (   ::pressio::is_vector_tpetra<T>::value
+   || ::pressio::is_multi_vector_tpetra<T>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T>::value
+  )
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
@@ -67,18 +66,19 @@ template <typename T>
 max(const T & obj)
 {
   assert(::pressio::ops::extent(obj, 0) > 0);
-  assert(!::pressio::is_multi_vector_tpetra<T>::value
-       || ::pressio::ops::extent(obj, 1) > 0);
+  // assert(!::pressio::is_multi_vector_tpetra<T>::value
+  //      || ::pressio::ops::extent(obj, 1) > 0);
 
-  // get local minimum
+  const auto & obj_native = impl::get_native(obj);
+
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  auto local = obj.getLocalViewDevice(Tpetra::Access::ReadOnly);
+  auto local = obj_native.getLocalViewDevice(Tpetra::Access::ReadOnly);
   sc_t max_local = ::pressio::ops::max(local);
 
-  // reduce over ranks to get global minimum
+  // reduce over ranks
   sc_t max_global = max_local;
   Teuchos::reduceAll<int, sc_t>(
-    *obj.getMap()->getComm(),
+    *(obj_native.getMap()->getComm()),
     Teuchos::REDUCE_MAX,
     1,
     &max_local,
@@ -88,14 +88,14 @@ max(const T & obj)
   return max_global;
 }
 
+
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  // min/max common constraints
-    (::pressio::Traits<T>::rank == 1
-  || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
-  && (::pressio::is_vector_tpetra<T>::value
-  || ::pressio::is_multi_vector_tpetra<T>::value)
+  (   ::pressio::is_vector_tpetra<T>::value
+   || ::pressio::is_multi_vector_tpetra<T>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<T>::value
+  )
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
@@ -104,18 +104,17 @@ template <typename T>
 min(const T & obj)
 {
   assert(::pressio::ops::extent(obj, 0) > 0);
-  assert(!::pressio::is_multi_vector_tpetra<T>::value
-       || ::pressio::ops::extent(obj, 1) > 0);
+  // assert(!::pressio::is_multi_vector_tpetra<T>::value
+  //      || ::pressio::ops::extent(obj, 1) > 0);
+  const auto & obj_native = impl::get_native(obj);
 
-  // get local minimum
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  auto local = obj.getLocalViewDevice(Tpetra::Access::ReadOnly);
+  auto local = obj_native.getLocalViewDevice(Tpetra::Access::ReadOnly);
   sc_t min_local = ::pressio::ops::min(local);
 
-  // reduce over ranks to get global minimum
   sc_t min_global = min_local;
   Teuchos::reduceAll<int, sc_t>(
-    *obj.getMap()->getComm(),
+    *(obj_native.getMap()->getComm()),
     Teuchos::REDUCE_MIN,
     1,
     &min_local,

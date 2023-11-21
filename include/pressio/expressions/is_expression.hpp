@@ -51,105 +51,21 @@
 
 namespace pressio{
 
-/* is_expression_diagonal */
-template <typename T>
-struct is_expression_diagonal : std::false_type{};
+#define PRESSIO_IMPL_IS_EXPRESSION(NAMEA, NAMEB) \
+  template <typename T> struct is_expression_##NAMEA : std::false_type{}; \
+  template <typename T> struct is_expression_##NAMEA<			\
+    ::pressio::expressions::impl::NAMEB##Expr<T> > : std::true_type{};	\
+  template <typename T> struct is_expression_##NAMEA<			\
+    const ::pressio::expressions::impl::NAMEB##Expr<T> > : std::true_type{};	\
+  template <typename T> struct is_expression_##NAMEA<			\
+    ::pressio::expressions::impl::NAMEB##Expr<const T> > : std::true_type{}; \
+  template <typename T> struct is_expression_##NAMEA<			\
+   const ::pressio::expressions::impl::NAMEB##Expr<const T> > : std::true_type{}; \
 
-template <typename T>
-struct is_expression_diagonal<
-  ::pressio::expressions::impl::DiagonalExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_diagonal<
-  const ::pressio::expressions::impl::DiagonalExpr<T>
-  > : is_expression_diagonal<T>{};
-
-template <typename T>
-struct is_expression_diagonal<
-  ::pressio::expressions::impl::DiagonalExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_diagonal<
-  const ::pressio::expressions::impl::DiagonalExpr<const T>
-  > : std::true_type{};
-
-
-/* span */
-template <typename T>
-struct is_expression_span : std::false_type{};
-
-template <typename T>
-struct is_expression_span<
-  ::pressio::expressions::impl::SpanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_span<
-  const ::pressio::expressions::impl::SpanExpr<T>
-  > : is_expression_span<T>{};
-
-template <typename T>
-struct is_expression_span<
-  ::pressio::expressions::impl::SpanExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_span<
-  const ::pressio::expressions::impl::SpanExpr<const T>
-  > : std::true_type{};
-
-
-/* subspan */
-template <typename T>
-struct is_expression_subspan : std::false_type{};
-
-template <typename T>
-struct is_expression_subspan<
-  ::pressio::expressions::impl::SubspanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_subspan<
-  const ::pressio::expressions::impl::SubspanExpr<T>
-  > : is_expression_subspan<T>{};
-
-template <typename T>
-struct is_expression_subspan<
-  ::pressio::expressions::impl::SubspanExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_subspan<
-  const ::pressio::expressions::impl::SubspanExpr<const T>
-  > : std::true_type{};
-
-
-/* is_expression_column */
-template <typename T>
-struct is_expression_column : std::false_type{};
-
-template <typename T>
-struct is_expression_column<
-  ::pressio::expressions::impl::ColumnExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_column<
-  const ::pressio::expressions::impl::ColumnExpr<T>
-  > : is_expression_column<T>{};
-
-template <typename T>
-struct is_expression_column<
-  ::pressio::expressions::impl::ColumnExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_column<
-  const ::pressio::expressions::impl::ColumnExpr<const T>
-  > : std::true_type{};
-
+PRESSIO_IMPL_IS_EXPRESSION(diagonal, Diagonal)
+PRESSIO_IMPL_IS_EXPRESSION(span, Span)
+PRESSIO_IMPL_IS_EXPRESSION(subspan, Subspan)
+PRESSIO_IMPL_IS_EXPRESSION(column, Column)
 
 /* detect any expression */
 template <typename T, typename enable = void>
@@ -232,6 +148,25 @@ struct is_expression_acting_on_kokkos<
   static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
 };
 #endif // PRESSIO_ENABLE_TPL_KOKKOS
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+struct is_expression_acting_on_tpetra: public std::false_type {};
+
+template <typename T>
+struct is_expression_acting_on_tpetra<
+  ::pressio::expressions::impl::ColumnExpr<T>
+  >
+{
+  static constexpr auto value = ::pressio::is_multi_vector_tpetra<T>::value;
+};
+
+template <typename T>
+struct is_expression_column_acting_on_tpetra{
+  static constexpr auto value = ::pressio::is_expression_column<T>::value
+    && is_expression_acting_on_tpetra<T>::value;
+};
+#endif
 
 }
 #endif  // EXPRESSIONS_IS_EXPRESSION_HPP_

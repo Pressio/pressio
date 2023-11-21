@@ -60,8 +60,10 @@ template<class T, class T1, class a_Type, class b_Type>
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
   // TPL/container specific
-  && ::pressio::is_vector_tpetra<T>::value
-  && ::pressio::is_vector_tpetra<T1>::value
+  && (   ::pressio::is_vector_tpetra<T>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T>::value)
+  && (   ::pressio::is_vector_tpetra<T1>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -69,11 +71,13 @@ template<class T, class T1, class a_Type, class b_Type>
   && std::is_convertible<a_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,         const a_Type & a,
-       const T1 & v1, const b_Type & b)
+update(T & vin,         const a_Type & a,
+       const T1 & v1in, const b_Type & b)
 {
-  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
+  auto v  = impl::get_native(vin);
+  auto v1 = impl::get_native(v1in);
 
+  assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const sc_t a_(a);
   const sc_t b_(b);
@@ -93,9 +97,12 @@ template<
   && ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
   // TPL/container specific
-  && ::pressio::is_vector_tpetra<T>::value
-  && ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
+  && (   ::pressio::is_vector_tpetra<T>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T>::value)
+  && (   ::pressio::is_vector_tpetra<T1>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (   ::pressio::is_vector_tpetra<T2>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -104,10 +111,14 @@ template<
   && std::is_convertible<b_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,         const a_Type &a,
-       const T1 & v1, const b_Type &b,
-       const T2 & v2, const c_Type &c)
+update(T & vin,         const a_Type &a,
+       const T1 & v1in, const b_Type &b,
+       const T2 & v2in, const c_Type &c)
 {
+  auto v  = impl::get_native(vin);
+  auto v1 = impl::get_native(v1in);
+  auto v2 = impl::get_native(v2in);
+
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
@@ -135,10 +146,14 @@ template<
   && ::pressio::Traits<T2>::rank == 1
   && ::pressio::Traits<T3>::rank == 1
   // TPL/container specific
-  && ::pressio::is_vector_tpetra<T>::value
-  && ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
-  && ::pressio::is_vector_tpetra<T3>::value
+  && (   ::pressio::is_vector_tpetra<T>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T>::value)
+  && (   ::pressio::is_vector_tpetra<T1>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (   ::pressio::is_vector_tpetra<T2>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
+  && (   ::pressio::is_vector_tpetra<T3>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T3>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -148,11 +163,16 @@ template<
   && std::is_convertible<c_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,         const a_Type &a,
-       const T1 & v1, const b_Type &b,
-       const T2 & v2, const c_Type &c,
-       const T3 & v3, const d_Type &d)
+update(T & vin,         const a_Type &a,
+       const T1 & v1in, const b_Type &b,
+       const T2 & v2in, const c_Type &c,
+       const T3 & v3in, const d_Type &d)
 {
+  auto v  = impl::get_native(vin);
+  auto v1 = impl::get_native(v1in);
+  auto v2 = impl::get_native(v2in);
+  auto v3 = impl::get_native(v3in);
+
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
@@ -184,11 +204,16 @@ template<
   && ::pressio::Traits<T3>::rank == 1
   && ::pressio::Traits<T4>::rank == 1
   // TPL/container specific
-  && ::pressio::is_vector_tpetra<T>::value
-  && ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
-  && ::pressio::is_vector_tpetra<T3>::value
-  && ::pressio::is_vector_tpetra<T4>::value
+  && (   ::pressio::is_vector_tpetra<T>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T>::value)
+  && (   ::pressio::is_vector_tpetra<T1>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (   ::pressio::is_vector_tpetra<T2>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
+  && (   ::pressio::is_vector_tpetra<T3>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T3>::value)
+  && (   ::pressio::is_vector_tpetra<T4>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T4>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1, T2, T3, T4>::value
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -199,12 +224,18 @@ template<
   && std::is_convertible<d_Type, typename ::pressio::Traits<T>::scalar_type>::value
   && std::is_convertible<e_Type, typename ::pressio::Traits<T>::scalar_type>::value
   >
-update(T & v,         const a_Type &a,
-       const T1 & v1, const b_Type &b,
-       const T2 & v2, const c_Type &c,
-       const T3 & v3, const d_Type &d,
-       const T4 & v4, const e_Type &e)
+update(T & vin,         const a_Type &a,
+       const T1 & v1in, const b_Type &b,
+       const T2 & v2in, const c_Type &c,
+       const T3 & v3in, const d_Type &d,
+       const T4 & v4in, const e_Type &e)
 {
+  auto v  = impl::get_native(vin);
+  auto v1 = impl::get_native(v1in);
+  auto v2 = impl::get_native(v2in);
+  auto v3 = impl::get_native(v3in);
+  auto v4 = impl::get_native(v4in);
+
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));

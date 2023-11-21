@@ -166,7 +166,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 //
 // x is Teuchos Vector
 // A = tpetra::MultiVector
-// y = tpetra vector
+// y = tpetra vector or column expression
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
@@ -176,7 +176,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_vector_tpetra<y_type>::value
+  && (   ::pressio::is_vector_tpetra<y_type>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<y_type>::value)
   && ::pressio::is_dense_vector_teuchos<x_type>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
@@ -190,8 +191,9 @@ product(::pressio::nontranspose /*unused*/,
 	const A_type & A,
 	const x_type & x,
 	const beta_t & beta,
-	y_type & y)
+	y_type & yin)
 {
+  auto y = impl::get_native(yin);
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
@@ -200,7 +202,7 @@ product(::pressio::nontranspose /*unused*/,
 //
 // x is Kokkos Vector
 // A = tpetra::MultiVector
-// y = tpetra vector
+// y = tpetra vector or column expression
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
@@ -210,7 +212,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_vector_tpetra<y_type>::value
+  && (::pressio::is_vector_tpetra<y_type>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<y_type>::value)
   && (::pressio::is_vector_kokkos<x_type>::value
    || ::pressio::is_expression_acting_on_kokkos<x_type>::value)
   // scalar compatibility
@@ -225,8 +228,9 @@ product(::pressio::nontranspose /*unused*/,
 	const A_type & A,
 	const x_type & x,
 	const beta_t & beta,
-	y_type & y)
+	y_type & yin)
 {
+  auto y = impl::get_native(yin);
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
@@ -235,7 +239,7 @@ product(::pressio::nontranspose /*unused*/,
 //
 // x is Eigen Vector
 // A = tpetra::MultiVector
-// y = tpetra vector
+// y = tpetra vector or column expression
 // -------------------------------
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
@@ -246,7 +250,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_vector_tpetra<y_type>::value
+  && (::pressio::is_vector_tpetra<y_type>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<y_type>::value)
   && ::pressio::is_vector_eigen<x_type>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
@@ -260,11 +265,12 @@ product(::pressio::nontranspose /*unused*/,
 	const A_type & A,
 	const x_type & x,
 	const beta_t & beta,
-	y_type & y)
+	y_type & yin)
 {
 
   //makesure x is contiguous
   assert(x.innerSize() == x.outerStride());
+  auto y = impl::get_native(yin);
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
@@ -310,7 +316,7 @@ product(::pressio::nontranspose mode,
 //
 // x is Pressio expression based on Eigen
 // A = tpetra::MultiVector
-// y = tpetra vector
+// y = tpetra vector or column expression
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
@@ -320,7 +326,8 @@ template < class A_type, class x_type, class y_type, class alpha_t, class beta_t
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_vector_tpetra<y_type>::value
+  && (::pressio::is_vector_tpetra<y_type>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<y_type>::value)
   && ::pressio::is_expression_acting_on_eigen<x_type>::value
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<A_type, x_type, y_type>::value
@@ -334,9 +341,10 @@ product(::pressio::nontranspose /*unused*/,
 	const A_type & A,
 	const x_type & x,
 	const beta_t & beta,
-	y_type & y)
+	y_type & yin)
 {
   const auto A_h = A.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+  auto y = impl::get_native(yin);
   const auto y2_h = y.getLocalViewHost(Tpetra::Access::ReadWriteStruct());
   const auto y_h = Kokkos::subview(y2_h, Kokkos::ALL(), 0);
 
@@ -364,7 +372,7 @@ product(::pressio::nontranspose /*unused*/,
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
-// x = tpetra Vector
+// x = tpetra Vector or column expression
 // A = tpetra::MultiVector
 // y = Eigen vector
 // -------------------------------
@@ -376,7 +384,8 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_vector_tpetra<x_type>::value
+  && (::pressio::is_vector_tpetra<x_type>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<x_type>::value)
   && (::pressio::is_vector_eigen<y_type>::value
    || ::pressio::is_expression_acting_on_eigen<y_type>::value)
   // scalar compatibility
@@ -389,7 +398,7 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
-	const x_type & x,
+	const x_type & xin,
 	const beta_t & beta,
 	y_type & y)
 {
@@ -402,6 +411,7 @@ product(::pressio::transpose /*unused*/,
 
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(y,0)));
 
+  auto x = impl::get_native(xin);
   const auto zero = ::pressio::utils::Constants<beta_t>::zero();
   const auto numVecs = ::pressio::ops::extent(A, 1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
@@ -419,7 +429,7 @@ product(::pressio::transpose /*unused*/,
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
-// x = tpetra Vector
+// x = tpetra Vector or column expression
 // A = tpetra::MultiVector
 // y = Kokkos vector
 // -------------------------------
@@ -431,7 +441,8 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
   && ::pressio::Traits<y_type>::rank == 1
   // TPL/container specific
   && ::pressio::is_multi_vector_tpetra<A_type>::value
-  && ::pressio::is_vector_tpetra<x_type>::value
+  && (::pressio::is_vector_tpetra<x_type>::value
+   || ::pressio::is_expression_column_acting_on_tpetra<x_type>::value)
   && (::pressio::is_vector_kokkos<y_type>::value
    || ::pressio::is_expression_acting_on_kokkos<y_type>::value)
   // scalar compatibility
@@ -444,10 +455,11 @@ template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
 product(::pressio::transpose /*unused*/,
 	const alpha_t & alpha,
 	const A_type & A,
-	const x_type & x,
+	const x_type & xin,
 	const beta_t & beta,
 	y_type & y)
 {
+  auto x = impl::get_native(xin);
   auto y_native = ::pressio::ops::impl::get_native(y);
   using y_native_type = typename ::pressio::mpl::remove_cvref<decltype(y_native)>::type;
   Kokkos::View<
@@ -461,90 +473,4 @@ product(::pressio::transpose /*unused*/,
 
 }}//end namespace pressio::ops
 
-
-
-
-
-// #ifdef PRESSIO_ENABLE_TPL_EIGEN
-// /* -------------------------------------------------------------------
-//  * y = beta * y + alpha*A*x
-
-//  * x is a sharedmem vector wrapper eigen
-//  * A = Eigen::MultiVector wrapper
-//  * y = Tpetra Vector
-//  * this covers the case where the matrix A acts locally to x
-//    while y is distributed, so A*x only fills the corresponding part of y
-//  *-------------------------------------------------------------------*/
-// template < typename A_type, typename x_type, typename y_type, typename scalar_type>
-// ::pressio::mpl::enable_if_t<
-//       ::pressio::is_multi_vector_eigen<A_type>::value
-//   and ::pressio::is_vector_eigen<x_type>::value
-//   and ::pressio::is_vector_tpetra<y_type>::value
-//   >
-// product(::pressio::nontranspose mode,
-// 	const scalar_type alpha,
-// 	const A_type & A,
-// 	const x_type & x,
-// 	const scalar_type beta,
-// 	y_type & y)
-// {
-//   static_assert
-//     (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
-//      "Scalar compatibility broken");
-
-//   using kuv = Kokkos::MemoryTraits<Kokkos::Unmanaged>;
-
-//   using A_view_t = Kokkos::View<const scalar_type**, Kokkos::HostSpace, kuv>;
-//   A_view_t Aview(A.data()->data(), A.extent(0), A.extent(1));
-
-//   using x_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace, kuv>;
-//   x_view_t xview(x.data()->data(), x.extent(0));
-
-//   const char ctA = 'N';
-//   const auto yLocalView_h = y.data()->getLocalViewHost();
-//   const auto yLocalView_rank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
-//   ::KokkosBlas::gemv(&ctA, alpha, Aview, xview, beta, yLocalView_rank1);
-// }
-// #endif
-
-// #ifdef PRESSIO_ENABLE_TPL_EIGEN
-// /* -------------------------------------------------------------------
-//  * y = beta * y + alpha*A^T*x
-//  * x is a distributed Tpetra vector wrapper
-//  * A is an Eigen MV
-//  * y is vector wrapper Eigen
-//  *-------------------------------------------------------------------*/
-// template <typename A_type, typename x_type, typename y_type, typename scalar_type>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::is_vector_wpetra<x_type>::value and
-//   ::pressio::is_multi_vector_eigen<A_type>::value and
-//   ::pressio::is_vector_eigen<y_type>::value
-//   >
-// product(::pressio::transpose mode,
-// 	const scalar_type alpha,
-// 	const A_type & A,
-// 	const x_type & x,
-// 	const scalar_type beta,
-// 	y_type & y)
-// {
-//   static_assert
-//     (mpl::is_same<
-//      scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
-//      "Scalar compatibility broken");
-
-//   using kuv = Kokkos::MemoryTraits<Kokkos::Unmanaged>;
-
-//   using A_view_t = Kokkos::View<const scalar_type**, Kokkos::HostSpace, kuv>;
-//   A_view_t Aview(A.data()->data(), A.extent(0), A.extent(1));
-
-//   const auto xLocalView_h     = x.data()->getLocalViewHost();
-//   const auto xLocalView_rank1 = Kokkos::subview(xLocalView_h, Kokkos::ALL(), 0);
-
-//   using y_view_t = Kokkos::View<scalar_type*, Kokkos::HostSpace, kuv>;
-//   y_view_t yview(y.data()->data(), y.extent(0));
-
-//   const char ctA = 'T';
-//   ::KokkosBlas::gemv(&ctA, alpha, Aview, xLocalView_rank1, beta, yview);
-// }
-// #endif
 #endif  // OPS_TPETRA_OPS_LEVEL2_HPP_

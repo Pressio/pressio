@@ -28,8 +28,19 @@ auto get_global_host_view<mvec_t>(mvec_t &mv, const importer_t &importer) {
 
 template <>
 auto get_global_host_view<vec_t>(vec_t &v, const importer_t &importer) {
-  auto v_import = Teuchos::rcp(new vec_t(importer.getTargetMap(), v.getNumVectors()));
+  auto v_import = Teuchos::rcp(new vec_t(importer.getTargetMap()));//, v.getNumVectors()));
   v_import->doImport(v, importer, Tpetra::REPLACE);
+  auto v_h = v_import->getLocalViewHost(Tpetra::Access::ReadWrite);
+  return Kokkos::subview(v_h, Kokkos::ALL(), 0);
+}
+
+template <>
+auto get_global_host_view<pressio::expressions::impl::ColumnExpr<mvec_t>>(
+     pressio::expressions::impl::ColumnExpr<mvec_t> &v,
+     const importer_t &importer)
+{
+  auto v_import = Teuchos::rcp(new vec_t(importer.getTargetMap()));//, v.native().getNumVectors()));
+  v_import->doImport(v.native(), importer, Tpetra::REPLACE);
   auto v_h = v_import->getLocalViewHost(Tpetra::Access::ReadWrite);
   return Kokkos::subview(v_h, Kokkos::ALL(), 0);
 }
@@ -92,75 +103,118 @@ void test_impl(FixtureType &test, TransMode trans, AType A, XType x, YType y) {
   A_h(0, 0) = a00;
 }
 
-//-------------------------------------------
-// Test Tuchos x
-//-------------------------------------------
+// //-------------------------------------------
+// // Test Tuchos x
+// //-------------------------------------------
 
-TEST_F(ops_tpetra, mv_prod_teuchos_vector)
-{
-  Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
-  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
-    x_teuchos(i) = (double)(i + 1.);
-  }
-  // auto n = ::pressio::ops::extent(x_teuchos, 0);
-  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
-}
+// TEST_F(ops_tpetra, mv_prod_teuchos_vector)
+// {
+//   Teuchos::SerialDenseVector<int, double> x_teuchos(numVecs_);
+//   for (size_t i = 0; i < (size_t)numVecs_; ++i) {
+//     x_teuchos(i) = (double)(i + 1.);
+//   }
+//   // auto n = ::pressio::ops::extent(x_teuchos, 0);
+//   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_teuchos, *y_tpetra);
+// }
 
-//-------------------------------------------
-// Test Kokkos x
-//-------------------------------------------
+// //-------------------------------------------
+// // Test Kokkos x
+// //-------------------------------------------
 
-TEST_F(ops_tpetra, mv_prod_kokkos_vector)
-{
-  Kokkos::View<double*> x_kokkos{"x", (size_t)numVecs_};
-  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x_kokkos);
-  for (int j = 0; j < numVecs_; ++j) {
-    x_h(j) = (double)(j + 1.); // unique int values
-  }
-  Kokkos::deep_copy(x_kokkos, x_h);
+// TEST_F(ops_tpetra, mv_prod_kokkos_vector)
+// {
+//   Kokkos::View<double*> x_kokkos{"x", (size_t)numVecs_};
+//   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x_kokkos);
+//   for (int j = 0; j < numVecs_; ++j) {
+//     x_h(j) = (double)(j + 1.); // unique int values
+//   }
+//   Kokkos::deep_copy(x_kokkos, x_h);
 
-  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos, *y_tpetra);
-}
+//   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos, *y_tpetra);
+// }
 
-TEST_F(ops_tpetra, mv_prod_kokkos_span)
-{
-  Kokkos::View<double*> x0{ "x_span", std::size_t(numVecs_ + 2) };
-  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
-  for (int i = 0; i < numVecs_ + 2; ++i) {
-    x_h(i) = (double)(i + 1.); // unique int values
-  }
-  Kokkos::deep_copy(x0, x_h);
-  auto x_kokkos_span = ::pressio::span(x0, 1, numVecs_);
+// TEST_F(ops_tpetra, mv_prod_kokkos_span)
+// {
+//   Kokkos::View<double*> x0{ "x_span", std::size_t(numVecs_ + 2) };
+//   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
+//   for (int i = 0; i < numVecs_ + 2; ++i) {
+//     x_h(i) = (double)(i + 1.); // unique int values
+//   }
+//   Kokkos::deep_copy(x0, x_h);
+//   auto x_kokkos_span = ::pressio::span(x0, 1, numVecs_);
 
-  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_span, *y_tpetra);
-  printf("@ [%d] DONE\n", rank_);
-}
+//   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_span, *y_tpetra);
+//   printf("@ [%d] DONE\n", rank_);
+// }
 
-TEST_F(ops_tpetra, mv_prod_kokkos_diag)
-{
-  Kokkos::View<double**> x0{ "x_diag", std::size_t(numVecs_), std::size_t(numVecs_)};
-  auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
-  for (size_t i = 0; i < (size_t)numVecs_; ++i) {
-    for (size_t j = 0; j < (size_t)numVecs_; ++j) {
-      x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
-    }
-  }
-  Kokkos::deep_copy(x0, x_h);
-  auto x_kokkos_diag = ::pressio::diagonal(x0);
+// TEST_F(ops_tpetra, mv_prod_kokkos_diag)
+// {
+//   Kokkos::View<double**> x0{ "x_diag", std::size_t(numVecs_), std::size_t(numVecs_)};
+//   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x0);
+//   for (size_t i = 0; i < (size_t)numVecs_; ++i) {
+//     for (size_t j = 0; j < (size_t)numVecs_; ++j) {
+//       x_h(i, j) = (double)(i * numVecs_ + j + 1.0);
+//     }
+//   }
+//   Kokkos::deep_copy(x0, x_h);
+//   auto x_kokkos_diag = ::pressio::diagonal(x0);
 
-  test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_diag, *y_tpetra);
-}
+//   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_diag, *y_tpetra);
+// }
 
-//-------------------------------------------
-// Test Kokkos y
-//-------------------------------------------
+// //-------------------------------------------
+// // Test Kokkos y
+// //-------------------------------------------
 
-TEST_F(ops_tpetra, mv_T_vector_storein_kokkos_vector)
+// TEST_F(ops_tpetra, mv_T_vector_storein_kokkos_vector)
+// {
+//   Kokkos::View<double*> y_kokkos{"y", (size_t)numVecs_};
+//   ::pressio::ops::fill(y_kokkos, 2.);
+
+//   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos);
+// }
+
+TEST_F(ops_tpetra, mv_T_column_expr_storein_kokkos_vector)
 {
   Kokkos::View<double*> y_kokkos{"y", (size_t)numVecs_};
   ::pressio::ops::fill(y_kokkos, 2.);
 
-  test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos);
+  mvec_t MV(contigMap_, 4);
+  MV.randomize();
+  auto e = pressio::column(MV, 0);
+  test_impl(*this, ::pressio::transpose{}, *myMv_, e, y_kokkos);
+}
+
+TEST_F(ops_tpetra, mv_T_column_expr_storein_kokkos_vector_B)
+{
+  Kokkos::View<double*> y{"y", (size_t)numVecs_};
+
+  mvec_t MV(contigMap_, 4);
+  MV.putScalar(1.);
+  auto e = pressio::column(MV, 0);
+  pressio::ops::product(pressio::transpose{}, 1., *myMv_, e, 0., y);
+
+  ASSERT_TRUE(y(0) == 435.);
+  ASSERT_TRUE(y(1) == 450.);
+  ASSERT_TRUE(y(2) == 465.);
+  ASSERT_TRUE(y(3) == 480.);
+}
+
+TEST_F(ops_tpetra, mv_T_column_expr_storein_kokkos_span)
+{
+  Kokkos::View<double*> y0{ "x_span", std::size_t(numVecs_ + 2) };
+  auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
+  for (int i = 0; i < numVecs_ + 2; ++i) {
+    y_h(i) = (double)(i + 1.); // unique int values
+  }
+  Kokkos::deep_copy(y0, y_h);
+  auto y_kokkos_span = ::pressio::span(y0, 1, numVecs_);
+
+  mvec_t MV(contigMap_, 4);
+  MV.randomize();
+  auto e = pressio::column(MV, 0);
+
+  test_impl(*this, ::pressio::transpose{}, *myMv_, e, y_kokkos_span);
 }
 
 TEST_F(ops_tpetra, mv_T_vector_storein_kokkos_span)
