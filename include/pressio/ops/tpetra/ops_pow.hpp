@@ -49,8 +49,6 @@
 #ifndef OPS_TPETRA_OPS_POW_HPP_
 #define OPS_TPETRA_OPS_POW_HPP_
 
-#include <Kokkos_MathematicalFunctions.hpp>
-
 namespace pressio{ namespace ops{
 
 // y = |x|^exponent, expo>0
@@ -120,9 +118,9 @@ abs_pow(T1 & y_in,
   auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const std::size_t& i){
-			 using Kokkos::pow;
-			 using Kokkos::abs;
-			 using Kokkos::max;
+			 using std::pow;
+			 using std::abs;
+			 using std::max;
 			 y_kv(i,0) = one/max(eps, pow(abs(x_kv(i,0)), expo));
 		       });
 }
@@ -140,7 +138,7 @@ pow(T & x_in,
   auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadWriteStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const std::size_t& i){
-			 x_kv(i,0) = Kokkos::pow(x_kv(i,0), exponent);
+			 x_kv(i,0) = std::pow(x_kv(i,0), exponent);
 		       });
 }
 
