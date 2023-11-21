@@ -49,6 +49,8 @@
 #ifndef OPS_TPETRA_OPS_POW_HPP_
 #define OPS_TPETRA_OPS_POW_HPP_
 
+#include <Kokkos_MathematicalFunctions.hpp>
+
 namespace pressio{ namespace ops{
 
 // y = |x|^exponent, expo>0
