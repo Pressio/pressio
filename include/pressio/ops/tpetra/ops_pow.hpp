@@ -80,8 +80,8 @@ abs_pow(T1 & y_in,
   auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
   Kokkos::parallel_for(x.getLocalLength(),
 		       KOKKOS_LAMBDA (const std::size_t& i){
-			 using Kokkos::pow;
-			 using Kokkos::abs;
+			 using std::pow;
+			 using std::abs;
 			 y_kv(i,0) = pow( abs(x_kv(i,0)), exponent);
 		       });
 }
