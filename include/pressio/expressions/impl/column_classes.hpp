@@ -164,7 +164,6 @@ class ColumnExpr<
   T * operand_;
   std::size_t colIndex_;
   std::size_t numRowsGlobal_;
-  typename T::mv_type tpetraMv_;
   typename traits::native_expr_type colVec_;
 
 public:
@@ -172,8 +171,7 @@ public:
     : operand_(&matObjIn)
     , colIndex_(colIndex)
     , numRowsGlobal_(matObjIn.getMap()->getGlobalNumElements())
-    , tpetraMv_(*matObjIn.getMultiVectorView().getVectorNonConst(colIndex))
-    , colVec_(tpetraMv_, *(matObjIn.getMap()), matObjIn.getBlockSize())
+    , colVec_( operand_->getMultiVectorView().getVectorNonConst(colIndex) )
   {
     assert( colIndex_ >= 0 &&
 	    colIndex_ < std::size_t(matObjIn.getNumVectors()) );
@@ -183,11 +181,12 @@ public:
   auto data() const { return operand_; }
 
   std::size_t extentGlobal(std::size_t i) const{
-    if (i == 0) { return numRowsGlobal_; } else { return std::size_t(1); }
+    if (i == 0) { return numRowsGlobal_; }
+    else { return std::size_t(1); }
   }
 
-  typename traits::native_expr_type native() const{ return colVec_; }
-  typename traits::native_expr_type native(){ return colVec_; }
+  auto native() const{ return *colVec_; }
+  auto native(){ return *colVec_; }
 };
 
 #endif

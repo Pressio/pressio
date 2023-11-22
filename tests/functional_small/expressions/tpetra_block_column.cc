@@ -10,10 +10,9 @@ TEST_F(ft, multi_vector_column_expr)
   for (int k=0; k<3; ++k)
   {
     auto e = pressio::column(*myMv_, k);
-    ASSERT_TRUE(e.native().getBlockSize()==4);
     ASSERT_TRUE(e.native().getNumVectors()==1);
-    auto ev = e.native().getMultiVectorView();
-    auto a = ev.getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
+
+    auto a = e.native().getLocalViewHost(Tpetra::Access::ReadOnlyStruct());
 
     auto tpmv = myMv_->getMultiVectorView();
     auto e2 = pressio::column(tpmv, k);

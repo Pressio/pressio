@@ -52,13 +52,15 @@
 namespace pressio{ namespace ops{ namespace impl{
 
 template<typename T>
-mpl::enable_if_t<!::pressio::is_expression<T>::value, T&>
+mpl::enable_if_t<
+  !::pressio::is_expression<T>::value, T& >
 get_native(T & objectIn){
   return objectIn;
 }
 
 template<typename T>
-mpl::enable_if_t<!::pressio::is_expression<T>::value, const T&>
+mpl::enable_if_t<
+  !::pressio::is_expression<T>::value, const T& >
 get_native(const T & objectIn){
   return objectIn;
 }
@@ -102,6 +104,34 @@ struct NativeType<
 {
   using type = typename ::pressio::Traits<T>::native_expr_type;
 };
+
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T,
+  mpl::enable_if_t<
+    ::pressio::is_vector_tpetra_block<T>::value, int > = 0 >
+auto get_underlying_tpetra_object(T & o){ return o.getVectorView(); }
+
+template<typename T,
+  mpl::enable_if_t<
+    ::pressio::is_vector_tpetra_block<T>::value, int > = 0 >
+auto get_underlying_tpetra_object(const T & o){
+  // constcast here because for block vector
+  // getVectorView is non-const method
+  return const_cast<T &>(o).getVectorView();
+}
+
+template<typename T,
+  mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra_block<T>::value, int > = 0 >
+auto get_underlying_tpetra_object(const T & o){ return o.getMultiVectorView(); }
+
+template<typename T,
+  mpl::enable_if_t<
+    ::pressio::is_expression_column_acting_on_tpetra_block<T>::value, int > = 0 >
+auto get_underlying_tpetra_object(T o){ return o.native(); }
+
+#endif
 
 }}}
 #endif  // OPS_OPS_GET_NATIVE_HPP_

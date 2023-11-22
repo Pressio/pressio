@@ -57,9 +57,6 @@ template <typename T1, class T2>
    || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
   && (::pressio::is_vector_tpetra<T2>::value
    || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
-  // rank constraint needed for the expression
-  && Traits<T1>::rank == 1
-  && Traits<T2>::rank == 1
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value

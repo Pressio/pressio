@@ -112,11 +112,13 @@ class ColumnTraits<
     >
   > : public ::pressio::Traits<T>
 {
+private:
+  using _tpetra_mv_type = typename T::mv_type;
 public:
   static constexpr int rank = 1; // a column is a rank-1 object
 
-  // the native thing is also a block mv with a single column
-  using native_expr_type = T;
+  using native_expr_type =
+   decltype( std::declval<_tpetra_mv_type>().getVectorNonConst(0) );
 };
 #endif
 

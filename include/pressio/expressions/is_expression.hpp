@@ -166,6 +166,23 @@ struct is_expression_column_acting_on_tpetra{
   static constexpr auto value = ::pressio::is_expression_column<T>::value
     && is_expression_acting_on_tpetra<T>::value;
 };
+
+template <typename T>
+struct is_expression_acting_on_tpetra_block: public std::false_type {};
+
+template <typename T>
+struct is_expression_acting_on_tpetra_block<
+  ::pressio::expressions::impl::ColumnExpr<T>
+  >
+{
+  static constexpr auto value = ::pressio::is_multi_vector_tpetra_block<T>::value;
+};
+
+template <typename T>
+struct is_expression_column_acting_on_tpetra_block{
+  static constexpr auto value = ::pressio::is_expression_column<T>::value
+    && is_expression_acting_on_tpetra_block<T>::value;
+};
 #endif
 
 }
