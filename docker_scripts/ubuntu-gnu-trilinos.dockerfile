@@ -6,6 +6,7 @@ ARG COMPILER_VERSION=11
 ARG CC=gcc-${COMPILER_VERSION}
 ARG CXX=g++-${COMPILER_VERSION}
 ARG GFORTRAN=gfortran-${COMPILER_VERSION}
+ARG DOCKER_TAG=trilinos-release-14-4-0
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -53,7 +54,7 @@ ENV MPIRUNe=/usr/bin/mpirun
 WORKDIR /home
 RUN git clone https://github.com/trilinos/Trilinos.git && \
     cd Trilinos && \
-    git checkout trilinos-release-14-4-0
+    git checkout ${DOCKER_TAG}
 
 RUN cmake -B Trilinos/builddir \
         -D CMAKE_BUILD_TYPE:STRING=Release \
