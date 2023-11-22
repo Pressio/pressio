@@ -1,6 +1,7 @@
 ARG UBUNTU_VERSION=22.04
 FROM ubuntu:${UBUNTU_VERSION}
 
+ARG CMAKE_VERSION=3.27.8
 ARG COMPILER_VERSION=11
 ARG CC=gcc-${COMPILER_VERSION}
 ARG CXX=g++-${COMPILER_VERSION}
@@ -12,7 +13,6 @@ RUN apt-get update -y -q && \
     apt-get upgrade -y -q && \
     apt-get install -y -q --no-install-recommends \
         ca-certificates \
-        cmake \
         git \
         libgtest-dev \
         liblapack-dev \
@@ -25,6 +25,11 @@ RUN apt-get update -y -q && \
         $CC $CXX $GFORTRAN && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# CMake installation
+RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
+    sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/ && \
+    rm cmake.sh
 
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/${CC} 10
 RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/${CXX} 10
