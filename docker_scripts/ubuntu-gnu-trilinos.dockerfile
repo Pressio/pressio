@@ -48,7 +48,7 @@ ENV MPIRUNe=/usr/bin/mpirun
 WORKDIR /home
 RUN git clone https://github.com/trilinos/Trilinos.git && \
     cd Trilinos && \
-    git checkout ef73d14babf6e7556b0420add98cce257ccaa56b
+    git checkout trilinos-release-14-4-0
 
 RUN cmake -B Trilinos/builddir \
         -D CMAKE_BUILD_TYPE:STRING=Release \
