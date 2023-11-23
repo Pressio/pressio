@@ -1,10 +1,12 @@
 ARG UBUNTU_VERSION=22.04
 FROM ubuntu:${UBUNTU_VERSION}
 
+ARG CMAKE_VERSION=3.27.8
 ARG COMPILER_VERSION=11
 ARG CC=gcc-${COMPILER_VERSION}
 ARG CXX=g++-${COMPILER_VERSION}
 ARG GFORTRAN=gfortran-${COMPILER_VERSION}
+ARG DOCKER_TAG=trilinos-release-14-4-0
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -12,7 +14,6 @@ RUN apt-get update -y -q && \
     apt-get upgrade -y -q && \
     apt-get install -y -q --no-install-recommends \
         ca-certificates \
-        cmake \
         git \
         libgtest-dev \
         liblapack-dev \
@@ -25,6 +26,11 @@ RUN apt-get update -y -q && \
         $CC $CXX $GFORTRAN && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# CMake installation
+RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
+    sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/ && \
+    rm cmake.sh
 
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/${CC} 10
 RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/${CXX} 10
@@ -48,7 +54,7 @@ ENV MPIRUNe=/usr/bin/mpirun
 WORKDIR /home
 RUN git clone https://github.com/trilinos/Trilinos.git && \
     cd Trilinos && \
-    git checkout ef73d14babf6e7556b0420add98cce257ccaa56b
+    git checkout ${DOCKER_TAG}
 
 RUN cmake -B Trilinos/builddir \
         -D CMAKE_BUILD_TYPE:STRING=Release \
