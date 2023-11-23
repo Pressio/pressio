@@ -58,16 +58,11 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/all_have_traits.hpp"
 #include "type_traits/all_have_traits_and_same_scalar.hpp"
 #include "type_traits/all_have_same_rank.hpp"
-#ifdef PRESSIO_ENABLE_CXX20
-#include "type_traits/same_rank_as.hpp"
-#endif
 
 #include "type_traits/scalar_trait_t.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "type_traits/is_teuchos_rcp.hpp"
 #endif
-#include "type_traits/has_method_size.hpp"
-#include "type_traits/has_method_extent.hpp"
 
 #include "type_traits/nested_typedef_detection.hpp"
 
@@ -105,9 +100,5 @@ template<class T, class Enable = void> struct Traits;
 #endif
 
 #include "type_traits/traits_tpl.hpp"
-#include "type_traits/traits_vector.hpp"
-#include "type_traits/traits_dense_matrix.hpp"
-#include "type_traits/traits_multi_vector.hpp"
-#include "type_traits/traits_sparse_matrix.hpp"
 
 #endif

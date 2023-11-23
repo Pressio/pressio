@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_multi_vector_traits.hpp
+// traits_tpl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -67,6 +67,140 @@ struct is_native_container_kokkos {
     || ::pressio::is_dense_matrix_kokkos<T>::value;
 };
 #endif
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename T>
+struct Traits< T,
+  mpl::enable_if_t< is_vector_eigen<T>::value > >
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::Scalar;
+};
+#endif //PRESSIO_ENABLE_TPL_EIGEN
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct Traits< T,
+  ::pressio::mpl::enable_if_t< is_vector_kokkos<T>::value > >
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::traits::value_type;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct Traits< T,
+   mpl::enable_if_t<
+    is_vector_tpetra<T>::value || is_vector_tpetra_block<T>::value > >
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::impl_scalar_type;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct Traits< T,
+  mpl::enable_if_t< is_vector_epetra<T>::value > >
+{
+  static constexpr int rank = 1;
+  using scalar_type = double;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct Traits< T,
+  mpl::enable_if_t<
+    is_dense_vector_teuchos<T>::value > >
+{
+  static constexpr int rank = 1;
+  using scalar_type = typename T::scalarType;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename T>
+struct Traits<
+  T, mpl::enable_if_t<
+    is_dense_matrix_eigen<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = typename T::Scalar;
+};
+
+#endif //PRESSIO_ENABLE_TPL_EIGEN
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct Traits<
+  T, ::pressio::mpl::enable_if_t<
+      is_dense_matrix_kokkos<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = typename T::traits::value_type;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct Traits<
+  T, mpl::enable_if_t<
+    is_dense_matrix_teuchos<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = typename T::scalarType;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct Traits<
+  T, ::pressio::mpl::enable_if_t<
+    is_multi_vector_tpetra<T>::value ||
+    is_multi_vector_tpetra_block<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = typename T::impl_scalar_type;
+};
+
+template<typename T>
+struct Traits<
+  T, ::pressio::mpl::enable_if_t<
+    is_multi_vector_epetra<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = double;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename T>
+struct Traits<
+  T, mpl::enable_if_t<
+    is_sparse_matrix_eigen<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = typename T::Scalar;
+
+private:
+  using ordinal_type_ = typename T::StorageIndex;
+
+  static_assert(
+    std::is_integral<ordinal_type_>::value &&
+    std::is_signed<ordinal_type_>::value,
+    "ordinal type for indexing eigen sparse matrix has to be signed"
+  );
+};
+#endif //PRESSIO_ENABLE_TPL_EIGEN
+
 
 } // namespace pressio
 #endif  // TYPE_TRAITS_TRAITS_TPL_HPP_
