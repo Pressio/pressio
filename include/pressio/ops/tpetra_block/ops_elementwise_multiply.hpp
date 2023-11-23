@@ -56,9 +56,12 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
-     ::pressio::is_vector_tpetra_block<T>::value
-  && ::pressio::is_vector_tpetra_block<T1>::value
-  && ::pressio::is_vector_tpetra_block<T2>::value
+     (   ::pressio::is_vector_tpetra_block<T>::value
+      || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value)
+  && (   ::pressio::is_vector_tpetra_block<T1>::value
+      || ::pressio::is_expression_column_acting_on_tpetra_block<T1>::value)
+  && (   ::pressio::is_vector_tpetra_block<T2>::value
+      || ::pressio::is_expression_column_acting_on_tpetra_block<T2>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
@@ -79,10 +82,10 @@ elementwise_multiply(const alpha_t & alpha,
   const sc_t alpha_(alpha);
   const sc_t beta_(beta);
 
-  auto x_tpetraview = const_cast<T &>(x).getVectorView();
-  auto z_tpetraview = const_cast<T1 &>(z).getVectorView();
-  auto y_tpetraview = y.getVectorView();
-  y_tpetraview.elementWiseMultiply(alpha_, x_tpetraview, z_tpetraview, beta_);
+  auto x_tp = impl::get_underlying_tpetra_object(x);
+  auto z_tp = impl::get_underlying_tpetra_object(z);
+  auto y_tp = impl::get_underlying_tpetra_object(y);
+  y_tp.elementWiseMultiply(alpha_, x_tp, z_tp, beta_);
 }
 
 }}//end namespace pressio::ops

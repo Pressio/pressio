@@ -128,6 +128,11 @@ auto get_underlying_tpetra_object(const T & o){ return o.getMultiVectorView(); }
 
 template<typename T,
   mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra_block<T>::value, int > = 0 >
+auto get_underlying_tpetra_object(T & o){ return o.getMultiVectorView(); }
+
+template<typename T,
+  mpl::enable_if_t<
     ::pressio::is_expression_column_acting_on_tpetra_block<T>::value, int > = 0 >
 auto get_underlying_tpetra_object(T o){ return o.native(); }
 

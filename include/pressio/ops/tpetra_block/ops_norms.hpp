@@ -53,10 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  // norm-1 common constraints
-  ::pressio::Traits<T>::rank == 1
-  // TPL/container specific
-  && ::pressio::is_vector_tpetra_block<T>::value
+  ::pressio::is_vector_tpetra_block<T>::value
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
@@ -78,10 +75,7 @@ norm2(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  // norm-1 common constraints
-  ::pressio::Traits<T>::rank == 1
-  // TPL/container specific
-  && ::pressio::is_vector_tpetra_block<T>::value
+  ::pressio::is_vector_tpetra_block<T>::value
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
@@ -100,6 +94,37 @@ norm1(const T & a)
   const auto a_v = const_cast<vec_t &>(a).getVectorView();
   return a_v.norm1();
 }
+
+template <
+  typename T,
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_column_acting_on_tpetra_block<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  int > = 0
+  >
+auto norm1(const T & o)
+{
+  auto o_tp = impl::get_underlying_tpetra_object(o);
+  return norm1(o_tp);
+}
+
+template <
+  typename T,
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_column_acting_on_tpetra_block<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  int > = 0
+  >
+auto norm2(const T & o)
+{
+  auto o_tp = impl::get_underlying_tpetra_object(o);
+  return norm2(o_tp);
+}
+
 
 }}//end namespace pressio::ops
 #endif  // OPS_TPETRA_BLOCK_OPS_NORMS_HPP_

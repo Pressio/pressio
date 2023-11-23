@@ -63,9 +63,6 @@ template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
       || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
   && (   ::pressio::is_vector_tpetra<T2>::value
       || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
-  && Traits<T>::rank == 1
-  && Traits<T1>::rank == 1
-  && Traits<T2>::rank == 1
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
