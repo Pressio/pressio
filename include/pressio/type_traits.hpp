@@ -100,9 +100,5 @@ template<class T, class Enable = void> struct Traits;
 #endif
 
 #include "type_traits/traits_tpl.hpp"
-#include "type_traits/traits_vector.hpp"
-#include "type_traits/traits_dense_matrix.hpp"
-#include "type_traits/traits_multi_vector.hpp"
-#include "type_traits/traits_sparse_matrix.hpp"
 
 #endif
