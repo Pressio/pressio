@@ -2,9 +2,6 @@
 set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/detect_typedefs.cc)
 add_serial_utest(${TESTING_LEVEL}_type_traits_nested_typedefs ${SRC1})
 
-set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/detect_methods.cc)
-add_serial_utest(${TESTING_LEVEL}_type_traits_nested_methods ${SRC1})
-
 #if defined(PRESSIO_ENABLE_TPL_EIGEN) // use Eigen types for testing
 
 if(PRESSIO_ENABLE_TPL_EIGEN)

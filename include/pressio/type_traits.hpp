@@ -66,8 +66,6 @@ template<class T, class Enable = void> struct Traits;
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "type_traits/is_teuchos_rcp.hpp"
 #endif
-#include "type_traits/has_method_size.hpp"
-#include "type_traits/has_method_extent.hpp"
 
 #include "type_traits/nested_typedef_detection.hpp"
 
