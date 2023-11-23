@@ -51,36 +51,35 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T1, typename T2>
+template <
+  typename T1, typename T2,
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
-     ::pressio::is_vector_tpetra_block<T1>::value
-  && ::pressio::is_vector_tpetra_block<T2>::value
+  (   ::pressio::is_vector_tpetra_block<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra_block<T1>::value)
+  && (::pressio::is_vector_tpetra_block<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra_block<T2>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value),
-  decltype(
-    std::declval<T1>().getVectorView().dot(
-      std::declval<T2>().getVectorView())
-    )
+  int > = 0
   >
-dot(const T1 & a, const T2 & b)
+auto dot(const T1 & a, const T2 & b)
 {
-
   assert(extent(a,0) == extent(b,0));
-  // constcast here because for block vector
-  // getVectorView is non-const method
-  auto a_tp = const_cast<T1 &>(a).getVectorView();
-  auto b_tp = const_cast<T2 &>(b).getVectorView();
+  auto a_tp = impl::get_underlying_tpetra_object(a);
+  auto b_tp = impl::get_underlying_tpetra_object(b);
   return a_tp.dot(b_tp);
 }
 
 template <typename T1, typename T2, class DotResult>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
-     ::pressio::is_vector_tpetra_block<T1>::value
-  && ::pressio::is_vector_tpetra_block<T2>::value
+  (   ::pressio::is_vector_tpetra_block<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra_block<T1>::value)
+  && (::pressio::is_vector_tpetra_block<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra_block<T2>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value

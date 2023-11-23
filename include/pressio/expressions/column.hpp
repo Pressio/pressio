@@ -46,24 +46,38 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_DIAG_HPP_
-#define EXPRESSIONS_DIAG_HPP_
+#ifndef EXPRESSIONS_COLUMN_HPP_
+#define EXPRESSIONS_COLUMN_HPP_
 
-#include "impl/diag_traits.hpp"
-#include "impl/diag_classes.hpp"
+#include "impl/column_traits.hpp"
+#include "impl/column_classes.hpp"
 
 namespace pressio{
 
-// note that the following works also when T is const-qualified
-// because that qualification carries over to the impl
-
-template <typename T>
-auto diag(T & operand)
+template <class T, class IndexType>
+auto column(T & operand, IndexType colIndex)
 {
-  static_assert(::pressio::Traits<T>::rank==2,
-		"diag can only be applied to a rank-2 object.");
-  return expressions::impl::DiagExpr<T>(operand);
+  // note that this works also when T is const-qualified
+  // because that qualification carries over to the impl
+
+  constexpr bool constraint = false
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    || is_dense_matrix_eigen<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+    || is_multi_vector_tpetra<T>::value
+    || is_multi_vector_tpetra_block<T>::value
+#endif
+    ;
+  static_assert(constraint, "pressio::column() currently supported only for "
+		"an Eigen dynamic matrix, a tpetra or tpetra-block multivector");
+
+  static_assert(Traits< std::remove_const_t<T> >::rank==2,
+		"column can only be applied to a rank-2 object.");
+  static_assert(std::is_integral_v<IndexType>);
+
+  return expressions::impl::ColumnExpr<T>(operand, colIndex);
 }
 
 }
-#endif  // EXPRESSIONS_DIAG_HPP_
+#endif  // EXPRESSIONS_SPAN_HPP_

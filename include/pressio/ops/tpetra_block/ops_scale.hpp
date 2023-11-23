@@ -54,18 +54,20 @@ namespace pressio{ namespace ops{
 template <typename T, class ScalarType>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
-    (::pressio::is_vector_tpetra_block<T>::value
-  || ::pressio::is_multi_vector_tpetra_block<T>::value)
+  (   ::pressio::is_vector_tpetra_block<T>::value
+  || ::pressio::is_multi_vector_tpetra_block<T>::value
+  || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
-scale(T & objectIn, const ScalarType value)
+scale(T & o, const ScalarType value)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const sc_t v{value};
-  objectIn.scale(v);
+  auto o_tp = impl::get_underlying_tpetra_object(o);
+  o_tp.scale(v);
 }
 
 }}//end namespace pressio::ops

@@ -58,15 +58,17 @@ template <typename T>
   || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
   && (::pressio::is_vector_tpetra_block<T>::value
+  || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value
   || ::pressio::is_multi_vector_tpetra_block<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   typename ::pressio::Traits<T>::scalar_type
   >
-max(const T & obj)
+max(const T & o)
 {
-  return ::pressio::ops::max(obj.getMultiVectorView());
+  auto o_tp = impl::get_underlying_tpetra_object(o);
+  return ::pressio::ops::max(o_tp);
 }
 
 template <typename T>
@@ -76,15 +78,17 @@ template <typename T>
   || ::pressio::Traits<T>::rank == 2)
   // TPL/container specific
   && (::pressio::is_vector_tpetra_block<T>::value
+  || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value
   || ::pressio::is_multi_vector_tpetra_block<T>::value)
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
   typename ::pressio::Traits<T>::scalar_type
   >
-min(const T & obj)
+min(const T & o)
 {
-  return ::pressio::ops::min(obj.getMultiVectorView());
+  auto o_tp = impl::get_underlying_tpetra_object(o);
+  return ::pressio::ops::min(o_tp);
 }
 
 }}//end namespace pressio::ops

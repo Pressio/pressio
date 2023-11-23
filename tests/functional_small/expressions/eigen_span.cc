@@ -2,106 +2,137 @@
 #include <gtest/gtest.h>
 #include "pressio/expressions.hpp"
 
-namespace{
+namespace
+{
+template<class T>
+auto create_vector(){
+  Eigen::Matrix<T, -1, 1> a(6);
+  a(0) = 1;
+  a(1) = 5;
+  a(2) = 9;
+  a(3) = 13;
+  a(4) = 17;
+  a(5) = 21;
+  return a;
+}
 
-  template <typename T>
-  void test1(T & a)
+template<class T>
+void execute()
+{
   {
-    {
-      const auto sp = pressio::span(a, 3, 2);
-      EXPECT_EQ( sp.extent(0), 2 );
-      EXPECT_DOUBLE_EQ( sp(0), 13. );
-      EXPECT_DOUBLE_EQ( sp(1), 17. );
-    }
-    {
-      const auto sp = pressio::span(a, 2, 1);
-      EXPECT_EQ( sp.extent(0), 1 );
-      EXPECT_DOUBLE_EQ( sp(0), 9. );
-    }
+    auto v = create_vector<T>();
+    auto s = pressio::span(v, 1, 0);
+    ASSERT_TRUE(s.extent(0) == 0);
   }
 
-  template <typename T>
-  void test2(T & a)
   {
-    {
-      // change some entries
-      auto sp = pressio::span(a, 2, 3);
-      EXPECT_EQ( sp.extent(0), 3 );
+    auto v = create_vector<T>();
+    auto s = pressio::span(v, 1, 3);
+    ASSERT_TRUE(s.extent(0) == 3);
+    ASSERT_TRUE(s(0) == T(5));
+    ASSERT_TRUE(s(1) == T(9));
+    ASSERT_TRUE(s(2) == T(13));
+    ASSERT_TRUE(s[0] == T(5));
+    ASSERT_TRUE(s[1] == T(9));
+    ASSERT_TRUE(s[2] == T(13));
 
-      // before changing it
-      EXPECT_DOUBLE_EQ( sp(0), 9. );
-      EXPECT_DOUBLE_EQ( sp(1), 13. );
-      EXPECT_DOUBLE_EQ( sp(2), 17. );
-      // modify
-      sp(0) = 44.;
-      // after
-      EXPECT_DOUBLE_EQ( sp(0), 44. );
-      EXPECT_DOUBLE_EQ( sp(1), 13. );
-      EXPECT_DOUBLE_EQ( sp(2), 17. );
-    }
-
-    {
-      // get the native expression
-      auto sp = pressio::span(a, 2, 3);
-      auto & natEx = sp.native();
-      EXPECT_EQ( natEx.size(), 3 );
-      EXPECT_DOUBLE_EQ( natEx(0), 44. );
-      EXPECT_DOUBLE_EQ( natEx(1), 13. );
-      EXPECT_DOUBLE_EQ( natEx(2), 17. );
-    }
+    ASSERT_TRUE(v(1) == T(5));
+    ASSERT_TRUE(v(2) == T(9));
+    ASSERT_TRUE(v(3) == T(13));
   }
 
-  template <typename T>
-  void testConst(const T & a)
   {
-    auto sp = pressio::span(a, 2, 3);
-    EXPECT_EQ( sp.extent(0), 3 );
-    EXPECT_DOUBLE_EQ( sp(0), 44. );
-    EXPECT_DOUBLE_EQ( sp(1), 13. );
-    EXPECT_DOUBLE_EQ( sp(2), 17. );
-    const auto &natEx = sp.native();
-    EXPECT_DOUBLE_EQ( natEx(0), 44. );
-    EXPECT_DOUBLE_EQ( natEx(1), 13. );
-    EXPECT_DOUBLE_EQ( natEx(2), 17. );
+    auto v = create_vector<T>();
+    auto s = pressio::span(v, 1, 3);
+    s(0) = 66;
+    s(2) = 88;
+    ASSERT_TRUE(s.extent(0) == 3);
+    ASSERT_TRUE(s(0) == T(66));
+    ASSERT_TRUE(s(1) == T(9));
+    ASSERT_TRUE(s(2) == T(88));
+    ASSERT_TRUE(s[0] == T(66));
+    ASSERT_TRUE(s[1] == T(9));
+    ASSERT_TRUE(s[2] == T(88));
+
+    ASSERT_TRUE(v(1) == T(66));
+    ASSERT_TRUE(v(2) == T(9));
+    ASSERT_TRUE(v(3) == T(88));
+  }
+
+  {
+    const auto v = create_vector<T>();
+    auto s = pressio::span(v, 1, 3);
+    // s(0) = 66; should not compile
+    ASSERT_TRUE(s.extent(0) == 3);
+    ASSERT_TRUE(s(0) == T(5));
+    ASSERT_TRUE(s(1) == T(9));
+    ASSERT_TRUE(s(2) == T(13));
+
+    ASSERT_TRUE(s[0] == T(5));
+    ASSERT_TRUE(s[1] == T(9));
+    ASSERT_TRUE(s[2] == T(13));
+  }
+
+  {
+    const auto v = create_vector<T>();
+    auto s = pressio::span(v, 1, 3);
+    auto s2 = s;
+    ASSERT_TRUE(s.data() == s2.data());
+    ASSERT_TRUE(s.extent(0) == s2.extent(0));
+  }
+
+  {
+    auto v = create_vector<T>();
+    auto s = pressio::span(v, 1, 3);
+    auto & natEx = s.native();
+    EXPECT_EQ( natEx.size(), 3 );
+    EXPECT_TRUE( natEx(0) == T(5) );
+    EXPECT_TRUE( natEx(1) == T(9) );
+    EXPECT_TRUE( natEx(2) == T(13) );
   }
 }
 
-TEST(expressions_eigen, span)
-{
-  using eigv_t = Eigen::VectorXd;
+} //end namespace
 
-  eigv_t a(6);
-  a(0) = 1.;
-  a(1) = 5.;
-  a(2) = 9.;
-  a(3) = 13.;
-  a(4) = 17.;
-  a(5) = 21.;
-
-  test1(a);
-  test2(a);
-  testConst(a);
+TEST(expressions_eigen, span_double){
+  execute<double>();
 }
 
-TEST(expressions_eigen, spanConstructor)
+TEST(expressions_eigen, span_int){
+  execute<int>();
+}
+
+TEST(expressions_eigen, span_float){
+  execute<float>();
+}
+
+TEST(expressions_eigen, span_traits)
 {
-  using eigv_t = Eigen::VectorXd;
-  eigv_t a(6);
-  a(0) = 1.;
-  a(1) = 5.;
-  a(2) = 9.;
-  a(3) = 13.;
-  a(4) = 17.;
-  a(5) = 21.;
+  {
+    using T = Eigen::VectorXd;
+    T o(10);
+    using expr_t = decltype(pressio::span(o, 0, 1));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
 
-  // span elements a(2),a(3),a(4)
-  const auto sp = pressio::span(a, 2, 3);
-  EXPECT_EQ( sp.extent(0), 3 );
+  {
+    using T = Eigen::Matrix<int,-1,1>;
+    T o(10);
+    using expr_t = decltype(pressio::span(o, 0, 1));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, int>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int &>);
+  }
 
-  const auto sp2 = pressio::span(a, std::make_pair(2,5));
-  EXPECT_EQ( sp2.extent(0), 3 );
 
-  EXPECT_DOUBLE_EQ(sp(0), sp2(0));
-  EXPECT_DOUBLE_EQ(sp(1), sp2(1));
-  EXPECT_DOUBLE_EQ(sp(2), sp2(2));
+  {
+    using T = Eigen::Matrix<int,-1,1>;
+    const T o(10);
+    using expr_t = decltype(pressio::span(o, 0, 1));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, int>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int const &>);
+  }
 }

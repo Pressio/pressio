@@ -54,8 +54,10 @@ namespace pressio{ namespace ops{
 // y= abs(x)
 template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
-     ::pressio::is_vector_tpetra_block<T1>::value
-  && ::pressio::is_vector_tpetra_block<T2>::value
+  (   ::pressio::is_vector_tpetra_block<T1>::value
+   || ::pressio::is_expression_column_acting_on_tpetra_block<T1>::value)
+  && (::pressio::is_vector_tpetra_block<T2>::value
+   || ::pressio::is_expression_column_acting_on_tpetra_block<T2>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
   && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
@@ -65,8 +67,8 @@ abs(T1 & y, const T2 & x)
 {
   assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
 
-  auto y_tpetraview = y.getVectorView();
-  auto x_tpetraview = const_cast<T2 &>(x).getVectorView();
+  auto y_tpetraview = impl::get_underlying_tpetra_object(y);
+  auto x_tpetraview = impl::get_underlying_tpetra_object(x);
   y_tpetraview.abs(x_tpetraview);
 }
 

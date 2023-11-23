@@ -46,64 +46,62 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_
-#define EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_
+#ifndef EXPRESSIONS_IMPL_DIAGONAL_TRAITS_HPP_
+#define EXPRESSIONS_IMPL_DIAGONAL_TRAITS_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct DiagTraits<
-  DiagExpr<MatrixType>,
+class DiagonalTraits<
+  DiagonalExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
-  >
-  : public ::pressio::Traits<MatrixType>
+  > : public ::pressio::Traits<MatrixType>
 {
-  static constexpr int rank = 1; // expression changes the rank
-
-  // type of the native expression
+private:
+  using _ordinal_type = typename MatrixType::StorageIndex;
   using _native_expr_type = decltype(std::declval<MatrixType>().diagonal());
-  using _const_native_expr_type=decltype(std::declval<const MatrixType>().diagonal());
+  using _const_native_expr_type=decltype(std::declval<std::add_const_t<MatrixType>>().diagonal());
 
-  using native_expr_type = typename std::conditional<
-    std::is_const<MatrixType>::value,
+public:
+  static constexpr int rank = 1; // the result of diagonal() is a rank-1 object
+
+  using native_expr_type = std::conditional_t<
+    std::is_const_v<MatrixType>,
     _const_native_expr_type,
     _native_expr_type
-  >::type;
+  >;
 
-  using reference_type = decltype( std::declval<_native_expr_type>()(0) );
-  using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0) );
+  using reference_type = std::conditional_t<
+    std::is_const_v<MatrixType>,
+    const typename MatrixType::Scalar &,
+    typename MatrixType::Scalar &
+    >;
 };
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-struct DiagTraits<
-  DiagExpr<MatrixType>,
+class DiagonalTraits<
+  DiagonalExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
-  >
-  : public ::pressio::Traits<MatrixType>
+  > : public ::pressio::Traits<MatrixType>
 {
-  static constexpr int rank = 1; // expression changes the rank
+public:
+  static constexpr int rank = 1; // the result of diagonal() is a rank-1 object
 
   using native_expr_type = Kokkos::View<
     typename ::pressio::mpl::remove_cvref_t<MatrixType>::traits::value_type*,
     Kokkos::LayoutStride
   >;
 
-  // using _native_expr_t	     = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
-  // using _const_native_expr_t = Kokkos::View<const scalar_t*, Kokkos::LayoutStride>;
-  // using native_expr_t = typename std::conditional<
-  //   std::is_const<MatrixType>::value,
-  //   _const_native_expr_t,
-  //   _native_expr_t
-  // >::type;
+  using reference_type = typename MatrixType::reference_type;
 };
 #endif
 
 }}} // pressio::expressions::impl
-#endif  // EXPRESSIONS_IMPL_DIAG_TRAITS_HPP_
+#endif  // EXPRESSIONS_IMPL_DIAGONAL_TRAITS_HPP_

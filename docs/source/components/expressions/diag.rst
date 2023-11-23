@@ -1,7 +1,7 @@
 .. include:: ../../mydefs.rst
 
-``diag``
-========
+``diagonal``
+============
 
 Header: ``<pressio/expressions.hpp>``
 
@@ -13,7 +13,7 @@ API
   namespace pressio {
 
   template<class T>
-  /*impl defined*/ diag(T & operand);
+  /*impl defined*/ diagonal(T & operand);
 
   } // end namespace pressio
 

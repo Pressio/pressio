@@ -8,7 +8,7 @@ using mat_t = Eigen::MatrixXd;
 TEST(ops_eigen, diag_extent)
 {
   mat_t a(5,5);
-  auto ex = pressio::diag(a);
+  auto ex = pressio::diagonal(a);
   ASSERT_TRUE(pressio::ops::extent(ex,0)==5);
   ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
@@ -17,7 +17,7 @@ TEST(ops_eigen, diag_abs)
 {
   mat_t a(5,5);
   a.setConstant(-1);
-  auto ex = pressio::diag(a);
+  auto ex = pressio::diagonal(a);
 
   vec_t y(5);
   pressio::ops::abs(y,ex);
@@ -34,7 +34,7 @@ TEST(ops_eigen, diag_scale)
   T a(5,5);
   a.setConstant(1.);
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
 
   pressio::ops::scale(exp, 3.);
   ASSERT_DOUBLE_EQ(a(0,0),3.);
@@ -74,7 +74,7 @@ TEST(ops_eigen, diag_set_zero)
   T a(5,5);
   a.setConstant(1.);
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
 
   pressio::ops::set_zero(exp);
   ASSERT_DOUBLE_EQ(a(0,0),0.);
@@ -114,7 +114,7 @@ TEST(ops_eigen, diag_fill)
   T a(5,5);
   a.setConstant(1.);
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
 
   pressio::ops::fill(exp, 44.);
   ASSERT_DOUBLE_EQ(a(0,0),44.);
@@ -160,7 +160,7 @@ TEST(ops_eigen, diag_min_max)
     v+=1.;
    }
   }
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::min(exp), 0.);
   ASSERT_DOUBLE_EQ(pressio::ops::max(exp), 24.);
 }
@@ -181,7 +181,7 @@ TEST(ops_eigen, diag_norms)
   Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::norm1(exp), gold.lpNorm<1>());
   ASSERT_DOUBLE_EQ(pressio::ops::norm2(exp), gold.lpNorm<2>());
 }
@@ -202,7 +202,7 @@ TEST(ops_eigen, diag_dot_vector)
   Eigen::VectorXd b(5);
   b.setConstant(2.);
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::dot(exp,b), 120.);
 }
 
@@ -226,7 +226,7 @@ TEST(ops_eigen, diag_dot_diag)
   Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ASSERT_DOUBLE_EQ(pressio::ops::dot(exp,exp),1080.);
 }
 
@@ -245,7 +245,7 @@ TEST(ops_eigen, diag_pow)
   Eigen::VectorXd gold(5);
   gold << 0.,6.,12.,18.,24.;
 
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   pressio::ops::pow(exp, 2.);
 
   for (int i=0; i<a.rows(); ++i){
@@ -266,9 +266,9 @@ Eigen::MatrixXd createMatrixForUpdate(){
 TEST(ops_eigen, diag_update1)
 {
   auto M1 = createMatrixForUpdate();
-  auto d1 = pressio::diag(M1);
+  auto d1 = pressio::diagonal(M1);
   auto M2 = createMatrixForUpdate();
-  auto d2 = pressio::diag(M2);
+  auto d2 = pressio::diagonal(M2);
 
   pressio::ops::update(d1, 1., d2, 1.);
   EXPECT_DOUBLE_EQ( d1(0), 2.0);
@@ -284,11 +284,11 @@ TEST(ops_eigen, diag_update1)
 // TEST(ops_eigen, diag_update2)
 // {
 //   auto M1 = createMatrixForUpdate();
-//   auto v = pressio::diag(M1);
+//   auto v = pressio::diagonal(M1);
 //   auto M2 = createMatrixForUpdate();
-//   auto a = pressio::diag(M2);
+//   auto a = pressio::diagonal(M2);
 //   auto M3 = createMatrixForUpdate();
-//   auto b = pressio::diag(M3);
+//   auto b = pressio::diagonal(M3);
 
 //   pressio::ops::update(v, 1., a, 1., b, 1.);
 //   EXPECT_DOUBLE_EQ( v(0), 3.0);
@@ -304,13 +304,13 @@ TEST(ops_eigen, diag_update1)
 // TEST(ops_eigen, diag_update3)
 // {
 //   auto M1 = createMatrixForUpdate();
-//   auto v = pressio::diag(M1);
+//   auto v = pressio::diagonal(M1);
 //   auto M2 = createMatrixForUpdate();
-//   auto a = pressio::diag(M2);
+//   auto a = pressio::diagonal(M2);
 //   auto M3 = createMatrixForUpdate();
-//   auto b = pressio::diag(M3);
+//   auto b = pressio::diagonal(M3);
 //   auto M4 = createMatrixForUpdate();
-//   auto c = pressio::diag(M4);
+//   auto c = pressio::diagonal(M4);
 
 //   pressio::ops::update(v, 1., a, 1., b, 1., c, 1.);
 //   EXPECT_DOUBLE_EQ( v(0), 4.0);
@@ -326,15 +326,15 @@ TEST(ops_eigen, diag_update1)
 // TEST(ops_eigen, diag_update4)
 // {
 //   auto M1 = createMatrixForUpdate();
-//   auto v = pressio::diag(M1);
+//   auto v = pressio::diagonal(M1);
 //   auto M2 = createMatrixForUpdate();
-//   auto a = pressio::diag(M2);
+//   auto a = pressio::diagonal(M2);
 //   auto M3 = createMatrixForUpdate();
-//   auto b = pressio::diag(M3);
+//   auto b = pressio::diagonal(M3);
 //   auto M4 = createMatrixForUpdate();
-//   auto c = pressio::diag(M4);
+//   auto c = pressio::diagonal(M4);
 //   auto M5 = createMatrixForUpdate();
-//   auto d = pressio::diag(M5);
+//   auto d = pressio::diagonal(M5);
 
 //   pressio::ops::update(v, 1., a, 1., b, 1., c, 1., d, 1.);
 //   EXPECT_DOUBLE_EQ( v(0), 5.0);
@@ -351,15 +351,15 @@ TEST(ops_eigen, diag_elementwiseMultiply)
 {
   Eigen::MatrixXd M1(3,3);
   M1(0,0)=1.; M1(1,1)=2.; M1(2,2)=3.;
-  auto y = pressio::diag(M1);
+  auto y = pressio::diagonal(M1);
 
   Eigen::MatrixXd M2(3,3);
   M2(0,0)=2.; M2(1,1)=3.; M2(2,2)=4.;
-  const auto x = pressio::diag(M2);
+  const auto x = pressio::diagonal(M2);
 
   Eigen::MatrixXd M3(3,3);
   M3(0,0)=3.; M3(1,1)=4.; M3(2,2)=5.;
-  const auto z = pressio::diag(M3);
+  const auto z = pressio::diagonal(M3);
 
   pressio::ops::elementwise_multiply(1., x, z, 1., y);
   EXPECT_DOUBLE_EQ( y(0), 7.0);

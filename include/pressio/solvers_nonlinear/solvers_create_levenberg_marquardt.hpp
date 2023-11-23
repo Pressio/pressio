@@ -65,7 +65,7 @@ namespace pressio{
   where r(x) is the residual vector with r \in R^n and x \in R^k, with k < n,
   LM solves the *modified* normal equations: H delta = -g
   where:
-    H = H_0 + lambda*diag(H_0), with H_0 = J^T_r*J_r
+    H = H_0 + lambda*diagonal(H_0), with H_0 = J^T_r*J_r
     g = J^T_r * r
     delta = x_k+1 - x_k
   The user provides a problem computing residual and jacobian

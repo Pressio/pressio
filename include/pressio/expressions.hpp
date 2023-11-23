@@ -55,7 +55,8 @@
 #include "./expressions/fwd.hpp"
 #include "./expressions/span.hpp"
 #include "./expressions/subspan.hpp"
-#include "./expressions/diag.hpp"
+#include "./expressions/diagonal.hpp"
+#include "./expressions/column.hpp"
 
 #include "./expressions/is_expression.hpp"
 

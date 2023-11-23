@@ -53,13 +53,15 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_tpetra_block<T>::value or
-  ::pressio::is_multi_vector_tpetra_block<T>::value
+  (  ::pressio::is_vector_tpetra_block<T>::value
+  || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value
+  || ::pressio::is_multi_vector_tpetra_block<T>::value)
   >
 set_zero(T & v)
 {
   using value_t = typename ::pressio::Traits<T>::scalar_type;
-  v.putScalar( ::pressio::utils::Constants<value_t>::zero() );
+  auto v_tp = impl::get_underlying_tpetra_object(v);
+  v_tp.putScalar( ::pressio::utils::Constants<value_t>::zero() );
 }
 
 }}//end namespace pressio::ops

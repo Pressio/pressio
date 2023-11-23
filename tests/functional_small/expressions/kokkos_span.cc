@@ -58,7 +58,6 @@ TEST(expressions_kokkos, span1)
 
   using kv2_t = Kokkos::View<const double*, Kokkos::HostSpace>;
   kv2_t a2 = a;
-
   auto s = pressio::span(a2, 2, 2);
   static_assert
     (std::is_const<
@@ -71,7 +70,6 @@ TEST(expressions_kokkos, span1)
      typename std::remove_reference<decltype(s2(0))>::type
      >::value, "");
 }
-
 
 TEST(expressions_kokkos, span2)
 {
@@ -98,4 +96,35 @@ TEST(expressions_kokkos, span2)
   EXPECT_DOUBLE_EQ( b(2), 10. );
   EXPECT_DOUBLE_EQ( b(3), 11. );
   EXPECT_DOUBLE_EQ( b(4), 5.1 );
+}
+
+TEST(expressions_kokkos, span_traits)
+{
+  {
+    using T = Kokkos::View<double*, Kokkos::HostSpace>;
+    T o("o", 10);
+    using expr_t = decltype(pressio::span(o, 0, 1));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Kokkos::View<double[4], Kokkos::HostSpace>;
+    T o("o");
+    using expr_t = decltype(pressio::span(o, 0, 1));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+  }
+
+  {
+    using T = Kokkos::View<double*, Kokkos::HostSpace>;
+    T o("o", 10);
+    typename T::const_type o2 = o;
+    using expr_t = decltype(pressio::span(o2, 0, 1));
+    static_assert(pressio::Traits<expr_t>::rank == 1);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, const double>);
+    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);
+  }
 }

@@ -51,80 +51,21 @@
 
 namespace pressio{
 
-/* is_expression_diag */
-template <typename T>
-struct is_expression_diag : std::false_type{};
+#define PRESSIO_IMPL_IS_EXPRESSION(NAMEA, NAMEB) \
+  template <typename T> struct is_expression_##NAMEA : std::false_type{}; \
+  template <typename T> struct is_expression_##NAMEA<			\
+    ::pressio::expressions::impl::NAMEB##Expr<T> > : std::true_type{};	\
+  template <typename T> struct is_expression_##NAMEA<			\
+    const ::pressio::expressions::impl::NAMEB##Expr<T> > : std::true_type{};	\
+  template <typename T> struct is_expression_##NAMEA<			\
+    ::pressio::expressions::impl::NAMEB##Expr<const T> > : std::true_type{}; \
+  template <typename T> struct is_expression_##NAMEA<			\
+   const ::pressio::expressions::impl::NAMEB##Expr<const T> > : std::true_type{}; \
 
-template <typename T>
-struct is_expression_diag<
-  ::pressio::expressions::impl::DiagExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_diag<
-  const ::pressio::expressions::impl::DiagExpr<T>
-  > : is_expression_diag<T>{};
-
-template <typename T>
-struct is_expression_diag<
-  ::pressio::expressions::impl::DiagExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_diag<
-  const ::pressio::expressions::impl::DiagExpr<const T>
-  > : std::true_type{};
-
-
-/* span */
-template <typename T>
-struct is_expression_span : std::false_type{};
-
-template <typename T>
-struct is_expression_span<
-  ::pressio::expressions::impl::SpanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_span<
-  const ::pressio::expressions::impl::SpanExpr<T>
-  > : is_expression_span<T>{};
-
-template <typename T>
-struct is_expression_span<
-  ::pressio::expressions::impl::SpanExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_span<
-  const ::pressio::expressions::impl::SpanExpr<const T>
-  > : std::true_type{};
-
-
-/* subspan */
-template <typename T>
-struct is_expression_subspan : std::false_type{};
-
-template <typename T>
-struct is_expression_subspan<
-  ::pressio::expressions::impl::SubspanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_subspan<
-  const ::pressio::expressions::impl::SubspanExpr<T>
-  > : is_expression_subspan<T>{};
-
-template <typename T>
-struct is_expression_subspan<
-  ::pressio::expressions::impl::SubspanExpr<const T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression_subspan<
-  const ::pressio::expressions::impl::SubspanExpr<const T>
-  > : std::true_type{};
-
+PRESSIO_IMPL_IS_EXPRESSION(diagonal, Diagonal)
+PRESSIO_IMPL_IS_EXPRESSION(span, Span)
+PRESSIO_IMPL_IS_EXPRESSION(subspan, Subspan)
+PRESSIO_IMPL_IS_EXPRESSION(column, Column)
 
 /* detect any expression */
 template <typename T, typename enable = void>
@@ -134,9 +75,10 @@ template <typename T>
 struct is_expression<
   T,
   mpl::enable_if_t<
-    is_expression_span<T>::value or
-    is_expression_diag<T>::value or
-    is_expression_subspan<T>::value
+    is_expression_span<T>::value
+    || is_expression_diagonal<T>::value
+    || is_expression_subspan<T>::value
+    || is_expression_column<T>::value
     >
   > : std::true_type{};
 
@@ -146,28 +88,37 @@ struct is_expression_acting_on_eigen: public std::false_type {};
 
 template <typename T>
 struct is_expression_acting_on_eigen<
-    ::pressio::expressions::impl::DiagExpr<T>
-    >
+  ::pressio::expressions::impl::DiagonalExpr<T>
+  >
 {
-    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+  static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
 };
 
 template <typename T>
 struct is_expression_acting_on_eigen<
-    ::pressio::expressions::impl::SpanExpr<T>
-    >
+  ::pressio::expressions::impl::SpanExpr<T>
+  >
 {
-    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+  static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
 };
 
 template <typename T>
 struct is_expression_acting_on_eigen<
-    ::pressio::expressions::impl::SubspanExpr<T>
-    >
+  ::pressio::expressions::impl::SubspanExpr<T>
+  >
 {
-    static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+  static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_eigen<
+  ::pressio::expressions::impl::ColumnExpr<T>
+  >
+{
+  static constexpr auto value = ::pressio::is_native_container_eigen<T>::value;
 };
 #endif // PRESSIO_ENABLE_TPL_EIGEN
+
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename T>
@@ -175,28 +126,64 @@ struct is_expression_acting_on_kokkos: public std::false_type {};
 
 template <typename T>
 struct is_expression_acting_on_kokkos<
-    ::pressio::expressions::impl::DiagExpr<T>
-    >
+  ::pressio::expressions::impl::DiagonalExpr<T>
+  >
 {
-    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+  static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
 };
 
 template <typename T>
 struct is_expression_acting_on_kokkos<
-    ::pressio::expressions::impl::SpanExpr<T>
-    >
+  ::pressio::expressions::impl::SpanExpr<T>
+  >
 {
-    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+  static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
 };
 
 template <typename T>
 struct is_expression_acting_on_kokkos<
-    ::pressio::expressions::impl::SubspanExpr<T>
-    >
+  ::pressio::expressions::impl::SubspanExpr<T>
+  >
 {
-    static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
+  static constexpr auto value = ::pressio::is_native_container_kokkos<T>::value;
 };
 #endif // PRESSIO_ENABLE_TPL_KOKKOS
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+struct is_expression_acting_on_tpetra: public std::false_type {};
+
+template <typename T>
+struct is_expression_acting_on_tpetra<
+  ::pressio::expressions::impl::ColumnExpr<T>
+  >
+{
+  static constexpr auto value = ::pressio::is_multi_vector_tpetra<T>::value;
+};
+
+template <typename T>
+struct is_expression_column_acting_on_tpetra{
+  static constexpr auto value = ::pressio::is_expression_column<T>::value
+    && is_expression_acting_on_tpetra<T>::value;
+};
+
+template <typename T>
+struct is_expression_acting_on_tpetra_block: public std::false_type {};
+
+template <typename T>
+struct is_expression_acting_on_tpetra_block<
+  ::pressio::expressions::impl::ColumnExpr<T>
+  >
+{
+  static constexpr auto value = ::pressio::is_multi_vector_tpetra_block<T>::value;
+};
+
+template <typename T>
+struct is_expression_column_acting_on_tpetra_block{
+  static constexpr auto value = ::pressio::is_expression_column<T>::value
+    && is_expression_acting_on_tpetra_block<T>::value;
+};
+#endif
 
 }
 #endif  // EXPRESSIONS_IS_EXPRESSION_HPP_

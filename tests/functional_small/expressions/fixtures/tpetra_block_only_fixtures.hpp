@@ -107,7 +107,7 @@ public:
       for (int j = 0; j < numVecs_; ++j){
         // generate rank-unique int values
         myMv_h(i, j) = (double)((rank_ * localSize_ * blockSize_ + i) * numVecs_ + j + 1.);
-        //printf("\t@ [%d](%d, %d) -> %g\n", rank_, i, j, myMv_h(i, j));
+        printf("\t@ [%d](%d, %d) -> %g\n", rank_, i, j, myMv_h(i, j));
       }
     }
     x_tpetra = std::make_shared<vec_t>(*contigMap_, blockSize_);

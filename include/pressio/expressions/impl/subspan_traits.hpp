@@ -53,64 +53,77 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct SubSpanTraits<
+class SubSpanTraits<
   SubspanExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
-  >
-  : public ::pressio::Traits<MatrixType>
+  > : public ::pressio::Traits<MatrixType>
 {
-  using ordinal_type = typename MatrixType::StorageIndex;
-
-  // type of the native expression
+private:
+  using _ord_t = typename MatrixType::StorageIndex;
   using _native_expr_type = decltype(
-    std::declval<MatrixType>().block(ordinal_type{},ordinal_type{},ordinal_type{},ordinal_type{} )
+    std::declval<MatrixType>().block(_ord_t{},_ord_t{},_ord_t{},_ord_t{} )
     );
   using _const_native_expr_type = decltype(
-    std::declval<const MatrixType>().block(ordinal_type{},ordinal_type{},ordinal_type{},ordinal_type{} )
-    );
-  using native_expr_type = typename std::conditional<
+    std::declval<const MatrixType>().block(_ord_t{},_ord_t{},_ord_t{},_ord_t{} )
+  );
+
+public:
+  using ordinal_type = _ord_t;
+
+  using native_expr_type = std::conditional_t<
     std::is_const<MatrixType>::value,
     _const_native_expr_type,
     _native_expr_type
-  >::type;
+  >;
 
-  using reference_type = decltype( std::declval<_native_expr_type>()(0,0) );
-  using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0,0) );
+  using reference_type = std::conditional_t<
+    std::is_const_v<MatrixType>,
+    const typename MatrixType::Scalar &,
+    typename MatrixType::Scalar &
+    >;
 };
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-struct SubSpanTraits<
+class SubSpanTraits<
   SubspanExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
-  >
-  : public ::pressio::Traits<MatrixType>
+  > : public ::pressio::Traits<MatrixType>
 {
-  using ordinal_type = typename MatrixType::traits::size_type;
-  using pair_type = std::pair<ordinal_type, ordinal_type>;
+
+private:
+  using _ordinal_type = typename MatrixType::traits::size_type;
+  using _pair_type = std::pair<_ordinal_type, _ordinal_type>;
 
   using _native_expr_type = decltype
     (
      Kokkos::subview(std::declval<MatrixType>(),
-		     std::declval<pair_type>(),
-		     std::declval<pair_type>())
+		     std::declval<_pair_type>(),
+		     std::declval<_pair_type>())
     );
   using _const_native_expr_type = decltype
     (
      Kokkos::subview(std::declval<const MatrixType>(),
-		     std::declval<pair_type>(),
-		     std::declval<pair_type>())
+		     std::declval<_pair_type>(),
+		     std::declval<_pair_type>())
      );
+
+public:
+  using ordinal_type = _ordinal_type;
+  using pair_type = _pair_type;
+
   using native_expr_type = typename std::conditional<
     std::is_const<MatrixType>::value,
     _const_native_expr_type,
     _native_expr_type
   >::type;
+
+  using reference_type = typename MatrixType::reference_type;
 };
 #endif
 

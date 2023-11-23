@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_abs.hpp
+// public_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,37 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_OPS_ABS_HPP_
-#define OPS_TPETRA_OPS_ABS_HPP_
+#ifndef EXPRESSIONS_DIAGONAL_HPP_
+#define EXPRESSIONS_DIAGONAL_HPP_
 
-namespace pressio{ namespace ops{
+#include "impl/diagonal_traits.hpp"
+#include "impl/diagonal_classes.hpp"
 
-template <typename T1, class T2>
-::pressio::mpl::enable_if_t<
-  (   ::pressio::is_vector_tpetra<T1>::value
-   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
-  && (::pressio::is_vector_tpetra<T2>::value
-   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
-  // scalar compatibility
-  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
-  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
-   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
-  >
-abs(T1 & y, const T2 & x)
+namespace pressio{
+
+template <typename T>
+auto diagonal(T & operand)
 {
-  assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
-  auto y_native = impl::get_native(y);
-  auto x_native = impl::get_native(x);
-  y_native.abs(x_native);
+  // note that this works also when T is const-qualified
+  // because that qualification carries over to the impl
+
+  constexpr bool constraint = false
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    || is_dense_matrix_kokkos<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    || is_dense_matrix_eigen<T>::value
+#endif
+    ;
+  static_assert(constraint, "pressio::diagonal() currently supported only for an Eigen dynamic matrix"
+		" or a Kokkos rank-2 View.");
+  static_assert(Traits<T>::rank==2,
+		"diagonal can only be applied to a rank-2 object.");
+
+  // the operand must be a square matrix: precondition checked internally
+
+  return expressions::impl::DiagonalExpr<T>(operand);
 }
 
-}}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_ABS_HPP_
+}
+#endif  // EXPRESSIONS_DIAGONAL_HPP_

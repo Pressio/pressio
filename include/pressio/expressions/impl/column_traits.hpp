@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_abs.hpp
+// subspan_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,82 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_OPS_ABS_HPP_
-#define OPS_TPETRA_OPS_ABS_HPP_
+#ifndef EXPRESSIONS_IMPL_COLUMN_TRAITS_HPP_
+#define EXPRESSIONS_IMPL_COLUMN_TRAITS_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace expressions{ namespace impl{
 
-template <typename T1, class T2>
-::pressio::mpl::enable_if_t<
-  (   ::pressio::is_vector_tpetra<T1>::value
-   || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
-  && (::pressio::is_vector_tpetra<T2>::value
-   || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
-  // scalar compatibility
-  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
-  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
-   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
-  >
-abs(T1 & y, const T2 & x)
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename MatrixType>
+class ColumnTraits<
+  ColumnExpr<MatrixType>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_dense_matrix_eigen<MatrixType>::value
+    >
+  > : public ::pressio::Traits<MatrixType>
 {
-  assert(::pressio::ops::extent(y, 0) == ::pressio::ops::extent(x, 0));
-  auto y_native = impl::get_native(y);
-  auto x_native = impl::get_native(x);
-  y_native.abs(x_native);
-}
+private:
+  using _ord_t = typename MatrixType::StorageIndex;
+  using _native_expr_type = decltype(
+    std::declval<MatrixType>().col(_ord_t{})
+    );
+  using _const_native_expr_type = decltype(
+    std::declval<const MatrixType>().col(_ord_t{})
+  );
 
-}}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_ABS_HPP_
+public:
+  static constexpr int rank = 1; // a column is a rank-1 object
+
+  using ordinal_type = _ord_t;
+
+  using native_expr_type = std::conditional_t<
+    std::is_const<MatrixType>::value,
+    _const_native_expr_type,
+    _native_expr_type
+  >;
+
+  using reference_type = std::conditional_t<
+    std::is_const_v<MatrixType>,
+    const typename MatrixType::Scalar &,
+    typename MatrixType::Scalar &
+    >;
+};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+class ColumnTraits<
+  ColumnExpr<T>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra<T>::value
+    >
+  > : public ::pressio::Traits<T>
+{
+public:
+  static constexpr int rank = 1; // a column is a rank-1 object
+
+  using native_expr_type =
+    decltype( std::declval<T>().getVectorNonConst(0) );
+};
+
+template <typename T>
+class ColumnTraits<
+  ColumnExpr<T>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra_block<T>::value
+    >
+  > : public ::pressio::Traits<T>
+{
+private:
+  using _tpetra_mv_type = typename T::mv_type;
+public:
+  static constexpr int rank = 1; // a column is a rank-1 object
+
+  using native_expr_type =
+   decltype( std::declval<_tpetra_mv_type>().getVectorNonConst(0) );
+};
+#endif
+
+
+}}}
+#endif  // EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_

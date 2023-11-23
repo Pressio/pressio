@@ -259,10 +259,10 @@ auto compute_nonlinearls_operators_and_objective(LevenbergMarquardtNormalEqTag /
   ::pressio::ops::product(pT, pnT, 1, J, 0, H);
   ::pressio::ops::product(pT, 1, J, r, 0, g);
 
-  // compute scaledH = H + mu*diag(H)
+  // compute scaledH = H + mu*diagonal(H)
   ::pressio::ops::deep_copy(scaledH, H);
-  const auto diagH = ::pressio::diag(H);
-  auto diaglmH = ::pressio::diag(scaledH);
+  const auto diagH = ::pressio::diagonal(H);
+  auto diaglmH = ::pressio::diagonal(scaledH);
   ::pressio::ops::update(diaglmH, 1, diagH, damp);
 
   return compute_half_sum_of_squares(r);
@@ -335,7 +335,7 @@ void compute_correction(LevenbergMarquardtNormalEqTag /*tag*/,
   /*
     For LM we are solving: H c = g
     where:
-       H = J_r^T*J_r + lambda*diag(J_r^T J_r)
+       H = J_r^T*J_r + lambda*diagonal(J_r^T J_r)
        g = J_r^T r
        c = x_k - x_k+1
 

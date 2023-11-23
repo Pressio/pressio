@@ -57,9 +57,12 @@ namespace pressio{ namespace ops{
 template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
 ::pressio::mpl::enable_if_t<
   // TPL/container specific
-     ::pressio::is_vector_tpetra<T>::value
-  && ::pressio::is_vector_tpetra<T1>::value
-  && ::pressio::is_vector_tpetra<T2>::value
+     (   ::pressio::is_vector_tpetra<T>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T>::value)
+  && (   ::pressio::is_vector_tpetra<T1>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
+  && (   ::pressio::is_vector_tpetra<T2>::value
+      || ::pressio::is_expression_column_acting_on_tpetra<T2>::value)
   // scalar compatibility
   && ::pressio::all_have_traits_and_same_scalar<T, T1, T2>::value
   && std::is_convertible<alpha_t, typename ::pressio::Traits<T>::scalar_type>::value
@@ -68,11 +71,15 @@ template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
    || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value)
   >
 elementwise_multiply(const alpha_t & alpha,
-		     const T & x,
-		     const T1 & z,
+		     const T & xin,
+		     const T1 & zin,
 		     const beta_t & beta,
-		     T2 & y)
+		     T2 & yin)
 {
+  auto x = impl::get_native(xin);
+  auto z = impl::get_native(zin);
+  auto y = impl::get_native(yin);
+
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
 

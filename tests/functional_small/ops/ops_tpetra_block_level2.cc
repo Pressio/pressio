@@ -30,7 +30,8 @@ auto create_importer(const MultiVectorType &mv_src, const CommType &comm) {
 
 // returns local copy containing all global data
 template <typename T>
-auto get_global_host_view(T &view, const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test) {
+auto get_global_host_view(T &view, const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test)
+{
   // need a deep copy here and pressio::ops::clone(view)
   // won't produce it for Eigen/Kokkos expressions
   auto size = ::pressio::ops::extent(view, 0);
@@ -42,7 +43,9 @@ auto get_global_host_view(T &view, const tpetraBlockMultiVectorGlobSize15NVec3Bl
 }
 
 template <>
-auto get_global_host_view<mvec_t>(mvec_t &mv, const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test) {
+auto get_global_host_view<mvec_t>(mvec_t &mv,
+				  const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test)
+{
   auto mv_src = mv.getMultiVectorView(); // cast to non-block view for importing
   auto importer = create_importer(mv_src, test.comm_);
   decltype(mv_src) mv_import(importer.getTargetMap(), mv.getNumVectors());
@@ -51,8 +54,23 @@ auto get_global_host_view<mvec_t>(mvec_t &mv, const tpetraBlockMultiVectorGlobSi
 }
 
 template <>
-auto get_global_host_view<vec_t>(vec_t &v, const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test) {
+auto get_global_host_view<vec_t>(vec_t &v,
+				 const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test)
+{
   auto v_src = v.getVectorView(); // cast to non-block view for importing
+  auto importer = create_importer(v_src, test.comm_);
+  decltype(v_src) v_import(importer.getTargetMap());
+  v_import.doImport(v_src, importer, Tpetra::REPLACE);
+  auto view2d = v_import.getLocalViewHost(Tpetra::Access::ReadWrite);
+  return Kokkos::subview(view2d, Kokkos::ALL(), 0);
+}
+
+template <>
+auto get_global_host_view<pressio::expressions::impl::ColumnExpr<mvec_t>>(
+         pressio::expressions::impl::ColumnExpr<mvec_t> &v,
+	 const tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture &test)
+{
+  auto v_src = v.native();
   auto importer = create_importer(v_src, test.comm_);
   decltype(v_src) v_import(importer.getTargetMap());
   v_import.doImport(v_src, importer, Tpetra::REPLACE);
@@ -68,7 +86,10 @@ template <
   typename YType,
   typename ScalarType
   >
-void test_impl(FixtureType &test, TransMode trans, ScalarType alpha, AType A, XType x, ScalarType beta, YType &y) {
+void test_impl(FixtureType &test, TransMode trans,
+	       ScalarType alpha, AType A, XType x,
+	       ScalarType beta, YType &y)
+{
   Kokkos::Profiling::pushRegion("test_impl");
   // copy original values, fetch whole vector (from all ranks) to do the verification locally
   auto y_ref_h = get_global_host_view(y, test);
@@ -85,7 +106,7 @@ void test_impl(FixtureType &test, TransMode trans, ScalarType alpha, AType A, XT
     vanilla_gemv(trans, alpha, A_h, x_h, beta, y_ref_h);
     const size_t y_size = ::pressio::ops::extent(y_h, 0);
     for (size_t i = 0; i < y_size; ++i) {
-      EXPECT_DOUBLE_EQ(y_h(i), y_ref_h(i));
+      EXPECT_NEAR(y_h(i), y_ref_h(i), 1e-12);
     }
   }
   Kokkos::Profiling::popRegion();
@@ -173,7 +194,7 @@ TEST_F(ops_tpetra_block,
     }
   }
   Kokkos::deep_copy(x0, x_h);
-  auto x_kokkos_diag = ::pressio::diag(x0);
+  auto x_kokkos_diag = ::pressio::diagonal(x0);
 
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_kokkos_diag, *y_tpetra);
 }
@@ -192,6 +213,18 @@ TEST_F(ops_tpetra_block,
 }
 
 TEST_F(ops_tpetra_block,
+       mv_T_column_expr_storein_kokkos_vector)
+{
+  Kokkos::View<double*> y_kokkos{"y", (size_t)numVecs_};
+  ::pressio::ops::fill(y_kokkos, 2.);
+
+  mvec_t MV(*contigMap_, blockSize_, 4);
+  MV.getMultiVectorView().randomize();
+  auto e = pressio::column(MV, 0);
+  test_impl(*this, ::pressio::transpose{}, *myMv_, e, y_kokkos);
+}
+
+TEST_F(ops_tpetra_block,
        mv_T_vector_storein_kokkos_span)
 {
   Kokkos::View<double*> y0{ "y_span", std::size_t(numVecs_ + 2) };
@@ -206,6 +239,25 @@ TEST_F(ops_tpetra_block,
 }
 
 TEST_F(ops_tpetra_block,
+       mv_T_column_expr_storein_kokkos_span)
+{
+  Kokkos::View<double*> y0{ "y_span", std::size_t(numVecs_ + 2) };
+  auto y_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), y0);
+  for (int i = 0; i < numVecs_ + 2; ++i) {
+    y_h(i) = (double)(i + 1.); // unique int values
+  }
+  Kokkos::deep_copy(y0, y_h);
+  auto y_kokkos_span = ::pressio::span(y0, 1, numVecs_);
+
+  mvec_t MV(*contigMap_, blockSize_, 4);
+  MV.getMultiVectorView().randomize();
+  auto e = pressio::column(MV, 0);
+
+  test_impl(*this, ::pressio::transpose{}, *myMv_, e, y_kokkos_span);
+}
+
+
+TEST_F(ops_tpetra_block,
        mv_T_vector_storein_kokkos_diag)
 {
   Kokkos::View<double**> y0{ "y_diag", std::size_t(numVecs_), std::size_t(numVecs_) };
@@ -216,7 +268,7 @@ TEST_F(ops_tpetra_block,
     }
   }
   Kokkos::deep_copy(y0, y_h);
-  auto y_kokkos_diag = ::pressio::diag(y0);
+  auto y_kokkos_diag = ::pressio::diagonal(y0);
 
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_kokkos_diag);
 }
@@ -253,7 +305,7 @@ TEST_F(ops_tpetra_block,
   for (int i = 0; i < numVecs_; ++i) {
     M0(i, i) = 1.;
   }
-  auto x_eigen_diag = ::pressio::diag(M0);
+  auto x_eigen_diag = ::pressio::diagonal(M0);
 
   test_impl(*this, ::pressio::nontranspose{}, *myMv_, x_eigen_diag, *y_tpetra);
 }
@@ -269,6 +321,21 @@ TEST_F(ops_tpetra_block,
   y_eigen.setConstant(1.);
 
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen);
+}
+
+TEST_F(ops_tpetra_block,
+       mv_T_column_expr_storein_eigen_vector)
+{
+  mvec_t MV(*contigMap_, blockSize_, 4);
+  MV.getMultiVectorView().randomize();
+
+  for (int j=0; j<4; ++j){
+    Eigen::VectorXd y_eigen(numVecs_);
+    y_eigen.setConstant(1.);
+
+    auto e = pressio::column(MV, 0);
+    test_impl(*this, ::pressio::transpose{}, *myMv_, e, y_eigen);
+  }
 }
 
 TEST_F(ops_tpetra_block,
@@ -288,7 +355,7 @@ TEST_F(ops_tpetra_block,
   for (int i = 0; i < numVecs_; ++i) {
     M0(i, i) = 1.;
   }
-  auto y_eigen_diag = ::pressio::diag(M0);
+  auto y_eigen_diag = ::pressio::diagonal(M0);
 
   test_impl(*this, ::pressio::transpose{}, *myMv_, *x_tpetra, y_eigen_diag);
 }

@@ -46,99 +46,93 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
-#define EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
+#ifndef EXPRESSIONS_IMPL_DIAGONAL_CLASSES_HPP_
+#define EXPRESSIONS_IMPL_DIAGONAL_CLASSES_HPP_
 
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct DiagExpr<
+class DiagonalExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
 {
-  using this_t = DiagExpr<MatrixType>;
-  using traits = DiagTraits<this_t>;
-  using ref_t = typename traits::reference_type;
-  using const_ref_t = typename traits::const_reference_type;
+  using traits = DiagonalTraits<DiagonalExpr<MatrixType>>;
+  using reference_t = typename traits::reference_type;
   using native_expr_t = typename traits::native_expr_type;
 
 private:
-  std::reference_wrapper<MatrixType> matObj_;
+  MatrixType * operand_;
   native_expr_t nativeExprObj_;
-  size_t numRows_ = {};
-  size_t numCols_ = {};
-  size_t extent_ = {};
+  std::size_t numRows_ = {};
+  std::size_t numCols_ = {};
+  std::size_t extent_ = {};
 
 public:
-  DiagExpr() = delete;
-
-  DiagExpr(const DiagExpr & other) = default;
-  DiagExpr & operator=(const DiagExpr & other) = delete;
-
-  DiagExpr(DiagExpr && other) = default;
-  DiagExpr & operator=(DiagExpr && other) = delete;
-  ~DiagExpr() = default;
-
-  DiagExpr(MatrixType & matObjIn)
-    : matObj_(matObjIn),
-      nativeExprObj_(matObj_.get().diagonal()),
-      numRows_(matObj_.get().rows()),
-      numCols_(matObj_.get().cols()),
-      extent_(matObj_.get().rows())
+  explicit DiagonalExpr(MatrixType & matObjIn)
+    : operand_(&matObjIn),
+      nativeExprObj_(operand_->diagonal()),
+      numRows_(operand_->rows()),
+      numCols_(operand_->cols()),
+      extent_(operand_->rows())
   {
     assert(numRows_ == numCols_);
   }
 
-  size_t extent(size_t i) const{
+  std::size_t extent(std::size_t i) const{
     return (i < 1) ? extent_ : std::size_t(1);
   }
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
 
-  native_expr_t const & native() const{
-    return nativeExprObj_;
+  reference_t operator()(std::size_t i) const{
+    assert(i < extent_);
+    return (*operand_)(i,i);
   }
 
-  native_expr_t & native(){
-    return nativeExprObj_;
+  reference_t operator[](std::size_t i) const{
+    assert(i < extent_);
+    return (*operand_)(i,i);
   }
 
-  ref_t operator()(size_t i)
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
-  const_ref_t operator()(size_t i) const
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
+  auto data() const { return operand_; }
+  // ref_t operator()(size_t i){
+  //   assert(i < (size_t)extent_);
+  //   return nativeExprObj_(i);
+  // }
+  // const_ref_t operator()(size_t i) const {
+  //   assert(i < (size_t)extent_);
+  //   return nativeExprObj_(i);
+  // }
 };
 #endif
 
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-struct DiagExpr<
+class DiagonalExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
 {
-  using this_t		= DiagExpr<MatrixType>;
-  using traits	= DiagTraits<this_t>;
-  using size_t	= typename MatrixType::traits::size_type;
+  static_assert(Kokkos::SpaceAccessibility<
+		typename MatrixType::execution_space,
+		Kokkos::HostSpace>::accessible,
+		"diagonal is currently only valid for a host-accessible Kokkos View");
+
+  using traits	= DiagonalTraits<DiagonalExpr<MatrixType>>;
   using native_expr_t	= typename traits::native_expr_type;
-  using ref_t		= decltype( std::declval<native_expr_t>()(size_t{}) );
+  using ref_t = typename traits::reference_type;
 
 private:
-  std::reference_wrapper<MatrixType> matObj_;
+  MatrixType * matObj_;
   native_expr_t nativeExprObj_;
-  size_t extent_ = {};
+  std::size_t extent_ = {};
 
   using natexpr_layout = typename native_expr_t::traits::array_layout;
   // for now leave this assert, then remove later
@@ -147,15 +141,8 @@ private:
    "The layout for the native type of the diagonal kokkos expression does not match the strided layout expected");
 
 public:
-  DiagExpr() = delete;
-  DiagExpr(const DiagExpr & other) = default;
-  DiagExpr & operator=(const DiagExpr & other) = delete;
-  DiagExpr(DiagExpr && other) = default;
-  DiagExpr & operator=(DiagExpr && other) = delete;
-  ~DiagExpr() = default;
-
-  DiagExpr(MatrixType & M)
-    : matObj_(M),
+  explicit DiagonalExpr(MatrixType & M)
+    : matObj_(&M),
       nativeExprObj_(M.data(), natexpr_layout(M.extent(0), M.stride(0)+M.stride(1))),
       extent_(M.extent(0))
   {
@@ -164,30 +151,23 @@ public:
   }
 
 public:
-  size_t extent(size_t i) const{
+  std::size_t extent(std::size_t i) const{
     return (i < 1) ? extent_ : std::size_t(1);
   }
 
-  native_expr_t const & native() const{
-    return nativeExprObj_;
-  }
+  native_expr_t const & native() const{ return nativeExprObj_; }
+  native_expr_t & native(){ return nativeExprObj_; }
 
-  native_expr_t & native(){
-    return nativeExprObj_;
+  ref_t operator()(std::size_t i) const{
+    assert(i < extent_);
+    return nativeExprObj_(i);
   }
-
-  template<typename _MatrixType = MatrixType>
-  mpl::enable_if_t<
-    std::is_same<typename _MatrixType::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
-  operator()(size_t i) const
-  {
-    assert(i < (size_t)extent_);
+  ref_t operator[](std::size_t i) const{
+    assert(i < extent_);
     return nativeExprObj_(i);
   }
 };
 #endif
 
 }}}
-#endif  // EXPRESSIONS_IMPL_DIAG_CLASSES_HPP_
+#endif  // EXPRESSIONS_IMPL_DIAGONAL_CLASSES_HPP_

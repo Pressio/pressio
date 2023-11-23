@@ -53,72 +53,65 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename VectorType>
-struct SpanTraits<
+class SpanTraits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
-  >
-  : public ::pressio::Traits<VectorType>
+  > : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename VectorType::StorageIndex;
+private:
+  using _ordinal_type = typename VectorType::StorageIndex;
 
-  // type of the native expression
   using _native_expr_type =
     decltype(
-     std::declval<VectorType>().segment(ordinal_type{}, ordinal_type{})
+     std::declval<VectorType>().segment(_ordinal_type{}, _ordinal_type{})
      );
 
   using _const_native_expr_type =
     decltype(
-     std::declval<const VectorType>().segment(ordinal_type{}, ordinal_type{})
+     std::declval<std::add_const_t<VectorType>>().segment(_ordinal_type{}, _ordinal_type{})
      );
 
-  using native_expr_type = typename std::conditional<
-    std::is_const<VectorType>::value,
+public:
+  using ordinal_type = _ordinal_type;
+
+  using native_expr_type = std::conditional_t<
+    std::is_const_v<VectorType>,
     _const_native_expr_type,
     _native_expr_type
-    >::type;
+    >;
 
-  using reference_type = decltype( std::declval<_native_expr_type>()(0) );
-  using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0) );
+  using reference_type = std::conditional_t<
+    std::is_const_v<VectorType>,
+    const typename VectorType::Scalar &,
+    typename VectorType::Scalar &
+    >;
 };
 #endif
 
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename VectorType>
-struct SpanTraits<
+class SpanTraits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
-  >
-  : public ::pressio::Traits<VectorType>
+  > : public ::pressio::Traits<VectorType>
 {
-  using ordinal_type = typename VectorType::traits::size_type;
-  using pair_type = std::pair<ordinal_type, ordinal_type>;
+private:
+  using _ordinal_type = typename VectorType::traits::size_type;
+  using _pair_type = std::pair<_ordinal_type, _ordinal_type>;
 
+public:
+  using ordinal_type = _ordinal_type;
   using native_expr_type =
     decltype(
-      Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
-     );
-  using const_native_expr_type =
-    decltype(
-      Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
+      Kokkos::subview(std::declval<VectorType>(), std::declval<_pair_type>())
      );
 
-  // using _const_native_expr_type =
-  //   decltype(
-  //    Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
-  //    );
-  // using native_expr_type = typename std::conditional<
-  //   std::is_const<VectorType>::value,
-  //   _const_native_expr_type,
-  //   _native_expr_type
-  //   >::type;
-  // using const_data_return_type = native_expr_type const *;
-  // using data_return_type = native_expr_type *;
+  using reference_type = typename VectorType::reference_type;
 };
 #endif
 
