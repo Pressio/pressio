@@ -7,6 +7,7 @@ on:
   pull_request:
     types: [ opened, reopened, synchronize ]
     paths:
+      - '.github/workflows/ci-docker.yml'
       - 'docker_scripts/**'
   schedule:
     - cron:  '0 5 * * FRI'
