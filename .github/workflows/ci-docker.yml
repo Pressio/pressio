@@ -22,6 +22,7 @@ jobs:
           # - {dockerfile: 'intel-oneapi',            compiler-version: 'latest'}
           - {dockerfile: 'ubuntu-clang',        compiler-version: '14', tag: 'latest'}
           - {dockerfile: 'ubuntu-gnu-trilinos', compiler-version: '11', tag: 'ef73d14'}
+          - {dockerfile: 'ubuntu-gnu-trilinos', compiler-version: '11', tag: '702aac5'}
           - {dockerfile: 'ubuntu-gnu-trilinos', compiler-version: '11', tag: 'trilinos-release-14-4-0'}
           - {dockerfile: 'ubuntu-gnu',          compiler-version: '11', tag: 'latest'}
     runs-on: ubuntu-latest
