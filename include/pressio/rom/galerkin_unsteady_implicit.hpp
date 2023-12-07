@@ -207,5 +207,33 @@ auto create_unsteady_implicit_problem(const TrialSubspaceType & trialSpace,    /
     TotalNumberOfDesiredStates>(std::move(galSystem));
 }
 
+template<
+  std::size_t TotalNumberOfDesiredStates,
+  class TrialSubspaceType,
+  class FomSystemType,
+  class HyperReducerType>
+auto create_unsteady_implicit_problem(const TrialSubspaceType & trialSpace,
+                                      const FomSystemType & fomSystem,
+                                      const HyperReducerType & hyperReducer)
+{
+
+  using independent_variable_type = typename FomSystemType::time_type;
+  using reduced_state_type        = typename TrialSubspaceType::reduced_state_type;
+  using default_types             = ImplicitGalerkinDefaultReducedOperatorsTraits<reduced_state_type>;
+  using reduced_residual_type = typename default_types::reduced_residual_type;
+  using reduced_jacobian_type = typename default_types::reduced_jacobian_type;
+
+  // the "system" implements the math
+  using galerkin_system = impl::GalerkinHypRedFullyDiscreteSystem<
+    TotalNumberOfDesiredStates, independent_variable_type,
+    reduced_state_type, reduced_residual_type,
+    reduced_jacobian_type, TrialSubspaceType, FomSystemType,
+    HyperReducerType>;
+
+  galerkin_system galSystem(trialSpace, fomSystem, hyperReducer);
+  return ::pressio::ode::create_implicit_stepper<
+    TotalNumberOfDesiredStates>(std::move(galSystem));
+}
+
 }}} // end pressio::rom::galerkin
 #endif  // ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_

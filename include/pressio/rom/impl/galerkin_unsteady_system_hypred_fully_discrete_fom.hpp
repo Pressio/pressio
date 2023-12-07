@@ -78,25 +78,21 @@ public:
   template<typename step_t, std::size_t _n = n>
   mpl::enable_if_t< (_n==2) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
-			      const independent_variable_type & time_np1,
-			      const independent_variable_type & dt,
-			      discrete_residual_type & galerkinResidual,
-			      discrete_jacobian_type & galerkinJacobian,
-			      bool computeJacobian,
-			      const state_type & galerkin_state_np1,
-			      const state_type & galerkin_state_n) const
+                              const independent_variable_type & time_np1,
+                              const independent_variable_type & dt,
+                              discrete_residual_type & galerkinResidual,
+                              std::optional<discrete_jacobian_type *> galerkinJacobian,
+                              const state_type & galerkin_state_np1,
+                              const state_type & galerkin_state_n) const
   {
     doFomStatesReconstruction(currentStepNumber, galerkin_state_np1, galerkin_state_n);
+    const bool computeJacobian = bool(galerkinJacobian);
 
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     try
     {
-      const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_, phi,
-							     computeJacobian, fomJacAction_,
-							     ynp1, yn);
+      queryFomOperators(currentStepNumber, time_np1, dt, computeJacobian, ynp1, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -108,28 +104,24 @@ public:
   template<typename step_t, std::size_t _n = n>
   mpl::enable_if_t< (_n==3) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
-			      const independent_variable_type & time_np1,
-			      const independent_variable_type & dt,
-			      discrete_residual_type & galerkinResidual,
-			      discrete_jacobian_type & galerkinJacobian,
-			      bool computeJacobian,
-			      const state_type & galerkin_state_np1,
-			      const state_type & galerkin_state_n,
-			      const state_type & galerkin_state_nm1) const
+                              const independent_variable_type & time_np1,
+                              const independent_variable_type & dt,
+                              discrete_residual_type & galerkinResidual,
+                              std::optional<discrete_jacobian_type *> galerkinJacobian,
+                              const state_type & galerkin_state_np1,
+                              const state_type & galerkin_state_n,
+                              const state_type & galerkin_state_nm1) const
   {
     doFomStatesReconstruction(currentStepNumber, galerkin_state_np1,
-			      galerkin_state_n, galerkin_state_nm1);
+                              galerkin_state_n, galerkin_state_nm1);
 
     const auto & ynp1 = fomStatesManager_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesManager_(::pressio::ode::n());
     const auto & ynm1 = fomStatesManager_(::pressio::ode::nMinusOne());
+    const bool computeJacobian = bool(galerkinJacobian);
 
     try{
-      const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_, phi,
-							     computeJacobian, fomJacAction_,
-							     ynp1, yn, ynm1);
+      queryFomOperators(currentStepNumber, time_np1, dt, computeJacobian, ynp1, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
@@ -139,22 +131,45 @@ public:
   }
 
 private:
+  template<typename step_t, class ...States>
+  void queryFomOperators(const step_t & currentStepNumber,
+                         const independent_variable_type & time_np1,
+                         const independent_variable_type & dt,
+                         bool computeJacobian,
+                         States && ... states) const
+  {
+    const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
+
+    if (computeJacobian){
+      using op_ja_t = std::optional<fom_jac_action_result_type*>;
+      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
+                                                             dt, fomResidual_, phi,
+                                                             op_ja_t{&fomJacAction_},
+                                                             std::forward<States>(states)...);
+    }
+    else{
+      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
+                                                             dt, fomResidual_, phi, {},
+                                                             std::forward<States>(states)...);
+    }
+  }
+
   void computeReducedOperators(const independent_variable_type & time_np1,
-			       discrete_residual_type & galerkinResidual,
-			       discrete_jacobian_type & galerkinJacobian,
-			       bool computeJacobian) const
+                               discrete_residual_type & galerkinResidual,
+                               std::optional<discrete_jacobian_type *> galerkinJacobian,
+                               bool computeJacobian) const
   {
     hyperReducer_(fomResidual_, time_np1, galerkinResidual);
     if (computeJacobian){
-      hyperReducer_(fomJacAction_, time_np1, galerkinJacobian);
+      hyperReducer_(fomJacAction_, time_np1, *(galerkinJacobian.value()));
     }
   }
 
   void doFomStatesReconstruction(const int32_t & step_number,
-				 const state_type & galerkin_state_np1) const
+                                 const state_type & galerkin_state_np1) const
   {
     fomStatesManager_.reconstructAtWithoutStencilUpdate(galerkin_state_np1,
-							::pressio::ode::nPlusOne());
+                                                        ::pressio::ode::nPlusOne());
   }
 
   void doFomStatesReconstruction(const int32_t & step_number,
