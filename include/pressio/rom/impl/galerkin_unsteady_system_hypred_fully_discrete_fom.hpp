@@ -173,13 +173,6 @@ private:
   }
 
   void doFomStatesReconstruction(const int32_t & step_number,
-				 const state_type & galerkin_state_np1) const
-  {
-    fomStatesManager_.reconstructAtWithoutStencilUpdate(galerkin_state_np1,
-							::pressio::ode::nPlusOne());
-  }
-
-  void doFomStatesReconstruction(const int32_t & step_number,
 				 const state_type & galerkin_state_np1,
 				 const state_type & galerkin_state_n) const
   {
