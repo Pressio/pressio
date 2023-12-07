@@ -278,6 +278,13 @@ auto create_reduced_linear_operator(const FomLinearOperatorType & fomOp,
 
 template <class ...Ts>
 void export_ascii(const impl::RomLinearThingy<Ts...> & o,
+		  const std::string & matFile)
+{
+  impl::write_matrix_to_ascii(matFile, o.redMat_);
+}
+
+template <class ...Ts>
+void export_ascii(const impl::RomLinearThingy<Ts...> & o,
 		  const std::string & matFile,
 		  const std::string & shiftFile)
 {
