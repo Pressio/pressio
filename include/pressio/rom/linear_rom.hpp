@@ -169,8 +169,8 @@ private:
 
     // 3.
     fop_->apply(*shift_, fomATimeShift_);
+    pressio::ops::update(fomATimeShift_, 1., fomHiddenForcing_, -1.);
     pressio::ops::product(pT, 1., *lb_, fomATimeShift_, 0., redShift_);
-    std::cout << fomATimeShift_ << '\n';
   }
 
   void compute()

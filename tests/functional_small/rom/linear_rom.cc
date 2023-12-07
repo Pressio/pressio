@@ -147,11 +147,6 @@ TEST(rom, linear_rom_linear_operator)
   auto gold = lb.transpose() * 2. * rb;
   ASSERT_TRUE(gold.isApprox(A));
 
-  Eigen::VectorXd goldShift(10);
-  goldShift.setConstant(0.);
-  Eigen::VectorXd v2(10);
-  v2.setConstant(44.);
-
-  goldShift = lb.transpose() * v2;
+  Eigen::VectorXd goldShift = lb.transpose() * 2. * shift;
   ASSERT_TRUE(goldShift.isApprox(s));
 }
