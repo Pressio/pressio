@@ -51,15 +51,14 @@ template <class FomVecType, class LeftBasisType>
 class RomLinearThingyConstVector;
 }
 
+template <class ...Ts>
+void export_ascii(const impl::RomLinearThingy<Ts...> & o,
+		  const std::string & matFile);
 
 template <class ...Ts>
 void export_ascii(const impl::RomLinearThingy<Ts...> & o,
-					  const std::string & matFile);
-
-template <class ...Ts>
-void export_ascii(const impl::RomLinearThingy<Ts...> & o,
-					  const std::string & matFile,
-					  const std::string & shiftFile);
+		  const std::string & matFile,
+		  const std::string & shiftFile);
 
 template <class ...Ts>
 void export_ascii(const impl::RomLinearThingy<Ts...> & o,
