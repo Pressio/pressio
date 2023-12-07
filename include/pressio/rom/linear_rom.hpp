@@ -51,6 +51,11 @@ template <class FomVecType, class LeftBasisType>
 class RomLinearThingyConstVector;
 }
 
+
+template <class ...Ts>
+void export_ascii(const impl::RomLinearThingy<Ts...> & o,
+					  const std::string & matFile);
+
 template <class ...Ts>
 void export_ascii(const impl::RomLinearThingy<Ts...> & o,
 					  const std::string & matFile,
@@ -74,6 +79,10 @@ template <
 class RomLinearThingy{
 
   // we need to make this friend to access private methods
+  template <class ...Ts> friend
+  void ::pressio::rom::linear::export_ascii(const RomLinearThingy<Ts...> &,
+		    const std::string &);
+
   template <class ...Ts> friend
   void ::pressio::rom::linear::export_ascii(const RomLinearThingy<Ts...> &,
 		    const std::string &,
