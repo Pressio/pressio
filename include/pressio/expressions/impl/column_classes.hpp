@@ -133,7 +133,7 @@ public:
     , colIndex_(colIndex)
     , numRowsLocal_(matObjIn.getLocalLength())
     , numRowsGlobal_(matObjIn.getGlobalLength())
-    , colVec_(*matObjIn.getVectorNonConst(colIndex))
+    , colVec_(*matObjIn.getVector(colIndex))
   {
     assert( colIndex_ >= 0 &&
 	    colIndex_ < std::size_t(matObjIn.getNumVectors()) );
@@ -171,7 +171,7 @@ public:
     : operand_(&matObjIn)
     , colIndex_(colIndex)
     , numRowsGlobal_(matObjIn.getMap()->getGlobalNumElements())
-    , colVec_( operand_->getMultiVectorView().getVectorNonConst(colIndex) )
+    , colVec_( operand_->getMultiVectorView().getVector(colIndex) )
   {
     assert( colIndex_ >= 0 &&
 	    colIndex_ < std::size_t(matObjIn.getNumVectors()) );
