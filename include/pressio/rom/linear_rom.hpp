@@ -6,20 +6,11 @@ namespace pressio{ namespace rom{ namespace linear{
 
 namespace impl{
 
-template<class T, class = void>
-struct LinearRomDefaultReducedOperatorsTraits{
-  using reduced_matrix_type = void;
-};
-
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<class T>
-struct LinearRomDefaultReducedOperatorsTraits<
-  T, pressio::mpl::enable_if_t<::pressio::is_dense_matrix_eigen<T>::value> >
+template<class ScalarType>
+struct LinearRomDefaultReducedOperatorsTraits
 {
-  using reduced_matrix_type = Eigen::Matrix<
-    typename pressio::Traits<T>::scalar_type, -1, -1>;
-  using reduced_vector_type = Eigen::Matrix<
-    typename pressio::Traits<T>::scalar_type, -1, 1>;
+  using reduced_matrix_type = Eigen::Matrix<ScalarType, -1, -1>;
+  using reduced_vector_type = Eigen::Matrix<ScalarType, -1, 1>;
 
   static auto createMatrix(std::size_t nr, std::size_t nc){
     return reduced_matrix_type(nr, nc);
@@ -28,9 +19,7 @@ struct LinearRomDefaultReducedOperatorsTraits<
   static auto createVector(std::size_t n){
     return reduced_vector_type(n);
   }
-
 };
-#endif
 
 template <typename T>
 void write_matrix_to_ascii(const std::string fileName,
@@ -102,7 +91,8 @@ class RomLinearThingy{
   using lb_type    = pressio::mpl::remove_cvref_t<LeftBasisType>;
   using rb_type    = pressio::mpl::remove_cvref_t<RightBasisType>;
   using shift_type = pressio::mpl::remove_cvref_t<ShiftVecType>;
-  using reduced_operators = LinearRomDefaultReducedOperatorsTraits<lb_type>;
+  using reduced_operators = LinearRomDefaultReducedOperatorsTraits<
+    typename pressio::Traits<lb_type>::scalar_type>;
 
   const fomop_type * fop_ = nullptr;
   const lb_type * lb_ = nullptr;
@@ -212,7 +202,8 @@ class RomLinearThingyConstVector
 
   using fomop_type = pressio::mpl::remove_cvref_t<FomVecType>;
   using lb_type    = pressio::mpl::remove_cvref_t<LeftBasisType>;
-  using reduced_operators = LinearRomDefaultReducedOperatorsTraits<lb_type>;
+  using reduced_operators = LinearRomDefaultReducedOperatorsTraits<
+    typename pressio::Traits<lb_type>::scalar_type>;
 
   const fomop_type * fop_ = nullptr;
   const lb_type * lb_ = nullptr;
