@@ -101,7 +101,7 @@ public:
   static constexpr int rank = 1; // a column is a rank-1 object
 
   using native_expr_type =
-    decltype( std::declval<T>().getVectorNonConst(0) );
+    decltype( std::declval<T>().getVector(0) );
 };
 
 template <typename T>
@@ -118,7 +118,7 @@ public:
   static constexpr int rank = 1; // a column is a rank-1 object
 
   using native_expr_type =
-   decltype( std::declval<_tpetra_mv_type>().getVectorNonConst(0) );
+   decltype( std::declval<_tpetra_mv_type>().getVector(0) );
 };
 #endif
 
