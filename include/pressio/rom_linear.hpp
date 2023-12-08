@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// subspan_traits.hpp
+// rom_linear.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,82 +46,18 @@
 //@HEADER
 */
 
-#ifndef EXPRESSIONS_IMPL_COLUMN_TRAITS_HPP_
-#define EXPRESSIONS_IMPL_COLUMN_TRAITS_HPP_
+#ifndef PRESSIO_ROM_LINEAR_TOPLEVEL_INCLUDE_HPP_
+#define PRESSIO_ROM_LINEAR_TOPLEVEL_INCLUDE_HPP_
 
-namespace pressio{ namespace expressions{ namespace impl{
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename MatrixType>
-class ColumnTraits<
-  ColumnExpr<MatrixType>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<MatrixType>::value
-    >
-  > : public ::pressio::Traits<MatrixType>
-{
-private:
-  using _ord_t = typename MatrixType::StorageIndex;
-  using _native_expr_type = decltype(
-    std::declval<MatrixType>().col(_ord_t{})
-    );
-  using _const_native_expr_type = decltype(
-    std::declval<const MatrixType>().col(_ord_t{})
-  );
+#include "rom/linear_rom.hpp"
 
-public:
-  static constexpr int rank = 1; // a column is a rank-1 object
-
-  using ordinal_type = _ord_t;
-
-  using native_expr_type = std::conditional_t<
-    std::is_const<MatrixType>::value,
-    _const_native_expr_type,
-    _native_expr_type
-  >;
-
-  using reference_type = std::conditional_t<
-    std::is_const_v<MatrixType>,
-    const typename MatrixType::Scalar &,
-    typename MatrixType::Scalar &
-    >;
-};
 #endif
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template <typename T>
-class ColumnTraits<
-  ColumnExpr<T>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_multi_vector_tpetra<T>::value
-    >
-  > : public ::pressio::Traits<T>
-{
-public:
-  static constexpr int rank = 1; // a column is a rank-1 object
-
-  using native_expr_type =
-    decltype( std::declval<T>().getVector(0) );
-};
-
-template <typename T>
-class ColumnTraits<
-  ColumnExpr<T>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_multi_vector_tpetra_block<T>::value
-    >
-  > : public ::pressio::Traits<T>
-{
-private:
-  using _tpetra_mv_type = typename T::mv_type;
-public:
-  static constexpr int rank = 1; // a column is a rank-1 object
-
-  using native_expr_type =
-   decltype( std::declval<_tpetra_mv_type>().getVector(0) );
-};
-#endif
-
-
-}}}
-#endif  // EXPRESSIONS_IMPL_SUBSPAN_TRAITS_HPP_
