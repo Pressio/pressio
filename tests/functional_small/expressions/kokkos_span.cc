@@ -1,29 +1,26 @@
 #include <gtest/gtest.h>
+#include "test_helpers.hpp"
+
 #include "pressio/expressions.hpp"
 
 namespace
 {
-template <typename T>
-void fillVector(T & a)
-{
-  a(0) = 1.;
-  a(1) = 5.;
-  a(2) = 9.;
-  a(3) = 13.;
-  a(4) = 17.;
-  a(5) = 21.;
-}
-}
+using kv_t = Kokkos::View<double*, Kokkos::HostSpace>;
 
-TEST(expressions_kokkos, span0)
-{
-  using kv_t = Kokkos::View<double*, Kokkos::HostSpace>;
+kv_t create_view(){
   kv_t a("a",5);
   a(0)=1.1;
   a(1)=2.1;
   a(2)=3.1;
   a(3)=4.1;
   a(4)=5.1;
+  return a;
+}
+}
+
+TEST(expressions_kokkos, span0)
+{
+  auto a = create_view();
 
   auto s = pressio::span(a, 2, 2);
   s(0)=10.;
@@ -48,13 +45,7 @@ TEST(expressions_kokkos, span0)
 
 TEST(expressions_kokkos, span1)
 {
-  using kv_t = Kokkos::View<double*, Kokkos::HostSpace>;
-  kv_t a("a",5);
-  a(0)=1.1;
-  a(1)=2.1;
-  a(2)=3.1;
-  a(3)=4.1;
-  a(4)=5.1;
+  auto a = create_view();
 
   using kv2_t = Kokkos::View<const double*, Kokkos::HostSpace>;
   kv2_t a2 = a;
@@ -73,14 +64,7 @@ TEST(expressions_kokkos, span1)
 
 TEST(expressions_kokkos, span2)
 {
-  using kv_t = Kokkos::View<double*, Kokkos::HostSpace>;
-  kv_t a("a",5);
-  a(0)=1.1;
-  a(1)=2.1;
-  a(2)=3.1;
-  a(3)=4.1;
-  a(4)=5.1;
-
+  auto a = create_view();
   const kv_t b = a;
   auto s = pressio::span(b, 2, 2);
   s(0)=10.;
@@ -101,30 +85,19 @@ TEST(expressions_kokkos, span2)
 TEST(expressions_kokkos, span_traits)
 {
   {
-    using T = Kokkos::View<double*, Kokkos::HostSpace>;
-    T o("o", 10);
-    using expr_t = decltype(pressio::span(o, 0, 1));
-    static_assert(pressio::Traits<expr_t>::rank == 1);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+    Kokkos::View<double*, Kokkos::HostSpace> o("o", 10);
+    check_span_traits<double>(o);
   }
 
   {
-    using T = Kokkos::View<double[4], Kokkos::HostSpace>;
-    T o("o");
-    using expr_t = decltype(pressio::span(o, 0, 1));
-    static_assert(pressio::Traits<expr_t>::rank == 1);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+    Kokkos::View<double[4], Kokkos::HostSpace> o("o");
+    check_span_traits<double>(o);
   }
 
   {
     using T = Kokkos::View<double*, Kokkos::HostSpace>;
     T o("o", 10);
     typename T::const_type o2 = o;
-    using expr_t = decltype(pressio::span(o2, 0, 1));
-    static_assert(pressio::Traits<expr_t>::rank == 1);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, const double>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);
+    check_span_traits<const double>(o2);
   }
 }

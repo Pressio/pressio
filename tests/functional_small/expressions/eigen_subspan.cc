@@ -5,6 +5,16 @@
 namespace
 {
 
+template<class T>
+void fill_matrix(T & A){
+  A(0,0) = 1.;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
+  A(1,0) = 5.;  A(1,1) = 6.;  A(1,2) = 7.;  A(1,3) = 8.;
+  A(2,0) = 9.;  A(2,1) = 10.; A(2,2) = 11.; A(2,3) = 12.;
+  A(3,0) = 13.; A(3,1) = 14.; A(3,2) = 15.; A(3,3) = 16.;
+  A(4,0) = 17.; A(4,1) = 18.; A(4,2) = 19.; A(4,3) = 20.;
+  A(5,0) = 21.; A(5,1) = 22.; A(5,2) = 23.; A(5,3) = 24.;
+}
+
 template <typename T>
 void test1(T & A)
 {
@@ -93,36 +103,21 @@ void testConst(const T & A)
 }
 
 
-TEST(expressions_eigen, subspan)
+template <typename T>
+class EigenSubspanTest : public testing::Test {};
+
+using TestingTypes = ::testing::Types<
+    Eigen::MatrixXd,
+    Eigen::Matrix<double, -1, -1, Eigen::RowMajor>
+>;
+
+TYPED_TEST_SUITE(EigenSubspanTest, TestingTypes);
+
+
+TYPED_TEST(EigenSubspanTest, baseline)
 {
-  // col-major matrix (which is default in Eigen)
-  using eigmat_t = Eigen::MatrixXd;
-
-  eigmat_t A(6,4);
-  A(0,0) = 1.;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
-  A(1,0) = 5.;  A(1,1) = 6.;  A(1,2) = 7.;  A(1,3) = 8.;
-  A(2,0) = 9.;  A(2,1) = 10.; A(2,2) = 11.; A(2,3) = 12.;
-  A(3,0) = 13.; A(3,1) = 14.; A(3,2) = 15.; A(3,3) = 16.;
-  A(4,0) = 17.; A(4,1) = 18.; A(4,2) = 19.; A(4,3) = 20.;
-  A(5,0) = 21.; A(5,1) = 22.; A(5,2) = 23.; A(5,3) = 24.;
-
-  test1(A);
-  test2(A);
-  testConst(A);
-}
-
-
-TEST(expressions_eigen, subspanRowMajor)
-{
-  using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
-
-  eigmat_t A(6,4);
-  A(0,0) = 1.;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
-  A(1,0) = 5.;  A(1,1) = 6.;  A(1,2) = 7.;  A(1,3) = 8.;
-  A(2,0) = 9.;  A(2,1) = 10.; A(2,2) = 11.; A(2,3) = 12.;
-  A(3,0) = 13.; A(3,1) = 14.; A(3,2) = 15.; A(3,3) = 16.;
-  A(4,0) = 17.; A(4,1) = 18.; A(4,2) = 19.; A(4,3) = 20.;
-  A(5,0) = 21.; A(5,1) = 22.; A(5,2) = 23.; A(5,3) = 24.;
+  TypeParam A(6,4);
+  fill_matrix(A);
 
   test1(A);
   test2(A);
