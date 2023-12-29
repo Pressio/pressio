@@ -3,6 +3,7 @@
 
 namespace
 {
+
 template <typename T>
 void fillMatrix(T & A)
 {
@@ -12,11 +13,11 @@ void fillMatrix(T & A)
   A(3,0) = 13.; A(3,1) = 14.; A(3,2) = 15.;  A(3,3) = 16.;
   A(4,0) = 12.; A(4,1) = 14.; A(4,2) = 5.;   A(4,3) = 6.;
 }
-}
+
+using n_t  = Kokkos::View<double**, Kokkos::HostSpace>;
 
 TEST(expressions_kokkos, subspan0)
 {
-  using n_t  = Kokkos::View<double**, Kokkos::HostSpace>;
   const n_t A("A",5,4);
   auto ss = pressio::subspan(A,
 			     std::make_pair(0,2),
@@ -50,8 +51,7 @@ TEST(expressions_kokkos, subspan1)
 
 TEST(expressions_kokkos, subspan2)
 {
-  using T  = Kokkos::View<double**, Kokkos::HostSpace>;
-  T A("A",5,4);
+  n_t A("A",5,4);
   fillMatrix(A);
 
   auto ss = pressio::subspan(A,
@@ -82,8 +82,7 @@ TEST(expressions_kokkos, span_traits)
   using pair_t = std::pair<std::size_t, std::size_t>;
 
   {
-    using T = Kokkos::View<double**, Kokkos::HostSpace>;
-    T o("o", 10, 10);
+    n_t o("o", 10, 10);
     using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
     static_assert(pressio::Traits<expr_t>::rank == 2);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
@@ -100,12 +99,13 @@ TEST(expressions_kokkos, span_traits)
   }
 
   {
-    using T = Kokkos::View<double**, Kokkos::HostSpace>;
-    T o("o",10, 10);
-    typename T::const_type o2 = o;
+    n_t o("o",10, 10);
+    typename n_t::const_type o2 = o;
     using expr_t = decltype(pressio::subspan(o2, pair_t{0, 1}, pair_t{0,1}));
     static_assert(pressio::Traits<expr_t>::rank == 2);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, const double>);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);
   }
 }
+
+} // namespace

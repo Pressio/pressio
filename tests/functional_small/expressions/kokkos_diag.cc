@@ -4,6 +4,8 @@
 
 #include "pressio/expressions.hpp"
 
+namespace
+{
 
 TEST(expressions_kokkos, diag1)
 {
@@ -51,8 +53,7 @@ TEST(expressions_kokkos, diag2)
      >::value, "");
 }
 
-
-TEST(expressions_kokkos, span_traits)
+TEST(expressions_kokkos, diag_traits)
 {
   {
     using T = Kokkos::View<double**, Kokkos::HostSpace>;
@@ -82,3 +83,5 @@ TEST(expressions_kokkos, span_traits)
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);
   }
 }
+
+} // namespace

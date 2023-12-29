@@ -59,7 +59,6 @@ void testConst(const T & A){
   EXPECT_DOUBLE_EQ( natEx(0), 44. );
   EXPECT_DOUBLE_EQ( natEx(1), 6. );
 }
-}
 
 TEST(expressions_eigen, diag)
 {
@@ -112,3 +111,5 @@ TEST(expressions_eigen, diag_traits)
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int const &>);
   }
 }
+
+} // namespace

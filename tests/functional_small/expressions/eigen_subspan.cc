@@ -100,9 +100,6 @@ void testConst(const T & A)
   EXPECT_DOUBLE_EQ( natEx(1,0), 14. );  EXPECT_DOUBLE_EQ( natEx(1,1), 15. );
 }
 
-}
-
-
 template <typename T>
 class EigenSubspanTest : public testing::Test {};
 
@@ -110,9 +107,7 @@ using TestingTypes = ::testing::Types<
     Eigen::MatrixXd,
     Eigen::Matrix<double, -1, -1, Eigen::RowMajor>
 >;
-
 TYPED_TEST_SUITE(EigenSubspanTest, TestingTypes);
-
 
 TYPED_TEST(EigenSubspanTest, baseline)
 {
@@ -155,3 +150,5 @@ TEST(expressions_eigen, subspan_traits)
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int const &>);
   }
 }
+
+} // namespace

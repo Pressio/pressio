@@ -5,6 +5,7 @@
 
 namespace
 {
+
 template <typename T>
 void fill_matrix(T & A)
 {
@@ -22,6 +23,7 @@ void check_span_traits(T obj)
   static_assert(std::is_same_v<typename pressio::Traits<expr_t>::scalar_type, Scalar>);
   static_assert(std::is_same_v<typename pressio::Traits<expr_t>::reference_type, Scalar &>);
 }
-}
+
+} // namespace
 
 #endif  // EXPRESSIONS_TEST_HELPERS_HPP_

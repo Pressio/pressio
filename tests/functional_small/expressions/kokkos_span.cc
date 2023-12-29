@@ -5,6 +5,7 @@
 
 namespace
 {
+
 using kv_t = Kokkos::View<double*, Kokkos::HostSpace>;
 
 kv_t create_view(){
@@ -15,7 +16,6 @@ kv_t create_view(){
   a(3)=4.1;
   a(4)=5.1;
   return a;
-}
 }
 
 TEST(expressions_kokkos, span0)
@@ -65,7 +65,7 @@ TEST(expressions_kokkos, span1)
 TEST(expressions_kokkos, span2)
 {
   auto a = create_view();
-  const kv_t b = a;
+  const auto b = a;
   auto s = pressio::span(b, 2, 2);
   s(0)=10.;
   s(1)=11.;
@@ -85,7 +85,7 @@ TEST(expressions_kokkos, span2)
 TEST(expressions_kokkos, span_traits)
 {
   {
-    Kokkos::View<double*, Kokkos::HostSpace> o("o", 10);
+    kv_t o("o", 10);
     check_span_traits<double>(o);
   }
 
@@ -95,9 +95,10 @@ TEST(expressions_kokkos, span_traits)
   }
 
   {
-    using T = Kokkos::View<double*, Kokkos::HostSpace>;
-    T o("o", 10);
-    typename T::const_type o2 = o;
+    kv_t o("o", 10);
+    typename kv_t::const_type o2 = o;
     check_span_traits<const double>(o2);
   }
 }
+
+} // namespace

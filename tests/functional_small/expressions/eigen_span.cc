@@ -23,9 +23,6 @@ template <typename T>
 class EigenSpanTest : public testing::Test {};
 
 using TestingTypes = ::testing::Types<double, int, float>;
-
-} //end namespace
-
 TYPED_TEST_SUITE(EigenSpanTest, TestingTypes);
 
 TYPED_TEST(EigenSpanTest, baseline) {
@@ -122,3 +119,5 @@ TEST(expressions_eigen, span_traits)
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int const &>);
   }
 }
+
+} // namespace
