@@ -103,12 +103,12 @@ TEST(expressions_eigen, span_traits)
 {
   {
     Eigen::VectorXd o(10);
-    check_span_traits<double>(o);
+    helpers::check_span_traits<double>(o);
   }
 
   {
     Eigen::Matrix<int,-1,1> o(10);
-    check_span_traits<int>(o);
+    helpers::check_span_traits<int>(o);
   }
 
   {

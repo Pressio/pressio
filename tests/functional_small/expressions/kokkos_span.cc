@@ -86,18 +86,18 @@ TEST(expressions_kokkos, span_traits)
 {
   {
     kv_t o("o", 10);
-    check_span_traits<double>(o);
+    helpers::check_span_traits<double>(o);
   }
 
   {
     Kokkos::View<double[4], Kokkos::HostSpace> o("o");
-    check_span_traits<double>(o);
+    helpers::check_span_traits<double>(o);
   }
 
   {
     kv_t o("o", 10);
     typename kv_t::const_type o2 = o;
-    check_span_traits<const double>(o2);
+    helpers::check_span_traits<const double>(o2);
   }
 }
 

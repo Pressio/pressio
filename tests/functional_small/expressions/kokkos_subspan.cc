@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include "test_helpers.hpp"
+
 #include "pressio/expressions.hpp"
 
 namespace
@@ -79,29 +81,22 @@ TEST(expressions_kokkos, subspan2)
 
 TEST(expressions_kokkos, span_traits)
 {
-  using pair_t = std::pair<std::size_t, std::size_t>;
-
   {
     n_t o("o", 10, 10);
-    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
-    static_assert(pressio::Traits<expr_t>::rank == 2);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+    helpers::check_subspan_traits<double>(o);
   }
 
   {
-    using T = Kokkos::View<double[4][4], Kokkos::HostSpace>;
-    T o("o");
-    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
-    static_assert(pressio::Traits<expr_t>::rank == 2);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+    Kokkos::View<double[4][4], Kokkos::HostSpace> o("o");
+    helpers::check_subspan_traits<double>(o);
   }
 
   {
+    using pair_t = std::pair<std::size_t, std::size_t>;
     n_t o("o",10, 10);
     typename n_t::const_type o2 = o;
     using expr_t = decltype(pressio::subspan(o2, pair_t{0, 1}, pair_t{0,1}));
+
     static_assert(pressio::Traits<expr_t>::rank == 2);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, const double>);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, const double &>);

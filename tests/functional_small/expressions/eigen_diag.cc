@@ -66,7 +66,7 @@ TEST(expressions_eigen, diag)
   using eigmat_t = Eigen::MatrixXd;
 
   eigmat_t A(4,4);
-  fill_matrix(A);
+  helpers::fill_matrix(A);
   test1(A);
   test2(A);
   testConst(A);
@@ -76,7 +76,7 @@ TEST(expressions_eigen, diagRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
   eigmat_t A(4,4);
-  fill_matrix(A);
+  helpers::fill_matrix(A);
   test1(A);
   test2(A);
   testConst(A);

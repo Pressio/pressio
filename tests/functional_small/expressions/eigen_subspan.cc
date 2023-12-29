@@ -1,5 +1,7 @@
 
 #include <gtest/gtest.h>
+#include "test_helpers.hpp"
+
 #include "pressio/expressions.hpp"
 
 namespace
@@ -121,30 +123,21 @@ TYPED_TEST(EigenSubspanTest, baseline)
 
 TEST(expressions_eigen, subspan_traits)
 {
-  using pair_t = std::pair<std::size_t, std::size_t>;
-
   {
-    using T = Eigen::MatrixXd;
-    T o(10,10);
-    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
-    static_assert(pressio::Traits<expr_t>::rank == 2);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, double>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, double &>);
+    Eigen::MatrixXd o(10,10);
+    helpers::check_subspan_traits<double>(o);
   }
 
   {
-    using T = Eigen::Matrix<int,-1,-1>;
-    T o(10,10);
-    using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
-    static_assert(pressio::Traits<expr_t>::rank == 2);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, int>);
-    static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int &>);
+    Eigen::Matrix<int,-1,-1> o(10,10);
+    helpers::check_subspan_traits<int>(o);
   }
 
   {
-    using T = Eigen::Matrix<int,-1,-1>;
-    const T o(10,10);
+    using pair_t = std::pair<std::size_t, std::size_t>;
+    const Eigen::Matrix<int,-1,-1> o(10,10);
     using expr_t = decltype(pressio::subspan(o, pair_t{0, 1}, pair_t{0,1}));
+
     static_assert(pressio::Traits<expr_t>::rank == 2);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::scalar_type, int>);
     static_assert(std::is_same_v<pressio::Traits<expr_t>::reference_type, int const &>);

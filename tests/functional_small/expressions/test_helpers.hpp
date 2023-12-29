@@ -3,7 +3,7 @@
 
 #include "pressio/expressions.hpp"
 
-namespace
+namespace helpers
 {
 
 template <typename T>
@@ -19,11 +19,23 @@ template <typename Scalar, typename T>
 void check_span_traits(T obj)
 {
   using expr_t = decltype(pressio::span(obj, 0, 1));
+
   static_assert(pressio::Traits<expr_t>::rank == 1);
   static_assert(std::is_same_v<typename pressio::Traits<expr_t>::scalar_type, Scalar>);
   static_assert(std::is_same_v<typename pressio::Traits<expr_t>::reference_type, Scalar &>);
 }
 
-} // namespace
+template <typename Scalar, typename T>
+void check_subspan_traits(T obj)
+{
+  using pair_t = std::pair<std::size_t, std::size_t>;
+  using expr_t = decltype(pressio::subspan(obj, pair_t{0, 1}, pair_t{0,1}));
+
+  static_assert(pressio::Traits<expr_t>::rank == 2);
+  static_assert(std::is_same_v<typename pressio::Traits<expr_t>::scalar_type, Scalar>);
+  static_assert(std::is_same_v<typename pressio::Traits<expr_t>::reference_type, Scalar &>);
+}
+
+} // namespace helpers
 
 #endif  // EXPRESSIONS_TEST_HELPERS_HPP_
