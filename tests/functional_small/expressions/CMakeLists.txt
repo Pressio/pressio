@@ -23,8 +23,8 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/tpetra_column.cc)
-  add_utest_mpi(${TESTING_LEVEL}_expressions_tpetra_column "${SRC}" gTestMain_tpetra 3)
+  add_utest_mpi(${TESTING_LEVEL}_expressions_tpetra_column gTestMain_tpetra 3 "${SRC}")
 
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/tpetra_block_column.cc)
-  add_utest_mpi(${TESTING_LEVEL}_expressions_tpetra_block_column "${SRC}" gTestMain_tpetra 3)
+  add_utest_mpi(${TESTING_LEVEL}_expressions_tpetra_block_column gTestMain_tpetra 3 "${SRC}")
 endif()

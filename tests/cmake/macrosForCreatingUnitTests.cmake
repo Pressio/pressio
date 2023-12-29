@@ -13,9 +13,9 @@ macro(add_serial_utest_kokkos TESTNAME)
 endmacro()
 #=====================================================================
 
-macro(add_utest_mpi TESTNAME TESTSRCS gMAIN nRANKS)
+macro(add_utest_mpi TESTNAME gMAIN nRANKS)
   set(testNameFinal ${TESTNAME}_np${nRANKS})
-  add_executable(${testNameFinal} ${TESTSRCS} ${GTESTMAINSDIR}/${gMAIN}.cc)
+  add_executable(${testNameFinal} ${ARGN} ${GTESTMAINSDIR}/${gMAIN}.cc)
   target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES} pressio gtest_main)
   add_test(
     NAME ${testNameFinal}
