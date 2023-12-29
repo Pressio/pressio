@@ -5,7 +5,7 @@
 using vec_t = Eigen::VectorXd;
 using mat_t = Eigen::MatrixXd;
 
-TEST(ops_eigen, column_extent)
+TEST(ops_eigen_column, extent)
 {
   mat_t a(5,5);
   auto ex = pressio::column(a, 0);
@@ -13,7 +13,7 @@ TEST(ops_eigen, column_extent)
   ASSERT_TRUE(pressio::ops::extent(ex,1)==1);
 }
 
-TEST(ops_eigen, column_abs)
+TEST(ops_eigen_column, abs)
 {
   mat_t a(5,5);
   a.setConstant(-1);
@@ -28,7 +28,7 @@ TEST(ops_eigen, column_abs)
   ASSERT_DOUBLE_EQ(y(4),1.);
 }
 
-TEST(ops_eigen, column_scale)
+TEST(ops_eigen_column, scale)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -52,7 +52,7 @@ TEST(ops_eigen, column_scale)
   ASSERT_DOUBLE_EQ(a(4,1),3.);
 }
 
-TEST(ops_eigen, column_set_zero)
+TEST(ops_eigen_column, set_zero)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -76,7 +76,7 @@ TEST(ops_eigen, column_set_zero)
   ASSERT_DOUBLE_EQ(a(4,1),0.);
 }
 
-TEST(ops_eigen, column_fill)
+TEST(ops_eigen_column, fill)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -100,7 +100,7 @@ TEST(ops_eigen, column_fill)
   ASSERT_DOUBLE_EQ(a(4,1),44.);
 }
 
-TEST(ops_eigen, column_min_max)
+TEST(ops_eigen_column, min_max)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -118,7 +118,7 @@ TEST(ops_eigen, column_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(exp), 21.);
 }
 
-TEST(ops_eigen, column_norms)
+TEST(ops_eigen_column, norms)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -139,7 +139,7 @@ TEST(ops_eigen, column_norms)
   ASSERT_DOUBLE_EQ(pressio::ops::norm2(exp), gold.lpNorm<2>());
 }
 
-TEST(ops_eigen, column_dot_vector)
+TEST(ops_eigen_column, dot_vector)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -159,7 +159,7 @@ TEST(ops_eigen, column_dot_vector)
   ASSERT_DOUBLE_EQ(pressio::ops::dot(exp,b), 110.);
 }
 
-TEST(ops_eigen, column_dot_diag)
+TEST(ops_eigen_column, dot_diag)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -183,7 +183,7 @@ TEST(ops_eigen, column_dot_diag)
   ASSERT_DOUBLE_EQ(pressio::ops::dot(exp,exp),855.);
 }
 
-TEST(ops_eigen, column_pow)
+TEST(ops_eigen_column, pow)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
@@ -216,7 +216,7 @@ Eigen::MatrixXd createMatrixForUpdate(){
 }
 }
 
-TEST(ops_eigen, column_update1)
+TEST(ops_eigen_column, update1)
 {
   auto M1 = createMatrixForUpdate();
   auto d1 = pressio::column(M1,0);

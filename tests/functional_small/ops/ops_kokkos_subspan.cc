@@ -5,7 +5,7 @@
 using vec_t = Kokkos::View<double*>;
 using mat_t = Kokkos::View<double**>;
 
-TEST(ops_kokkos, subspan_extent)
+TEST(ops_kokkos_subspan, _extent)
 {
   mat_t A("A",5,5);
   std::pair<int,int> r(1,3);
@@ -17,7 +17,7 @@ TEST(ops_kokkos, subspan_extent)
   ASSERT_TRUE(pressio::ops::extent(ex,2)==1); // check extent over the rank
 }
 
-TEST(ops_kokkos, subspan_scale)
+TEST(ops_kokkos_subspan, _scale)
 {
   mat_t A("A",4,5);
   KokkosBlas::fill(A,1.);
@@ -53,7 +53,7 @@ TEST(ops_kokkos, subspan_scale)
   ASSERT_DOUBLE_EQ(A_h(3,4),1.);
 }
 
-TEST(ops_kokkos, subspan_set_zero)
+TEST(ops_kokkos_subspan, _set_zero)
 {
   mat_t A("A",4,5);
   KokkosBlas::fill(A,1.);
@@ -89,7 +89,7 @@ TEST(ops_kokkos, subspan_set_zero)
   ASSERT_DOUBLE_EQ(A_h(3,4),1.);
 }
 
-TEST(ops_kokkos, subspan_fill)
+TEST(ops_kokkos_subspan, _fill)
 {
   mat_t A("A",4,5);
   KokkosBlas::fill(A,1.);
@@ -125,7 +125,7 @@ TEST(ops_kokkos, subspan_fill)
   ASSERT_DOUBLE_EQ(A_h(3,4),1.);
 }
 
-TEST(ops_kokkos, subspan_min_max)
+TEST(ops_kokkos_subspan, _min_max)
 {
   mat_t A("A", 6, 6);
   auto A_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), A);

@@ -34,7 +34,7 @@ void fill3(T v)
 }
 }//end namespace
 
-TEST(ops_kokkos, vector_clone)
+TEST(ops_kokkos_vector, vector_clone)
 {
   Kokkos::View<double*> a("a", 6);
   fill1(a);
@@ -48,14 +48,14 @@ TEST(ops_kokkos, vector_clone)
   }
 }
 
-TEST(ops_kokkos, vector_extent)
+TEST(ops_kokkos_vector, vector_extent)
 {
   Kokkos::View<double*> a("a", 6);
   ASSERT_TRUE(pressio::ops::extent(a,0)== 6);
   ASSERT_TRUE(pressio::ops::extent(a,1)== 1); // check extent over the rank
 }
 
-TEST(ops_kokkos, vector_abs)
+TEST(ops_kokkos_vector, vector_abs)
 {
   Kokkos::View<double*> x("a", 6);
   fill2(x);
@@ -72,7 +72,7 @@ TEST(ops_kokkos, vector_abs)
   EXPECT_DOUBLE_EQ(y_h(5), 5.);
 }
 
-TEST(ops_kokkos, vector_setzero)
+TEST(ops_kokkos_vector, vector_setzero)
 {
   Kokkos::View<double*> x("a", 6);
   fill1(x);
@@ -84,7 +84,7 @@ TEST(ops_kokkos, vector_setzero)
   }
 }
 
-TEST(ops_kokkos, vector_scale)
+TEST(ops_kokkos_vector, vector_scale)
 {
   Kokkos::View<double*> x("a", 6);
   fill1(x);
@@ -110,7 +110,7 @@ TEST(ops_kokkos, vector_scale)
   EXPECT_DOUBLE_EQ(x_h(5), 0.);
 }
 
-TEST(ops_kokkos, vector_fill)
+TEST(ops_kokkos_vector, vector_fill)
 {
   Kokkos::View<double*> x("a", 6);
   pressio::ops::fill(x, 44.44);
@@ -123,14 +123,14 @@ TEST(ops_kokkos, vector_fill)
   EXPECT_DOUBLE_EQ(x_h(5), 44.44);
 }
 
-TEST(ops_kokkos, vector_resize)
+TEST(ops_kokkos_vector, vector_resize)
 {
   Kokkos::View<double*> x("a", 6);
   pressio::ops::resize(x,3);
   ASSERT_EQ(x.extent(0), 3);
 }
 
-TEST(ops_kokkos, vector_deep_copy)
+TEST(ops_kokkos_vector, vector_deep_copy)
 {
   Kokkos::View<double*> x("a", 6);
   pressio::ops::fill(x, 44.);
@@ -143,7 +143,7 @@ TEST(ops_kokkos, vector_deep_copy)
   }
 }
 
-TEST(ops_kokkos, vector_min_max)
+TEST(ops_kokkos_vector, vector_min_max)
 {
   Kokkos::View<double*> x("x", 6);
   auto x_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), x);
@@ -156,21 +156,21 @@ TEST(ops_kokkos, vector_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(x), 100.);
 }
 
-TEST(ops_kokkos, vector_norm1)
+TEST(ops_kokkos_vector, vector_norm1)
 {
   Kokkos::View<double*> x("a", 6);
   fill1(x);
   ASSERT_DOUBLE_EQ(pressio::ops::norm1(x), 15);
 }
 
-TEST(ops_kokkos, vector_norm2)
+TEST(ops_kokkos_vector, vector_norm2)
 {
   Kokkos::View<double*> x("a", 6);
   fill1(x);
   ASSERT_DOUBLE_EQ(pressio::ops::norm2(x), 7.416198487095663);
 }
 
-TEST(ops_kokkos, vector_dot)
+TEST(ops_kokkos_vector, vector_dot)
 {
   Kokkos::View<double*> a("a", 6);
   pressio::ops::fill(a, 1.);
@@ -182,7 +182,7 @@ TEST(ops_kokkos, vector_dot)
   ASSERT_DOUBLE_EQ(result,12.);
 }
 
-TEST(ops_kokkos, vector_pow)
+TEST(ops_kokkos_vector, vector_pow)
 {
   Kokkos::View<double*> a("a", 6);
   fill1(a);
@@ -197,7 +197,7 @@ TEST(ops_kokkos, vector_pow)
   EXPECT_DOUBLE_EQ(a_h(5), 25.);
 }
 
-TEST(ops_kokkos, vector_absPowPos)
+TEST(ops_kokkos_vector, vector_absPowPos)
 {
   Kokkos::View<double*> x("x", 6);
   fill2(x);
@@ -214,7 +214,7 @@ TEST(ops_kokkos, vector_absPowPos)
   EXPECT_DOUBLE_EQ(y_h(5), 125.);
 }
 
-TEST(ops_kokkos, vector_absPowNeg)
+TEST(ops_kokkos_vector, vector_absPowNeg)
 {
   Kokkos::View<double*> x("x", 6);
   fill2(x);
@@ -230,7 +230,7 @@ TEST(ops_kokkos, vector_absPowNeg)
   EXPECT_DOUBLE_EQ(y_h(5), 1./125.);
 }
 
-TEST(ops_kokkos, vector_update1)
+TEST(ops_kokkos_vector, vector_update1)
 {
   Kokkos::View<double*> v("v", 3);
   Kokkos::View<double*> a("a", 3);
@@ -250,7 +250,7 @@ TEST(ops_kokkos, vector_update1)
   EXPECT_DOUBLE_EQ( v_h2(2), 3.0);
 }
 
-TEST(ops_kokkos, vector_update2)
+TEST(ops_kokkos_vector, vector_update2)
 {
   Kokkos::View<double*> v("v", 3);
   Kokkos::View<double*> a("a", 3);
@@ -272,7 +272,7 @@ TEST(ops_kokkos, vector_update2)
   EXPECT_DOUBLE_EQ( v_h2(2), 6.0);
 }
 
-TEST(ops_kokkos, vector_update3)
+TEST(ops_kokkos_vector, vector_update3)
 {
   Kokkos::View<double*> v("v", 3);
   Kokkos::View<double*> a("a", 3);
@@ -296,7 +296,7 @@ TEST(ops_kokkos, vector_update3)
   EXPECT_DOUBLE_EQ( v_h2(2), 9.0);
 }
 
-TEST(ops_kokkos, vector_update4)
+TEST(ops_kokkos_vector, vector_update4)
 {
   Kokkos::View<double*> v("v", 3);
   Kokkos::View<double*> a("a", 3);
@@ -322,7 +322,7 @@ TEST(ops_kokkos, vector_update4)
   EXPECT_DOUBLE_EQ( v_h2(2), 12.0);
 }
 
-TEST(ops_kokkos, vector_update_nan1)
+TEST(ops_kokkos_vector, vector_update_nan1)
 {
   Kokkos::View<double*> v("v", 3);
   Kokkos::View<double*> a("a", 3);
@@ -370,7 +370,7 @@ TEST(ops_kokkos, vector_update_nan1)
 }
 
 // injects NaN through the updated vector
-TEST(ops_kokkos, vector_update_nan2)
+TEST(ops_kokkos_vector, vector_update_nan2)
 {
   const auto nan = std::nan("0");
   Kokkos::View<double*> v("v", 3);
@@ -403,7 +403,7 @@ TEST(ops_kokkos, vector_update_nan2)
   EXPECT_DOUBLE_EQ(v_h(0), 4.0);
 }
 
-TEST(ops_kokkos, vector_update_expr_span)
+TEST(ops_kokkos_vector, vector_update_expr_span)
 {
   Kokkos::View<double*> v0("v_span", 5);
   Kokkos::View<double*> a0("a_span", 5);
@@ -426,7 +426,7 @@ TEST(ops_kokkos, vector_update_expr_span)
   EXPECT_DOUBLE_EQ( v_h(2), 30.0);
 }
 
-TEST(ops_kokkos, vector_update_expr_diag)
+TEST(ops_kokkos_vector, vector_update_expr_diag)
 {
   Kokkos::View<double**> v0("v_diag", 3, 3);
   Kokkos::View<double**> a0("a_diag", 3, 3);
@@ -449,7 +449,7 @@ TEST(ops_kokkos, vector_update_expr_diag)
   EXPECT_DOUBLE_EQ( v_h(2), 30.0);
 }
 
-TEST(ops_kokkos, vector_elementwiseMultiply)
+TEST(ops_kokkos_vector, vector_elementwiseMultiply)
 {
   Kokkos::View<double*> y("y", 3);
   Kokkos::View<double*> x("x", 3);

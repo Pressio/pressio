@@ -3,52 +3,29 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/fixtures)
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_vector.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_vector_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_matrix.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_matrix_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_diag.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_diag_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_column.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_column_expr_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_span.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_span_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_subspan.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_subspan_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_level2.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_level2_eigen "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_eigen_level3.cc)
-  add_serial_utest(${TESTING_LEVEL}_ops_level3_eigen "${SRC1}")
+  add_serial_utest(
+    ${TESTING_LEVEL}_ops_eigen
+    ops_eigen_vector.cc
+    ops_eigen_matrix.cc
+    ops_eigen_diag.cc
+    ops_eigen_column.cc
+    ops_eigen_span.cc
+    ops_eigen_subspan.cc
+    ops_eigen_level2.cc
+    ops_eigen_level3.cc
+  )
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_vector.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_vector_kokkos "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_matrix.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_matrix_kokkos "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_diag.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_diag_kokkos "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_span.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_span_kokkos "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_subspan.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_subspan_kokkos "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_level2.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_level2_kokkos "${SRC1}")
-
-  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_kokkos_level3.cc)
-  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_level3_kokkos "${SRC1}")
+  add_serial_utest_kokkos(${TESTING_LEVEL}_ops_vector_kokkos
+    ops_kokkos_vector.cc
+    ops_kokkos_matrix.cc
+    ops_kokkos_diag.cc
+    ops_kokkos_span.cc
+    ops_kokkos_subspan.cc
+    ops_kokkos_level2.cc
+    ops_kokkos_level3.cc
+  )
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)

@@ -3,7 +3,7 @@
 #include "pressio/ops.hpp"
 
 
-TEST(ops_eigen, subspan_extent)
+TEST(ops_eigen_subspan, extent)
 {
   using T = Eigen::MatrixXd;
   T A(5,5);
@@ -16,7 +16,7 @@ TEST(ops_eigen, subspan_extent)
   ASSERT_EQ(1, pressio::ops::extent(ex, 2)); // check extent over the rank
 }
 
-TEST(ops_eigen, subspan_scale)
+TEST(ops_eigen_subspan, scale)
 {
   using T = Eigen::MatrixXd;
   T a(4,5);
@@ -52,7 +52,7 @@ TEST(ops_eigen, subspan_scale)
   ASSERT_DOUBLE_EQ(a(3,4),1.);
 }
 
-TEST(ops_eigen, subspan_set_zero)
+TEST(ops_eigen_subspan, set_zero)
 {
   using T = Eigen::MatrixXd;
   T a(4,5);
@@ -88,7 +88,7 @@ TEST(ops_eigen, subspan_set_zero)
   ASSERT_DOUBLE_EQ(a(3,4),1.);
 }
 
-TEST(ops_eigen, subspan_fill)
+TEST(ops_eigen_subspan, fill)
 {
   using T = Eigen::MatrixXd;
   T a(4,5);
@@ -124,7 +124,7 @@ TEST(ops_eigen, subspan_fill)
   ASSERT_DOUBLE_EQ(a(3,4),1.);
 }
 
-TEST(ops_eigen, subspan_min_max)
+TEST(ops_eigen_subspan, min_max)
 {
   using T = Eigen::MatrixXd;
   T a(5, 5);

@@ -5,7 +5,7 @@
 using vec_t = Kokkos::View<double*>;
 using mat_t = Kokkos::View<double**>;
 
-TEST(ops_kokkos, span_extent)
+TEST(ops_kokkos_span, extent)
 {
   vec_t a("a", 8);
   auto ex = pressio::span(a,5,2);
@@ -13,7 +13,7 @@ TEST(ops_kokkos, span_extent)
   ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
 
-TEST(ops_kokkos, span_abs)
+TEST(ops_kokkos_span, abs)
 {
   vec_t a("a", 8);
   KokkosBlas::fill(a, -1.);
@@ -26,7 +26,7 @@ TEST(ops_kokkos, span_abs)
   ASSERT_DOUBLE_EQ(y_h(1),1.);
 }
 
-TEST(ops_kokkos, span_scale)
+TEST(ops_kokkos_span, scale)
 {
   vec_t a("a",6);
   KokkosBlas::fill(a, 1.);
@@ -42,7 +42,7 @@ TEST(ops_kokkos, span_scale)
   ASSERT_DOUBLE_EQ(a_h(5),1.);
 }
 
-TEST(ops_kokkos, span_set_zero)
+TEST(ops_kokkos_span, set_zero)
 {
   vec_t a("a",6);
   KokkosBlas::fill(a, 1.2);
@@ -58,7 +58,7 @@ TEST(ops_kokkos, span_set_zero)
   ASSERT_DOUBLE_EQ(a_h(5),1.2);
 }
 
-TEST(ops_kokkos, span_fill)
+TEST(ops_kokkos_span, fill)
 {
   vec_t a("a",6);
   KokkosBlas::fill(a, 1.2);
@@ -74,7 +74,7 @@ TEST(ops_kokkos, span_fill)
   ASSERT_DOUBLE_EQ(a_h(5),1.2);
 }
 
-TEST(ops_kokkos, span_min_max)
+TEST(ops_kokkos_span, min_max)
 {
   vec_t a("a",6);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
@@ -88,7 +88,7 @@ TEST(ops_kokkos, span_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(sp), 1.);
 }
 
-TEST(ops_kokkos, span_norms)
+TEST(ops_kokkos_span, norms)
 {
   vec_t a("a",6);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
@@ -102,7 +102,7 @@ TEST(ops_kokkos, span_norms)
   ASSERT_DOUBLE_EQ(pressio::ops::norm2(sp), std::sqrt(14.));
 }
 
-TEST(ops_kokkos, span_dot)
+TEST(ops_kokkos_span, dot)
 {
   vec_t a("a",6);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
@@ -117,7 +117,7 @@ TEST(ops_kokkos, span_dot)
   ASSERT_DOUBLE_EQ(pressio::ops::dot(sp, b), 12.);
 }
 
-TEST(ops_kokkos, span_pow)
+TEST(ops_kokkos_span, pow)
 {
   vec_t a("a",8);
   auto a_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), a);
@@ -153,7 +153,7 @@ vec_t createVectorForUpdate()
 }
 }
 
-TEST(ops_kokkos, span_update1)
+TEST(ops_kokkos_span, update1)
 {
   auto M1 = createVectorForUpdate();
   auto d1 = pressio::span(M1,2,3);
@@ -179,7 +179,7 @@ TEST(ops_kokkos, span_update1)
   EXPECT_DOUBLE_EQ( M1_h(5), 0.0);
 }
 
-TEST(ops_kokkos, span_update2)
+TEST(ops_kokkos_span, update2)
 {
   auto M1 = createVectorForUpdate();
   auto v = pressio::span(M1,2,3);
@@ -201,7 +201,7 @@ TEST(ops_kokkos, span_update2)
   EXPECT_DOUBLE_EQ( M1_h(4), 6.0);
 }
 
-TEST(ops_kokkos, span_update3)
+TEST(ops_kokkos_span, update3)
 {
   auto M1 = createVectorForUpdate();
   auto v = pressio::span(M1,2,3);
@@ -225,7 +225,7 @@ TEST(ops_kokkos, span_update3)
   EXPECT_DOUBLE_EQ( M1_h(4), 9.0);
 }
 
-TEST(ops_kokkos, span_update4)
+TEST(ops_kokkos_span, update4)
 {
   auto M1 = createVectorForUpdate();
   auto v = pressio::span(M1,2,3);
@@ -251,7 +251,7 @@ TEST(ops_kokkos, span_update4)
   EXPECT_DOUBLE_EQ( M1_h(4), 12.0);
 }
 
-TEST(ops_kokkos, span_elementwiseMultiply)
+TEST(ops_kokkos_span, elementwiseMultiply)
 {
   vec_t M1("M1",6);
   vec_t M2("M2",7);
