@@ -7,9 +7,9 @@ macro(add_serial_utest TESTNAME)
 endmacro()
 #=====================================================================
 
-macro(add_serial_utest_kokkos TESTNAME TESTSRCS)
+macro(add_serial_utest_kokkos TESTNAME)
   set(testNameFinal ${TESTNAME})
-  add_executable(${testNameFinal} ${TESTSRCS} ${GTESTMAINSDIR}/gTestMain_kokkos.cc)
+  add_executable(${testNameFinal} ${ARGN} ${GTESTMAINSDIR}/gTestMain_kokkos.cc)
   target_link_libraries(${testNameFinal} ${KOKKOS_LIBS} pressio gtest_main)
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
 endmacro()

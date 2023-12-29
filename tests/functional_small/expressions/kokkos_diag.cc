@@ -11,7 +11,7 @@ TEST(expressions_kokkos, diag1)
 {
   using n_t = Kokkos::View<double **, Kokkos::HostSpace>;
   n_t A("A", 4,4);
-  fill_matrix(A);
+  helpers::fill_matrix(A);
 
   auto d = pressio::diagonal(A);
   d(0) = 5.;
@@ -41,7 +41,7 @@ TEST(expressions_kokkos, diag2)
 {
   using n_t = Kokkos::View<double**, Kokkos::HostSpace>;
   n_t A("A", 4,4);
-  fill_matrix(A);
+  helpers::fill_matrix(A);
 
   using T = Kokkos::View<const double**, Kokkos::HostSpace>;
   T B = A;
