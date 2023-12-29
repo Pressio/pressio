@@ -1,17 +1,15 @@
 
 macro(add_serial_utest TESTNAME)
-  set(testNameFinal ${TESTNAME})
-  add_executable(${testNameFinal} ${ARGN} ${GTESTMAINSDIR}/gTestMain_serial.cc)
-  target_link_libraries(${testNameFinal} pressio gtest_main)
-  add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
+  add_executable(${TESTNAME} ${ARGN} ${GTESTMAINSDIR}/gTestMain_serial.cc)
+  target_link_libraries(${TESTNAME} pressio gtest_main)
+  add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
 endmacro()
 #=====================================================================
 
 macro(add_serial_utest_kokkos TESTNAME)
-  set(testNameFinal ${TESTNAME})
-  add_executable(${testNameFinal} ${ARGN} ${GTESTMAINSDIR}/gTestMain_kokkos.cc)
-  target_link_libraries(${testNameFinal} ${KOKKOS_LIBS} pressio gtest_main)
-  add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
+  add_executable(${TESTNAME} ${ARGN} ${GTESTMAINSDIR}/gTestMain_kokkos.cc)
+  target_link_libraries(${TESTNAME} ${KOKKOS_LIBS} pressio gtest_main)
+  add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
 endmacro()
 #=====================================================================
 
