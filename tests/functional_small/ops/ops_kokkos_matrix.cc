@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-TEST(ops_kokkos, dense_matrix_clone)
+TEST(ops_kokkos_matrix, dense_matrix_clone)
 {
   Kokkos::View<double**> A("A", 6,8);
   auto A_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), A);
@@ -26,7 +26,7 @@ TEST(ops_kokkos, dense_matrix_clone)
   }
 }
 
-TEST(ops_kokkos, dense_matrix_extent)
+TEST(ops_kokkos_matrix, dense_matrix_extent)
 {
   Kokkos::View<double**> A("A", 6,8);
   ASSERT_TRUE(pressio::ops::extent(A,0) == 6);
@@ -34,7 +34,7 @@ TEST(ops_kokkos, dense_matrix_extent)
   ASSERT_TRUE(pressio::ops::extent(A,2) == 1); // check extent over the rank
 }
 
-TEST(ops_kokkos, dense_matrix_scale)
+TEST(ops_kokkos_matrix, dense_matrix_scale)
 {
   Kokkos::View<double**> A("A", 6,8);
   KokkosBlas::fill(A, 1.);
@@ -49,7 +49,7 @@ TEST(ops_kokkos, dense_matrix_scale)
 }
 
 
-TEST(ops_kokkos, dense_matrix_setzero)
+TEST(ops_kokkos_matrix, dense_matrix_setzero)
 {
   Kokkos::View<double**> A("A", 6,8);
   KokkosBlas::fill(A, 1.);
@@ -63,7 +63,7 @@ TEST(ops_kokkos, dense_matrix_setzero)
   }
 }
 
-TEST(ops_kokkos, dense_matrix_fill)
+TEST(ops_kokkos_matrix, dense_matrix_fill)
 {
   Kokkos::View<double**> A("A", 6,8);
   pressio::ops::fill(A, 44.);
@@ -75,7 +75,7 @@ TEST(ops_kokkos, dense_matrix_fill)
   }
 }
 
-TEST(ops_kokkos, dense_matrix_resize)
+TEST(ops_kokkos_matrix, dense_matrix_resize)
 {
   Kokkos::View<double**> A("A", 6,8);
   ASSERT_EQ(A.extent(0), 6);
@@ -86,7 +86,7 @@ TEST(ops_kokkos, dense_matrix_resize)
   ASSERT_EQ(A.extent(1), 4);
 }
 
-TEST(ops_kokkos, dense_matrix_deep_copy)
+TEST(ops_kokkos_matrix, dense_matrix_deep_copy)
 {
   Kokkos::View<double**> A("A", 6,8);
   pressio::ops::fill(A,44.);
@@ -101,7 +101,7 @@ TEST(ops_kokkos, dense_matrix_deep_copy)
   }
 }
 
-TEST(ops_kokkos, dense_matrix_min_max)
+TEST(ops_kokkos_matrix, dense_matrix_min_max)
 {
   Kokkos::View<double**> A("A", 6, 3);
   auto A_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), A);
@@ -115,7 +115,7 @@ TEST(ops_kokkos, dense_matrix_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(A), 100.);
 }
 
-TEST(ops_kokkos, dense_matrix_update)
+TEST(ops_kokkos_matrix, dense_matrix_update)
 {
   Kokkos::View<double**> M("A", 2, 2);
   Kokkos::View<double**> A("A", 2, 2);
@@ -159,7 +159,7 @@ TEST(ops_kokkos, dense_matrix_update)
   EXPECT_DOUBLE_EQ(M_h(1, 1), 0.);
 }
 
-TEST(ops_kokkos, dense_matrix_update_epxr)
+TEST(ops_kokkos_matrix, dense_matrix_update_epxr)
 {
   Kokkos::View<double**> M0("M", 4, 4);
   Kokkos::View<double**> A0("A", 4, 4);

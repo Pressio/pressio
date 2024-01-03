@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-TEST(ops_eigen, span_extent)
+TEST(ops_eigen_span, extent)
 {
   using T = Eigen::VectorXd;
   T a(8);
@@ -11,7 +11,7 @@ TEST(ops_eigen, span_extent)
   ASSERT_TRUE(pressio::ops::extent(ex,1)==1); // check extent over the rank
 }
 
-TEST(ops_eigen, span_abs)
+TEST(ops_eigen_span, abs)
 {
   using T = Eigen::VectorXd;
   T a(8);
@@ -24,7 +24,7 @@ TEST(ops_eigen, span_abs)
   ASSERT_DOUBLE_EQ(y(1),1.);
 }
 
-TEST(ops_eigen, span_scale)
+TEST(ops_eigen_span, scale)
 {
   using T = Eigen::VectorXd;
   T a(6);
@@ -39,7 +39,7 @@ TEST(ops_eigen, span_scale)
   ASSERT_DOUBLE_EQ(a(5),1.);
 }
 
-TEST(ops_eigen, span_set_zero)
+TEST(ops_eigen_span, set_zero)
 {
   using T = Eigen::VectorXd;
   T a(6);
@@ -54,7 +54,7 @@ TEST(ops_eigen, span_set_zero)
   ASSERT_DOUBLE_EQ(a(5),1.2);
 }
 
-TEST(ops_eigen, span_fill)
+TEST(ops_eigen_span, fill)
 {
   using T = Eigen::VectorXd;
   T a(6);
@@ -69,7 +69,7 @@ TEST(ops_eigen, span_fill)
   ASSERT_DOUBLE_EQ(a(5),1.2);
 }
 
-TEST(ops_eigen, span_min_max)
+TEST(ops_eigen_span, min_max)
 {
   using T = Eigen::VectorXd;
   T a(6);
@@ -81,7 +81,7 @@ TEST(ops_eigen, span_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(sp), 3.);
 }
 
-TEST(ops_eigen, span_norms)
+TEST(ops_eigen_span, norms)
 {
   using T = Eigen::VectorXd;
   T a(6);
@@ -93,7 +93,7 @@ TEST(ops_eigen, span_norms)
   ASSERT_DOUBLE_EQ(pressio::ops::norm2(sp), std::sqrt(14.));
 }
 
-TEST(ops_eigen, span_dot)
+TEST(ops_eigen_span, dot)
 {
   using T = Eigen::VectorXd;
   T a(6);
@@ -108,7 +108,7 @@ TEST(ops_eigen, span_dot)
   ASSERT_DOUBLE_EQ(pressio::ops::dot(sp, b), 12.);
 }
 
-TEST(ops_eigen, span_pow)
+TEST(ops_eigen_span, pow)
 {
   using vec_t = Eigen::VectorXd;
   vec_t x(8);
@@ -139,7 +139,7 @@ Eigen::VectorXd createVectorForUpdate(){
 }
 }
 
-TEST(ops_eigen, span_update1)
+TEST(ops_eigen_span, update1)
 {
   auto M1 = createVectorForUpdate();
   auto d1 = pressio::span(M1,2,3);
@@ -157,7 +157,7 @@ TEST(ops_eigen, span_update1)
   EXPECT_DOUBLE_EQ( d1(2), 3.0);
 }
 
-TEST(ops_eigen, span_update2)
+TEST(ops_eigen_span, update2)
 {
   auto M1 = createVectorForUpdate();
   auto v = pressio::span(M1,2,3);
@@ -177,7 +177,7 @@ TEST(ops_eigen, span_update2)
   EXPECT_DOUBLE_EQ( v(2), 6.0);
 }
 
-TEST(ops_eigen, span_update3)
+TEST(ops_eigen_span, update3)
 {
   auto M1 = createVectorForUpdate();
   auto v = pressio::span(M1,2,3);
@@ -199,7 +199,7 @@ TEST(ops_eigen, span_update3)
   EXPECT_DOUBLE_EQ( v(2), 9.0);
 }
 
-TEST(ops_eigen, span_update4)
+TEST(ops_eigen_span, update4)
 {
   auto M1 = createVectorForUpdate();
   auto v = pressio::span(M1,2,3);
@@ -223,7 +223,7 @@ TEST(ops_eigen, span_update4)
   EXPECT_DOUBLE_EQ( v(2), 12.0);
 }
 
-TEST(ops_eigen, span_elementwiseMultiply)
+TEST(ops_eigen_span, elementwiseMultiply)
 {
   Eigen::VectorXd M1(6);
   M1(2)=1.; M1(3)=2.; M1(4)=3.;

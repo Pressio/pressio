@@ -20,7 +20,7 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS AND PRESSIO_ENABLE_TPL_EIGEN)
  set(SRC trial_subspace_tpetra_full_state_eigen_reduced_state)
- add_utest_mpi(${TESTING_LEVEL}_rom_${SRC} "${SRC}.cc" gTestMain_tpetra 3)
+ add_utest_mpi(${TESTING_LEVEL}_rom_${SRC} gTestMain_tpetra 3 "${SRC}.cc")
 endif()
 
 #

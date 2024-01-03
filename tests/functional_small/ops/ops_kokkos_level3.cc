@@ -147,21 +147,21 @@ void fillOperand2(T & M)
 }
 }//end namespace
 
-TEST(ops_kokkos, dense_matrix_dense_matrix_prod)
+TEST(ops_kokkos_level3, dense_matrix_dense_matrix_prod)
 {
   mat_t operand("M", 3,4);
   fillOperand1(operand);
   OPS_KOKKOS_DENSE_MAT_MAT_PROD(operand);
 }
 
-TEST(ops_kokkos, dense_matrix_T_dense_matrix_prod)
+TEST(ops_kokkos_level3, dense_matrix_T_dense_matrix_prod)
 {
   mat_t operand("M", 4,3);
   fillOperand2(operand);
   OPS_KOKKOS_DENSE_MAT_T_MAT_PROD(operand);
 }
 
-TEST(ops_kokkos, dense_matrix_T_self_prod)
+TEST(ops_kokkos_level3, dense_matrix_T_self_prod)
 {
   OPS_KOKKOS_DENSE_MAT_T_SELF_PROD;
 }

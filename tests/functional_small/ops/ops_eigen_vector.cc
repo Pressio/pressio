@@ -5,7 +5,7 @@
 using T = Eigen::VectorXd;
 using V_t = Eigen::Matrix<double,3,1>;
 
-TEST(ops_eigen, vector_clone)
+TEST(ops_eigen_vector, clone)
 {
   T a(6);
   for (int i=0; i<6; ++i){
@@ -23,14 +23,14 @@ TEST(ops_eigen, vector_clone)
   ASSERT_FALSE(b(0) == a(0));
 }
 
-TEST(ops_eigen, vector_extent)
+TEST(ops_eigen_vector, extent)
 {
   T x(6);
   ASSERT_TRUE(pressio::ops::extent(x,0)== 6);
   ASSERT_TRUE(pressio::ops::extent(x,1)== 1); // check extent over the rank
 }
 
-TEST(ops_eigen, vector_abs)
+TEST(ops_eigen_vector, abs)
 {
   T x(6);
   for (int i=0; i<6; ++i){
@@ -53,7 +53,7 @@ TEST(ops_eigen, vector_abs)
   }
 }
 
-TEST(ops_eigen, vector_scale)
+TEST(ops_eigen_vector, scale)
 {
   const size_t n = 6;
   T a(n);
@@ -71,7 +71,7 @@ TEST(ops_eigen, vector_scale)
   }
 }
 
-TEST(ops_eigen, vector_setzero)
+TEST(ops_eigen_vector, setzero)
 {
   T a(6);
   a.setConstant(11.);
@@ -82,7 +82,7 @@ TEST(ops_eigen, vector_setzero)
   }
 }
 
-TEST(ops_eigen, vector_fill)
+TEST(ops_eigen_vector, fill)
 {
   T a(6);
   a.setConstant(11.);
@@ -93,14 +93,14 @@ TEST(ops_eigen, vector_fill)
   }
 }
 
-TEST(ops_eigen, vector_resize)
+TEST(ops_eigen_vector, resize)
 {
   T a(6);
   pressio::ops::resize(a,3);
   ASSERT_EQ(a.size(), 3);
 }
 
-TEST(ops_eigen, vector_deep_copy)
+TEST(ops_eigen_vector, deep_copy)
 {
   T a(6);
   a.setConstant(44.);
@@ -112,7 +112,7 @@ TEST(ops_eigen, vector_deep_copy)
   }
 }
 
-TEST(ops_eigen, vector_min_max)
+TEST(ops_eigen_vector, min_max)
 {
   T a(5);
   for (int i=0; i<5; ++i){
@@ -123,7 +123,7 @@ TEST(ops_eigen, vector_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(a), 4.);
 }
 
-TEST(ops_eigen, vector_norm1)
+TEST(ops_eigen_vector, norm1)
 {
   T a(5);
   for (int i=0; i<5; ++i){
@@ -133,7 +133,7 @@ TEST(ops_eigen, vector_norm1)
   ASSERT_DOUBLE_EQ(pressio::ops::norm1(a), a.lpNorm<1>());
 }
 
-TEST(ops_eigen, vector_norm2)
+TEST(ops_eigen_vector, norm2)
 {
   T a(5);
   for (int i=0; i<5; ++i){
@@ -146,7 +146,7 @@ TEST(ops_eigen, vector_norm2)
  ASSERT_DOUBLE_EQ(pressio::ops::norm2(a), a.lpNorm<2>());
 }
 
-TEST(ops_eigen, vector_dot)
+TEST(ops_eigen_vector, dot)
 {
   T a(5);
   a.setConstant(1.);
@@ -156,7 +156,7 @@ TEST(ops_eigen, vector_dot)
   ASSERT_DOUBLE_EQ(pressio::ops::dot(a,b), 10.);
 }
 
-TEST(ops_eigen, vector_pow)
+TEST(ops_eigen_vector, pow)
 {
   T x(6);
   for (int i=0; i<6; ++i) x(i) = (double) i;
@@ -174,7 +174,7 @@ TEST(ops_eigen, vector_pow)
     EXPECT_DOUBLE_EQ(x(i), g(i));
 }
 
-TEST(ops_eigen, vector_absPowPos)
+TEST(ops_eigen_vector, absPowPos)
 {
   T y(6);
   T x(6);
@@ -196,7 +196,7 @@ TEST(ops_eigen, vector_absPowPos)
   }
 }
 
-TEST(ops_eigen, vector_absPowNeg)
+TEST(ops_eigen_vector, absPowNeg)
 {
   T y(6);
   T x(6);
@@ -221,7 +221,7 @@ TEST(ops_eigen, vector_absPowNeg)
   }
 }
 
-TEST(ops_eigen, vector_update1)
+TEST(ops_eigen_vector, update1)
 {
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
@@ -237,7 +237,7 @@ TEST(ops_eigen, vector_update1)
   EXPECT_DOUBLE_EQ( v(2), 3.0);
 }
 
-TEST(ops_eigen, vector_update2)
+TEST(ops_eigen_vector, update2)
 {
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
@@ -254,7 +254,7 @@ TEST(ops_eigen, vector_update2)
   EXPECT_DOUBLE_EQ( v(2), 6.0);
 }
 
-TEST(ops_eigen, vector_update3)
+TEST(ops_eigen_vector, update3)
 {
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
@@ -272,7 +272,7 @@ TEST(ops_eigen, vector_update3)
   EXPECT_DOUBLE_EQ( v(2), 9.0);
 }
 
-TEST(ops_eigen, vector_update4)
+TEST(ops_eigen_vector, update4)
 {
   V_t v; v << 1.,2.,3.;
   V_t a; a << 1.,2.,3.;
@@ -291,7 +291,7 @@ TEST(ops_eigen, vector_update4)
   EXPECT_DOUBLE_EQ( v(2), 12.0);
 }
 
-TEST(ops_eigen, vector_update_nan1)
+TEST(ops_eigen_vector, update_nan1)
 {
   V_t v, a, vecOfNans;
   pressio::ops::fill(v, 1.);
@@ -327,7 +327,7 @@ TEST(ops_eigen, vector_update_nan1)
 }
 
 // injects NaN through the updated vector
-TEST(ops_eigen, vector_update_nan2)
+TEST(ops_eigen_vector, update_nan2)
 {
   const auto nan = std::nan("0");
   V_t v, a;
@@ -354,7 +354,7 @@ TEST(ops_eigen, vector_update_nan2)
   EXPECT_DOUBLE_EQ(v(0), 4.0);
 }
 
-TEST(ops_eigen, vector_update_expr_span)
+TEST(ops_eigen_vector, update_expr_span)
 {
   T v0(5);
   T a0(5);
@@ -375,7 +375,7 @@ TEST(ops_eigen, vector_update_expr_span)
   EXPECT_DOUBLE_EQ(v(2), 30.0);
 }
 
-TEST(ops_eigen, vector_update_expr_diag)
+TEST(ops_eigen_vector, update_expr_diag)
 {
   Eigen::Matrix<double, 3, 3> v0;
   Eigen::Matrix<double, 3, 3> a0;
@@ -396,7 +396,7 @@ TEST(ops_eigen, vector_update_expr_diag)
   EXPECT_DOUBLE_EQ(v(2), 30.0);
 }
 
-TEST(ops_eigen, vector_elementwiseMultiply)
+TEST(ops_eigen_vector, elementwiseMultiply)
 {
   V_t y; y << 1.,2.,3.;
   V_t x; x << 2.,3.,4.;

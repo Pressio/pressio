@@ -72,21 +72,21 @@
   EXPECT_DOUBLE_EQ( myR(2), 0.0); \
 
 
-TEST(ops_eigen, dense_matrix_vector_prod)
+TEST(ops_eigen_level2, dense_matrix_vector_prod)
 {
   using V_t = Eigen::VectorXd;
   V_t a(3); a << 4.,2.,6;
   OPS_EIGEN_DENSEMATRIX_VEC_PROD(a);
 }
 
-TEST(ops_eigen, dense_matrix_T_vector_prod)
+TEST(ops_eigen_level2, dense_matrix_T_vector_prod)
 {
   using V_t = Eigen::VectorXd;
   V_t a(4); a << 4.,2.,6,3.;
   OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(a);
 }
 
-TEST(ops_eigen, dense_matrix_span_prod)
+TEST(ops_eigen_level2, dense_matrix_span_prod)
 {
   using V_t = Eigen::VectorXd;
   V_t a(7);
@@ -98,7 +98,7 @@ TEST(ops_eigen, dense_matrix_span_prod)
   OPS_EIGEN_DENSEMATRIX_VEC_PROD(sp);
 }
 
-TEST(ops_eigen, dense_matrix_T_span_prod)
+TEST(ops_eigen_level2, dense_matrix_T_span_prod)
 {
   using V_t = Eigen::VectorXd;
   V_t a(7);
@@ -111,7 +111,7 @@ TEST(ops_eigen, dense_matrix_T_span_prod)
   OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(sp);
 }
 
-TEST(ops_eigen, dense_matrix_column_prod){
+TEST(ops_eigen_level2, dense_matrix_column_prod){
   using T = Eigen::MatrixXd;
   T a(3,6);
   a.row(0).setConstant(4.);
@@ -121,7 +121,7 @@ TEST(ops_eigen, dense_matrix_column_prod){
   OPS_EIGEN_DENSEMATRIX_VEC_PROD(sp);
 }
 
-TEST(ops_eigen, dense_matrix_T_column_prod)
+TEST(ops_eigen_level2, dense_matrix_T_column_prod)
 {
   using T = Eigen::MatrixXd;
   T a(4,6);
@@ -133,7 +133,7 @@ TEST(ops_eigen, dense_matrix_T_column_prod)
   OPS_EIGEN_DENSEMATRIX_T_VEC_PROD(sp);
 }
 
-TEST(ops_eigen, dense_matrix_diag_prod)
+TEST(ops_eigen_level2, dense_matrix_diag_prod)
 {
   using T = Eigen::MatrixXd;
   T M0(3,3);
@@ -145,7 +145,7 @@ TEST(ops_eigen, dense_matrix_diag_prod)
   OPS_EIGEN_DENSEMATRIX_VEC_PROD(exp);
 }
 
-TEST(ops_eigen, dense_matrix_T_diag_prod)
+TEST(ops_eigen_level2, dense_matrix_T_diag_prod)
 {
   using T = Eigen::MatrixXd;
   T M0(4,4);

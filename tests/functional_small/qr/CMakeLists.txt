@@ -4,6 +4,6 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
-  add_utest_mpi(${TESTING_LEVEL}_qr_epetra qr_epetra.cc gTestMain_mpi 2 )
-  add_utest_mpi(${TESTING_LEVEL}_qr_tpetra qr_tpetra.cc gTestMain_tpetra 2 )
+  add_utest_mpi(${TESTING_LEVEL}_qr_epetra gTestMain_mpi 2 qr_epetra.cc)
+  add_utest_mpi(${TESTING_LEVEL}_qr_tpetra gTestMain_tpetra 2 qr_tpetra.cc)
 endif()

@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio/ops.hpp"
 
-TEST(ops_eigen, dense_matrix_clone)
+TEST(ops_eigen_matrix, dense_matrix_clone)
 {
   using T = Eigen::MatrixXd;
   T a(6,8);
@@ -28,7 +28,7 @@ TEST(ops_eigen, dense_matrix_clone)
   ASSERT_FALSE(b(0, 0) == a(0, 0));
 }
 
-TEST(ops_eigen, dense_matrix_extent)
+TEST(ops_eigen_matrix, dense_matrix_extent)
 {
   using T = Eigen::MatrixXd;
   T x(6,8);
@@ -37,7 +37,7 @@ TEST(ops_eigen, dense_matrix_extent)
   ASSERT_TRUE(pressio::ops::extent(x,2) == 1); // check extent over the rank
 }
 
-TEST(ops_eigen, dense_matrix_scale)
+TEST(ops_eigen_matrix, dense_matrix_scale)
 {
   using T = Eigen::MatrixXd;
   T a(6,8);
@@ -51,7 +51,7 @@ TEST(ops_eigen, dense_matrix_scale)
   }
 }
 
-TEST(ops_eigen, dense_matrix_setzero)
+TEST(ops_eigen_matrix, dense_matrix_setzero)
 {
   using T = Eigen::MatrixXd;
   T a(6,6);
@@ -65,7 +65,7 @@ TEST(ops_eigen, dense_matrix_setzero)
   }
 }
 
-TEST(ops_eigen, dense_matrix_fill)
+TEST(ops_eigen_matrix, dense_matrix_fill)
 {
   using T = Eigen::MatrixXd;
   T a(6,6);
@@ -79,7 +79,7 @@ TEST(ops_eigen, dense_matrix_fill)
   }
 }
 
-TEST(ops_eigen, dense_matrix_resize)
+TEST(ops_eigen_matrix, dense_matrix_resize)
 {
   using T = Eigen::MatrixXd;
   T a(6,6);
@@ -88,7 +88,7 @@ TEST(ops_eigen, dense_matrix_resize)
   ASSERT_EQ(a.cols(), 4);
 }
 
-TEST(ops_eigen, dense_matrix_deep_copy)
+TEST(ops_eigen_matrix, dense_matrix_deep_copy)
 {
   using T = Eigen::MatrixXd;
   T a(6,5);
@@ -103,7 +103,7 @@ TEST(ops_eigen, dense_matrix_deep_copy)
   }
 }
 
-TEST(ops_eigen, matrix_min_max)
+TEST(ops_eigen_matrix, matrix_min_max)
 {
   using T = Eigen::MatrixXd;
   T a(5, 5);
@@ -116,7 +116,7 @@ TEST(ops_eigen, matrix_min_max)
   ASSERT_DOUBLE_EQ(pressio::ops::max(a), 25.);
 }
 
-TEST(ops_eigen, add_to_diagonal)
+TEST(ops_eigen_matrix, add_to_diagonal)
 {
   using T = Eigen::MatrixXd;
   T A(6,6);
@@ -134,7 +134,7 @@ TEST(ops_eigen, add_to_diagonal)
   }
 }
 
-TEST(ops_eigen, dense_matrix_update)
+TEST(ops_eigen_matrix, dense_matrix_update)
 {
   Eigen::Matrix<double, 2, 2> M;
   Eigen::Matrix<double, 2, 2> A;
@@ -174,7 +174,7 @@ TEST(ops_eigen, dense_matrix_update)
   EXPECT_DOUBLE_EQ(M(1, 1), 0.);
 }
 
-TEST(ops_eigen, dense_matrix_update_epxr)
+TEST(ops_eigen_matrix, dense_matrix_update_epxr)
 {
   Eigen::Matrix<double, 4, 4> M0;
   Eigen::Matrix<double, 4, 4> A0;
