@@ -57,10 +57,12 @@ public:
 		      const TrialSubspaceType & trialSubspace,
 		      const FomSystemType & fomSystem,
 		      Args && ... args)
-    : fomStatesManager_(create_lspg_fom_states_manager(odeSchemeName, trialSubspace)),
-      rjPolicyOrFullyDiscreteSystem_(trialSubspace, fomSystem, fomStatesManager_,
-				     std::forward<Args>(args)...),
-      stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, rjPolicyOrFullyDiscreteSystem_))
+    : fomStatesManager_(std::make_unique<LspgFomStatesManager<TrialSubspaceType>>(create_lspg_fom_states_manager(odeSchemeName, trialSubspace))),
+      rjPolicyOrFullyDiscreteSystem_(std::make_unique<ResJacPolicyOrFullyDiscreteSystemType>(trialSubspace,
+											     fomSystem,
+											     *fomStatesManager_,
+											     std::forward<Args>(args)...)),
+      stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, *rjPolicyOrFullyDiscreteSystem_))
   {}
 
   template<
@@ -72,12 +74,13 @@ public:
   LspgUnsteadyProblem(const TrialSubspaceType & trialSubspace,
 		      const FomSystemType & fomSystem,
 		      Args && ... args)
-    : fomStatesManager_(create_lspg_fom_states_manager<
-			_TotalNumberOfDesiredStates>(trialSubspace)),
-      rjPolicyOrFullyDiscreteSystem_(trialSubspace, fomSystem, fomStatesManager_,
-				     std::forward<Args>(args)...),
+    : fomStatesManager_(std::make_unique<LspgFomStatesManager<TrialSubspaceType>>(create_lspg_fom_states_manager<
+				  _TotalNumberOfDesiredStates>(trialSubspace))),
+      rjPolicyOrFullyDiscreteSystem_(std::make_unique<ResJacPolicyOrFullyDiscreteSystemType>(trialSubspace, fomSystem,
+											     *fomStatesManager_,
+											     std::forward<Args>(args)...)),
       stepper_( ::pressio::ode::create_implicit_stepper<
-		_TotalNumberOfDesiredStates>(rjPolicyOrFullyDiscreteSystem_))
+		_TotalNumberOfDesiredStates>(*rjPolicyOrFullyDiscreteSystem_))
   {}
 
   stepper_type & lspgStepper(){ return stepper_; }
@@ -95,8 +98,8 @@ public:
   }
 
 private:
-  LspgFomStatesManager<TrialSubspaceType> fomStatesManager_;
-  ResJacPolicyOrFullyDiscreteSystemType rjPolicyOrFullyDiscreteSystem_;
+  std::unique_ptr<LspgFomStatesManager<TrialSubspaceType>> fomStatesManager_;
+  std::unique_ptr<ResJacPolicyOrFullyDiscreteSystemType> rjPolicyOrFullyDiscreteSystem_;
   stepper_type stepper_;
 };
 
