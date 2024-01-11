@@ -75,7 +75,7 @@ public:
   }
 
   template <typename VectorInType, typename VectorOutType>
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::Traits<VectorInType>::rank ==1 and
     ::pressio::Traits<VectorOutType>::rank ==1 and
     meta::is_legitimate_vector_type_for_qr_project<VectorInType, QType>::value
@@ -85,7 +85,7 @@ public:
   }
 
   template <typename VectorInType, typename VectorOutType>
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::Traits<VectorInType>::rank ==1 and
     ::pressio::Traits<VectorOutType>::rank ==1
   >

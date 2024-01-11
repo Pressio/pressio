@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_epetra<T1>::value and
   ::pressio::is_vector_epetra<T2>::value
   >
@@ -76,7 +76,7 @@ abs_pow(T1 & y,
 
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_epetra<T1>::value and
   ::pressio::is_vector_epetra<T2>::value
   >
@@ -104,7 +104,7 @@ abs_pow(T1 & y,
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_epetra<T>::value
   >
 pow(T & x,

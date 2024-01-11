@@ -76,7 +76,7 @@ template<
   typename T, typename T1,
   typename a_Type, typename b_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -105,7 +105,7 @@ update(T & v, const a_Type &a,
 }
 
 template<typename T, typename T1, typename b_Type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -138,7 +138,7 @@ template<
   typename T, typename T1, typename T2,
   typename a_Type, typename b_Type, typename c_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -194,7 +194,7 @@ template<
   typename T, typename T1, typename T2,
   typename b_Type, typename c_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -252,7 +252,7 @@ template<
   typename T, typename T1, typename T2, typename T3,
   typename a_Type, typename b_Type, typename c_Type, typename d_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -320,7 +320,7 @@ template<
   typename T, typename T1, typename T2, typename T3,
   typename b_Type, typename c_Type, typename d_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -390,7 +390,7 @@ template<
   typename T, typename T1, typename T2, typename T3, typename T4,
   typename a_Type, typename b_Type, typename c_Type, typename d_Type, typename e_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -469,7 +469,7 @@ template<
   typename T, typename T1, typename T2, typename T3, typename T4,
   typename b_Type, typename c_Type, typename d_Type, typename e_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1

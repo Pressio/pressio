@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template<class T, class ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_vector_teuchos<T>::value
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >

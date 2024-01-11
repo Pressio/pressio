@@ -9,9 +9,9 @@ namespace nonlinearsolvers{
 namespace impl{
 
 #define GETMETHOD(N) \
-  template<class Tag, mpl::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
+  template<class Tag, std::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
   auto & get(){ return d##N##_; } \
-  template<class Tag, mpl::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
+  template<class Tag, std::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
   const auto & get() const { return d##N##_; }
 
 

@@ -74,7 +74,7 @@ struct is_expression : std::false_type{};
 template <typename T>
 struct is_expression<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     is_expression_span<T>::value
     || is_expression_diagonal<T>::value
     || is_expression_subspan<T>::value

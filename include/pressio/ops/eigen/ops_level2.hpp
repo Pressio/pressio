@@ -69,7 +69,7 @@ template <
   class A_type, class x_type, class y_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -121,7 +121,7 @@ product(::pressio::nontranspose /*unused*/,
 template <
   class y_type, class A_type, class x_type, class alpha_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -161,7 +161,7 @@ template <
   class A_type, class x_type, class y_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -211,7 +211,7 @@ product(::pressio::transpose /*unused*/,
 // op(A) = A^T, construct result
 //-------------------------------
 template <class y_type, class A_type, class x_type, class alpha_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1

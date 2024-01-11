@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // norm-1 common constraints
   ::pressio::Traits<T>::rank == 1
   // TPL/container specific
@@ -69,7 +69,7 @@ norm1(const T & a)
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // norm-2 common constraints
   ::pressio::Traits<T>::rank == 1
   // TPL/container specific

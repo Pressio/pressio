@@ -60,7 +60,7 @@ requires (::pressio::is_native_container_kokkos<T>::value
        and std::convertible_to<ScalarType, typename ::pressio::Traits<T>::scalar_type>
 void
 #else
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
     (::pressio::is_native_container_kokkos<T>::value
   or ::pressio::is_expression_acting_on_kokkos<T>::value)
   and std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value

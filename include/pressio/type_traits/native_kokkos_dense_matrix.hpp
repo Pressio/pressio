@@ -90,7 +90,7 @@ struct is_dense_matrix_kokkos : std::false_type {};
 template <typename T>
 struct is_dense_matrix_kokkos<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     is_static_dense_matrix_kokkos<T>::value or
     is_dynamic_dense_matrix_kokkos<T>::value
     >

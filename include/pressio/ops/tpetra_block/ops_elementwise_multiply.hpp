@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
      (   ::pressio::is_vector_tpetra_block<T>::value
       || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value)
   && (   ::pressio::is_vector_tpetra_block<T1>::value

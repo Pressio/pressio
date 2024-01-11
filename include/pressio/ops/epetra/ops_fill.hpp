@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T, typename ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   (::pressio::is_vector_epetra<T>::value ||
    ::pressio::is_multi_vector_epetra<T>::value)
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value

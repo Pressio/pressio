@@ -61,7 +61,7 @@ namespace pressio{ namespace ops{
 // specialize for op(A) = A and op(B) = B
 //-------------------------------------------
 template <typename A_type, typename B_type, typename alpha_type, typename beta_type, typename C_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -102,7 +102,7 @@ product(::pressio::nontranspose /*unused*/,
 // specialize for op(A) = A^T and op(B) = B
 //-------------------------------------------
 template <typename A_type, typename B_type, typename alpha_type, typename beta_type, typename C_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -143,7 +143,7 @@ product(::pressio::transpose /*unused*/,
 * special case A==B and op(A)=A^T, op(B)=B
 ------------------------------------------*/
 template <typename A_type, typename alpha_type, typename beta_type, typename C_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -171,7 +171,7 @@ product(::pressio::transpose modeA,
 * special case A==B and op(A)=A^T, op(B)=B, return C
 -----------------------------------------------------*/
 template <typename C_type, typename A_type, typename alpha_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2

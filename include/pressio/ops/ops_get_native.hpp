@@ -52,21 +52,21 @@
 namespace pressio{ namespace ops{ namespace impl{
 
 template<typename T>
-mpl::enable_if_t<
+std::enable_if_t<
   !::pressio::is_expression<T>::value, T& >
 get_native(T & objectIn){
   return objectIn;
 }
 
 template<typename T>
-mpl::enable_if_t<
+std::enable_if_t<
   !::pressio::is_expression<T>::value, const T& >
 get_native(const T & objectIn){
   return objectIn;
 }
 
 template<typename T>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_expression<T>::value,
   decltype(std::declval<const T>().native())
 >
@@ -75,7 +75,7 @@ get_native(const T & objectIn){
 }
 
 template<typename T>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_expression<T>::value,
   decltype(std::declval<T>().native())
 >
@@ -90,7 +90,7 @@ struct NativeType;
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename T>
 struct NativeType<
-  T, mpl::enable_if_t<::pressio::is_vector_kokkos<T>::value>
+  T, std::enable_if_t<::pressio::is_vector_kokkos<T>::value>
  >
 {
   using type = T;
@@ -99,7 +99,7 @@ struct NativeType<
 
 template<typename T>
 struct NativeType<
-  T, mpl::enable_if_t<::pressio::is_expression<T>::value>
+  T, std::enable_if_t<::pressio::is_expression<T>::value>
  >
 {
   using type = typename ::pressio::Traits<T>::native_expr_type;
@@ -108,12 +108,12 @@ struct NativeType<
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_tpetra_block<T>::value, int > = 0 >
 auto get_underlying_tpetra_object(T & o){ return o.getVectorView(); }
 
 template<typename T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_tpetra_block<T>::value, int > = 0 >
 auto get_underlying_tpetra_object(const T & o){
   // constcast here because for block vector
@@ -122,17 +122,17 @@ auto get_underlying_tpetra_object(const T & o){
 }
 
 template<typename T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_multi_vector_tpetra_block<T>::value, int > = 0 >
 auto get_underlying_tpetra_object(const T & o){ return o.getMultiVectorView(); }
 
 template<typename T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_multi_vector_tpetra_block<T>::value, int > = 0 >
 auto get_underlying_tpetra_object(T & o){ return o.getMultiVectorView(); }
 
 template<typename T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_expression_column_acting_on_tpetra_block<T>::value, int > = 0 >
 auto get_underlying_tpetra_object(T o){ return o.native(); }
 

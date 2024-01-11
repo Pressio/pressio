@@ -66,7 +66,7 @@ C is an Eigen dense matrix
 template <
   class A_type, class B_type, class C_type, class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -105,7 +105,7 @@ C is an Eigen dense matrix returned by the function
 template <
   class C_type, class A_type, class B_type, class alpha_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -139,7 +139,7 @@ product(::pressio::transpose modeA,
 template <
   class A_type, class C_type, class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -166,7 +166,7 @@ product(::pressio::transpose modeA,
 template <
   class C_type, class A_type, class alpha_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -200,7 +200,7 @@ C is a Kokkos dense matrix
 template <
   class A_type, class C_type, class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -232,7 +232,7 @@ product(::pressio::transpose modeA,
    C is a Kokkos dense matrix
    *-------------------------------------------------------------------*/
 template <class C_type, class A_type, class alpha_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -263,7 +263,7 @@ B = tpetra block multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
 template <class A_type, class C_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -306,7 +306,7 @@ product(::pressio::transpose modeA,
 // template <
 //   class A_type, class B_type, class scalar_type, class C_type
 //   >
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
 //   ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value
@@ -343,7 +343,7 @@ product(::pressio::transpose modeA,
 // template <
 //   class C_type, class A_type, class B_type, class scalar_type
 //   >
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
 //   ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value and
@@ -369,7 +369,7 @@ product(::pressio::transpose modeA,
 // //  * special case A==B
 // // **********************************/
 // template <class A_type, class scalar_type, class C_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
 //   ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value and
 //   !::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
@@ -407,7 +407,7 @@ product(::pressio::transpose modeA,
 // }
 
 // template <class A_type, class scalar_type, class C_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
 //   ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value
 //   >
@@ -443,7 +443,7 @@ product(::pressio::transpose modeA,
 // }
 
 // template <class C_type, class A_type, class scalar_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
 //   (::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value or
 //    ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value),
@@ -465,7 +465,7 @@ product(::pressio::transpose modeA,
 // // specialize for when A is a diagonal expression
 // //-------------------------------------------
 // template <class T, class B_type, class scalar_type, class C_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<C_type>::value and
 //   ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value

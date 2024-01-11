@@ -55,7 +55,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 template <typename MatrixType>
 class SubspanExpr<
   MatrixType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
@@ -135,7 +135,7 @@ public:
 template <typename MatrixType>
 struct SubspanExpr<
   MatrixType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >

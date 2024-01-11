@@ -62,7 +62,7 @@ template<
   class IndVarType
   >
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
        Steppable<StepperType>::value
     && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
     >
@@ -95,7 +95,7 @@ template<
   class IndVarType
   >
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
        Steppable<StepperType>::value
     && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
     && StateObserver<ObserverType &&, IndVarType, StateType>::value

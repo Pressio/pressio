@@ -67,7 +67,7 @@ template <
   class A_type, class x_type, class y_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
   ::pressio::Traits<A_type>::rank == 2 and
   ::pressio::Traits<x_type>::rank == 1 and
@@ -124,7 +124,7 @@ template <
   class A_type, class x_type, class y_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
   ::pressio::Traits<A_type>::rank == 2 and
   ::pressio::Traits<x_type>::rank == 1 and

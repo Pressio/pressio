@@ -55,7 +55,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 template <typename MatrixType>
 class DiagonalExpr<
   MatrixType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
@@ -115,7 +115,7 @@ public:
 template <typename MatrixType>
 class DiagonalExpr<
   MatrixType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >

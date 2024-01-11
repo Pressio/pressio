@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_tpetra_block<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {
@@ -65,7 +65,7 @@ extent(const T & oIn, const IndexType i)
 }
 
 template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_expression_column_acting_on_tpetra_block<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {
@@ -73,7 +73,7 @@ extent(const T & oIn, const IndexType i)
 }
 
 template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_multi_vector_tpetra_block<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {

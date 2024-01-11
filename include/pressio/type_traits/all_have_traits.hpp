@@ -55,7 +55,7 @@ struct has_traits : std::false_type{};
 
 template <class T>
 struct has_traits<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
        // I need to check for something meaninful
        // because if I only check for ::pressio::Traits<T>
        // any type would yield true since ::pressio::Traits<T>

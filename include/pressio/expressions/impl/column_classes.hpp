@@ -55,7 +55,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 template <typename T>
 class ColumnExpr<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_eigen<T>::value
     >
   >
@@ -110,7 +110,7 @@ public:
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename T>
 class ColumnExpr<
-  T, ::pressio::mpl::enable_if_t<
+  T, std::enable_if_t<
        ::pressio::is_multi_vector_tpetra<T>::value > >
 {
 
@@ -156,7 +156,7 @@ public:
 
 template <typename T>
 class ColumnExpr<
-  T, ::pressio::mpl::enable_if_t<
+  T, std::enable_if_t<
        ::pressio::is_multi_vector_tpetra_block<T>::value > >
 {
   using traits = ColumnTraits<ColumnExpr<T>>;

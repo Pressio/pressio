@@ -49,7 +49,10 @@
 #ifndef MPL_IS_STD_COMPLEX_HPP_
 #define MPL_IS_STD_COMPLEX_HPP_
 
-namespace pressio{ namespace mpl{ 
+#include <complex>
+#include <type_traits>
+
+namespace pressio{ namespace mpl{
 
 template <typename T,
 	  typename enable = void>
@@ -57,11 +60,10 @@ struct is_std_complex : std::false_type{};
 
 template <typename T>
 struct is_std_complex<T, typename
-		      ::pressio::mpl::enable_if_t<
-			   std::is_same<T,
-					std::complex<typename T::value_type
-						     >
-					>::value
+		      std::enable_if_t<
+			   std::is_same_v<T,
+					std::complex<typename T::value_type>
+					>
 			   >
 		      > : std::true_type{};
 

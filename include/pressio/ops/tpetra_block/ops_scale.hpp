@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T, class ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // TPL/container specific
   (   ::pressio::is_vector_tpetra_block<T>::value
   || ::pressio::is_multi_vector_tpetra_block<T>::value

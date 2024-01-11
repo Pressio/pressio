@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::Traits<T>::rank == 1
   && ::pressio::is_native_container_kokkos<T>::value, T>
 clone(const T & clonable)
@@ -63,7 +63,7 @@ clone(const T & clonable)
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::Traits<T>::rank == 2
   && ::pressio::is_native_container_kokkos<T>::value, T>
 clone(const T & clonable)

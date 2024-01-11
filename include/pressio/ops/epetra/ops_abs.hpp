@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 // y= abs(x)
 template <typename T1, class T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_epetra<T1>::value
   && ::pressio::is_vector_epetra<T2>::value
   >

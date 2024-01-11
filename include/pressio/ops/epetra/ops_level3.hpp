@@ -66,7 +66,7 @@ C is an Eigen dense matrix
 template <
   typename A_type, typename B_type, typename alpha_type, typename beta_type, typename C_type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -125,7 +125,7 @@ C is an Eigen dense matrix returned by the function
 template <
   typename C_type, typename A_type, typename B_type, typename alpha_type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -169,7 +169,7 @@ C is an Eigen dense matrix
 template <
   typename A_type, typename alpha_type, typename beta_type, typename C_type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -231,7 +231,7 @@ product(::pressio::transpose /*unused*/,
 template <
   typename C_type, typename A_type, typename alpha_type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2

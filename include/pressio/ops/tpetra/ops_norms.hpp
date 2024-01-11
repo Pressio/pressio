@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
- ::pressio::mpl::enable_if_t<
+ std::enable_if_t<
   ::pressio::is_vector_tpetra<T>::value
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -69,7 +69,7 @@ norm1(const T & a)
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_tpetra<T>::value
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -88,7 +88,7 @@ norm2(const T & a)
 
 template <
   typename T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
   ::pressio::is_expression_column_acting_on_tpetra<T>::value
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
@@ -101,7 +101,7 @@ auto norm1(const T & a){
 
 template <
   typename T,
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_expression_column_acting_on_tpetra<T>::value
   // scalar compatibility
   && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value

@@ -52,14 +52,14 @@
 namespace pressio{ namespace ops{
 
 template<class T, class IndexType>
-mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value, std::size_t >
+std::enable_if_t< ::pressio::is_vector_eigen<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
 {
   return (i == 0) ? std::size_t(objectIn.size()) : std::size_t(1);
 }
 
 template<class T, class IndexType>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_matrix_eigen<T>::value or
   ::pressio::is_sparse_matrix_eigen<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
@@ -76,7 +76,7 @@ extent(const T & objectIn, const IndexType i)
 }
 
 template<class T, class IndexType>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_expression_acting_on_eigen<T>::value, std::size_t >
 extent(const T & objectIn, const IndexType i)
 {

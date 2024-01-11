@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 namespace impl{
 
 template <typename ReducerType, typename ViewType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ViewType::rank == 1,
   typename ::pressio::Traits<ViewType>::scalar_type
   >
@@ -71,7 +71,7 @@ kokkos_reduce(const ViewType & view) {
 }
 
 template <typename ReducerType, typename ViewType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ViewType::rank == 2,
   typename ::pressio::Traits<ViewType>::scalar_type
   >
@@ -95,7 +95,7 @@ kokkos_reduce(const ViewType & view) {
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // min/max common constraints
     (::pressio::Traits<T>::rank == 1
   || ::pressio::Traits<T>::rank == 2)
@@ -116,7 +116,7 @@ max(const T & obj)
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // min/max common constraints
     (::pressio::Traits<T>::rank == 1
   || ::pressio::Traits<T>::rank == 2)

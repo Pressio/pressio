@@ -105,7 +105,7 @@ public:
    * T and MatrixType have same execution space
    */
   template < typename _MatrixType = MatrixType, typename T>
-  mpl::enable_if_t<
+  std::enable_if_t<
     mpl::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::is_vector_kokkos<T>::value 
     /*::pressio::containers::details::traits<T>::has_host_execution_space and*/
@@ -133,7 +133,7 @@ public:
    * T and MatrixType have same execution space
    */
   template < typename _MatrixType = MatrixType, typename T>
-  mpl::enable_if_t<
+  std::enable_if_t<
     mpl::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::is_vector_kokkos<T>::value 
     /*::pressio::containers::details::traits<T>::has_host_execution_space and*/
@@ -180,7 +180,7 @@ public:
    * T and MatrixType have same execution space
    */
   template < typename _MatrixType = MatrixType, typename T>
-  mpl::enable_if_t<
+  std::enable_if_t<
     mpl::is_same<typename wrapped_type::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::is_vector_kokkos<T>::value 
     /*and ::pressio::containers::details::traits<T>::has_host_execution_space and*/

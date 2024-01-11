@@ -83,7 +83,7 @@ namespace ops{
   to work, value has to be convertible to the the scalar type of ide
 */
 template <typename T, class ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_sparse_matrix_eigen<T>::value
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value
   >
@@ -99,7 +99,7 @@ add_to_diagonal(T & o, const ScalarType & value)
   operation is well-formed
 */
 template <typename T, class ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_matrix_eigen<T>::value
   && std::is_assignable<
     decltype( std::declval<T>()(0,0) ),

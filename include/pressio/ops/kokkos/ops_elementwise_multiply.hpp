@@ -57,7 +57,7 @@ namespace pressio{ namespace ops{
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2, typename alpha_t, typename beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // common elementwise_multiply constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1

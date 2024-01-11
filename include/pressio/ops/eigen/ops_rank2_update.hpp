@@ -62,7 +62,7 @@ namespace pressio{ namespace ops{
 // M = a * M + b * M1
 //----------------------------------------------------------------------
 template<typename T, typename T1, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 2
   && ::pressio::Traits<T1>::rank == 2

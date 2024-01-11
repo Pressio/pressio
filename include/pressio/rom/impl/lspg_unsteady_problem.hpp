@@ -20,7 +20,7 @@ template <> struct DeducedStepperType<-1>{
 template <int TotalNumberOfDesiredStates>
 struct DeducedStepperType<
   TotalNumberOfDesiredStates,
-  mpl::enable_if_t< (TotalNumberOfDesiredStates>0) >
+  std::enable_if_t< (TotalNumberOfDesiredStates>0) >
   >
 {
   template<class T>
@@ -51,7 +51,7 @@ public:
     class FomSystemType,
     class ...Args,
     int _TotalNumberOfDesiredStates = TotalNumberOfDesiredStates,
-    mpl::enable_if_t< _TotalNumberOfDesiredStates == -1, int > = 0
+    std::enable_if_t< _TotalNumberOfDesiredStates == -1, int > = 0
     >
   LspgUnsteadyProblem(::pressio::ode::StepScheme odeSchemeName,
 		      const TrialSubspaceType & trialSubspace,
@@ -69,7 +69,7 @@ public:
     class FomSystemType,
     class ...Args,
     int _TotalNumberOfDesiredStates = TotalNumberOfDesiredStates,
-    mpl::enable_if_t< (_TotalNumberOfDesiredStates > 0), int > = 0
+    std::enable_if_t< (_TotalNumberOfDesiredStates > 0), int > = 0
     >
   LspgUnsteadyProblem(const TrialSubspaceType & trialSubspace,
 		      const FomSystemType & fomSystem,

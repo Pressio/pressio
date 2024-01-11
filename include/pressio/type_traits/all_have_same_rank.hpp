@@ -62,7 +62,7 @@ struct all_have_same_rank<void, T1>{
 
 template <class T1, class T2>
 struct all_have_same_rank<
-  mpl::enable_if_t< all_have_traits<T1, T2>::value >,
+  std::enable_if_t< all_have_traits<T1, T2>::value >,
   T1, T2
   >
 {
@@ -72,7 +72,7 @@ struct all_have_same_rank<
 
 template <class T1, class T2, class T3, class ... rest>
 struct all_have_same_rank<
-  mpl::enable_if_t< all_have_traits<T1, T2, T3, rest...>::value >,
+  std::enable_if_t< all_have_traits<T1, T2, T3, rest...>::value >,
   T1, T2, T3, rest...>
 {
   static constexpr auto value =

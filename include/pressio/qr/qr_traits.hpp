@@ -70,7 +70,7 @@ struct qr_traits_shared_all{
 template<typename matrix_type, typename algo_t, bool in_place>
 struct Traits<
   qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
-    ::pressio::mpl::enable_if_t<
+    std::enable_if_t<
       ::pressio::is_dense_matrix_eigen<matrix_type>::value
       >
   > : qr_traits_shared_all<matrix_type, algo_t, in_place>
@@ -120,7 +120,7 @@ struct impl_class_helper<Epetra_MultiVector, qr::ModifiedGramSchmidt, R_t>{
 template <class matrix_t, class R_t>
 struct impl_class_helper<
   matrix_t, qr::TSQR, R_t,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_multi_vector_tpetra<matrix_t>::value
     >
   >
@@ -131,7 +131,7 @@ struct impl_class_helper<
 template <class matrix_t, class R_t>
 struct impl_class_helper<
   matrix_t, qr::TSQR, R_t,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_multi_vector_tpetra_block<matrix_t>::value
     >
   >
@@ -142,7 +142,7 @@ struct impl_class_helper<
 template <class matrix_t, class R_t>
 struct impl_class_helper<
   matrix_t, qr::ModifiedGramSchmidt, R_t,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_multi_vector_tpetra<matrix_t>::value
     >
   >
@@ -153,7 +153,7 @@ struct impl_class_helper<
 template <class matrix_t, class R_t>
 struct impl_class_helper<
   matrix_t, qr::Householder, R_t,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_multi_vector_tpetra<matrix_t>::value
     >
   >{
@@ -199,7 +199,7 @@ struct Traits<
 template<typename matrix_type, typename algo_t, bool in_place>
 struct Traits<
   qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
-    ::pressio::mpl::enable_if_t<::pressio::is_multi_vector_tpetra<matrix_type>::value>
+    std::enable_if_t<::pressio::is_multi_vector_tpetra<matrix_type>::value>
   >
   : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
@@ -233,7 +233,7 @@ struct Traits<
 template<typename matrix_type, typename algo_t, bool in_place>
 struct Traits<
   qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
-  ::pressio::mpl::enable_if_t< ::pressio::is_multi_vector_tpetra_block<matrix_type>::value >
+  std::enable_if_t< ::pressio::is_multi_vector_tpetra_block<matrix_type>::value >
   >
   : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {

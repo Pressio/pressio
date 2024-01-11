@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T1, typename T2, typename DotResult>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // dot common constraints
      ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
@@ -80,7 +80,7 @@ dot(const T1 & vecA, const T2 & vecB, DotResult & result)
 }
 
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // dot common constraints
      ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1

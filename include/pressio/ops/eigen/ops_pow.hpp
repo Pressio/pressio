@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 // x^exponent
 template <class T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::Traits<T>::rank==1 and
   (::pressio::is_vector_eigen<T>::value or
   ::pressio::is_expression_acting_on_eigen<T>::value)
@@ -69,7 +69,7 @@ pow(T & x,
 
 // y= x^exponent
 template <class T1, class T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
   and (::pressio::is_native_container_eigen<T1>::value
     or ::pressio::is_expression_acting_on_eigen<T1>::value)
@@ -90,7 +90,7 @@ pow(T1 & y,
 
 // y = |x|^exponent, expo>0
 template <class T1, class T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
   and (::pressio::is_native_container_eigen<T1>::value
     or ::pressio::is_expression_acting_on_eigen<T1>::value)
@@ -118,7 +118,7 @@ abs_pow(T1 & y,
 
 // y = |x|^exponent, expo<0
 template <class T1, class T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1
   and (::pressio::is_native_container_eigen<T1>::value
     or ::pressio::is_expression_acting_on_eigen<T1>::value)
