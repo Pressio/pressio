@@ -346,7 +346,7 @@ struct FullyDiscreteSystemWithJacobianAction<
     && ::pressio::has_discrete_residual_typedef<T>::value
     && std::is_copy_constructible<typename T::state_type>::value
     && std::is_copy_constructible<typename T::discrete_residual_type>::value
-    && mpl::is_same<
+    && std::is_same<
 	 typename T::discrete_residual_type,
 	 decltype(std::declval<T const>().createDiscreteTimeResidual())
 	 >::value

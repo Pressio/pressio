@@ -58,7 +58,7 @@ template <class T, class StateType>
 struct has_const_create_state_method_return_result<
   T, StateType,
   std::enable_if_t<
-    mpl::is_same<
+    std::is_same<
       StateType,
       decltype(std::declval<T const>().createState())
       >::value
@@ -75,7 +75,7 @@ struct has_const_create_rhs_method_return_result<
   T, RhsType,
   std::enable_if_t<
     !std::is_void<RhsType>::value and
-    mpl::is_same<
+    std::is_same<
       RhsType,
       decltype(
 	       std::declval<T const>().createRhs()
@@ -94,7 +94,7 @@ struct has_const_create_mass_matrix_method_return_result<
   T, MMType,
   std::enable_if_t<
     !std::is_void<MMType>::value and
-    mpl::is_same<
+    std::is_same<
       MMType,
       decltype(
 	       std::declval<T const>().createMassMatrix()
@@ -132,7 +132,7 @@ struct has_const_create_discrete_residual_method_return_result<
   T, ResultType,
   std::enable_if_t<
     !std::is_void<ResultType>::value and
-    mpl::is_same<
+    std::is_same<
       ResultType,
       decltype
       (
@@ -152,7 +152,7 @@ struct has_const_create_discrete_jacobian_method_return_result<
   T, JacobianType,
   std::enable_if_t<
     !std::is_void<JacobianType>::value and
-    mpl::is_same<
+    std::is_same<
       JacobianType,
       decltype(
          std::declval<T const>().createDiscreteJacobian()

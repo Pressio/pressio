@@ -296,7 +296,7 @@ product(::pressio::transpose /*unused*/,
 // 	::pressio::containers::Vector<Epetra_Vector> & y)
 // {
 //   static_assert
-//     (mpl::is_same<
+//     (std::is_same<
 //      scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
 //      "Scalar compatibility broken");
 

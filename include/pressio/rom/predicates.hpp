@@ -78,7 +78,7 @@ struct has_const_create_residual_method_return_result<
   T, ResidualType,
   std::enable_if_t<
     !std::is_void<ResidualType>::value and
-    mpl::is_same<
+    std::is_same<
       ResidualType,
       decltype(
 	       std::declval<T const>().createResidual()

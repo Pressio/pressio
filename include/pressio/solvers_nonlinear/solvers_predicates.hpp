@@ -63,7 +63,7 @@ template <class T, class StateType>
 struct has_const_create_state_method_return_result<
   T, StateType,
   std::enable_if_t<
-    mpl::is_same<
+    std::is_same<
       StateType,
       decltype(std::declval<T const>().createState())
       >::value
@@ -77,7 +77,7 @@ template<typename T, typename ResidualType>
 struct has_const_create_residual_method_return_result
 <T, ResidualType,
  std::enable_if_t<
-   ::pressio::mpl::is_same<
+   ::pressio::std::is_same<
      ResidualType,
      decltype( std::declval<T const>().createResidual() )
      >::value
@@ -120,7 +120,7 @@ template<class T, class JacobianType>
 struct has_const_create_jacobian_method_return_result
 <T, JacobianType,
  std::enable_if_t<
-   ::pressio::mpl::is_same<
+   ::pressio::std::is_same<
      JacobianType,
      decltype( std::declval<T const>().createJacobian() )
      >::value
