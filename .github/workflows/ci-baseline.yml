@@ -84,22 +84,22 @@ jobs:
       - name: Example - include only
         working-directory: examples
         run: |
-          $CXX \
+          $CXX --std=c++14 \
             -DPRESSIO_ENABLE_TPL_EIGEN \
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main.cpp                \
-          && $CXX -o pressio-example main.o \
+          && $CXX --std=c++14 -o pressio-example main.o \
           && ./pressio-example
 
       - name: Example - include only with embedded definitions
         working-directory: examples
         run: |
-          $CXX \
+          $CXX --std=c++14 \
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main_with_defines.cpp   \
-          && $CXX -o pressio-example main.o \
+          && $CXX --std=c++14 -o pressio-example main.o \
           && ./pressio-example
 
       - name: Configure
