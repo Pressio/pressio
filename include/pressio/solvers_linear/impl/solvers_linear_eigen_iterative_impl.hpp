@@ -72,6 +72,7 @@ public:
   static_assert( solver_traits::direct == false,
 		 "The native eigen solver must be iterative to use in EigenIterative");
 
+
 public:
   iteration_type numIterationsExecuted() const
   {
@@ -85,12 +86,14 @@ public:
 
   void resetLinearSystem(const MatrixType& A)
   {
+    mysolver_.setMaxIterations(this->maxIters_);
     mysolver_.compute(A);
   }
 
   template <typename T>
   void solve(const T& b, T & y)
   {
+    mysolver_.setMaxIterations(this->maxIters_);
     y = mysolver_.solve(b);
   }
 
