@@ -63,10 +63,11 @@ template <typename T, class ScalarType>
   >
 add_to_diagonal(T & o, const ScalarType & value)
 {
-  auto identity(o);
-  identity.setIdentity();
-  identity.coeffs() *= value;
-  o += identity;
+  // auto identity(o);
+  // identity.setIdentity();
+  // identity.coeffs() *= value;
+  // o += identity;
+  o.diagonal().array() += value;
 }
 
 /*
