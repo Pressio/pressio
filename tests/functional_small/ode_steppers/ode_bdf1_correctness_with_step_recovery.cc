@@ -19,6 +19,10 @@ public:
 
   jacobian_type createJacobian() const{
     jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      (void)J.coeffRef(i, i);
+    }
     return J;
   }
 
