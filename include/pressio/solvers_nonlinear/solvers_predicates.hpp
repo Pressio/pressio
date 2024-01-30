@@ -77,7 +77,7 @@ template<typename T, typename ResidualType>
 struct has_const_create_residual_method_return_result
 <T, ResidualType,
  std::enable_if_t<
-   ::pressio::std::is_same<
+   std::is_same<
      ResidualType,
      decltype( std::declval<T const>().createResidual() )
      >::value
@@ -120,7 +120,7 @@ template<class T, class JacobianType>
 struct has_const_create_jacobian_method_return_result
 <T, JacobianType,
  std::enable_if_t<
-   ::pressio::std::is_same<
+   std::is_same<
      JacobianType,
      decltype( std::declval<T const>().createJacobian() )
      >::value
