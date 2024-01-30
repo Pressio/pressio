@@ -106,7 +106,7 @@ struct MyFakeNonLinSolverForFOM{
     // mimic solve step 2
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR4) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR4) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
   }
 };
