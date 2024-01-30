@@ -104,17 +104,17 @@ struct MyFakeNonLinSolverForFOM{
     // mimic solve step 1
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR1) );
-    else if (count_ == 2) ASSERT_TRUE( R.isApprox(goldR3) );
-    else if (count_ == 3) ASSERT_TRUE( R.isApprox(goldR9) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR1) ); }
+    else if (count_ == 2){ ASSERT_TRUE( R.isApprox(goldR3) ); }
+    else if (count_ == 3){ ASSERT_TRUE( R.isApprox(goldR9) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
     // mimic solve step 2
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR2) );
-    else if (count_ == 2) ASSERT_TRUE( R.isApprox(goldR4) );
-    else if (count_ == 3) ASSERT_TRUE( R.isApprox(goldR10) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR2) ); }
+    else if (count_ == 2){ ASSERT_TRUE( R.isApprox(goldR4) ); }
+    else if (count_ == 3){ ASSERT_TRUE( R.isApprox(goldR10) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
   }
 };
@@ -139,15 +139,15 @@ struct MyFakeNonLinSolverForROM{
     // mimic solve step 1
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR5) );
-    else if (count_ == 2) ASSERT_TRUE( R.isApprox(goldR7) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR5) ); }
+    else if (count_ == 2){ ASSERT_TRUE( R.isApprox(goldR7) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
     // mimic solve step 2
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR6) );
-    else if (count_ == 2) ASSERT_TRUE( R.isApprox(goldR8) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR6) ); }
+    else if (count_ == 2){ ASSERT_TRUE( R.isApprox(goldR8) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
   }
 };

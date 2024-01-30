@@ -105,15 +105,15 @@ struct MyFakeNonLinSolverForFOM{
     // mimic solve step 1
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR1) );
-    else if (count_ == 2) ASSERT_TRUE( R.isApprox(goldR5) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR1) ); }
+    else if (count_ == 2){ ASSERT_TRUE( R.isApprox(goldR5) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
     // mimic solve step 2
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR2) );
-    else if (count_ == 2) ASSERT_TRUE( R.isApprox(goldR6) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR2) ); }
+    else if (count_ == 2){ ASSERT_TRUE( R.isApprox(goldR6) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
   }
 };
@@ -136,13 +136,13 @@ struct MyFakeNonLinSolverForROM{
     // mimic solve step 1
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR3) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR3) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
 
     // mimic solve step 2
     system.residualAndJacobian(state, R, &J);
     write_vec_cout("R = ", R); std::cout << "\n";
-    if      (count_ == 1) ASSERT_TRUE( R.isApprox(goldR4) );
+    if      (count_ == 1){ ASSERT_TRUE( R.isApprox(goldR4) ); }
     for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
   }
 };
