@@ -318,9 +318,6 @@ auto create_unsteady_problem_mixed_fom(::pressio::ode::StepScheme schemeName,
   using lspg_jacobian_type =
     decltype(fomSystem.createResultOfJacobianActionOn(trialSpace.basisOfTranslatedSpace()));
 
-  using fom_residual_type = typename FomSystemType::rhs_type;
-  using fom_jacobian_type = typename FomSystemType::jacobian_type;
-
   using rom_rj_policy_type = impl::LspgUnsteadyResidualJacobianPolicy<
     ind_var_type, reduced_state_type,
     lspg_residual_type, lspg_jacobian_type,
