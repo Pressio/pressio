@@ -133,7 +133,6 @@ public:
 #endif
   {
 
-    constexpr bool canRelyOnSavedHistory = true;
     (*this)(true, /*communicate that it is safe to rely on the stored history */
 	    odeSchemeName, predictedReducedState, reducedStatesStencilManager,
 	    fomRhsStencilManger, rhsEvaluationTime, step, dt, R, Jo);
