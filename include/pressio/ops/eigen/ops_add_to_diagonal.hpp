@@ -54,25 +54,17 @@ namespace pressio{
 namespace impl{
 
 template<class T>
-bool eigen_entry_is_null(const T &M, int row, int col) {
-  // adapted from Eigen's lower_bound method (SpareCompressedBase.h line 182)
-  auto outer = M.IsRowMajor ? row : col;
-  auto inner = M.IsRowMajor ? col : row;
-  auto start = M.outerIndexPtr()[outer];
-  auto end = M.isCompressed() ? M.outerIndexPtr()[outer + 1]
-                              : M.outerIndexPtr()[outer] + M.innerNonZeroPtr()[outer];
-  auto it = std::lower_bound(M.innerIndexPtr() + start, M.innerIndexPtr() + end, inner);
-  bool found = (it != M.innerIndexPtr() + end) && (*it == inner);
-
-  return !found;
-}
-
-template<class T>
-bool _has_diagonal_elements(const T &M) {
-  for (int i=0; i<M.rows(); i++) {
-    if (eigen_entry_is_null(M, i, i)) return false;
+bool _eigen_matrix_has_diagonal_elements(T M) {
+  try {
+    auto d = M.diagonal();
+    for (int i=0; i<M.rows(); i++) {
+      d(i) = 1;
+    }
+    return true;
   }
-  return true;
+  catch(...) {
+    return false;
+  }
 }
 } // end namespace impl
 
@@ -90,7 +82,7 @@ template <typename T, class ScalarType>
   >
 add_to_diagonal(T & o, const ScalarType & value)
 {
-  assert(::pressio::impl::_has_diagonal_elements(o));
+  assert(::pressio::impl::_eigen_matrix_has_diagonal_elements(o));
   o.diagonal().array() += value;
 }
 

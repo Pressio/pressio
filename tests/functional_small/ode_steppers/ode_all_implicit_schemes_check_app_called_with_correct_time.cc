@@ -27,7 +27,7 @@ public:
     jacobian_type J(3,3);
     // ensure that the diagonal elements exist
     for (int i=0; i<J.innerSize(); i++) {
-      (void)J.coeffRef(i, i);
+      J.coeffRef(i, i) = 0;
     }
     return J;
   }
@@ -96,7 +96,7 @@ public:
     jacobian_type J(3,3);
     // ensure that the diagonal elements exist
     for (int i=0; i<J.innerSize(); i++) {
-      (void)J.coeffRef(i, i);
+      J.coeffRef(i, i) = 0;
     }
     return J;
   }
