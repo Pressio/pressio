@@ -25,6 +25,10 @@ public:
 
   jacobian_type createJacobian() const{
     jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
     return J;
   }
 
@@ -90,6 +94,10 @@ public:
 
   jacobian_type createJacobian() const{
     jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
     return J;
   }
 

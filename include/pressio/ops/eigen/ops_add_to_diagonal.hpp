@@ -49,7 +49,33 @@
 #ifndef OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
 #define OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{
+
+namespace impl{
+
+template<class T>
+bool _eigen_matrix_has_diagonal_elements(T & M) {
+  using value_type = typename ::pressio::Traits<T>::scalar_type;
+
+  /*
+    https://eigen.tuxfamily.org/dox-devel/classEigen_1_1SparseMatrix.html#ae6f4db56c76e4d374eb8507fbef5bdb5
+
+    If the diagonal entries are written, then all diagonal entries must already exist, 
+    otherwise an assertion will be raised.
+    Since we do not catch the assertion, the program terminates which is what we want.
+    Note that we need to add zero here so that if M is satisfies the condition, 
+    then its values are not changed.
+  */
+  const volatile value_type zero = value_type(0);
+  auto d = M.diagonal();
+  for (int i=0; i<M.rows(); i++) {
+    d(i) += zero;
+  }
+  return true;
+}
+} // end namespace impl
+
+namespace ops{
 
 /*
   constrained via is_convertible because the impl is using
@@ -63,10 +89,8 @@ template <typename T, class ScalarType>
   >
 add_to_diagonal(T & o, const ScalarType & value)
 {
-  auto identity(o);
-  identity.setIdentity();
-  identity.coeffs() *= value;
-  o += identity;
+  assert(::pressio::impl::_eigen_matrix_has_diagonal_elements(o));
+  o.diagonal().array() += value;
 }
 
 /*
