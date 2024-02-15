@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_epetra<T>::value, std::size_t>
 extent(const T & oIn, const IndexType i)
 {
@@ -60,7 +60,7 @@ extent(const T & oIn, const IndexType i)
 }
 
 template <typename T, class IndexType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_multi_vector_epetra<T>::value, std::size_t >
 extent(const T & oIn, const IndexType i)
 {

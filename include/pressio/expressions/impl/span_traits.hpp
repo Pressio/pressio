@@ -55,7 +55,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 template <typename VectorType>
 class SpanTraits<
   SpanExpr<VectorType>,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   > : public ::pressio::Traits<VectorType>
@@ -95,7 +95,7 @@ public:
 template <typename VectorType>
 class SpanTraits<
   SpanExpr<VectorType>,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   > : public ::pressio::Traits<VectorType>

@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   (::pressio::is_native_container_eigen<T>::value
   and !::pressio::is_sparse_matrix_eigen<T>::value)
   or ::pressio::is_expression_acting_on_eigen<T>::value
@@ -63,7 +63,7 @@ set_zero(T & o)
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_sparse_matrix_eigen<T>::value
   >
 set_zero(T & M)

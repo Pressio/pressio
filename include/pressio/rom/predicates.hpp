@@ -12,7 +12,7 @@ struct has_const_create_##NAMEA##_return_result \
   : std::false_type{};\
 template <class T>\
 struct has_const_create_##NAMEA##_return_result<T,\
-  mpl::enable_if_t<\
+  std::enable_if_t<\
     std::is_same<\
       decltype(\
 	       std::declval<T const>().create##NAMEB()\
@@ -34,7 +34,7 @@ struct has_const_map_from_reduced_state_return_void
 template <class T>
 struct has_const_map_from_reduced_state_return_void<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>().mapFromReducedState
@@ -55,7 +55,7 @@ struct has_const_create_full_state_from_reduced_state
 template <class T>
 struct has_const_create_full_state_from_reduced_state<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_same<
       decltype(
 	       std::declval<T const>().createFullStateFromReducedState
@@ -76,9 +76,9 @@ struct has_const_create_residual_method_return_result
 template <class T, class ResidualType>
 struct has_const_create_residual_method_return_result<
   T, ResidualType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<ResidualType>::value and
-    mpl::is_same<
+    std::is_same<
       ResidualType,
       decltype(
 	       std::declval<T const>().createResidual()
@@ -95,7 +95,7 @@ struct has_const_residual_method_accept_state_result_return_void
 template <class T, class StateType, class ResidualType>
 struct has_const_residual_method_accept_state_result_return_void<
   T, StateType, ResidualType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>().residual(
@@ -214,7 +214,7 @@ struct has_const_create_result_of_jacobian_action_on
 template <class T, class OperandType>
 struct has_const_create_result_of_jacobian_action_on<
   T, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<
       decltype
       (
@@ -235,7 +235,7 @@ struct has_const_create_apply_mass_matrix_result_method_accept_operand_return_re
 template <class T, class OperandType>
 struct has_const_create_apply_mass_matrix_result_method_accept_operand_return_result<
   T, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<
       decltype
       (
@@ -256,7 +256,7 @@ struct has_const_rhs_method_accept_state_indvar_result_return_void
 template <class T, class StateType, class IndVarType, class RhsType>
 struct has_const_rhs_method_accept_state_indvar_result_return_void<
   T, StateType, IndVarType, RhsType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>().rhs(

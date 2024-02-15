@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T1, class T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   (   ::pressio::is_vector_tpetra<T1>::value
    || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
   && (::pressio::is_vector_tpetra<T2>::value

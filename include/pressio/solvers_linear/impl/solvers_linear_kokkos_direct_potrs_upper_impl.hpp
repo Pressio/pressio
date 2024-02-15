@@ -94,11 +94,11 @@ public:
    * T and MatrixType have same execution space
    */
   template <typename _MatrixType = MatrixType, typename T>
-  mpl::enable_if_t<
-    mpl::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
+  std::enable_if_t<
+    std::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::is_vector_kokkos<T>::value 
     /*and ::pressio::containers::details::traits<T>::has_host_execution_space and*/
-    and mpl::is_same<typename T::traits::execution_space, typename _MatrixType::traits::execution_space>::value
+    and std::is_same<typename T::traits::execution_space, typename _MatrixType::traits::execution_space>::value
   >
   solve(const _MatrixType & A, const T& b, T & y)
   {
@@ -122,11 +122,11 @@ public:
    * T and MatrixType have same execution space
    */
   template <typename _MatrixType = MatrixType, typename T>
-  mpl::enable_if_t<
-    mpl::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
+  std::enable_if_t<
+    std::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::is_vector_kokkos<T>::value 
     /*and ::pressio::containers::details::traits<T>::has_host_execution_space and*/
-    and mpl::is_same<typename T::traits::execution_space, typename _MatrixType::traits::execution_space>::value
+    and std::is_same<typename T::traits::execution_space, typename _MatrixType::traits::execution_space>::value
   >
   solveAllowMatOverwrite(_MatrixType & A, const T& b, T & y)
   {

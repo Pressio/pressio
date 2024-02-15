@@ -57,7 +57,7 @@ namespace pressio{ namespace ode{ namespace impl{
   on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
     >::value
@@ -80,7 +80,7 @@ discrete_jacobian(::pressio::ode::BDF1,
   on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class MassMatrixType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
@@ -104,7 +104,7 @@ discrete_jacobian(::pressio::ode::BDF1,
   - on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
     >::value
@@ -127,7 +127,7 @@ discrete_jacobian(::pressio::ode::BDF2,
   - on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class MassMatrixType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
@@ -152,7 +152,7 @@ discrete_jacobian(::pressio::ode::BDF2,
   - on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
     >::value

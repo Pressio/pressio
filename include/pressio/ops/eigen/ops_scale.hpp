@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
    Eigen native operations which are based on expressions and require
    coefficients to be convertible to scalar types of the vector/matrix operand */
 template <typename T, class ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
     (::pressio::Traits<T>::rank == 1
   || ::pressio::Traits<T>::rank == 2)

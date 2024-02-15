@@ -54,7 +54,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
     (::pressio::is_native_container_kokkos<T>::value
   or ::pressio::is_expression_acting_on_kokkos<T>::value)
   >

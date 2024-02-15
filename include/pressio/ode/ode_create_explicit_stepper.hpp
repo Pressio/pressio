@@ -80,7 +80,7 @@ template<class SystemType>
 #else
 template<
   class SystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>::value,
     int > = 0
   >
@@ -134,7 +134,7 @@ template<class SystemType>
 #else
 template<
   class SystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     RealValuedOdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>::value,
     int > = 0
   >

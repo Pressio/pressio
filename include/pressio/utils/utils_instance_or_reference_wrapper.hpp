@@ -72,7 +72,7 @@ public:
   InstanceOrReferenceWrapper & operator=(InstanceOrReferenceWrapper &&) = default;
   ~InstanceOrReferenceWrapper() = default;
 
-  template< class _T = T, mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0>
+  template< class _T = T, std::enable_if_t<std::is_default_constructible<_T>::value, int> = 0>
   InstanceOrReferenceWrapper(){}
 
   explicit InstanceOrReferenceWrapper(T & valIn)

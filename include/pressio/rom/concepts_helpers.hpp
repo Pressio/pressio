@@ -100,7 +100,7 @@ struct mask_action{
 template<class MaskerType, class OperandType>
 struct mask_action<
   MaskerType, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<
     decltype
       (std::declval<MaskerType const>().createResultOfMaskActionOn
@@ -131,7 +131,7 @@ struct fom_mass_matrix_action{
 template<class MassMatrixOpType, class OperandType>
 struct fom_mass_matrix_action<
   MassMatrixOpType, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<
     decltype
       (std::declval<MassMatrixOpType const>().createResultOfMassMatrixActionOn

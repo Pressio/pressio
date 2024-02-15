@@ -64,7 +64,7 @@ template<
   class ...Args
   >
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
     SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args &&...>::value
     && StepSizePolicy<StepSizePolicyType&& , IndVarType>::value
     && !StateObserver<AuxT &&, IndVarType, StateType>::value
@@ -105,7 +105,7 @@ template<
   class ...Args
   >
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
        SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
     && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
     && StateObserver<ObserverType&&, IndVarType, StateType>::value

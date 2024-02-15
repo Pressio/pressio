@@ -71,7 +71,7 @@ struct is_native_container_kokkos {
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T>
 struct Traits< T,
-  mpl::enable_if_t< is_vector_eigen<T>::value > >
+  std::enable_if_t< is_vector_eigen<T>::value > >
 {
   static constexpr int rank = 1;
   using scalar_type = typename T::Scalar;
@@ -81,7 +81,7 @@ struct Traits< T,
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename T>
 struct Traits< T,
-  ::pressio::mpl::enable_if_t< is_vector_kokkos<T>::value > >
+  std::enable_if_t< is_vector_kokkos<T>::value > >
 {
   static constexpr int rank = 1;
   using scalar_type = typename T::traits::value_type;
@@ -91,7 +91,7 @@ struct Traits< T,
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
 struct Traits< T,
-   mpl::enable_if_t<
+   std::enable_if_t<
     is_vector_tpetra<T>::value || is_vector_tpetra_block<T>::value > >
 {
   static constexpr int rank = 1;
@@ -102,7 +102,7 @@ struct Traits< T,
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
 struct Traits< T,
-  mpl::enable_if_t< is_vector_epetra<T>::value > >
+  std::enable_if_t< is_vector_epetra<T>::value > >
 {
   static constexpr int rank = 1;
   using scalar_type = double;
@@ -112,7 +112,7 @@ struct Traits< T,
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
 struct Traits< T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     is_dense_vector_teuchos<T>::value > >
 {
   static constexpr int rank = 1;
@@ -123,7 +123,7 @@ struct Traits< T,
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T>
 struct Traits<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
     is_dense_matrix_eigen<T>::value >
   >
 {
@@ -136,7 +136,7 @@ struct Traits<
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename T>
 struct Traits<
-  T, ::pressio::mpl::enable_if_t<
+  T, std::enable_if_t<
       is_dense_matrix_kokkos<T>::value >
   >
 {
@@ -148,7 +148,7 @@ struct Traits<
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
 struct Traits<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
     is_dense_matrix_teuchos<T>::value >
   >
 {
@@ -160,7 +160,7 @@ struct Traits<
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
 struct Traits<
-  T, ::pressio::mpl::enable_if_t<
+  T, std::enable_if_t<
     is_multi_vector_tpetra<T>::value ||
     is_multi_vector_tpetra_block<T>::value >
   >
@@ -171,7 +171,7 @@ struct Traits<
 
 template<typename T>
 struct Traits<
-  T, ::pressio::mpl::enable_if_t<
+  T, std::enable_if_t<
     is_multi_vector_epetra<T>::value >
   >
 {
@@ -183,7 +183,7 @@ struct Traits<
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T>
 struct Traits<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
     is_sparse_matrix_eigen<T>::value >
   >
 {

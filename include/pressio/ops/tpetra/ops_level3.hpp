@@ -63,7 +63,7 @@ template <
   class A_type, class B_type, class C_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -144,7 +144,7 @@ template <
   class C_type, class A_type, class B_type,
   class alpha_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -183,7 +183,7 @@ template <
   class A_type, class C_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -235,7 +235,7 @@ product(::pressio::transpose /*unused*/,
 }
 
 template <class C_type, class A_type, class alpha_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -271,7 +271,7 @@ A = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
 template <class A_type, class C_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -326,7 +326,7 @@ A = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
 template <class C_type, class A_type, class alpha_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -361,7 +361,7 @@ B = tpetra multivector
 C is a Kokkos dense matrix
 *-------------------------------------------------------------------*/
 template <class A_type, class B_type, class C_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -420,7 +420,7 @@ product(::pressio::transpose /*unused*/,
 // // specialize for when A is a diagonal expression
 // //-------------------------------------------
 // template <typename T, typename B_type, typename scalar_type, typename C_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<C_type>::value and
 //   ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value

@@ -56,7 +56,7 @@ namespace pressio{ namespace qr{ namespace impl{
 template< typename MatrixType, typename R_t>
 class QRHouseholderDenseEigenMatrix<
   MatrixType, R_t,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >

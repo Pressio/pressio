@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   (   ::pressio::is_vector_tpetra_block<T1>::value
    || ::pressio::is_expression_column_acting_on_tpetra_block<T1>::value)
   && (::pressio::is_vector_tpetra_block<T2>::value
@@ -79,7 +79,7 @@ abs_pow(T1 & y,
 
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   (::pressio::is_vector_tpetra_block<T1>::value
    || ::pressio::is_expression_column_acting_on_tpetra_block<T1>::value)
   && (::pressio::is_vector_tpetra_block<T2>::value
@@ -105,7 +105,7 @@ abs_pow(T1 & y,
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_tpetra_block<T>::value
   || ::pressio::is_expression_column_acting_on_tpetra_block<T>::value
   >

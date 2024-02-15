@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <class T1, class T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // common abs constraints
      ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1

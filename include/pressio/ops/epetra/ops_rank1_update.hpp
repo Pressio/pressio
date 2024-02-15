@@ -56,7 +56,7 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename T1,
          typename a_Type, typename b_Type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -101,7 +101,7 @@ template<
   class T, class T1, class T2,
   class a_Type, class b_Type, class c_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -154,7 +154,7 @@ template<
   class T, class T1, class T2, class T3,
   class a_Type, class b_Type, class c_Type, class d_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1
@@ -215,7 +215,7 @@ template<
   class T, class T1, class T2, class T3, class T4,
   class a_Type, class b_Type, class c_Type, class d_Type, class e_Type
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 1
   && ::pressio::Traits<T1>::rank == 1

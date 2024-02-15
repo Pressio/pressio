@@ -58,7 +58,7 @@ namespace pressio{ namespace ops{
 // where MV is an kokkos multivector wrapper
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename alpha_t, typename beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // rank-1 update common constraints
      ::pressio::Traits<T>::rank == 2
   && ::pressio::Traits<T1>::rank == 2

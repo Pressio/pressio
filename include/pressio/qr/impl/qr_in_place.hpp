@@ -96,7 +96,7 @@ private:
 //   >
 // class QRSolver<
 //   MatrixType, algo, true, R_type, Q_type,
-//   ::pressio::mpl::enable_if_t<
+//   std::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
 //     containers::predicates::is_multi_vector_wrapper<MatrixType>::value
 //     >

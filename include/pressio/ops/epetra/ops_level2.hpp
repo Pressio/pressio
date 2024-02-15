@@ -95,7 +95,7 @@ template <
   typename y_type,
   typename beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -135,7 +135,7 @@ template <
   typename y_type,
   typename beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -190,7 +190,7 @@ template <
   typename y_type,
   typename beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -231,7 +231,7 @@ template <
   typename y_type,
   typename beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -284,7 +284,7 @@ product(::pressio::transpose /*unused*/,
 //    while y is distributed, so A*x only fills the corresponding part of y
 //  *-------------------------------------------------------------------*/
 // template < typename A_type, typename x_type, typename scalar_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
 //   ::pressio::containers::predicates::is_vector_wrapper_eigen<x_type>::value
 //   >
@@ -296,7 +296,7 @@ product(::pressio::transpose /*unused*/,
 // 	::pressio::containers::Vector<Epetra_Vector> & y)
 // {
 //   static_assert
-//     (mpl::is_same<
+//     (std::is_same<
 //      scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
 //      "Scalar compatibility broken");
 
@@ -316,7 +316,7 @@ product(::pressio::transpose /*unused*/,
 //  * y is vector wrapper Eigen
 //  *-------------------------------------------------------------------*/
 // template <typename A_type, typename y_type, typename scalar_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
 //   ::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value
 //   >

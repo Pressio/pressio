@@ -246,7 +246,7 @@ private:
   }
 
   template<class SystemType, class _Tag = Tag>
-  mpl::enable_if_t< std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
+  std::enable_if_t< std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
   solve_lm_impl(const SystemType & system,
 		StateType & solutionInOut)
   {
@@ -276,7 +276,7 @@ private:
   }
 
   template<class SystemType, class _Tag = Tag>
-  mpl::enable_if_t< !std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
+  std::enable_if_t< !std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
   solve_lm_impl(const SystemType & /*system*/,
 		StateType & /*solutionInOut*/)
   {

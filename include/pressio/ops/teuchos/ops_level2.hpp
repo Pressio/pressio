@@ -62,7 +62,7 @@ template <
   typename A_type, typename x_type, typename y_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_matrix_teuchos<A_type>::value and
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_eigen<y_type>::value
@@ -93,7 +93,7 @@ template <
   typename A_type, typename x_type, typename y_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   is_dense_matrix_teuchos<A_type>::value and
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_eigen<y_type>::value

@@ -67,7 +67,7 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< (_n==2) >
+  std::enable_if_t< (_n==2) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
@@ -97,7 +97,7 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< (_n==3) >
+  std::enable_if_t< (_n==3) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,

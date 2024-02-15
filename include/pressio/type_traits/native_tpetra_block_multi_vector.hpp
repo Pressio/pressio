@@ -59,7 +59,7 @@ struct is_multi_vector_tpetra_block : std::false_type {};
 template <typename T>
 struct is_multi_vector_tpetra_block<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_same<
       typename std::remove_cv<T>::type,
       Tpetra::BlockMultiVector<

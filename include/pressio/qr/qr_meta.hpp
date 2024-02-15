@@ -57,7 +57,7 @@ struct is_legitimate_r_type : std::false_type {};
 
 template <typename T>
 struct is_legitimate_r_type<T,
-	 ::pressio::mpl::enable_if_t<
+	 std::enable_if_t<
   	   ::pressio::Traits<T>::rank == 2 and
 	   ::pressio::Traits<T>::is_shared_mem and
 	   ::pressio::Traits<T>::is_dense
@@ -70,7 +70,7 @@ struct is_legitimate_vector_type_for_qr_project : std::false_type {};
 
 template <typename T, typename Q_t>
 struct is_legitimate_vector_type_for_qr_project<T, Q_t,
-	 ::pressio::mpl::enable_if_t<
+	 std::enable_if_t<
   	   ::pressio::Traits<T>::rank == 1 and
 	   // the vector type should be from same package as Q
 	   (false
@@ -96,7 +96,7 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 
 // template <typename algo_t>
 // struct is_legitimate_algo_for_epetra_mv<algo_t,
-// 	 ::pressio::mpl::enable_if_t<
+// 	 std::enable_if_t<
 // 	   std::is_same<algo_t, ::pressio::qr::Householder>::value
 // 	   or std::is_same<algo_t, ::pressio::qr::TSQR>::value
 // 	 >
@@ -109,7 +109,7 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 
 // template <typename algo_t>
 // struct is_legitimate_algo_for_tpetra_mv<algo_t,
-// 	 ::pressio::mpl::enable_if_t<
+// 	 std::enable_if_t<
 // 	   std::is_same<algo_t, ::pressio::qr::Householder>::value
 // 	   or std::is_same<algo_t, ::pressio::qr::TSQR>::value
 // 	   >

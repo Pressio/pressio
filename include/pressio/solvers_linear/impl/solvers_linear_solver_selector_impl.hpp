@@ -72,7 +72,7 @@ struct Selector{
 template<typename TagType, typename MatrixType>
 struct Selector<
   TagType, MatrixType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::linearsolvers::Traits<TagType>::iterative and
     (::pressio::is_dense_matrix_eigen<MatrixType>::value or
      ::pressio::is_sparse_matrix_eigen<MatrixType>::value)
@@ -86,7 +86,7 @@ struct Selector<
 template<typename TagType, typename MatrixType>
 struct Selector<
   TagType, MatrixType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::linearsolvers::Traits<TagType>::direct and
     (::pressio::is_dense_matrix_eigen<MatrixType>::value or
      ::pressio::is_sparse_matrix_eigen<MatrixType>::value)>
@@ -101,7 +101,7 @@ struct Selector<
 template<typename TagType, typename MatrixType>
 struct Selector<
   TagType, MatrixType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::linearsolvers::Traits<TagType>::direct and
     (::pressio::is_dense_matrix_kokkos<MatrixType>::value)
     >

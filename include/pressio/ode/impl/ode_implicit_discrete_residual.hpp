@@ -63,7 +63,7 @@ template <
   class StencilStatesContainerType,
   class StepSizeType
   >
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<ResidualType>::scalar_type
@@ -100,7 +100,7 @@ template <
   class StencilStatesContainerType,
   class StepSizeType
   >
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType, MassMatrixType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<ResidualType>::scalar_type
@@ -142,7 +142,7 @@ template <
   class StencilStatesContainerType,
   class StepSizeType
   >
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<ResidualType>::scalar_type
@@ -183,7 +183,7 @@ template <
   class StencilStatesContainerType,
   class StepSizeType
   >
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType, MassMatrixType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<ResidualType>::scalar_type
@@ -233,7 +233,7 @@ template <
   class StencilVelocitiesContainerType,
   class StepSizeType
   >
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<StateType, ResidualType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<ResidualType>::scalar_type

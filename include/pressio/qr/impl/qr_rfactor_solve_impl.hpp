@@ -59,7 +59,7 @@ namespace pressio{ namespace qr{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template< typename VectorType, typename R_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_eigen<VectorType>::value and
   ::pressio::is_dense_matrix_eigen<R_type>::value
 >
@@ -73,7 +73,7 @@ solve(const VectorType & rhs,
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename VectorType, typename R_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_vector_teuchos<VectorType>::value and
   ::pressio::is_dense_matrix_teuchos_rcp<R_type>::value
 >
@@ -102,7 +102,7 @@ solve(const VectorType & rhs, R_type Rmatrix, VectorType & y)
 }
 
 template<typename VectorType, typename R_type>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   !::pressio::is_dense_vector_teuchos<VectorType>::value and
   ::pressio::is_dense_matrix_teuchos_rcp<R_type>::value
 >

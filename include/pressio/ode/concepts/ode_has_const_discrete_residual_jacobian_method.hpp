@@ -70,7 +70,7 @@ template <
   class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 1, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -98,7 +98,7 @@ template <
   class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 2, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -126,7 +126,7 @@ template <
   class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 3, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -156,7 +156,7 @@ template <
     class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 4, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (

@@ -11,7 +11,7 @@ struct CreateReducedState;
 template<class ReducedStateType>
 struct CreateReducedState<
   ReducedStateType,
-  mpl::enable_if_t< ::pressio::is_vector_eigen<ReducedStateType>::value >
+  std::enable_if_t< ::pressio::is_vector_eigen<ReducedStateType>::value >
   >
 {
   template<class BasisType>
@@ -25,7 +25,7 @@ struct CreateReducedState<
 template<class ReducedStateType>
 struct CreateReducedState<
   ReducedStateType,
-  mpl::enable_if_t< ::pressio::is_vector_kokkos<ReducedStateType>::value >
+  std::enable_if_t< ::pressio::is_vector_kokkos<ReducedStateType>::value >
   >
 {
   template<class BasisType>

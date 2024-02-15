@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
   native Eigen ops which use expressions, so value has to
   be convertible to the the scalar type of the object */
 template <typename T, class ScalarType>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
     (::pressio::is_native_container_eigen<T>::value
   || ::pressio::is_expression_acting_on_eigen<T>::value)
   && std::is_convertible<ScalarType, typename ::pressio::Traits<T>::scalar_type>::value

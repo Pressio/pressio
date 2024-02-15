@@ -51,7 +51,7 @@ An example of one such specialization (in this case for Eigen) is:
 
    template <typename T>
    struct Traits<
-     T, ::pressio::mpl::enable_if_t<is_dynamic_vector_eigen<T>::value>
+     T, std::enable_if_t<is_dynamic_vector_eigen<T>::value>
      >
    {
      using scalar_type   = typename T::Scalar;

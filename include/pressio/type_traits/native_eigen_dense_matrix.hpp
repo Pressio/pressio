@@ -63,7 +63,7 @@ struct is_static_dense_matrix_eigen : std::false_type {};
 template<typename T>
 struct is_static_dense_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !is_vector_eigen<T>::value and
     std::is_same<
       typename std::remove_cv<T>::type,
@@ -86,7 +86,7 @@ struct is_dynamic_dense_matrix_eigen : std::false_type {};
 template<typename T>
 struct is_dynamic_dense_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !is_vector_eigen<T>::value and
     !is_static_dense_matrix_eigen<T>::value and
     std::is_same<
@@ -109,7 +109,7 @@ struct is_dynamic_dense_matrix_eigen<
 template<typename T>
 struct is_dynamic_dense_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !is_vector_eigen<T>::value and
     !is_static_dense_matrix_eigen<T>::value and
     std::is_same<
@@ -133,7 +133,7 @@ struct is_dynamic_dense_matrix_eigen<
 template<typename T>
 struct is_dynamic_dense_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !is_vector_eigen<T>::value and
     !is_static_dense_matrix_eigen<T>::value and
     std::is_same<
@@ -156,7 +156,7 @@ struct is_dense_row_major_matrix_eigen : std::false_type {};
 template<typename T>
 struct is_dense_row_major_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     (is_static_dense_matrix_eigen<T>::value or
     is_dynamic_dense_matrix_eigen<T>::value) and
     int(T::IsRowMajor)==1
@@ -170,7 +170,7 @@ struct is_dense_col_major_matrix_eigen : std::false_type {};
 template<typename T>
 struct is_dense_col_major_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     (is_static_dense_matrix_eigen<T>::value or
     is_dynamic_dense_matrix_eigen<T>::value) and
     int(T::IsRowMajor)==0
@@ -184,7 +184,7 @@ struct is_dense_matrix_eigen : std::false_type {};
 template<typename T>
 struct is_dense_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     is_static_dense_matrix_eigen<T>::value or
     is_dynamic_dense_matrix_eigen<T>::value
     >

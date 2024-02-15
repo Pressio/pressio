@@ -139,7 +139,7 @@ public:
 // 		     const mass_matrix_type & M,
 // 		     const RightHandSideType & b){ { solver.solve(M, x, b) }; }
 // #else
-  // mpl::enable_if_t<
+  // std::enable_if_t<
   //   std::is_void<
   //     decltype(
   //       std::declval<LinearSolverType &>().solve(

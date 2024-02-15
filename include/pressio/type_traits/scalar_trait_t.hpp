@@ -57,7 +57,7 @@ template<class T, class = void> struct _scalar_trait
 
 template<class T>
 struct _scalar_trait<
-  T, mpl::enable_if_t< has_traits<T>::value >
+  T, std::enable_if_t< has_traits<T>::value >
   >
 {
   using type = typename ::pressio::Traits<T>::scalar_type;

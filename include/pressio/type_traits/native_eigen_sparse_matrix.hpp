@@ -64,7 +64,7 @@ struct is_sparse_matrix_eigen : std::false_type {};
 template<typename T>
 struct is_sparse_matrix_eigen<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !is_vector_eigen<T>::value and
     std::is_same<
       typename std::remove_cv<T>::type,

@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   (::pressio::is_vector_tpetra_block<T>::value
   || ::pressio::is_multi_vector_tpetra_block<T>::value), T>
 clone(const T & clonable)

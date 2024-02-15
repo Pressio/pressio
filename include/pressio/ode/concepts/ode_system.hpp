@@ -13,7 +13,7 @@ struct OdeSystem : std::false_type{};
 template<class T>
 struct OdeSystem<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_rhs_typedef<T>::value
@@ -42,7 +42,7 @@ struct OdeSystemFusingRhsAndJacobian : std::false_type{};
 template<class T>
 struct OdeSystemFusingRhsAndJacobian<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_rhs_typedef<T>::value
@@ -81,7 +81,7 @@ struct OdeSystemFusingMassMatrixAndRhs : std::false_type{};
 template<class T>
 struct OdeSystemFusingMassMatrixAndRhs<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_rhs_typedef<T>::value
@@ -117,7 +117,7 @@ struct CompleteOdeSystem : std::false_type{};
 template<class T>
 struct CompleteOdeSystem<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_rhs_typedef<T>::value
@@ -161,7 +161,7 @@ struct FullyDiscreteSystemWithJacobian : std::false_type{};
 template<class T, int NumStates>
 struct FullyDiscreteSystemWithJacobian<
   T, NumStates,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_discrete_residual_typedef<T>::value
@@ -196,7 +196,7 @@ struct RealValuedOdeSystem : std::false_type{};
 
 template<class T>
 struct RealValuedOdeSystem<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
        OdeSystem<T>::value
        && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
        && std::is_floating_point< scalar_trait_t<typename T::rhs_type> >::value
@@ -212,7 +212,7 @@ struct RealValuedOdeSystemFusingRhsAndJacobian : std::false_type{};
 template<class T>
 struct RealValuedOdeSystemFusingRhsAndJacobian<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     OdeSystemFusingRhsAndJacobian<T>::value
   && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
   && std::is_floating_point< scalar_trait_t<typename T::rhs_type> >::value
@@ -228,7 +228,7 @@ struct RealValuedOdeSystemFusingMassMatrixAndRhs : std::false_type{};
 
 template<class T>
 struct RealValuedOdeSystemFusingMassMatrixAndRhs<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
     OdeSystemFusingMassMatrixAndRhs<T>::value
   && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
   && std::is_floating_point< scalar_trait_t<typename T::rhs_type> >::value
@@ -245,7 +245,7 @@ struct RealValuedCompleteOdeSystem : std::false_type{};
 
 template<class T>
 struct RealValuedCompleteOdeSystem<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
        CompleteOdeSystem<T>::value
        && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
        && std::is_floating_point< scalar_trait_t<typename T::rhs_type> >::value
@@ -263,7 +263,7 @@ struct RealValuedFullyDiscreteSystemWithJacobian : std::false_type{};
 template <class T, int NumStates>
 struct RealValuedFullyDiscreteSystemWithJacobian<
   T, NumStates,
-  mpl::enable_if_t<
+  std::enable_if_t<
     FullyDiscreteSystemWithJacobian<T, NumStates>::value
     && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
     && std::is_floating_point< scalar_trait_t<typename T::discrete_residual_type> >::value
@@ -284,7 +284,7 @@ struct ImplicitResidualJacobianPolicy : std::false_type{};
 template<class T>
 struct ImplicitResidualJacobianPolicy<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_residual_typedef<T>::value

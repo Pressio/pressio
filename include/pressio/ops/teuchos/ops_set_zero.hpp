@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_vector_teuchos<T>::value
   >
 set_zero(T & objectIn)

@@ -67,7 +67,7 @@ class QRSolveBase
 
 public:
   template <typename VectorType>
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
    ::pressio::Traits<VectorType>::rank ==1 
   >
   solve(const VectorType & rhs, VectorType & y)const {

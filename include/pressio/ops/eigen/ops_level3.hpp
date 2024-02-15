@@ -62,7 +62,7 @@ template <
   class A_type, class B_type, class C_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -114,7 +114,7 @@ template <
   class A_type, class B_type, class C_type,
   class alpha_t, class beta_t
   >
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<B_type>::rank == 2
@@ -163,7 +163,7 @@ product(::pressio::nontranspose /*unused*/,
 * special case A==B and op(A) = transpose
 **********************************/
 template <class A_type, class C_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -204,7 +204,7 @@ product(::pressio::transpose /*unused*/,
 }
 
 template <class C_type, class A_type, class alpha_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level3 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<C_type>::rank == 2
@@ -240,7 +240,7 @@ product(::pressio::transpose modeA,
 
 
 // template < class A_type, class B_type, class ScalarType, class C_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::is_dense_matrix_eigen<B_type>::value and
 //   ::pressio::is_dense_matrix_eigen<C_type>::value
 //   >
@@ -265,7 +265,7 @@ product(::pressio::transpose modeA,
 // }
 
 // template < class A_type, class B_type, class ScalarType, class C_type>
-// ::pressio::mpl::enable_if_t<
+// std::enable_if_t<
 //   ::pressio::is_dense_matrix_eigen<B_type>::value and
 //   ::pressio::is_dense_matrix_eigen<C_type>::value
 //   >

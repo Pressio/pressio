@@ -57,7 +57,7 @@ template <
   bool useExtraArgs,
   class StepSizePolicyType, class IndVarType, class ...Args
   >
-mpl::enable_if_t< useExtraArgs==true >
+std::enable_if_t< useExtraArgs==true >
 call_dt_policy(StepSizePolicyType && dtPolicy,
 	       const StepCount & step,
 	       const ::pressio::ode::StepStartAt<IndVarType> & time,
@@ -71,7 +71,7 @@ template<
   bool useExtraArgs,
   class StepSizePolicyType, class IndVarType, class ...Args
   >
-mpl::enable_if_t< useExtraArgs==false >
+std::enable_if_t< useExtraArgs==false >
 call_dt_policy(StepSizePolicyType && dtPolicy,
 	       const StepCount & step,
 	       const ::pressio::ode::StepStartAt<IndVarType> time,

@@ -89,7 +89,7 @@ jobs:
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main.cpp                \
-          && $CXX -o pressio-example main.o \
+          && $CXX --std=c++17 -o pressio-example main.o \
           && ./pressio-example
 
       - name: Example - include only with embedded definitions
@@ -99,7 +99,7 @@ jobs:
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main_with_defines.cpp   \
-          && $CXX -o pressio-example main.o \
+          && $CXX --std=c++17 -o pressio-example main.o \
           && ./pressio-example
 
       - name: Configure

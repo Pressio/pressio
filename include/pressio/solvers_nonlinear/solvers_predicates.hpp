@@ -62,8 +62,8 @@ struct has_const_create_state_method_return_result
 template <class T, class StateType>
 struct has_const_create_state_method_return_result<
   T, StateType,
-  ::pressio::mpl::enable_if_t<
-    mpl::is_same<
+  std::enable_if_t<
+    std::is_same<
       StateType,
       decltype(std::declval<T const>().createState())
       >::value
@@ -76,8 +76,8 @@ struct has_const_create_residual_method_return_result : std::false_type{};
 template<typename T, typename ResidualType>
 struct has_const_create_residual_method_return_result
 <T, ResidualType,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_same<
+ std::enable_if_t<
+   std::is_same<
      ResidualType,
      decltype( std::declval<T const>().createResidual() )
      >::value
@@ -100,7 +100,7 @@ template <
   >
 struct has_const_residual_method_accept_state_result_return_void<
   T, StateType, ResidualType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().residual
@@ -119,8 +119,8 @@ struct has_const_create_jacobian_method_return_result : std::false_type{};
 template<class T, class JacobianType>
 struct has_const_create_jacobian_method_return_result
 <T, JacobianType,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_same<
+ std::enable_if_t<
+   std::is_same<
      JacobianType,
      decltype( std::declval<T const>().createJacobian() )
      >::value
@@ -143,7 +143,7 @@ template <
   >
 struct has_const_jacobian_method_accept_state_result_return_void<
   T, StateType, JacobianType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().jacobian
@@ -175,7 +175,7 @@ template <
   >
 struct has_const_residualandjacobian_method_accept_state_result_return_void<
   T, StateType, ResidualType, JacobianType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().residualAndJacobian

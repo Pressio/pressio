@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // TPL/container specific
   (   ::pressio::is_vector_tpetra<T>::value
    || ::pressio::is_multi_vector_tpetra<T>::value
@@ -90,7 +90,7 @@ max(const T & obj)
 
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // TPL/container specific
   (   ::pressio::is_vector_tpetra<T>::value
    || ::pressio::is_multi_vector_tpetra<T>::value

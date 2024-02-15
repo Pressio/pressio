@@ -10,7 +10,7 @@ namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 #else
   template<
     class RegistryType, class StateType, class SystemType,
-    mpl::enable_if_t<NonlinearSystemFusingResidualAndJacobian<SystemType>::value, int> = 0
+    std::enable_if_t<NonlinearSystemFusingResidualAndJacobian<SystemType>::value, int> = 0
   >
 #endif
 void compute_residual(RegistryType & reg,
@@ -31,7 +31,7 @@ requires NonlinearSystem<SystemType>
 #else
 template<
   class RegistryType, class StateType, class SystemType,
-  mpl::enable_if_t< NonlinearSystem<SystemType>::value, int> = 0
+  std::enable_if_t< NonlinearSystem<SystemType>::value, int> = 0
   >
 #endif
 void compute_residual(RegistryType & reg,
@@ -137,7 +137,7 @@ requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
@@ -168,7 +168,7 @@ requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
@@ -196,7 +196,7 @@ requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
@@ -236,7 +236,7 @@ requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
 #else
 template<
   class RegistryType, class SystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
     int> = 0
   >
@@ -399,7 +399,7 @@ void reset_for_new_solve_loop(LevenbergMarquardtNormalEqTag /*tagJ*/,
 // =====================================================
 
 template<class Tag, class T, class RegistryType>
-mpl::enable_if_t< !RegistryType::template contains<Tag>() >
+std::enable_if_t< !RegistryType::template contains<Tag>() >
 compute_norm2_if_tag_if_present(Tag /*t*/,
 				const RegistryType & reg,
 				bool isInitial,
@@ -407,7 +407,7 @@ compute_norm2_if_tag_if_present(Tag /*t*/,
 { /* noop */ }
 
 template<class Tag, class T, class RegistryType>
-mpl::enable_if_t< RegistryType::template contains<Tag>() >
+std::enable_if_t< RegistryType::template contains<Tag>() >
 compute_norm2_if_tag_if_present(Tag /*t*/,
 				const RegistryType & reg,
 				bool isInitial,

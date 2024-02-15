@@ -65,7 +65,7 @@ op(A) = A or A^T
 namespace impl{
 
 template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
   ::pressio::is_vector_eigen<x_type>::value and
   ::pressio::is_vector_tpetra<y_type>::value
@@ -95,7 +95,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 
 // when the operand is a kokkos wrapper we use kokkos functionalities directly
 template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
   ::pressio::is_vector_kokkos<x_type>::value and
   ::pressio::is_vector_tpetra<y_type>::value
@@ -120,7 +120,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 }
 
 template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
   (::pressio::is_expression_acting_on_kokkos<x_type>::value or
    ::pressio::is_dense_vector_teuchos<x_type>::value) and
@@ -169,7 +169,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
 // y = tpetra vector or column expression
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -205,7 +205,7 @@ product(::pressio::nontranspose /*unused*/,
 // y = tpetra vector or column expression
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -243,7 +243,7 @@ product(::pressio::nontranspose /*unused*/,
 // -------------------------------
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -282,7 +282,7 @@ product(::pressio::nontranspose /*unused*/,
 // y = tpetra vector
 // -------------------------------
 template <class y_type, class A_type, class x_type, class alpha_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -319,7 +319,7 @@ product(::pressio::nontranspose mode,
 // y = tpetra vector or column expression
 // -------------------------------
 template < class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -377,7 +377,7 @@ product(::pressio::nontranspose /*unused*/,
 // y = Eigen vector
 // -------------------------------
 template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1
@@ -434,7 +434,7 @@ product(::pressio::transpose /*unused*/,
 // y = Kokkos vector
 // -------------------------------
 template <class A_type, class x_type, class y_type, class alpha_t, class beta_t>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // level2 common constraints
      ::pressio::Traits<A_type>::rank == 2
   && ::pressio::Traits<x_type>::rank == 1

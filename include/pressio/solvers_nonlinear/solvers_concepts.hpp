@@ -59,7 +59,7 @@ struct NonlinearSystem : std::false_type{};
 template<class T>
 struct NonlinearSystem<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::has_state_typedef<T>::value
     && ::pressio::has_residual_typedef<T>::value
     && std::is_copy_constructible<typename T::state_type>::value
@@ -80,7 +80,7 @@ struct NonlinearSystemFusingResidualAndJacobian : std::false_type{};
 template<class T>
 struct NonlinearSystemFusingResidualAndJacobian<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::has_state_typedef<T>::value
     && ::pressio::has_residual_typedef<T>::value
     && ::pressio::has_jacobian_typedef<T>::value
@@ -102,7 +102,7 @@ struct NonlinearSystemFusingResidualAndJacobian<
 template<class T, class = void> struct RealValuedNonlinearSystem : std::false_type{};
 template<class T> struct RealValuedNonlinearSystem<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     NonlinearSystem<T>::value
     && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
     && std::is_floating_point< scalar_trait_t<typename T::residual_type> >::value
@@ -112,7 +112,7 @@ template<class T> struct RealValuedNonlinearSystem<
 template<class T, class = void> struct RealValuedNonlinearSystemFusingResidualAndJacobian : std::false_type{};
 template<class T> struct RealValuedNonlinearSystemFusingResidualAndJacobian<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     NonlinearSystemFusingResidualAndJacobian<T>::value
     && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
     && std::is_floating_point< scalar_trait_t<typename T::residual_type> >::value
@@ -128,7 +128,7 @@ template <class T, class = void> struct scalar_of;
 
 template <class T>
 struct scalar_of<
-  T, mpl::enable_if_t<
+  T, std::enable_if_t<
        RealValuedNonlinearSystem<T>::value
        || RealValuedNonlinearSystemFusingResidualAndJacobian<T>::value>
   >

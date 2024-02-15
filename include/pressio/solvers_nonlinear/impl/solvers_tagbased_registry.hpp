@@ -116,7 +116,7 @@ public:
 
   template<
     class TagToFind,
-    mpl::enable_if_t< Extendable::template contains<TagToFind>(), int> * = nullptr
+    std::enable_if_t< Extendable::template contains<TagToFind>(), int> * = nullptr
     >
   auto & get(){
     return reg_.template get<TagToFind>();
@@ -124,7 +124,7 @@ public:
 
   template<
     class TagToFind,
-    mpl::enable_if_t< !Extendable::template contains<TagToFind>(), int> * = nullptr
+    std::enable_if_t< !Extendable::template contains<TagToFind>(), int> * = nullptr
     >
   auto & get(){
     return newReg_.template get<TagToFind>();
@@ -132,7 +132,7 @@ public:
 
   template<
     class TagToFind,
-    mpl::enable_if_t< Extendable::template contains<TagToFind>(), int> * = nullptr
+    std::enable_if_t< Extendable::template contains<TagToFind>(), int> * = nullptr
     >
   const auto & get() const {
     return reg_.template get<TagToFind>();
@@ -140,7 +140,7 @@ public:
 
   template<
     class TagToFind,
-    mpl::enable_if_t< !Extendable::template contains<TagToFind>(), int> * = nullptr
+    std::enable_if_t< !Extendable::template contains<TagToFind>(), int> * = nullptr
     >
   const auto & get() const {
     return newReg_.template get<TagToFind>();

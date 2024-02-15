@@ -59,7 +59,7 @@ template<typename T, class Enable = void> struct GlobalOrdinalType { using type 
 template <class T>
 struct OrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_eigen<T>::value
     || ::pressio::is_dense_matrix_eigen<T>::value
     >
@@ -95,7 +95,7 @@ struct OrdinalType<
 template <class T>
 struct OrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_kokkos<T>::value
     || ::pressio::is_dense_matrix_kokkos<T>::value
     >
@@ -109,7 +109,7 @@ struct OrdinalType<
 template <class T>
 struct LocalOrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_tpetra<T>::value
     || ::pressio::is_vector_tpetra_block<T>::value
     || ::pressio::is_multi_vector_tpetra_block<T>::value
@@ -123,7 +123,7 @@ struct LocalOrdinalType<
 template <class T>
 struct GlobalOrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_tpetra<T>::value
     || ::pressio::is_vector_tpetra_block<T>::value
     || ::pressio::is_multi_vector_tpetra_block<T>::value
@@ -137,7 +137,7 @@ struct GlobalOrdinalType<
 template <class T>
 struct LocalOrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_epetra<T>::value
     || ::pressio::is_multi_vector_epetra<T>::value
     >
@@ -149,7 +149,7 @@ struct LocalOrdinalType<
 template <class T>
 struct GlobalOrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_vector_epetra<T>::value
     || ::pressio::is_multi_vector_epetra<T>::value
     >
@@ -162,7 +162,7 @@ struct GlobalOrdinalType<
 template <class T>
 struct OrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_expression<T>::value
     >
   >
@@ -176,7 +176,7 @@ public:
 template <class T>
 struct LocalOrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_expression<T>::value
     >
   >
@@ -190,7 +190,7 @@ public:
 template <class T>
 struct GlobalOrdinalType<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_expression<T>::value
     >
   >

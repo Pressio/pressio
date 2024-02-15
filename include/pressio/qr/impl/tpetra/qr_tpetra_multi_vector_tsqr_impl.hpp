@@ -105,7 +105,7 @@ public:
   }
 
   template <typename T = R_t>
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     !::pressio::is_dense_matrix_teuchos<T>::value and 
     !std::is_void<T>::value,
     const T &
@@ -116,7 +116,7 @@ public:
   }
 
   template <typename T = R_t>
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::is_dense_matrix_teuchos<T>::value and 
     !std::is_void<T>::value,
     const T &

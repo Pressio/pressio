@@ -28,7 +28,7 @@ template<class T, class = void> struct CreateGalerkinRhs;
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct CreateGalerkinRhs<
-  T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value >
+  T, std::enable_if_t< ::pressio::is_vector_eigen<T>::value >
   >
 {
   T operator()(std::size_t ext){ return T(ext); }
@@ -44,7 +44,7 @@ struct CreateGalerkinMassMatrix;
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct CreateGalerkinMassMatrix<
-  T, mpl::enable_if_t< ::pressio::is_dense_matrix_eigen<T>::value >
+  T, std::enable_if_t< ::pressio::is_dense_matrix_eigen<T>::value >
   >
 {
   T operator()(std::size_t ext){ return T(ext, ext); }

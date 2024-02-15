@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
 
 namespace impl{
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
       (::pressio::is_native_container_kokkos<T1>::value
   or   ::pressio::is_expression_acting_on_kokkos<T1>::value)
   and (::pressio::is_native_container_kokkos<T2>::value
@@ -75,7 +75,7 @@ kokkos_ops_dot(const T1 & a,
 }//end namespace impl
 
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // dot common constraints
      ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1
@@ -97,7 +97,7 @@ dot(const T1 & a,
 }
 
 template <typename T1, typename T2, typename DotResult>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // dot common constraints
      ::pressio::Traits<T1>::rank == 1
   && ::pressio::Traits<T2>::rank == 1

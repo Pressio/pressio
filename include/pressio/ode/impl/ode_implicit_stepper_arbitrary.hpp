@@ -135,7 +135,7 @@ public:
 
   // 1 aux states, 2 total states
   template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==1 >
+  std::enable_if_t< _numAuxStates==1 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
 #ifdef PRESSIO_ENABLE_CXX17
@@ -157,7 +157,7 @@ public:
 
   // 2 aux states, 3 total states
   template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==2 >
+  std::enable_if_t< _numAuxStates==2 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
 #ifdef PRESSIO_ENABLE_CXX17
@@ -181,7 +181,7 @@ public:
 
   // 3 aux states, 4 total states
   template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==3 >
+  std::enable_if_t< _numAuxStates==3 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
 #ifdef PRESSIO_ENABLE_CXX17
@@ -207,7 +207,7 @@ public:
 private:
   // one aux states
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==1>
+  std::enable_if_t<nAux==1>
   updateAuxiliaryStorage(const StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -216,7 +216,7 @@ private:
   }
 
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==1>
+  std::enable_if_t<nAux==1>
   rollBackStates(StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -226,7 +226,7 @@ private:
 
   // two aux states
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==2>
+  std::enable_if_t<nAux==2>
   updateAuxiliaryStorage(const StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -237,7 +237,7 @@ private:
   }
 
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==2>
+  std::enable_if_t<nAux==2>
   rollBackStates(StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -249,7 +249,7 @@ private:
 
   // three aux states
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==3>
+  std::enable_if_t<nAux==3>
   updateAuxiliaryStorage(const StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -262,7 +262,7 @@ private:
   }
 
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==3>
+  std::enable_if_t<nAux==3>
   rollBackStates(StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());

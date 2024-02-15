@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T1, typename T2, typename DotResult>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // TPL/container specific
      ::pressio::is_vector_epetra<T1>::value
   && ::pressio::is_vector_epetra<T2>::value
@@ -76,7 +76,7 @@ dot(const T1 & a,
 }
 
 template <typename T1, typename T2>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // TPL/container specific
      ::pressio::is_vector_epetra<T1>::value
   && ::pressio::is_vector_epetra<T2>::value

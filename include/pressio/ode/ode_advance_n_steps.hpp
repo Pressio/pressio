@@ -64,7 +64,7 @@ template<class StepperType, class StateType, class IndVarType>
   requires Steppable<StepperType>
   void
 #else
-  mpl::enable_if_t< Steppable<StepperType>::value >
+  std::enable_if_t< Steppable<StepperType>::value >
 #endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
@@ -91,7 +91,7 @@ template<
   class IndVarType
   >
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
     Steppable<StepperType>::value
     && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
   >
@@ -125,7 +125,7 @@ template<
   class IndVarType
   >
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
     Steppable<StepperType>::value
     && StateObserver<ObserverType &&, IndVarType, StateType>::value
   >
@@ -160,7 +160,7 @@ template<
   class StepSizePolicyType,
   class IndVarType>
 #if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
        Steppable<StepperType>::value
     && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
     && StateObserver<ObserverType &&, IndVarType, StateType>::value

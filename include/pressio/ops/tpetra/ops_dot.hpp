@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <
   typename T1, typename T2,
- ::pressio::mpl::enable_if_t<
+ std::enable_if_t<
   // TPL/container specific
   (   ::pressio::is_vector_tpetra<T1>::value
    || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)
@@ -74,7 +74,7 @@ auto dot(const T1 & a, const T2 & b)
 }
 
 template <typename T1, typename T2, class DotResult>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   // TPL/container specific
   (   ::pressio::is_vector_tpetra<T1>::value
    || ::pressio::is_expression_column_acting_on_tpetra<T1>::value)

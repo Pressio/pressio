@@ -103,7 +103,7 @@ struct is_vector_kokkos : std::false_type {};
 template <class T>
 struct is_vector_kokkos<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     is_static_vector_kokkos<T>::value or
     is_dynamic_vector_kokkos<T>::value
     >

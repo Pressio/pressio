@@ -59,7 +59,7 @@ struct is_dense_vector_teuchos : std::false_type {};
 template <typename T>
 struct is_dense_vector_teuchos<
   T,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_same<
       typename std::remove_cv<T>::type,
       Teuchos::SerialDenseVector<typename T::ordinalType, typename T::scalarType>

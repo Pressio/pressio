@@ -24,7 +24,7 @@ template<class TrialSubspaceType, class FomSystemType>
 #else
 template<
  class TrialSubspaceType, class FomSystemType,
- mpl::enable_if_t<
+ std::enable_if_t<
    PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
    && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
    && !RealValuedSemiDiscreteFomWithJacobianAndMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value
@@ -67,7 +67,7 @@ template<class TrialSubspaceType, class FomSystemType>
 #else
 template<
   class TrialSubspaceType, class FomSystemType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
     && RealValuedSemiDiscreteFomWithJacobianAndMassMatrixAction<
          FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value

@@ -52,7 +52,7 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_vector_kokkos<T>::value
   >
 resize(T & o, ::pressio::ops::impl::ordinal_t<T> newSize)
@@ -65,7 +65,7 @@ resize(T & o, ::pressio::ops::impl::ordinal_t<T> newSize)
 }
 
 template <typename T>
-::pressio::mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::is_dense_matrix_kokkos<T>::value
   >
 resize(T & o,
