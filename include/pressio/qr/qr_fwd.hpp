@@ -60,12 +60,9 @@ namespace impl{
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<class matrix_t, class R_t> class EpetraMVHouseholderUsingEigen;
 template<class matrix_t, class R_t> class TpetraMVHouseholderUsingEigen;
 #endif
 
-template<class matrix_t, class R_t> class EpetraMVTSQR;
-template<class matrix_t, class R_t> class ModGramSchmidtMVEpetra;
 template<class matrix_t, class R_t> class TpetraMVTSQR;
 template<class matrix_t, class R_t> class ModGramSchmidtMVTpetra;
 template<class matrix_t, class R_t> class TpetraBlockMVTSQR;
