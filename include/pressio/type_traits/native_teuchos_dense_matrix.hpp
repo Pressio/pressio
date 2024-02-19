@@ -49,13 +49,9 @@
 #ifndef TYPE_TRAITS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
 #define TYPE_TRAITS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
 
-// #include <Epetra_CrsMatrix.h>
-// #include <Epetra_MultiVector.h>
-// #include <Epetra_LocalMap.h>
-// #include <Tpetra_CrsMatrix_decl.hpp>
 #include <Teuchos_SerialDenseMatrix.hpp>
 
-namespace pressio{ 
+namespace pressio{
 
 template <typename T, typename enable = void>
 struct is_dense_matrix_teuchos : std::false_type {};
@@ -85,5 +81,5 @@ struct is_dense_matrix_teuchos_rcp<
   > : std::true_type{};
 
 
-}//end namespace 
+}//end namespace
 #endif  // TYPE_TRAITS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_

@@ -48,7 +48,11 @@
 #ifndef TYPE_TRAITS_MISCELLANEA_HPP_
 #define TYPE_TRAITS_MISCELLANEA_HPP_
 
-namespace pressio{ 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include <Teuchos_RCPDecl.hpp>
+#endif
+
+namespace pressio{
 
 namespace impl{
 
@@ -94,7 +98,7 @@ struct all_have_traits<T1, T2, T3, rest...>{
 
 
 namespace impl{
-  
+
 template <class, class ... Args>
 struct all_have_traits_and_same_scalar;
 

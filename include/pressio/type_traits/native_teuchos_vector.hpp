@@ -51,7 +51,7 @@
 
 #include "Teuchos_SerialDenseVector.hpp"
 
-namespace pressio{ 
+namespace pressio{
 
 template <typename T, typename enable = void>
 struct is_dense_vector_teuchos : std::false_type {};
@@ -67,5 +67,5 @@ struct is_dense_vector_teuchos<
     >
   > : std::true_type{};
 
-}//end namespace 
+}//end namespace
 #endif  // TYPE_TRAITS_NATIVE_TEUCHOS_VECTOR_HPP_
