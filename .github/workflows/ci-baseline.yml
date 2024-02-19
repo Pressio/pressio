@@ -85,6 +85,7 @@ jobs:
         working-directory: examples
         run: |
           $CXX \
+            --std=c++17 \
             -DPRESSIO_ENABLE_TPL_EIGEN \
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
@@ -96,6 +97,7 @@ jobs:
         working-directory: examples
         run: |
           $CXX \
+            --std=c++17 \
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I../include               \
             -c main_with_defines.cpp   \
@@ -125,6 +127,7 @@ jobs:
         working-directory: examples/cmake_find_package
         run: |
           cmake -B builddir \
+            -DCMAKE_CXX_STANDARD=17 \
             -DCMAKE_PREFIX_PATH=../../install \
           && cmake --build builddir           \
           && ./builddir/pressio-example
@@ -133,6 +136,7 @@ jobs:
         working-directory: examples/cmake_add_subdirectory
         run: |
           cmake -B builddir \
+            -DCMAKE_CXX_STANDARD=17  \
             -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           && cmake --build builddir            \
           && ./builddir/pressio-example
@@ -141,6 +145,7 @@ jobs:
         working-directory: examples/cmake_include_directories
         run: |
           cmake -B builddir \
+            -DCMAKE_CXX_STANDARD=17 \
             -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           && cmake --build builddir            \
           && ./builddir/pressio-example
