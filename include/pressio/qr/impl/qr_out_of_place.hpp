@@ -53,12 +53,12 @@ namespace pressio{ namespace qr{ namespace impl{
 
 /* R_type == void, in_place = false */
 template<typename MatrixType, typename algo>
-class QRSolver<MatrixType, algo, false, void> 
+class QRSolver<MatrixType, algo, false, void>
   : public ::pressio::Traits< QRSolver<MatrixType, algo, false, void>>::base_compute_t,
     public ::pressio::Traits< QRSolver<MatrixType, algo, false, void>>::base_solve_t
 {
 
-  static_assert(::pressio::Traits<MatrixType>::rank == 2, 
+  static_assert(::pressio::Traits<MatrixType>::rank == 2,
     "QRSolver only supports rank-2 objects");
 
   using this_t	       = QRSolver<MatrixType, algo, false, void>;
@@ -115,8 +115,7 @@ private:
 //   MatrixType, algo, false, R_type, Q_type,
 //   std::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
-//     (containers::predicates::is_multi_vector_wrapper_epetra<MatrixType>::value or
-//      containers::predicates::is_multi_vector_wrapper_tpetra<MatrixType>::value)
+//     (containers::predicates::is_multi_vector_wrapper_tpetra<MatrixType>::value)
 //     >
 //   > : public ::pressio::Traits< QRSolver<MatrixType, algo,
 // 				       false, R_type, Q_type>>::base_compute_t,

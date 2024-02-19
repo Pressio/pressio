@@ -22,7 +22,6 @@ void test_tpetra_block_container()
   test_is_not_eigen_container<T>();
   test_is_not_kokkos_container<T>();
   test_is_not_teuchos_container<T>();
-  test_is_not_epetra_container<T>();
 }
 
 TEST(tpetra_block, VectorTraits)

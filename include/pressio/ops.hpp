@@ -158,24 +158,6 @@ template<class ...> struct matching_extents;
 #include "ops/tpetra_block/ops_multi_vector_update.hpp"
 #include "ops/tpetra_block/ops_level2.hpp"
 #include "ops/tpetra_block/ops_level3.hpp"
-
-// Epetra
-#include "ops/epetra/ops_clone.hpp"
-#include "ops/epetra/ops_extent.hpp"
-#include "ops/epetra/ops_deep_copy.hpp"
-#include "ops/epetra/ops_set_zero.hpp"
-#include "ops/epetra/ops_scale.hpp"
-#include "ops/epetra/ops_fill.hpp"
-#include "ops/epetra/ops_abs.hpp"
-#include "ops/epetra/ops_dot.hpp"
-#include "ops/epetra/ops_min_max.hpp"
-#include "ops/epetra/ops_norms.hpp"
-#include "ops/epetra/ops_pow.hpp"
-#include "ops/epetra/ops_rank1_update.hpp"
-#include "ops/epetra/ops_elementwise_multiply.hpp"
-#include "ops/epetra/ops_multi_vector_update.hpp"
-#include "ops/epetra/ops_level2.hpp"
-#include "ops/epetra/ops_level3.hpp"
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 // keep this last

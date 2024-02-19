@@ -82,39 +82,11 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 	   or (::pressio::is_vector_tpetra<T>::value and ::pressio::is_multi_vector_tpetra<Q_t>::value)
-	   or (::pressio::is_vector_epetra<T>::value and ::pressio::is_multi_vector_epetra<Q_t>::value)
 	   or (::pressio::is_vector_tpetra_block<T>::value and ::pressio::is_multi_vector_tpetra_block<Q_t>::value)
 #endif
 	   )
 	 >
       > : std::true_type{};
-
-
-// #if defined PRESSIO_ENABLE_TPL_TRILINOS
-// template <typename algo_t, typename enable = void>
-// struct is_legitimate_algo_for_epetra_mv : std::false_type {};
-
-// template <typename algo_t>
-// struct is_legitimate_algo_for_epetra_mv<algo_t,
-// 	 std::enable_if_t<
-// 	   std::is_same<algo_t, ::pressio::qr::Householder>::value
-// 	   or std::is_same<algo_t, ::pressio::qr::TSQR>::value
-// 	 >
-//       > : std::true_type{};
-// #endif
-
-// #if defined PRESSIO_ENABLE_TPL_TRILINOS
-// template <typename algo_t, typename enable = void>
-// struct is_legitimate_algo_for_tpetra_mv : std::false_type {};
-
-// template <typename algo_t>
-// struct is_legitimate_algo_for_tpetra_mv<algo_t,
-// 	 std::enable_if_t<
-// 	   std::is_same<algo_t, ::pressio::qr::Householder>::value
-// 	   or std::is_same<algo_t, ::pressio::qr::TSQR>::value
-// 	   >
-//         > : std::true_type{};
-// #endif
 
 }}}//end namespace pressio::qr::meta
 #endif  // QR_QR_META_HPP_
