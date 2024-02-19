@@ -67,6 +67,7 @@ jobs:
       working-directory: examples
       run: |
         $CXX \
+          --std=c++17 \
           -DPRESSIO_ENABLE_TPL_EIGEN    \
           -DPRESSIO_ENABLE_TPL_TRILINOS \
           -I/eigen/eigen-${{ env.eigen_version }} \
@@ -78,6 +79,7 @@ jobs:
       working-directory: examples
       run: |
         $CXX \
+          --std=c++17 \
           -DPRESSIO_ENABLE_TPL_TRILINOS \
           -I/eigen/eigen-${{ env.eigen_version }} \
           -I$trilinos_dir/include       \
