@@ -2,8 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// are_scalar_compatible.hpp
-//                          Pressio
+//                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
@@ -46,10 +45,29 @@
 //@HEADER
 */
 
-#ifndef TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_
-#define TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_
+#ifndef TYPE_TRAITS_MISCELLANEA_HPP_
+#define TYPE_TRAITS_MISCELLANEA_HPP_
 
 namespace pressio{ namespace impl{
+
+template <class T, class = void>
+struct has_traits : std::false_type{};
+
+template <class T>
+struct has_traits<
+  T, std::enable_if_t<
+       // I need to check for something meaninful
+       // because if I only check for ::pressio::Traits<T>
+       // any type would yield true since ::pressio::Traits<T>
+       // is always the default case
+       mpl::not_void<
+	 typename ::pressio::Traits<T>::scalar_type
+	 >::value
+       &&
+       ::pressio::Traits<T>::rank != 0
+       >
+  > : std::true_type{};
+
 
 template <class, class ... Args>
 struct all_have_traits_and_same_scalar;
@@ -84,6 +102,27 @@ struct all_have_traits_and_same_scalar<
 
 } //end namespace impl
 
+template <class ... Args>
+struct all_have_traits;
+
+template <class T>
+struct all_have_traits<T>{
+  static constexpr auto value = impl::has_traits<T>::value;
+};
+
+template <class T1, class T2>
+struct all_have_traits<T1, T2>{
+  static constexpr auto value = impl::has_traits<T1>::value
+    && impl::has_traits<T2>::value;
+};
+
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits<T1, T2, T3, rest...>{
+  static constexpr auto value =
+    all_have_traits<T1, T2>::value &&
+    all_have_traits<T3, rest...>::value;
+};
+
 template <class ...Args>
 using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
 
@@ -94,5 +133,39 @@ struct all_have_floating_point_scalar
     && ::pressio::mpl::all_of< std::is_floating_point, Args...>::value;
 };
 
-} // namespace
-#endif  // TYPE_TRAITS_ALL_HAVE_TRAITS_AND_SAME_SCALAR_HPP_
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T,
+	  typename enable = void>
+struct is_teuchos_rcp : std::false_type{};
+
+template <typename T>
+struct is_teuchos_rcp<
+  T,
+  typename std::enable_if<
+    std::is_same<
+      typename std::remove_cv<T>::type, Teuchos::RCP<typename T::element_type>
+     >::value or
+    std::is_same<
+      typename std::remove_cv<T>::type, Teuchos::RCP<const typename T::element_type>
+     >::value
+    >::type
+  > : std::true_type{};
+#endif
+
+
+template<class T, class = void>
+struct _scalar_trait{ using type = void; };
+
+template<class T>
+struct _scalar_trait<
+  T, std::enable_if_t< has_traits<T>::value >
+  > {
+  using type = typename ::pressio::Traits<T>::scalar_type;
+};
+}//end namespace impl
+
+template<class T> using scalar_trait_t = typename impl::_scalar_trait<T>::type;
+
+}
+#endif  // TYPE_TRAITS_ALL_HAVE_TRAITS_HPP_
