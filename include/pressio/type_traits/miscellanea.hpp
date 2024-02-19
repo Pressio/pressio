@@ -48,7 +48,9 @@
 #ifndef TYPE_TRAITS_MISCELLANEA_HPP_
 #define TYPE_TRAITS_MISCELLANEA_HPP_
 
-namespace pressio{ namespace impl{
+namespace pressio{ 
+
+namespace impl{
 
 template <class T, class = void>
 struct has_traits : std::false_type{};
@@ -61,14 +63,38 @@ struct has_traits<
        // any type would yield true since ::pressio::Traits<T>
        // is always the default case
        mpl::not_void<
-	 typename ::pressio::Traits<T>::scalar_type
-	 >::value
+   typename ::pressio::Traits<T>::scalar_type
+   >::value
        &&
        ::pressio::Traits<T>::rank != 0
        >
   > : std::true_type{};
+}
+
+template <class ... Args>
+struct all_have_traits;
+
+template <class T>
+struct all_have_traits<T>{
+  static constexpr auto value = impl::has_traits<T>::value;
+};
+
+template <class T1, class T2>
+struct all_have_traits<T1, T2>{
+  static constexpr auto value = impl::has_traits<T1>::value
+    && impl::has_traits<T2>::value;
+};
+
+template <class T1, class T2, class T3, class ... rest>
+struct all_have_traits<T1, T2, T3, rest...>{
+  static constexpr auto value =
+    all_have_traits<T1, T2>::value &&
+    all_have_traits<T3, rest...>::value;
+};
 
 
+namespace impl{
+  
 template <class, class ... Args>
 struct all_have_traits_and_same_scalar;
 
@@ -102,36 +128,9 @@ struct all_have_traits_and_same_scalar<
 
 } //end namespace impl
 
-template <class ... Args>
-struct all_have_traits;
-
-template <class T>
-struct all_have_traits<T>{
-  static constexpr auto value = impl::has_traits<T>::value;
-};
-
-template <class T1, class T2>
-struct all_have_traits<T1, T2>{
-  static constexpr auto value = impl::has_traits<T1>::value
-    && impl::has_traits<T2>::value;
-};
-
-template <class T1, class T2, class T3, class ... rest>
-struct all_have_traits<T1, T2, T3, rest...>{
-  static constexpr auto value =
-    all_have_traits<T1, T2>::value &&
-    all_have_traits<T3, rest...>::value;
-};
 
 template <class ...Args>
 using all_have_traits_and_same_scalar = impl::all_have_traits_and_same_scalar<void, Args...>;
-
-template <class ...Args>
-struct all_have_floating_point_scalar
-{
-  static constexpr bool value = all_have_traits_and_same_scalar<Args...>::value
-    && ::pressio::mpl::all_of< std::is_floating_point, Args...>::value;
-};
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -153,6 +152,7 @@ struct is_teuchos_rcp<
   > : std::true_type{};
 #endif
 
+namespace impl{
 
 template<class T, class = void>
 struct _scalar_trait{ using type = void; };
