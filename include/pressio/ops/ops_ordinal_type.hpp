@@ -133,30 +133,6 @@ struct GlobalOrdinalType<
 {
   using type = typename T::global_ordinal_type;
 };
-
-template <class T>
-struct LocalOrdinalType<
-  T,
-  std::enable_if_t<
-    ::pressio::is_vector_epetra<T>::value
-    || ::pressio::is_multi_vector_epetra<T>::value
-    >
- >
-{
-  using type = int;
-};
-
-template <class T>
-struct GlobalOrdinalType<
-  T,
-  std::enable_if_t<
-    ::pressio::is_vector_epetra<T>::value
-    || ::pressio::is_multi_vector_epetra<T>::value
-    >
- >
-{
-  using type = int;
-};
 #endif
 
 template <class T>

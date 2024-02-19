@@ -73,9 +73,6 @@
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/impl/epetra/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/impl/epetra/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/impl/epetra/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
 #include "qr/impl/tpetra/qr_tpetra_multi_vector_tsqr_impl.hpp"
 #include "qr/impl/tpetra/qr_tpetra_mv_householder_using_eigen_impl.hpp"
 #include "qr/impl/tpetra/qr_tpetra_multi_vector_modified_gram_schmidt_impl.hpp"

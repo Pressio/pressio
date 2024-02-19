@@ -62,19 +62,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_tpetra_block_level3.cc)
  add_utest_mpi(${TESTING_LEVEL}_ops_level3_tpetra_block gTestMain_tpetra 3 "${SRC1}")
 
- # EPETRA
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_vector.cc)
- add_utest_mpi(${TESTING_LEVEL}_ops_vector_epetra gTestMain_mpi 3 "${SRC1}")
-
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_multi_vector.cc)
- add_utest_mpi(${TESTING_LEVEL}_ops_multi_vector_epetra gTestMain_mpi 3 "${SRC1}")
-
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_level2.cc)
- add_utest_mpi(${TESTING_LEVEL}_ops_level2_epetra gTestMain_mpi 3 "${SRC1}")
-
- set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_level3.cc)
- add_utest_mpi(${TESTING_LEVEL}_ops_level3_epetra gTestMain_mpi 3 "${SRC1}")
-
  # TEUCHOS
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_teuchos_vector.cc)
  add_serial_utest(${TESTING_LEVEL}_ops_vector_teuchos "${SRC1}")
