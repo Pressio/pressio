@@ -65,7 +65,7 @@ deep_copy(T2 & dest, const T1 & src)
 {
   assert((matching_extents<T2, T1>::compare(dest, src)));
 
-  const auto src_n = impl::get_native(src);
+  auto && src_n = impl::get_native(src);
   auto && dest_n = impl::get_native(dest);
   dest_n = src_n;
 }
