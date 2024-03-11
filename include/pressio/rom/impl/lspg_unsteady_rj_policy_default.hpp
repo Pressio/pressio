@@ -94,7 +94,54 @@ public:
   }
 
   template <class StencilStatesContainerType, class StencilRhsContainerType>
+  void operator()(::pressio::ode::StencilStatesPotentiallyOverwrittenByUser /*tag*/,
+		  ::pressio::ode::StepScheme odeSchemeName,
+		  const state_type & predictedReducedState,
+		  const StencilStatesContainerType & reducedStatesStencilManager,
+		  StencilRhsContainerType & fomRhsStencilManger,
+		  const ::pressio::ode::StepEndAt<IndVarType> & rhsEvaluationTime,
+		  ::pressio::ode::StepCount step,
+		  const ::pressio::ode::StepSize<IndVarType> & dt,
+		  residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type *> Jo) const
+#else
+		  jacobian_type * Jo) const
+#endif
+  {
+
+    std::cout << "!!!! ******* NEW COOL POLICY ******* \n";
+
+    (*this)(false, /*communicate that it is NOT safe to rely on the stored history */
+	    odeSchemeName, predictedReducedState, reducedStatesStencilManager,
+	    fomRhsStencilManger, rhsEvaluationTime, step, dt, R, Jo);
+  }
+
+  template <class StencilStatesContainerType, class StencilRhsContainerType>
   void operator()(::pressio::ode::StepScheme odeSchemeName,
+		  const state_type & predictedReducedState,
+		  const StencilStatesContainerType & reducedStatesStencilManager,
+		  StencilRhsContainerType & fomRhsStencilManger,
+		  const ::pressio::ode::StepEndAt<IndVarType> & rhsEvaluationTime,
+		  ::pressio::ode::StepCount step,
+		  const ::pressio::ode::StepSize<IndVarType> & dt,
+		  residual_type & R,
+#ifdef PRESSIO_ENABLE_CXX17
+		  std::optional<jacobian_type *> Jo) const
+#else
+		  jacobian_type * Jo) const
+#endif
+  {
+
+    (*this)(true, /*communicate that it is safe to rely on the stored history */
+	    odeSchemeName, predictedReducedState, reducedStatesStencilManager,
+	    fomRhsStencilManger, rhsEvaluationTime, step, dt, R, Jo);
+  }
+
+private:
+  template <class StencilStatesContainerType, class StencilRhsContainerType>
+  void operator()(const bool isSafeToRelyOnSavedHistory,
+		  ::pressio::ode::StepScheme odeSchemeName,
 		  const state_type & predictedReducedState,
 		  const StencilStatesContainerType & reducedStatesStencilManager,
 		  StencilRhsContainerType & fomRhsStencilManger,
@@ -111,21 +158,24 @@ public:
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
       (*this).template compute_impl_bdf<ode::BDF1>
-	(predictedReducedState, reducedStatesStencilManager,
-	 rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+	(isSafeToRelyOnSavedHistory, predictedReducedState,
+	 reducedStatesStencilManager, rhsEvaluationTime.get(),
+	 dt.get(), step.get(), R, Jo);
     }
 
     else if (odeSchemeName == ::pressio::ode::StepScheme::BDF2)
     {
       if (step.get() == ::pressio::ode::first_step_value){
 	(*this).template compute_impl_bdf<ode::BDF1>
-	  (predictedReducedState, reducedStatesStencilManager,
-	   rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+	  (isSafeToRelyOnSavedHistory, predictedReducedState,
+	   reducedStatesStencilManager, rhsEvaluationTime.get(),
+	   dt.get(), step.get(), R, Jo);
       }
       else{
 	(*this).template compute_impl_bdf<ode::BDF2>
-	  (predictedReducedState, reducedStatesStencilManager,
-	   rhsEvaluationTime.get(), dt.get(), step.get(), R, Jo);
+	  (isSafeToRelyOnSavedHistory, predictedReducedState,
+	   reducedStatesStencilManager, rhsEvaluationTime.get(),
+	   dt.get(), step.get(), R, Jo);
       }
     }
 
@@ -134,14 +184,14 @@ public:
     }
   }
 
-private:
   template <class OdeTag, class StencilStatesContainerType>
-  void compute_impl_bdf(const state_type & predictedReducedState,
-			 const StencilStatesContainerType & reducedStatesStencilManager,
-			 const IndVarType & rhsEvaluationTime,
-			 const IndVarType & dt,
-			 const typename ::pressio::ode::StepCount::value_type & step,
-			 residual_type & R,
+  void compute_impl_bdf(const bool isSafeToRelyOnSavedHistory,
+			const state_type & predictedReducedState,
+			const StencilStatesContainerType & reducedStatesStencilManager,
+			const IndVarType & rhsEvaluationTime,
+			const IndVarType & dt,
+			const typename ::pressio::ode::StepCount::value_type & step,
+			residual_type & R,
 #ifdef PRESSIO_ENABLE_CXX17
 			std::optional<jacobian_type *> & Jo) const
 #else
@@ -164,11 +214,20 @@ private:
        The method below does not recompute all previous states, but only
        recomputes the n-th state and updates/shifts back all the other
        FOM states stored. */
-    if (stepTracker_ != step){
+    if (stepTracker_ != step)
+    {
       const auto & lspgStateAt_n = reducedStatesStencilManager(::pressio::ode::n());
-      fomStatesManager_.get().reconstructAtWithStencilUpdate(lspgStateAt_n,
-								::pressio::ode::n());
 
+      if (!isSafeToRelyOnSavedHistory){
+	fomStatesManager_.get().reconstructAtWithoutStencilUpdate(lspgStateAt_n, ode::n());
+	if constexpr(std::is_same<OdeTag, ode::BDF2>::value){
+	  const auto & lspgStateAt_nm1 = reducedStatesStencilManager(ode::nMinusOne());
+	  fomStatesManager_.get().reconstructAtWithoutStencilUpdate(lspgStateAt_nm1, ode::nMinusOne());
+	}
+      }
+      else{
+	fomStatesManager_.get().reconstructAtWithStencilUpdate(lspgStateAt_n, ode::n());
+      }
       stepTracker_ = step;
     }
 

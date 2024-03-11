@@ -4,6 +4,7 @@
 
 #include "ode_predicates_for_system.hpp"
 #include "ode_has_const_discrete_residual_jacobian_method.hpp"
+#include "ode_policy_has_call_overload_for_userdefined_action_on_stencil.hpp"
 
 namespace pressio{ namespace ode{
 
@@ -335,6 +336,19 @@ struct ImplicitResidualJacobianPolicy<
 	)
        )
       >::value
+    >
+  > : std::true_type{};
+
+template<class T, class = void>
+struct ImplicitResidualJacobianPolicyForUserDefinedStencilStatesAction
+  : std::false_type{};
+
+template<class T>
+struct ImplicitResidualJacobianPolicyForUserDefinedStencilStatesAction<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ImplicitResidualJacobianPolicy<T>::value &&
+    mpl::is_detected< policy_has_call_overload_for_userdefined_action_on_stencil_states_t >::value
     >
   > : std::true_type{};
 

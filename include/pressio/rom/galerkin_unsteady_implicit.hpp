@@ -9,6 +9,8 @@
 #include "impl/galerkin_unsteady_system_masked_rhs_and_jacobian.hpp"
 #include "impl/galerkin_unsteady_system_fully_discrete_fom.hpp"
 #include "impl/galerkin_unsteady_system_hypred_fully_discrete_fom.hpp"
+#include "impl/mixed_fom_rom_unsteady_problem.hpp"
+#include "impl/galerkin_unsteady_default_problem_mixed_fom.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
@@ -234,6 +236,54 @@ auto create_unsteady_implicit_problem(const TrialSubspaceType & trialSpace,
   return ::pressio::ode::create_implicit_stepper<
     TotalNumberOfDesiredStates>(std::move(galSystem));
 }
+
+// -------------------------------------------------------------
+// mixed fom/rom
+// -------------------------------------------------------------
+namespace experimental{
+
+// because this is the mixed case FOM/ROM, we need to check that the FomSystem
+// meets the API needed for ROM but also that needed for doing ode stepping directly on it
+template<class TrialSubspaceType, class FomSystemType>
+#ifdef PRESSIO_ENABLE_CXX20
+requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
+&& RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
+&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
+&& ::pressio::ode::RealValuedOdeSystemFusingRhsAndJacobian<FomSystemType>
+#endif
+auto create_unsteady_implicit_problem_mixed_fom(::pressio::ode::StepScheme schemeName,
+						const TrialSubspaceType & trialSpace,
+						const FomSystemType & fomSystem)
+{
+
+#if !defined PRESSIO_ENABLE_CXX20
+  static_assert(PossiblyAffineTrialColumnSubspace<TrialSubspaceType>::value);
+  static_assert(RealValuedSemiDiscreteFomWithJacobianAction<
+		FomSystemType, typename TrialSubspaceType::basis_matrix_type>::value);
+  static_assert(::pressio::ode::RealValuedOdeSystemFusingRhsAndJacobian<FomSystemType>::value);
+#endif
+
+  if (   schemeName != ::pressio::ode::StepScheme::BDF1
+      && schemeName != ::pressio::ode::StepScheme::BDF2)
+  {
+    throw std::runtime_error("galerkin mixed fom/rom currently accepting BDF1 or BDF2");
+  }
+
+  using ind_var_type          = typename FomSystemType::time_type;
+  using reduced_state_type    = typename TrialSubspaceType::reduced_state_type;
+  using default_types         = ImplicitGalerkinDefaultReducedOperatorsTraits<reduced_state_type>;
+  using reduced_residual_type = typename default_types::reduced_residual_type;
+  using reduced_jacobian_type = typename default_types::reduced_jacobian_type;
+
+  using galerkin_system = impl::GalerkinDefaultOdeSystemRhsAndJacobian<
+    ind_var_type, reduced_state_type, reduced_residual_type,
+    reduced_jacobian_type, TrialSubspaceType, FomSystemType>;
+
+  using return_type = impl::GalerkinUnsteadyDefaultProblemRomFom<
+    ind_var_type, FomSystemType, TrialSubspaceType, galerkin_system, impl::MixedFomRomStepper>;
+  return return_type(schemeName, trialSpace, fomSystem);
+}
+}//end namespace experimental
 
 }}} // end pressio::rom::galerkin
 #endif  // ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_

@@ -96,6 +96,8 @@ class nMinusTwo{};
 class nMinusThree{};
 class nMinusFour{};
 
+struct StencilStatesPotentiallyOverwrittenByUser{};
+
 }}//end namespace pressio::ode
 
 #endif  // ODE_ODE_ENUM_AND_TAGS_HPP_
