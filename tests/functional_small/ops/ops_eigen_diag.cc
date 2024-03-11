@@ -148,6 +148,29 @@ TEST(ops_eigen_diag, fill)
   ASSERT_DOUBLE_EQ(a(4,4),44.);
 }
 
+TEST(ops_eigen_diag, deep_copy)
+{
+  using T = Eigen::MatrixXd;
+  T a(6, 6);
+  auto exp = pressio::diagonal(a);
+  ::pressio::ops::fill(exp, 44.);
+
+  // copy to native vector
+  Eigen::VectorXd b(6);
+  pressio::ops::deep_copy(b, exp);
+  for (int i = 0; i < 6; ++i){
+    ASSERT_DOUBLE_EQ(b(i), 44.);
+  }
+
+  // copy to expression
+  T a2(6, 6);
+  auto exp2 = pressio::diagonal(a2);
+  pressio::ops::deep_copy(exp2, exp);
+  for (int i = 0; i < 6; ++i){
+    ASSERT_DOUBLE_EQ(exp2(i), 44.);
+  }
+}
+
 TEST(ops_eigen_diag, min_max)
 {
   using T = Eigen::MatrixXd;

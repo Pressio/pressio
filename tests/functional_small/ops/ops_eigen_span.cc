@@ -69,6 +69,30 @@ TEST(ops_eigen_span, fill)
   ASSERT_DOUBLE_EQ(a(5),1.2);
 }
 
+TEST(ops_eigen_span, deep_copy)
+{
+  using T = Eigen::VectorXd;
+  const int n = 3;
+  T a(n + 2);
+  auto sp = pressio::span(a, 1, n);
+  ::pressio::ops::fill(sp, 44.);
+
+  // copy to native vector
+  T b(n);
+  pressio::ops::deep_copy(b, sp);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(b(i), 44.);
+  }
+
+  // copy to expression
+  T a2(n + 2);
+  auto sp2 = pressio::span(a2, 1, n);
+  pressio::ops::deep_copy(sp2, sp);
+  for (int i = 0; i < n; ++i){
+    ASSERT_DOUBLE_EQ(sp2(i), 44.);
+  }
+}
+
 TEST(ops_eigen_span, min_max)
 {
   using T = Eigen::VectorXd;

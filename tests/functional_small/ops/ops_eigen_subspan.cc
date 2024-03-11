@@ -124,6 +124,36 @@ TEST(ops_eigen_subspan, fill)
   ASSERT_DOUBLE_EQ(a(3,4),1.);
 }
 
+TEST(ops_eigen_subspan, deep_copy)
+{
+  using T = Eigen::MatrixXd;
+  const int m = 3, n = 2;
+  T a(m + 2, n + 3);
+  std::pair<int,int> r(1, 1 + m);
+  std::pair<int,int> c(2, 2 + n);
+  auto sp = pressio::subspan(a, r, c);
+  ::pressio::ops::fill(sp, 44.);
+
+  // copy to native vector
+  T b(m, n);
+  pressio::ops::deep_copy(b, sp);
+  for (int i = 0; i < m; ++i){
+    for (int j = 0; j < n; ++j){
+      ASSERT_DOUBLE_EQ(b(i, j), 44.);
+    }
+  }
+
+  // copy to expression
+  T a2(m + 2, n + 3);
+  auto sp2 = pressio::subspan(a2, r, c);
+  pressio::ops::deep_copy(sp2, sp);
+  for (int i = 0; i < m; ++i){
+    for (int j = 0; j < n; ++j){
+      ASSERT_DOUBLE_EQ(sp2(i, j), 44.);
+    }
+  }
+}
+
 TEST(ops_eigen_subspan, min_max)
 {
   using T = Eigen::MatrixXd;

@@ -108,7 +108,7 @@ TEST(ops_eigen_vector, deep_copy)
   T b(6);
   pressio::ops::deep_copy(b,a);
   for (int i=0; i<6; ++i){
-    ASSERT_DOUBLE_EQ(a(i),44.);
+    ASSERT_DOUBLE_EQ(b(i),44.);
   }
 }
 
