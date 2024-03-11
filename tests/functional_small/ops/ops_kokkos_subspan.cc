@@ -125,7 +125,24 @@ TEST(ops_kokkos_subspan, _fill)
   ASSERT_DOUBLE_EQ(A_h(3,4),1.);
 }
 
-TEST(ops_kokkos_subspan, _min_max)
+TEST(ops_kokkos_subspan, deep_copy)
+{
+  const int m = 2, n = 3;
+  mat_t A("A", m + 3, n + 3);
+  auto A1 = pressio::subspan(A, {1, 1 + m}, {2, 2 + n});
+  pressio::ops::fill(A1, 44.);
+
+  Kokkos::View<double**> B("B", m, n);
+  pressio::ops::deep_copy(B, A1);
+  auto B_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), B);
+  for (int i = 0; i < m; ++i){
+   for (int j = 0; j < n; ++j){
+    ASSERT_DOUBLE_EQ(B_h(i, j), 44.);
+   }
+  }
+}
+
+TEST(ops_kokkos_subspan, min_max)
 {
   mat_t A("A", 6, 6);
   auto A_h = Kokkos::create_mirror_view(Kokkos::HostSpace(), A);

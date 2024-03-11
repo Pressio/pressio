@@ -53,14 +53,21 @@ namespace pressio{ namespace ops{
 
 template< typename T1, typename T2 >
 std::enable_if_t<
-  (::pressio::is_native_container_kokkos<T1>::value
-  or ::pressio::is_expression_acting_on_kokkos<T1>::value)
-  and (::pressio::is_native_container_kokkos<T2>::value
-  or ::pressio::is_expression_acting_on_kokkos<T2>::value)
+  // common deep_copy constraints
+  ::pressio::Traits<T1>::rank == ::pressio::Traits<T2>::rank
+  // TPL/container specific
+  && (::pressio::is_native_container_kokkos<T1>::value
+   || ::pressio::is_expression_acting_on_kokkos<T1>::value)
+  && (::pressio::is_native_container_kokkos<T2>::value
+   || ::pressio::is_expression_acting_on_kokkos<T2>::value)
   >
 deep_copy(const T1 & dest, const T2 & src)
 {
-  ::Kokkos::deep_copy(dest, src);
+  assert((matching_extents<T1, T2>::compare(dest, src)));
+
+  const auto src_view = impl::get_native(src);
+  const auto dest_view = impl::get_native(dest);
+  ::Kokkos::deep_copy(dest_view, src_view);
 }
 
 }}//end namespace pressio::ops

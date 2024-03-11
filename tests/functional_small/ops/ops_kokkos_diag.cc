@@ -131,6 +131,20 @@ TEST(ops_kokkos_diag, fill)
   ASSERT_DOUBLE_EQ(a_h(4,4),44.);
 }
 
+TEST(ops_kokkos_diag, deep_copy)
+{
+  mat_t a("a", 6, 6);
+  auto exp = pressio::diagonal(a);
+  pressio::ops::fill(exp, 44.);
+
+  Kokkos::View<double*> b("b", 6);
+  pressio::ops::deep_copy(b, exp);
+  auto b_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), b);
+  for (int i = 0; i < 6; ++i){
+    ASSERT_DOUBLE_EQ(b(i), 44.);
+  }
+}
+
 TEST(ops_kokkos_diag, min_max)
 {
   mat_t A("A", 5, 5);
