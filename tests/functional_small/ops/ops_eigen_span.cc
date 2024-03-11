@@ -69,7 +69,7 @@ TEST(ops_eigen_span, fill)
   ASSERT_DOUBLE_EQ(a(5),1.2);
 }
 
-TEST(ops_eigen, span_deep_copy)
+TEST(ops_eigen_span, deep_copy)
 {
   using T = Eigen::VectorXd;
   const int n = 3;
@@ -93,7 +93,7 @@ TEST(ops_eigen, span_deep_copy)
   }
 }
 
-TEST(ops_eigen, span_min_max)
+TEST(ops_eigen_span, min_max)
 {
   using T = Eigen::VectorXd;
   T a(6);

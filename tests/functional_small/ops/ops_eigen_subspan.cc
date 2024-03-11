@@ -124,7 +124,7 @@ TEST(ops_eigen_subspan, fill)
   ASSERT_DOUBLE_EQ(a(3,4),1.);
 }
 
-TEST(ops_eigen, subspan_deep_copy)
+TEST(ops_eigen_subspan, deep_copy)
 {
   using T = Eigen::MatrixXd;
   const int m = 3, n = 2;
@@ -154,7 +154,7 @@ TEST(ops_eigen, subspan_deep_copy)
   }
 }
 
-TEST(ops_eigen, subspan_min_max)
+TEST(ops_eigen_subspan, min_max)
 {
   using T = Eigen::MatrixXd;
   T a(5, 5);

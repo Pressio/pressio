@@ -148,7 +148,7 @@ TEST(ops_eigen_diag, fill)
   ASSERT_DOUBLE_EQ(a(4,4),44.);
 }
 
-TEST(ops_eigen, diag_deep_copy)
+TEST(ops_eigen_diag, deep_copy)
 {
   using T = Eigen::MatrixXd;
   T a(6, 6);
@@ -171,7 +171,7 @@ TEST(ops_eigen, diag_deep_copy)
   }
 }
 
-TEST(ops_eigen, diag_min_max)
+TEST(ops_eigen_diag, min_max)
 {
   using T = Eigen::MatrixXd;
   T a(5,5);
