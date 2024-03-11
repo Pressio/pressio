@@ -74,7 +74,7 @@ TEST(ops_kokkos_span, fill)
   ASSERT_DOUBLE_EQ(a_h(5),1.2);
 }
 
-TEST(ops_kokkos_diag, deep_copy)
+TEST(ops_kokkos_span, deep_copy)
 {
   vec_t a("a", 8);
   auto exp = pressio::span(a, 1, 6);
