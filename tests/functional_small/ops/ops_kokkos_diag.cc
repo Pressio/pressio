@@ -134,7 +134,7 @@ TEST(ops_kokkos_diag, fill)
 TEST(ops_kokkos_diag, deep_copy)
 {
   mat_t a("a", 6, 6);
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   pressio::ops::fill(exp, 44.);
 
   Kokkos::View<double*> b("b", 6);
