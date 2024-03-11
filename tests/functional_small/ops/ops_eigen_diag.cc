@@ -152,7 +152,7 @@ TEST(ops_eigen_diag, deep_copy)
 {
   using T = Eigen::MatrixXd;
   T a(6, 6);
-  auto exp = pressio::diag(a);
+  auto exp = pressio::diagonal(a);
   ::pressio::ops::fill(exp, 44.);
 
   // copy to native vector
@@ -164,7 +164,7 @@ TEST(ops_eigen_diag, deep_copy)
 
   // copy to expression
   T a2(6, 6);
-  auto exp2 = pressio::diag(a2);
+  auto exp2 = pressio::diagonal(a2);
   pressio::ops::deep_copy(exp2, exp);
   for (int i = 0; i < 6; ++i){
     ASSERT_DOUBLE_EQ(exp2(i), 44.);
