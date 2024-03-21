@@ -10,6 +10,7 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_scaling_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
+#include "./impl/lspg_unsteady_reconstructor.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
@@ -279,6 +280,26 @@ auto create_unsteady_problem(const TrialSubspaceType & trialSpace,     /*(6)*/
   using return_type = impl::LspgUnsteadyProblemFullyDiscreteAPI<
     TotalNumberOfDesiredStates, TrialSubspaceType, system_type>;
   return return_type(trialSpace, fomSystem);
+}
+
+
+template<
+  std::size_t TotalNumberOfDesiredStates,
+  class TrialSubspaceType,
+  class FomSystemType,
+  std::enable_if_t<
+    PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
+    && RealValuedFullyDiscreteSystemWithJacobianAction<
+      FomSystemType, TotalNumberOfDesiredStates,
+      typename TrialSubspaceType::basis_matrix_type>::value, int
+    > = 0
+  >
+auto create_reconstructor(const TrialSubspaceType & trialSpace,
+			  const FomSystemType & fomSystem)
+{
+  using T = impl::LspgReconstructor<
+    TotalNumberOfDesiredStates, TrialSubspaceType, FomSystemType>;
+  return T(trialSpace, fomSystem);
 }
 
 }}} // end pressio::rom::lspg

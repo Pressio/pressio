@@ -70,3 +70,10 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   add_serial_utest(${TESTING_LEVEL}_rom_linear linear_rom.cc)
 endif()
+
+
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  set(SRCDIR ${CMAKE_CURRENT_SOURCE_DIR}/lspg_residual_jacaction_reconstructor)
+  configure_file(${SRCDIR}/rom_states.txt ${CMAKE_CURRENT_BINARY_DIR}/lspg_residual_jacaction_reconstructor/rom_states.txt COPYONLY)
+  add_utest_mpi(${TESTING_LEVEL}_rom_lspg_residual_jacaction_reconstructor gTestMain_tpetra 3 "${SRCDIR}/main1.cc")
+endif()
