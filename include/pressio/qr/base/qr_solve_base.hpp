@@ -53,7 +53,6 @@ namespace pressio{ namespace qr{
 
 template<typename DerivedType>
 class QRSolveBase
-  : private utils::details::CrtpBase<QRSolveBase<DerivedType> >
 {
 
   using this_t = QRSolveBase<DerivedType>;
@@ -63,15 +62,13 @@ class QRSolveBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<DerivedType>::type;
 
-  friend utils::details::CrtpBase<this_t>;
-
 public:
   template <typename VectorType>
   std::enable_if_t<
    ::pressio::Traits<VectorType>::rank ==1 
   >
   solve(const VectorType & rhs, VectorType & y)const {
-    this->underlying().solveImpl(rhs, y);
+    static_cast<DerivedType const &>(*this).solveImpl(rhs, y);
   }
 
   QRSolveBase() = default;

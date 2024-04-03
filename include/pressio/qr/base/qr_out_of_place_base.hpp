@@ -54,7 +54,6 @@ namespace pressio{ namespace qr{
 
 template<typename DerivedType, typename MatrixType, typename QType>
 class QROutOfPlaceBase
-  : private utils::details::CrtpBase<QROutOfPlaceBase<DerivedType, MatrixType, QType>>
 {
 
   using this_t = QROutOfPlaceBase<DerivedType, MatrixType, QType>;
@@ -63,15 +62,13 @@ class QROutOfPlaceBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<DerivedType>::type;
 
-  friend utils::details::CrtpBase<this_t>;
-
 public:
   void computeThin(const MatrixType & A){
-    this->underlying().computeThinImpl(A);
+    static_cast<DerivedType &>(*this).computeThinImpl(A);
   }
 
   const QType & cRefQFactor() const {
-    return this->underlying().cRefQFactorImpl();
+    return static_cast<DerivedType const &>(*this).cRefQFactorImpl();
   }
 
   template <typename VectorInType, typename VectorOutType>
@@ -81,7 +78,7 @@ public:
     meta::is_legitimate_vector_type_for_qr_project<VectorInType, QType>::value
   >
   applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const{
-    this->underlying().applyQTransposeImpl(vecIn, vecOut);
+    static_cast<DerivedType const &>(*this).applyQTransposeImpl(vecIn, vecOut);
   }
 
   template <typename VectorInType, typename VectorOutType>
@@ -90,7 +87,7 @@ public:
     ::pressio::Traits<VectorOutType>::rank ==1
   >
   applyRTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const{
-    this->underlying().applyRTransposeImpl(vecIn, vecOut);
+    static_cast<DerivedType const &>(*this).applyRTransposeImpl(vecIn, vecOut);
   }
 
   QROutOfPlaceBase() = default;
