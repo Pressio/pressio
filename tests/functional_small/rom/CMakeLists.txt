@@ -72,7 +72,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 
-if(PRESSIO_ENABLE_TPL_EIGEN)
+if(PRESSIO_ENABLE_TPL_TRILINOS AND PRESSIO_ENABLE_TPL_EIGEN)
   set(SRCDIR ${CMAKE_CURRENT_SOURCE_DIR}/lspg_residual_jacaction_reconstructor)
   configure_file(${SRCDIR}/rom_states.txt ${CMAKE_CURRENT_BINARY_DIR}/lspg_residual_jacaction_reconstructor/rom_states.txt COPYONLY)
 
