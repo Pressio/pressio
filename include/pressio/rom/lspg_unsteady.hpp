@@ -10,6 +10,9 @@
 #include "./impl/lspg_unsteady_mask_decorator.hpp"
 #include "./impl/lspg_unsteady_scaling_decorator.hpp"
 #include "./impl/lspg_unsteady_problem.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "./impl/lspg_unsteady_reconstructor.hpp"
+#endif
 
 namespace pressio{ namespace rom{ namespace lspg{
 
@@ -280,6 +283,21 @@ auto create_unsteady_problem(const TrialSubspaceType & trialSpace,     /*(6)*/
     TotalNumberOfDesiredStates, TrialSubspaceType, system_type>;
   return return_type(trialSpace, fomSystem);
 }
+
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<
+  class TrialSubspaceType,
+  std::enable_if_t<
+    PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value,
+    int > = 0
+  >
+auto create_reconstructor(const TrialSubspaceType & trialSpace)
+{
+  using T = impl::LspgReconstructor<TrialSubspaceType>;
+  return T(trialSpace);
+}
+#endif
 
 }}} // end pressio::rom::lspg
 #endif  // ROM_LSPG_UNSTEADY_HPP_
