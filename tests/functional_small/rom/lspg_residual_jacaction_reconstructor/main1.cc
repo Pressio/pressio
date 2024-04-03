@@ -51,11 +51,28 @@ public:
 
     if (bool(JA)){
       auto & J = *JA.value();
-      for (std::size_t i=0; i< pressio::ops::extent(J, 1); ++i){
-	auto col = pressio::column(J, i);
-	pressio::ops::fill(col, time);
+      auto J_view = J.getLocalViewHost(Tpetra::Access::ReadWrite);
+
+      int count = 0;
+      for (std::size_t j=0; j< pressio::ops::extent(J_view, 1); ++j){
+	for (std::size_t i=0; i< pressio::ops::extent(J_view, 0); ++i){
+	  J_view(i,j) = time + count++;
+	}
       }
     }
+
+    auto R_view = R.getLocalViewHost(Tpetra::Access::ReadOnly);
+
+    double goldVal = 0.;
+    if (time == 2.) { goldVal = 12.; }
+    if (time == 4.) { goldVal = 42.; }
+    if (time == 6.) { goldVal = 72.; }
+    if (time == 8.) { goldVal = 102.; }
+    if (time == 10.){ goldVal = 132.; }
+    for (int i=0; i<5; ++i){
+      ASSERT_DOUBLE_EQ( R_view(i,0), goldVal );
+    }
+
   }
 };
 
@@ -70,11 +87,12 @@ TEST_F(fixture_t, lspg_residual_jacaction_reconstructor)
   }
 
   vec_t shift(contigMap_);
+  pressio::ops::fill(shift, 0);
   using reduced_state_type = Eigen::VectorXd;
   auto space = create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, false);
 
+  const std::string romStatesStr = "./lspg_residual_jacaction_reconstructor/rom_states.txt";
   MyFom app(*this);
-  auto o = lspg::create_reconstructor<2>(space, app);
-  o.execute("./lspg_residual_jacaction_reconstructor/rom_states.txt");
-  (void) o;
+  auto o = lspg::create_reconstructor(space);
+  o.execute<2>(app, romStatesStr, "main1_");
 }

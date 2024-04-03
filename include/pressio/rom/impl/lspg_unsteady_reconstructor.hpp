@@ -52,7 +52,7 @@
 namespace pressio{ namespace rom{ namespace impl{
 
 template<typename reduced_state_type>
-auto read(std::string const & filein, std::size_t ext)
+auto read_rom_states_and_times_from_ascii(std::string const & filein, std::size_t ext)
 {
   using scalar_type = scalar_trait_t<reduced_state_type>;
 
@@ -80,6 +80,7 @@ auto read(std::string const & filein, std::size_t ext)
   return std::make_tuple(times, reduced_states);
 }
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename ViewT>
 auto _rank1_view_to_stdvector(ViewT view)
 {
@@ -104,6 +105,7 @@ auto _rank2_view_to_stdvector(ViewT view)
   }
   return v;
 }
+#endif
 
 template<typename sc_t, typename size_t>
 void write_vector_to_binary(const std::string filename,
@@ -115,66 +117,151 @@ void write_vector_to_binary(const std::string filename,
   out.close();
 }
 
-template <
-  std::size_t n,
-  class TrialSubspaceType,
-  class FomSystemType
-  >
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<class Rt, class Jt>
+void write_res_jac_to_binary(const std::string & prepend, std::size_t i, const Rt & R, const Jt & JPhi)
+{
+  const auto myRank = R.getMap()->getComm()->getRank();
+  const std::string finalPart = "rank_" + std::to_string(myRank) + "_step_" + std::to_string(i) + ".bin";
+
+  auto r_view = R.getLocalViewHost(Tpetra::Access::ReadOnly);
+  auto r_stdv = _rank1_view_to_stdvector(r_view);
+  const std::string R_f = prepend + "residual_" + finalPart;
+  write_vector_to_binary(R_f, r_stdv.data(), r_stdv.size());
+
+  auto jphi_view = JPhi.getLocalViewHost(Tpetra::Access::ReadOnly);
+  auto jphi_stdv = _rank2_view_to_stdvector(jphi_view);
+  std::string Jphi_f = prepend + "jacobian_action_" + finalPart;
+  write_vector_to_binary(Jphi_f, jphi_stdv.data(), jphi_stdv.size());
+}
+
+template<class MapType>
+void write_map_to_file(MapType const & map)
+{
+  std::ofstream outMapFile("row_map.txt");
+  auto out = Teuchos::getFancyOStream(Teuchos::rcpFromRef(outMapFile));
+  map.describe(*out, Teuchos::EVerbosityLevel::VERB_EXTREME);
+  outMapFile.close();
+}
+#endif
+
+template <class TrialSubspaceType>
 class LspgReconstructor{
-  using state_type = typename TrialSubspaceType::reduced_state_type;
-  using scalar_type = scalar_trait_t<state_type>;
+  using rom_state_type = typename TrialSubspaceType::reduced_state_type;
+  using fom_state_type = typename TrialSubspaceType::full_state_type;
+  using scalar_type = scalar_trait_t<rom_state_type>;
 
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
-  std::reference_wrapper<const FomSystemType> fomSystem_;
 
 public:
-  LspgReconstructor(const TrialSubspaceType & trialSubspace,
-		    const FomSystemType & fomSystem)
-    : trialSubspace_(trialSubspace), fomSystem_(fomSystem){}
+  LspgReconstructor(const TrialSubspaceType & trialSubspace)
+    : trialSubspace_(trialSubspace){}
 
-  void execute(std::string const & filename) const
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  template <
+    std::size_t n,
+    class FomSystemType,
+    class _TrialSubspaceType = TrialSubspaceType
+    >
+  std::enable_if_t<
+    RealValuedFullyDiscreteSystemWithJacobianAction<
+      FomSystemType, n, typename _TrialSubspaceType::basis_matrix_type>::value
+    >
+  execute(const FomSystemType & fomSystem,
+	  const std::string & filename,
+	  std::optional<std::string> filenamePrepend = {}) const
   {
-    static_assert(n==2);
+    static_assert(n==2,
+    "lspg reconstructor for a fully discrete system currently supports TotalNumberOfDesiredStates==2");
 
     const auto & trialSub = trialSubspace_.get();
-    auto y_np1 = trialSub.createFullState();
-    auto y_n   = trialSub.createFullState();
     const auto & phi = trialSub.basisOfTranslatedSpace();
 
-    auto R = fomSystem_.get().createDiscreteTimeResidual();
-    auto JPhi = fomSystem_.get().createResultOfDiscreteTimeJacobianActionOn(phi);
-    assert( *R.getMap() == *JPhi.getMap() );
+    // 1. allocate what we need
+    auto state_np1 = trialSub.createFullState();
+    auto state_n   = trialSub.createFullState();
+    auto R = fomSystem.createDiscreteTimeResidual();
+    auto JTimesPhi = fomSystem.createResultOfDiscreteTimeJacobianActionOn(phi);
+    assert( *R.getMap() == *JTimesPhi.getMap() );
 
-    const auto myRank = R.getMap()->getComm()->getRank();
-    std::ofstream outMap("row_map.txt");
-    auto out = Teuchos::getFancyOStream(Teuchos::rcpFromRef(outMap));//std::cout));
-    R.getMap()->describe(*out, Teuchos::EVerbosityLevel::VERB_EXTREME);
-    outMap.close();
+    // 2. write the row map
+    write_map_to_file(*R.getMap());
 
+    // 3. read states
     const std::size_t numModes = trialSubspace_.get().dimension();
-    auto [times, redStates] = read<state_type>(filename, numModes);
+    auto [times, reducedStates] = read_rom_states_and_times_from_ascii<rom_state_type>(filename, numModes);
 
-    trialSub.mapFromReducedState(redStates[0], y_n);
+    trialSub.mapFromReducedState(reducedStates[0], state_n);
     for (std::size_t i = 1; i < times.size(); i++){
-      trialSub.mapFromReducedState(redStates[i], y_np1);
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(i,
-							     times[i],
-							     times[i] - times[i - 1],
-							     R, phi, &JPhi,
-							     y_np1, y_n);
-      auto r_view = R.getLocalViewHost(Tpetra::Access::ReadOnly);
-      auto r_stdv = _rank1_view_to_stdvector(r_view);
-      const std::string R_f = "residual_rank_" + std::to_string(myRank) + "_" + std::to_string(i) + ".bin";
-      write_vector_to_binary(R_f, r_stdv.data(), r_stdv.size());
+      const auto t_n   = times[i-1];
+      const auto t_np1 = times[i];
+      const auto dt    = t_np1 - t_n;
 
-      auto jphi_view = JPhi.getLocalViewHost(Tpetra::Access::ReadOnly);
-      auto jphi_stdv = _rank2_view_to_stdvector(jphi_view);
-      std::string Jphi_f = "jacobian_action_rank_" + std::to_string(myRank) + "_" + std::to_string(i) + ".bin";
-      write_vector_to_binary(Jphi_f, jphi_stdv.data(), jphi_stdv.size());
-
-      pressio::ops::deep_copy(y_n, y_np1);
+      trialSub.mapFromReducedState(reducedStates[i], state_np1);
+      fomSystem.discreteTimeResidualAndJacobianAction(i, t_np1, dt, R,
+						      phi, &JTimesPhi, state_np1, state_n);
+      write_res_jac_to_binary(filenamePrepend.value_or(""), i, R, JTimesPhi);
+      pressio::ops::deep_copy(state_n, state_np1);
     }
   }
+
+  template <
+    class FomSystemType,
+    class _TrialSubspaceType = TrialSubspaceType
+    >
+  std::enable_if_t<
+    RealValuedSemiDiscreteFomWithJacobianAction<
+      FomSystemType, typename _TrialSubspaceType::basis_matrix_type
+      >::value
+    >
+  execute(const FomSystemType & fomSystem,
+	  std::string const & filename,
+	  ::pressio::ode::StepScheme schemeName,
+	  std::optional<std::string> filenamePrepend = {}) const
+  {
+    assert(schemeName == pressio::ode::StepScheme::BDF1);
+
+    const auto & trialSub = trialSubspace_.get();
+    const auto & phi = trialSub.basisOfTranslatedSpace();
+
+    // 1. allocate what we need
+    auto state_np1 = trialSub.createFullState();
+    // for bdf1, this contains state_n
+    ode::ImplicitStencilStatesDynamicContainer<fom_state_type> fomStencilStates{trialSub.createFullState()};
+
+    auto R = fomSystem.createRhs();
+    auto JTimesPhi = fomSystem.createResultOfJacobianActionOn(phi);
+    assert( *R.getMap() == *JTimesPhi.getMap() );
+
+    // 2. write out the row map
+    write_map_to_file(*R.getMap());
+
+    // 3. read states
+    const std::size_t numModes = trialSubspace_.get().dimension();
+    auto [times, reducedStates] = read_rom_states_and_times_from_ascii<rom_state_type>(filename, numModes);
+
+    auto & state_n = fomStencilStates(::pressio::ode::n());
+    const auto one = ::pressio::utils::Constants<scalar_type>::one();
+    trialSub.mapFromReducedState(reducedStates[0], state_n);
+    for (std::size_t i = 1; i < times.size(); i++){
+      const auto t_n   = times[i-1];
+      const auto t_np1 = times[i];
+      const auto dt    = t_np1 - t_n;
+
+      trialSub.mapFromReducedState(reducedStates[i], state_np1);
+      fomSystem.rhs(state_np1, t_np1, R);
+      fomSystem.applyJacobian(state_np1, phi, t_np1, JTimesPhi);
+
+      ::pressio::ode::impl::discrete_residual(pressio::ode::BDF1(), state_np1, R, fomStencilStates, dt);
+      const auto factor = dt*::pressio::ode::constants::bdf1<scalar_type>::c_f_;
+      ::pressio::ops::update(JTimesPhi, factor, phi, one);
+
+      write_res_jac_to_binary(filenamePrepend.value_or(""), i, R, JTimesPhi);
+      pressio::ops::deep_copy(state_n, state_np1);
+    }
+  }
+#endif
+
 };
 
 }}}
