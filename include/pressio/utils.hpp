@@ -52,7 +52,6 @@
 #include "./mpl.hpp"
 #include <iomanip>
 
-#include "./utils/utils_crtp_helper.hpp"
 #include "./utils/utils_static_constants.hpp"
 #include "./utils/utils_make_unique.hpp"
 #include "./utils/utils_instance_or_reference_wrapper.hpp"

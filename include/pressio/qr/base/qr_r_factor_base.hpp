@@ -53,7 +53,6 @@ namespace pressio{ namespace qr{
 
 template<typename DerivedType, typename RType>
 class RFactorBase
-  : private utils::details::CrtpBase<RFactorBase<DerivedType, RType>>
 {
 
   using this_t = RFactorBase<DerivedType, RType>;
@@ -63,11 +62,9 @@ class RFactorBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<DerivedType>::type;
 
-  friend utils::details::CrtpBase<this_t>;
-
 public:
   const RType & cRefRFactor() const {
-    return this->underlying().cRefRFactorImpl();
+    return static_cast<DerivedType const&>(*this).cRefRFactorImpl();
   }
 
   RFactorBase() = default;

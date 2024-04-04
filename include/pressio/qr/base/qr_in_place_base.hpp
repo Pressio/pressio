@@ -53,8 +53,6 @@ namespace pressio{ namespace qr{
 
 template<typename DerivedType, typename MatrixType>
 class QRInPlaceBase
-  : private utils::details::CrtpBase<
-  QRInPlaceBase<DerivedType, MatrixType>>
 {
 
   using this_t = QRInPlaceBase<DerivedType, MatrixType>;
@@ -64,11 +62,9 @@ class QRInPlaceBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<DerivedType>::type;
 
-  friend utils::details::CrtpBase<this_t>;
-
 public:
   void computeThin(MatrixType & A){
-    this->underlying().computeThinImpl(A);
+    static_cast<DerivedType &>(*this).computeThinImpl(A);
   }
 
 private:
