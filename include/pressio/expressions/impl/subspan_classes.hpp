@@ -133,7 +133,7 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-struct SubspanExpr<
+class SubspanExpr<
   MatrixType,
   std::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
