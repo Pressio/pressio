@@ -219,11 +219,11 @@ auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag 
 
   W.get()(r, Wr);
   W.get()(J, WJ);
-  ::pressio::ops::product(pT, pnT, 1, J, WJ, 0, H);
-  ::pressio::ops::product(pT, 1, J, Wr, 0, g);
+  ::pressio::ops::product(pT, pnT, 1, WJ, WJ, 0, H);
+  ::pressio::ops::product(pT, 1, WJ, Wr, 0, g);
 
   using sc_t = scalar_trait_t<typename SystemType::state_type>;
-  const auto v = ::pressio::ops::dot(r, Wr);
+  const auto v = ::pressio::ops::dot(Wr, Wr);
   constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
   constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
   return v*(one/two);
