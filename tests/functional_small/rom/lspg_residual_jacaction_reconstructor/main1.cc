@@ -72,7 +72,6 @@ public:
     for (int i=0; i<5; ++i){
       ASSERT_DOUBLE_EQ( R_view(i,0), goldVal );
     }
-
   }
 };
 
@@ -96,3 +95,38 @@ TEST_F(fixture_t, lspg_residual_jacaction_reconstructor)
   auto o = lspg::create_reconstructor(space);
   o.execute<2>(app, romStatesStr, "main1_");
 }
+
+
+struct MyCustomWriter{
+  void operator()(
+        std::size_t i,
+        const typename fixture_t::vec_t & R,
+        const typename fixture_t::mvec_t & JPhi
+      ) const
+  {
+    ASSERT_TRUE(i >= 1 && i<6);
+  }
+};
+
+TEST_F(fixture_t, lspg_residual_jacaction_reconstructor_custom_writer)
+{
+  using namespace pressio::rom;
+
+  auto phi = ::pressio::ops::clone(*myMv_);
+  for (int i=0; i<numVecs_; ++i){
+    auto col = pressio::column(phi, i);
+    pressio::ops::fill(col, i);
+  }
+
+  vec_t shift(contigMap_);
+  pressio::ops::fill(shift, 0);
+  using reduced_state_type = Eigen::VectorXd;
+  auto space = create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, false);
+
+  const std::string romStatesStr = "./lspg_residual_jacaction_reconstructor/rom_states.txt";
+  MyFom app(*this);
+  auto o = lspg::create_reconstructor(space);
+  o.execute<2>(app, romStatesStr, MyCustomWriter{});
+}
+
+
