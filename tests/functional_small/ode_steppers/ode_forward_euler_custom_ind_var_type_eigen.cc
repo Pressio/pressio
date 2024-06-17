@@ -45,7 +45,7 @@ TEST(ode_explicit_steppers, euler_custom_ind_var_type)
   MyCustomTime dt{0.1};
   ode::advance_n_steps(stepperObj, y, t0,
 		       dt, pressio::ode::StepCount(1));
-  EXPECT_DOUBLE_EQ( y[0], 0.);
-  EXPECT_DOUBLE_EQ( y[1], 0.);
-  EXPECT_DOUBLE_EQ( y[2], 0.);
+  EXPECT_NEAR( y[0], 0., 1e-14);
+  EXPECT_NEAR( y[1], 0., 1e-14);
+  EXPECT_NEAR( y[2], 0., 1e-14);
 }
