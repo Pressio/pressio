@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr_out_of_place.hpp
+// qr_in_place.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,54 @@
 //@HEADER
 */
 
-#ifndef QR_IMPL_QR_OUT_OF_PLACE_HPP_
-#define QR_IMPL_QR_OUT_OF_PLACE_HPP_
+#ifndef QR_IMPL_QR_CONCRETE_CLASSES_HPP_
+#define QR_IMPL_QR_CONCRETE_CLASSES_HPP_
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "Teuchos_SerialDenseMatrix.hpp"
+#include "Teuchos_SerialDenseSolver.hpp"
+#include <Teuchos_SerialQRDenseSolver.hpp>
+#endif
+
 
 namespace pressio{ namespace qr{ namespace impl{
+
+/* specialize for R_type == void */
+template<typename MatrixType, typename AlgoType>
+class QRSolver<MatrixType, AlgoType, true, void> 
+  : public ::pressio::Traits< QRSolver<MatrixType, AlgoType,true, void>>::base_compute_t,
+    public ::pressio::Traits< QRSolver<MatrixType, AlgoType,true, void>>::base_solve_t
+{
+
+  static_assert(::pressio::Traits<MatrixType>::rank == 2, 
+    "QRSolver only supports rank-2 objects");
+
+  using this_t		= QRSolver<MatrixType, AlgoType, true, void>;
+  using qr_traits	= ::pressio::Traits<this_t>;
+  using base_compute_t	= typename qr_traits::base_compute_t;
+  using base_solve_t	= typename qr_traits::base_solve_t;
+
+  using impl_t	       = typename qr_traits::impl_t;
+  impl_t myImpl_;
+
+  void computeThinImpl(MatrixType & A){
+    myImpl_.computeThinInPlace(A);
+  }
+
+  template <typename VectorType>
+  void solveImpl(const VectorType & rhs, VectorType & y) const {
+    myImpl_.template doLinSolve<VectorType>(rhs, y);
+  }
+
+public:
+  QRSolver() = default;
+  ~QRSolver() = default;
+
+private:
+  friend base_compute_t;
+  friend base_solve_t;
+};
+
 
 /* R_type == void, in_place = false */
 template<typename MatrixType, typename algo>
@@ -61,12 +105,12 @@ class QRSolver<MatrixType, algo, false, void>
   static_assert(::pressio::Traits<MatrixType>::rank == 2,
     "QRSolver only supports rank-2 objects");
 
-  using this_t	       = QRSolver<MatrixType, algo, false, void>;
+  using this_t         = QRSolver<MatrixType, algo, false, void>;
   using qr_traits      = ::pressio::Traits<this_t>;
   using base_compute_t = typename qr_traits::base_compute_t;
   using base_solve_t   = typename qr_traits::base_solve_t;
-  using Q_t	           = typename qr_traits::Q_type;
-  using impl_t	       = typename qr_traits::impl_t;
+  using Q_t            = typename qr_traits::Q_type;
+  using impl_t         = typename qr_traits::impl_t;
   impl_t myImpl_;
 
 public:
@@ -103,73 +147,5 @@ private:
 };
 
 
-
-// /*
-//  *   overload for R_type != void, in_place = false
-//  */
-// template<
-//   typename MatrixType, typename algo,
-//   typename R_type, template <typename...> class Q_type
-//   >
-// class QRSolver<
-//   MatrixType, algo, false, R_type, Q_type,
-//   std::enable_if_t<
-//     meta::is_legitimate_r_type<R_type>::value and
-//     (containers::predicates::is_multi_vector_wrapper_tpetra<MatrixType>::value)
-//     >
-//   > : public ::pressio::Traits< QRSolver<MatrixType, algo,
-// 				       false, R_type, Q_type>>::base_compute_t,
-//       public ::pressio::Traits< QRSolver<MatrixType, algo,
-// 				       false, R_type, Q_type>>::base_solve_t,
-//       public ::pressio::Traits< QRSolver<MatrixType, algo,
-// 				       false, R_type, Q_type>>::base_Rfactor_t
-// {
-
-//   using this_t	  = QRSolver<MatrixType, algo, false, R_type, Q_type>;
-//   using traits_t       = ::pressio::Traits<this_t>;
-//   using base_compute_t = typename traits_t::base_compute_t;
-//   using base_solve_t   = typename traits_t::base_solve_t;
-//   using base_Rfactor_t = typename traits_t::base_Rfactor_t;
-//   using Q_t	       = typename traits_t::Q_t;
-
-//   using impl_t	       = typename traits_t::impl_t;
-//   impl_t myImpl_       = {};
-
-//   void computeThinImpl(MatrixType & A){
-//     myImpl_.computeThinOutOfPlace(A);
-//   }
-
-//   const Q_t & cRefQFactorImpl() const {
-//     return myImpl_.QFactor();
-//   }
-
-//   template < typename vector_in_t, typename vector_out_t>
-//   void projectImpl(const vector_in_t & vecIn,
-//   		   vector_out_t & vecOut) const{
-//     myImpl_.template project<vector_in_t, vector_out_t>(vecIn, vecOut);
-//   }
-
-//   // here we have the Rfactor, maybe we should call the solver
-//   // native to the Rfactor??? think
-//   template <typename vector_t>
-//   void solveImpl(const vector_t & rhs, vector_t & y)const {
-//     myImpl_.template doLinSolve<vector_t, n>(rhs, y);
-//   }
-
-//   const R_type & cRefRFactorImpl() const {
-//     return myImpl_.RFactor();
-//   }
-
-// public:
-//   QRSolver() = default;
-//   ~QRSolver() = default;
-
-// private:
-//   friend base_compute_t;
-//   friend base_Rfactor_t;
-//   friend base_solve_t;
-// };
-
-
 }}} // end namespace pressio::qr::impl
-#endif  // QR_IMPL_QR_OUT_OF_PLACE_HPP_
+#endif  // QR_IMPL_QR_IN_PLACE_HPP_

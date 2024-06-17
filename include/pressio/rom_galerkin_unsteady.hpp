@@ -53,7 +53,6 @@
 #include "./utils.hpp"
 #include "./type_traits.hpp"
 #include "./ops.hpp"
-#include "./qr.hpp"
 #include "./solvers_linear.hpp"
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"

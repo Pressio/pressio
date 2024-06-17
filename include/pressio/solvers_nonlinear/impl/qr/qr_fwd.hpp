@@ -49,7 +49,7 @@
 #ifndef QR_QR_FWD_HPP_
 #define QR_QR_FWD_HPP_
 
-namespace pressio{  namespace qr{
+namespace pressio{ namespace qr{
 
 template<typename derived, typename matrix_t> class QRInPlaceBase;
 template<typename derived, typename matrix_t, typename Q_type> class QROutOfPlaceBase;
@@ -78,11 +78,24 @@ class QRSolver;
 
 }//end namespace pressio::qr::impl
 
+
+/* Note to devs: if you add a method here, and code it
+ * remember to update the corresponding static_assert
+ * message in the qr_traits.hpp */
+
+struct ModifiedGramSchmidt{};
+struct Householder{};
+
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
+struct TSQR{};
+#endif
+
+
 template<class matrix_type, class algorithm, bool in_place = false>
 using QRSolver = impl::QRSolver<matrix_type, algorithm, in_place, void>;
 
-template<class matrix_type, class algorithm, class R_type, bool in_place = false>
-using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type>;
+// template<class matrix_type, class algorithm, class R_type, bool in_place = false>
+// using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type>;
 
 }}//end namespace pressio::qr
 #endif  // QR_QR_FWD_HPP_
