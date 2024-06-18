@@ -77,3 +77,35 @@ TEST_F(fixture_t, lspg_residual_jacaction_reconstructor_bdf1)
   auto o = rom::lspg::create_reconstructor(space);
   o.execute(app, romStatesStr, ode::StepScheme::BDF1, "main2_");
 }
+
+struct MyCustomWriter{
+  void operator()(
+        std::size_t i,
+        const typename fixture_t::vec_t & R,
+        const typename fixture_t::mvec_t & JPhi
+      ) const
+  {
+    ASSERT_TRUE(i >= 1 && i<6);
+  }
+};
+
+TEST_F(fixture_t, lspg_residual_jacaction_reconstructor_bdf1_custom_writer)
+{
+  using namespace pressio;
+
+  auto phi = ops::clone(*myMv_);
+  for (int i=0; i<numVecs_; ++i){
+    auto col = pressio::column(phi, i);
+    ops::fill(col, i);
+  }
+
+  vec_t shift(contigMap_);
+  ops::fill(shift, 0);
+  using reduced_state_type = Eigen::VectorXd;
+  auto space = rom::create_trial_column_subspace<reduced_state_type>(std::move(phi), shift, false);
+
+  const std::string romStatesStr = "./lspg_residual_jacaction_reconstructor/rom_states.txt";
+  MyFom app(*this);
+  auto o = rom::lspg::create_reconstructor(space);
+  o.execute(app, romStatesStr, ode::StepScheme::BDF1, MyCustomWriter{});
+}
