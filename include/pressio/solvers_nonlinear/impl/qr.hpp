@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr_in_place_base.hpp
+// qr.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,20 @@
 //@HEADER
 */
 
-#ifndef QR_BASE_QR_IN_PLACE_BASE_HPP_
-#define QR_BASE_QR_IN_PLACE_BASE_HPP_
+#ifndef PRESSIO_QR_HPP_
+#define PRESSIO_QR_HPP_
 
-namespace pressio{ namespace qr{
+#include "qr/qr_fwd.hpp"
+#include "qr/qr_base_classes.hpp"
+#include "qr/qr_traits.hpp"
+#include "qr/qr_concrete_classes.hpp"
 
-template<typename DerivedType, typename MatrixType>
-class QRInPlaceBase
-{
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+#include "qr/qr_eigen_impl.hpp"
+#endif
 
-  using this_t = QRInPlaceBase<DerivedType, MatrixType>;
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "qr/qr_tpetra_impl.hpp"
+#endif
 
-  /* workaround for nvcc issue with templates, 
-  see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<DerivedType>::type;
-
-public:
-  void computeThin(MatrixType & A){
-    static_cast<DerivedType &>(*this).computeThinImpl(A);
-  }
-
-private:
-  QRInPlaceBase() = default;
-  ~QRInPlaceBase() = default;
-
-};
-
-}}//end namespace pressio::qr
-#endif  // QR_BASE_QR_IN_PLACE_BASE_HPP_
+#endif

@@ -66,3 +66,9 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(name gaussnewton_qr_problem8_eigen)
   add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
 endif()
+
+
+# -----------------------------
+# add tests for QR
+# -----------------------------
+add_subdirectory(qr)

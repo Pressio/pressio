@@ -65,10 +65,6 @@ the documentation and the code.
      - linear dense (on-node) solvers
      - ``<pressio/solvers_linear.hpp>``
 
-   * - ``qr``
-     - QR factorization functionalities
-     - ``<pressio/qr.hpp>``
-
    * - ``ops``
      - shared-memory/distributed linear algebra kernels specializations
      - ``<pressio/ops.hpp>``
@@ -177,7 +173,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    ./components/ode
    ./components/nonlinsolvers
    ./components/linsolvers
-   ./components/qr
    ./components/ops
    ./components/expressions
    ./components/type_traits

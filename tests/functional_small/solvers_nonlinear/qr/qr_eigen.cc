@@ -1,6 +1,6 @@
 
 #include "fixtures.hpp"
-#include "pressio/qr.hpp"
+//#include "pressio/qr.hpp"
 
 TEST_F(eigenDenseR9Fixture, HouseholderEigenDenseOutOfPlace)
 {
@@ -28,7 +28,7 @@ TEST_F(eigenDenseR9Fixture,
   vector_type rhs(pressio::qr::test::numVectors_);
   qrObj.applyQTranspose(v_, rhs);
   std::cout << " RHS" << std::setprecision(14) << rhs << std::endl;
-  
+
   vector_type y(pressio::qr::test::numVectors_);
   qrObj.solve(rhs, y);
   std::cout << std::setprecision(14)
