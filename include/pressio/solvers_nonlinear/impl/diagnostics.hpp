@@ -258,10 +258,11 @@ private:
         return is_absolute_diagnostic(d) ? data.getAbsolute() : data.getRelative();
     };
 
+    const auto pd = dm.publicNames();
+
 #if !defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
     std::cout << "nonlinIter = " << std::left << std::setw(3) << iStep << " ";
 
-    const auto pd = dm.publicNames();
     for (auto const & it : pd){
       const auto symbol = diagnostic_to_log_symbol(it);
        std::cout << symbol << " = "

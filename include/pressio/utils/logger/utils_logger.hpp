@@ -11,7 +11,7 @@ namespace pressio{
 enum class logto{
   terminal
 #if defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
-  ,file,
+  ,file
   ,fileAndTerminal
 #endif
 };
