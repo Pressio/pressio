@@ -16,8 +16,6 @@ option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	  OFF)
 option(PRESSIO_ENABLE_TPL_MPI		    "Enable MPI"	      	OFF)
-option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
-
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
   message(">> Eigen is currently enabled by default via PRESSIO_ENABLE_TPL_EIGEN=ON")
@@ -89,11 +87,6 @@ if(PRESSIO_ENABLE_TPL_MPI)
 
   find_package(MPI REQUIRED)
   include_directories(SYSTEM ${MPI_CXX_INCLUDE_DIRS})
-endif()
-
-if(PRESSIO_ENABLE_TPL_Pybind11)
-  message(">> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
-  add_definitions(-DPRESSIO_ENABLE_TPL_Pybind11)
 endif()
 
 if(PRESSIO_ENABLE_TPL_BLAS)
