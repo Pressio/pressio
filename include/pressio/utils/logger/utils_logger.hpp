@@ -14,7 +14,6 @@ using logger = spdlog::logger;
 
 namespace log{
 
-#if !defined PRESSIO_ENABLE_TPL_PYBIND11
 template<typename ...Args>
 void initialize(::pressio::logto en, Args && ... args)
 {
@@ -32,51 +31,6 @@ void initialize(::pressio::logto en, Args && ... args)
   logger->log(spdlog::level::info, "Initializing pressio logger");
 #endif
 }
-
-#else //PRESSIO_ENABLE_TPL_PYBIND11
-
-// need this because for pybind11 cannot use variadic directly
-void initialize(::pressio::logto en, std::string fileName)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  auto logger = ::pressio::log::impl::create(en, fileName);
-  // logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] [fnc=%!] : %v");
-
-  // note that the sinks can have different levels. By using trace for the
-  // main logger we make sure it is up to the sinks or the global
-  // define to set the minlevel of output.
-  logger->set_level(spdlog::level::trace);
-
-  // set the singleton
-  spdlog::set_default_logger(logger);
-  logger->log(spdlog::level::info, "Initializing pressio logger");
-#endif
-}
-
-// need this because for pybind11 cannot use variadic directly
-void initialize2(::pressio::logto en)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  if (en != ::pressio::logto::terminal){
-    throw std::runtime_error("logger: this overload of initialize is only for terminal output");
-  }
-
-  auto logger = ::pressio::log::impl::create(en, "null");
-  // logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] [fnc=%!] : %v");
-
-  // note that the sinks can have different levels. By using trace for the
-  // main logger we make sure it is up to the sinks or the global
-  // define to set the minlevel of output.
-  logger->set_level(spdlog::level::trace);
-
-  // set the singleton
-  spdlog::set_default_logger(logger);
-  logger->log(spdlog::level::info, "Initializing pressio logger");
-#endif
-}
-
-#endif//PRESSIO_ENABLE_TPL_PYBIND11
-
 
 // Return an existing logger or nullptr if a logger with such name doesn't exist.
 // example: spdlog::get("my_logger")->info("hello {}", "world");
@@ -116,11 +70,8 @@ void finalize()
 }
 
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T> void setVerbosity(T levels)
-#else
-template <typename T= void> void setVerbosity(std::initializer_list<::pressio::log::level> levels)
-#endif
+template <typename T= void> 
+void setVerbosity(std::initializer_list<::pressio::log::level> levels)
 {
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   auto logger = ::pressio::log::get("pressioLogger");
@@ -187,27 +138,6 @@ inline void critical(const FormatString &fmt, Args&&...args)
   spdlog::default_logger_raw()->critical(fmt, std::forward<Args>(args)...);
 #endif
 }
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<typename... Args>
-// inline void print4py(spdlog::source_loc loc, spdlog::level::level_enum lvl, Args&&...args)
-// {
-//   {
-//   pybind11::scoped_ostream_redirect stream
-//     (
-//      std::cout,                               // std::ostream&
-//      pybind11::module_::import("sys").attr("stdout") // Python output
-//      );
-
-//   spdlog::memory_buf_t buf;
-//   fmt::format_to(buf, std::forward<Args>(args)...);
-//   pybind11::print(buf.data());
-//   fmt::print(buf.data());
-//   pybind11::print("\n");
-//   //fmt::print(std::string(loc.filename) + " " + a + "\n");
-//   }
-// }
-// #endif
 
 }} // namespace pressio::log
 
