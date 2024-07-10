@@ -12,6 +12,12 @@ if (PRESSIO_ENABLE_DEBUG_PRINT)
   add_definitions(-DPRESSIO_ENABLE_DEBUG_PRINT)
 endif()
 
+option(PRESSIO_ENABLE_INTERNAL_SPDLOG "Enable the use of the internal spdlog" ON)
+if (PRESSIO_ENABLE_INTERNAL_SPDLOG)
+  add_definitions(-DPRESSIO_ENABLE_INTERNAL_SPDLOG)
+endif()
+
+
 option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	  OFF)

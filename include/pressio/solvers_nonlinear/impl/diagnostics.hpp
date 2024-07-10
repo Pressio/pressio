@@ -244,7 +244,6 @@ private:
     else if (count == 11){ logImpl(iStep, dm, std::make_index_sequence<11u>{}); }
     else{ std::runtime_error("count not implemented yet");}
     ;
-
   }
 
   template <class T, std::size_t ... Is>
@@ -259,9 +258,21 @@ private:
         return is_absolute_diagnostic(d) ? data.getAbsolute() : data.getRelative();
     };
 
-    //(..., (std::cout << lam(pd[Is], dm[pd[Is]]) << "\n"));
+#if !defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+    std::cout << "nonlinIter = " << std::left << std::setw(3) << iStep << " ";
+
     const auto pd = dm.publicNames();
+    for (auto const & it : pd){
+      const auto symbol = diagnostic_to_log_symbol(it);
+       std::cout << symbol << " = "
+                 << std::left << std::setw(18) << std::scientific << std::setprecision(10)
+                 << lam(it, dm[it]) << " ";
+    }
+    std::cout << "\n";
+#else
     PRESSIOLOG_INFO(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
+#endif
+
   }
 };
 
