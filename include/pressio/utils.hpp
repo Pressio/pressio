@@ -61,9 +61,6 @@
 #include "./utils/utils_teuchos_performance_monitor.hpp"
 #endif
 
-#include "./utils/io/utils_colorize_print.hpp"
-#include "./utils/io/utils_print_helper.hpp"
-
 #include "./utils/logger/fmt/fmt.hpp"
 #include "./utils/logger/utils_logger_enums.hpp"
 #include "./utils/logger/utils_logger.hpp"

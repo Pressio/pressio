@@ -1,5 +1,4 @@
 
-add_serial_utest(${TESTING_LEVEL}_utils_serial_printer utils_serial_printer.cc)
 add_serial_utest(${TESTING_LEVEL}_logger logger.cc)
 
 if(PRESSIO_ENABLE_TPL_MPI)
