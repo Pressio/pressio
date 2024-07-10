@@ -107,8 +107,7 @@ std::shared_ptr<spdlog::logger> create(::pressio::logto en,
     return std::make_shared<spdlog::logger>(loggerName,
 					    spdlog::sinks_init_list({terminal_sink}));
   }
-  else if (en == ::pressio::logto::fileAndTerminal or
-	   en == ::pressio::logto::terminalAndFile)
+  else if (en == ::pressio::logto::fileAndTerminal)
   {
     if (fileName == "void"){
       throw std::runtime_error("Invalid filename to initialize logger.");

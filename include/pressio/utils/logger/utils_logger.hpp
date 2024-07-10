@@ -2,14 +2,45 @@
 #ifndef UTILS_LOGGER_UTILS_LOGGER_HPP_
 #define UTILS_LOGGER_UTILS_LOGGER_HPP_
 
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
+#if defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+#include "./fmt/fmt.hpp"
+#endif
+
+namespace pressio{
+
+enum class logto{
+  terminal
+#if defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+  ,file
+  ,fileAndTerminal
+#endif
+};
+
+namespace log{
+enum class level
+{
+  trace		  = PRESSIO_LOG_LEVEL_TRACE,
+  debug		  = PRESSIO_LOG_LEVEL_DEBUG,
+  info		  = PRESSIO_LOG_LEVEL_INFO,
+  warn		  = PRESSIO_LOG_LEVEL_WARN,
+  err		    = PRESSIO_LOG_LEVEL_ERROR,
+  critical	= PRESSIO_LOG_LEVEL_CRITICAL,
+  off		    = PRESSIO_LOG_LEVEL_OFF,
+  n_levels
+};
+}// end namespace pressio::log
+}// end namespace pressio
+
+// this impl has to be included here because it needs
+// visibility of the enums above
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF && defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 #include "utils_logger_impl.hpp"
 #endif
 
 namespace pressio{
 
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-using logger = spdlog::logger;
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF && defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+using logger_t = spdlog::logger;
 #endif
 
 namespace log{
@@ -17,7 +48,7 @@ namespace log{
 template<typename ...Args>
 void initialize(::pressio::logto en, Args && ... args)
 {
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF && defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
   auto logger = ::pressio::log::impl::create(en, std::forward<Args>(args)...);
   // logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] [fnc=%!] : %v");
 
@@ -32,48 +63,28 @@ void initialize(::pressio::logto en, Args && ... args)
 #endif
 }
 
-// Return an existing logger or nullptr if a logger with such name doesn't exist.
-// example: spdlog::get("my_logger")->info("hello {}", "world");
-
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF && defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 template <class T= void>
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-std::shared_ptr<::pressio::logger> get(const std::string &name)
-#else
-void get(const std::string &name)
-#endif
+std::shared_ptr<::pressio::logger_t> get(const std::string &name)
 {
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   return spdlog::details::registry::instance().get(name);
-#endif
 }
-
-template <class T= void>
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-std::shared_ptr<::pressio::logger> getLogger()
-#else
-void getLogger()
 #endif
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  return get("pressioLogger");
-#else
-#endif
-}
 
 template <class T= void>
 void finalize()
 {
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  getLogger()->log(spdlog::level::info, "Finalizing pressio logger");
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF && defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+  auto logger = ::pressio::log::get("pressioLogger");
+  logger->log(spdlog::level::info, "Finalizing pressio logger");
   spdlog::shutdown();
 #endif
 }
 
-
-template <typename T= void> 
+template <typename T= void>
 void setVerbosity(std::initializer_list<::pressio::log::level> levels)
 {
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF && defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
   auto logger = ::pressio::log::get("pressioLogger");
   std::vector<spdlog::sink_ptr> & sinks = logger->sinks();
   // make sure the number of levels is same as sinks
@@ -89,64 +100,42 @@ void setVerbosity(std::initializer_list<::pressio::log::level> levels)
 #endif
 }
 
-// Set global format string.
-// example: spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e %l : %v");
-template <typename ...Args>
-void setPattern(Args && ... args)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  spdlog::set_pattern(std::forward<Args>(args)...);
-#endif
-}
-
-template<typename FormatString, typename... Args>
-inline void trace(const FormatString &fmt, Args&&...args)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  spdlog::default_logger_raw()->trace(fmt, std::forward<Args>(args)...);
-#endif
-}
-
-template<typename FormatString, typename... Args>
-inline void debug(const FormatString &fmt, Args&&...args)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  spdlog::default_logger_raw()->debug(fmt, std::forward<Args>(args)...);
-#endif
-}
-
-template<typename FormatString, typename... Args>
-inline void info(const FormatString &fmt, Args&&...args)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  spdlog::default_logger_raw()->info(fmt, std::forward<Args>(args)...);
-#endif
-}
-
-template<typename FormatString, typename... Args>
-inline void warn(const FormatString &fmt, Args&&...args)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  spdlog::default_logger_raw()->warn(fmt, std::forward<Args>(args)...);
-#endif
-}
-
-template<typename FormatString, typename... Args>
-inline void critical(const FormatString &fmt, Args&&...args)
-{
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
-  spdlog::default_logger_raw()->critical(fmt, std::forward<Args>(args)...);
-#endif
-}
-
 }} // namespace pressio::log
 
+#if !defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_TRACE
+#define PRESSIOLOG_TRACE(...) (void)0
+#endif
+
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_DEBUG
+#define PRESSIOLOG_DEBUG(...) (void)0
+#endif
+
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_INFO
+#define PRESSIOLOG_INFO(...) (void)0
+#endif
+
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_WARN
+#define PRESSIOLOG_WARN(...) (void)0
+#endif
+
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_ERROR
+#define PRESSIOLOG_ERROR(...) (void)0
+#endif
+
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_CRITICAL
+#define PRESSIOLOG_CRITICAL(...) (void)0
+#endif
+
+#else // defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 #define PRESSIO_LOGGER_CALL(logger, level, ...) \
   if (logger) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__);
 
-#define PRESSIO_LOGGER_NOSRCLOC_CALL(logger, level, ...) if (logger) (logger)->log(level, __VA_ARGS__);
+#define PRESSIO_LOGGER_NOSRCLOC_CALL(logger, level, ...) \
+  if (logger) (logger)->log(level, __VA_ARGS__);
 #endif
 
 ///// TRACE /////
@@ -196,5 +185,9 @@ inline void critical(const FormatString &fmt, Args&&...args)
 #else
 #define PRESSIOLOG_CRITICAL(...) (void)0
 #endif
+
+#endif // defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+
+
 
 #endif  // UTILS_LOGGER_UTILS_LOGGER_HPP_
