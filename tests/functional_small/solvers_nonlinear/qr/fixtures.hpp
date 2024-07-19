@@ -6,12 +6,13 @@
 #include "pressio/solvers_nonlinear.hpp"
 #include "qr_r9c4_gold.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifdef PRESSIO_ENABLE_EPETRA
 #include "Epetra_MpiComm.h"
 #endif // PRESSIO_ENABLE_EPETRA
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "Eigen/Dense"
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+#endif
 
 namespace pressio{ namespace qr{ namespace test{
   static constexpr int numVectors_ = 4;
