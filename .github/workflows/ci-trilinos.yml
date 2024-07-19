@@ -101,7 +101,7 @@ jobs:
           -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_MPI:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_TRILINOS:BOOL=ON \
-          -D PRESSIO_ENABLE_EPETRA:BOOL={{ matrix.epetra_toggle }} \
+          -D PRESSIO_ENABLE_EPETRA:BOOL=${{ matrix.epetra_toggle }} \
           -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_BLAS:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
