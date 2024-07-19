@@ -101,6 +101,23 @@ struct Traits<
 template <class matrix_t, class algo_tag, class R_t, class enable = void>
 struct impl_class_helper{};
 
+#ifdef PRESSIO_ENABLE_EPETRA
+template <class R_t>
+struct impl_class_helper<Epetra_MultiVector, qr::Householder, R_t>{
+  using impl_t = qr::impl::EpetraMVHouseholderUsingEigen<Epetra_MultiVector, R_t>;
+};
+
+template <class R_t>
+struct impl_class_helper<Epetra_MultiVector, qr::TSQR, R_t>{
+  using impl_t = qr::impl::EpetraMVTSQR<Epetra_MultiVector, R_t>;
+};
+
+template <class R_t>
+struct impl_class_helper<Epetra_MultiVector, qr::ModifiedGramSchmidt, R_t>{
+  using impl_t = qr::impl::ModGramSchmidtMVEpetra<Epetra_MultiVector, R_t>;
+};
+#endif // PRESSIO_ENABLE_EPETRA
+
 template <class matrix_t, class R_t>
 struct impl_class_helper<
   matrix_t, qr::TSQR, R_t,
@@ -144,6 +161,38 @@ struct impl_class_helper<
   using impl_t = qr::impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t>;
 };
 
+#ifdef PRESSIO_ENABLE_EPETRA
+/*
+ * specialize for Epetra::MultiVector, R_type = void
+ */
+template<class algo_t, bool in_place>
+struct Traits<
+  qr::impl::QRSolver<Epetra_MultiVector, algo_t, in_place, void>
+  > : qr_traits_shared_all<Epetra_MultiVector, algo_t, in_place>
+{
+
+  static_assert(
+     std::is_same<algo_t, qr::ModifiedGramSchmidt>::value or
+     std::is_same<algo_t, qr::Householder>::value or
+     std::is_same<algo_t, qr::TSQR>::value,
+     "Currently, only TSQR, ModifiedGramSchmidt and Householder are available for \
+     Epetra dense matrices. Use TSQR because it is fast and accurate. ModifiedGramSchmidt \
+     and Householder are just here for testing purposes. ");
+
+  using traits_all_t  = qr_traits_shared_all<Epetra_MultiVector, algo_t, in_place>;
+  using typename traits_all_t::matrix_t;
+  using typename traits_all_t::sc_t;
+
+  using impl_t  = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
+  using Q_type  = typename impl_t::Q_type;
+
+  using concrete_t  = qr::impl::QRSolver<matrix_t, algo_t, in_place, void>;
+  using inplace_base_t  = qr::QRInPlaceBase<concrete_t, matrix_t>;
+  using outplace_base_t = qr::QROutOfPlaceBase<concrete_t, matrix_t, Q_type>;
+  using base_compute_t  = typename std::conditional<in_place, inplace_base_t, outplace_base_t>::type;
+  using base_solve_t  = qr::QRSolveBase<concrete_t>;
+};
+#endif // PRESSIO_ENABLE_EPETRA
 
 /*
  * specialize for Tpetra::MultiVector, R_type = void

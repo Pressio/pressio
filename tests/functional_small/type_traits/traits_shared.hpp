@@ -81,6 +81,16 @@ void test_is_not_teuchos_container() {
 }
 
 template <typename T>
+void test_is_not_epetra_container() {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_EPETRA
+  static_assert(pressio::is_vector_epetra<T>::value == false, "");
+  static_assert(pressio::is_multi_vector_epetra<T>::value == false, "");
+#endif // PRESSIO_ENABLE_EPETRA
+#endif // PRESSIO_ENABLE_TRILINOS
+}
+
+template <typename T>
 void test_is_not_tpetra_container() {
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert(pressio::is_vector_tpetra<T>::value == false, "");

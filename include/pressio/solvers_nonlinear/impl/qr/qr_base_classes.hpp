@@ -69,11 +69,41 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
      or (::pressio::is_vector_tpetra<T>::value and ::pressio::is_multi_vector_tpetra<Q_t>::value)
      or (::pressio::is_vector_tpetra_block<T>::value and ::pressio::is_multi_vector_tpetra_block<Q_t>::value)
+#ifdef PRESSIO_ENABLE_EPETRA
+     or (::pressio::is_vector_epetra<T>::value and ::pressio::is_multi_vector_epetra<Q_t>::value)
+#endif // PRESSIO_ENABLE_EPETRA
 #endif
      )
    >
 > : std::true_type{};
 
+// #if defined PRESSIO_ENABLE_TPL_TRILINOS
+// #ifdef PRESSIO_ENABLE_EPETRA
+// template <typename algo_t, typename enable = void>
+// struct is_legitimate_algo_for_epetra_mv : std::false_type {};
+
+// template <typename algo_t>
+// struct is_legitimate_algo_for_epetra_mv<algo_t,
+// 	 std::enable_if_t<
+// 	   std::is_same<algo_t, ::pressio::qr::Householder>::value
+// 	   or std::is_same<algo_t, ::pressio::qr::TSQR>::value
+// 	 >
+//       > : std::true_type{};
+// #endif
+
+// #if defined PRESSIO_ENABLE_TPL_TRILINOS
+// template <typename algo_t, typename enable = void>
+// struct is_legitimate_algo_for_tpetra_mv : std::false_type {};
+
+// template <typename algo_t>
+// struct is_legitimate_algo_for_tpetra_mv<algo_t,
+// 	 std::enable_if_t<
+// 	   std::is_same<algo_t, ::pressio::qr::Householder>::value
+// 	   or std::is_same<algo_t, ::pressio::qr::TSQR>::value
+// 	   >
+//         > : std::true_type{};
+// #endif // PRESSIO_ENABLE_EPETRA
+// #endif // PRESSIO_ENABLE_TPL_TRILINOS
 
 template<typename DerivedType, typename MatrixType>
 class QRInPlaceBase
@@ -81,7 +111,7 @@ class QRInPlaceBase
 
   using this_t = QRInPlaceBase<DerivedType, MatrixType>;
 
-  /* workaround for nvcc issue with templates, 
+  /* workaround for nvcc issue with templates,
   see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<DerivedType>::type;

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// ops_norms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,48 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef OPS_EPETRA_OPS_NORMS_HPP_
+#define OPS_EPETRA_OPS_NORMS_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+template <typename T>
+std::enable_if_t<
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename ::pressio::Traits<T>::scalar_type
+  >
+norm1(const T & a)
+{
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t result = 0.0;
+  a.Norm1(&result);
+  return result;
+}
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T>
+std::enable_if_t<
+  // norm-1 common constraints
+  ::pressio::Traits<T>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename ::pressio::Traits<T>::scalar_type
+  >
+norm2(const T & a)
+{
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  sc_t result = 0.0;
+  a.Norm2(&result);
+  return result;
+}
 
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_NORMS_HPP_

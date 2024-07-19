@@ -99,6 +99,31 @@ why it is included, where it was found
 - can find on wikipedia or somewhere else
 
 ========================================================
+# problem 6
+========================================================
+- datafit with 5 vars and 33 equations (overdetermined)
+- [header](./problem6.hpp)
+- Epetra
+- RealSystemWithResidualAndJacobian
+- minpack problem
+- links:
+   - sec 3.4 http://ftp.mcs.anl.gov/pub/tech_reports/reports/P153.pdf
+   - data from http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dedffj.f
+
+========================================================
+# problem 7
+========================================================
+- datafit with 11 vars and 65 equations (overdetermined)
+- [header](./problem7.hpp)
+- Epetra
+- RealSystemWithResidualAndJacobian
+- minpack problem
+- links:
+   - sec 3.5 http://ftp.mcs.anl.gov/pub/tech_reports/reports/P153.pdf
+     (note that there is a typo: n=9 is wrong, should be n=11
+   - data from http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dgdffj.f
+
+========================================================
 # problem 8
 ========================================================
 - nist problem (overdetermined)

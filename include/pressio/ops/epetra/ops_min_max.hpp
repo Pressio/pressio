@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// ops_min_max.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,62 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef OPS_EPETRA_OPS_MIN_MAX_HPP_
+#define OPS_EPETRA_OPS_MIN_MAX_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+template <typename T>
+std::enable_if_t<
+  // TPL/container specific
+    (::pressio::is_vector_epetra<T>::value
+  || ::pressio::is_multi_vector_epetra<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename ::pressio::Traits<T>::scalar_type
+  >
+max(T & obj)
+{
+  assert(::pressio::ops::extent(obj, 0) > 0);
+  assert(!::pressio::is_multi_vector_epetra<T>::value
+       || ::pressio::ops::extent(obj, 1) > 0);
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  std::vector<sc_t> x(obj.NumVectors());
+  obj.MaxValue(x.data());
+  const auto i = std::max_element(x.begin(), x.end());
+  if (i == x.end()) {
+    throw std::runtime_error("Can't take max() of no elements");
+  }
+  return *i;
+}
 
-#endif
+template <typename T>
+std::enable_if_t<
+  // TPL/container specific
+    (::pressio::is_vector_epetra<T>::value
+  || ::pressio::is_multi_vector_epetra<T>::value)
+  // scalar compatibility
+  && (std::is_floating_point<typename ::pressio::Traits<T>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T>::scalar_type>::value),
+  typename ::pressio::Traits<T>::scalar_type
+  >
+min(const T & obj)
+{
+  assert(::pressio::ops::extent(obj, 0) > 0);
+  assert(!::pressio::is_multi_vector_epetra<T>::value
+       || ::pressio::ops::extent(obj, 1) > 0);
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  std::vector<sc_t> x(obj.NumVectors());
+  obj.MinValue(x.data());
+  const auto i = std::min_element(x.begin(), x.end());
+  if (i == x.end()) {
+    throw std::runtime_error("Can't take min() of no elements");
+  }
+  return *i;
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_MIN_MAX_HPP_

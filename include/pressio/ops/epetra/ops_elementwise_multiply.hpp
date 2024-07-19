@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// ops_elementwise_multiply.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,40 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef OPS_EPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_EPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+//----------------------------------------------------------------------
+// computing elementwise:  y = beta * y + alpha * x * z
+//----------------------------------------------------------------------
+template <class T, class T1, class T2, class alpha_t, class beta_t>
+std::enable_if_t<
+  // common elementwise_multiply constraints
+     ::pressio::Traits<T>::rank == 1
+  && ::pressio::Traits<T1>::rank == 1
+  && ::pressio::Traits<T2>::rank == 1
+  // TPL/container specific
+  && ::pressio::is_vector_epetra<T>::value
+  && ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  // scalar compatibility
+  && std::is_convertible<alpha_t, double>::value
+  && std::is_convertible<beta_t,  double>::value
+  >
+elementwise_multiply(alpha_t alpha, const T & x, const T1 & z, beta_t beta, T2 & y)
+{
+  assert(x.MyLength()==z.MyLength());
+  assert(z.MyLength()==y.MyLength());
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+  const double alpha_(alpha);
+  const double beta_(beta);
+  const auto has_beta = beta_ != 0.0;
+  for (int i=0; i<x.MyLength(); ++i){
+    y[i] = has_beta ? (beta_*y[i] + alpha_*x[i]*z[i]) : alpha_*x[i]*z[i];
+  }
+}
 
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_

@@ -77,7 +77,13 @@ struct is_known_data_type
     is_vector_tpetra<T>::value
     || is_multi_vector_tpetra<T>::value
     || is_vector_tpetra_block<T>::value
-    || is_multi_vector_tpetra_block<T>::value;
+    || is_multi_vector_tpetra_block<T>::value
+#ifdef PRESSIO_ENABLE_EPETRA
+    || is_multi_vector_epetra<T>::value
+    || is_vector_epetra<T>::value
+    || is_multi_vector_epetra<T>::value
+#endif // PRESSIO_ENABLE_EPETRA
+    ;
 #else
     false;
 #endif

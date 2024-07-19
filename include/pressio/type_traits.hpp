@@ -66,6 +66,9 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/native_kokkos_vector.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_EPETRA
+#include "type_traits/native_epetra_vector.hpp"
+#endif // PRESSIO_ENABLE_EPETRA
 #include "type_traits/native_teuchos_vector.hpp"
 #include "type_traits/native_tpetra_block_vector.hpp"
 #include "type_traits/native_tpetra_vector.hpp"
@@ -85,6 +88,9 @@ template<class T, class Enable = void> struct Traits;
 
 //*** multi vector ****
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_EPETRA
+#include "type_traits/native_epetra_multi_vector.hpp"
+#endif // PRESSIO_ENABLE_EPETRA
 #include "type_traits/native_tpetra_block_multi_vector.hpp"
 #include "type_traits/native_tpetra_multi_vector.hpp"
 #endif

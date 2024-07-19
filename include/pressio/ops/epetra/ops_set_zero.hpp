@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// ops_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,21 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef OPS_EPETRA_OPS_SET_ZERO_HPP_
+#define OPS_EPETRA_OPS_SET_ZERO_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+template <typename T>
+std::enable_if_t<
+  ::pressio::is_vector_epetra<T>::value or
+  ::pressio::is_multi_vector_epetra<T>::value
+  >
+set_zero(T & v)
+{
+  using value_t = typename ::pressio::Traits<T>::scalar_type;
+  v.PutScalar( ::pressio::utils::Constants<value_t>::zero() );
+}
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
-
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_SET_ZERO_HPP_

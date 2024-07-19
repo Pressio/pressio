@@ -20,6 +20,7 @@ endif()
 
 option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
+option(PRESSIO_ENABLE_EPETRA        "Enable Epetra"       OFF)
 option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	  OFF)
 option(PRESSIO_ENABLE_TPL_MPI		    "Enable MPI"	      	OFF)
 
