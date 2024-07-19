@@ -39,7 +39,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
   add_serial_utest(${TESTING_LEVEL}_type_traits_teuchos ${SRC})
 
   if(PRESSIO_ENABLE_EPETRA)
-    message(STATUS "Adding Epetra unit test because PRESSIO_ENABLE_EPETRA=${PRESSIO_ENABLE_EPETRA}")
     set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/traits_epetra.cc)
     add_serial_utest(${TESTING_LEVEL}_type_traits_epetra ${SRC})
   endif()
