@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// native_epetra_multi_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,23 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef TYPE_TRAITS_NATIVE_EPETRA_MULTI_VECTOR_HPP_
+#define TYPE_TRAITS_NATIVE_EPETRA_MULTI_VECTOR_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+#include "Epetra_MultiVector.h"
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+namespace pressio{
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T, typename enable = void>
+struct is_multi_vector_epetra : std::false_type {};
 
-#endif
+template <typename T>
+struct is_multi_vector_epetra<T,
+  typename
+   std::enable_if<
+    std::is_same<T,Epetra_MultiVector>::value
+   >::type
+  > : std::true_type{};
+
+}//end namespace
+#endif  // TYPE_TRAITS_NATIVE_EPETRA_MULTI_VECTOR_HPP_

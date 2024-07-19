@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// ops_dot.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,53 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef OPS_EPETRA_OPS_DOT_HPP_
+#define OPS_EPETRA_OPS_DOT_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+template <typename T1, typename T2, typename DotResult>
+std::enable_if_t<
+  // TPL/container specific
+     ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value)
+  && std::is_convertible<
+    typename ::pressio::Traits<T1>::scalar_type,
+    DotResult>::value
+  >
+dot(const T1 & a,
+    const T2 & b,
+    DotResult & result)
+{
+  assert(a.MyLength() == b.MyLength());
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  sc_t ret;
+  a.Dot(b, &ret);
+  result = static_cast<DotResult>(ret);
+}
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+template <typename T1, typename T2>
+std::enable_if_t<
+  // TPL/container specific
+     ::pressio::is_vector_epetra<T1>::value
+  && ::pressio::is_vector_epetra<T2>::value
+  // scalar compatibility
+  && ::pressio::all_have_traits_and_same_scalar<T1, T2>::value
+  && (std::is_floating_point<typename ::pressio::Traits<T1>::scalar_type>::value
+   || std::is_integral<typename ::pressio::Traits<T1>::scalar_type>::value),
+  typename ::pressio::Traits<T1>::scalar_type
+  >
+dot(const T1 & a, const T2 & b)
+{
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  sc_t result = {};
+  dot(a, b, result);
+  return result;
+}
 
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_DOT_HPP_

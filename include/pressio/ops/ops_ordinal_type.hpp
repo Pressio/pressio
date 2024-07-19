@@ -135,6 +135,32 @@ struct GlobalOrdinalType<
 };
 #endif
 
+#ifdef PRESSIO_ENABLE_EPETRA
+template <class T>
+struct LocalOrdinalType<
+  T,
+  std::enable_if_t<
+    ::pressio::is_vector_epetra<T>::value
+    || ::pressio::is_multi_vector_epetra<T>::value
+    >
+ >
+{
+  using type = int;
+};
+
+template <class T>
+struct GlobalOrdinalType<
+  T,
+  std::enable_if_t<
+    ::pressio::is_vector_epetra<T>::value
+    || ::pressio::is_multi_vector_epetra<T>::value
+    >
+ >
+{
+  using type = int;
+};
+#endif // PRESSIO_ENABLE_EPETRA
+
 template <class T>
 struct OrdinalType<
   T,

@@ -20,6 +20,7 @@ endif()
 
 option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
+option(PRESSIO_ENABLE_EPETRA        "Enable Epetra"       OFF)
 option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	  OFF)
 option(PRESSIO_ENABLE_TPL_MPI		    "Enable MPI"	      	OFF)
 
@@ -47,6 +48,11 @@ endif()
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   message(">> PRESSIO_ENABLE_TPL_TRILINOS=ON ==> enabling also BLAS, LAPACK, MPI, KOKKOS")
   add_definitions(-DPRESSIO_ENABLE_TPL_TRILINOS)
+
+  if(PRESSIO_ENABLE_EPETRA)
+    message("Enabling Epetra since PRESSIO_ENABLE_TPL_TRILINOS=${PRESSIO_ENABLE_TPL_TRILINOS} and PRESSIO_ENABLE_EPETRA=${PRESSIO_ENABLE_EPETRA}.")
+    add_definitions(-DPRESSIO_ENABLE_EPETRA)
+  endif()
 
   set(PRESSIO_ENABLE_TPL_KOKKOS ON)
   set(PRESSIO_ENABLE_TPL_MPI ON)

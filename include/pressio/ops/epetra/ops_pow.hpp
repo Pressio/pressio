@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr.hpp
+// ops_pow.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,74 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef OPS_EPETRA_OPS_POW_HPP_
+#define OPS_EPETRA_OPS_POW_HPP_
 
-#include "qr/qr_fwd.hpp"
-#include "qr/qr_base_classes.hpp"
-#include "qr/qr_traits.hpp"
-#include "qr/qr_concrete_classes.hpp"
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/qr_eigen_impl.hpp"
-#endif
+// y = |x|^exponent, expo>0
+template <typename T1, typename T2>
+std::enable_if_t<
+  ::pressio::is_vector_epetra<T1>::value and
+  ::pressio::is_vector_epetra<T2>::value
+  >
+abs_pow(T1 & y,
+	const T2 & x,
+	const typename ::pressio::Traits<T1>::scalar_type & exponent)
+{
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/qr_tpetra_impl.hpp"
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "qr/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#endif // PRESSIO_ENABLE_EPETRA
-#endif // PRESSIO_ENABLE_TPL_TRILINOS
+  assert(x.GlobalLength() == y.GlobalLength());
+  assert(x.MyLength() == y.MyLength());
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
+    throw std::runtime_error("this overload is only for exponent > 0");
 
-#endif
+  for (int i=0; i< x.MyLength(); ++i){
+    y[i] = std::pow( std::abs(x[i]), exponent);
+  }
+}
+
+// y = |x|^exponent, expo<0
+template <typename T1, typename T2>
+std::enable_if_t<
+  ::pressio::is_vector_epetra<T1>::value and
+  ::pressio::is_vector_epetra<T2>::value
+  >
+abs_pow(T1 & y,
+	const T2 & x,
+	const typename ::pressio::Traits<T1>::scalar_type & exponent,
+	const typename ::pressio::Traits<T1>::scalar_type & eps)
+{
+
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+
+  assert(x.GlobalLength() == y.GlobalLength());
+  assert(x.MyLength() == y.MyLength());
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
+
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero()){
+    throw std::runtime_error("this overload is only for exponent < 0");
+  }
+
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
+  const auto expo = -exponent;
+  for (int i=0; i<x.MyLength(); ++i){
+    y[i] = one/std::max(eps, std::pow(std::abs(x[i]), expo));
+  }
+}
+
+template <typename T>
+std::enable_if_t<
+  ::pressio::is_vector_epetra<T>::value
+  >
+pow(T & x,
+    const typename ::pressio::Traits<T>::scalar_type & exponent)
+{
+  for (int i=0; i<x.MyLength(); ++i){
+    x[i] = std::pow(x[i], exponent);
+  }
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_POW_HPP_

@@ -89,6 +89,16 @@ struct Traits< T,
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_EPETRA
+template<typename T>
+struct Traits< T,
+  std::enable_if_t< is_vector_epetra<T>::value > >
+{
+  static constexpr int rank = 1;
+  using scalar_type = double;
+};
+#endif // PRESSIO_ENABLE_EPETRA
+
 template<typename T>
 struct Traits< T,
    std::enable_if_t<
@@ -97,7 +107,7 @@ struct Traits< T,
   static constexpr int rank = 1;
   using scalar_type = typename T::impl_scalar_type;
 };
-#endif
+#endif // PRESSIO_ENABLE_TPL_TRILINOS
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
@@ -158,7 +168,19 @@ struct Traits<
   static constexpr int rank = 2;
   using scalar_type = typename T::impl_scalar_type;
 };
-#endif
+
+#ifdef PRESSIO_ENABLE_EPETRA
+template<typename T>
+struct Traits<
+  T, std::enable_if_t<
+    is_multi_vector_epetra<T>::value >
+  >
+{
+  static constexpr int rank = 2;
+  using scalar_type = double;
+};
+#endif // PRESSIO_ENABLE_EPETRA
+#endif // PRESSIO_ENABLE_TPL_TRILINOS
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T>
