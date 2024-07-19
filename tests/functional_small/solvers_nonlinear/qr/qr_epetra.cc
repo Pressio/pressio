@@ -1,6 +1,5 @@
 
 #include "fixtures.hpp"
-#include "pressio/qr.hpp"
 
 TEST_F(epetraR9Fixture, HouseholderEpetraMultiVectorOutOfPlace)
 {
