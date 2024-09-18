@@ -261,6 +261,14 @@ private:
     const auto pd = dm.publicNames();
 
 #if !defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+
+    int rank = 0;
+#if defined PRESSIO_ENABLE_TPL_MPI
+  int flag = 0; MPI_Initialized( &flag );
+  if (flag==1) MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+
+  if (rank==0){
     std::cout << "nonlinIter = " << std::left << std::setw(3) << iStep << " ";
 
     for (auto const & it : pd){
@@ -270,6 +278,7 @@ private:
                  << lam(it, dm[it]) << " ";
     }
     std::cout << "\n";
+  }
 #else
     PRESSIOLOG_INFO(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
 #endif
