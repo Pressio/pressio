@@ -122,7 +122,7 @@ public:
       {
         cloned_custom_formatters[it.first] = it.second->clone();
       }
-    return details::make_unique<pattern_formatter>(pattern_, pattern_time_type_, eol_, std::move(cloned_custom_formatters));
+    return std::make_unique<pattern_formatter>(pattern_, pattern_time_type_, eol_, std::move(cloned_custom_formatters));
   }
 
   void format(const details::log_msg &msg, memory_buf_t &dest) override
@@ -144,7 +144,7 @@ public:
   template<typename T, typename... Args>
   pattern_formatter &add_flag(char flag, Args&&...args)
   {
-    custom_handlers_[flag] = details::make_unique<T>(std::forward<Args>(args)...);
+    custom_handlers_[flag] = std::make_unique<T>(std::forward<Args>(args)...);
     return *this;
   }
 
