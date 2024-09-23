@@ -8,20 +8,20 @@
   M << 1.,0.,2.,2.,1.,3.,0.,0.,1.;      \
   Eigen::VectorXd myR(3);      \
   myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();  \
+  constexpr auto beta0  = static_cast<double>(0); \
+  constexpr auto alpha1 = static_cast<double>(1);  \
   pressio::ops::product(pressio::nontranspose(), alpha1, M, VECIN, beta0, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 16.0); \
   EXPECT_DOUBLE_EQ( myR(1), 28.0); \
   EXPECT_DOUBLE_EQ( myR(2), 6.0);  \
   /* also cover non-zero beta */ \
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  constexpr auto beta1 = static_cast<double>(1); \
   pressio::ops::product(pressio::nontranspose(), alpha1, M, VECIN, beta1, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 32.0); \
   EXPECT_DOUBLE_EQ( myR(1), 56.0); \
   EXPECT_DOUBLE_EQ( myR(2), 12.0);  \
   /* alpha = 0, beta = 1 */ \
-  constexpr auto alpha0 = ::pressio::utils::Constants<double>::zero();  \
+  constexpr auto alpha0 = static_cast<double>(0);  \
   M(0, 0) = std::nan("0"); /* simulate NaN in input A matrix */ \
   pressio::ops::product(pressio::nontranspose(), alpha0, M, VECIN, beta1, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 32.0); \
@@ -41,14 +41,14 @@
                                \
   Eigen::VectorXd myR(3);      \
   myR(0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();  \
+  constexpr auto beta0  = static_cast<double>(0); \
+  constexpr auto alpha1 = static_cast<double>(1);  \
   pressio::ops::product(pressio::transpose(), alpha1, M, VECIN, beta0, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 14.);  \
   EXPECT_DOUBLE_EQ( myR(1), 11.0); \
   EXPECT_DOUBLE_EQ( myR(2), 8.+6.+6.+12.);  \
   /* also cover non-zero beta */ \
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one(); \
+  constexpr auto beta1 = static_cast<double>(1); \
   pressio::ops::product(pressio::transpose(), alpha1, M, VECIN, beta1, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 28.0); \
   EXPECT_DOUBLE_EQ( myR(1), 22.0); \
@@ -58,7 +58,7 @@
   EXPECT_DOUBLE_EQ( y(1), 11.0); \
   EXPECT_DOUBLE_EQ( y(2), 8.+6.+6.+12.);  \
   /* alpha = 0, beta = 1 */ \
-  constexpr auto alpha0 = ::pressio::utils::Constants<double>::zero();  \
+  constexpr auto alpha0 = static_cast<double>(0);  \
   M(0, 0) = std::nan("0"); /* simulate NaN in input A matrix */ \
   pressio::ops::product(pressio::transpose(), alpha0, M, VECIN, beta1, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 28.0); \

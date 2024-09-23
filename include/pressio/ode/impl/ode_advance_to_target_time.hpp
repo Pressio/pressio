@@ -140,7 +140,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
       }
 
       if (enableTimeStepRecovery){
-	if (dtScalingFactor.get() <= ::pressio::utils::Constants<IndVarType>::one()){
+	if (dtScalingFactor.get() <= static_cast<IndVarType>(1)){
 	  // need to change this to use some notion of identity
 	  throw std::runtime_error("The time step size reduction factor must be > 1.");
 	}

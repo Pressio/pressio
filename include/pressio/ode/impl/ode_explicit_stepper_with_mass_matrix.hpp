@@ -230,7 +230,7 @@ private:
     // need to do: y_n+1 = y_n + stepSize*x
     // odeState already contains y_n
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto one  = static_cast<scalar_type>(1);
     ::pressio::ops::update(odeState, one, x, stepSize);
   }
 
@@ -249,7 +249,7 @@ private:
      */
 
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto one  = static_cast<scalar_type>(1);
 
     auto & fn = rhsInstance_;
 
@@ -273,8 +273,10 @@ private:
       rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartVal, fn);
       solver.solve(massMatrix_, xn, fn);
 
-      const auto cfn   = ::pressio::utils::Constants<scalar_type>::threeOvTwo()*stepSize;
-      const auto cfnm1 = ::pressio::utils::Constants<scalar_type>::negOneHalf()*stepSize;
+      using cnst = ::pressio::ode::constants::Constants<scalar_type>;
+      const auto cfn   = cnst::threeOvTwo()*stepSize;
+      const auto cfnm1 = cnst::negOneHalf()*stepSize;
+
       ::pressio::ops::update(odeState, one, xn, cfn, xnm1, cfnm1);
     }
 
@@ -292,15 +294,7 @@ private:
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
-    constexpr auto one   = ::pressio::utils::Constants<scalar_type>::one();
-    constexpr auto two   = ::pressio::utils::Constants<scalar_type>::two();
-    constexpr auto three = ::pressio::utils::Constants<scalar_type>::three();
-    constexpr auto four  = ::pressio::utils::Constants<scalar_type>::four();
-    constexpr auto oneOvThree = one/three;
-    constexpr auto twoOvThree = two/three;
-    constexpr auto threeOvFour = three/four;
-    constexpr auto fourInv = one/four;
+    using cnst = ::pressio::ode::constants::Constants<scalar_type>;
 
     auto & rhs = rhsInstance_;
     auto & x = xInstances_[0];
@@ -308,7 +302,7 @@ private:
 
     // see e.g. https://gkeyll.readthedocs.io/en/latest/dev/ssp-rk.html
 
-    const scalar_type stepSize_half{stepSize/two};
+    const scalar_type stepSize_half{stepSize/cnst::two()};
     const independent_variable_type t_phalf{stepStartTime + stepSize_half};
     const independent_variable_type t_next{stepStartTime + stepSize};
 
@@ -317,21 +311,21 @@ private:
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(0), stepStartTime, rhs);
     solver.solve(massMatrix_, x, rhs);
     // u_1 = u_n + stepSize * x
-    ::pressio::ops::update(auxState, zero, odeState, one, x, stepSize);
+    ::pressio::ops::update(auxState, cnst::zero(), odeState, cnst::one(), x, stepSize);
 
     // rhs(u_1, t_n+stepSize)
     systemObj_.get().massMatrixAndRhs(auxState, t_next, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(1), t_next, rhs);
     solver.solve(massMatrix_, x, rhs);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*stepSize*x
-    ::pressio::ops::update(auxState, fourInv, odeState, threeOvFour, x, fourInv*stepSize);
+    ::pressio::ops::update(auxState, cnst::fourInv(), odeState, cnst::threeOvFour(), x, cnst::fourInv()*stepSize);
 
     // rhs(u_2, t_n + 0.5*stepSize)
     systemObj_.get().massMatrixAndRhs(auxState, t_phalf, massMatrix_, rhs);
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(2), t_phalf, rhs);
     solver.solve(massMatrix_, x, rhs);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*stepSize*rhs(u_2, t_n+0.5*stepSize)
-    ::pressio::ops::update(odeState, oneOvThree, auxState, twoOvThree, x, twoOvThree*stepSize);
+    ::pressio::ops::update(odeState, cnst::oneOvThree(), auxState, cnst::twoOvThree(), x, cnst::twoOvThree()*stepSize);
   }
 
   template<class LinearSolver, class RhsObserverType>
@@ -354,16 +348,13 @@ private:
     auto & auxState = xInstances_[4];
 
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-    constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
-    constexpr auto three  = ::pressio::utils::Constants<scalar_type>::three();
-    constexpr auto six  = two * three;
+    using cnst = ::pressio::ode::constants::Constants<scalar_type>;
 
-    const scalar_type stepSize_half{stepSize / two};
+    const scalar_type stepSize_half{stepSize / cnst::two()};
     const independent_variable_type t_phalf{stepStartTime + stepSize_half};
     const independent_variable_type t_next{stepStartTime + stepSize};
-    const scalar_type stepSize6{stepSize / six};
-    const scalar_type stepSize3{stepSize / three};
+    const scalar_type stepSize6{stepSize / cnst::six()};
+    const scalar_type stepSize3{stepSize / cnst::three()};
 
     // stage 1:
     // rhs1 = rhs(y_n, t_n)
@@ -395,7 +386,7 @@ private:
     rhsObserver(stepNumber, ::pressio::ode::IntermediateStepCount(3), t_next, rhs);
     solver.solve(massMatrix_, x4, rhs);
 
-    ::pressio::ops::update(odeState, one,
+    ::pressio::ops::update(odeState, cnst::one(),
 			   x1, stepSize6, x2, stepSize3,
 			   x3, stepSize3, x4, stepSize6);
   }
@@ -407,9 +398,8 @@ private:
 			     const FactorType & rhsFactor)
   {
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-    ::pressio::ops::update(yIn, zero, stateIn, one, xIn, rhsFactor);
+    using cnst = ::pressio::ode::constants::Constants<scalar_type>;
+    ::pressio::ops::update(yIn, cnst::zero(), stateIn, cnst::one(), xIn, rhsFactor);
   }
 
 };

@@ -61,9 +61,9 @@ public:
     // compute the reduced rhs
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    constexpr auto alpha = static_cast<phi_scalar_t>(1);
     using rhs_scalar_t = typename ::pressio::Traits<rhs_type>::scalar_type;
-    constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
+    constexpr auto beta = static_cast<rhs_scalar_t>(0);
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomRhs_,
 			    beta, reducedRhs);

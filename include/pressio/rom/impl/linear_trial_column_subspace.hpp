@@ -144,7 +144,7 @@ public:
     if (isAffine_){
       // update full state to account for translation
       using sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
-      constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
+      constexpr auto one = static_cast<sc_t>(1);
       ::pressio::ops::update(fullState, one, translation_, one);
     }
   }
@@ -187,8 +187,8 @@ private:
     const auto & basis = linSpace_.basis();
     using basis_sc_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     using full_state_sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<basis_sc_t>::one();
-    constexpr auto beta  = ::pressio::utils::Constants<full_state_sc_t>::zero();
+    constexpr auto alpha = static_cast<basis_sc_t>(1);
+    constexpr auto beta  = static_cast<full_state_sc_t>(0);
     ::pressio::ops::product(::pressio::nontranspose(), alpha,
 			    basis, latState, beta, fullState);
   }

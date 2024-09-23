@@ -85,7 +85,7 @@ solve(const VectorType & rhs, R_type Rmatrix, VectorType & y)
 
   solver_t My_Solver;
   My_Solver.setMatrix(Rmatrix);
-  My_Solver.setVectors( Teuchos::rcpFromRef(y), 
+  My_Solver.setVectors( Teuchos::rcpFromRef(y),
     Teuchos::rcpFromRef(const_cast<VectorType&>(rhs)));
 
   int info = My_Solver.factor();
@@ -182,16 +182,16 @@ public:
   template < typename VectorInType, typename VectorOutType>
   void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   template < typename VectorInType, typename VectorOutType>
   void applyRTranspose(const VectorInType & vecIn, VectorOutType & y) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->localR_, vecIn, beta, y);
   }
 
@@ -271,8 +271,8 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
@@ -365,7 +365,7 @@ public:
   TpetraMVTSQR() = default;
   ~TpetraMVTSQR() = default;
 
-  void computeThinOutOfPlace(const MatrixType & A) 
+  void computeThinOutOfPlace(const MatrixType & A)
   {
     auto nVecs = ::pressio::ops::extent(A,1);
     auto ArowMap = A.getMap();
@@ -383,22 +383,22 @@ public:
   template < typename VectorInType, typename VectorOutType>
   void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   template < typename VectorInType, typename VectorOutType>
   void applyRTranspose(const VectorInType & vecIn, VectorOutType & y) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->localR_, vecIn, beta, y);
   }
 
   template <typename T = R_t>
   std::enable_if_t<
-    !::pressio::is_dense_matrix_teuchos<T>::value and 
+    !::pressio::is_dense_matrix_teuchos<T>::value and
     !std::is_void<T>::value,
     const T &
   >
@@ -409,7 +409,7 @@ public:
 
   template <typename T = R_t>
   std::enable_if_t<
-    ::pressio::is_dense_matrix_teuchos<T>::value and 
+    ::pressio::is_dense_matrix_teuchos<T>::value and
     !std::is_void<T>::value,
     const T &
   >
@@ -481,15 +481,15 @@ public:
     {
       auto ak = A.getVector(k);
       localR_(k,k) = ak->norm2();
-      rkkInv = utils::Constants<sc_t>::one()/localR_(k,k);
+      rkkInv = static_cast<sc_t>(1)/localR_(k,k);
 
       auto qk = Qmat_->getVectorNonConst(k);
-      qk->update( rkkInv, *ak, utils::Constants<sc_t>::zero() );
+      qk->update( rkkInv, *ak, static_cast<sc_t>(0) );
 
       for (size_t j=k+1; j<nVecs; j++){
         auto aj = A.getVectorNonConst(j);
         localR_(k,j) = qk->dot(*aj);
-        aj->update(-localR_(k,j), *qk, utils::Constants<sc_t>::one());
+        aj->update(-localR_(k,j), *qk, static_cast<sc_t>(1));
       }
     }
   }
@@ -504,8 +504,8 @@ public:
   template < typename VectorInType, typename VectorOutType>
   void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
@@ -516,7 +516,7 @@ public:
 private:
   void createLocalRIfNeeded(std::size_t newsize){
     const std::size_t locRext0 = ::pressio::ops::extent(localR_, 0);
-    const std::size_t locRext1 = ::pressio::ops::extent(localR_, 1);   
+    const std::size_t locRext1 = ::pressio::ops::extent(localR_, 1);
     if (locRext0!=newsize or locRext1!=newsize){
       localR_ = R_nat_t(newsize, newsize);
       ::pressio::ops::set_zero(localR_);

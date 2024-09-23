@@ -62,9 +62,9 @@ deep_copy(T & dest, const T & src)
   assert((matching_extents<T, T>::compare(dest, src)));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  dest.update(::pressio::utils::Constants<sc_t>::one(),
+  dest.update(static_cast<sc_t>(1),
 	      src,
-	      ::pressio::utils::Constants<sc_t>::zero() );
+	      static_cast<sc_t>(0) );
 }
 
 }}//end namespace pressio::ops

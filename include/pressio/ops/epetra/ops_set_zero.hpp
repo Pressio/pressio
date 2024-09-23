@@ -59,7 +59,7 @@ std::enable_if_t<
 set_zero(T & v)
 {
   using value_t = typename ::pressio::Traits<T>::scalar_type;
-  v.PutScalar( ::pressio::utils::Constants<value_t>::zero() );
+  v.PutScalar( static_cast<value_t>(0) );
 }
 
 }}//end namespace pressio::ops

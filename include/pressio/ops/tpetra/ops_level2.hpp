@@ -143,7 +143,7 @@ _product_tpetra_mv_sharedmem_vec(const alpha_t & alpha,
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
   const auto x_size = ::pressio::ops::extent(x, 0);
   const auto y_size = ::pressio::ops::extent(yLocalView_drank1, 0);
-  const auto zero = ::pressio::utils::Constants<typename pressio::Traits<x_type>::scalar_type>::zero();
+  const auto zero = static_cast<typename pressio::Traits<x_type>::scalar_type>(0);
   for (size_t i = 0; i < y_size; ++i) {
     if (beta == zero) {
       yLocalView_drank1(i) = zero;
@@ -351,9 +351,8 @@ product(::pressio::nontranspose /*unused*/,
   assert( ::pressio::ops::extent(y_h, 0) == ::pressio::ops::extent(A_h, 0) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A_h, 1) );
 
-  const auto zero = ::pressio::utils::Constants<beta_t>::zero();
   ::pressio::ops::scale(y_h, beta);
-  if (alpha == zero) {
+  if (alpha == static_cast<alpha_t>(0)) {
     return;
   }
 
@@ -412,7 +411,7 @@ product(::pressio::transpose /*unused*/,
   assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(y,0)));
 
   auto x = impl::get_native(xin);
-  const auto zero = ::pressio::utils::Constants<beta_t>::zero();
+  const auto zero = static_cast<beta_t>(0);
   const auto numVecs = ::pressio::ops::extent(A, 1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
     {

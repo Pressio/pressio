@@ -22,8 +22,8 @@ using mat_t = Kokkos::View<double**>;
   Kokkos::deep_copy(M, M_h); \
   mat_t myR("MYR", 4,4);         \
   myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
+  constexpr auto beta  = static_cast<double>(0); \
+  constexpr auto alpha = static_cast<double>(1); \
   pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
       alpha, M, OPERAND, beta, myR);\
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
@@ -63,8 +63,8 @@ using mat_t = Kokkos::View<double**>;
   Kokkos::deep_copy(M, M_h); \
   mat_t myR("MYR", 3,3);         \
   myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
+  constexpr auto beta  = static_cast<double>(0); \
+  constexpr auto alpha = static_cast<double>(1); \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
       alpha, M, OPERAND, beta, myR); \
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
@@ -97,8 +97,8 @@ using mat_t = Kokkos::View<double**>;
   Kokkos::deep_copy(M, M_h); \
   mat_t myR("MYR", 3,3);         \
   myR(0, 0) = std::nan("0"); /* simulate uninitialized NaN */ \
-  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
+  constexpr auto beta  = static_cast<double>(0); \
+  constexpr auto alpha = static_cast<double>(1); \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta, myR); \
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
   EXPECT_DOUBLE_EQ(myR_h(0,0), 9.0); \

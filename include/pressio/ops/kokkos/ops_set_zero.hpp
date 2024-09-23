@@ -61,8 +61,7 @@ std::enable_if_t<
 set_zero(const T & v)
 {
   using value_t	      = typename ::pressio::Traits<T>::scalar_type;
-  constexpr auto zero = ::pressio::utils::Constants<value_t>::zero();
-  ::KokkosBlas::fill(impl::get_native(v), zero);
+  ::KokkosBlas::fill(impl::get_native(v), static_cast<value_t>(0));
 }
 
 }}//end namespace pressio::ops

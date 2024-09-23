@@ -120,12 +120,12 @@ void test_impl(TransModeA trans_A, const AType &A, const BType &B) {
   ops_eigen::mat_t C(num_rows, ::pressio::ops::extent(B, 1));
   ::pressio::ops::fill(C, nan); /* simulate NaN in uninitialized output */
 
-  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero();
-  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();
+  constexpr auto beta0  = static_cast<double>(0);
+  constexpr auto alpha1 = static_cast<double>(1);
   test_impl(trans_A, alpha1, A, B, beta0, C, product);
 
   /* also cover non-zero beta */
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one();
+  constexpr auto beta1 = static_cast<double>(1);
   test_impl(trans_A, alpha1, A, B, beta1, C, product);
 }
 
@@ -144,12 +144,12 @@ void test_impl(const AType &A) {
   ops_eigen::mat_t C(size, size);
   ::pressio::ops::fill(C, nan); /* simulate NaN in uninitialized output */
 
-  constexpr auto beta0  = ::pressio::utils::Constants<double>::zero();
-  constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();
+  constexpr auto beta0  = static_cast<double>(0);
+  constexpr auto alpha1 = static_cast<double>(1);
   test_impl(::pressio::transpose(), alpha1, A, A, beta0, C, self_product);
 
   /* also cover non-zero beta */
-  constexpr auto beta1 = ::pressio::utils::Constants<double>::one();
+  constexpr auto beta1 = static_cast<double>(1);
   test_impl(::pressio::transpose(), alpha1, A, A, beta1, C, self_product);
 }
 

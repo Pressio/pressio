@@ -78,8 +78,8 @@ struct kokkosFixture
   : public ::testing::Test {
 
   const double          NaN    = std::nan("0");
-  static constexpr auto alpha0 = ::pressio::utils::Constants<double>::zero();
-  static constexpr auto alpha1 = ::pressio::utils::Constants<double>::one();
+  static constexpr auto alpha0 = static_cast<double>(0);
+  static constexpr auto alpha1 = static_cast<double>(1);
   static constexpr auto beta0  = alpha0;
   static constexpr auto beta1  = alpha1;
 

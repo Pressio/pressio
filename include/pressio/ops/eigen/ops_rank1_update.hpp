@@ -84,7 +84,7 @@ update(T & v,         const a_Type & a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v1, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   const sc_t a_(a);
   const sc_t b_(b);
 
@@ -137,7 +137,7 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v2, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   const sc_t a_(a);
   const sc_t b_(b);
   const sc_t c_(c);
@@ -200,7 +200,7 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v3, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   const sc_t a_(a);
   const sc_t b_(b);
   const sc_t c_(c);
@@ -273,7 +273,7 @@ update(T & v,         const a_Type &a,
   assert(::pressio::ops::extent(v, 0) == ::pressio::ops::extent(v4, 0));
 
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   const sc_t a_(a);
   const sc_t b_(b);
   const sc_t c_(c);

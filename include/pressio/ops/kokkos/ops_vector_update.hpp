@@ -127,8 +127,7 @@ update(T & v, const T1 & v1, const b_Type &b)
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   static_assert(impl::_kokkosUpdateAdmissibleOperands<scalar_t,T,T1>::value,"");
   const scalar_t b_(b);
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  ::KokkosBlas::axpby(b_, impl::get_native(v1), zero, impl::get_native(v));
+  ::KokkosBlas::axpby(b_, impl::get_native(v1), static_cast<scalar_t>(0), impl::get_native(v));
 }
 
 //----------------------------------------------------------------------
@@ -172,7 +171,7 @@ update(T & v, const a_Type &a,
   const scalar_t b_(b);
   const scalar_t c_(c);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  constexpr auto zero = static_cast<scalar_t>(0);
   if (b_ == zero) {
     ::pressio::ops::update(v, a_, v2, c_);
   } else if (c_ == zero) {
@@ -226,7 +225,7 @@ update(T & v,
   const scalar_t b_(b);
   const scalar_t c_(c);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  constexpr auto zero = static_cast<scalar_t>(0);
   if (b_ == zero) {
     ::pressio::ops::update(v, v2, c_);
   } else if (c_ == zero) {
@@ -293,7 +292,7 @@ update(T & v, const a_Type &a,
   const scalar_t c_(c);
   const scalar_t d_(d);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  constexpr auto zero = static_cast<scalar_t>(0);
   if (b_ == zero) {
     ::pressio::ops::update(v, a_, v2, c_, v3, d_);
   } else if (c_ == zero) {
@@ -359,7 +358,7 @@ update(T & v,
   const scalar_t c_(c);
   const scalar_t d_(d);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  constexpr auto zero = static_cast<scalar_t>(0);
   if (b_ == zero) {
     ::pressio::ops::update(v, v2, c_, v3, d_);
   } else if (c_ == zero) {
@@ -438,7 +437,7 @@ update(T & v, const a_Type &a,
   const scalar_t d_(d);
   const scalar_t e_(e);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  constexpr auto zero = static_cast<scalar_t>(0);
   if (b_ == zero) {
     ::pressio::ops::update(v, a_, v2, c_, v3, d_, v4, e_);
   } else if (c_ == zero) {
@@ -515,7 +514,7 @@ update(T & v,
   const scalar_t d_(d);
   const scalar_t e_(e);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  constexpr auto zero = static_cast<scalar_t>(0);
   if (b_ == zero) {
     ::pressio::ops::update(v, v2, c_, v3, d_, v4, e_);
   } else if (c_ == zero) {

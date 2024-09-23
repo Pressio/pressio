@@ -356,7 +356,7 @@ product(::pressio::transpose modeA,
 // 	const A_type & A,
 // 	const B_type & B)
 // {
-//   constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+//   constexpr auto zero = static_cast<scalar_type>(0);
 
 //   const auto numVecsA = A.numVectors();
 //   const auto numVecsB = B.numVectors();
@@ -386,7 +386,7 @@ product(::pressio::transpose modeA,
 //   const auto numVecsA = A.numVectors();
 //   assert(C.extent(0) == numVecsA);
 //   assert(C.extent(1) == numVecsA);
-//   scalar_type tmp = ::pressio::utils::Constants<scalar_type>::zero();
+//   scalar_type tmp = static_cast<scalar_type>(0);
 
 //   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
 
@@ -454,7 +454,7 @@ product(::pressio::transpose modeA,
 // 	const scalar_type alpha,
 // 	const A_type & A)
 // {
-//   constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+//   constexpr auto zero = static_cast<scalar_type>(0);
 //   C_type C(A.numVectors(), A.numVectors());
 //   product(modeA, modeB, alpha, A, zero, C);
 //   return C;
