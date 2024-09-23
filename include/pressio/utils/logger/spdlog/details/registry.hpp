@@ -177,7 +177,7 @@ public:
   {
     std::lock_guard<std::mutex> lock(flusher_mutex_);
     auto clbk = [this]() { this->flush_all(); };
-    periodic_flusher_ = std::make_unique<periodic_worker>(clbk, interval);
+    periodic_flusher_ = details::make_unique<periodic_worker>(clbk, interval);
   }
 
   void set_error_handler(void (*handler)(const std::string &msg))

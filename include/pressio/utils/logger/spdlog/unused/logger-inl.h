@@ -101,7 +101,7 @@ namespace spdlog {
 
 // SPDLOG_INLINE void logger::set_pattern(std::string pattern, pattern_time_type time_type)
 // {
-//   auto new_formatter = std::make_unique<pattern_formatter>(std::move(pattern), time_type);
+//   auto new_formatter = details::make_unique<pattern_formatter>(std::move(pattern), time_type);
 //   set_formatter(std::move(new_formatter));
 // }
 
