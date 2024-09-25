@@ -4,6 +4,7 @@
 
 #include "./impl/lspg_steady_system_default.hpp"
 #include "./impl/lspg_steady_system_masked.hpp"
+#include "./impl/noop.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
@@ -25,7 +26,7 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(1)*/
 {
 
   using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
-  using scaler_type = utils::NoOperation<void>;
+  using scaler_type = impl::NoOperation<void>;
   using system_type = impl::LspgSteadyDefaultSystem<
     reduced_state_type, TrialSubspaceType, FomSystemType, scaler_type>;
   return system_type(trialSpace, fomSystem, scaler_type{});
@@ -49,7 +50,7 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,  /*(2)*/
 {
 
   using reduced_state_type = typename TrialSubspaceType::reduced_state_type;
-  using scaler_type = utils::NoOperation<void>;
+  using scaler_type = impl::NoOperation<void>;
   using system_type = impl::LspgSteadyMaskedSystem<
     reduced_state_type, TrialSubspaceType, FomSystemType, MaskerType, scaler_type>;
   return system_type(trialSpace, fomSystem, masker, scaler_type{});

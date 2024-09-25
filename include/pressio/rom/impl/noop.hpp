@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// utils_crtp_helper.hpp
+// noop.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,10 @@
 //@HEADER
 */
 
-#ifndef UTILS_NOOP_FUNCTOR_HPP_
-#define UTILS_NOOP_FUNCTOR_HPP_
+#ifndef ROM_NOOP_FUNCTOR_HPP_
+#define ROM_NOOP_FUNCTOR_HPP_
 
-namespace pressio{ namespace utils{
+namespace pressio{ namespace rom{ namespace impl{
 
 template <class ReturnType>
 class NoOperation{
@@ -78,6 +78,6 @@ public:
   void operator () (Types && ... /*args*/) noexcept{}
 };
 
-}} // end namespace pressio::utils
+}}} // end namespace pressio::rom::impl
 
-#endif  // UTILS_UTILS_CRTP_HELPER_HPP_
+#endif
