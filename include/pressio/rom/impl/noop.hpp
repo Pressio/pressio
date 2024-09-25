@@ -49,7 +49,7 @@
 #ifndef ROM_NOOP_FUNCTOR_HPP_
 #define ROM_NOOP_FUNCTOR_HPP_
 
-namespace pressio{ namespace{ rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace impl{
 
 template <class ReturnType>
 class NoOperation{
