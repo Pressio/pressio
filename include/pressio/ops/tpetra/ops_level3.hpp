@@ -123,7 +123,7 @@ product(::pressio::transpose /*unused*/,
        for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
        {
 	 const auto colJ = B.getVector(j);
-	 if (beta == pressio::utils::Constants<beta_t>::zero()) {
+	 if (beta == static_cast<beta_t>(0)) {
 	   C(i,j) = alpha * colI->dot(*colJ);
 	 } else {
 	   C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
