@@ -2,6 +2,8 @@
 #ifndef ROM_LINEAR_ROM_API_HPP_
 #define ROM_LINEAR_ROM_API_HPP_
 
+#include <fstream>
+
 namespace pressio{ namespace rom{ namespace linear{
 
 namespace impl{
