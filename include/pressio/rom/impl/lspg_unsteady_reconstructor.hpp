@@ -49,6 +49,8 @@
 #ifndef ROM_IMPL_LSPG_UNSTEADY_RECONSTRUCTOR_HPP_
 #define ROM_IMPL_LSPG_UNSTEADY_RECONSTRUCTOR_HPP_
 
+#include <fstream>
+
 namespace pressio{ namespace rom{ namespace impl{
 
 template<typename reduced_state_type>
