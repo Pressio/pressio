@@ -106,11 +106,6 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
     return;
   }
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("time loop");
-#endif
-
   using step_t = typename StepCount::value_type;
 
   IndVarType time  = start_time;
@@ -148,10 +143,6 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 
       print_step_and_current_time(step, time, dt.get());
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->start("time step");
-#endif
-
       if (enableTimeStepRecovery)
       {
 	bool needStop = false;
@@ -183,10 +174,6 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 		std::forward<Args>(args)...);
       }
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->stop("time step");
-#endif
-
       time += dt.get();
       observer(::pressio::ode::StepCount(step), time, odeState);
 
@@ -198,10 +185,6 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 
       step++;
     }
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("time loop");
-#endif
 }
 
 }}}//end namespace pressio::ode::impl
