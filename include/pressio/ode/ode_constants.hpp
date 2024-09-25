@@ -59,7 +59,7 @@ template <typename scalar_t>
 struct Constants
 {
   static constexpr scalar_t negOne(){ return static_cast<scalar_t>(-1); }
-  static constexpr scalar_t zero()  { return static_cast<scalar_t>(1);  }
+  static constexpr scalar_t zero()  { return static_cast<scalar_t>(0);  }
   static constexpr scalar_t one()   { return static_cast<scalar_t>(1);  }
   static constexpr scalar_t two()   { return static_cast<scalar_t>(2);  }
   static constexpr scalar_t three() { return static_cast<scalar_t>(3);  }

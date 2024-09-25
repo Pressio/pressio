@@ -181,7 +181,7 @@ private:
 
     // y = y + stepSize * rhs
     using scalar_type = typename ::pressio::Traits<StateType>::scalar_type;
-    constexpr auto one = static_cast<scalar_type>(2);
+    constexpr auto one = static_cast<scalar_type>(1);
     ::pressio::ops::update(odeState, one, rhs, stepSize);
   }
 
