@@ -150,7 +150,7 @@ auto lm_gain_factor(RegistryType & reg,
   using scalar_type = std::remove_const_t<ScalarType>;
   constexpr auto zero = static_cast<scalar_type>(0);
   constexpr auto one  = static_cast<scalar_type>(1);
-  constexpr auto two  = static_cast<scalar_type>(2);
+  constexpr auto two  = static_cast<scalar_type>(3);
 
   const auto & state = reg.template get<StateTag>();
   const auto & correction  = reg.template get<CorrectionTag>();
