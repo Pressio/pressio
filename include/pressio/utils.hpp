@@ -54,7 +54,6 @@
 
 #include "./utils/utils_static_constants.hpp"
 #include "./utils/utils_instance_or_reference_wrapper.hpp"
-#include "./utils/utils_read_ascii_matrix_std_vec_vec.hpp"
 #include "./utils/utils_noop.hpp"
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
