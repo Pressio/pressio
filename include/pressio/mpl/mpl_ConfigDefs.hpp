@@ -54,7 +54,5 @@
 #include <complex>
 #include <cstddef>
 #include <tuple>
-#include <iostream>
-#include <iomanip>
 
 #endif  // MPL_MPL_CONFIGDEFS_HPP_

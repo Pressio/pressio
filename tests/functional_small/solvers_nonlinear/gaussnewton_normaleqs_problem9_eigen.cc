@@ -3,6 +3,8 @@
 #include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem9.hpp"
 
+#include <iomanip>
+
 int main()
 {
   namespace plog = pressio::log;

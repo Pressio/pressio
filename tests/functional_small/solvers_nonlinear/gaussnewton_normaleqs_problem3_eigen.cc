@@ -3,6 +3,8 @@
 #include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem3.hpp"
 
+#include <iomanip>
+
 template <typename problem_t, typename state_t, typename solver>
 void testC1(std::string & sentinel,
             problem_t & problem,
