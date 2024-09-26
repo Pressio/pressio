@@ -299,7 +299,7 @@ private:
   }
 
 private:
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<SystemType> systemObj_;
   mutable int32_t stepTracker_ = -1;
 };
 

@@ -3,6 +3,7 @@
 #define SOLVERS_REGISTRIES_HPP_
 
 #include "levmar_damping.hpp"
+#include "instance_or_reference_wrapper.hpp"
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -33,7 +34,7 @@ class RegistryNewton
   state_t d2_;
   r_t d3_;
   j_t d4_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d5_;
+  InstanceOrReferenceWrapper<InnSolverType> d5_;
   SystemType const * d6_;
 
 public:
@@ -85,7 +86,7 @@ class RegistryGaussNewtonNormalEqs
   j_t d4_;
   gradient_t d5_;
   hessian_t d6_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d7_;
+  InstanceOrReferenceWrapper<InnSolverType> d7_;
   SystemType const * d8_;
 
 public:
@@ -146,8 +147,8 @@ class RegistryWeightedGaussNewtonNormalEqs
   j_t d6_;
   gradient_t d7_;
   hessian_t d8_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d9_;
-  utils::InstanceOrReferenceWrapper<WeightingOpType> d10_;
+  InstanceOrReferenceWrapper<InnSolverType> d9_;
+  InstanceOrReferenceWrapper<WeightingOpType> d10_;
   SystemType const * d11_;
 
 public:
@@ -211,7 +212,7 @@ class RegistryGaussNewtonQr
   j_t d4_;
   gradient_t d5_;
   QTr_t d6_;
-  utils::InstanceOrReferenceWrapper<QRSolverType> d7_;
+  InstanceOrReferenceWrapper<QRSolverType> d7_;
   SystemType const * d8_;
 
 public:
@@ -273,7 +274,7 @@ class RegistryLevMarNormalEqs
   hessian_t d6_;
   hessian_t d7_;
   lm_damp_t d8_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d9_;
+  InstanceOrReferenceWrapper<InnSolverType> d9_;
   SystemType const * d10_;
 
 public:

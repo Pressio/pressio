@@ -50,9 +50,7 @@
 #define PRESSIO_UTILS_HPP_
 
 #include "./mpl.hpp"
-#include <iomanip>
 
-#include "./utils/utils_instance_or_reference_wrapper.hpp"
 #include "./utils/logger/utils_logger.hpp"
 
 #endif

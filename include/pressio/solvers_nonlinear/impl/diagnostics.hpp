@@ -2,6 +2,8 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
 #define SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
 
+#include <iostream>
+
 namespace pressio{
 namespace nonlinearsolvers{
 namespace impl{

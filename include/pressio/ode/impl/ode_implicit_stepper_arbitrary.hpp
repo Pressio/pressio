@@ -78,7 +78,7 @@ private:
   IndVarType dt_ = {};
   typename StepCount::value_type stepNumber_  = {};
 
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<SystemType> systemObj_;
   stencil_states_t stencilStates_;
   // state object to ensure the strong guarantee for handling excpetions
   StateType recoveryState_;
