@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// utils_instance_or_reference_wrapper.hpp
+// instance_or_reference_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,12 +46,10 @@
 //@HEADER
 */
 
-#ifndef UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
-#define UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
+#ifndef SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
+#define SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 
-#include <iostream>
-
-namespace pressio{ namespace utils{
+namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <class T>
 class InstanceOrReferenceWrapper;
@@ -126,5 +124,5 @@ public:
   T const& get() const { return refObj_.get(); }
 };
 
-}} // end of namespace pressio::utils
-#endif  // UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
+}}} // end of namespace pressio::nonlinearsolvers
+#endif  // SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_

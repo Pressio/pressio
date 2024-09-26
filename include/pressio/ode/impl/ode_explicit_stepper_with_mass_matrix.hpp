@@ -73,7 +73,7 @@ public:
 
 private:
   StepScheme name_;
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<SystemType> systemObj_;
   RightHandSideType rhsInstance_;
 
   // xInstances is a container of instances of states

@@ -70,7 +70,7 @@ public:
 
 private:
   StepScheme name_;
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::vector<RightHandSideType> rhsInstances_;
   StateType auxiliaryState_;
 
