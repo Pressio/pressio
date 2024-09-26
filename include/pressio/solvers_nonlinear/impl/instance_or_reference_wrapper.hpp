@@ -49,8 +49,6 @@
 #ifndef SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 #define SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 
-#include <iostream>
-
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <class T>
@@ -126,5 +124,5 @@ public:
   T const& get() const { return refObj_.get(); }
 };
 
-}}} // end of namespace pressio::nonlinearsolvers
+}}} // end of namespace pressio::nonlinearsolvers::impl
 #endif  // SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
