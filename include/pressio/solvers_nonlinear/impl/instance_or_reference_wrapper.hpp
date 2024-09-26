@@ -49,6 +49,8 @@
 #ifndef SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 #define SOLVERS_NONLINEAR_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 
+#include <iostream>
+
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <class T>
