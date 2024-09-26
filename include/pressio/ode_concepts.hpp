@@ -49,10 +49,10 @@
 #ifndef PRESSIO_ODE_CONCEPTS_TOPLEVEL_INC_HPP_
 #define PRESSIO_ODE_CONCEPTS_TOPLEVEL_INC_HPP_
 
-#include "./mpl.hpp"
+#include "pressio/mpl.hpp"
 #include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./ops.hpp"
+#include "pressio/type_traits.hpp"
+#include "pressio/ops.hpp"
 
 #include "./ode/ode_strong_types.hpp"
 #include "./ode/ode_enum_and_tags.hpp"

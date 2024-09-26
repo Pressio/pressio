@@ -49,10 +49,10 @@
 #ifndef PRESSIO_ODE_STEPPERS_IMPLICIT_HPP_
 #define PRESSIO_ODE_STEPPERS_IMPLICIT_HPP_
 
-#include "./mpl.hpp"
+#include "pressio/mpl.hpp"
 #include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./ops.hpp"
+#include "pressio/type_traits.hpp"
+#include "pressio/ops.hpp"
 #include "./solvers.hpp"
 
 #include "./ode_concepts.hpp"

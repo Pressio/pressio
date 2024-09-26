@@ -2,6 +2,8 @@
 #ifndef UTILS_LOGGER_UTILS_LOGGER_HPP_
 #define UTILS_LOGGER_UTILS_LOGGER_HPP_
 
+#include "pressio/macros.hpp"
+
 #if defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 #include "./fmt/fmt.hpp"
 #endif

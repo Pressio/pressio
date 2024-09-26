@@ -36,6 +36,25 @@ if(CMAKE_CXX_STANDARD STREQUAL "17"
   endif()
 endif()
 
+#=====================================================================
+# pull in pressio-ops
+#=====================================================================
+include(FetchContent)
+
+message("${Green}-- Fetching pressio-ops...")
+
+FetchContent_Declare(
+  pressio-ops
+  GIT_REPOSITORY https://github.com/Pressio/pressio-ops.git
+  GIT_TAG        fix-compatibility-with-pressio
+  GIT_PROGRESS   TRUE
+  GIT_SHALLOW    TRUE
+)
+
+FetchContent_MakeAvailable(pressio-ops)
+
+message("${Green}-- Done.")
+
 ################################################################################
 
 include(GNUInstallDirs)
@@ -52,6 +71,8 @@ target_include_directories(
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+
+target_link_libraries(pressio INTERFACE pressioops)
 
 install(
   TARGETS pressio

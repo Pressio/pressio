@@ -49,26 +49,11 @@
 #ifndef PRESSIO_MACROS_HPP_
 #define PRESSIO_MACROS_HPP_
 
+#include "pressio/ops_macros.hpp"
+
 #define PRESSIO_MAJOR_VERSION 0
 #define PRESSIO_MINOR_VERSION 14
 #define PRESSIO_PATCH_VERSION 0
-
-// ----------------------------------------
-// compiler version
-// ----------------------------------------
-#ifdef _MSVC_LANG
-#define _PRESSIO_CPLUSPLUS _MSVC_LANG
-#else
-#define _PRESSIO_CPLUSPLUS __cplusplus
-#endif
-
-#define PRESSIO_CXX_STD_17 201703L
-#define PRESSIO_CXX_STD_20 202002L
-static_assert(_PRESSIO_CPLUSPLUS >= PRESSIO_CXX_STD_17, "PRESSIO requires C++17 or greater.");
-
-#if defined PRESSIO_ENABLE_CXX20
-#define PRESSIO_ENABLE_CXX17
-#endif
 
 // ----------------------------------------
 // logging macros
@@ -94,26 +79,6 @@ static_assert(_PRESSIO_CPLUSPLUS >= PRESSIO_CXX_STD_17, "PRESSIO requires C++17 
 #define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_OFF
 #else
 //DEBUG_PRINT is off and LOG_ACTIVE_MIN_LEVEL=on, nothing to do
-#endif
-
-// ----------------------------------------
-// TPL macros
-// ----------------------------------------
-#if defined PRESSIO_ENABLE_TPL_TRILINOS
-// if trilinos enabled, kokkos and MPI should be too
-#if !defined PRESSIO_ENABLE_TPL_KOKKOS
-#define PRESSIO_ENABLE_TPL_KOKKOS
-#endif
-#if !defined PRESSIO_ENABLE_TPL_MPI
-#define PRESSIO_ENABLE_TPL_MPI
-#endif
-#if !defined PRESSIO_ENABLE_TEUCHOS_TIMERS
-#define PRESSIO_ENABLE_TEUCHOS_TIMERS
-#endif
-#endif
-
-#ifndef PRESSIO_ENABLE_TPL_EIGEN
-static_assert(false, "Eigen is not enabled.");
 #endif
 
 #endif
