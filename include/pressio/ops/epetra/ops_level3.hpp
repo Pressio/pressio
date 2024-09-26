@@ -97,7 +97,7 @@ product(::pressio::transpose /*unused*/,
   assert( (std::size_t)::pressio::ops::extent(C,1) == (std::size_t)numVecsB );
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   const sc_t alpha_(alpha);
   const sc_t beta_(beta);
   auto tmp = zero;
@@ -146,12 +146,11 @@ product(::pressio::transpose modeA,
  const B_type & B)
 {
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
 
   const auto numVecsA = A.NumVectors();
   const auto numVecsB = B.NumVectors();
   C_type C(numVecsA, numVecsB);
-  product(modeA, modeB, alpha, A, B, zero, C);
+  product(modeA, modeB, alpha, A, B, static_cast<sc_t>(0), C);
   return C;
 }
 
@@ -196,7 +195,7 @@ product(::pressio::transpose /*unused*/,
   assert(C.cols() == numVecsA);
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  constexpr auto zero = static_cast<sc_t>(0);
   sc_t tmp = zero;
   const sc_t alpha_(alpha);
   const sc_t beta_(beta);
@@ -247,9 +246,8 @@ product(::pressio::transpose modeA,
 	const A_type & A)
 {
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C(A.NumVectors(), A.NumVectors());
-  product(modeA, modeB, alpha, A, zero, C);
+  product(modeA, modeB, alpha, A, static_cast<sc_t>(0), C);
   return C;
 }
 

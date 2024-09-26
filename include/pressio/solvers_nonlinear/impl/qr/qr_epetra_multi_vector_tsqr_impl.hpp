@@ -88,16 +88,16 @@ public:
   template < typename VectorInType, typename VectorOutType>
   void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   template < typename VectorInType, typename VectorOutType>
   void applyRTranspose(const VectorInType & vecIn, VectorOutType & y) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->localR_, vecIn, beta, y);
   }
 

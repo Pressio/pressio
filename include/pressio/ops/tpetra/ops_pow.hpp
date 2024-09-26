@@ -71,8 +71,8 @@ abs_pow(T1 & y_in,
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
-  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::Constants<sc_t>::zero()){
+
+  if (exponent <= static_cast<sc_t>(0)){
     throw std::runtime_error("this overload is only for exponent > 0");
   }
 
@@ -107,12 +107,11 @@ abs_pow(T1 & y_in,
 
   assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
-  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::Constants<sc_t>::zero()){
+
+  if (exponent >= static_cast<sc_t>(0)){
     throw std::runtime_error("this overload is only for exponent < 0");
   }
 
-  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
   auto x_kv = x.getLocalViewDevice(Tpetra::Access::ReadOnlyStruct());
   auto y_kv = y.getLocalViewDevice(Tpetra::Access::OverwriteAllStruct());
@@ -121,7 +120,7 @@ abs_pow(T1 & y_in,
 			 using std::pow;
 			 using std::abs;
 			 using std::max;
-			 y_kv(i,0) = one/max(eps, pow(abs(x_kv(i,0)), expo));
+			 y_kv(i,0) = static_cast<sc_t>(1) / max(eps, pow(abs(x_kv(i,0)), expo));
 		       });
 }
 

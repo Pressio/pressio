@@ -61,7 +61,7 @@ set_zero(T & v)
 {
   using value_t = typename ::pressio::Traits<T>::scalar_type;
   auto v_tp = impl::get_underlying_tpetra_object(v);
-  v_tp.putScalar( ::pressio::utils::Constants<value_t>::zero() );
+  v_tp.putScalar( static_cast<value_t>(0) );
 }
 
 }}//end namespace pressio::ops

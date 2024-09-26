@@ -58,7 +58,7 @@ std::enable_if_t<
 set_zero(T & objectIn)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
-  objectIn = ::pressio::utils::Constants<sc_t>::zero();
+  objectIn = static_cast<sc_t>(0);
 }
 
 }} // namespace pressio::ops

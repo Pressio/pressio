@@ -178,16 +178,16 @@ private:
   {
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    constexpr auto alpha = static_cast<phi_scalar_t>(1);
 
     using residual_scalar_t = typename ::pressio::Traits<discrete_residual_type>::scalar_type;
-    constexpr auto beta = ::pressio::utils::Constants<residual_scalar_t>::zero();
+    constexpr auto beta = static_cast<residual_scalar_t>(0);;
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomResidual_,
 			    beta, galerkinResidual);
 
     if (galerkinJacobian){
-      constexpr auto beta = ::pressio::utils::Constants<residual_scalar_t>::zero();
+      constexpr auto beta = static_cast<residual_scalar_t>(0);;
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,

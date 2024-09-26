@@ -340,7 +340,7 @@ private:
     auto [times, reducedStates] = read_rom_states_and_times_from_ascii<rom_state_type>(romStateFilename, numModes);
 
     auto & state_n = fomStencilStates(::pressio::ode::n());
-    const auto one = ::pressio::utils::Constants<scalar_type>::one();
+    const auto one = static_cast<scalar_type>(1);
     trialSub.mapFromReducedState(reducedStates[0], state_n);
     for (std::size_t i = 1; i < times.size(); i++){
       const auto t_n   = times[i-1];

@@ -228,9 +228,8 @@ product(::pressio::transpose modeA,
 {
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
   C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
-  product(modeA, modeB, alpha, A, A, zero, C);
+  product(modeA, modeB, alpha, A, A, static_cast<sc_t>(0), C);
   return C;
 }
 

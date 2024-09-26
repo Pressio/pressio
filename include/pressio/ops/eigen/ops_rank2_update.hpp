@@ -88,7 +88,7 @@ update(T & M,         const alpha_t & a,
   const sc_t a_(a);
   const sc_t b_(b);
 
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   if (b_ == zero) {
     ::pressio::ops::scale(M, a_);
     return;

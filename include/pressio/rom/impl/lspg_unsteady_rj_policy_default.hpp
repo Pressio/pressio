@@ -197,7 +197,6 @@ private:
       // second, we just need to update J properly
       using basis_sc_t = typename ::pressio::Traits<
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
-      const auto one = ::pressio::utils::Constants<basis_sc_t>::one();
       IndVarType factor = {};
       if (std::is_same<OdeTag, ode::BDF1>::value){
 	factor = dt*::pressio::ode::constants::bdf1<IndVarType>::c_f_;
@@ -206,7 +205,7 @@ private:
 	// goes to bdf2
 	factor = dt*::pressio::ode::constants::bdf2<IndVarType>::c_f_;
       }
-      ::pressio::ops::update(J, factor, phi, one);
+      ::pressio::ops::update(J, factor, phi, static_cast<basis_sc_t>(1));
     }
   }
 

@@ -78,9 +78,9 @@ public:
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    constexpr auto alpha = static_cast<phi_scalar_t>(1);
     using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
-    constexpr auto beta = ::pressio::utils::Constants<R_scalar_t>::zero();
+    constexpr auto beta = static_cast<R_scalar_t>(0);
 
 #ifdef PRESSIO_ENABLE_CXX17
     fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi,
@@ -94,7 +94,7 @@ public:
 
     if (reducedJacobian){
       using J_scalar_t = typename ::pressio::Traits<jacobian_type>::scalar_type;
-      constexpr auto beta = ::pressio::utils::Constants<J_scalar_t>::zero();
+      constexpr auto beta = static_cast<J_scalar_t>(0);
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_, beta,

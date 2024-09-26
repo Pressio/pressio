@@ -65,9 +65,8 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 				      const scalar_type beta,
 				      Epetra_Vector & y)
 {
-  constexpr auto zero = pressio::utils::Constants<scalar_type>::zero();
   ::pressio::ops::scale(y, beta);
-  if (alpha == zero) {
+  if (alpha == static_cast<scalar_type>(0)) {
     return;
   }
 
@@ -163,7 +162,7 @@ product(::pressio::transpose /*unused*/,
   assert( (std::size_t)y.length() == (std::size_t)numVecs );
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {
@@ -260,7 +259,7 @@ product(::pressio::transpose /*unused*/,
   assert( (std::size_t)::pressio::ops::extent(y, 0) == (std::size_t)numVecs );
 
   using sc_t = typename ::pressio::Traits<A_type>::scalar_type;
-  const auto zero = ::pressio::utils::Constants<sc_t>::zero();
+  const auto zero = static_cast<sc_t>(0);
   auto tmp = zero;
   for (int i=0; i<numVecs; i++)
   {

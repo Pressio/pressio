@@ -79,8 +79,7 @@ update(T & mv, const alpha_t &a,
   const scalar_t a_(a);
   const scalar_t b_(b);
 
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  if (b_ == zero) {
+  if (b_ == static_cast<scalar_t>(0)) {
     ::pressio::ops::scale(mv, a_);
   } else {
     mv.Update(b_, mv1, a_);
@@ -104,8 +103,7 @@ std::enable_if_t<
 update(T & mv, const T1 & mv1, const beta_t & b)
 {
   using scalar_t = typename ::pressio::Traits<T>::scalar_type;
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  ::pressio::ops::update(mv, b, mv1, zero);
+  ::pressio::ops::update(mv, b, mv1, static_cast<scalar_t>(0));
 }
 
 }}//end namespace ::pressio::ops

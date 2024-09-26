@@ -103,8 +103,8 @@ public:
   template < typename VectorInType, typename VectorOutType>
   void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
+    constexpr auto beta  = static_cast<sc_t>(0);
+    constexpr auto alpha = static_cast<sc_t>(1);
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
@@ -115,7 +115,7 @@ public:
 private:
   void createLocalRIfNeeded(size_t newsize){
     const std::size_t locRext0 = ::pressio::ops::extent(localR_, 0);
-    const std::size_t locRext1 = ::pressio::ops::extent(localR_, 1);   
+    const std::size_t locRext1 = ::pressio::ops::extent(localR_, 1);
     if (locRext0!=newsize or locRext1!=newsize){
       localR_ = R_nat_t(newsize, newsize);
       ::pressio::ops::set_zero(localR_);

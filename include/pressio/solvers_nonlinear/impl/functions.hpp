@@ -74,8 +74,8 @@ auto compute_half_sum_of_squares(const T & operand)
   static_assert(Traits<T>::rank == 1, "");
   const auto normVal = ::pressio::ops::norm2(operand);
   using sc_type = mpl::remove_cvref_t<decltype(normVal)>;
-  constexpr auto one  = ::pressio::utils::Constants<sc_type>::one();
-  constexpr auto two  = ::pressio::utils::Constants<sc_type>::two();
+  constexpr auto one  = static_cast<sc_type>(1);
+  constexpr auto two  = static_cast<sc_type>(2);
   return std::pow(normVal, two)*(one/two);
 }
 
@@ -126,9 +126,7 @@ auto compute_nonlinearls_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
 
   const auto v = ::pressio::ops::dot(r, Wr);
   using sc_t = mpl::remove_cvref_t< decltype(v) >;
-  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
-  return v*(one/two);
+  return v * (static_cast<sc_t>(1) / static_cast<sc_t>(2));
 }
 
 #ifdef PRESSIO_ENABLE_CXX20
@@ -224,9 +222,7 @@ auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag 
 
   using sc_t = scalar_trait_t<typename SystemType::state_type>;
   const auto v = ::pressio::ops::dot(r, Wr);
-  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
-  return v*(one/two);
+  return v * (static_cast<sc_t>(1) / static_cast<sc_t>(2));
 }
 
 
@@ -285,7 +281,7 @@ void solve_newton_step(RegistryType & reg)
   // scale by -1 for sign convention
   using c_t = mpl::remove_cvref_t<decltype(c)>;
   using scalar_type = typename ::pressio::Traits<c_t>::scalar_type;
-  pressio::ops::scale(c, utils::Constants<scalar_type>::negOne() );
+  pressio::ops::scale(c, static_cast<scalar_type>(-1));
 }
 
 template<class RegistryType>

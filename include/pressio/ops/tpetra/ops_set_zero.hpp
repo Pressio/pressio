@@ -60,7 +60,7 @@ std::enable_if_t<
 set_zero(T & o)
 {
   using value_t = typename ::pressio::Traits<T>::scalar_type;
-  impl::get_native(o).putScalar( ::pressio::utils::Constants<value_t>::zero() );
+  impl::get_native(o).putScalar( static_cast<value_t>(0) );
 }
 
 }}//end namespace pressio::ops

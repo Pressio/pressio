@@ -117,8 +117,8 @@ discrete_residual(::pressio::ode::BDF1,
 {
 
   using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
-  constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
-  constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
+  constexpr sc_t zero = static_cast<sc_t>(0);
+  constexpr sc_t one  = static_cast<sc_t>(1);
 
   const sc_t cf	      = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
   const auto & y_n = stencilStates(::pressio::ode::n());
@@ -200,8 +200,8 @@ discrete_residual(::pressio::ode::BDF2,
 {
 
   using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
-  constexpr sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
-  constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
+  using cnst = ::pressio::ode::constants::Constants<sc_t>;
+
   constexpr sc_t cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
   constexpr sc_t cn   = ::pressio::ode::constants::bdf2<sc_t>::c_n_;
   constexpr sc_t cnm1 = ::pressio::ode::constants::bdf2<sc_t>::c_nm1_;
@@ -211,11 +211,11 @@ discrete_residual(::pressio::ode::BDF2,
   const auto & y_nm1 = stencilStates(::pressio::ode::nMinusOne());
 
   // scratchState = y_n+1 - (4/3)*y_n + (1/3)*y_n-1
-  ::pressio::ops::update(scratchState, zero, y_np1, cnp1, y_n, cn, y_nm1, cnm1);
+  ::pressio::ops::update(scratchState, cnst::zero(), y_np1, cnp1, y_n, cn, y_nm1, cnm1);
   // R = M_n+1 * scratchState
-  ::pressio::ops::product(::pressio::nontranspose(), one, M_np1, scratchState, zero, R);
+  ::pressio::ops::product(::pressio::nontranspose(), cnst::one(), M_np1, scratchState, cnst::zero(), R);
   // R = R - dt * f_n+1
-  ::pressio::ops::update(R, one, f_np1, cf);
+  ::pressio::ops::update(R, cnst::one(), f_np1, cf);
 }
 
 /*
@@ -249,7 +249,6 @@ discrete_residual(::pressio::ode::CrankNicolson,
 
   using sc_t = typename ::pressio::Traits<ResidualType>::scalar_type;
 
-  constexpr auto zero  = ::pressio::utils::Constants<sc_t>::zero();
   using cnst = ::pressio::ode::constants::cranknicolson<sc_t>;
   constexpr sc_t cnp1  = cnst::c_np1_;
   constexpr sc_t cn    = cnst::c_n_;
@@ -261,7 +260,7 @@ discrete_residual(::pressio::ode::CrankNicolson,
   const auto & f_n   = stencilVelocities(::pressio::ode::n());
   const auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
 
-  ::pressio::ops::update(R, zero,
+  ::pressio::ops::update(R, static_cast<sc_t>(0),
 			 y_np1, cnp1,
 			 y_n, cn,
 			 f_n, cfnDt,

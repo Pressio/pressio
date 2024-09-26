@@ -68,8 +68,7 @@ scale(T & objectIn, const ScalarType value)
 {
   using sc_t = typename ::pressio::Traits<T>::scalar_type;
   const sc_t v(value);
-  sc_t zero = ::pressio::utils::Constants<sc_t>::zero();
-  if (v == zero) {
+  if (v == static_cast<sc_t>(0)) {
     ::pressio::ops::set_zero(objectIn);
   } else {
     if (0 != objectIn.Scale(v)) {

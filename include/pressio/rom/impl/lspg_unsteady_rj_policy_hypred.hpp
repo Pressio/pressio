@@ -191,18 +191,16 @@ private:
       const auto & fomStateAt_n = fomStatesManager_(::pressio::ode::n());
       using fom_state_type = typename FomSystemType::state_type;
       using sc_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
-      constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
       constexpr auto cnp1 = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
       constexpr auto cn   = ::pressio::ode::constants::bdf1<sc_t>::c_n_;
-      ::pressio::ops::update(fomStateHelperInstance_, zero,
+      ::pressio::ops::update(fomStateHelperInstance_, static_cast<sc_t>(0),
 			     fomStateAt_np1, cnp1,
 			     fomStateAt_n, cn);
 
       // step 3
-      constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
       const auto cf = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
       hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
-	(R, cf, fomStateHelperInstance_, one);
+	(R, cf, fomStateHelperInstance_, static_cast<sc_t>(1));
     }
     else{
 
@@ -220,20 +218,18 @@ private:
 
       using fom_state_type = typename FomSystemType::state_type;
       using sc_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
-      constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
       constexpr auto cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
       constexpr auto cn   = ::pressio::ode::constants::bdf2<sc_t>::c_n_;
       constexpr auto cnm1 = ::pressio::ode::constants::bdf2<sc_t>::c_nm1_;
-      ::pressio::ops::update(fomStateHelperInstance_, zero,
+      ::pressio::ops::update(fomStateHelperInstance_, static_cast<sc_t>(0),
 			     fomStateAt_np1, cnp1,
 			     fomStateAt_n, cn,
 			     fomStateAt_nm1, cnm1);
 
       // step 3
-      constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
       const auto cf = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
       hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
-	(R, cf, fomStateHelperInstance_, one);
+	(R, cf, fomStateHelperInstance_, static_cast<sc_t>(1));
     }
 
     // deal with jacobian if needed
@@ -252,7 +248,6 @@ private:
 
       using sc_t = typename ::pressio::Traits<
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
-      const auto one = ::pressio::utils::Constants<sc_t>::one();
       IndVarType cf = {};
       if (std::is_same<OdeTag, ode::BDF1>::value){
 	cf = dt * ::pressio::ode::constants::bdf1<sc_t>::c_f_;
@@ -261,7 +256,7 @@ private:
 	cf = dt * ::pressio::ode::constants::bdf2<sc_t>::c_f_;
       }
 
-      hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(J, cf, phi, one);
+      hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(J, cf, phi, static_cast<sc_t>(1));
     }
   }
 
