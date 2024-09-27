@@ -50,11 +50,11 @@
 #define PRESSIO_ODE_STEPPERS_IMPLICIT_HPP_
 
 #include "pressio/mpl.hpp"
-#include "./utils.hpp"
 #include "pressio/type_traits.hpp"
 #include "pressio/ops.hpp"
-#include "./solvers.hpp"
 
+#include "./utils.hpp"
+#include "./solvers.hpp"
 #include "./ode_concepts.hpp"
 #include "./ode/exceptions.hpp"
 #include "./ode/ode_strong_types.hpp"

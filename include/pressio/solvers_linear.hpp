@@ -50,8 +50,9 @@
 #define PRESSIO_LINEAR_SOLVERS_HPP_
 
 #include "pressio/mpl.hpp"
-#include "./utils.hpp"
 #include "pressio/type_traits.hpp"
+
+#include "./utils.hpp"
 #include "solvers_linear/solvers_linear_tags.hpp"
 #include "solvers_linear/solvers_linear_solver.hpp"
 

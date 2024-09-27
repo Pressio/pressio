@@ -5,10 +5,29 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(colors)
 
 #=====================================================================
+# pull in pressio-ops
+#=====================================================================
+include(FetchContent)
+
+message("${Green}-- Fetching pressio-ops...")
+
+FetchContent_Declare(
+  pressio-ops
+  GIT_REPOSITORY https://github.com/Pressio/pressio-ops.git
+  GIT_TAG        fix-compatibility-with-pressio
+  GIT_PROGRESS   TRUE
+  GIT_SHALLOW    TRUE
+)
+
+FetchContent_MakeAvailable(pressio-ops)
+
+message("${Green}-- Done.")
+
+#=====================================================================
 # versioning
 #=====================================================================
 # adapted from Eigen
-file(READ "${PROJECT_SOURCE_DIR}/include/pressio/macros.hpp" _pressio_macros)
+file(READ "${pressio-ops_SOURCE_DIR}/include/pressio/ops_macros.hpp" _pressio_macros)
 string(REGEX MATCH "define[ \t]+PRESSIO_MAJOR_VERSION[ \t]+([0-9]+)" _pressio_major_version_match "${_pressio_macros}")
 set(PRESSIO_MAJOR_VERSION "${CMAKE_MATCH_1}")
 string(REGEX MATCH "define[ \t]+PRESSIO_MINOR_VERSION[ \t]+([0-9]+)" _pressio_minor_version_match "${_pressio_macros}")
@@ -35,25 +54,6 @@ if(CMAKE_CXX_STANDARD STREQUAL "17"
     message(FATAL_ERROR "Compiler does not support C++${CMAKE_CXX_STANDARD}. This is required.")
   endif()
 endif()
-
-#=====================================================================
-# pull in pressio-ops
-#=====================================================================
-include(FetchContent)
-
-message("${Green}-- Fetching pressio-ops...")
-
-FetchContent_Declare(
-  pressio-ops
-  GIT_REPOSITORY https://github.com/Pressio/pressio-ops.git
-  GIT_TAG        fix-compatibility-with-pressio
-  GIT_PROGRESS   TRUE
-  GIT_SHALLOW    TRUE
-)
-
-FetchContent_MakeAvailable(pressio-ops)
-
-message("${Green}-- Done.")
 
 ################################################################################
 

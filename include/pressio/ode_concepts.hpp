@@ -50,10 +50,10 @@
 #define PRESSIO_ODE_CONCEPTS_TOPLEVEL_INC_HPP_
 
 #include "pressio/mpl.hpp"
-#include "./utils.hpp"
 #include "pressio/type_traits.hpp"
 #include "pressio/ops.hpp"
 
+#include "./utils.hpp"
 #include "./ode/ode_strong_types.hpp"
 #include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_stencil_containers.hpp"

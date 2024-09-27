@@ -50,8 +50,9 @@
 #define PRESSIO_NONLINEAR_SOLVERS_CONCEPTS_HPP_
 
 #include "pressio/mpl.hpp"
-#include "./utils.hpp"
 #include "pressio/type_traits.hpp"
+
+#include "./utils.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
 #include "solvers_nonlinear/solvers_concepts_cxx20.hpp"

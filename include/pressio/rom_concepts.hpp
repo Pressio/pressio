@@ -50,9 +50,10 @@
 #define PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
 
 #include "pressio/mpl.hpp"
-#include "./utils.hpp"
 #include "pressio/type_traits.hpp"
 #include "pressio/ops.hpp"
+
+#include "./utils.hpp"
 #include "./solvers_linear.hpp"
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"

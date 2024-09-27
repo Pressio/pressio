@@ -50,10 +50,11 @@
 #define PRESSIO_NONLINEAR_SOLVERS_NEWTON_HPP_
 
 #include "pressio/mpl.hpp"
-#include "./utils.hpp"
 #include "pressio/type_traits.hpp"
 #include "pressio/expressions.hpp"
 #include "pressio/ops.hpp"
+
+#include "./utils.hpp"
 #include "./solvers_linear.hpp"
 
 #include "solvers_nonlinear_concepts.hpp"
