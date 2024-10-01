@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_PUBLIC_CONSTANTS_HPP_
-#define ODE_ODE_PUBLIC_CONSTANTS_HPP_
+#ifndef ODE_ODE_CONSTANTS_HPP_
+#define ODE_ODE_CONSTANTS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -103,4 +103,4 @@ struct cranknicolson{
 
 }}}//end namespace pressio::ode::constants
 
-#endif  // ODE_ODE_PUBLIC_CONSTANTS_HPP_
+#endif  // ODE_ODE_CONSTANTS_HPP_

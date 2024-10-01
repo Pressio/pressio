@@ -1,6 +1,6 @@
 
-#ifndef UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
-#define UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
+#ifndef QR_LOGGER_UTILS_LOGGER_IMPL_HPP_
+#define QR_LOGGER_UTILS_LOGGER_IMPL_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
@@ -142,4 +142,4 @@ std::shared_ptr<spdlog::logger> create(::pressio::logto en,
 
 }}}//end namespace pressio::log::impl
 
-#endif  // UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
+#endif  // QR_LOGGER_UTILS_LOGGER_IMPL_HPP_

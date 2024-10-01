@@ -253,4 +253,4 @@ protected:
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_ONLY_HPP_
+#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_FULLY_DISCRETE_FOM_HPP_

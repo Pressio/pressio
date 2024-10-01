@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_QR_HPP_
+#define SOLVERS_NONLINEAR_IMPL_QR_HPP_
 
 #include "qr/qr_fwd.hpp"
 #include "qr/qr_base_classes.hpp"
@@ -67,4 +67,4 @@
 #endif // PRESSIO_ENABLE_EPETRA
 #endif // PRESSIO_ENABLE_TPL_TRILINOS
 
-#endif
+#endif  // SOLVERS_NONLINEAR_IMPL_QR_HPP_

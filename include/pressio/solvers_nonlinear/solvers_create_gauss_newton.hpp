@@ -238,4 +238,4 @@ auto create_gauss_newton_qr_solver(const SystemType & system,
 }//end experimental
 
 } // end namespace pressio
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_

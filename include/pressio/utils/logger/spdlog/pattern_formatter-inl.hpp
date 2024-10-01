@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
-#define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
+#ifndef QR_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
+#define QR_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
 
 // #ifndef SPDLOG_HEADER_ONLY
 // #include "./pattern_formatter.hpp"
@@ -1341,4 +1341,4 @@ inline void pattern_formatter::compile_pattern_(const std::string &pattern)
 
 } // namespace spdlog
 
-#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
+#endif  // QR_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_

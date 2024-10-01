@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_CFG_ARGV_HPP_
-#define UTILS_LOGGER_SPDLOG_CFG_ARGV_HPP_
+#ifndef QR_LOGGER_SPDLOG_CFG_ARGV_HPP_
+#define QR_LOGGER_SPDLOG_CFG_ARGV_HPP_
 
 #include "./helpers.hpp"
 #include "../details/registry.hpp"
@@ -44,4 +44,4 @@ inline void load_argv_levels(int argc, char **argv)
 
 } // namespace cfg
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_CFG_ARGV_HPP_
+#endif  // QR_LOGGER_SPDLOG_CFG_ARGV_HPP_

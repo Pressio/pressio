@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_LOCALE_HPP_
-#define UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_LOCALE_HPP_
+#ifndef QR_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_LOCALE_HPP_
+#define QR_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_LOCALE_HPP_
 
 #include <locale>
 
@@ -75,4 +75,4 @@ inline OutputIt format_to(OutputIt out, const std::locale& loc,
 
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_LOCALE_HPP_
+#endif  // QR_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_LOCALE_HPP_

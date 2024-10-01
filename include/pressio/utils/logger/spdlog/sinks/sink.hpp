@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_SINK_HPP_
-#define UTILS_LOGGER_SPDLOG_SINKS_SINK_HPP_
+#ifndef QR_LOGGER_SPDLOG_SINKS_SINK_HPP_
+#define QR_LOGGER_SPDLOG_SINKS_SINK_HPP_
 
 //#include "../details/log_msg.hpp"
 // #include "../formatter.hpp"
@@ -49,4 +49,4 @@ protected:
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "sink-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_SINK_HPP_
+#endif  // QR_LOGGER_SPDLOG_SINKS_SINK_HPP_

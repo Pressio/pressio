@@ -1,6 +1,6 @@
 
-#ifndef ODE_CONCEPTS_SYSTEM_ALL_HPP_
-#define ODE_CONCEPTS_SYSTEM_ALL_HPP_
+#ifndef ODE_CONCEPTS_ODE_SYSTEM_CXX20_HPP_
+#define ODE_CONCEPTS_ODE_SYSTEM_CXX20_HPP_
 
 #include <concepts>
 #include "ode_has_const_discrete_residual_jacobian_method.hpp"
@@ -211,4 +211,4 @@ struct scalar_of{
 template <class T, int n=0> using scalar_of_t = typename scalar_of<T,n>::type;
 
 }}
-#endif
+#endif  // ODE_CONCEPTS_ODE_SYSTEM_CXX20_HPP_

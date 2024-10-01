@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -272,4 +272,4 @@ public:
 };
 
 }}}
-#endif
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_HPP_

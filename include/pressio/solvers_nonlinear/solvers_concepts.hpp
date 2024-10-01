@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_CONCEPTS_HPP_
-#define SOLVERS_NONLINEAR_CONCEPTS_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CONCEPTS_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CONCEPTS_HPP_
 
 #include "./solvers_predicates.hpp"
 
@@ -141,4 +141,4 @@ using scalar_of_t = typename scalar_of<T>::type;
 
 
 }} // end namespace pressio::nonlinearsolvers
-#endif  // SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CONCEPTS_HPP_

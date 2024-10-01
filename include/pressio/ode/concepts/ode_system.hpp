@@ -1,6 +1,6 @@
 
-#ifndef ODE_CONCEPTS_SYSTEM_ALL_HPP_
-#define ODE_CONCEPTS_SYSTEM_ALL_HPP_
+#ifndef ODE_CONCEPTS_ODE_SYSTEM_HPP_
+#define ODE_CONCEPTS_ODE_SYSTEM_HPP_
 
 #include "ode_predicates_for_system.hpp"
 #include "ode_has_const_discrete_residual_jacobian_method.hpp"
@@ -339,4 +339,4 @@ struct ImplicitResidualJacobianPolicy<
   > : std::true_type{};
 
 }}
-#endif
+#endif  // ODE_CONCEPTS_ODE_SYSTEM_HPP_

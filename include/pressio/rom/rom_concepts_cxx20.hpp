@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_CXX20_ALL_HPP_
-#define ROM_CONCEPTS_CXX20_ALL_HPP_
+#ifndef ROM_ROM_CONCEPTS_CXX20_HPP_
+#define ROM_ROM_CONCEPTS_CXX20_HPP_
 
 #include <concepts>
 #include "concepts_helpers.hpp"
@@ -293,4 +293,4 @@ concept RealValuedFullyDiscreteSystemWithJacobianAction =
 
 }} // end namespace pressio::rom
 
-#endif
+#endif  // ROM_ROM_CONCEPTS_CXX20_HPP_

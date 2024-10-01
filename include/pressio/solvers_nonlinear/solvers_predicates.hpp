@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_PREDICATES_HPP_
-#define SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_PREDICATES_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_PREDICATES_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_PREDICATES_HPP_
 
 #ifdef PRESSIO_ENABLE_CXX17
 #include <optional>
@@ -194,4 +194,4 @@ struct has_const_residualandjacobian_method_accept_state_result_return_void<
   > : std::true_type{};
 
 }} // namespace pressio::solvers
-#endif  // SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_PREDICATES_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_PREDICATES_HPP_

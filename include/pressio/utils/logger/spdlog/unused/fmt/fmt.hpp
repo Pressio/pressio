@@ -3,8 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#ifndef UTILS_LOGGER_SPDLOG_UNUSED_FMT_FMT_HPP_
-#define UTILS_LOGGER_SPDLOG_UNUSED_FMT_FMT_HPP_
+#ifndef QR_LOGGER_SPDLOG_UNUSED_FMT_FMT_HPP_
+#define QR_LOGGER_SPDLOG_UNUSED_FMT_FMT_HPP_
 
 //
 // Include a bundled header-only copy of fmtlib or an external one.
@@ -26,4 +26,4 @@
 /* #include <fmt/core.h> */
 /* #include <fmt/format.h> */
 /* #endif */
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_FMT_FMT_HPP_
+#endif  // QR_LOGGER_SPDLOG_UNUSED_FMT_FMT_HPP_

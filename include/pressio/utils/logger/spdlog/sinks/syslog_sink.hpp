@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_HPP_
-#define UTILS_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_HPP_
+#ifndef QR_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_HPP_
+#define QR_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_HPP_
 
 #include "./base_sink.hpp"
 #include "../details/null_mutex.hpp"
@@ -108,4 +108,4 @@ inline std::shared_ptr<logger> syslog_logger_st(const std::string &logger_name, 
     return Factory::template create<sinks::syslog_sink_st>(logger_name, syslog_ident, syslog_option, syslog_facility, enable_formatting);
 }
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_HPP_
+#endif  // QR_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_HPP_

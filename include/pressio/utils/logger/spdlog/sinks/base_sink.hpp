@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_HPP_
-#define UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_HPP_
+#ifndef QR_LOGGER_SPDLOG_SINKS_BASE_SINK_HPP_
+#define QR_LOGGER_SPDLOG_SINKS_BASE_SINK_HPP_
 //
 // base sink templated over a mutex (either dummy or real)
 // concrete implementation should override the sink_it_() and flush_()  methods.
@@ -51,4 +51,4 @@ protected:
 #ifdef SPDLOG_HEADER_ONLY
 #include "base_sink-inl.hpp"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_HPP_
+#endif  // QR_LOGGER_SPDLOG_SINKS_BASE_SINK_HPP_
