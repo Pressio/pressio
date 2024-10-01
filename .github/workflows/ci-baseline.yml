@@ -75,6 +75,12 @@ jobs:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
 
+      - name: Checkout pressio-ops
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-ops
+          path: pressio-ops
+
       - name: Preparing environment
         run: |
           wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
@@ -88,6 +94,7 @@ jobs:
             --std=c++17 \
             -DPRESSIO_ENABLE_TPL_EIGEN \
             -I/eigen/eigen-${{ env.eigen_version }} \
+            -I../pressio-ops/include   \
             -I../include               \
             -c main.cpp                \
           && $CXX --std=c++17 -o pressio-example main.o \
@@ -99,6 +106,7 @@ jobs:
           $CXX \
             --std=c++17 \
             -I/eigen/eigen-${{ env.eigen_version }} \
+            -I../pressio-ops/include   \
             -I../include               \
             -c main_with_defines.cpp   \
           && $CXX --std=c++17 -o pressio-example main.o \
