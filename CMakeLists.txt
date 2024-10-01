@@ -69,10 +69,9 @@ add_library(pressio INTERFACE)
 target_include_directories(
   pressio INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${pressio-ops_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-
-target_link_libraries(pressio INTERFACE pressioops)
 
 install(
   TARGETS pressio
