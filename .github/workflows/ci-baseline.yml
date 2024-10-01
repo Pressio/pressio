@@ -74,6 +74,7 @@ jobs:
         with:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
+          ref: add-compatibility-with-pressio-ops
 
       - name: Checkout pressio-ops
         uses: actions/checkout@v4
