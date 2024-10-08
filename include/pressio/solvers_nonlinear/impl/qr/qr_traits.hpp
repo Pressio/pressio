@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_QR_QR_TRAITS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_QR_QR_TRAITS_HPP_
+#ifndef QR_QR_TRAITS_HPP_
+#define QR_QR_TRAITS_HPP_
 
 namespace pressio{
 
@@ -259,4 +259,4 @@ struct Traits<
 #endif // PRESSIO_ENABLE_TPL_TRILINOS
 
 }
-#endif  // SOLVERS_NONLINEAR_IMPL_QR_QR_TRAITS_HPP_
+#endif  // QR_QR_TRAITS_HPP_

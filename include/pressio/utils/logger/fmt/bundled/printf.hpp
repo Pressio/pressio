@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef QR_LOGGER_FMT_BUNDLED_PRINTF_HPP_
-#define QR_LOGGER_FMT_BUNDLED_PRINTF_HPP_
+#ifndef UTILS_LOGGER_FMT_BUNDLED_PRINTF_HPP_
+#define UTILS_LOGGER_FMT_BUNDLED_PRINTF_HPP_
 
 #include <algorithm>  // std::max
 #include <limits>     // std::numeric_limits
@@ -748,4 +748,4 @@ inline int fprintf(std::basic_ostream<Char>& os, const S& format_str,
 }
 FMT_END_NAMESPACE
 
-#endif  // QR_LOGGER_FMT_BUNDLED_PRINTF_HPP_
+#endif  // UTILS_LOGGER_FMT_BUNDLED_PRINTF_HPP_

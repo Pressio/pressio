@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_NOOP_HPP_
-#define ROM_IMPL_NOOP_HPP_
+#ifndef ROM_NOOP_FUNCTOR_HPP_
+#define ROM_NOOP_FUNCTOR_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -80,4 +80,4 @@ public:
 
 }}} // end namespace pressio::rom::impl
 
-#endif  // ROM_IMPL_NOOP_HPP_
+#endif

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CONCEPTS_CXX20_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CONCEPTS_CXX20_HPP_
+#ifndef SOLVERS_NONLINEAR_CONCEPTS_CXX20_HPP_
+#define SOLVERS_NONLINEAR_CONCEPTS_CXX20_HPP_
 
 #include <optional>
 #include <concepts>
@@ -110,4 +110,4 @@ template <class T> using scalar_of_t = typename scalar_of<T>::type;
 
 
 }} // end namespace pressio::nonlinearsolvers
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CONCEPTS_CXX20_HPP_
+#endif  // SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_

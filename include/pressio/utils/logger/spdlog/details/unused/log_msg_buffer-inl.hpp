@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_
-#define QR_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_
+#define UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./log_msg_buffer.hpp"
@@ -57,4 +57,4 @@ namespace details {
 
 } // namespace details
 } // namespace spdlog
-#endif  // QR_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_

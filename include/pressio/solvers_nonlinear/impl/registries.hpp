@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_REGISTRIES_HPP_
-#define SOLVERS_NONLINEAR_IMPL_REGISTRIES_HPP_
+#ifndef SOLVERS_REGISTRIES_HPP_
+#define SOLVERS_REGISTRIES_HPP_
 
 #include "levmar_damping.hpp"
 #include "instance_or_reference_wrapper.hpp"
@@ -310,4 +310,4 @@ public:
 };
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_REGISTRIES_HPP_
+#endif

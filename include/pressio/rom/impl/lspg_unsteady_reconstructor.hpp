@@ -364,4 +364,4 @@ private:
 };
 
 }}}
-#endif  // ROM_IMPL_LSPG_UNSTEADY_RECONSTRUCTOR_HPP_
+#endif

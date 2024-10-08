@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_QR_QR_BASE_CLASSES_HPP_
-#define SOLVERS_NONLINEAR_IMPL_QR_QR_BASE_CLASSES_HPP_
+#ifndef QR_BASE_QR_IN_PLACE_BASE_HPP_
+#define QR_BASE_QR_IN_PLACE_BASE_HPP_
 
 namespace pressio{ namespace qr{
 
@@ -216,4 +216,4 @@ public:
 };
 
 }}//end namespace pressio::qr
-#endif  // SOLVERS_NONLINEAR_IMPL_QR_QR_BASE_CLASSES_HPP_
+#endif  // QR_BASE_QR_IN_PLACE_BASE_HPP_

@@ -1,6 +1,6 @@
 
-#ifndef QR_LOGGER_UTILS_LOGGER_HPP_
-#define QR_LOGGER_UTILS_LOGGER_HPP_
+#ifndef UTILS_LOGGER_UTILS_LOGGER_HPP_
+#define UTILS_LOGGER_UTILS_LOGGER_HPP_
 
 #include "pressio/macros.hpp"
 
@@ -192,4 +192,4 @@ void setVerbosity(std::initializer_list<::pressio::log::level> levels)
 
 
 
-#endif  // QR_LOGGER_UTILS_LOGGER_HPP_
+#endif  // UTILS_LOGGER_UTILS_LOGGER_HPP_

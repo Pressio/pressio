@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_
-#define QR_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_
+#ifndef UTILS_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_
+#define UTILS_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_
 
 // #ifndef SPDLOG_HEADER_ONLY
 // #include "./logger.h"
@@ -255,4 +255,4 @@ namespace spdlog {
 // }
 
 } // namespace spdlog
-#endif  // QR_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_
+#endif  // UTILS_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_

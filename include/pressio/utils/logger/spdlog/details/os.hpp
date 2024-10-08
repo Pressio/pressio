@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_DETAILS_OS_HPP_
-#define QR_LOGGER_SPDLOG_DETAILS_OS_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
+#define UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
 
 //#include "../common.hpp"
 #include <ctime> // std::time_t
@@ -110,4 +110,4 @@ std::string getenv(const char *field);
 #ifdef SPDLOG_HEADER_ONLY
 #include "os-inl.hpp"
 #endif
-#endif  // QR_LOGGER_SPDLOG_DETAILS_OS_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_

@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_CFG_HELPERS_INL_HPP_
-#define QR_LOGGER_SPDLOG_CFG_HELPERS_INL_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_CFG_HELPERS_INL_HPP_
+#define UTILS_LOGGER_SPDLOG_CFG_HELPERS_INL_HPP_
 
 // #ifndef SPDLOG_HEADER_ONLY
 // #include "./helpers.hpp"
@@ -118,4 +118,4 @@ SPDLOG_INLINE void load_levels(const std::string &input)
 } // namespace helpers
 } // namespace cfg
 } // namespace spdlog
-#endif  // QR_LOGGER_SPDLOG_CFG_HELPERS_INL_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_CFG_HELPERS_INL_HPP_

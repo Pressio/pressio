@@ -289,4 +289,4 @@ private:
 };
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
+#endif

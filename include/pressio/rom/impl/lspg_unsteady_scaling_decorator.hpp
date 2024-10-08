@@ -117,4 +117,4 @@ private:
 };
 
 }}}
-#endif  // ROM_IMPL_LSPG_UNSTEADY_SCALING_DECORATOR_HPP_
+#endif

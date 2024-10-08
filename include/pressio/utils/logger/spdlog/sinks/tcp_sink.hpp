@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_SINKS_TCP_SINK_HPP_
-#define QR_LOGGER_SPDLOG_SINKS_TCP_SINK_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_HPP_
+#define UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_HPP_
 
 #include "../common.hpp"
 #include "../base_sink.hpp"
@@ -78,4 +78,4 @@ using tcp_sink_st = tcp_sink<spdlog::details::null_mutex>;
 
 } // namespace sinks
 } // namespace spdlog
-#endif  // QR_LOGGER_SPDLOG_SINKS_TCP_SINK_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_HPP_

@@ -3,8 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#ifndef QR_LOGGER_FMT_BIN_TO_HEX_HPP_
-#define QR_LOGGER_FMT_BIN_TO_HEX_HPP_
+#ifndef UTILS_LOGGER_FMT_BIN_TO_HEX_HPP_
+#define UTILS_LOGGER_FMT_BIN_TO_HEX_HPP_
 
 #include <cctype>
 
@@ -215,4 +215,4 @@ struct formatter<spdlog::details::dump_info<T>>
     }
 };
 } // namespace fmt
-#endif  // QR_LOGGER_FMT_BIN_TO_HEX_HPP_
+#endif  // UTILS_LOGGER_FMT_BIN_TO_HEX_HPP_

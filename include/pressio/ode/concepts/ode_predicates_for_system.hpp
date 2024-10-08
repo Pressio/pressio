@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONCEPTS_ODE_PREDICATES_FOR_SYSTEM_HPP_
-#define ODE_CONCEPTS_ODE_PREDICATES_FOR_SYSTEM_HPP_
+#ifndef ODE_CONCEPTS_PREDICATES_HPP_
+#define ODE_CONCEPTS_PREDICATES_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -162,4 +162,4 @@ struct has_const_create_discrete_jacobian_method_return_result<
   > : std::true_type{};
 
 }}
-#endif  // ODE_CONCEPTS_ODE_PREDICATES_FOR_SYSTEM_HPP_
+#endif  // ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_

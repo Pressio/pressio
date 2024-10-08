@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_HPP_
-#define QR_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_HPP_
+#define UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_HPP_
 
 // #ifdef _WIN32
 // #include "../sinks/wincolor_sink.hpp"
@@ -55,4 +55,4 @@ using stderr_color_sink_st = ansicolor_stderr_sink_st;
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "stdout_color_sinks-inl.hpp"
 // #endif
-#endif  // QR_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_HPP_

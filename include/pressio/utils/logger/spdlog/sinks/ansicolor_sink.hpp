@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef QR_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_
-#define QR_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_
+#define UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_
 
 #include "../details/console_globals.hpp"
 //#include "../details/null_mutex.hpp"
@@ -117,4 +117,4 @@ using ansicolor_stderr_sink_st = ansicolor_stderr_sink<details::console_nullmute
 #ifdef SPDLOG_HEADER_ONLY
 #include "ansicolor_sink-inl.hpp"
 #endif
-#endif  // QR_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_QR_QR_CONCRETE_CLASSES_HPP_
-#define SOLVERS_NONLINEAR_IMPL_QR_QR_CONCRETE_CLASSES_HPP_
+#ifndef QR_IMPL_QR_CONCRETE_CLASSES_HPP_
+#define QR_IMPL_QR_CONCRETE_CLASSES_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Teuchos_SerialDenseMatrix.hpp"
@@ -148,4 +148,4 @@ private:
 
 
 }}} // end namespace pressio::qr::impl
-#endif  // SOLVERS_NONLINEAR_IMPL_QR_QR_CONCRETE_CLASSES_HPP_
+#endif  // QR_IMPL_QR_IN_PLACE_HPP_

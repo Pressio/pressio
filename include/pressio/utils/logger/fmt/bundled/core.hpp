@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef QR_LOGGER_FMT_BUNDLED_CORE_HPP_
-#define QR_LOGGER_FMT_BUNDLED_CORE_HPP_
+#ifndef UTILS_LOGGER_FMT_BUNDLED_CORE_HPP_
+#define UTILS_LOGGER_FMT_BUNDLED_CORE_HPP_
 
 #include <cstdio>  // std::FILE
 #include <cstring>
@@ -1879,4 +1879,4 @@ inline void print(const S& format_str, Args&&... args) {
 }
 FMT_END_NAMESPACE
 
-#endif  // QR_LOGGER_FMT_BUNDLED_CORE_HPP_
+#endif  // UTILS_LOGGER_FMT_BUNDLED_CORE_HPP_

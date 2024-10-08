@@ -21,4 +21,4 @@ struct LevenbergMarquardtNormalEqTag{};
 struct GaussNewtonQrTag{};
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_INTERNAL_TAGS_HPP_
+#endif

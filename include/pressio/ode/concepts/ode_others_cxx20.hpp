@@ -1,6 +1,6 @@
 
-#ifndef ODE_CONCEPTS_ODE_OTHERS_CXX20_HPP_
-#define ODE_CONCEPTS_ODE_OTHERS_CXX20_HPP_
+#ifndef ODE_CONCEPTS_OTHERS_HPP_
+#define ODE_CONCEPTS_OTHERS_HPP_
 
 #include <concepts>
 
@@ -88,4 +88,4 @@ concept StepSizePolicyWithReductionScheme =
   };
 
 }}// end namespace pressio::ode
-#endif  // ODE_CONCEPTS_ODE_OTHERS_CXX20_HPP_
+#endif

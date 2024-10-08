@@ -439,4 +439,4 @@ void compute_norm_internal_diagnostics(const RegistryType & reg,
 }
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
+#endif
