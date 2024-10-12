@@ -127,7 +127,8 @@ jobs:
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }}
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
+            -D PRESSIO_OPS_INCLUDE_DIR=/pressio-ops/include
 
       - name: Build
         run: |
