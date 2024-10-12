@@ -81,6 +81,7 @@ jobs:
         with:
           repository: Pressio/pressio-ops
           path: pressio-ops
+          ref: develop
 
       - name: Preparing environment
         run: |
