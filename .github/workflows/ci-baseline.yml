@@ -128,7 +128,7 @@ jobs:
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
             -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-            -D PRESSIO_OPS_INCLUDE_DIR=/pressio-ops/pressio-ops/include
+            -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
 
       - name: Build
         run: |
