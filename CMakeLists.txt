@@ -14,7 +14,7 @@ message("${Green}-- Fetching pressio-ops...")
 FetchContent_Declare(
   pressio-ops
   GIT_REPOSITORY https://github.com/Pressio/pressio-ops.git
-  GIT_TAG        main
+  GIT_TAG        develop
   GIT_PROGRESS   TRUE
   GIT_SHALLOW    TRUE
 )
