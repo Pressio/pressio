@@ -10,7 +10,7 @@ include(colors)
 if(PRESSIO_OPS_INCLUDE_DIR)
   message("${Green}-- Using ${PRESSIO_OPS_INCLUDE_DIR}")
   include_directories(SYSTEM ${PRESSIO_OPS_INCLUDE_DIR})
-  file(READ "${PRESSIO_OPS_INCLUDE_DIR}/pressio/ops_macros.hpp" _pressio_macros)
+  set(PRESSIO_OPS_IMPL_INCLUDE_PATH ${PRESSIO_OPS_INCLUDE_DIR})
 
 else()
 
@@ -26,14 +26,15 @@ else()
   )
 
   FetchContent_MakeAvailable(pressio-ops)
-
-  file(READ "${pressio-ops_SOURCE_DIR}/include/pressio/ops_macros.hpp" _pressio_macros)
+  set(PRESSIO_OPS_IMPL_INCLUDE_PATH ${pressio-ops_SOURCE_DIR}/include)
 endif()
 
 #=====================================================================
 # versioning
 #=====================================================================
 # adapted from Eigen
+file(READ "${PRESSIO_OPS_IMPL_INCLUDE_PATH}/pressio/ops_macros.hpp" _pressio_macros)
+
 string(REGEX MATCH "define[ \t]+PRESSIO_MAJOR_VERSION[ \t]+([0-9]+)" _pressio_major_version_match "${_pressio_macros}")
 set(PRESSIO_MAJOR_VERSION "${CMAKE_MATCH_1}")
 string(REGEX MATCH "define[ \t]+PRESSIO_MINOR_VERSION[ \t]+([0-9]+)" _pressio_minor_version_match "${_pressio_macros}")
@@ -75,7 +76,7 @@ add_library(pressio INTERFACE)
 target_include_directories(
   pressio INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${pressio-ops_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${PRESSIO_OPS_IMPL_INCLUDE_PATH}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
