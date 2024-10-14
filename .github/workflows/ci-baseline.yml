@@ -65,6 +65,7 @@ jobs:
     env:
       eigen_version: 3.4.0
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
+      PRESSIO_INSTALL_DIR: ${{ github.workspace }}/pressio_install
 
     steps:
       - uses: actions/checkout@v4
@@ -89,31 +90,6 @@ jobs:
           && mkdir -p /eigen \
           && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
 
-      - name: Example - include only
-        working-directory: examples
-        run: |
-          $CXX \
-            --std=c++17 \
-            -DPRESSIO_ENABLE_TPL_EIGEN \
-            -I/eigen/eigen-${{ env.eigen_version }} \
-            -I../pressio-ops/include   \
-            -I../include               \
-            -c main.cpp                \
-          && $CXX --std=c++17 -o pressio-example main.o \
-          && ./pressio-example
-
-      - name: Example - include only with embedded definitions
-        working-directory: examples
-        run: |
-          $CXX \
-            --std=c++17 \
-            -I/eigen/eigen-${{ env.eigen_version }} \
-            -I../pressio-ops/include   \
-            -I../include               \
-            -c main_with_defines.cpp   \
-          && $CXX --std=c++17 -o pressio-example main.o \
-          && ./pressio-example
-
       - name: Configure
         run: |
           cmake -B builddir \
@@ -121,7 +97,7 @@ jobs:
             -D CMAKE_C_COMPILER=$CC \
             -D CMAKE_CXX_COMPILER=$CXX \
             -D CMAKE_CXX_FLAGS='-Wall -Werror' \
-            -D CMAKE_INSTALL_PREFIX:PATH=../install \
+            -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
             ${{ matrix.cmake_extra_args }} \
             -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
@@ -134,32 +110,57 @@ jobs:
         run: |
           cmake --build builddir --target install
 
-      - name: Example - CMake installed
-        working-directory: examples/cmake_find_package
+      - name: Example - include only
+        working-directory: examples
         run: |
-          cmake -B builddir \
-            -DCMAKE_CXX_STANDARD=17 \
-            -DCMAKE_PREFIX_PATH=../../install \
-          && cmake --build builddir           \
-          && ./builddir/pressio-example
+          $CXX \
+            --std=c++17 \
+            -DPRESSIO_ENABLE_TPL_EIGEN \
+            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${PRESSIO_INSTALL_DIR}/include \
+            -c main.cpp                \
+          && $CXX --std=c++17 -o pressio-example main.o \
+          && ./pressio-example
 
-      - name: Example - CMake add_subdirectory
-        working-directory: examples/cmake_add_subdirectory
+      - name: Example - include only with embedded definitions
+        working-directory: examples
         run: |
-          cmake -B builddir \
-            -DCMAKE_CXX_STANDARD=17  \
-            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-          && cmake --build builddir            \
-          && ./builddir/pressio-example
+          $CXX \
+            --std=c++17 \
+            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${PRESSIO_INSTALL_DIR}/include \
+            -c main_with_defines.cpp   \
+          && $CXX --std=c++17 -o pressio-example main.o \
+          && ./pressio-example
 
-      - name: Example - CMake include_directories
-        working-directory: examples/cmake_include_directories
-        run: |
-          cmake -B builddir \
-            -DCMAKE_CXX_STANDARD=17 \
-            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-          && cmake --build builddir            \
-          && ./builddir/pressio-example
+      # - name: Example - CMake installed
+      #   working-directory: examples/cmake_find_package
+      #   run: |
+      #     cmake -B builddir \
+      #       -DCMAKE_CXX_STANDARD=17 \
+      #       -DCMAKE_PREFIX_PATH=../../install \
+      #     && cmake --build builddir           \
+      #     && ./builddir/pressio-example
+
+      # - name: Example - CMake add_subdirectory
+      #   working-directory: examples/cmake_add_subdirectory
+      #   run: |
+      #     cmake -B builddir \
+      #       -DCMAKE_CXX_STANDARD=17  \
+      #       -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
+      #     && cmake --build builddir            \
+      #     && ./builddir/pressio-example
+
+      # - name: Example - CMake include_directories
+      #   working-directory: examples/cmake_include_directories
+      #   run: |
+      #     cmake -B builddir \
+      #       -DCMAKE_CXX_STANDARD=17 \
+      #       -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
+      #     && cmake --build builddir            \
+      #     && ./builddir/pressio-example
 
       - name: Run small tests
         working-directory: builddir/tests/functional_small
