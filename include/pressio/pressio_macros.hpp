@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_extent.hpp
+// macros.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,35 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_EXTENT_HPP_
-#define OPS_TPETRA_BLOCK_OPS_EXTENT_HPP_
+#ifndef PRESSIO_MACROS_HPP_
+#define PRESSIO_MACROS_HPP_
 
-namespace pressio{ namespace ops{
+#include "pressio/ops_macros.hpp"
 
-template <typename T, class IndexType>
-std::enable_if_t<
-  ::pressio::is_vector_tpetra_block<T>::value, std::size_t >
-extent(const T & oIn, const IndexType i)
-{
-  if (i == 0) {
-    return std::size_t(oIn.getMap()->getGlobalNumElements());
-  }
-  else {
-    return std::size_t(1);
-  }
-}
+// ----------------------------------------
+// logging macros
+// ----------------------------------------
+#define PRESSIO_LOG_LEVEL_TRACE	    0
+#define PRESSIO_LOG_LEVEL_DEBUG	    1
+#define PRESSIO_LOG_LEVEL_INFO	    2
+#define PRESSIO_LOG_LEVEL_WARN	    3
+#define PRESSIO_LOG_LEVEL_ERROR	    4
+#define PRESSIO_LOG_LEVEL_CRITICAL  5
+#define PRESSIO_LOG_LEVEL_OFF	    6
 
-template <typename T, class IndexType>
-std::enable_if_t<
-  ::pressio::is_expression_column_acting_on_tpetra_block<T>::value, std::size_t >
-extent(const T & oIn, const IndexType i)
-{
-  return oIn.extentGlobal(i);
-}
+// if we are in debug mode, enable debug prints by default
+#if !defined NDEBUG && !defined PRESSIO_ENABLE_DEBUG_PRINT
+#define PRESSIO_ENABLE_DEBUG_PRINT
+#endif
 
-template <typename T, class IndexType>
-std::enable_if_t<
-  ::pressio::is_multi_vector_tpetra_block<T>::value, std::size_t >
-extent(const T & oIn, const IndexType i)
-{
-  if (i == 0) {
-    return std::size_t(oIn.getMap()->getGlobalNumElements());
-  }
-  else if (i == 1) {
-    return std::size_t(oIn.getNumVectors());
-  }
-  else {
-    return std::size_t(1);
-  }
-}
+#if defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+// if DEBUG_PRINT is on but MIN_LEVEL off, then set min level to trace
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_TRACE
+#elif !defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+// if DEBUG_PRINT=off and MIN_LEVEL=off, then set logging off
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_OFF
+#else
+//DEBUG_PRINT is off and LOG_ACTIVE_MIN_LEVEL=on, nothing to do
+#endif
 
-}}
-#endif  // OPS_TPETRA_BLOCK_OPS_EXTENT_HPP_
+#endif
