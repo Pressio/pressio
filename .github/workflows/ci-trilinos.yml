@@ -125,30 +125,6 @@ jobs:
           -I${PRESSIO_INSTALL_DIR}/include \
           -c main_with_defines.cpp
 
-    # - name: Example - CMake installed
-    #   working-directory: examples/cmake_find_package
-    #   run: |
-    #     cmake -B builddir \
-    #       -DCMAKE_PREFIX_PATH=../../install \
-    #     && cmake --build builddir           \
-    #     && ./builddir/pressio-example
-
-    # - name: Example - CMake include_directories
-    #   working-directory: examples/cmake_include_directories
-    #   run: |
-    #     cmake -B builddir \
-    #       -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-    #     && cmake --build builddir            \
-    #     && ./builddir/pressio-example
-
-    # - name: Example - CMake add_subdirectory
-    #   working-directory: examples/cmake_add_subdirectory
-    #   run: |
-    #     cmake -B builddir \
-    #       -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-    #     && cmake --build builddir            \
-    #     && ./builddir/pressio-example
-
     - name: Test
       working-directory: builddir
       run: |

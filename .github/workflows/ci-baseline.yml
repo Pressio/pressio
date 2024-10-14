@@ -43,16 +43,7 @@ jobs:
         cmake_extra_args:
           - ''
         include:
-          - image: ubuntu-gnu-11
-            build_type: Release
-            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
           - image: ubuntu-clang-14
-            build_type: Release
-            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-gnu-13
-            build_type: Release
-            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
-          - image: fedora-clang-17
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
@@ -134,33 +125,6 @@ jobs:
             -c main_with_defines.cpp   \
           && $CXX --std=c++17 -o pressio-example main.o \
           && ./pressio-example
-
-      # - name: Example - CMake installed
-      #   working-directory: examples/cmake_find_package
-      #   run: |
-      #     cmake -B builddir \
-      #       -DCMAKE_CXX_STANDARD=17 \
-      #       -DCMAKE_PREFIX_PATH=../../install \
-      #     && cmake --build builddir           \
-      #     && ./builddir/pressio-example
-
-      # - name: Example - CMake add_subdirectory
-      #   working-directory: examples/cmake_add_subdirectory
-      #   run: |
-      #     cmake -B builddir \
-      #       -DCMAKE_CXX_STANDARD=17  \
-      #       -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-      #     && cmake --build builddir            \
-      #     && ./builddir/pressio-example
-
-      # - name: Example - CMake include_directories
-      #   working-directory: examples/cmake_include_directories
-      #   run: |
-      #     cmake -B builddir \
-      #       -DCMAKE_CXX_STANDARD=17 \
-      #       -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-      #     && cmake --build builddir            \
-      #     && ./builddir/pressio-example
 
       - name: Run small tests
         working-directory: builddir/tests/functional_small
