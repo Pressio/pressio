@@ -1,6 +1,6 @@
 
-#ifndef ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
-#define ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
+#define PRESSIO_ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
 
 #include "./reduced_operators_traits.hpp"
 #include "impl/galerkin_helpers.hpp"
@@ -159,4 +159,4 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 }
 
 }}} // end pressio::rom::galerkin
-#endif  // ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
+#endif  // PRESSIO_ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_

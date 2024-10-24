@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_HPP_
 
 // #ifdef _WIN32
 // #error include tcp_client-windows.h instead
@@ -145,4 +145,4 @@ public:
 };
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_HPP_

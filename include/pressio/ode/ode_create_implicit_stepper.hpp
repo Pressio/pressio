@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_CREATE_IMPLICIT_STEPPER_HPP_
-#define ODE_ODE_CREATE_IMPLICIT_STEPPER_HPP_
+#ifndef PRESSIO_ODE_ODE_CREATE_IMPLICIT_STEPPER_HPP_
+#define PRESSIO_ODE_ODE_CREATE_IMPLICIT_STEPPER_HPP_
 
 
 #include "./impl/ode_implicit_discrete_residual.hpp"
@@ -294,4 +294,4 @@ auto create_implicit_stepper(SystemType && system)
 }
 
 }} // end namespace pressio::ode
-#endif  // ODE_ODE_CREATE_IMPLICIT_STEPPER_HPP_
+#endif  // PRESSIO_ODE_ODE_CREATE_IMPLICIT_STEPPER_HPP_

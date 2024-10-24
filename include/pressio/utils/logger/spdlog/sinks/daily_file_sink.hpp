@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_HPP_
-#define UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_HPP_
 
 #include "../common.hpp"
 #include "../details/file_helper.hpp"
@@ -203,4 +203,4 @@ inline std::shared_ptr<logger> daily_logger_st(
     return Factory::template create<sinks::daily_file_sink_st>(logger_name, filename, hour, minute, truncate, max_files);
 }
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_HPP_

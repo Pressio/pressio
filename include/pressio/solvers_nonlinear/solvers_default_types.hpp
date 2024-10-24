@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_DEFAULT_TYPES_NORMAL_EQ_PP_
-#define SOLVERS_NONLINEAR_DEFAULT_TYPES_NORMAL_EQ_PP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_DEFAULT_TYPES_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_DEFAULT_TYPES_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -44,4 +44,4 @@ struct valid_state_for_least_squares<
 #endif
 
 }}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_DEFAULT_TYPES_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_ENUM_AND_TAGS_HPP_
-#define ODE_ODE_ENUM_AND_TAGS_HPP_
+#ifndef PRESSIO_ODE_ODE_ENUM_AND_TAGS_HPP_
+#define PRESSIO_ODE_ODE_ENUM_AND_TAGS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -98,4 +98,4 @@ class nMinusFour{};
 
 }}//end namespace pressio::ode
 
-#endif  // ODE_ODE_ENUM_AND_TAGS_HPP_
+#endif  // PRESSIO_ODE_ODE_ENUM_AND_TAGS_HPP_

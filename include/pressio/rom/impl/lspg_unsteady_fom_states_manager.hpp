@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_FOM_STATES_MANAGER_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_FOM_STATES_MANAGER_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_FOM_STATES_MANAGER_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_FOM_STATES_MANAGER_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -229,4 +229,4 @@ auto create_lspg_fom_states_manager(const TrialSubspaceType & trialSubspace)
 
 }}}//end namespace pressio::rom::impl
 
-#endif  // ROM_IMPL_LSPG_UNSTEADY_FOM_STATES_MANAGER_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_FOM_STATES_MANAGER_HPP_

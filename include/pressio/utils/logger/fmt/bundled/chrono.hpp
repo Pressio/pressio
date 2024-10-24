@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_FMT_BUNDLED_CHRONO_HPP_
-#define UTILS_LOGGER_FMT_BUNDLED_CHRONO_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_FMT_BUNDLED_CHRONO_HPP_
+#define PRESSIO_UTILS_LOGGER_FMT_BUNDLED_CHRONO_HPP_
 
 #include <chrono>
 #include <ctime>
@@ -1120,4 +1120,4 @@ struct formatter<std::chrono::duration<Rep, Period>, Char> {
 
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_FMT_BUNDLED_CHRONO_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_FMT_BUNDLED_CHRONO_HPP_

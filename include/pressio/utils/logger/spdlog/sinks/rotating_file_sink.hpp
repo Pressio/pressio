@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_HPP_
-#define UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_HPP_
 
 #include "./base_sink.hpp"
 #include "../details/file_helper.hpp"
@@ -77,4 +77,4 @@ inline std::shared_ptr<logger> rotating_logger_st(
 #ifdef SPDLOG_HEADER_ONLY
 #include "rotating_file_sink-inl.hpp"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_HPP_

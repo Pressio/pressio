@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_LOGGER_HPP_
-#define UTILS_LOGGER_SPDLOG_LOGGER_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_LOGGER_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_LOGGER_HPP_
 
 // Thread safe logger (except for set_error_handler())
 // Has name, log level, vector of std::shared sink pointers and formatter
@@ -568,4 +568,4 @@ inline void swap(logger &a, logger &b)
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "logger-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_LOGGER_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_LOGGER_HPP_

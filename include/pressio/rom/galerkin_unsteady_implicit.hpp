@@ -1,6 +1,6 @@
 
-#ifndef ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
-#define ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
+#define PRESSIO_ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
 
 #include "impl/galerkin_helpers.hpp"
 #include "impl/galerkin_unsteady_system_default_rhs_and_jacobian.hpp"
@@ -236,4 +236,4 @@ auto create_unsteady_implicit_problem(const TrialSubspaceType & trialSpace,
 }
 
 }}} // end pressio::rom::galerkin
-#endif  // ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_
+#endif  // PRESSIO_ROM_GALERKIN_UNSTEADY_IMPLICIT_HPP_

@@ -1,6 +1,6 @@
 
-#ifndef ROM_PREDICATES_HPP_
-#define ROM_PREDICATES_HPP_
+#ifndef PRESSIO_ROM_PREDICATES_HPP_
+#define PRESSIO_ROM_PREDICATES_HPP_
 
 #include "./impl/ode_has_const_discrete_residual_jacobian_action_method.hpp"
 
@@ -270,4 +270,4 @@ struct has_const_rhs_method_accept_state_indvar_result_return_void<
   > : std::true_type{};
 
 }} // end pressio::rom
-#endif  // ROM_PREDICATES_HPP_
+#endif  // PRESSIO_ROM_PREDICATES_HPP_

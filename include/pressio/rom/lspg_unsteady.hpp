@@ -1,6 +1,6 @@
 
-#ifndef ROM_LSPG_UNSTEADY_HPP_
-#define ROM_LSPG_UNSTEADY_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_HPP_
 
 #include "./impl/lspg_helpers.hpp"
 #include "./impl/lspg_unsteady_fom_states_manager.hpp"
@@ -300,4 +300,4 @@ auto create_reconstructor(const TrialSubspaceType & trialSpace)
 #endif
 
 }}} // end pressio::rom::lspg
-#endif  // ROM_LSPG_UNSTEADY_HPP_
+#endif  // PRESSIO_ROM_LSPG_UNSTEADY_HPP_

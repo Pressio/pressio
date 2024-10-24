@@ -1,6 +1,6 @@
 
-#ifndef ROM_REDUCED_OPERATORS_TRAITS_HPP_
-#define ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#ifndef PRESSIO_ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#define PRESSIO_ROM_REDUCED_OPERATORS_TRAITS_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -180,4 +180,4 @@ struct UnsteadyLspgDefaultReducedOperatorsTraits<
 #endif
 
 }}
-#endif  // ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#endif  // PRESSIO_ROM_REDUCED_OPERATORS_TRAITS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_HELPERS_HPP_
-#define ROM_CONCEPTS_HELPERS_HPP_
+#ifndef PRESSIO_ROM_CONCEPTS_HELPERS_HPP_
+#define PRESSIO_ROM_CONCEPTS_HELPERS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -155,4 +155,4 @@ using fom_mass_matrix_action_on_trial_space_t =
   fom_mass_matrix_action_t<FomMassMatOpType, typename TrialSubspaceType::basis_matrix_type>;
 
 }}}
-#endif  // ROM_CONCEPTS_HELPERS_HPP_
+#endif  // PRESSIO_ROM_CONCEPTS_HELPERS_HPP_

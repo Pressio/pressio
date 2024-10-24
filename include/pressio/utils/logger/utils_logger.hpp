@@ -1,6 +1,6 @@
 
-#ifndef UTILS_LOGGER_UTILS_LOGGER_HPP_
-#define UTILS_LOGGER_UTILS_LOGGER_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_UTILS_LOGGER_HPP_
+#define PRESSIO_UTILS_LOGGER_UTILS_LOGGER_HPP_
 
 #if defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 #include "./fmt/fmt.hpp"
@@ -190,4 +190,4 @@ void setVerbosity(std::initializer_list<::pressio::log::level> levels)
 
 
 
-#endif  // UTILS_LOGGER_UTILS_LOGGER_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_UTILS_LOGGER_HPP_

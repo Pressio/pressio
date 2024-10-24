@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./periodic_worker.hpp"
@@ -48,4 +48,4 @@ namespace details {
 
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_

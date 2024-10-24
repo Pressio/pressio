@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_
 
 #include <atomic>
 #include <utility>
@@ -48,4 +48,4 @@ struct null_atomic_int
 
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_

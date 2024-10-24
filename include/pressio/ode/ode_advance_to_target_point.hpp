@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
-#define ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#ifndef PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#define PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
@@ -123,4 +123,4 @@ advance_to_target_point(StepperType & stepper,
 }
 
 }}//end namespace pressio::ode
-#endif  // ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#endif  // PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_

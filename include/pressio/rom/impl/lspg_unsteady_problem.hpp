@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -113,4 +113,4 @@ using LspgUnsteadyProblemFullyDiscreteAPI =
 
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
