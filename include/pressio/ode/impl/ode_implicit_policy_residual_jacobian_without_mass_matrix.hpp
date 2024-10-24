@@ -105,11 +105,7 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type*> Jo) const
-#else
-                  jacobian_type* Jo) const
-#endif
   {
 
     trampoline(name, predictedState, stencilStatesManager,
@@ -153,11 +149,7 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
-		         std::optional<jacobian_type*> Jo) const
-#else
-                         jacobian_type* Jo) const
-#endif
+       std::optional<jacobian_type*> Jo) const
   {
 
     try{
@@ -168,11 +160,7 @@ private:
 					      R, stencilStatesManager, dt);
 
       if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
-	auto & Jv = *(Jo.value());
-#else
-	auto & Jv = *Jo;
-#endif
+	      auto & Jv = *(Jo.value());
        	::pressio::ode::impl::discrete_jacobian(BDF1(), Jv, dt);
       }
     }
@@ -196,11 +184,7 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
-		         std::optional<jacobian_type*> Jo) const
-#else
-                         jacobian_type* Jo) const
-#endif
+       std::optional<jacobian_type*> Jo) const
   {
 
     stepTracker_ = step;
@@ -213,11 +197,7 @@ private:
 						R, stencilStatesManager, dt);
 
 	if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
 	  auto & Jv = *(Jo.value());
-#else
-	  auto & Jv = *Jo;
-#endif
 	  ::pressio::ode::impl::discrete_jacobian(BDF1(), Jv, dt);
 	}
       }
@@ -233,11 +213,7 @@ private:
 						R, stencilStatesManager, dt);
 
 	if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
 	  auto & Jv = *(Jo.value());
-#else
-	  auto & Jv = *Jo;
-#endif
 	  ::pressio::ode::impl::discrete_jacobian(BDF2(), Jv, dt);
 	}
       }
@@ -263,11 +239,7 @@ private:
 		       const IndVarType & dt,
 		       const StepType & step,
 		       ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		       std::optional<jacobian_type*> Jo) const
-#else
-                       jacobian_type* Jo) const
-#endif
   {
 
     if (stepTracker_ != step){
@@ -280,12 +252,7 @@ private:
     auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
     if (Jo){
       systemObj_.get().rhsAndJacobian(predictedState, t_np1, f_np1, Jo);
-
-#ifdef PRESSIO_ENABLE_CXX17
       auto & Jv = *(Jo.value());
-#else
-      auto & Jv = *Jo;
-#endif
       ::pressio::ode::impl::discrete_jacobian(ode::CrankNicolson(), Jv, dt);
     }
     else{

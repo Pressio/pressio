@@ -233,11 +233,7 @@ struct SteadyFomWithJacobianAction<
 	std::declval<typename T::state_type const&>(),
 	std::declval<typename T::residual_type &>(),
 	std::declval<JacobianActionOperandType const&>(),
-#ifdef PRESSIO_ENABLE_CXX17
 	std::declval< std::optional<impl::fom_jac_action_t<T, JacobianActionOperandType> *> >()
-#else
-	std::declval< impl::fom_jac_action_t<T, JacobianActionOperandType> *>()
-#endif
 	)
        )
     >::value

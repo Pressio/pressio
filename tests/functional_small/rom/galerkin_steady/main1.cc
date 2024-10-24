@@ -22,11 +22,7 @@ struct MyFom
   void residualAndJacobianAction(const state_type & u,
 				 residual_type & r,
 				 const Eigen::MatrixXd & B,
-#ifdef PRESSIO_ENABLE_CXX17
 				 std::optional<Eigen::MatrixXd *> Ain) const
-#else
-				 Eigen::MatrixXd * Ain) const
-#endif
   {
     EXPECT_TRUE(u.size()==r.size());
     EXPECT_TRUE(u.size()==N_);
@@ -35,16 +31,12 @@ struct MyFom
     }
 
     if (Ain){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & A = *Ain.value();
-#else
-      auto & A = *Ain;
-#endif
       A = B;
       for (auto i=0; i<A.rows(); ++i){
-	for (auto j=0; j<A.cols(); ++j){
-	  A(i,j) += u(i);
-	}
+        for (auto j=0; j<A.cols(); ++j){
+          A(i,j) += u(i);
+        }
       }
     }
   }

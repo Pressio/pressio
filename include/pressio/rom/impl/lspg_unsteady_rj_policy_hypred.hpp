@@ -107,11 +107,7 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type *> Jo) const
-#else
-		  jacobian_type * Jo) const
-#endif
   {
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1)
@@ -148,11 +144,7 @@ private:
 			 const IndVarType & dt,
 			 const typename ::pressio::ode::StepCount::value_type & step,
 			 residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
-			std::optional<jacobian_type *> & Jo) const
-#else
-		        jacobian_type * Jo) const
-#endif
+			 std::optional<jacobian_type *> & Jo) const
   {
     static_assert( std::is_same<OdeTag, ode::BDF1>::value ||
 		   std::is_same<OdeTag, ode::BDF2>::value, "");
@@ -234,11 +226,7 @@ private:
 
     // deal with jacobian if needed
     if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & J = *Jo.value();
-#else
-      auto & J = *Jo;
-#endif
       // lspgJac = decoderJac + dt*coeff*J*decoderJac
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 

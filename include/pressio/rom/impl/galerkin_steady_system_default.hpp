@@ -67,11 +67,7 @@ public:
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & reducedResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> reducedJacobian) const
-#else
-                           jacobian_type* reducedJacobian) const
-#endif
   {
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
@@ -82,12 +78,8 @@ public:
     using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
     constexpr auto beta = static_cast<R_scalar_t>(0);
 
-#ifdef PRESSIO_ENABLE_CXX17
     fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi,
 					       std::optional<fom_jac_action_result_type *>(&fomJacAction_));
-#else
-    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi, &fomJacAction_);
-#endif
 
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomResidual_, beta, reducedResidual);
@@ -98,11 +90,7 @@ public:
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_, beta,
-#ifdef PRESSIO_ENABLE_CXX17
 			      *reducedJacobian.value());
-#else
-                              *reducedJacobian);
-#endif
     }
   }
 

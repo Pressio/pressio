@@ -106,11 +106,7 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type*> Jo,
-#else
-			      discrete_jacobian_type* Jo,
-#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n) const
   {
@@ -135,11 +131,7 @@ public:
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type*> Jo,
-#else
-			      discrete_jacobian_type* Jo,
-#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n,
 			      const state_type & lspg_state_nm1) const

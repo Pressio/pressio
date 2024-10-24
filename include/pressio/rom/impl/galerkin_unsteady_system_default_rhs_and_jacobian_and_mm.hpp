@@ -75,11 +75,7 @@ public:
 				   const IndVarType & rhsEvaluationTime,
 				   mass_matrix_type & reducedMassMatrix,
 				   rhs_type & reducedRhs,
-#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<jacobian_type*> reducedJacobian) const
-#else
-                                   jacobian_type* reducedJacobian) const
-#endif
   {
 
     // reconstruct fom state fomState = phi*reducedState
@@ -114,11 +110,7 @@ public:
       ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,
 			      beta,
-#ifdef PRESSIO_ENABLE_CXX17
 			      *reducedJacobian.value());
-#else
-                              *reducedJacobian);
-#endif
     }
   }
 

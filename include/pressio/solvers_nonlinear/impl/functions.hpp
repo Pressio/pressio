@@ -18,11 +18,7 @@ void compute_residual(RegistryType & reg,
 		      const SystemType & system)
 {
   auto & r = reg.template get<ResidualTag>();
-#ifdef PRESSIO_ENABLE_CXX17
   system.residualAndJacobian(state, r, {});
-#else
-  system.residualAndJacobian(state, r, nullptr);
-#endif
 }
 
 #ifdef PRESSIO_ENABLE_CXX20
@@ -49,12 +45,8 @@ void compute_residual_and_jacobian(RegistryType & reg,
   const auto & state = reg.template get<StateTag>();
   auto & r = reg.template get<ResidualTag>();
   auto & j = reg.template get<JacobianTag>();
-#ifdef PRESSIO_ENABLE_CXX17
   using j_t = typename SystemType::jacobian_type;
   system.residualAndJacobian(state, r, std::optional<j_t*>{&j});
-#else
-  system.residualAndJacobian(state, r, &j);
-#endif
 }
 
 template<class RegistryType>

@@ -62,11 +62,7 @@ public:
 
   void residualAndJacobian(const state_type & lspgState,
 			   residual_type & lspgResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type *> lspgJacobian) const
-#else
-			   jacobian_type * lspgJacobian) const
-#endif
   {
     trialSubspace_.get().mapFromReducedState(lspgState, fomState_);
 

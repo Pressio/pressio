@@ -63,11 +63,7 @@ struct OdeSystemFusingRhsAndJacobian<
 		std::declval<typename T::state_type const&>(),
 		std::declval<typename T::independent_variable_type const &>(),
                 std::declval<typename T::rhs_type &>(),
-#ifdef PRESSIO_ENABLE_CXX17
 		std::declval< std::optional<typename T::jacobian_type*> >()
-#else
-		std::declval< typename T::jacobian_type* >()
-#endif
 	       )
 	   )
       >::value
@@ -144,11 +140,7 @@ struct CompleteOdeSystem<
 		std::declval<typename T::independent_variable_type const &>(),
                 std::declval<typename T::mass_matrix_type &>(),
                 std::declval<typename T::rhs_type &>(),
-#ifdef PRESSIO_ENABLE_CXX17
 		std::declval< std::optional<typename T::jacobian_type*> >()
-#else
-		std::declval< typename T::jacobian_type* >()
-#endif
 	       )
 	   )
       >::value
@@ -327,11 +319,7 @@ struct ImplicitResidualJacobianPolicy<
 	std::declval< ::pressio::ode::StepCount >(),
 	std::declval< ::pressio::ode::StepSize<typename T::independent_variable_type> >(),
 	std::declval<typename T::residual_type &>(),
-#ifdef PRESSIO_ENABLE_CXX17
 	std::declval< std::optional<typename T::jacobian_type*> >()
-#else
-	std::declval< typename T::jacobian_type* >()
-#endif
 	)
        )
       >::value

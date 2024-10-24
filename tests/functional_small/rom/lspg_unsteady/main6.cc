@@ -368,11 +368,7 @@ struct Scaler{
   void operator()(const Eigen::VectorXd & statein,
 		  double evalTime,
 		  Eigen::VectorXd & residual,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<Eigen::MatrixXd *> jacobian) const
-#else
-		  Eigen::MatrixXd * jacobian) const
-#endif
   {
     std::cout << "SCALING\n";
   }
