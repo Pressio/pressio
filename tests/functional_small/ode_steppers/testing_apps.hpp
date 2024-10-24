@@ -103,21 +103,13 @@ public:
   void rhsAndJacobian(const state_type & yIn,
 		      independent_variable_type /*unused*/,
 		      rhs_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jin) const
-#else
-                      jacobian_type* Jin) const
-#endif
   {
     assert(yIn.size()==3);
     R = -10. * yIn;
 
     if (Jin){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & JJ = *Jin.value();
-#else
-      auto & JJ = *Jin;
-#endif
 
       assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
       typedef Eigen::Triplet<double> Tr;

@@ -26,11 +26,7 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
 {
 
   auto mustStop = [
-#ifdef PRESSIO_ENABLE_CXX17
 		   &normDiag = std::as_const(normDiagnostics),
-#else
-		   &normDiag = normDiagnostics,
-#endif
 		   stopEnumValue, maxIters, stopTolerance](int stepCount)
   {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);

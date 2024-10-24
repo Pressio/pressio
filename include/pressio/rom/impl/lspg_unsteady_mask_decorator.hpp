@@ -111,18 +111,9 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<ind_var_type> & dt,
 		  residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type *> Jo) const
-#else
-		  jacobian_type * Jo) const
-#endif
   {
-
-#ifdef PRESSIO_ENABLE_CXX17
     std::optional<unmasked_jacobian_type*> unmaskedJo{&unMaskedJacobian_};
-#else
-    unmasked_jacobian_type* unmaskedJo = &unMaskedJacobian_;
-#endif
 
     Maskable::operator()(odeSchemeName, predictedReducedState,
 			 reducedStatesStencilManager, fomRhsStencilManger,
@@ -131,11 +122,7 @@ public:
     masker_(unMaskedResidual_, R);
 
     if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
      masker_(unMaskedJacobian_, *Jo.value());
-#else
-     masker_(unMaskedJacobian_, *Jo);
-#endif
     }
   }
 

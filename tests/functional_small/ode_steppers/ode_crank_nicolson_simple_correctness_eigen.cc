@@ -27,11 +27,7 @@ public:
   void rhsAndJacobian(const state_type & y,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const
-#else
-                      jacobian_type* /*J*/) const
-#endif
   {
     std::cout << "velo: t=" << evaltime << "\n";
     f[0] = y(0)+evaltime;
@@ -57,11 +53,8 @@ struct MyFakeSolver
     for (int i=0; i<2; ++i)
     {
       std::cout << "i = "  << i << std::endl;
-#ifdef PRESSIO_ENABLE_CXX17
-	sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
-#else
-	sys.residualAndJacobian(state, R, &J);
-#endif
+
+	    sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
 
       std::cout << "state = "  << *state.data() << std::endl;
       std::cout << "R = " << *R.data() << std::endl;
