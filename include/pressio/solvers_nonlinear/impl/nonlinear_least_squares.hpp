@@ -230,19 +230,11 @@ private:
     // so we need to reset the data in the registry everytime
     reset_for_new_solve_loop(tag_, extReg);
 
-    if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
-      nonlin_ls_solving_loop_impl(tag_, system, extReg,
-				  stopEnValue_, stopTolerance_,
-				  diagnostics_, diagnosticsLogger_,
-				  maxIters_,
-				  BacktrackStrictlyDecreasingObjectiveUpdater{});
-    }else{
-      nonlin_ls_solving_loop_impl(tag_, system, extReg,
-				  stopEnValue_, stopTolerance_,
-				  diagnostics_, diagnosticsLogger_,
-				  maxIters_,
-				  BacktrackStrictlyDecreasingObjectiveUpdater{});
-    }
+    nonlin_ls_solving_loop_impl(tag_, system, extReg,
+        stopEnValue_, stopTolerance_,
+        diagnostics_, diagnosticsLogger_,
+        maxIters_,
+        BacktrackStrictlyDecreasingObjectiveUpdater{});
   }
 
   template<class SystemType, class _Tag = Tag>
