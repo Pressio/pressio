@@ -35,8 +35,17 @@ One drawback is that at any point in time, the various components might
 have different maturity levels, so reaching a comparable and solid maturity
 across the stack might take some time---our current goal is to obtain
 in version ``1.0.0`` a uniform maturity level *at least* across
-the ``rom, ode and solvers`` components. Please keep this in mind while browsing
+the ``rom``, ``ode``, and ``solvers`` components. Please keep this in mind while browsing
 the documentation and the code.
+
+Notably, we have extracted the core operations from the ``Pressio/pressio`` repository
+in order to increase modularity and allow users to build their code directly on top of
+the ``pressio-ops`` if desired.
+
+However, it is still useful to understand ``pressio`` with the additional context of ``pressio-ops``
+to understand how the repositories fit together.
+
+The following components are included in ``Pressio/pressio`` and build off of the contents of ``pressio-ops``:
 
 |
 
@@ -65,6 +74,17 @@ the documentation and the code.
      - linear dense (on-node) solvers
      - ``<pressio/solvers_linear.hpp>``
 
+
+The following components are not included in the core ``Pressio/pressio`` library, and are instead part of the ``pressio-ops`` library.
+They are pulled in automatically when you install ``pressio``.
+
+|
+
+.. list-table::
+   :widths: 10 48 42
+   :header-rows: 1
+   :align: left
+
    * - ``ops``
      - shared-memory/distributed linear algebra kernels specializations
      - ``<pressio/ops.hpp>``
@@ -76,10 +96,6 @@ the documentation and the code.
    * - ``type_traits``
      - type traits and detection
      - ``<pressio/type_traits.hpp>``
-
-   * - ``utils``
-     - logger, constants, etc
-     - ``<pressio/utils.hpp>``
 
    * - ``mpl``
      - metaprogramming functionalities
