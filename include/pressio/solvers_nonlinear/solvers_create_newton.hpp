@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_HPP_
 
 #include "solvers_default_types.hpp"
 #include "./impl/solvers_tagbased_registry.hpp"
@@ -129,4 +129,4 @@ auto create_newton_solver(const SystemType & system,
 }
 
 } //end namespace pressio
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_HPP_

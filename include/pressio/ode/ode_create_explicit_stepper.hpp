@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
-#define ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#ifndef PRESSIO_ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#define PRESSIO_ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
 
 #include "./impl/ode_explicit_stepper_without_mass_matrix.hpp"
 #include "./impl/ode_explicit_stepper_with_mass_matrix.hpp"
@@ -183,4 +183,4 @@ auto create_ssprk3_stepper(Args && ...args){
 }
 
 }} // end namespace pressio::ode
-#endif  // ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#endif  // PRESSIO_ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_

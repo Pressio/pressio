@@ -9,8 +9,8 @@
 // All Rights Reserved
 // {fmt} support for ranges, containers and types tuple interface.
 
-#ifndef UTILS_LOGGER_FMT_BUNDLED_RANGES_HPP_
-#define UTILS_LOGGER_FMT_BUNDLED_RANGES_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_FMT_BUNDLED_RANGES_HPP_
+#define PRESSIO_UTILS_LOGGER_FMT_BUNDLED_RANGES_HPP_
 
 #include <initializer_list>
 #include <type_traits>
@@ -383,4 +383,4 @@ arg_join<const T*, const T*, wchar_t> join(std::initializer_list<T> list,
 
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_FMT_BUNDLED_RANGES_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_FMT_BUNDLED_RANGES_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
-#define ODE_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
+#define PRESSIO_ODE_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -268,4 +268,4 @@ discrete_residual(::pressio::ode::CrankNicolson,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_IMPLICIT_DISCRETE_RESIDUAL_HPP_

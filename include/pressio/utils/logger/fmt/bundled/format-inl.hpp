@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_FMT_BUNDLED_FORMAT_INL_HPP_
-#define UTILS_LOGGER_FMT_BUNDLED_FORMAT_INL_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_FMT_BUNDLED_FORMAT_INL_HPP_
+#define PRESSIO_UTILS_LOGGER_FMT_BUNDLED_FORMAT_INL_HPP_
 
 #include <cassert>
 #include <cctype>
@@ -1450,4 +1450,4 @@ FMT_END_NAMESPACE
 #  pragma warning(pop)
 #endif
 
-#endif  // UTILS_LOGGER_FMT_BUNDLED_FORMAT_INL_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_FMT_BUNDLED_FORMAT_INL_HPP_
