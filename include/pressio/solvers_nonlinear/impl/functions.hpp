@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
@@ -439,4 +439,4 @@ void compute_norm_internal_diagnostics(const RegistryType & reg,
 }
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_

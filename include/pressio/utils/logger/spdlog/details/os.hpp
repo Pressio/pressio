@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
 
 //#include "../common.hpp"
 #include <ctime> // std::time_t
@@ -110,4 +110,4 @@ std::string getenv(const char *field);
 #ifdef SPDLOG_HEADER_ONLY
 #include "os-inl.hpp"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_

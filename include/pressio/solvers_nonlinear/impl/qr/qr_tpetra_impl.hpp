@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_IMPL_TPETRA_QR_TPETRA_IMPL_HPP_
-#define QR_IMPL_TPETRA_QR_TPETRA_IMPL_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_QR_QR_TPETRA_IMPL_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_QR_QR_TPETRA_IMPL_HPP_
 
 #include "Tpetra_TsqrAdaptor.hpp"
 #include <Eigen/OrderingMethods>
@@ -537,4 +537,4 @@ private:
 };
 
 }}} // end namespace pressio::qr::impl
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_QR_QR_TPETRA_IMPL_HPP_

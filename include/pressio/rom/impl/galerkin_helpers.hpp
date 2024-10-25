@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_GALERKIN_HELPERS_HPP_
-#define ROM_IMPL_GALERKIN_HELPERS_HPP_
+#ifndef PRESSIO_ROM_IMPL_GALERKIN_HELPERS_HPP_
+#define PRESSIO_ROM_IMPL_GALERKIN_HELPERS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -57,4 +57,4 @@ template<class JacType, class = void>
 using CreateGalerkinJacobian = CreateGalerkinMassMatrix<JacType>;
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_HELPERS_HPP_
+#endif  // PRESSIO_ROM_IMPL_GALERKIN_HELPERS_HPP_

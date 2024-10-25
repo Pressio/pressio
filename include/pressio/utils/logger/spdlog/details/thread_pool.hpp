@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_HPP_
-#define UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_HPP_
 
 #include "./log_msg_buffer.hpp"
 #include "./mpmc_blocking_q.hpp"
@@ -120,4 +120,4 @@ private:
 #ifdef SPDLOG_HEADER_ONLY
 #include "thread_pool-inl.hpp"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_HPP_
