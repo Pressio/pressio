@@ -22,11 +22,6 @@ namespace pressio{ namespace rom{ namespace lspg{
 template<
   class TrialSubspaceType,
   class FomSystemType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(1)*/
 			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem)
@@ -58,14 +53,6 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(1)*/
 // masked
 // -------------------------------------------------------------
 
-#ifdef PRESSIO_ENABLE_CXX20
-template<class TrialSubspaceType, class FomSystemType, class MaskerType>
-  requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-  && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-  && MaskableWith<typename FomSystemType::rhs_type, MaskerType>
-  && MaskableWith<impl::fom_jac_action_on_trial_space_t<FomSystemType, TrialSubspaceType>, MaskerType>
-#else
 template<
   class TrialSubspaceType, class FomSystemType, class MaskerType,
   std::enable_if_t<
@@ -76,7 +63,6 @@ template<
     && MaskableWith<impl::fom_jac_action_on_trial_space_t<FomSystemType, TrialSubspaceType>, MaskerType>::value
     , int> = 0
   >
-#endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(2)*/
 			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem,
@@ -115,12 +101,6 @@ auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(2)*/
 // hyp-red
 // -------------------------------------------------------------
 
-#ifdef PRESSIO_ENABLE_CXX20
-template<class TrialSubspaceType, class FomSystemType, class HypRedUpdaterType>
-  requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-  && RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#else
 template<class TrialSubspaceType, class FomSystemType, class HypRedUpdaterType,
   std::enable_if_t<
     PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>::value
@@ -129,7 +109,6 @@ template<class TrialSubspaceType, class FomSystemType, class HypRedUpdaterType,
     && !MaskableWith<typename FomSystemType::rhs_type, HypRedUpdaterType>::value
     , int> = 0
   >
-#endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(3)*/
 			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem,
@@ -166,11 +145,6 @@ template<
   class TrialSubspaceType,
   class FomSystemType,
   class ScalingOperatorType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(4)*/
 			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem,
@@ -209,11 +183,6 @@ template<
   class FomSystemType,
   class HypRedUpdaterType,
   class ScalingOperatorType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_unsteady_problem(::pressio::ode::StepScheme schemeName,    /*(5)*/
 			     const TrialSubspaceType & trialSpace,
 			     const FomSystemType & fomSystem,
@@ -256,11 +225,6 @@ template<
   std::size_t TotalNumberOfDesiredStates,
   class TrialSubspaceType,
   class FomSystemType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedFullyDiscreteSystemWithJacobianAction<
-     FomSystemType, TotalNumberOfDesiredStates, typename TrialSubspaceType::basis_matrix_type>
-#endif
 auto create_unsteady_problem(const TrialSubspaceType & trialSpace,     /*(6)*/
 			     const FomSystemType & fomSystem)
 {
