@@ -63,19 +63,11 @@ template<
   class AuxT,
   class ...Args
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
-    && !StateObserver<AuxT&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
-    && (!StateObserver<AuxT, IndVarType, StateType>)
-void
-#endif
+std::enable_if_t<
+     StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
+  && !StateObserver<AuxT&&, IndVarType, StateType>::value
+  >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -105,19 +97,11 @@ template<
   class AuxT,
   class ...Args
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
-    && StateObserver<ObserverType&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
-    && StateObserver<ObserverType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+     StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
+  && StateObserver<ObserverType&&, IndVarType, StateType>::value
+  >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,

@@ -60,12 +60,7 @@ namespace pressio{ namespace ode{
 // const dt
 //
 template<class StepperType, class StateType, class IndVarType>
-#if defined PRESSIO_ENABLE_CXX20
-  requires Steppable<StepperType>
-  void
-#else
-  std::enable_if_t< Steppable<StepperType>::value >
-#endif
+std::enable_if_t< Steppable<StepperType>::value >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -90,16 +85,10 @@ template<
   class StepSizePolicyType,
   class IndVarType
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-    Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-  >
-#else
-  requires Steppable<StepperType>
-    && StepSizePolicy<StepSizePolicyType, IndVarType>
-  void
-#endif
+std::enable_if_t<
+  Steppable<StepperType>::value
+  && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+>
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -124,16 +113,10 @@ template<
   class ObserverType,
   class IndVarType
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-    Steppable<StepperType>::value
-    && StateObserver<ObserverType &&, IndVarType, StateType>::value
-  >
-#else
-  requires Steppable<StepperType>
-    && StateObserver<ObserverType, IndVarType, StateType>
-  void
-#endif
+std::enable_if_t<
+  Steppable<StepperType>::value
+  && StateObserver<ObserverType &&, IndVarType, StateType>::value
+>
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -159,18 +142,11 @@ template<
   class ObserverType,
   class StepSizePolicyType,
   class IndVarType>
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    && StateObserver<ObserverType &&, IndVarType, StateType>::value
-  >
-#else
-  requires Steppable<StepperType>
-        && StepSizePolicy<StepSizePolicyType, IndVarType>
-	&& StateObserver<ObserverType, IndVarType, StateType>
-  void
-#endif
+std::enable_if_t<
+     Steppable<StepperType>::value
+  && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+  && StateObserver<ObserverType &&, IndVarType, StateType>::value
+>
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
