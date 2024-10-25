@@ -49,11 +49,7 @@ public:
 				   const independent_variable_type & /*unused*/,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<discrete_jacobian_type*> J,
-#else
-				   discrete_jacobian_type* J,
-#endif
 				   const state_type & x_n,
 				   const state_type & x_nm1) const
   {
@@ -67,11 +63,7 @@ public:
     R = x_n - A * x_nm1;
 
     if (J){
-#ifdef PRESSIO_ENABLE_CXX17
       J.value()->setIdentity();
-#else
-      J->setIdentity();
-#endif
     }
   }
 };
@@ -92,11 +84,7 @@ public:
 				   const independent_variable_type & /*unused*/,
 				   const independent_variable_type & dt,
 				   discrete_residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<discrete_jacobian_type*> J,
-#else
-				   discrete_jacobian_type* J,
-#endif
 				   const state_type & w_n,
 				   const state_type & w_nm1) const
   {
@@ -109,11 +97,7 @@ public:
     const auto & A = A_mats_[index];
     R = w_n - A.transpose() * w_nm1;
     if (J){
-#ifdef PRESSIO_ENABLE_CXX17
       J.value()->setIdentity();
-#else
-      J->setIdentity();
-#endif
     }
   }
 };

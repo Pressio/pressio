@@ -114,11 +114,7 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type*> Jo) const
-#else
-                  jacobian_type* Jo) const
-#endif
   {
 
     if (name == StepScheme::BDF1){
@@ -152,11 +148,7 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
 			 std::optional<jacobian_type*> & Jo) const
-#else
-                         jacobian_type* Jo) const
-#endif
   {
 
     try{
@@ -167,11 +159,7 @@ private:
 			massMatrix_, R, stencilStatesManager, dt);
 
       if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
 	auto & Jv = *(Jo.value());
-#else
-	auto & Jv = *Jo;
-#endif
 	discrete_jacobian(BDF1(), Jv, massMatrix_, dt);
       }
     }
@@ -191,11 +179,7 @@ private:
 			 const IndVarType & dt,
 			 const StepType & step,
 			 ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
-		         std::optional<jacobian_type*> Jo) const
-#else
-                         jacobian_type* Jo) const
-#endif
+       std::optional<jacobian_type*> Jo) const
   {
 
     stepTracker_ = step;
@@ -209,11 +193,7 @@ private:
 			  massMatrix_, R, stencilStatesManager, dt);
 
 	if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
 	  auto & Jv = *(Jo.value());
-#else
-	  auto & Jv = *Jo;
-#endif
 	  discrete_jacobian(BDF1(), Jv, massMatrix_, dt);
 	}
       }
@@ -221,11 +201,7 @@ private:
 	discrete_residual(BDF2(), predictedState, scratchState_, rhs_,
 			  massMatrix_, R, stencilStatesManager, dt);
 	if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
 	  auto & Jv = *(Jo.value());
-#else
-	  auto & Jv = *Jo;
-#endif
 	  discrete_jacobian(BDF2(), Jv, massMatrix_, dt);
 	}
       }

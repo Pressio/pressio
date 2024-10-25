@@ -111,17 +111,9 @@ struct Problem7
 
   void residualAndJacobian(const state_type& x,
 			   residual_type& res,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> Jin) const
-#else
-                           jacobian_type* Jin) const
-#endif
   {
-#ifdef PRESSIO_ENABLE_CXX17
     auto * jac = Jin.value_or(nullptr);
-#else
-    auto * jac = Jin;
-#endif
 
     for (int i=0; i<NumMyElem_; i++){
       const scalar_type t = (*tt_)[i];
