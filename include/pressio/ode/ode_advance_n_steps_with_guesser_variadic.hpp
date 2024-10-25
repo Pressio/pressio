@@ -62,17 +62,10 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StateGuesser<GuesserType &&, IndVarType, StateType>::value
-  >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-        && StateGuesser<GuesserType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+     SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StateGuesser<GuesserType &&, IndVarType, StateType>::value
+>
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -101,19 +94,11 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
-    && StateGuesser<GuesserType&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-    && StepSizePolicy<StepSizePolicyType, IndVarType>
-    && StateGuesser<GuesserType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+     SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
+  && StateGuesser<GuesserType&&, IndVarType, StateType>::value
+  >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -142,19 +127,11 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-    SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StateGuesser<GuesserType&&, IndVarType, StateType>::value
-    && StateObserver<ObserverType&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-  && StateGuesser<GuesserType, IndVarType, StateType>
-  && StateObserver<ObserverType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+  SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StateGuesser<GuesserType&&, IndVarType, StateType>::value
+  && StateObserver<ObserverType&&, IndVarType, StateType>::value
+  >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,
@@ -184,21 +161,12 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-    SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
-    && StateGuesser<GuesserType&&, IndVarType, StateType>::value
-    && StateObserver<ObserverType&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-    && StepSizePolicy<StepSizePolicyType, IndVarType>
-    && StateGuesser<GuesserType, IndVarType, StateType>
-    && StateObserver<ObserverType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+  SteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StepSizePolicy<StepSizePolicyType&&, IndVarType>::value
+  && StateGuesser<GuesserType&&, IndVarType, StateType>::value
+  && StateObserver<ObserverType&&, IndVarType, StateType>::value
+  >
 advance_n_steps_with_pre_step_guesser(StepperType & stepper,
 				      StateType & state,
 				      const IndVarType & startVal,

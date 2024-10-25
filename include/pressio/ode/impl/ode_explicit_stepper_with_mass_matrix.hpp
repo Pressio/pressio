@@ -133,12 +133,6 @@ public:
 public:
 
   template<class LinearSolverType>
-// // #if defined PRESSIO_ENABLE_CXX20
-//   requires requires (LinearSolverType & solver,
-// 		     StateType & x,
-// 		     const mass_matrix_type & M,
-// 		     const RightHandSideType & b){ { solver.solve(M, x, b) }; }
-// #else
   // std::enable_if_t<
   //   std::is_void<
   //     decltype(
@@ -150,7 +144,6 @@ public:
   //     )
   //     >::value, void
   //   >
-  //#endif
   void operator()(StateType & odeState,
 	     const ::pressio::ode::StepStartAt<independent_variable_type> & stepStartVal,
 	     ::pressio::ode::StepCount step,

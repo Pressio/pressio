@@ -15,11 +15,6 @@ namespace pressio{ namespace rom{ namespace lspg{
 template<
   class TrialSubspaceType,
   class FomSystemType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(1)*/
 			   const FomSystemType & fomSystem)
 
@@ -39,11 +34,6 @@ template<
   class TrialSubspaceType,
   class FomSystemType,
   class MaskerType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_steady_problem(const TrialSubspaceType & trialSpace,  /*(2)*/
 			   const FomSystemType & fomSystem,
 			   const MaskerType & masker)
@@ -66,11 +56,6 @@ template<
   class TrialSubspaceType,
   class FomSystemType,
   class ScalingOperatorType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_steady_problem(const TrialSubspaceType & trialSpace,  /*(3)*/
 			   const FomSystemType & fomSystem,
 			   const ScalingOperatorType & scaler)
@@ -91,11 +76,6 @@ template<
   class FomSystemType,
   class MaskerType,
   class ScalingOperatorType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSteadyFomWithJacobianAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_steady_problem(const TrialSubspaceType & trialSpace,  /*(4)*/
 			   const FomSystemType & fomSystem,
 			   const MaskerType & masker,

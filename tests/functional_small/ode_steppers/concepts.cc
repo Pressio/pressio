@@ -143,29 +143,6 @@ TEST(ode, concepts)
 {
   using namespace pressio::ode;
 
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert( OdeSystem<System1>, "");
-  static_assert(!CompleteOdeSystem<System1>, "");
-
-  static_assert(!OdeSystem<System2>, "");
-  static_assert(!CompleteOdeSystem<System2>, "");
-
-  static_assert(!OdeSystem<System3>, "");
-  static_assert(!CompleteOdeSystem<System3>, "");
-
-  static_assert( OdeSystemFusingMassMatrixAndRhs<System4>, "");
-
-  static_assert( !CompleteOdeSystem<System6>, "");
-  static_assert( CompleteOdeSystem<System7>, "");
-
-  static_assert(FullyDiscreteSystemWithJacobian<System9,  1>, "");
-  static_assert(FullyDiscreteSystemWithJacobian<System9,  2>, "");
-  static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>, "");
-  static_assert(!OdeSystem<System9>, "");
-  static_assert(!CompleteOdeSystem<System9>, "");
-
-#else
-
   static_assert(OdeSystem<System1>::value, "");
   static_assert(!CompleteOdeSystem<System1>::value, "");
 
@@ -185,6 +162,5 @@ TEST(ode, concepts)
   static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
   static_assert(!OdeSystem<System9>::value, "");
   static_assert(!CompleteOdeSystem<System9>::value, "");
-#endif
 
 }

@@ -58,10 +58,6 @@
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-#include "./rom/rom_concepts_cxx20.hpp"
-#else
 #include "./rom/rom_concepts.hpp"
-#endif
 
 #endif

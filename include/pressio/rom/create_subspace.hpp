@@ -11,10 +11,6 @@ template<
   class BasisMatrixType,
   class FullStateType
 >
-#ifdef PRESSIO_ENABLE_CXX20
-requires ReducedState<ReducedStateType>
-&& VectorSubspace< LinearSubspace<mpl::remove_cvref_t<BasisMatrixType>> >
-#endif
 auto create_trial_column_subspace(BasisMatrixType && basisMatrix,
 				  FullStateType && offset,
 				  bool isAffine)
