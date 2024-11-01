@@ -34,18 +34,12 @@ extensibility, maintainability, and usability of each component on its own.**
 One drawback is that at any point in time, the various components might
 have different maturity levels, so reaching a comparable and solid maturity
 across the stack might take some time---our current goal is to obtain
-in version ``1.0.0`` a uniform maturity level *at least* across
+in version ``1.0.0`` a uniform maturity level across
 the ``rom``, ``ode``, and ``solvers`` components. Please keep this in mind while browsing
 the documentation and the code.
 
-Notably, we have extracted the core operations from the ``Pressio/pressio`` repository
-in order to increase modularity and allow users to build their code directly on top of
-the ``pressio-ops`` if desired.
-
-However, it is still useful to understand ``pressio`` with the additional context of ``pressio-ops``
-to understand how the repositories fit together.
-
-The following components are included in ``Pressio/pressio`` and build off of the contents of ``pressio-ops``:
+The supported capabilities of ``Pressio/pressio`` are included in the table below.
+Each component (level) of the stack depends on the ones below it.
 
 |
 
@@ -75,32 +69,7 @@ The following components are included in ``Pressio/pressio`` and build off of th
      - ``<pressio/solvers_linear.hpp>``
 
 
-The following components are not included in the core ``Pressio/pressio`` library, and are instead part of the ``pressio-ops`` library.
-They are pulled in automatically when you install ``pressio``.
-
-|
-
-.. list-table::
-   :widths: 10 48 42
-   :header-rows: 1
-   :align: left
-
-   * - ``ops``
-     - shared-memory/distributed linear algebra kernels specializations
-     - ``<pressio/ops.hpp>``
-
-   * - ``expressions``
-     - expressions templates, e.g.: span, diagonal, subspan
-     - ``<pressio/expressions.hpp>``
-
-   * - ``type_traits``
-     - type traits and detection
-     - ``<pressio/type_traits.hpp>``
-
-   * - ``mpl``
-     - metaprogramming functionalities
-     - ``<pressio/mpl.hpp>``
-
+These components are built off of the `Pressio/pressio-ops <https://github.com/Pressio/pressio-ops>`_ library, which is pulled in automatically when ``pressio`` is installed.
 
 Get Started
 -----------
@@ -189,11 +158,7 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    ./components/ode
    ./components/nonlinsolvers
    ./components/linsolvers
-   ./components/ops
-   ./components/expressions
-   ./components/type_traits
    ./components/utils
-   ./components/mpl
 
 .. toctree::
    :caption: Miscellanea
