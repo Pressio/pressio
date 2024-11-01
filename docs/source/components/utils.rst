@@ -140,7 +140,7 @@ one you set via the ``define`` statement.
      plog::setVerbosity({plog::level::info});
      // ...
 
-The loggin macros
+The logging macros
 ^^^^^^^^^^^^^^^^^
 
 To actually issue log statements, you use the macros as in the following example:

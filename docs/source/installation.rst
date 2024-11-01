@@ -20,8 +20,6 @@ Dependencies
 
 Some parts of ``pressio`` contain code and implementations
 that are specific to third-party libraries (TPLs).
-An example is ``pressio/ops``\ , which contains kernels specializations
-for widely-used HPC libraries (e.g. Trilinos, Kokkos).
 The main reason for doing this is that we aim, where possible,
 to alleviate the user from writing custom operations and allow ``pressio`` to decide when and how to leverage
 the native libraries' operations to obtain the best performance.
@@ -110,6 +108,9 @@ but only processes the cmake arguments and copies the pressio headers to the
 install prefix ``<where-you-cloned-pressio>/install``.
 If you want, inspect the file ``<where-you-cloned-pressio>/install/pressio_cmake_config.h``
 which contains the cmake variables configuration.
+
+By default, this step will also clone and link to the ``Pressio/pressio-ops`` library,
+which contains essential operations for ``pressio``.
 
 We also remark that during the configuration step above pressio
 does not need to know where a target TPL exists in your system.
