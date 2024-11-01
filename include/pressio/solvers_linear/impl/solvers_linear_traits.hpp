@@ -57,6 +57,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseQR>
 #include <Eigen/OrderingMethods>
+#include <unsupported/Eigen/IterativeSolvers>
 #endif
 
 namespace pressio{ namespace linearsolvers{
@@ -70,6 +71,23 @@ struct Traits {
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
   static constexpr bool kokkos_enabled = false;
+#endif
+};
+
+template <>
+struct Traits<::pressio::linearsolvers::iterative::GMRES>
+{
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+  template <
+    typename MatrixOrOperatorT,
+    typename PrecT = Eigen::IdentityPreconditioner
+    >
+  using eigen_solver_type = Eigen::GMRES<MatrixOrOperatorT, PrecT>;
+
+  static constexpr bool eigen_enabled = true;
 #endif
 };
 

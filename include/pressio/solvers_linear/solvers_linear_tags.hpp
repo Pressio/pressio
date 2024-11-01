@@ -55,6 +55,7 @@ namespace iterative{
 struct CG {};
 struct LSCG {};
 struct Bicgstab {};
+struct GMRES{};
 }
 
 namespace direct{
