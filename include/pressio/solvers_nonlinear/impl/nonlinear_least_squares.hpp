@@ -117,6 +117,7 @@ class NonLinLeastSquares : public RegistryType
     InternalDiagnosticDataWithAbsoluteRelativeTracking<ScalarType> >;
   diagnostics_container diagnostics_;
   DiagnosticsLogger diagnosticsLogger_ = {};
+  std::optional<std::vector<scalar_of_t<StateType> > > parameters_;
 
 public:
   template<class ...Args>
@@ -156,6 +157,9 @@ public:
   void setStopCriterion(Stop value)	  { stopEnValue_ = value; }
   void setStopTolerance(ScalarType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)       { maxIters_ = newMax; }
+  auto & getLineSearchParameters(){
+    return parameters_; 
+  }
 
   // this method can be used when passing a system object
   // that is different but syntactically and semantically equivalent
@@ -230,7 +234,7 @@ private:
         stopEnValue_, stopTolerance_,
         diagnostics_, diagnosticsLogger_,
         maxIters_,
-        BacktrackStrictlyDecreasingObjectiveUpdater{});
+        BacktrackStrictlyDecreasingObjectiveUpdater<scalar_of_t<StateType> >(parameters_));
   }
 
   template<class SystemType, class _Tag = Tag>

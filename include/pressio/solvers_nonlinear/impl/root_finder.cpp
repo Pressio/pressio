@@ -116,6 +116,7 @@ class RootFinder : public RegistryType
     InternalDiagnosticDataWithAbsoluteRelativeTracking<NormValueType> >;
   norm_diagnostics_container normDiagnostics_;
   DiagnosticsLogger diagnosticsLogger_ = {};
+  std::optional<std::vector<scalar_of_t<StateType> > > parameters_;
 
 public:
   template<class ...Args>
@@ -152,6 +153,9 @@ public:
   void setStopCriterion(Stop value)	     { stopEnValue_ = value; }
   void setStopTolerance(NormValueType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)          { maxIters_ = newMax; }
+  auto & getLineSearchParameters(){
+    return parameters_; 
+  }
 
   template<class SystemType>
   void solve(const SystemType & system, StateType & solutionInOut)
@@ -176,8 +180,7 @@ public:
 
       root_solving_loop_impl(tag_, system, extReg, stopEnValue_, stopTolerance_,
 			     normDiagnostics_, diagnosticsLogger_, maxIters_,
-			     BacktrackStrictlyDecreasingObjectiveUpdater{});
-
+			     BacktrackStrictlyDecreasingObjectiveUpdater<scalar_of_t<StateType> >(parameters_));
     }
     else{
       throw std::runtime_error("Invalid criterion");
