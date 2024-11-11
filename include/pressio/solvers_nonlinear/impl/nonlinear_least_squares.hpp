@@ -117,7 +117,7 @@ class NonLinLeastSquares : public RegistryType
     InternalDiagnosticDataWithAbsoluteRelativeTracking<ScalarType> >;
   diagnostics_container diagnostics_;
   DiagnosticsLogger diagnosticsLogger_ = {};
-  std::optional<std::vector<scalar_of_t<StateType> > > parameters_;
+  std::optional<std::vector<scalar_trait_t<StateType> > > parameters_;
 
 public:
   template<class ...Args>
@@ -158,7 +158,7 @@ public:
   void setStopTolerance(ScalarType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)       { maxIters_ = newMax; }
   auto & getLineSearchParameters(){
-    return parameters_; 
+    return parameters_;
   }
 
   // this method can be used when passing a system object
@@ -230,11 +230,11 @@ private:
     // so we need to reset the data in the registry everytime
     reset_for_new_solve_loop(tag_, extReg);
 
+    BacktrackStrictlyDecreasingObjectiveUpdater<scalar_trait_t<StateType>> updater(parameters_);
     nonlin_ls_solving_loop_impl(tag_, system, extReg,
         stopEnValue_, stopTolerance_,
         diagnostics_, diagnosticsLogger_,
-        maxIters_,
-        BacktrackStrictlyDecreasingObjectiveUpdater<scalar_of_t<StateType> >(parameters_));
+        maxIters_, updater);
   }
 
   template<class SystemType, class _Tag = Tag>
