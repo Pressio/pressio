@@ -91,10 +91,22 @@ public:
   }
 };
 
+template <typename ScalarType> 
 class BacktrackStrictlyDecreasingObjectiveUpdater
 {
+private:
+  ScalarType  zeta_ = 1.;
+
 public:
-  template<class RegistryType, class ObjF, class ScalarType>
+  BacktrackStrictlyDecreasingObjectiveUpdater(std::optional<std::vector<ScalarType> > parameter)
+  {
+    if (parameter)
+    {
+      zeta_ = parameter.value().front(); 
+    }
+  }
+
+  template<class RegistryType, class ObjF>
   void operator()(RegistryType & reg,
 		  ObjF objective,
 		  ScalarType objectiveValueAtCurrentNewtonStep)
