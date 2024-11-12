@@ -65,22 +65,18 @@ if(PRESSIO_ENABLE_TPL_KOKKOS)
   # when trilinos is enabled it links kokkos too
   if(NOT PRESSIO_ENABLE_TPL_TRILINOS)
     # if kokkos is used as standalone lib, then we are more specific
-    # user needs to define: KOKKOS_ROOT_DIR and KOKKOS_KERNELS_ROOT_DIR
-    if (NOT KOKKOS_ROOT OR NOT KOKKOS_KERNELS_ROOT)
-message(FATAL_ERROR "Missing KOKKOS_ROOT. KOKKOS needs:
-        -D KOKKOS_ROOT=<full-path-to-kokkos-installation>
-        -D KOKKOS_KERNELS_ROOT=<full-path-to-kokkos-kernels-installation>
-        ")
+    # user needs to define: Kokkos_ROOT and KokkosKernels_ROOT
+    if (NOT Kokkos_ROOT OR NOT KokkosKernels_ROOT)
+      message(
+        FATAL_ERROR
+        "Missing Kokkos_ROOT. Kokkos needs:
+        -D Kokkos_ROOT=<full-path-to-kokkos-installation>
+        -D KokkosKernels_ROOT=<full-path-to-kokkos-kernels-installation>"
+      )
     endif()
-
-    set(KOKKOS_LIB_NAMES kokkoscontainers kokkoscore kokkoskernels)
-
-    include_directories(SYSTEM ${KOKKOS_ROOT}/include ${KOKKOS_KERNELS_ROOT}/include)
-
-    link_directories(${KOKKOS_ROOT}/lib ${KOKKOS_ROOT}/lib64
-${KOKKOS_KERNELS_ROOT}/lib ${KOKKOS_KERNELS_ROOT}/lib64)
-
-    link_libraries(${KOKKOS_LIB_NAMES})
+    find_package(Kokkos REQUIRED)
+    find_package(KokkosKernels REQUIRED)
+    link_libraries(Kokkos::kokkos Kokkos::kokkoskernels)
   endif()
 endif()
 

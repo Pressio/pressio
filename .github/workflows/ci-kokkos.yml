@@ -1,0 +1,97 @@
+name: github-Linux-Kokkos
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    branches: [main, develop]
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+  push: # for direct quick fixes
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
+
+jobs:
+  CI:
+    name: Kokkos
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ubuntu-gnu-kokkos-cpu-serial-11
+          - ubuntu-gnu-kokkos-cpu-openmp-11
+        build_type:
+          - Release
+          - Debug
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pressio/${{ matrix.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+    env:
+      num_cpus: 4
+      PRESSIO_INSTALL_DIR: ${{ github.workspace }}/pressio_install
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: |
+          cmake -B builddir \
+            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+            -D CMAKE_C_COMPILER=$CC \
+            -D CMAKE_CXX_COMPILER=$CXX \
+            -D CMAKE_CXX_FLAGS='-Wall -Werror' \
+            -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
+            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
+            -D Kokkos_ROOT=/kokkos/install \
+            -D KokkosKernels_ROOT=/kokkos-kernels/install \
+            -D PRESSIO_OPS_ENABLE_TESTS:BOOL=ON \
+
+      - name: Build
+        run: |
+          cmake --build builddir --target install
+
+      - name: Run tests
+        working-directory: builddir/tests
+        run: |
+          ctest -j $num_cpus --output-on-failure
+
+      - name: Example - include only with embedded definitions
+        working-directory: examples
+        run: |
+          $CXX \
+            --std=c++17 \
+            -DPRESSIO_ENABLE_TPL_KOKKOS \
+            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I/kokkos/install/include \
+            -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${PRESSIO_INSTALL_DIR}/include \
+            -c main_with_defines.cpp
+
+      - name: Test
+        working-directory: builddir
+        run: |
+          export LD_LIBRARY_PATH=/kokkos/install/lib:/kokkos-kernels/install/include
+          export OMPI_ALLOW_RUN_AS_ROOT=1
+          export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+          ctest -j $num_cpus --output-on-failure
