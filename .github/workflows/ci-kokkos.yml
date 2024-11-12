@@ -1,4 +1,4 @@
-name: github-Linux-Kokkos
+name: github-Linux-kokkos
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ concurrency:
   cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 jobs:
-  CI:
+  CI-kokkos:
     name: Kokkos
     continue-on-error: false
     strategy:
@@ -52,28 +52,62 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout pressio examples
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-templates-usage-as-library
+          path: examples
+          ref: add-compatibility-with-pressio-ops
+
+      - name: Checkout pressio-ops
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-ops
+          path: pressio-ops
+          ref: develop
+
+      - name: Preparing environment
+        run: |
+          sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile \
+          && wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
+          && mkdir -p /eigen \
+          && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
+
       - name: Configure
         run: |
           cmake -B builddir \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
-            -D CMAKE_C_COMPILER=$CC \
-            -D CMAKE_CXX_COMPILER=$CXX \
-            -D CMAKE_CXX_FLAGS='-Wall -Werror' \
-            -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc \
+            -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
+            -D MPI_Fortran_COMPILER:FILEPATH=/usr/bin/mpif90 \
+            -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+            -D PRESSIO_ENABLE_TPL_MPI:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
             -D Kokkos_ROOT=/kokkos/install \
             -D KokkosKernels_ROOT=/kokkos-kernels/install \
-            -D PRESSIO_OPS_ENABLE_TESTS:BOOL=ON \
+            -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
+            -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
+            -D CMAKE_CXX_FLAGS='-Wall -Werror'
 
       - name: Build
-        run: |
-          cmake --build builddir --target install
+        run: cmake --build builddir -j $num_cpus --target install
 
-      - name: Run tests
-        working-directory: builddir/tests
+      - name: Example - include only
+        working-directory: examples
         run: |
-          ctest -j $num_cpus --output-on-failure
+          $CXX \
+            --std=c++17 \
+            -DPRESSIO_ENABLE_TPL_EIGEN    \
+            -DPRESSIO_ENABLE_TPL_KOKKOS \
+            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I/kokkos/install/include \
+            -I/kokkos-kernels/install/include \     \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${PRESSIO_INSTALL_DIR}/include \
+            -c main.cpp
 
       - name: Example - include only with embedded definitions
         working-directory: examples
