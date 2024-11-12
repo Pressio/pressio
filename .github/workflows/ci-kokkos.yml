@@ -68,8 +68,7 @@ jobs:
 
       - name: Preparing environment
         run: |
-          sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile \
-          && wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
+          wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
           && mkdir -p /eigen \
           && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
 
@@ -78,12 +77,11 @@ jobs:
           cmake -B builddir \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-            -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc \
-            -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
-            -D MPI_Fortran_COMPILER:FILEPATH=/usr/bin/mpif90 \
+            -D CMAKE_C_COMPILER:FILEPATH=$CC \
+            -D CMAKE_CXX_COMPILER:FILEPATH=$CXX \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-            -D PRESSIO_ENABLE_TPL_MPI:BOOL=ON \
+            -D PRESSIO_ENABLE_TPL_MPI:BOOL=OFF \
             -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
             -D Kokkos_ROOT=/kokkos/install \
             -D KokkosKernels_ROOT=/kokkos-kernels/install \
@@ -126,6 +124,4 @@ jobs:
         working-directory: builddir
         run: |
           export LD_LIBRARY_PATH=/kokkos/install/lib:/kokkos-kernels/install/include
-          export OMPI_ALLOW_RUN_AS_ROOT=1
-          export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
           ctest -j $num_cpus --output-on-failure
