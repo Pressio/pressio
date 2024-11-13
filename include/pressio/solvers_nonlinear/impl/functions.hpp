@@ -38,6 +38,23 @@ void compute_residual(RegistryType & reg,
   system.residual(state, r);
 }
 
+#ifdef PRESSIO_ENABLE_CXX20
+template<class RegistryType, class SystemType>
+requires NonlinearSystem<SystemType>
+#else
+template<
+  class RegistryType, class SystemType,
+  std::enable_if_t< NonlinearSystem<SystemType>::value, int> = 0
+  >
+#endif
+void compute_residual(RegistryType & reg,
+		      const SystemType & system)
+{
+  const auto & state = reg.template get<StateTag>();
+  auto & r = reg.template get<ResidualTag>();
+  system.residual(state, r);
+}
+
 template<class RegistryType, class SystemType>
 void compute_residual_and_jacobian(RegistryType & reg,
 				   const SystemType & system)

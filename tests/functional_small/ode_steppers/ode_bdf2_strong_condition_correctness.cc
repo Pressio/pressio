@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "pressio/ode_steppers_implicit.hpp"
+#include <iomanip>
 
 struct MyApp
 {

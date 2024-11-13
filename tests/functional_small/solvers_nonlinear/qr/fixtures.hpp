@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "pressio/solvers_nonlinear.hpp"
 #include "qr_r9c4_gold.hpp"
+#include <iomanip>
 
 #ifdef PRESSIO_ENABLE_EPETRA
 #include "Epetra_MpiComm.h"

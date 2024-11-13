@@ -61,6 +61,44 @@ public:
   GETMETHOD(6)
 };
 
+template<class SystemType, class LinearSolverTag>
+class RegistryMatrixFreeNewtonKrylov
+{
+  using state_t    = typename SystemType::state_type;
+  using r_t        = typename SystemType::residual_type;
+
+  using Tag1 = nonlinearsolvers::CorrectionTag;
+  using Tag2 = nonlinearsolvers::InitialGuessTag;
+  using Tag3 = nonlinearsolvers::ResidualTag;
+  using Tag4 = nonlinearsolvers::impl::SystemTag;
+
+  state_t d1_;
+  state_t d2_;
+  r_t d3_;
+  SystemType const * d4_;
+
+public:
+  using linear_solver_tag = LinearSolverTag;
+
+  RegistryMatrixFreeNewtonKrylov(const SystemType & system)
+    : d1_(system.createState()),
+      d2_(system.createState()),
+      d3_(system.createResidual()),
+      d4_(&system){}
+
+  template<class TagToFind>
+  static constexpr bool contains(){
+    return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
+	    Tag1, Tag2, Tag3, Tag4>::value) < 4;
+  }
+
+  GETMETHOD(1)
+  GETMETHOD(2)
+  GETMETHOD(3)
+  GETMETHOD(4)
+};
+
+
 template<class SystemType, class InnSolverType>
 class RegistryGaussNewtonNormalEqs
 {
