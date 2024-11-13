@@ -65,6 +65,29 @@ public:
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
+  template<class _FomSystemType = FomSystemType>
+  std::enable_if_t<
+    std::is_same_v<
+      void,
+      decltype(
+	       std::declval<_FomSystemType const>().residual(
+							     std::declval<state_type const>(),
+							     std::declval<residual_type &>()
+							     )
+	       )
+    >
+  >
+  residual(const state_type & reducedState,
+	   residual_type & reducedResidual) const
+  {
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
+
+    fomSystem_.get().residual(fomState_, fomResidual_);
+    ::pressio::ops::product(::pressio::transpose(),
+			    1, phi, fomResidual_, 0, reducedResidual);
+  }
+
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & reducedResidual,
 			   std::optional<jacobian_type*> reducedJacobian) const
@@ -92,6 +115,41 @@ public:
 			      alpha, phi, fomJacAction_, beta,
 			      *reducedJacobian.value());
     }
+  }
+
+  template<class OperandT, class ResultT, class _FomSystemType = FomSystemType>
+  std::enable_if_t<
+    std::is_same_v<
+      void,
+      decltype(
+	       std::declval<_FomSystemType const>().jacobianAction(
+							     std::declval<state_type const &>(),
+							     std::declval<state_type const &>(),
+							     std::declval<state_type &>()
+							     )
+	       )
+      >
+  >
+  applyJacobian(const state_type & reducedState,
+		OperandT const & reducedOperand,
+		ResultT & out) const
+  {
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
+
+    auto auxVec = pressio::ops::clone(fomState_);
+    auto auxVec2 = pressio::ops::clone(fomState_);
+    pressio::ops::set_zero(auxVec);
+    trialSubspace_.get().mapFromReducedState(reducedOperand, auxVec2);
+
+    fomSystem_.get().jacobianAction(fomState_, reducedOperand, auxVec);
+
+    using scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
+    scalar_t alpha{1};
+    scalar_t beta{0};
+
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+    ::pressio::ops::product(::pressio::transpose(),
+			    alpha, phi, auxVec2, beta, out);
   }
 
 private:
