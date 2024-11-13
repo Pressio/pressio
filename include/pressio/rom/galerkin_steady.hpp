@@ -29,6 +29,7 @@ auto create_steady_problem(const TrialSubspaceType & trialSpace,   /*(1)*/
   return return_type(trialSpace, fomSystem);
 }
 
+
 // ------------------------------------------------------------------------
 // hyper-reduced
 // ------------------------------------------------------------------------
