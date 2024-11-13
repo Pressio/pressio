@@ -91,18 +91,18 @@ public:
   }
 };
 
-template <typename ScalarType> 
+template <typename ScalarType>
 class BacktrackStrictlyDecreasingObjectiveUpdater
 {
 private:
-  ScalarType  zeta_ = 1.;
+  ScalarType zeta_ = 1;
 
 public:
   BacktrackStrictlyDecreasingObjectiveUpdater(std::optional<std::vector<ScalarType> > parameter)
   {
     if (parameter)
     {
-      zeta_ = parameter.value().front(); 
+      zeta_ = parameter.value().front();
     }
   }
 
@@ -141,7 +141,7 @@ public:
 
 	// update : trialState = state + alpha*p_k
 	::pressio::ops::update(trialState, zero, state, one, p_k, alpha);
-	if (objective(trialState) <= objectiveValueAtCurrentNewtonStep){
+	if (objective(trialState) <= zeta_ * objectiveValueAtCurrentNewtonStep){
 	  PRESSIOLOG_DEBUG("backtrack; condition satisfied with alpha= {:6e}", alpha);
 	  ::pressio::ops::update(state, one, p_k, alpha);
 	  break;
