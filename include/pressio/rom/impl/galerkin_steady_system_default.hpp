@@ -75,7 +75,6 @@ public:
 							     std::declval<residual_type>()
 							     )
 	       )
-      >
     >
   >
   residual(const state_type & reducedState,
@@ -129,7 +128,6 @@ public:
 							     )
 	       )
       >
-    >
   >
   applyJacobian(const state_type & reducedState,
 		OperandT const & reducedOperand,
@@ -148,7 +146,7 @@ public:
 
     ::pressio::ops::product(::pressio::transpose(),
 			    1, phi, fomJacAction_, beta, outVec);
-
+#endif
   }
 
 private:
