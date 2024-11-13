@@ -55,34 +55,32 @@
 
 namespace pressio { namespace linearsolvers{
 
-template<typename UserDefinedOperatorType>
+template<typename UserDefinedLinearOperatorType>
 class OperatorWrapper;
 
 }}
 
 namespace Eigen {
   namespace internal {
-
-    template<typename UserDefinedOperatorType>
-    struct traits< pressio::linearsolvers::OperatorWrapper<UserDefinedOperatorType> >
+    template<typename UserDefinedLinearOperatorType>
+    struct traits< pressio::linearsolvers::OperatorWrapper<UserDefinedLinearOperatorType> >
       : public Eigen::internal::traits<
-      Eigen::Matrix<typename UserDefinedOperatorType::scalar_type,-1,-1>
+      Eigen::Matrix<typename UserDefinedLinearOperatorType::scalar_type,-1,-1>
       >
     {};
-
   }
 }
 
 namespace pressio { namespace linearsolvers{
 
-template<typename UserDefinedOperatorType>
+template<typename UserDefinedLinearOperatorType>
 class OperatorWrapper :
     public Eigen::EigenBase<
-  OperatorWrapper<UserDefinedOperatorType>
+  OperatorWrapper<UserDefinedLinearOperatorType>
   >
 {
 public:
-  using Scalar = typename UserDefinedOperatorType::scalar_type;
+  using Scalar = typename UserDefinedLinearOperatorType::scalar_type;
   using RealScalar = Scalar;
   using StorageIndex = int;
   enum {
@@ -92,7 +90,7 @@ public:
 
   OperatorWrapper() = default;
 
-  OperatorWrapper(UserDefinedOperatorType const & valueIn)
+  OperatorWrapper(UserDefinedLinearOperatorType const & valueIn)
     : m_userOperator(&valueIn) {}
 
 
@@ -100,27 +98,26 @@ public:
   int cols() const { return m_userOperator->cols(); }
 
   template<typename Rhs>
-  Eigen::Product<OperatorWrapper<UserDefinedOperatorType>, Rhs, Eigen::AliasFreeProduct>
+  Eigen::Product<OperatorWrapper<UserDefinedLinearOperatorType>, Rhs, Eigen::AliasFreeProduct>
   operator*(const Eigen::MatrixBase<Rhs>& x) const{
-    using r_t = Eigen::Product<OperatorWrapper<UserDefinedOperatorType>, Rhs, Eigen::AliasFreeProduct>;
+    using r_t = Eigen::Product<
+      OperatorWrapper<UserDefinedLinearOperatorType>, Rhs, Eigen::AliasFreeProduct
+    >;
     return r_t(*this, x.derived());
   }
 
-  void replace(const UserDefinedOperatorType & opIn) {
+  void replace(const UserDefinedLinearOperatorType & opIn) {
     m_userOperator = &opIn;
   }
 
   template<class OperandT, class ResultT>
   void applyAndAddTo(OperandT const & operand, ResultT & out) const {
-    //
     // compute: out += operator * operand
-
-    // out += *m_userOperator * operand;
     m_userOperator->applyAndAddTo(operand, out);
   }
 
 private:
-  UserDefinedOperatorType const *m_userOperator = nullptr;
+  UserDefinedLinearOperatorType const *m_userOperator = nullptr;
 };
 
 }} // end namespace pressio::linearsolvers
@@ -134,8 +131,8 @@ namespace Eigen {
       Rhs, DenseShape, DenseShape, GemvProduct
       >
       : generic_product_impl_base<
-         pressio::linearsolvers::OperatorWrapper<UserDefinedOpT>, Rhs,
-         generic_product_impl<pressio::linearsolvers::OperatorWrapper<UserDefinedOpT>, Rhs>
+        pressio::linearsolvers::OperatorWrapper<UserDefinedOpT>, Rhs,
+        generic_product_impl<pressio::linearsolvers::OperatorWrapper<UserDefinedOpT>, Rhs>
       >
     {
       using Scalar = typename Product<
@@ -164,17 +161,18 @@ namespace Eigen {
 
 namespace pressio { namespace linearsolvers{ namespace impl{
 
-template<typename TagType, typename UserDefinedOperatorType>
+template<typename TagType, typename UserDefinedLinearOperatorType>
 class EigenIterativeMatrixFree
-  : public IterativeBase< EigenIterativeMatrixFree<TagType, UserDefinedOperatorType>>
+  : public IterativeBase<
+    EigenIterativeMatrixFree<TagType, UserDefinedLinearOperatorType>
+  >
 {
 
 public:
-  using this_type = EigenIterative<TagType, UserDefinedOperatorType>;
-  // using matrix_type	= UserDefinedOperatorType;
-  using scalar_type = typename UserDefinedOperatorType::scalar_type;
+  using this_type = EigenIterative<TagType, UserDefinedLinearOperatorType>;
+  using scalar_type = typename UserDefinedLinearOperatorType::scalar_type;
   using solver_traits = ::pressio::linearsolvers::Traits<TagType>;
-  using op_wrapper_t = OperatorWrapper<UserDefinedOperatorType>;
+  using op_wrapper_t = OperatorWrapper<UserDefinedLinearOperatorType>;
   using native_solver_type = typename solver_traits::template eigen_solver_type<op_wrapper_t>;
   using base_iterative_type = IterativeBase<this_type>;
   using iteration_type = typename base_iterative_type::iteration_type;
@@ -195,7 +193,7 @@ public:
     return mysolver_.error();
   }
 
-  void resetLinearSystem(const UserDefinedOperatorType& A)
+  void resetLinearSystem(const UserDefinedLinearOperatorType& A)
   {
     mysolver_.setMaxIterations(this->maxIters_);
     m_wrapper.replace(A);
@@ -209,7 +207,7 @@ public:
   }
 
   template <typename T>
-  void solve(const UserDefinedOperatorType & A, const T& b, T & y){
+  void solve(const UserDefinedLinearOperatorType & A, const T& b, T & y){
     this->resetLinearSystem(A);
     this->solve(b, y);
   }

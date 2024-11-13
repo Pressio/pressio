@@ -98,6 +98,8 @@ class TagBasedStaticRegistryExtension
   extension_registry_type newReg_;
 
 public:
+  using extended_registry = Extendable;
+
   template<class ...CArgs>
   explicit TagBasedStaticRegistryExtension(Extendable & reg, CArgs && ... cargs)
     : reg_(reg), newReg_(std::forward<CArgs>(cargs)...){}

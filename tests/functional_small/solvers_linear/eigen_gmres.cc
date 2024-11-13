@@ -143,7 +143,7 @@ struct MyOperator{
 
   template<class OperandT, class ResultT>
   void applyAndAddTo(OperandT const & operand, ResultT & out) const {
-    out = m_A * operand;
+    out += m_A * operand;
   }
 
 private:

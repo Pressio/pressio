@@ -2,6 +2,8 @@
 #ifndef ODE_REF_APPS_FOR_TESTING_HPP_
 #define ODE_REF_APPS_FOR_TESTING_HPP_
 
+#include <iomanip>
+
 namespace pressio{ namespace ode{ namespace testing{
 
 struct AppEigenA

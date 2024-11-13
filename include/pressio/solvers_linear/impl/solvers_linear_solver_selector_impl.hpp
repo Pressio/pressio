@@ -70,14 +70,14 @@ struct Selector{
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename UserDefinedOperatorType>
+template<typename UserDefinedLinearOperatorType>
 struct Selector<
-  iterative::GMRES, UserDefinedOperatorType, void
+  iterative::GMRES, UserDefinedLinearOperatorType, void
   >
 {
   using tag_t = iterative::GMRES;
   using solver_traits = ::pressio::linearsolvers::Traits<tag_t>;
-  using type = EigenIterativeMatrixFree<tag_t, UserDefinedOperatorType>;
+  using type = EigenIterativeMatrixFree<tag_t, UserDefinedLinearOperatorType>;
 };
 
 template<typename TagType, typename MatrixType>
