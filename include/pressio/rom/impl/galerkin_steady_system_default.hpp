@@ -72,7 +72,7 @@ public:
       decltype(
 	       std::declval<_FomSystemType const>().residual(
 							     std::declval<state_type const>(),
-							     std::declval<residual_type>()
+							     std::declval<residual_type &>()
 							     )
 	       )
     >
@@ -122,9 +122,10 @@ public:
     std::is_same_v<
       void,
       decltype(
-	       std::declval<_FomSystemType const>().applyJacobian(
-							     std::declval<state_type const>(),
-							     std::declval<residual_type>()
+	       std::declval<_FomSystemType const>().jacobianAction(
+							     std::declval<state_type const &>(),
+							     std::declval<state_type const &>(),
+							     std::declval<state_type &>()
 							     )
 	       )
       >
@@ -133,20 +134,22 @@ public:
 		OperandT const & reducedOperand,
 		ResultT & out) const
   {
-#if 0
-    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     auto auxVec = pressio::ops::clone(fomState_);
     auto auxVec2 = pressio::ops::clone(fomState_);
-    pressio::ops::set_sero(auxVec);
-    trialSubspace_.get().mapFromReducedState(reducedOperand, auxVec2_);
+    pressio::ops::set_zero(auxVec);
+    trialSubspace_.get().mapFromReducedState(reducedOperand, auxVec2);
 
-    fomSystem_.applyJacobian(fomState_, reducedOperand, auxVec);
+    fomSystem_.get().jacobianAction(fomState_, reducedOperand, auxVec);
 
+    using scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
+    scalar_t alpha{1};
+    scalar_t beta{0};
+
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     ::pressio::ops::product(::pressio::transpose(),
-			    1, phi, fomJacAction_, beta, outVec);
-#endif
+			    alpha, phi, auxVec2, beta, out);
   }
 
 private:
