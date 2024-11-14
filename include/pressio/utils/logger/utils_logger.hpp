@@ -104,29 +104,12 @@ void setVerbosity(std::initializer_list<::pressio::log::level> levels)
 
 #if !defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_TRACE
 #define PRESSIOLOG_TRACE(...) (void)0
-#endif
-
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_DEBUG
 #define PRESSIOLOG_DEBUG(...) (void)0
-#endif
-
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_INFO
 #define PRESSIOLOG_INFO(...) (void)0
-#endif
-
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_WARN
 #define PRESSIOLOG_WARN(...) (void)0
-#endif
-
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_ERROR
 #define PRESSIOLOG_ERROR(...) (void)0
-#endif
-
-#if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_CRITICAL
 #define PRESSIOLOG_CRITICAL(...) (void)0
-#endif
 
 #else // defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
 
