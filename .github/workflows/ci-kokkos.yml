@@ -89,6 +89,11 @@ jobs:
       - name: Example - include only
         working-directory: examples
         run: |
+          ls && \
+          ls /kokkos &&
+          ls /kokkos/install &&
+          ls /kokkos-kernels &&
+          ls /kokkos-kernels/install &&
           $CXX \
             --std=c++17 \
             -DPRESSIO_ENABLE_TPL_KOKKOS \
