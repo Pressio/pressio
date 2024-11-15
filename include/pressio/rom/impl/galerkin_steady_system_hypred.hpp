@@ -80,7 +80,10 @@ public:
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
-    std::optional<fom_jac_action_result_type *> fomJacActionOpt = (reducedJacobian) ? &fomJacAction_ : {};
+    std::optional<fom_jac_action_result_type *> fomJacActionOpt;
+    if (reducedJacobian) {
+      fomJacActionOpt = &fomJacAction_;
+    }
     fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi, fomJacActionOpt);
 
     hyperReducer_(fomResidual_, reducedResidual);
