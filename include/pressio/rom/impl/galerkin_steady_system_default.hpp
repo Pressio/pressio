@@ -101,8 +101,11 @@ public:
     using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
     constexpr auto beta = static_cast<R_scalar_t>(0);
 
-    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi,
-					       std::optional<fom_jac_action_result_type *>(&fomJacAction_));
+    std::optional<fom_jac_action_result_type *> fomJacActionOpt;
+    if (reducedJacobian) {
+      fomJacActionOpt = &fomJacAction_;
+    }
+    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi, fomJacActionOpt);
 
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomResidual_, beta, reducedResidual);
