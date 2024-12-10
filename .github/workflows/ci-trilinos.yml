@@ -32,9 +32,8 @@ jobs:
         image:
           - ubuntu-gnu-trilinos-11
         tag:
-          - ef73d14
-          - 702aac5
-          - trilinos-release-14-4-0
+          - 0dc4553
+          - 5bbda25
         build_type:
           - Release
           - Debug
