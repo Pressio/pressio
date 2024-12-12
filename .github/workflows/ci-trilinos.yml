@@ -65,7 +65,7 @@ jobs:
       with:
         repository: Pressio/pressio-ops
         path: pressio-ops
-        ref: develop
+        ref: update-trilinos-containers # develop
 
     - name: Preparing environment
       run: |
