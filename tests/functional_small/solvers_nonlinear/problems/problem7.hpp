@@ -1,11 +1,11 @@
 
-#ifndef NONLINEAR_SOLVERS_TESTS_PROBLEM6_HPP_
-#define NONLINEAR_SOLVERS_TESTS_PROBLEM6_HPP_
+#ifndef NONLINEAR_SOLVERS_TESTS_PROBLEM7_HPP_
+#define NONLINEAR_SOLVERS_TESTS_PROBLEM7_HPP_
 
 namespace pressio{ namespace solvers{ namespace test{
 
 template<class scalar_t = double>
-struct Problem6
+struct Problem7
 {
   using scalar_type   = double;
   using state_type    = Tpetra::Vector<>;
