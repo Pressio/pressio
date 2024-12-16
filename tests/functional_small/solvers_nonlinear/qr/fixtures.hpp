@@ -7,10 +7,6 @@
 #include "qr_r9c4_gold.hpp"
 #include <iomanip>
 
-#ifdef PRESSIO_ENABLE_EPETRA
-#include "Epetra_MpiComm.h"
-#endif // PRESSIO_ENABLE_EPETRA
-
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "Eigen/Dense"
 #endif
@@ -82,83 +78,6 @@ struct eigenDenseR9Fixture
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifdef PRESSIO_ENABLE_EPETRA
-struct epetraR9Fixture
-  : public ::testing::Test{
-
-  using this_t	 = epetraR9Fixture;
-  using mymvec_t = Epetra_MultiVector;
-  using myvec_t	 = Epetra_Vector;
-
-  // gold solution
-  pressio::qr::test::qrGoldr9c4Sol<double> gold_;
-
-  std::shared_ptr<Epetra_MpiComm> comm_;
-  std::shared_ptr<Epetra_Map> rowMap_;
-  std::shared_ptr<mymvec_t> A_;
-  std::shared_ptr<myvec_t> v_;
-
-  const int numVectors_ = pressio::qr::test::numVectors_;
-  int rank_ = {};
-  int numProc_ = {};
-  int numGlobalEntries_ = {};
-  int localSize_ = {};
-  int shift_	 = {};
-
-  virtual void SetUp(){
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
-    rank_ = comm_->MyPID();
-    numProc_ = comm_->NumProc();
-    localSize_ = (rank_==0) ? 5 : 4;
-    shift_ = (rank_==0) ? 0 : 5;
-    assert(numProc_ == 2);
-    numGlobalEntries_ = pressio::qr::test::numRows_;
-
-    rowMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
-    A_ = std::make_shared<mymvec_t>(*rowMap_, numVectors_);
-    v_ = std::make_shared<myvec_t>(*rowMap_);
-    A_->PutScalar(0);
-    v_->PutScalar(0);
-
-    fillVector();
-    fillMatrix();
-  }
-
-  void fillMatrix()
-  {
-    if(rank_==0){
-      (*A_)[0][0] = 3.2; (*A_)[1][0] = 1.2;  (*A_)[2][0] = 1.;
-      (*A_)[0][1] = 1.2; (*A_)[2][1] = -2.2;
-      (*A_)[1][2] = 4.0; (*A_)[3][2] = -2.;
-      (*A_)[1][3] = 4.;
-      (*A_)[2][4] = -1.; (*A_)[3][4] = -4.;
-    }
-    if(rank_==1){
-      (*A_)[0][0] = 0.2; (*A_)[1][0] = 5.;     (*A_)[2][0] = 1.;
-      (*A_)[0][1] = 1.;  (*A_)[1][1] = 1.1;    (*A_)[2][1] = 1.25; (*A_)[3][1] = -3.;
-      (*A_)[2][2] = 1.;  (*A_)[1][2] = 0.1111; (*A_)[3][2] = 6.;
-    }
-    // A_->Print(std::cout);
-  }
-
-  void fillVector(){
-    pressio::ops::fill(*v_.get(), 1.);
-  }
-
-  void checkQFactor(const mymvec_t & Q){
-    EXPECT_EQ( Q.GlobalLength(),   ::pressio::qr::test::numRows_);
-    EXPECT_EQ( Q.NumVectors(), ::pressio::qr::test::numVectors_);
-
-    for (auto i=0; i<localSize_; i++)
-      for (auto j=0; j<Q.NumVectors(); j++){
-	       EXPECT_NEAR(std::abs(Q[j][i]), std::abs(gold_.trueQ_(i+shift_,j)), 1e-6);
-      }
-  }
-
-  virtual void TearDown(){}
-};
-#endif // PRESSIO_ENABLE_EPETRA
 // --------------------------------------------
 struct tpetraR9Fixture
   : public ::testing::Test{
