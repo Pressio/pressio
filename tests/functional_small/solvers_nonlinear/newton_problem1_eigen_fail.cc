@@ -60,7 +60,7 @@ struct AdaptedProblem1 : pressio::solvers::test::Problem1
       // the following:
       //    VelocityFailureUnrecoverable
       //    DiscreteTimeResidualFailureUnrecoverable
-      // However, those are never explitily thrown, and so
+      // However, those are never explicitly thrown, and so
       // we have to manually throw the exception here.
       throw pressio::eh::ResidualEvaluationFailureUnrecoverable();
     } else if constexpr (failType == FailType::LineSearchObjFunctionChangeTooSmall) {
