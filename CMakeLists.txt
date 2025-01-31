@@ -27,6 +27,30 @@ else()
   set(PRESSIO_OPS_INCLUDE_DIR ${pressio-ops_SOURCE_DIR}/include)
 endif()
 
+# pull in pressio-log and read macros
+#=====================================================================
+if(PRESSIO_LOG_INCLUDE_DIR)
+  message("${Green}-- Using ${PRESSIO_LOG_INCLUDE_DIR}")
+  include_directories(SYSTEM ${PRESSIO_LOG_INCLUDE_DIR})
+
+else()
+
+  include(FetchContent)
+  message("${Green}-- PRESSIO_LOG_INCLUDE_DIR is not defined, so fetching pressio-log...")
+
+  FetchContent_Declare(
+    pressio-log
+    GIT_REPOSITORY https://github.com/Pressio/pressio-log.git
+    GIT_TAG        main
+    GIT_PROGRESS   TRUE
+    GIT_SHALLOW    TRUE
+  )
+
+  FetchContent_MakeAvailable(pressio-log)
+  set(PRESSIO_LOG_INCLUDE_DIR ${pressio-log_SOURCE_DIR}/include)
+
+endif()
+
 # versioning
 #=====================================================================
 # adapted from Eigen
@@ -74,7 +98,7 @@ if(PRESSIO_ENABLE_TESTS)
 
   target_include_directories(
     pressio INTERFACE
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${PRESSIO_OPS_INCLUDE_DIR}>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${PRESSIO_OPS_INCLUDE_DIR};${PRESSIO_LOG_INCLUDE_DIR}>"
   )
 
   enable_testing()

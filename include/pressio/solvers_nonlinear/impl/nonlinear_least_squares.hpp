@@ -2,6 +2,8 @@
 #ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_
 #define PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_
 
+#include <utility>
+
 namespace pressio{
 namespace nonlinearsolvers{
 namespace impl{
@@ -52,11 +54,11 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
       normDiagnostics[InternalDiagnostic::objectiveAbsoluteRelative].update(objValue, isFirstIteration);
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
     catch (::pressio::eh::ResidualHasNans const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
 
@@ -89,12 +91,12 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
     catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
   }

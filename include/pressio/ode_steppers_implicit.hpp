@@ -53,7 +53,7 @@
 #include "pressio/type_traits.hpp"
 #include "pressio/ops.hpp"
 
-#include "./utils.hpp"
+#include "pressio-log/core.hpp"
 #include "./solvers.hpp"
 #include "./ode_concepts.hpp"
 #include "./ode/exceptions.hpp"

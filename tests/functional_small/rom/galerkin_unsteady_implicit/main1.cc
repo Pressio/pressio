@@ -119,8 +119,7 @@ TEST(rom_galerkin_implicit, default_bdf1)
   // test for default implicit galerkin using BDF1
   // all numbers have been computed manually
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   // create fom
   using fom_t = MyFom;
@@ -158,5 +157,5 @@ TEST(rom_galerkin_implicit, default_bdf1)
   EXPECT_TRUE(romState[1] == 3.);
   EXPECT_TRUE(romState[2] == 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

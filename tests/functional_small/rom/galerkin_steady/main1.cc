@@ -110,8 +110,7 @@ struct FakeNonLinSolverSteady
 TEST(rom_galerkin_steady, default)
 {
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   constexpr int N = 8;
   using fom_t = MyFom;
@@ -142,5 +141,5 @@ TEST(rom_galerkin_steady, default)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

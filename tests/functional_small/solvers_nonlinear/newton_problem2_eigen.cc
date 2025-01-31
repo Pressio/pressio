@@ -6,8 +6,7 @@
 
 TEST(solvers_nonlinear, problem1A)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   using namespace pressio;
   using problem_t  = solvers::test::Problem2;
@@ -32,5 +31,5 @@ TEST(solvers_nonlinear, problem1A)
   ASSERT_TRUE(e2<1e-7);
   std::cout << y << std::endl;
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

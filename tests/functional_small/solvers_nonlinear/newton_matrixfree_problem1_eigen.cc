@@ -50,8 +50,7 @@ public:
 
 TEST(solvers_nonlinear, problem1MatrixFree)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   using namespace pressio;
   using problem_t  = Problem1MatrixFree;
@@ -72,5 +71,5 @@ TEST(solvers_nonlinear, problem1MatrixFree)
   ASSERT_TRUE(e1<1e-8);
   ASSERT_TRUE(e2<1e-8);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

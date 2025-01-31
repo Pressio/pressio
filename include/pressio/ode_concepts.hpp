@@ -53,7 +53,7 @@
 #include "pressio/type_traits.hpp"
 #include "pressio/ops.hpp"
 
-#include "./utils.hpp"
+#include "pressio-log/core.hpp"
 #include "./ode/ode_strong_types.hpp"
 #include "./ode/ode_enum_and_tags.hpp"
 #include "./ode/ode_stencil_containers.hpp"

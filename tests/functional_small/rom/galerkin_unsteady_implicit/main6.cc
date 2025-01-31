@@ -110,8 +110,7 @@ TEST(rom_galerkin_implicit, default_with_massmatrix_bdf1)
 {
   // implicit default galerkin with mass matrix
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   // create fom
   using fom_t = MyFom;
@@ -145,5 +144,5 @@ TEST(rom_galerkin_implicit, default_with_massmatrix_bdf1)
   pressio::ode::advance_n_steps(problem, romState, time_type{0}, dt,
 				::pressio::ode::StepCount(1), solver);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

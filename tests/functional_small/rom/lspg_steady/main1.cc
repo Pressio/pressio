@@ -133,8 +133,7 @@ TEST(rom_lspg_steady, test1)
     - fom applyJac appJac(B) always returns B += 1
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   constexpr int N = 8;
   using fom_t = MyFom;
@@ -168,5 +167,5 @@ TEST(rom_lspg_steady, test1)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

@@ -123,8 +123,7 @@ struct MyFakeSolver
 
 int main()
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::trace});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::basic, pressiolog::LogTo::console);
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
@@ -151,6 +150,6 @@ int main()
     (stepperObj, y, 0., 0.4, dtManager, solver);
 
   std::cout << checkStr << std::endl;
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
   return 0;
 }

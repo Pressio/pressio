@@ -224,8 +224,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_crank_nicolson_correctness_default_policy)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
@@ -243,13 +242,12 @@ TEST(ode, implicit_crank_nicolson_correctness_default_policy)
   EXPECT_TRUE(y(1)==8.);
   EXPECT_TRUE(y(2)==9.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
 
 TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   using app_t   = MyApp;
   using state_t = typename app_t::state_type;
@@ -272,5 +270,5 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
   EXPECT_TRUE(y(1)==8.);
   EXPECT_TRUE(y(2)==9.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

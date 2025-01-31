@@ -160,8 +160,7 @@ TEST(rom_lspg_steady, test4)
 {
   /* steady masked LSPG */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   const int N = 15;
   const std::vector<int> indices_to_corrupt = {1,3,5,7,9,11,13};
@@ -203,5 +202,5 @@ TEST(rom_lspg_steady, test4)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

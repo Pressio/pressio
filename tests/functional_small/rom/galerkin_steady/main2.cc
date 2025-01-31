@@ -48,8 +48,7 @@ TEST(rom_galerkin_steady, default_matrix_free)
     just supposed to compile for now
   */
 
-  log::initialize(logto::terminal);
-  log::setVerbosity({log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   constexpr int N = 8;
   using fom_t = MyFom;
@@ -70,5 +69,5 @@ TEST(rom_galerkin_steady, default_matrix_free)
   auto romState = space.createReducedState();
   nonLinSolver.solve(romState);
 
-  log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

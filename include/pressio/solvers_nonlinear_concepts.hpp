@@ -52,7 +52,7 @@
 #include "pressio/mpl.hpp"
 #include "pressio/type_traits.hpp"
 
-#include "./utils.hpp"
+#include "pressio-log/core.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
 #include "solvers_nonlinear/solvers_concepts_cxx20.hpp"

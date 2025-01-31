@@ -59,11 +59,11 @@ void root_solving_loop_impl(NewtonTag /*problemTag*/,
       compute_residual_and_jacobian(reg, system);
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
     catch (::pressio::eh::ResidualHasNans const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
 
@@ -92,12 +92,12 @@ void root_solving_loop_impl(NewtonTag /*problemTag*/,
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
     catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
   }
@@ -212,11 +212,11 @@ void root_solving_loop_impl(MatrixFreeNewtonTag /*problemTag*/,
       compute_residual(reg, system);
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
     catch (::pressio::eh::ResidualHasNans const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
 
@@ -252,12 +252,12 @@ void root_solving_loop_impl(MatrixFreeNewtonTag /*problemTag*/,
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
     catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
   }

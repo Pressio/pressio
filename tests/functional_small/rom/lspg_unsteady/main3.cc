@@ -370,8 +370,7 @@ TEST(rom_lspg_unsteady, test3)
 {
   /* masked lspg eigen */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   const std::vector<int> rows_to_corrupt_ = {1,3,5,7,9,11,13};\
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14};\
@@ -411,5 +410,5 @@ TEST(rom_lspg_unsteady, test3)
   EXPECT_DOUBLE_EQ(romState[1], 5.);
   EXPECT_DOUBLE_EQ(romState[2], 6.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

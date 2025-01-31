@@ -110,8 +110,7 @@ TEST(rom_galerkin_explicit, masked_velo_euler_forward)
     is doing the same thing the default galerkin main1.cc
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   constexpr int nFull = 20;\
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14,16,18};
@@ -166,5 +165,5 @@ TEST(rom_galerkin_explicit, masked_velo_euler_forward)
   EXPECT_DOUBLE_EQ(romState[1], 2611.);
   EXPECT_DOUBLE_EQ(romState[2], 5222.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

@@ -85,8 +85,7 @@ TEST(rom_galerkin_explicit, default)
       rom_state|_step2 = [0,51,102]^T + phi^T f(y_fom, t=1.) = [0, 2611, 5222]
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
 
   // create fom
   constexpr int N = 10;
@@ -123,5 +122,5 @@ TEST(rom_galerkin_explicit, default)
   EXPECT_DOUBLE_EQ(romState[1], 2611.);
   EXPECT_DOUBLE_EQ(romState[2], 5222.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

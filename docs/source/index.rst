@@ -158,7 +158,6 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    ./components/ode
    ./components/nonlinsolvers
    ./components/linsolvers
-   ./components/utils
 
 .. toctree::
    :caption: Miscellanea

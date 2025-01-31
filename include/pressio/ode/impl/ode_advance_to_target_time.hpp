@@ -162,7 +162,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 	      throw std::runtime_error("Violation of minimum time step while trying to recover time step");
 	    }
 
-	    PRESSIOLOG_CRITICAL("time step={} failed, retrying with dt={}", step, dt.get());
+	    PRESSIOLOG_ERROR("time step={} failed, retrying with dt={}", step, dt.get());
 	  }
 	}
       }
