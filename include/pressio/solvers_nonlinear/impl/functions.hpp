@@ -152,9 +152,7 @@ auto compute_nonlinearls_objective(CompactWeightedGaussNewtonNormalEqTag /*tag*/
 
   const auto v = ::pressio::ops::dot(Wr, Wr);
   using sc_t = mpl::remove_cvref_t< decltype(v) >;
-  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
-  return v*(one/two);
+  return v * (static_cast<sc_t>(1) / static_cast<sc_t>(2));
 }
 
 #ifdef PRESSIO_ENABLE_CXX20
@@ -253,6 +251,13 @@ auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag 
   return v * (static_cast<sc_t>(1) / static_cast<sc_t>(2));
 }
 
+/* Special case of weighted Gauss Newton, just changing the action of W such that
+    H = (J^T_r * W^T) * (W * J_r)
+    g = (J^T_r * W^T) * (W * r)
+  In instances where W is shape [M x N] and M << N, this results in a significant memory usage reduction
+  Particularly useful for GNAT on large sample meshes,
+    where M is the number of modes and N is the number of sampling points
+*/
 #ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
 requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
@@ -287,9 +292,7 @@ auto compute_nonlinearls_operators_and_objective(CompactWeightedGaussNewtonNorma
 
   using sc_t = scalar_trait_t<typename SystemType::state_type>;
   const auto v = ::pressio::ops::dot(Wr, Wr);
-  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
-  constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
-  return v*(one/two);
+  return v * (static_cast<sc_t>(1) / static_cast<sc_t>(2));
 }
 
 

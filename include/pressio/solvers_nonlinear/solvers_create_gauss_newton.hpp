@@ -180,6 +180,11 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
      std::forward<WeightingOpType>(weigher));
 }
 
+
+/*
+  Same as Weighted gauss-newton, but generalizes use of weighting tag
+  E.g., allowing the special case of using CompactWeightedGaussNewtonNormalEqTag,
+*/
 template<class SystemType, class LinearSolverType, class WeightingOpType, class TagType>
 auto create_gauss_newton_solver(const SystemType & system,           /*(3)*/
 				LinearSolverType && linSolver,

@@ -3,6 +3,8 @@
 #include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem3.hpp"
 
+#include <iomanip>
+
 template<class scalar_t>
 struct IdentityWeigher{
 
