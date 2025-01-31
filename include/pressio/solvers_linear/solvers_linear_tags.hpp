@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
-#define SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
+#ifndef PRESSIO_SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
+#define PRESSIO_SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
 
 namespace pressio{ namespace linearsolvers{
 
@@ -55,6 +55,7 @@ namespace iterative{
 struct CG {};
 struct LSCG {};
 struct Bicgstab {};
+struct GMRES{};
 }
 
 namespace direct{
@@ -69,4 +70,4 @@ struct geqrf{};
 
 }}
 
-#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
+#endif  // PRESSIO_SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_

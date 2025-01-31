@@ -30,8 +30,8 @@
  without including the above copyright and permission notices.
  */
 
-#ifndef UTILS_LOGGER_FMT_BUNDLED_FORMAT_HPP_
-#define UTILS_LOGGER_FMT_BUNDLED_FORMAT_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_FMT_BUNDLED_FORMAT_HPP_
+#define PRESSIO_UTILS_LOGGER_FMT_BUNDLED_FORMAT_HPP_
 
 #include <algorithm>
 #include <cerrno>
@@ -3726,4 +3726,4 @@ FMT_END_NAMESPACE
 #  define FMT_FUNC
 #endif
 
-#endif  // UTILS_LOGGER_FMT_BUNDLED_FORMAT_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_FMT_BUNDLED_FORMAT_HPP_

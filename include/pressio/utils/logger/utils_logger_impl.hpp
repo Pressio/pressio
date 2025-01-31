@@ -1,6 +1,6 @@
 
-#ifndef UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
-#define UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
+#define PRESSIO_UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
@@ -107,8 +107,7 @@ std::shared_ptr<spdlog::logger> create(::pressio::logto en,
     return std::make_shared<spdlog::logger>(loggerName,
 					    spdlog::sinks_init_list({terminal_sink}));
   }
-  else if (en == ::pressio::logto::fileAndTerminal or
-	   en == ::pressio::logto::terminalAndFile)
+  else if (en == ::pressio::logto::fileAndTerminal)
   {
     if (fileName == "void"){
       throw std::runtime_error("Invalid filename to initialize logger.");
@@ -143,4 +142,4 @@ std::shared_ptr<spdlog::logger> create(::pressio::logto en,
 
 }}}//end namespace pressio::log::impl
 
-#endif  // UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_

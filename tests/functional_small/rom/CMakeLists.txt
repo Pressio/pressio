@@ -29,6 +29,7 @@ endif()
 if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SOURCES_GALERKIN_STEADY
     ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main1.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main2.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main3.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main4.cc)
   add_serial_utest(${TESTING_LEVEL}_rom_galerkin_steady ${SOURCES_GALERKIN_STEADY})

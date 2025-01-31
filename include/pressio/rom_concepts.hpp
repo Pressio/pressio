@@ -49,19 +49,15 @@
 #ifndef PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
 #define PRESSIO_ROM_CONCEPTS_TOPLEVEL_INC_HPP_
 
-#include "./mpl.hpp"
+#include "pressio/mpl.hpp"
+#include "pressio/type_traits.hpp"
+#include "pressio/ops.hpp"
+
 #include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
 #include "./solvers_linear.hpp"
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"
 
-#ifdef PRESSIO_ENABLE_CXX20
-#include "./rom/rom_concepts_cxx20.hpp"
-#else
 #include "./rom/rom_concepts.hpp"
-#endif
 
 #endif

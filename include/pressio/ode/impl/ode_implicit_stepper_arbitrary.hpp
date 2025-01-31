@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
-#define ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#define PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -78,7 +78,7 @@ private:
   IndVarType dt_ = {};
   typename StepCount::value_type stepNumber_  = {};
 
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<SystemType> systemObj_;
   stencil_states_t stencilStates_;
   // state object to ensure the strong guarantee for handling excpetions
   StateType recoveryState_;
@@ -138,11 +138,7 @@ public:
   std::enable_if_t< _numAuxStates==1 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jo) const
-#else
-                      jacobian_type* Jo) const
-#endif
   {
     const auto & yn = stencilStates_(ode::n());
 
@@ -160,11 +156,7 @@ public:
   std::enable_if_t< _numAuxStates==2 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jo) const
-#else
-                      jacobian_type* Jo) const
-#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
@@ -184,11 +176,7 @@ public:
   std::enable_if_t< _numAuxStates==3 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jo) const
-#else
-                      jacobian_type* Jo) const
-#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
@@ -276,4 +264,4 @@ private:
 };
 
 }}}
-#endif  // ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_

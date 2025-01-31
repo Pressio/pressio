@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_MASKED_RHS_AND_JACOBIAN_HPP_
-#define ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_MASKED_RHS_AND_JACOBIAN_HPP_
+#ifndef PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_MASKED_RHS_AND_JACOBIAN_HPP_
+#define PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_MASKED_RHS_AND_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -87,11 +87,7 @@ public:
   void rhsAndJacobian(const state_type & reducedState,
 		      const IndVarType & rhsEvaluationTime,
 		      rhs_type & reducedRhs,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> reducedJacobian) const
-#else
-                      jacobian_type* reducedJacobian) const
-#endif
   {
 
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
@@ -103,11 +99,7 @@ public:
       const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
       fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, unMaskedFomJacAction_);
       masker_(unMaskedFomJacAction_, maskedFomJacAction_);
-#ifdef PRESSIO_ENABLE_CXX17
       hyperReducer_(maskedFomJacAction_, rhsEvaluationTime, *reducedJacobian.value());
-#else
-      hyperReducer_(maskedFomJacAction_, rhsEvaluationTime, *reducedJacobian);
-#endif
     }
   }
 
@@ -128,4 +120,4 @@ private:
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_MASKED_RHS_AND_JACOBIAN_HPP_
+#endif  // PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_MASKED_RHS_AND_JACOBIAN_HPP_

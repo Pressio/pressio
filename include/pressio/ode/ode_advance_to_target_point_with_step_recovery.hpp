@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
-#define ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
+#ifndef PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
+#define PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
@@ -61,17 +61,10 @@ template<
   class StepSizePolicyType,
   class IndVarType
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       StronglySteppable<StepperType>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType &&, IndVarType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppable<StepperType>
-	&& StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
-void
-#endif
+std::enable_if_t<
+     StronglySteppable<StepperType>::value
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType &&, IndVarType>::value
+  >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -95,19 +88,11 @@ template<
   class ObserverType,
   class IndVarType
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       StronglySteppable<StepperType>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
-    && StateObserver<ObserverType&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppable<StepperType>
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
-    && StateObserver<ObserverType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+     StronglySteppable<StepperType>::value
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
+  && StateObserver<ObserverType&&, IndVarType, StateType>::value
+  >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -126,4 +111,4 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 
 
 }}//end namespace pressio::ode
-#endif  // ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_
+#endif  // PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_HPP_

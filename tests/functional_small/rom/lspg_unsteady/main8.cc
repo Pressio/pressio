@@ -92,11 +92,7 @@ public:
    double dt,
    discrete_residual_type & R,
    const __this_test_phi_type & B,
-#ifdef PRESSIO_ENABLE_CXX17
-               std::optional<__this_test_phi_type*> /*JA*/,
-#else
-               __this_test_phi_type* /*JA*/,
-#endif
+   std::optional<__this_test_phi_type*> /*JA*/,
    const state_type & y_np1,
    const state_type & y_n ) const
   {

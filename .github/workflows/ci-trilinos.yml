@@ -32,9 +32,8 @@ jobs:
         image:
           - ubuntu-gnu-trilinos-11
         tag:
-          - ef73d14
-          - 702aac5
-          - trilinos-release-14-4-0
+          - 0dc4553
+          - 5bbda25
         build_type:
           - Release
           - Debug
@@ -46,6 +45,7 @@ jobs:
       eigen_version: 3.4.0
       num_cpus: 4
       trilinos_dir: /home/pressio_builds/trilinos/install
+      PRESSIO_INSTALL_DIR: ${{ github.workspace }}/pressio_install
 
     steps:
     - uses: actions/checkout@v4
@@ -55,6 +55,14 @@ jobs:
       with:
         repository: Pressio/pressio-templates-usage-as-library
         path: examples
+        ref: add-compatibility-with-pressio-ops
+
+    - name: Checkout pressio-ops
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-ops
+        path: pressio-ops
+        ref: develop
 
     - name: Preparing environment
       run: |
@@ -62,29 +70,6 @@ jobs:
         && wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
         && mkdir -p /eigen \
         && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
-
-    - name: Example - include only
-      working-directory: examples
-      run: |
-        $CXX \
-          --std=c++17 \
-          -DPRESSIO_ENABLE_TPL_EIGEN    \
-          -DPRESSIO_ENABLE_TPL_TRILINOS \
-          -I/eigen/eigen-${{ env.eigen_version }} \
-          -I$trilinos_dir/include       \
-          -I../include                  \
-          -c main.cpp
-
-    - name: Example - include only with embedded definitions
-      working-directory: examples
-      run: |
-        $CXX \
-          --std=c++17 \
-          -DPRESSIO_ENABLE_TPL_TRILINOS \
-          -I/eigen/eigen-${{ env.eigen_version }} \
-          -I$trilinos_dir/include       \
-          -I../include                  \
-          -c main_with_defines.cpp
 
     - name: Configure
       run: |
@@ -104,35 +89,36 @@ jobs:
           -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
           -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
-          -D CMAKE_INSTALL_PREFIX:PATH=../install \
-          -D CMAKE_CXX_FLAGS='-Wall -Werror'
+          -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
+          -D CMAKE_CXX_FLAGS='-Wall'
 
     - name: Build
       run: cmake --build builddir -j $num_cpus --target install
 
-    - name: Example - CMake installed
-      working-directory: examples/cmake_find_package
+    - name: Example - include only
+      working-directory: examples
       run: |
-        cmake -B builddir \
-          -DCMAKE_PREFIX_PATH=../../install \
-        && cmake --build builddir           \
-        && ./builddir/pressio-example
+        $CXX \
+          --std=c++17 \
+          -DPRESSIO_ENABLE_TPL_EIGEN    \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/eigen/eigen-${{ env.eigen_version }} \
+          -I$trilinos_dir/include       \
+          -I${GITHUB_WORKSPACE}/pressio-ops/include \
+          -I${PRESSIO_INSTALL_DIR}/include \
+          -c main.cpp
 
-    - name: Example - CMake include_directories
-      working-directory: examples/cmake_include_directories
+    - name: Example - include only with embedded definitions
+      working-directory: examples
       run: |
-        cmake -B builddir \
-          -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-        && cmake --build builddir            \
-        && ./builddir/pressio-example
-
-    - name: Example - CMake add_subdirectory
-      working-directory: examples/cmake_add_subdirectory
-      run: |
-        cmake -B builddir \
-          -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-        && cmake --build builddir            \
-        && ./builddir/pressio-example
+        $CXX \
+          --std=c++17 \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/eigen/eigen-${{ env.eigen_version }} \
+          -I$trilinos_dir/include       \
+          -I${GITHUB_WORKSPACE}/pressio-ops/include \
+          -I${PRESSIO_INSTALL_DIR}/include \
+          -c main_with_defines.cpp
 
     - name: Test
       working-directory: builddir

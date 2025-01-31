@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_TAG_BASED_REGISTRY_HPP_
-#define SOLVERS_NONLINEAR_TAG_BASED_REGISTRY_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_SOLVERS_TAGBASED_REGISTRY_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_SOLVERS_TAGBASED_REGISTRY_HPP_
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
@@ -98,6 +98,8 @@ class TagBasedStaticRegistryExtension
   extension_registry_type newReg_;
 
 public:
+  using extended_registry = Extendable;
+
   template<class ...CArgs>
   explicit TagBasedStaticRegistryExtension(Extendable & reg, CArgs && ... cargs)
     : reg_(reg), newReg_(std::forward<CArgs>(cargs)...){}
@@ -195,4 +197,4 @@ auto reference_capture_registry_and_extend_with(Extendable & reg, CArgs && ... c
 }
 
 }}}
-#endif  // SOLVERS_NONLINEAR_CONCEPTS_SOLVERS_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_SOLVERS_TAGBASED_REGISTRY_HPP_

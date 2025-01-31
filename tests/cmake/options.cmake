@@ -1,9 +1,6 @@
-option(PRESSIO_ENABLE_CXX17 "Enable C++17" OFF)
 option(PRESSIO_ENABLE_CXX20 "Enable C++20" OFF)
 
-if(CMAKE_CXX_STANDARD EQUAL 17)
-  add_definitions(-DPRESSIO_ENABLE_CXX17)
-elseif(CMAKE_CXX_STANDARD EQUAL 20)
+if(CMAKE_CXX_STANDARD EQUAL 20)
   add_definitions(-DPRESSIO_ENABLE_CXX20)
 endif()
 
@@ -12,12 +9,16 @@ if (PRESSIO_ENABLE_DEBUG_PRINT)
   add_definitions(-DPRESSIO_ENABLE_DEBUG_PRINT)
 endif()
 
+option(PRESSIO_ENABLE_INTERNAL_SPDLOG "Enable the use of the internal spdlog" ON)
+if (PRESSIO_ENABLE_INTERNAL_SPDLOG)
+  add_definitions(-DPRESSIO_ENABLE_INTERNAL_SPDLOG)
+endif()
+
+
 option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_KOKKOS		"Enable Kokkos TPL"	  OFF)
 option(PRESSIO_ENABLE_TPL_MPI		    "Enable MPI"	      	OFF)
-option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
-
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
   message(">> Eigen is currently enabled by default via PRESSIO_ENABLE_TPL_EIGEN=ON")
@@ -64,22 +65,18 @@ if(PRESSIO_ENABLE_TPL_KOKKOS)
   # when trilinos is enabled it links kokkos too
   if(NOT PRESSIO_ENABLE_TPL_TRILINOS)
     # if kokkos is used as standalone lib, then we are more specific
-    # user needs to define: KOKKOS_ROOT_DIR and KOKKOS_KERNELS_ROOT_DIR
-    if (NOT KOKKOS_ROOT OR NOT KOKKOS_KERNELS_ROOT)
-message(FATAL_ERROR "Missing KOKKOS_ROOT. KOKKOS needs:
-        -D KOKKOS_ROOT=<full-path-to-kokkos-installation>
-        -D KOKKOS_KERNELS_ROOT=<full-path-to-kokkos-kernels-installation>
-        ")
+    # user needs to define: Kokkos_ROOT and KokkosKernels_ROOT
+    if (NOT Kokkos_ROOT OR NOT KokkosKernels_ROOT)
+      message(
+        FATAL_ERROR
+        "Missing Kokkos_ROOT. Kokkos needs:
+        -D Kokkos_ROOT=<full-path-to-kokkos-installation>
+        -D KokkosKernels_ROOT=<full-path-to-kokkos-kernels-installation>"
+      )
     endif()
-
-    set(KOKKOS_LIB_NAMES kokkoscontainers kokkoscore kokkoskernels)
-
-    include_directories(SYSTEM ${KOKKOS_ROOT}/include ${KOKKOS_KERNELS_ROOT}/include)
-
-    link_directories(${KOKKOS_ROOT}/lib ${KOKKOS_ROOT}/lib64
-${KOKKOS_KERNELS_ROOT}/lib ${KOKKOS_KERNELS_ROOT}/lib64)
-
-    link_libraries(${KOKKOS_LIB_NAMES})
+    find_package(Kokkos REQUIRED)
+    find_package(KokkosKernels REQUIRED)
+    link_libraries(Kokkos::kokkos Kokkos::kokkoskernels)
   endif()
 endif()
 
@@ -89,11 +86,6 @@ if(PRESSIO_ENABLE_TPL_MPI)
 
   find_package(MPI REQUIRED)
   include_directories(SYSTEM ${MPI_CXX_INCLUDE_DIRS})
-endif()
-
-if(PRESSIO_ENABLE_TPL_Pybind11)
-  message(">> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
-  add_definitions(-DPRESSIO_ENABLE_TPL_Pybind11)
 endif()
 
 if(PRESSIO_ENABLE_TPL_BLAS)

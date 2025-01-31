@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
-#define ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#ifndef PRESSIO_ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#define PRESSIO_ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
 
 #include "./impl/ode_explicit_stepper_without_mass_matrix.hpp"
 #include "./impl/ode_explicit_stepper_with_mass_matrix.hpp"
@@ -58,33 +58,12 @@ namespace pressio{ namespace ode{
 //
 // basic, no mass matrix
 //
-#if defined PRESSIO_ENABLE_CXX20
-template<class SystemType>
-  requires RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank == 1)
-  && requires(      typename mpl::remove_cvref_t<SystemType>::state_type & s1,
-	      const typename mpl::remove_cvref_t<SystemType>::state_type & s2,
-	      const typename mpl::remove_cvref_t<SystemType>::rhs_type & f1,
-	      const typename mpl::remove_cvref_t<SystemType>::rhs_type & f2,
-	      const typename mpl::remove_cvref_t<SystemType>::rhs_type & f3,
-	      const typename mpl::remove_cvref_t<SystemType>::rhs_type & f4,
-	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > alpha)
-  {
-    { ::pressio::ops::deep_copy(s1, s2) };
-    { ::pressio::ops::update(s1, alpha, s2, alpha, f1, alpha) };
-    { ::pressio::ops::update(s1, alpha, f1, alpha) };
-    { ::pressio::ops::update(s1, alpha, f1, alpha, f2, alpha) };
-    { ::pressio::ops::update(s1, alpha, f1, alpha, f2, alpha, f3, alpha, f4, alpha) };
-  }
-#else
 template<
   class SystemType,
   std::enable_if_t<
     RealValuedOdeSystem<mpl::remove_cvref_t<SystemType>>::value,
     int > = 0
   >
-#endif
 auto create_explicit_stepper(StepScheme schemeName,                     // (1)
 			     SystemType && odeSystem)
 {
@@ -113,32 +92,12 @@ auto create_explicit_stepper(StepScheme schemeName,                     // (1)
 //
 // WITH mass matrix
 //
-#if defined PRESSIO_ENABLE_CXX20
-template<class SystemType>
-  requires RealValuedOdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::state_type>::rank == 1)
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::rhs_type>::rank == 1)
-  && (Traits<typename mpl::remove_cvref_t<SystemType>::mass_matrix_type>::rank == 2)
-  && requires(      typename mpl::remove_cvref_t<SystemType>::state_type & s1,
-	      const typename mpl::remove_cvref_t<SystemType>::state_type & s2,
-	      const typename mpl::remove_cvref_t<SystemType>::state_type & s3,
-	      const typename mpl::remove_cvref_t<SystemType>::state_type & s4,
-	      const typename mpl::remove_cvref_t<SystemType>::state_type & s5,
-	      ode::scalar_of_t< mpl::remove_cvref_t<SystemType> > alpha)
-  {
-    { ::pressio::ops::deep_copy(s1, s2) };
-    { ::pressio::ops::update(s1, alpha, s2, alpha) };
-    { ::pressio::ops::update(s1, alpha, s2, alpha, s3, alpha) };
-    { ::pressio::ops::update(s1, alpha, s2, alpha, s3, alpha, s4, alpha, s5, alpha) };
-  }
-#else
 template<
   class SystemType,
   std::enable_if_t<
     RealValuedOdeSystemFusingMassMatrixAndRhs<mpl::remove_cvref_t<SystemType>>::value,
     int > = 0
   >
-#endif
 auto create_explicit_stepper(StepScheme schemeName,                     // (2)
 			     SystemType && odeSystem)
 {
@@ -183,4 +142,4 @@ auto create_ssprk3_stepper(Args && ...args){
 }
 
 }} // end namespace pressio::ode
-#endif  // ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_
+#endif  // PRESSIO_ODE_ODE_CREATE_EXPLICIT_STEPPER_HPP_

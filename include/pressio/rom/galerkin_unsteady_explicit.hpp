@@ -1,6 +1,6 @@
 
-#ifndef ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
-#define ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
+#define PRESSIO_ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
 
 #include "./reduced_operators_traits.hpp"
 #include "impl/galerkin_helpers.hpp"
@@ -17,12 +17,6 @@ namespace pressio{ namespace rom{ namespace galerkin{
 // default
 // -------------------------------------------------------------
 
-#ifdef PRESSIO_ENABLE_CXX20
-template<class TrialSubspaceType, class FomSystemType>
-  requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-  && RealValuedSemiDiscreteFom<FomSystemType>
-  && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#else
 template<
  class TrialSubspaceType, class FomSystemType,
  std::enable_if_t<
@@ -32,7 +26,6 @@ template<
    && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
    , int> = 0
  >
-#endif
 auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(1)*/
 				      const TrialSubspaceType & trialSpace,
 				      const FomSystemType & fomSystem)
@@ -57,12 +50,6 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 // default with mass matrix
 // -------------------------------------------------------------
 
-#ifdef PRESSIO_ENABLE_CXX20
-template<class TrialSubspaceType, class FomSystemType>
-  requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-  && RealValuedSemiDiscreteFomWithMassMatrixAction<FomSystemType, typename TrialSubspaceType::basis_matrix_type>
-  && std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#else
 template<
   class TrialSubspaceType, class FomSystemType,
   std::enable_if_t<
@@ -71,7 +58,6 @@ template<
     && std::is_same<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>::value
     , int > = 0
   >
-#endif
 auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(2)*/
 				      const TrialSubspaceType & trialSpace,
 				      const FomSystemType & fomSystem)
@@ -98,11 +84,6 @@ template<
   class TrialSubspaceType,
   class FomSystemType,
   class HyperReducerType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFom<FomSystemType>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(3)*/
 				      const TrialSubspaceType & trialSpace,
 				      const FomSystemType & fomSystem,
@@ -133,11 +114,6 @@ template<
   class FomSystemType,
   class MaskerType,
   class HyperReducerType>
-#ifdef PRESSIO_ENABLE_CXX20
-requires PossiblyAffineRealValuedTrialColumnSubspace<TrialSubspaceType>
-&& RealValuedSemiDiscreteFom<FomSystemType>
-&& std::same_as<typename TrialSubspaceType::full_state_type, typename FomSystemType::state_type>
-#endif
 auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*(4)*/
 				      const TrialSubspaceType & trialSpace,
 				      const FomSystemType & fomSystem,
@@ -159,4 +135,4 @@ auto create_unsteady_explicit_problem(::pressio::ode::StepScheme schemeName,  /*
 }
 
 }}} // end pressio::rom::galerkin
-#endif  // ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_
+#endif  // PRESSIO_ROM_GALERKIN_UNSTEADY_EXPLICIT_HPP_

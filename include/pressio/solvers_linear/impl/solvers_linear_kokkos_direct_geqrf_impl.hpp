@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_IMPL_HPP_
-#define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_IMPL_HPP_
+#ifndef PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_IMPL_HPP_
+#define PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_IMPL_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Teuchos_LAPACK.hpp>
@@ -192,7 +192,7 @@ public:
     //std::cout << " info-ormqr " << info << std::endl;
 
     // solver R y = Q^T b
-    constexpr scalar_type alpha = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr scalar_type alpha = static_cast<scalar_type>(1);
     blas_.TRSM(Teuchos::ESide::LEFT_SIDE,
     	       Teuchos::EUplo::UPPER_TRI,
     	       Teuchos::ETransp::NO_TRANS,
@@ -225,4 +225,4 @@ private:
 };
 
 }}} // end namespace pressio::linearsolvers::impl
-#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_IMPL_HPP_
+#endif  // PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_IMPL_HPP_

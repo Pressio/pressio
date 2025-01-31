@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_LEAST_SQUARES_SOLVER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_LEAST_SQUARES_SOLVER_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -26,11 +26,7 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
 {
 
   auto mustStop = [
-#ifdef PRESSIO_ENABLE_CXX17
 		   &normDiag = std::as_const(normDiagnostics),
-#else
-		   &normDiag = normDiagnostics,
-#endif
 		   stopEnumValue, maxIters, stopTolerance](int stepCount)
   {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);
@@ -121,6 +117,7 @@ class NonLinLeastSquares : public RegistryType
     InternalDiagnosticDataWithAbsoluteRelativeTracking<ScalarType> >;
   diagnostics_container diagnostics_;
   DiagnosticsLogger diagnosticsLogger_ = {};
+  std::optional<std::vector<scalar_trait_t<StateType> > > parameters_;
 
 public:
   template<class ...Args>
@@ -160,6 +157,9 @@ public:
   void setStopCriterion(Stop value)	  { stopEnValue_ = value; }
   void setStopTolerance(ScalarType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)       { maxIters_ = newMax; }
+  auto & getLineSearchParameters(){
+    return parameters_;
+  }
 
   // this method can be used when passing a system object
   // that is different but syntactically and semantically equivalent
@@ -230,19 +230,11 @@ private:
     // so we need to reset the data in the registry everytime
     reset_for_new_solve_loop(tag_, extReg);
 
-    if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
-      nonlin_ls_solving_loop_impl(tag_, system, extReg,
-				  stopEnValue_, stopTolerance_,
-				  diagnostics_, diagnosticsLogger_,
-				  maxIters_,
-				  BacktrackStrictlyDecreasingObjectiveUpdater{});
-    }else{
-      nonlin_ls_solving_loop_impl(tag_, system, extReg,
-				  stopEnValue_, stopTolerance_,
-				  diagnostics_, diagnosticsLogger_,
-				  maxIters_,
-				  BacktrackStrictlyDecreasingObjectiveUpdater{});
-    }
+    BacktrackStrictlyDecreasingObjectiveUpdater<scalar_trait_t<StateType>> updater(parameters_);
+    nonlin_ls_solving_loop_impl(tag_, system, extReg,
+        stopEnValue_, stopTolerance_,
+        diagnostics_, diagnosticsLogger_,
+        maxIters_, updater);
   }
 
   template<class SystemType, class _Tag = Tag>
@@ -286,4 +278,4 @@ private:
 };
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_

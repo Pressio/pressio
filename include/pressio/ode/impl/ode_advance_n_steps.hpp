@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_ADVANCE_N_STEPS_HPP_
-#define ODE_IMPL_ODE_ADVANCE_N_STEPS_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_ADVANCE_N_STEPS_HPP_
+#define PRESSIO_ODE_IMPL_ODE_ADVANCE_N_STEPS_HPP_
 
 #include "ode_advance_printing_helpers.hpp"
 
@@ -72,11 +72,6 @@ void advance_n_steps_with_dt_policy(StepperType & stepper,
 				    Args && ... args)
 {
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("time loop");
-#endif
-
   using step_t = typename ::pressio::ode::StepCount::value_type;
   IndVarType time = start_val;
   observer(StepCount{0}, start_val, odeState);
@@ -99,25 +94,14 @@ void advance_n_steps_with_dt_policy(StepperType & stepper,
       // which is the trivial case is a noop
       guesser(stepWrap, ::pressio::ode::StepStartAt<IndVarType>(time), odeState);
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->start("time step");
-#endif
       stepper(odeState,
 	      ::pressio::ode::StepStartAt<IndVarType>(time),
 	      stepWrap, dt,
 	      std::forward<Args>(args)...);
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->stop("time step");
-#endif
-
       time += dt.get();
       observer(::pressio::ode::StepCount(step), time, odeState);
     }
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("time loop");
-#endif
 }
 
 
@@ -155,4 +139,4 @@ void advance_n_steps_with_fixed_dt(StepperType & stepper,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPL_ODE_ADVANCE_N_STEPS_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_ADVANCE_N_STEPS_HPP_

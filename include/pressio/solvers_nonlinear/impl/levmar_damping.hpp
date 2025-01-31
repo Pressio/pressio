@@ -1,6 +1,6 @@
 
-#ifndef LEVMAR_DAMPING_HPP_
-#define LEVMAR_DAMPING_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_LEVMAR_DAMPING_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_LEVMAR_DAMPING_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -19,4 +19,4 @@ public:
 };
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_LEVMAR_DAMPING_HPP_

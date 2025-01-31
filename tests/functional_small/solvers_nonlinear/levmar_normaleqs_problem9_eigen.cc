@@ -3,6 +3,8 @@
 #include "pressio/solvers_nonlinear_levmarq.hpp"
 #include "./problems/problem9.hpp"
 
+#include <iomanip>
+
 template <typename problem_t, typename solver_t>
 void testC1(std::string & sentinel,
             problem_t & problem,

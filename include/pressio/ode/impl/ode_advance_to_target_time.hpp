@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
-#define ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#define PRESSIO_ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
 
 #include "ode_advance_printing_helpers.hpp"
 
@@ -106,11 +106,6 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
     return;
   }
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("time loop");
-#endif
-
   using step_t = typename StepCount::value_type;
 
   IndVarType time  = start_time;
@@ -140,17 +135,13 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
       }
 
       if (enableTimeStepRecovery){
-	if (dtScalingFactor.get() <= ::pressio::utils::Constants<IndVarType>::one()){
+	if (dtScalingFactor.get() <= static_cast<IndVarType>(1)){
 	  // need to change this to use some notion of identity
 	  throw std::runtime_error("The time step size reduction factor must be > 1.");
 	}
       }
 
       print_step_and_current_time(step, time, dt.get());
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->start("time step");
-#endif
 
       if (enableTimeStepRecovery)
       {
@@ -183,10 +174,6 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 		std::forward<Args>(args)...);
       }
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->stop("time step");
-#endif
-
       time += dt.get();
       observer(::pressio::ode::StepCount(step), time, odeState);
 
@@ -198,11 +185,7 @@ void to_target_time_with_step_size_policy(StepperType & stepper,
 
       step++;
     }
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("time loop");
-#endif
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_ADVANCE_TO_TARGET_TIME_HPP_

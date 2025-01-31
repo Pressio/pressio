@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_UPDATERS_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_UPDATERS_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -52,8 +52,8 @@ public:
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
     PRESSIOLOG_DEBUG("start backtracking");
-    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
-    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto zero = static_cast<scalar_type>(0);
+    constexpr auto one = static_cast<scalar_type>(1);
     scalar_type ftrial = {};
     while (true)
       {
@@ -91,10 +91,22 @@ public:
   }
 };
 
+template <typename ScalarType>
 class BacktrackStrictlyDecreasingObjectiveUpdater
 {
+private:
+  ScalarType zeta_ = 1;
+
 public:
-  template<class RegistryType, class ObjF, class ScalarType>
+  BacktrackStrictlyDecreasingObjectiveUpdater(std::optional<std::vector<ScalarType> > parameter)
+  {
+    if (parameter)
+    {
+      zeta_ = parameter.value().front();
+    }
+  }
+
+  template<class RegistryType, class ObjF>
   void operator()(RegistryType & reg,
 		  ObjF objective,
 		  ScalarType objectiveValueAtCurrentNewtonStep)
@@ -108,8 +120,8 @@ public:
 
     auto alpha = static_cast<scalar_type>(1);
     constexpr auto alpha_lower_bound = static_cast<scalar_type>(0.001);
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto one  = static_cast<scalar_type>(1);
+    constexpr auto zero = static_cast<scalar_type>(0);
 
     PRESSIOLOG_DEBUG("start backtracking");
     while (true)
@@ -129,7 +141,7 @@ public:
 
 	// update : trialState = state + alpha*p_k
 	::pressio::ops::update(trialState, zero, state, one, p_k, alpha);
-	if (objective(trialState) <= objectiveValueAtCurrentNewtonStep){
+	if (objective(trialState) <= zeta_ * objectiveValueAtCurrentNewtonStep){
 	  PRESSIOLOG_DEBUG("backtrack; condition satisfied with alpha= {:6e}", alpha);
 	  ::pressio::ops::update(state, one, p_k, alpha);
 	  break;
@@ -148,9 +160,9 @@ auto lm_gain_factor(RegistryType & reg,
 		    StateType & cDiagH)
 {
   using scalar_type = std::remove_const_t<ScalarType>;
-  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
-  constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-  constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
+  constexpr auto zero = static_cast<scalar_type>(0);
+  constexpr auto one  = static_cast<scalar_type>(1);
+  constexpr auto two  = static_cast<scalar_type>(2);
 
   const auto & state = reg.template get<StateTag>();
   const auto & correction  = reg.template get<CorrectionTag>();
@@ -178,12 +190,15 @@ template<class ScalarType, class StateType>
 class LMSchedule1Updater
 {
   using scalar_type = std::remove_const_t<ScalarType>;
-  using cnst = pressio::utils::Constants<scalar_type>;
-  const scalar_type beta_     = cnst::two();
-  const scalar_type gammaInv_ = cnst::one()/cnst::three();
-  const scalar_type p_ = cnst::three();
-  const scalar_type tau_ = cnst::one();
-  scalar_type nu_ = cnst::two();
+  const scalar_type one = static_cast<scalar_type>(1);
+  const scalar_type two = static_cast<scalar_type>(2);
+  const scalar_type three = static_cast<scalar_type>(3);
+
+  const scalar_type beta_     = two;
+  const scalar_type gammaInv_ = one/three;
+  const scalar_type p_ = three;
+  const scalar_type tau_ = one;
+  scalar_type nu_ = two;
   StateType cDiagH_;
 
 public:
@@ -202,8 +217,8 @@ public:
     auto & state = reg.template get<StateTag>();
 
     const scalar_type rho = lm_gain_factor(reg, obj, objectiveValueAtCurrentNewtonStep, cDiagH_);
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
-    constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
+    constexpr auto one  = static_cast<scalar_type>(1);
+    constexpr auto two  = static_cast<scalar_type>(2);
     if (rho > 0){
       PRESSIOLOG_DEBUG("lm1 update: rho>0");
       ::pressio::ops::update(state, one, correction, one);
@@ -225,12 +240,11 @@ class LMSchedule2Updater
 {
   using scalar_type = std::remove_const_t<ScalarType>;
 
-  using cnst		   = pressio::utils::Constants<scalar_type>;
   const scalar_type rho1_	   = static_cast<scalar_type>(0.2);
   const scalar_type rho2_     = static_cast<scalar_type>(0.8);
-  const scalar_type beta_	   = cnst::two();
-  const scalar_type gammaInv_ = cnst::one()/cnst::three();
-  const scalar_type tau_	   = cnst::one();
+  const scalar_type beta_	   = static_cast<scalar_type>(2);
+  const scalar_type gammaInv_ = static_cast<scalar_type>(1)/static_cast<scalar_type>(3);
+  const scalar_type tau_	   = static_cast<scalar_type>(1);
   StateType cDiagH_;
 
 public:
@@ -247,10 +261,10 @@ public:
     const auto & correction  = reg.template get<CorrectionTag>();
     auto & state = reg.template get<StateTag>();
 
-    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto one  = static_cast<scalar_type>(1);
     constexpr auto ten  = static_cast<scalar_type>(10);
     constexpr auto seven  = static_cast<scalar_type>(7);
-    constexpr auto negSeven  = ::pressio::utils::Constants<scalar_type>::negOne()*seven;
+    constexpr auto negSeven  = static_cast<scalar_type>(-1) * seven;
     const auto tenToSev  = std::pow(ten, seven);
     const auto tenToNegSev  = std::pow(ten, negSeven);
 
@@ -270,4 +284,4 @@ public:
 };
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_UPDATERS_HPP_

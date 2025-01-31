@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_GALERKIN_STEADY_SYSTEM_DEFAULT_HPP_
-#define ROM_IMPL_GALERKIN_STEADY_SYSTEM_DEFAULT_HPP_
+#ifndef PRESSIO_ROM_IMPL_GALERKIN_STEADY_SYSTEM_DEFAULT_HPP_
+#define PRESSIO_ROM_IMPL_GALERKIN_STEADY_SYSTEM_DEFAULT_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -65,45 +65,94 @@ public:
     return impl::CreateGalerkinJacobian<jacobian_type>()(trialSubspace_.get().dimension());
   }
 
+  template<class _FomSystemType = FomSystemType>
+  std::enable_if_t<
+    std::is_same_v<
+      void,
+      decltype(
+	       std::declval<_FomSystemType const>().residual(
+							     std::declval<state_type const>(),
+							     std::declval<residual_type &>()
+							     )
+	       )
+    >
+  >
+  residual(const state_type & reducedState,
+	   residual_type & reducedResidual) const
+  {
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
+
+    fomSystem_.get().residual(fomState_, fomResidual_);
+    ::pressio::ops::product(::pressio::transpose(),
+			    1, phi, fomResidual_, 0, reducedResidual);
+  }
+
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & reducedResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> reducedJacobian) const
-#else
-                           jacobian_type* reducedJacobian) const
-#endif
   {
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    constexpr auto alpha = static_cast<phi_scalar_t>(1);
     using R_scalar_t = typename ::pressio::Traits<residual_type>::scalar_type;
-    constexpr auto beta = ::pressio::utils::Constants<R_scalar_t>::zero();
+    constexpr auto beta = static_cast<R_scalar_t>(0);
 
-#ifdef PRESSIO_ENABLE_CXX17
-    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi,
-					       std::optional<fom_jac_action_result_type *>(&fomJacAction_));
-#else
-    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi, &fomJacAction_);
-#endif
+    std::optional<fom_jac_action_result_type *> fomJacActionOpt;
+    if (reducedJacobian) {
+      fomJacActionOpt = &fomJacAction_;
+    }
+    fomSystem_.get().residualAndJacobianAction(fomState_, fomResidual_, phi, fomJacActionOpt);
 
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomResidual_, beta, reducedResidual);
 
     if (reducedJacobian){
       using J_scalar_t = typename ::pressio::Traits<jacobian_type>::scalar_type;
-      constexpr auto beta = ::pressio::utils::Constants<J_scalar_t>::zero();
+      constexpr auto beta = static_cast<J_scalar_t>(0);
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_, beta,
-#ifdef PRESSIO_ENABLE_CXX17
 			      *reducedJacobian.value());
-#else
-                              *reducedJacobian);
-#endif
     }
+  }
+
+  template<class OperandT, class ResultT, class _FomSystemType = FomSystemType>
+  std::enable_if_t<
+    std::is_same_v<
+      void,
+      decltype(
+	       std::declval<_FomSystemType const>().jacobianAction(
+							     std::declval<state_type const &>(),
+							     std::declval<state_type const &>(),
+							     std::declval<state_type &>()
+							     )
+	       )
+      >
+  >
+  applyJacobian(const state_type & reducedState,
+		OperandT const & reducedOperand,
+		ResultT & out) const
+  {
+    trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
+
+    auto auxVec = pressio::ops::clone(fomState_);
+    auto auxVec2 = pressio::ops::clone(fomState_);
+    pressio::ops::set_zero(auxVec);
+    trialSubspace_.get().mapFromReducedState(reducedOperand, auxVec2);
+
+    fomSystem_.get().jacobianAction(fomState_, reducedOperand, auxVec);
+
+    using scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
+    scalar_t alpha{1};
+    scalar_t beta{0};
+
+    const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
+    ::pressio::ops::product(::pressio::transpose(),
+			    alpha, phi, auxVec2, beta, out);
   }
 
 private:
@@ -115,4 +164,4 @@ private:
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_STEADY_SYSTEM_DEFAULT_HPP_
+#endif  // PRESSIO_ROM_IMPL_GALERKIN_STEADY_SYSTEM_DEFAULT_HPP_

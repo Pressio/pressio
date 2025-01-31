@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_CORE_HPP_
-#define UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_CORE_HPP_
+#ifndef PRESSIO_UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_CORE_HPP_
+#define PRESSIO_UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_CORE_HPP_
 
 #include <cstdio>  // std::FILE
 #include <cstring>
@@ -1879,4 +1879,4 @@ inline void print(const S& format_str, Args&&... args) {
 }
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_CORE_HPP_
+#endif  // PRESSIO_UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_CORE_HPP_

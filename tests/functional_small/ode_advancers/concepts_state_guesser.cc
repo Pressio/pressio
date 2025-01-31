@@ -47,17 +47,9 @@ TEST(ode, concepts_state_observer)
 {
   using namespace pressio::ode;
 
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert( StateGuesser<S1, double, state_type>, "");
-  static_assert( !StateGuesser<S2, double, state_type>, "");
-  static_assert( !StateGuesser<S3, double, state_type>, "");
-  // static_assert( !StateGuesser<S4, double, state_type>, "");
-  // static_assert( !StateGuesser<S5, double, state_type>, "");
-#else
   static_assert( StateGuesser<S1, double, state_type>::value, "");
   static_assert( !StateGuesser<S2, double, state_type>::value, "");
   static_assert( !StateGuesser<S3, double, state_type>::value, "");
   // static_assert( !StateGuesser<S4, double, state_type>::value, "");
   // static_assert( !StateGuesser<S5, double, state_type>::value, "");
-#endif  
 }

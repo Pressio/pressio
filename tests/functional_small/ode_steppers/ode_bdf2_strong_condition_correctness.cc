@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "pressio/ode_steppers_implicit.hpp"
+#include <iomanip>
 
 struct MyApp
 {
@@ -26,11 +27,7 @@ public:
   void rhsAndJacobian(const state_type & /*unused*/,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const
-#else
-                      jacobian_type* /*J*/) const
-#endif
   {
     f.setConstant(1.);
   }
@@ -51,11 +48,7 @@ struct MyFakeSolver
     std::cout << "SOLVE count = "  << count_ << std::endl;
 
     auto J = sys.createJacobian();
-#ifdef PRESSIO_ENABLE_CXX17
     sys.residualAndJacobian(state, resCopy_, std::optional<decltype(J)*>(&J));
-#else
-    sys.residualAndJacobian(state, resCopy_, &J);
-#endif
 
     state(0) += 0.1;
     state(1) += 0.2;

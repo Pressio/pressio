@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_ALL_HPP_
-#define ROM_CONCEPTS_ALL_HPP_
+#ifndef PRESSIO_ROM_ROM_CONCEPTS_HPP_
+#define PRESSIO_ROM_ROM_CONCEPTS_HPP_
 
 #include "concepts_helpers.hpp"
 #include "predicates.hpp"
@@ -233,11 +233,7 @@ struct SteadyFomWithJacobianAction<
 	std::declval<typename T::state_type const&>(),
 	std::declval<typename T::residual_type &>(),
 	std::declval<JacobianActionOperandType const&>(),
-#ifdef PRESSIO_ENABLE_CXX17
 	std::declval< std::optional<impl::fom_jac_action_t<T, JacobianActionOperandType> *> >()
-#else
-	std::declval< impl::fom_jac_action_t<T, JacobianActionOperandType> *>()
-#endif
 	)
        )
     >::value
@@ -471,4 +467,4 @@ struct RealValuedFullyDiscreteSystemWithJacobianAction<
 
 }} // end namespace pressio::rom
 
-#endif  // ROM_CONCEPTS_FOM_STEADY_WITH_JAC_ACTION_HPP_
+#endif  // PRESSIO_ROM_ROM_CONCEPTS_HPP_

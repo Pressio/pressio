@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
-#define ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
+#ifndef PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
+#define PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
@@ -63,19 +63,11 @@ template<
   class AuxT,
   class ...Args
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
-    && !StateObserver<AuxT&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
-    && (!StateObserver<AuxT, IndVarType, StateType>)
-void
-#endif
+std::enable_if_t<
+     StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
+  && !StateObserver<AuxT&&, IndVarType, StateType>::value
+  >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -105,19 +97,11 @@ template<
   class AuxT,
   class ...Args
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  std::enable_if_t<
-       StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
-    && StateObserver<ObserverType&&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires StronglySteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-    && StepSizePolicyWithReductionScheme<StepSizePolicyType, IndVarType>
-    && StateObserver<ObserverType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+     StronglySteppableWithAuxiliaryArgs<void, StepperType, AuxT&&, Args&&...>::value
+  && StepSizePolicyWithReductionScheme<StepSizePolicyType&&, IndVarType>::value
+  && StateObserver<ObserverType&&, IndVarType, StateType>::value
+  >
 advance_to_target_point_with_step_recovery(StepperType & stepper,
 					  StateType & state,
 					  const IndVarType & startVal,
@@ -139,4 +123,4 @@ advance_to_target_point_with_step_recovery(StepperType & stepper,
 }
 
 }}//end namespace pressio::ode
-#endif  // ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_
+#endif  // PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_WITH_STEP_RECOVERY_VARIADIC_HPP_

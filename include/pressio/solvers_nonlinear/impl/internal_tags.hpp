@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_INTERNAL_TAGS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_INTERNAL_TAGS_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_INTERNAL_TAGS_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_INTERNAL_TAGS_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -15,6 +15,7 @@ struct QTransposeResidualTag{};
 
 
 struct NewtonTag{};
+struct MatrixFreeNewtonTag{};
 struct GaussNewtonNormalEqTag{};
 struct WeightedGaussNewtonNormalEqTag{};
 struct CompactWeightedGaussNewtonNormalEqTag{};
@@ -22,4 +23,4 @@ struct LevenbergMarquardtNormalEqTag{};
 struct GaussNewtonQrTag{};
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_INTERNAL_TAGS_HPP_

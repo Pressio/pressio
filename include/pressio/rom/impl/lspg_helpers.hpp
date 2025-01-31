@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_LSPG_HELPERS_HPP_
-#define ROM_IMPL_LSPG_HELPERS_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_HELPERS_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_HELPERS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -14,4 +14,4 @@ void valid_scheme_for_lspg_else_throw(::pressio::ode::StepScheme name){
 }
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_LSPG_HELPERS_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_HELPERS_HPP_

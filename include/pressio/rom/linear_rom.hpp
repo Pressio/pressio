@@ -1,6 +1,8 @@
 
-#ifndef ROM_LINEAR_ROM_API_HPP_
-#define ROM_LINEAR_ROM_API_HPP_
+#ifndef PRESSIO_ROM_LINEAR_ROM_HPP_
+#define PRESSIO_ROM_LINEAR_ROM_HPP_
+
+#include <fstream>
 
 namespace pressio{ namespace rom{ namespace linear{
 
@@ -319,4 +321,4 @@ void export_ascii(const impl::RomLinearThingyConstVector<Ts...> & o,
 }
 
 }}}
-#endif
+#endif  // PRESSIO_ROM_LINEAR_ROM_HPP_

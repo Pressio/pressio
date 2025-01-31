@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
-#define ODE_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
+#define PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -84,7 +84,7 @@ private:
   // for cn  : y_n
   ImplicitStencilStatesDynamicContainer<StateType> stencil_states_;
 
-  ::pressio::utils::InstanceOrReferenceWrapper<ResidualJacobianPolicyType> rj_policy_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<ResidualJacobianPolicyType> rj_policy_;
 
   // stencilRightHandSide contains:
   // for bdf1,2: nothing
@@ -166,11 +166,7 @@ public:
 
   void residualAndJacobian(const StateType & odeState,
 			   ResidualType & R,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> Jo) const
-#else
-                           jacobian_type* Jo) const
-#endif
   {
     rj_policy_.get()(name_, odeState, stencil_states_, stencil_rhs_,
 		     ::pressio::ode::StepEndAt<IndVarType>(t_np1_),
@@ -325,4 +321,4 @@ private:
 };
 
 }}} // end namespace pressio::ode::implicitmethods
-#endif  // ODE_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_STANDARD_HPP_

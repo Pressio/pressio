@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_SCALING_DECORATOR_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_SCALING_DECORATOR_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_SCALING_DECORATOR_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_SCALING_DECORATOR_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -92,11 +92,7 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<independent_variable_type> & dt,
 		  residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type *> Jo) const
-#else
-		  jacobian_type * Jo) const
-#endif
   {
     ToDecorate::operator()(odeSchemeName, predictedReducedState,
 			   reducedStatesStencilManager, fomRhsStencilManger,
@@ -104,11 +100,7 @@ public:
 
     // fomStateAt_np1 is only valid IF already reconstructed in the base class
     const auto & fomStateAt_np1 = fomStatesManager_(::pressio::ode::nPlusOne());
-#ifdef PRESSIO_ENABLE_CXX17
     scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, Jo);
-#else
-    scaler_(fomStateAt_np1, rhsEvaluationTime.get(), R, Jo);
-#endif
   }
 
 private:
@@ -117,4 +109,4 @@ private:
 };
 
 }}}
-#endif
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_SCALING_DECORATOR_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -107,11 +107,7 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type *> Jo) const
-#else
-		  jacobian_type * Jo) const
-#endif
   {
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1)
@@ -148,11 +144,7 @@ private:
 			 const IndVarType & dt,
 			 const typename ::pressio::ode::StepCount::value_type & step,
 			 residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
-			std::optional<jacobian_type *> & Jo) const
-#else
-		        jacobian_type * Jo) const
-#endif
+			 std::optional<jacobian_type *> & Jo) const
   {
     static_assert( std::is_same<OdeTag, ode::BDF1>::value ||
 		   std::is_same<OdeTag, ode::BDF2>::value, "");
@@ -191,18 +183,16 @@ private:
       const auto & fomStateAt_n = fomStatesManager_(::pressio::ode::n());
       using fom_state_type = typename FomSystemType::state_type;
       using sc_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
-      constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
       constexpr auto cnp1 = ::pressio::ode::constants::bdf1<sc_t>::c_np1_;
       constexpr auto cn   = ::pressio::ode::constants::bdf1<sc_t>::c_n_;
-      ::pressio::ops::update(fomStateHelperInstance_, zero,
+      ::pressio::ops::update(fomStateHelperInstance_, static_cast<sc_t>(0),
 			     fomStateAt_np1, cnp1,
 			     fomStateAt_n, cn);
 
       // step 3
-      constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
       const auto cf = ::pressio::ode::constants::bdf1<sc_t>::c_f_ * dt;
       hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
-	(R, cf, fomStateHelperInstance_, one);
+	(R, cf, fomStateHelperInstance_, static_cast<sc_t>(1));
     }
     else{
 
@@ -220,29 +210,23 @@ private:
 
       using fom_state_type = typename FomSystemType::state_type;
       using sc_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
-      constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
       constexpr auto cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
       constexpr auto cn   = ::pressio::ode::constants::bdf2<sc_t>::c_n_;
       constexpr auto cnm1 = ::pressio::ode::constants::bdf2<sc_t>::c_nm1_;
-      ::pressio::ops::update(fomStateHelperInstance_, zero,
+      ::pressio::ops::update(fomStateHelperInstance_, static_cast<sc_t>(0),
 			     fomStateAt_np1, cnp1,
 			     fomStateAt_n, cn,
 			     fomStateAt_nm1, cnm1);
 
       // step 3
-      constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
       const auto cf = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
       hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne
-	(R, cf, fomStateHelperInstance_, one);
+	(R, cf, fomStateHelperInstance_, static_cast<sc_t>(1));
     }
 
     // deal with jacobian if needed
     if (Jo){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & J = *Jo.value();
-#else
-      auto & J = *Jo;
-#endif
       // lspgJac = decoderJac + dt*coeff*J*decoderJac
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
@@ -252,7 +236,6 @@ private:
 
       using sc_t = typename ::pressio::Traits<
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
-      const auto one = ::pressio::utils::Constants<sc_t>::one();
       IndVarType cf = {};
       if (std::is_same<OdeTag, ode::BDF1>::value){
 	cf = dt * ::pressio::ode::constants::bdf1<sc_t>::c_f_;
@@ -261,7 +244,7 @@ private:
 	cf = dt * ::pressio::ode::constants::bdf2<sc_t>::c_f_;
       }
 
-      hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(J, cf, phi, one);
+      hypRedUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(J, cf, phi, static_cast<sc_t>(1));
     }
   }
 
@@ -282,4 +265,4 @@ private:
 
 }}}
 
-#endif  // ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_HYPRED_HPP_
