@@ -57,7 +57,14 @@ jobs:
         with:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
-          ref: add-compatibility-with-pressio-ops
+          ref: 2-update-logging-to-use-pressio-log
+
+      - name: Checkout pressio-log
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-log
+          path: pressio-log
+          ref: main
 
       - name: Checkout pressio-ops
         uses: actions/checkout@v4
@@ -94,6 +101,7 @@ jobs:
             -DPRESSIO_ENABLE_TPL_KOKKOS \
             -I/kokkos/install/include \
             -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${PRESSIO_INSTALL_DIR}/include \
             -c main.cpp
@@ -106,6 +114,7 @@ jobs:
             -DPRESSIO_ENABLE_TPL_KOKKOS \
             -I/kokkos/install/include \
             -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${PRESSIO_INSTALL_DIR}/include \
             -c main_with_defines.cpp
