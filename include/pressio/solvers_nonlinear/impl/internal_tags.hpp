@@ -17,6 +17,7 @@ struct QTransposeResidualTag{};
 struct NewtonTag{};
 struct GaussNewtonNormalEqTag{};
 struct WeightedGaussNewtonNormalEqTag{};
+struct CompactWeightedGaussNewtonNormalEqTag{};
 struct LevenbergMarquardtNormalEqTag{};
 struct GaussNewtonQrTag{};
 

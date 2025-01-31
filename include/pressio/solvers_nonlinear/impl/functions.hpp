@@ -131,6 +131,25 @@ auto compute_nonlinearls_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
   return v*(one/two);
 }
 
+template<class RegistryType, class StateType, class SystemType>
+auto compute_nonlinearls_objective(CompactWeightedGaussNewtonNormalEqTag /*tag*/,
+				   RegistryType & reg,
+				   const StateType & state,
+				   const SystemType & system)
+{
+  const auto & W = reg.template get<WeightingOperatorTag>();
+  auto & r  = reg.template get<ResidualTag>();
+  auto & Wr = reg.template get<WeightedResidualTag>();
+  compute_residual(reg, state, system);
+  W.get()(r, Wr);
+
+  const auto v = ::pressio::ops::dot(Wr, Wr);
+  using sc_t = mpl::remove_cvref_t< decltype(v) >;
+  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
+  constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
+  return v*(one/two);
+}
+
 #ifdef PRESSIO_ENABLE_CXX20
 template<class RegistryType, class SystemType>
 requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
@@ -202,6 +221,45 @@ template<
   >
 #endif
 auto compute_nonlinearls_operators_and_objective(WeightedGaussNewtonNormalEqTag /*tag*/,
+						 RegistryType & reg,
+						 const SystemType & system)
+{
+  compute_residual_and_jacobian(reg, system);
+
+  constexpr auto pT  = ::pressio::transpose();
+  constexpr auto pnT = ::pressio::nontranspose();
+  const auto & W = reg.template get<WeightingOperatorTag>();
+  const auto & r = reg.template get<ResidualTag>();
+  const auto & J = reg.template get<JacobianTag>();
+  auto & Wr = reg.template get<WeightedResidualTag>();
+  auto & WJ = reg.template get<WeightedJacobianTag>();
+  auto & g  = reg.template get<GradientTag>();
+  auto & H  = reg.template get<HessianTag>();
+
+  W.get()(r, Wr);
+  W.get()(J, WJ);
+  ::pressio::ops::product(pT, pnT, 1, J, WJ, 0, H);
+  ::pressio::ops::product(pT, 1, J, Wr, 0, g);
+
+  using sc_t = scalar_trait_t<typename SystemType::state_type>;
+  const auto v = ::pressio::ops::dot(r, Wr);
+  constexpr auto one  = ::pressio::utils::Constants<sc_t>::one();
+  constexpr auto two  = ::pressio::utils::Constants<sc_t>::two();
+  return v*(one/two);
+}
+
+#ifdef PRESSIO_ENABLE_CXX20
+template<class RegistryType, class SystemType>
+requires RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>
+#else
+template<
+  class RegistryType, class SystemType,
+  std::enable_if_t<
+    RealValuedNonlinearSystemFusingResidualAndJacobian<SystemType>::value,
+    int> = 0
+  >
+#endif
+auto compute_nonlinearls_operators_and_objective(CompactWeightedGaussNewtonNormalEqTag /*tag*/,
 						 RegistryType & reg,
 						 const SystemType & system)
 {
@@ -320,6 +378,16 @@ void compute_correction(GaussNewtonNormalEqTag /*tag*/,
 
 template<class RegistryType>
 void compute_correction(WeightedGaussNewtonNormalEqTag /*tag*/,
+			RegistryType & reg)
+{
+  // this is same as regular GN since we solve H delta = g
+  solve_hessian_gradient_linear_system(reg);
+  auto & c = reg.template get<CorrectionTag>();
+  ::pressio::ops::scale(c, -1);
+}
+
+template<class RegistryType>
+void compute_correction(CompactWeightedGaussNewtonNormalEqTag /*tag*/,
 			RegistryType & reg)
 {
   // this is same as regular GN since we solve H delta = g

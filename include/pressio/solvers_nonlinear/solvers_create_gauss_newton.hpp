@@ -180,6 +180,35 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
      std::forward<WeightingOpType>(weigher));
 }
 
+template<class SystemType, class LinearSolverType, class WeightingOpType, class TagType>
+auto create_gauss_newton_solver(const SystemType & system,           /*(3)*/
+				LinearSolverType && linSolver,
+				WeightingOpType && weigher,
+				TagType /*tag*/)
+{
+
+  using nonlinearsolvers::Diagnostic;
+  const std::vector<Diagnostic> defaultDiagnostics =
+    {Diagnostic::objectiveAbsolute,
+     Diagnostic::objectiveRelative,
+     Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
+     Diagnostic::correctionAbsolutel2Norm,
+     Diagnostic::correctionRelativel2Norm,
+     Diagnostic::gradientAbsolutel2Norm,
+     Diagnostic::gradientRelativel2Norm};
+
+  using state_t  = typename SystemType::state_type;
+  using reg_t    = nonlinearsolvers::impl::RegistryWeightedGaussNewtonNormalEqs<
+    SystemType, LinearSolverType, WeightingOpType>;
+  using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
+
+  return nonlinearsolvers::impl::NonLinLeastSquares<TagType, state_t, reg_t, scalar_t>
+    (TagType{}, defaultDiagnostics, system,
+     std::forward<LinearSolverType>(linSolver),
+     std::forward<WeightingOpType>(weigher));
+}
+
 namespace experimental{
 
 /*
