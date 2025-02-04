@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - ubuntu-gnu-trilinos-11
+          - ubuntu-gnu11-trilinos
         tag:
           - 0dc4553
           - 5bbda25
