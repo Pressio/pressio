@@ -110,7 +110,7 @@ TEST(rom_galerkin_explicit, masked_velo_euler_forward)
     is doing the same thing the default galerkin main1.cc
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int nFull = 20;\
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14,16,18};

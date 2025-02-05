@@ -131,7 +131,7 @@ TEST(rom_lspg_steady, test3)
     steady hyper-reduced lspg
    */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 15;
   const int nSample  = 8;

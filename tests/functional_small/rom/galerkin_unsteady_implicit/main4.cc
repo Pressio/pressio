@@ -243,7 +243,7 @@ TEST(rom_galerkin_implicit, default_fullydiscrete_n2)
 {
   /* default galerkin impliacit eigen with fully discrete API */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 5;
   using fom_t = MyFom;

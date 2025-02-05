@@ -55,7 +55,7 @@ jobs:
       with:
         repository: Pressio/pressio-templates-usage-as-library
         path: examples
-        ref: 2-update-logging-to-use-pressio-log
+        ref: main
 
     - name: Checkout pressio-log
       uses: actions/checkout@v4

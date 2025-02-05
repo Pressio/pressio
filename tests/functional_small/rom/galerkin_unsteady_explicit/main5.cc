@@ -96,7 +96,7 @@ TEST(rom_galerkin_explicit, test5)
      phi^T f = [70; 140; 210]
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 5;
   using fom_t = MyFom;

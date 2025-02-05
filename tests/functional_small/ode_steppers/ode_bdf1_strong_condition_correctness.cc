@@ -58,7 +58,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_bdf1_step_strong_condition_correctness_A)
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -90,7 +90,7 @@ TEST(ode, implicit_bdf1_step_strong_condition_correctness_A)
 
 TEST(ode, implicit_bdf1_step_strong_condition_correctness_B)
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;

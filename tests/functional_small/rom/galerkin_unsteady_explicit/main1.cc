@@ -85,7 +85,7 @@ TEST(rom_galerkin_explicit, default)
       rom_state|_step2 = [0,51,102]^T + phi^T f(y_fom, t=1.) = [0, 2611, 5222]
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   // create fom
   constexpr int N = 10;

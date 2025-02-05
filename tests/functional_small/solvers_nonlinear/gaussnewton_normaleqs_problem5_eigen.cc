@@ -7,7 +7,7 @@
 
 int main()
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);
 
   using namespace pressio;
   Eigen::Vector4d state;

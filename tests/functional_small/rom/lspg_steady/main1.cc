@@ -133,7 +133,7 @@ TEST(rom_lspg_steady, test1)
     - fom applyJac appJac(B) always returns B += 1
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;

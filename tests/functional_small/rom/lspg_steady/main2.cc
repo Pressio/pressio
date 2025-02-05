@@ -135,7 +135,7 @@ TEST(rom_lspg_steady, test2)
 {
   /* default steady lspg with preconditioning */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   namespace plspg = pressio::rom::lspg;
 

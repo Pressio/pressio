@@ -370,7 +370,7 @@ TEST(rom_lspg_unsteady, test3)
 {
   /* masked lspg eigen */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const std::vector<int> rows_to_corrupt_ = {1,3,5,7,9,11,13};\
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14};\

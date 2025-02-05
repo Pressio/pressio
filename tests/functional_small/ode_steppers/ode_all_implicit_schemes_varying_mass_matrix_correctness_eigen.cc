@@ -199,7 +199,7 @@ struct FakeNonLinearSolver2{
 
 #define ODE_MASS_MATRIX_CHECK_TEST(NAME)			\
   std::cout << "\n";							\
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info, pressiolog::LogTo::console);			\
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);			\
   using namespace pressio;						\
   srand(342556331);							\
   const auto nsteps = ::pressio::ode::StepCount(4);			\

@@ -48,7 +48,7 @@ TEST(rom_galerkin_steady, default_matrix_free)
     just supposed to compile for now
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;

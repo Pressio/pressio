@@ -160,7 +160,7 @@ TEST(rom_lspg_steady, test4)
 {
   /* steady masked LSPG */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int N = 15;
   const std::vector<int> indices_to_corrupt = {1,3,5,7,9,11,13};

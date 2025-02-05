@@ -212,7 +212,7 @@ TEST(rom_galerkin_implicit, masked_bdf1)
   // test for masked implicit galerkin using BDF1
   // all numbers have been computed manually
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int nFull = 20;
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14,16,18};

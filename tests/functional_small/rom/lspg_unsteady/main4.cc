@@ -267,7 +267,7 @@ TEST(rom_lspg_unsteady, test4)
 {
   /* default lspg eigen with fully discrete API */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;

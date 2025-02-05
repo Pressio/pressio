@@ -184,7 +184,7 @@ TEST(rom_lspg_unsteady, fully_discrete_with_recovery_n2)
     but has no meaning at all. It is just a nmerical trick that helps us verify things.
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using fom_t = MyFom;
   using reduced_state_type = Eigen::VectorXd;

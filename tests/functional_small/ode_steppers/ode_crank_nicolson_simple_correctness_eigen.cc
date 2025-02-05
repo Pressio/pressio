@@ -224,7 +224,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_crank_nicolson_correctness_default_policy)
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
@@ -247,7 +247,7 @@ TEST(ode, implicit_crank_nicolson_correctness_default_policy)
 
 TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using app_t   = MyApp;
   using state_t = typename app_t::state_type;

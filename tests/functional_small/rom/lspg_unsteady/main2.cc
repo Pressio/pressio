@@ -369,7 +369,7 @@ TEST(rom_lspg_unsteady, test2)
 {
   /* hyper-reduced lspg eigen */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nstencil = 15;
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14};

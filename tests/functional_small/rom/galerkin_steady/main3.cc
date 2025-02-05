@@ -133,7 +133,7 @@ TEST(rom_galerkin_steady, hyperreduced)
     except that we pretend here to do a hyper-reduced problem
    */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 13;
   const std::vector<int> validStateIndices = {2,3,4,5,6,10,11,12};

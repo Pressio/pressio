@@ -50,7 +50,7 @@ public:
 
 TEST(solvers_nonlinear, problem1MatrixFree)
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t  = Problem1MatrixFree;

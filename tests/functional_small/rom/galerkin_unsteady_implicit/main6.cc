@@ -110,7 +110,7 @@ TEST(rom_galerkin_implicit, default_with_massmatrix_bdf1)
 {
   // implicit default galerkin with mass matrix
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   // create fom
   using fom_t = MyFom;

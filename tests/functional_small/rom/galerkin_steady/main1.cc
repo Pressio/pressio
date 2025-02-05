@@ -110,7 +110,7 @@ struct FakeNonLinSolverSteady
 TEST(rom_galerkin_steady, default)
 {
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;

@@ -93,7 +93,7 @@ TEST(rom_galerkin_explicit, hyperreduced_velo_euler_forward)
     we fake hypereduction by mimicing a stencil/sample mesh
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const std::vector<int> sampleMeshIndices = {1,3,5,7,9,11,13,15,17,19};
   const int nstencil = 20;

@@ -189,7 +189,7 @@ TEST(rom_galerkin_implicit, hyperreduced_bdf1)
   // test for hypred implicit galerkin using BDF1
   // all numbers have been computed manually
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 20;
   const int nSample  = 10;

@@ -279,7 +279,7 @@ TEST(rom_lspg_unsteady, test5)
    note that this WILL need to be changed to a non-trivial scale
   */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;

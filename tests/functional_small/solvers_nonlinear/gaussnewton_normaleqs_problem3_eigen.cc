@@ -58,7 +58,7 @@ void testC3(std::string & sentinel,
 
 int main()
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::basic, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::basic);
 
   std::string sentinel = "PASSED";
   using namespace pressio;

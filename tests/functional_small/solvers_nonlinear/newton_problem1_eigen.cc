@@ -8,7 +8,7 @@ template<class SystemType>
 void run_impl(int reps, bool logOn = false, bool callSolveWithJustState = true)
 {
   if (logOn){
-    PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+    PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
   }
 
   using namespace pressio;

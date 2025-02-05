@@ -63,7 +63,7 @@ void testC2(std::string & sentinel,
 
 int main()
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);
 
   using namespace pressio;
 

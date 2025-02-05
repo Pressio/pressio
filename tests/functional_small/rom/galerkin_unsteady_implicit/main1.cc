@@ -119,7 +119,7 @@ TEST(rom_galerkin_implicit, default_bdf1)
   // test for default implicit galerkin using BDF1
   // all numbers have been computed manually
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   // create fom
   using fom_t = MyFom;

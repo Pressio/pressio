@@ -165,7 +165,7 @@ TEST(rom_galerkin_steady, masked)
 {
   /* steady galerkin masked */
 
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug, pressiolog::LogTo::console);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 13;
   /* corrupt indices are those that we mess up on purpose */\
