@@ -47,7 +47,7 @@ else()
   )
 
   FetchContent_MakeAvailable(pressio-log)
-  set(PRESSIO_LOG_INCLUDE_DIR ${pressio-log_SOURCE_DIR}/include)
+  set(PRESSIO_LOG_INCLUDE_DIR ${pressio-log_SOURCE_DIR}/include;${pressio-log_SOURCE_DIR}/lib/fmt/include)
 
 endif()
 
