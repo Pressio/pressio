@@ -8,13 +8,9 @@ include(colors)
 #=====================================================================
 if(PRESSIO_OPS_INCLUDE_DIR)
   message("${Green}-- Using ${PRESSIO_OPS_INCLUDE_DIR}")
-  include_directories(SYSTEM ${PRESSIO_OPS_INCLUDE_DIR})
-
 else()
-
   include(FetchContent)
   message("${Green}-- PRESSIO_OPS_INCLUDE_DIR is not defined, so fetching pressio-ops...")
-
   FetchContent_Declare(
     pressio-ops
     GIT_REPOSITORY https://github.com/Pressio/pressio-ops.git
@@ -22,17 +18,23 @@ else()
     GIT_PROGRESS   TRUE
     GIT_SHALLOW    TRUE
   )
-
   FetchContent_MakeAvailable(pressio-ops)
   set(PRESSIO_OPS_INCLUDE_DIR ${pressio-ops_SOURCE_DIR}/include)
 endif()
 
 # pull in pressio-log and read macros
 #=====================================================================
+option(PRESSIO_ENABLE_LOGGING "Enable logging via pressio-log" ON)
+if (PRESSIO_ENABLE_LOGGING)
+  add_compile_definitions(PRESSIO_ENABLE_LOGGING=1)
+else()
+  add_compile_definitions(PRESSIO_ENABLE_LOGGING=0)
+endif()
+
+message(STATUS "PRESSIO_ENABLE_LOGGING = ${PRESSIO_ENABLE_LOGGING}")
 if (PRESSIO_ENABLE_LOGGING)
   if(PRESSIO_LOG_INCLUDE_DIR)
     message("${Green}-- Using ${PRESSIO_LOG_INCLUDE_DIR}")
-    include_directories(SYSTEM ${PRESSIO_LOG_INCLUDE_DIR})
   else()
     include(FetchContent)
     message("${Green}-- PRESSIO_LOG_INCLUDE_DIR is not defined, so fetching pressio-log...")
@@ -97,8 +99,15 @@ if(PRESSIO_ENABLE_TESTS)
 
   target_include_directories(
     pressio INTERFACE
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${PRESSIO_OPS_INCLUDE_DIR};${PRESSIO_LOG_INCLUDE_DIR}>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${PRESSIO_OPS_INCLUDE_DIR}>"
   )
+
+  if (PRESSIO_ENABLE_LOGGING)
+    target_include_directories(
+      pressio INTERFACE
+      "$<BUILD_INTERFACE:${PRESSIO_LOG_INCLUDE_DIR}>"
+    )
+  endif()
 
   enable_testing()
   add_subdirectory(tests)
