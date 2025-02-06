@@ -53,7 +53,7 @@
 #include "pressio/type_traits.hpp"
 #include "pressio/ops.hpp"
 
-#include "pressio-log/core.hpp"
+#include "pressio/pressio_macros.hpp"
 #include "./solvers_linear.hpp"
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"

@@ -49,7 +49,16 @@
 #ifndef PRESSIO_MACROS_HPP_
 #define PRESSIO_MACROS_HPP_
 
-#include "pressio-log/core.hpp"
 #include "pressio/ops_macros.hpp"
+
+#if PRESSIO_ENABLE_LOGGING
+    #include "pressio-log/core.hpp"
+#else
+    #define PRESSIOLOG_BASIC(...)   do {} while (0)
+    #define PRESSIOLOG_INFO(...)    do {} while (0)
+    #define PRESSIOLOG_DEBUG(...)   do {} while (0)
+    #define PRESSIOLOG_WARNING(...) do {} while (0)
+    #define PRESSIOLOG_ERROR(...)   do {} while (0)
+#endif
 
 #endif

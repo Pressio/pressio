@@ -29,26 +29,25 @@ endif()
 
 # pull in pressio-log and read macros
 #=====================================================================
-if(PRESSIO_LOG_INCLUDE_DIR)
-  message("${Green}-- Using ${PRESSIO_LOG_INCLUDE_DIR}")
-  include_directories(SYSTEM ${PRESSIO_LOG_INCLUDE_DIR})
-
+if (PRESSIO_ENABLE_LOGGING)
+  if(PRESSIO_LOG_INCLUDE_DIR)
+    message("${Green}-- Using ${PRESSIO_LOG_INCLUDE_DIR}")
+    include_directories(SYSTEM ${PRESSIO_LOG_INCLUDE_DIR})
+  else()
+    include(FetchContent)
+    message("${Green}-- PRESSIO_LOG_INCLUDE_DIR is not defined, so fetching pressio-log...")
+    FetchContent_Declare(
+      pressio-log
+      GIT_REPOSITORY https://github.com/Pressio/pressio-log.git
+      GIT_TAG        main
+      GIT_PROGRESS   TRUE
+      GIT_SHALLOW    TRUE
+    )
+    FetchContent_MakeAvailable(pressio-log)
+    set(PRESSIO_LOG_INCLUDE_DIR ${pressio-log_SOURCE_DIR}/include)
+  endif()
 else()
-
-  include(FetchContent)
-  message("${Green}-- PRESSIO_LOG_INCLUDE_DIR is not defined, so fetching pressio-log...")
-
-  FetchContent_Declare(
-    pressio-log
-    GIT_REPOSITORY https://github.com/Pressio/pressio-log.git
-    GIT_TAG        main
-    GIT_PROGRESS   TRUE
-    GIT_SHALLOW    TRUE
-  )
-
-  FetchContent_MakeAvailable(pressio-log)
-  set(PRESSIO_LOG_INCLUDE_DIR ${pressio-log_SOURCE_DIR}/include)
-
+  message(STATUS "Logging has been disabled (PRESSIO_ENABLE_LOGGING=OFF)")
 endif()
 
 # versioning
