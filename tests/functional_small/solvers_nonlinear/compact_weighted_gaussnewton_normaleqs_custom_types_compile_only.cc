@@ -19,6 +19,7 @@ struct MyProblem{
 };
 
 struct Weigher{
+  const int leading_dim = 1;
   void operator()(const CustomVecB & /*operand*/, CustomVecB & /*result*/) const{}
   void operator()(const CustomMat  & /*operand*/, CustomMat  & /*result*/) const{}
 };
@@ -41,6 +42,9 @@ double norm2(const CustomVecB &){ return {}; }
 double dot(const CustomVecB &, const CustomVecB &){ return {}; }
 void product(transpose, nontranspose, double, const CustomMat &, const CustomMat &, double, my_hessian_type &){}
 void product(transpose, double, const CustomMat &, const CustomVecB &, double, my_gradient_type &){}
+void resize(CustomVecB &, int){}
+void resize(CustomMat &, int, int){}
+std::size_t extent(CustomMat &, int){ return {}; }
 }//end namespace ops
 }//end namespace pressio
 

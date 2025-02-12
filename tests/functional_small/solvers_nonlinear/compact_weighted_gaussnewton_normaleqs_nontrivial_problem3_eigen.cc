@@ -6,16 +6,38 @@
 #include <iomanip>
 
 template<class scalar_t>
-struct IdentityWeigher{
+struct RangeWeigher{
 
-  const int leading_dim = 8;
+  const int leading_dim = 4;
+  Eigen::Matrix<scalar_t, -1, -1> operator_w;
 
-  template<class T>
-  void operator()(const Eigen::MatrixBase<T> & operand,
-		  Eigen::MatrixBase<T> & result) const
+  RangeWeigher() {
+    operator_w.resize(leading_dim, 8);
+    for (int i = 0; i < leading_dim; ++i) {
+      for (int j = 0; j < 8; ++ j) {
+        operator_w(i, j) = i;
+      }
+    }
+  }
+
+  void operator()(const Eigen::Matrix<scalar_t, -1, 1> & operand,
+		  Eigen::Matrix<scalar_t, -1, 1> & result) const
   {
-    // since this is an identity, just do a deep copy
-    result = operand;
+    pressio::ops::product(
+        pressio::nontranspose(),
+        1., operator_w, operand,
+        0., result
+    );
+  }
+
+  void operator()(const Eigen::Matrix<scalar_t, -1, -1> & operand,
+		  Eigen::Matrix<scalar_t, -1, -1> & result) const
+  {
+    pressio::ops::product(
+        ::pressio::nontranspose(), ::pressio::nontranspose(),
+        1., operator_w, operand,
+        0., result
+    );
   }
 };
 
@@ -27,8 +49,8 @@ void testC1(std::string & sentinel,
 {
   GNSolver.setStopTolerance(1e-8);
   GNSolver.solve(problem, x);
-  if ( (std::abs(x(0) - 2.4173449278229) > 1e-7 )or
-       (std::abs(x(1) - 0.26464986197941) > 1e-7) ){
+  if ( (std::abs(x(0) - 2.2812490140064) > 1e-7 )or
+       (std::abs(x(1) - 0.27503679698785) > 1e-7) ){
     sentinel = "FAILED";
   }
 }
@@ -46,8 +68,8 @@ void testC2(std::string & sentinel,
   GNSolver.setStopTolerance(1e3);
   GNSolver.solve(problem, x);
 
-  if ( (std::abs(x(0) - 2.4153884777105201) > 1e-11 )or
-       (std::abs(x(1) - 0.26879930127342189) > 1e-11) ){
+  if ( (std::abs(x(0) - 2.2817056308917141) > 1e-11 )or
+       (std::abs(x(1) - 0.27507107642086648) > 1e-11) ){
     sentinel = "FAILED";
   }
 }
@@ -63,8 +85,8 @@ void testC3(std::string & sentinel,
   GNSolver.setStopCriterion(criterion);
   GNSolver.setStopTolerance(1e-5);
   GNSolver.solve(problem, x);
-  if ( (std::abs(x(0) - 2.41728158794844) > 1e-11 )or
-       (std::abs(x(1) - 0.26465375115797) > 1e-11) ){
+  if ( (std::abs(x(0) - 2.2812490853208414) > 1e-11 )or
+       (std::abs(x(1) - 0.27503680234281269) > 1e-11) ){
     sentinel = "FAILED";
   }
 }
@@ -91,7 +113,7 @@ int main()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = create_gauss_newton_solver(problem, linSolver, IdentityWeigher<double>{}, tag_t{});
+  auto GNSolver = create_gauss_newton_solver(problem, linSolver, RangeWeigher<double>{}, tag_t{});
 
   x(0) = 2.0; x(1) = 0.25;
   testC1(sentinel, problem, x, GNSolver);

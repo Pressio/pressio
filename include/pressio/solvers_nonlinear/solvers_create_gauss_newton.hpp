@@ -182,14 +182,14 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
 
 
 /*
-  Same as Weighted gauss-newton, but generalizes use of weighting tag
-  E.g., allowing the special case of using CompactWeightedGaussNewtonNormalEqTag,
+  Special modifications for using CompactWeightedGaussNewtonNormalEqTag
+  Requires that weigher have member leading_dim specifying leading dimension of Wr and WJ
 */
-template<class SystemType, class LinearSolverType, class WeightingOpType, class TagType>
+template<class SystemType, class LinearSolverType, class WeightingOpType>
 auto create_gauss_newton_solver(const SystemType & system,           /*(3)*/
 				LinearSolverType && linSolver,
 				WeightingOpType && weigher,
-				TagType /*tag*/)
+				nonlinearsolvers::impl::CompactWeightedGaussNewtonNormalEqTag /*tag*/)
 {
 
   using nonlinearsolvers::Diagnostic;
@@ -203,13 +203,14 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(3)*/
      Diagnostic::gradientAbsolutel2Norm,
      Diagnostic::gradientRelativel2Norm};
 
+  using tag_t    = nonlinearsolvers::impl::CompactWeightedGaussNewtonNormalEqTag;
   using state_t  = typename SystemType::state_type;
-  using reg_t    = nonlinearsolvers::impl::RegistryWeightedGaussNewtonNormalEqs<
+  using reg_t    = nonlinearsolvers::impl::RegistryCompactWeightedGaussNewtonNormalEqs<
     SystemType, LinearSolverType, WeightingOpType>;
   using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
 
-  return nonlinearsolvers::impl::NonLinLeastSquares<TagType, state_t, reg_t, scalar_t>
-    (TagType{}, defaultDiagnostics, system,
+  return nonlinearsolvers::impl::NonLinLeastSquares<tag_t, state_t, reg_t, scalar_t>
+    (tag_t{}, defaultDiagnostics, system,
      std::forward<LinearSolverType>(linSolver),
      std::forward<WeightingOpType>(weigher));
 }
