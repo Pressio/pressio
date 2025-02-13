@@ -8,7 +8,7 @@
 template<class scalar_t>
 struct IdentityWeigher{
 
-  const int leading_dim = 8;
+  int leadingDim() { return 8; }
 
   template<class T>
   void operator()(const Eigen::MatrixBase<T> & operand,

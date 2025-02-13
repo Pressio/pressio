@@ -275,9 +275,9 @@ public:
       d9_(std::forward<InnSolverType>(innS)),
       d10_(std::forward<_WeightingOpType>(weigher)),
       d11_(&system){
-        // resize leading dimension according to weighing operator
-        pressio::ops::resize(d5_, weigher.leading_dim);
-        pressio::ops::resize(d6_, weigher.leading_dim, pressio::ops::extent(d6_, 1));
+        // resize Wr and WJ leading dimension according to weighing operator
+        pressio::ops::resize(d5_, weigher.leadingDim());
+        pressio::ops::resize(d6_, weigher.leadingDim(), pressio::ops::extent(d6_, 1));
       }
 
   template<class TagToFind>

@@ -19,7 +19,7 @@ struct MyProblem{
 };
 
 struct Weigher{
-  const int leading_dim = 1;
+  int leadingDim() { return {}; }
   void operator()(const CustomVecB & /*operand*/, CustomVecB & /*result*/) const{}
   void operator()(const CustomMat  & /*operand*/, CustomMat  & /*result*/) const{}
 };

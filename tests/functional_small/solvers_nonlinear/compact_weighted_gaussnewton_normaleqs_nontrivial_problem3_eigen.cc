@@ -8,17 +8,18 @@
 template<class scalar_t>
 struct RangeWeigher{
 
-  const int leading_dim = 4;
   Eigen::Matrix<scalar_t, -1, -1> operator_w;
 
   RangeWeigher() {
-    operator_w.resize(leading_dim, 8);
-    for (int i = 0; i < leading_dim; ++i) {
+    operator_w.resize(leadingDim(), 8);
+    for (int i = 0; i < leadingDim(); ++i) {
       for (int j = 0; j < 8; ++ j) {
         operator_w(i, j) = i;
       }
     }
   }
+
+  int leadingDim() { return 4; }
 
   void operator()(const Eigen::Matrix<scalar_t, -1, 1> & operand,
 		  Eigen::Matrix<scalar_t, -1, 1> & result) const
