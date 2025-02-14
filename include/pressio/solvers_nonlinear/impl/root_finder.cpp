@@ -2,6 +2,8 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_ROOT_FINDER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_ROOT_FINDER_HPP_
 
+#include <utility>
+
 namespace pressio{
 namespace nonlinearsolvers{
 namespace impl{

@@ -3,6 +3,7 @@
 #define PRESSIO_SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
 
 #include <iostream>
+#include <iomanip>
 
 namespace pressio{
 namespace nonlinearsolvers{

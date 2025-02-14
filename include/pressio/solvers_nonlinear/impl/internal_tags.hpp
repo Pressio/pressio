@@ -18,6 +18,7 @@ struct NewtonTag{};
 struct MatrixFreeNewtonTag{};
 struct GaussNewtonNormalEqTag{};
 struct WeightedGaussNewtonNormalEqTag{};
+struct CompactWeightedGaussNewtonNormalEqTag{};
 struct LevenbergMarquardtNormalEqTag{};
 struct GaussNewtonQrTag{};
 

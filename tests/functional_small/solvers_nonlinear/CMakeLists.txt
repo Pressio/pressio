@@ -61,6 +61,20 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 # -----------------------------
+# compact weighted gauss-newton with normal equations
+# -----------------------------
+if (PRESSIO_ENABLE_TPL_EIGEN)
+  set(name compact_weighted_gaussnewton_normaleqs_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name compact_weighted_gaussnewton_normaleqs_nontrivial_problem3_eigen)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+
+  set(name compact_weighted_gaussnewton_normaleqs_custom_types_compile_only)
+  add_serial_exe_and_test(${name} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc "PASSED")
+endif()
+
+# -----------------------------
 # gauss-newton via QR
 # -----------------------------
 if (PRESSIO_ENABLE_TPL_EIGEN)
