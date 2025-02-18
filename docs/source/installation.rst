@@ -89,7 +89,7 @@ or you can pick a `release version <https://github.com/Pressio/pressio/releases>
 
 3. Use cmake to configure by passing to the comand line the target list of cmake variables to define.
 
-For example, suppose we want to enable support for Trilinos and the debug prints. We would do:
+For example, suppose we want to enable support for Trilinos and the loger. We would do:
 
 .. code-block:: bash
 
@@ -98,7 +98,7 @@ For example, suppose we want to enable support for Trilinos and the debug prints
 
    cmake -D CMAKE_INSTALL_PREFIX=../install \
          -D PRESSIO_ENABLE_TPL_TRILINOS=ON \
-         -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
+         -D PRESSIO_ENABLE_LOGGING=ON \
          ${PRESSIO_SRC}
 
    make install # nothing is built, just headers copied to installation

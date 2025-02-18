@@ -95,10 +95,6 @@ Other Options
      - Description
      - Default
 
-   * - ``PRESSIO_ENABLE_DEBUG_PRINT``
-     - to enable debugging print statements
-     - ``OFF``
-
    * - ``PRESSIO_ENABLE_CXX20``
      - enables C++20 standard
      - ``OFF``; turned on if ``CMAKE_CXX_STANDARD`` is set to 20

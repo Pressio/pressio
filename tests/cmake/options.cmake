@@ -4,26 +4,6 @@ if(CMAKE_CXX_STANDARD EQUAL 20)
   add_definitions(-DPRESSIO_ENABLE_CXX20)
 endif()
 
-option(PRESSIO_ENABLE_DEBUG_PRINT "Enable debug printing" OFF)
-if (PRESSIO_ENABLE_DEBUG_PRINT)
-  add_definitions(-DPRESSIO_ENABLE_DEBUG_PRINT)
-endif()
-
-# LOGGING MACROS
-option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
-if (PRESSIO_SILENCE_WARNINGS)
-  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=1)
-else ()
-  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=0)
-endif()
-
-option(PRESSIO_ENABLE_COLORIZED_OUTPUT "Enable or disable colorized logging" OFF)
-if (PRESSIO_ENABLE_COLORIZED_OUTPUT)
-  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=1)
-else ()
-  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=0)
-endif()
-
 # TPLs
 option(PRESSIO_ENABLE_TPL_EIGEN		  "Enable Eigen TPL"	  ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)

@@ -86,7 +86,6 @@ jobs:
             -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
             -D Kokkos_ROOT=/kokkos/install \
             -D KokkosKernels_ROOT=/kokkos-kernels/install \
-            -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
             -D CMAKE_CXX_FLAGS='-Wall -Werror'
 

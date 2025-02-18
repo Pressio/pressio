@@ -93,7 +93,6 @@ jobs:
           -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_BLAS:BOOL=ON \
           -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
-          -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
           -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
           -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
