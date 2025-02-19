@@ -58,8 +58,7 @@ struct MyLinSolver{
 
 int main()
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
   {
     using namespace pressio;
     using problem_t  = MyProblem;
@@ -72,5 +71,5 @@ int main()
     (void)y;
     std::cout << "PASSED" << std::endl;
   }
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
