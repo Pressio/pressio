@@ -24,14 +24,6 @@ endif()
 
 # logging
 #=====================================================================
-# pressio-log options must be configured here and stored in the cache
-set(PRESSIO_ENABLE_COLORIZED_OUTPUT ON  CACHE BOOL   "Enable or disable colorized logging."          )
-set(PRESSIO_SILENCE_WARNINGS        OFF CACHE BOOL   "Enable or disable warnings"                    )
-set(PRESSIO_ENABLE_EXTERNAL_FMT     OFF CACHE BOOL   "Allow using an externally provided fmt library")
-set(fmt_INCLUDE_DIR                 ""  CACHE STRING "Include directory of fmt library."             )
-set(fmt_ROOT                        ""  CACHE STRING "Root directory of fmt library."                )
-set(fmt_DIR                         ""  CACHE STRING "Root directory of fmt library."                )
-
 option(PRESSIO_ENABLE_LOGGING "Enable logging via pressio-log" ON)
 if (PRESSIO_ENABLE_LOGGING)
   add_compile_definitions(PRESSIO_ENABLE_LOGGING=1)
@@ -42,13 +34,11 @@ endif()
 # get pressio-log (either find it or fetch it)
 message(STATUS "PRESSIO_ENABLE_LOGGING = ${PRESSIO_ENABLE_LOGGING}")
 if (PRESSIO_ENABLE_LOGGING)
-  if(PRESSIO_LOG_DIR)
-    message("${Green}-- Using ${PRESSIO_LOG_DIR}")
-    add_subdirectory(${PRESSIO_LOG_DIR} ${CMAKE_BINARY_DIR}/pressio-log)
-    set(PRESSIO_LOG_INCLUDE_DIR ${PRESSIO_LOG_DIR}/include)
+  if(PRESSIO_LOG_INCLUDE_DIR)
+    message("${Green}-- Using ${PRESSIO_LOG_INCLUDE_DIR}")
   else()
     include(FetchContent)
-    message("${Green}-- PRESSIO_LOG_DIR is not defined, so fetching pressio-log...")
+    message("${Green}-- PRESSIO_LOG_INCLUDE_DIR is not defined, so fetching pressio-log...")
     FetchContent_Declare(
       pressio-log
       GIT_REPOSITORY https://github.com/Pressio/pressio-log.git
@@ -107,8 +97,6 @@ install(
 #=====================================================================
 if(PRESSIO_ENABLE_TESTS)
   add_library(pressio INTERFACE)
-
-  target_link_libraries(pressio INTERFACE pressio-log)
 
   target_include_directories(
     pressio INTERFACE
