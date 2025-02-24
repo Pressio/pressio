@@ -40,15 +40,21 @@ void root_solving_loop_impl(NewtonTag /*problemTag*/,
     (int stepCount)
   {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);
+    const bool hasConverged =
+      is_absolute_diagnostic(stopDiag) ?
+      normDiag[stopDiag].getAbsolute() < stopTolerance :
+      normDiag[stopDiag].getRelative() < stopTolerance;
+    const bool hasReachedMaxIters = stepCount >= maxIters;
+    if (hasReachedMaxIters && !hasConverged) {
+      writeNonlinearSolverTerminationFile(
+        "Root Finder: Reached maximum number of iterations before convergence."
+      );
+    }
     switch (stopEnumValue){
     case Stop::AfterMaxIters:
-      return stepCount == maxIters;
+      return hasReachedMaxIters;
     default:
-      if (is_absolute_diagnostic(stopDiag)){
-	return normDiag[stopDiag].getAbsolute() < stopTolerance;
-      }else{
-	return normDiag[stopDiag].getRelative() < stopTolerance;
-      }
+      return hasConverged;
     };
   };
 
@@ -83,9 +89,6 @@ void root_solving_loop_impl(NewtonTag /*problemTag*/,
     /* stage 4*/
     if (mustStop(iStep)){
       PRESSIOLOG_DEBUG("nonlinsolver: stopping");
-      writeNonlinearSolverTerminationFile(
-        "Root Finder: Reached maximum number of iterations before convergence."
-      );
       break;
     }
 
@@ -182,20 +185,27 @@ void root_solving_loop_impl(MatrixFreeNewtonTag /*problemTag*/,
     return ::pressio::ops::norm2(r);
   };
 
-  auto mustStop = [&normDiag = std::as_const(normDiagnostics),
+  auto mustStop = [
+		   &normDiag = std::as_const(normDiagnostics),
 		   stopEnumValue, maxIters, stopTolerance]
     (int stepCount)
   {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);
+    const bool hasConverged =
+      is_absolute_diagnostic(stopDiag) ?
+      normDiag[stopDiag].getAbsolute() < stopTolerance :
+      normDiag[stopDiag].getRelative() < stopTolerance;
+    const bool hasReachedMaxIters = stepCount >= maxIters;
+    if (hasReachedMaxIters && !hasConverged) {
+      writeNonlinearSolverTerminationFile(
+        "Root Finder: Reached maximum number of iterations before convergence."
+      );
+    }
     switch (stopEnumValue){
     case Stop::AfterMaxIters:
-      return stepCount == maxIters;
+      return hasReachedMaxIters;
     default:
-      if (is_absolute_diagnostic(stopDiag)){
-	return normDiag[stopDiag].getAbsolute() < stopTolerance;
-      }else{
-	return normDiag[stopDiag].getRelative() < stopTolerance;
-      }
+      return hasConverged;
     };
   };
 
@@ -220,10 +230,12 @@ void root_solving_loop_impl(MatrixFreeNewtonTag /*problemTag*/,
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
       PRESSIOLOG_ERROR(e.what());
+      writeNonlinearSolverTerminationFile(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
     catch (::pressio::eh::ResidualHasNans const &e){
       PRESSIOLOG_ERROR(e.what());
+      writeNonlinearSolverTerminationFile(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
 
@@ -258,13 +270,15 @@ void root_solving_loop_impl(MatrixFreeNewtonTag /*problemTag*/,
       updater(reg, objective, currentObjValue);
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
-      // nicely exist the solve
+      // nicely exit the solve
       PRESSIOLOG_WARNING(e.what());
+      writeNonlinearSolverTerminationFile(e.what());
       break;
     }
     catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
-      // nicely exist the solve
+      // nicely exit the solve
       PRESSIOLOG_WARNING(e.what());
+      writeNonlinearSolverTerminationFile(e.what());
       break;
     }
   }

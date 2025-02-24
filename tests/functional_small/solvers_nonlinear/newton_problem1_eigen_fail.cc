@@ -100,8 +100,8 @@ void run_impl()
   auto nonLinSolver = create_newton_solver(sys, linearSolverObj);
 
   if constexpr (failType == FailType::MaximumIterations) {
-    // The max iteration will be hit before this converges.
-    y(0) = 1000; y(1) = -1000;
+    // The max iteration will be hit immediately.
+    nonLinSolver.setMaxIterations(1);
   } else if constexpr (failType == FailType::LineSearchStepTooSmall) {
     // First we make sure we are using an Updater that can throw this
     // exception. Then we make the backtrack condition tiny, so alpha
