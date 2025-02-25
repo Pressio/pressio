@@ -283,7 +283,7 @@ private:
     std::cout << "\n";
   }
 #else
-    PRESSIOLOG_BASIC(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
+    PRESSIOLOG_SOLVERS_DIAGNOSTICS_ONLY(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
 #endif
 
   }

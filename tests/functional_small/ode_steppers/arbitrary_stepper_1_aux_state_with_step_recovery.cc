@@ -123,7 +123,7 @@ struct MyFakeSolver
 
 int main()
 {
-  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::basic);
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::sparse);
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;

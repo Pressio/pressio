@@ -53,8 +53,9 @@
 
 #if PRESSIO_ENABLE_LOGGING
     #include "pressio-log/core.hpp"
+    #define PRESSIOLOG_SOLVERS_DIAGNOSTICS_ONLY(...) PRESSIOLOG_SPARSE(__VA_ARGS__)
 #else
-    #define PRESSIOLOG_BASIC(...)   do {} while (0)
+    #define PRESSIOLOG_SPARSE(...)  do {} while (0)
     #define PRESSIOLOG_INFO(...)    do {} while (0)
     #define PRESSIOLOG_DEBUG(...)   do {} while (0)
     #define PRESSIOLOG_WARNING(...) do {} while (0)
