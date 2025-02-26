@@ -66,7 +66,14 @@ jobs:
         with:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
-          ref: add-compatibility-with-pressio-ops
+          ref: main
+
+      - name: Checkout pressio-log
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-log
+          path: pressio-log
+          ref: main
 
       - name: Checkout pressio-ops
         uses: actions/checkout@v4
@@ -91,10 +98,10 @@ jobs:
             -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
             -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
             ${{ matrix.cmake_extra_args }} \
-            -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
             -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
+            -D PRESSIO_LOG_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-log/include \
             -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
 
       - name: Build
@@ -108,6 +115,7 @@ jobs:
             --std=c++17 \
             -DPRESSIO_ENABLE_TPL_EIGEN \
             -I/eigen/eigen-${{ env.eigen_version }} \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${PRESSIO_INSTALL_DIR}/include \
             -c main.cpp                \
@@ -120,6 +128,7 @@ jobs:
           $CXX \
             --std=c++17 \
             -I/eigen/eigen-${{ env.eigen_version }} \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${PRESSIO_INSTALL_DIR}/include \
             -c main_with_defines.cpp   \

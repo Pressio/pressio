@@ -57,7 +57,14 @@ jobs:
         with:
           repository: Pressio/pressio-templates-usage-as-library
           path: examples
-          ref: add-compatibility-with-pressio-ops
+          ref: main
+
+      - name: Checkout pressio-log
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-log
+          path: pressio-log
+          ref: main
 
       - name: Checkout pressio-ops
         uses: actions/checkout@v4
@@ -79,7 +86,6 @@ jobs:
             -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
             -D Kokkos_ROOT=/kokkos/install \
             -D KokkosKernels_ROOT=/kokkos-kernels/install \
-            -D PRESSIO_ENABLE_DEBUG_PRINT=ON \
             -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
             -D CMAKE_CXX_FLAGS='-Wall -Werror'
 
@@ -94,6 +100,7 @@ jobs:
             -DPRESSIO_ENABLE_TPL_KOKKOS \
             -I/kokkos/install/include \
             -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${PRESSIO_INSTALL_DIR}/include \
             -c main.cpp
@@ -106,6 +113,7 @@ jobs:
             -DPRESSIO_ENABLE_TPL_KOKKOS \
             -I/kokkos/install/include \
             -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${PRESSIO_INSTALL_DIR}/include \
             -c main_with_defines.cpp

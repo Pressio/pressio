@@ -176,8 +176,7 @@ struct FakeNonLinearSolver2{
 
 #define ODE_MASS_MATRIX_CHECK_TEST(NAME)				\
   std::cout << "\n";							\
-  pressio::log::initialize(pressio::logto::terminal);			\
-  pressio::log::setVerbosity({pressio::log::level::info});		\
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);			\
   using namespace pressio;						\
   srand(342556331);							\
   const auto nsteps = ::pressio::ode::StepCount(4);			\
@@ -235,7 +234,7 @@ struct FakeNonLinearSolver2{
   EXPECT_NEAR( y0(0), y1(0), 1e-12);					\
   EXPECT_NEAR( y0(1), y1(1), 1e-12);					\
   EXPECT_NEAR( y0(2), y1(2), 1e-12);					\
-  pressio::log::finalize();						\
+  PRESSIOLOG_FINALIZE();						\
 
 TEST(ode_implicit_steppers, bdf1_with_fixed_mass_matrix_use_inverse)
 {

@@ -131,8 +131,7 @@ TEST(rom_lspg_steady, test3)
     steady hyper-reduced lspg
    */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 15;
   const int nSample  = 8;
@@ -172,5 +171,5 @@ TEST(rom_lspg_steady, test3)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

@@ -369,8 +369,7 @@ TEST(rom_lspg_unsteady, test2)
 {
   /* hyper-reduced lspg eigen */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nstencil = 15;
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14};
@@ -408,5 +407,5 @@ TEST(rom_lspg_unsteady, test2)
   EXPECT_DOUBLE_EQ(romState[1], 5.);
   EXPECT_DOUBLE_EQ(romState[2], 6.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

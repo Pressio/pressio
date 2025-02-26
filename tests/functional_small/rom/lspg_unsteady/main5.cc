@@ -279,8 +279,7 @@ TEST(rom_lspg_unsteady, test5)
    note that this WILL need to be changed to a non-trivial scale
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;
@@ -324,5 +323,5 @@ TEST(rom_lspg_unsteady, test5)
   EXPECT_DOUBLE_EQ(romState[1], 5.);
   EXPECT_DOUBLE_EQ(romState[2], 6.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

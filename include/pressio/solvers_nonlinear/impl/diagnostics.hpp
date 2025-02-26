@@ -263,7 +263,7 @@ private:
 
     const auto pd = dm.publicNames();
 
-#if !defined(PRESSIO_ENABLE_INTERNAL_SPDLOG)
+#if !defined(PRESSIO_ENABLE_LOGGING)
 
     int rank = 0;
 #if defined PRESSIO_ENABLE_TPL_MPI
@@ -283,7 +283,7 @@ private:
     std::cout << "\n";
   }
 #else
-    PRESSIOLOG_INFO(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
+    PRESSIOLOG_SOLVERS_DIAGNOSTICS_ONLY(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
 #endif
 
   }

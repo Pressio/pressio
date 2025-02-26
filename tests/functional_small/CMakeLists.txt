@@ -1,7 +1,6 @@
 
 set(TESTING_LEVEL functional_small)
 
-add_subdirectory(utils)
 add_subdirectory(solvers_linear)
 add_subdirectory(solvers_nonlinear)
 add_subdirectory(ode_advancers)

@@ -133,8 +133,7 @@ TEST(rom_galerkin_steady, hyperreduced)
     except that we pretend here to do a hyper-reduced problem
    */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 13;
   const std::vector<int> validStateIndices = {2,3,4,5,6,10,11,12};
@@ -178,5 +177,5 @@ TEST(rom_galerkin_steady, hyperreduced)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

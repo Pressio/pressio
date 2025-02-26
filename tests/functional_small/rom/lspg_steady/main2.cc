@@ -135,8 +135,7 @@ TEST(rom_lspg_steady, test2)
 {
   /* default steady lspg with preconditioning */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   namespace plspg = pressio::rom::lspg;
 
@@ -175,5 +174,5 @@ TEST(rom_lspg_steady, test2)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

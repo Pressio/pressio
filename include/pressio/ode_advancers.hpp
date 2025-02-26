@@ -52,7 +52,7 @@
 #include "pressio/mpl.hpp"
 #include "pressio/type_traits.hpp"
 
-#include "./utils.hpp"
+#include "pressio/pressio_macros.hpp"
 
 #include "./ode_concepts.hpp"
 #include "./ode/exceptions.hpp"

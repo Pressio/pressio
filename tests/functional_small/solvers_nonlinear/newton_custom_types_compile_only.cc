@@ -56,8 +56,7 @@ struct MyLinSolver{
 
 TEST(solvers_nonlinear, newton_compile_only)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
   {
 
     using namespace pressio;
@@ -71,5 +70,5 @@ TEST(solvers_nonlinear, newton_compile_only)
     (void)y;
   }
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

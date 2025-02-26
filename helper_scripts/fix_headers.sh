@@ -9,7 +9,7 @@
 PCK_REL_DIR=${PWD}/../include/pressio
 
 # array of names
-declare -a pcks=("utils" "solvers_linear" "solvers_nonlinear" "ode" "rom")
+declare -a pcks=("solvers_linear" "solvers_nonlinear" "ode" "rom")
 
 # loop over and fix he
 for packName in ${pcks[@]}; do

@@ -58,6 +58,31 @@ For example, if we enable Trilinos then ``pressio`` automatically
 enables also Kokkos, BLAS, LAPACK and MPI.
 
 
+Logging
+=======
+
+.. list-table::
+   :widths: 30 60 10
+   :header-rows: 1
+   :align: left
+
+   * - Variable
+     - Description
+     - Default
+
+   * - ``PRESSIO_ENABLE_LOGGING``
+     - enables logging with ``pressio-log``
+     - ``ON``
+
+   * - ``PRESSIO_ENABLE_COLORIZED_OUTPUT``
+     - logging output will be colorized (warnings=yellow, errors=red)
+     - ``OFF``
+
+   * - ``PRESSIO_SILENCE_WARNINGS``
+     - the logger will omit any warning messages
+     - ``OFF``
+
+
 Other Options
 =============
 
@@ -69,10 +94,6 @@ Other Options
    * - Variable
      - Description
      - Default
-
-   * - ``PRESSIO_ENABLE_DEBUG_PRINT``
-     - to enable debugging print statements
-     - ``OFF``
 
    * - ``PRESSIO_ENABLE_CXX20``
      - enables C++20 standard

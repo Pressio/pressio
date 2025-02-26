@@ -66,8 +66,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_bdf2_step_strong_condition_correctness_A)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -105,7 +104,7 @@ TEST(ode, implicit_bdf2_step_strong_condition_correctness_A)
   EXPECT_DOUBLE_EQ(r(1), -1.2);
   EXPECT_DOUBLE_EQ(r(2), -1.2);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
 
 TEST(ode, implicit_bdf2_step_strong_condition_correctness_B)
@@ -119,8 +118,7 @@ TEST(ode, implicit_bdf2_step_strong_condition_correctness_B)
     1     1.3
    */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -160,7 +158,7 @@ TEST(ode, implicit_bdf2_step_strong_condition_correctness_B)
   EXPECT_DOUBLE_EQ(r(2), 1.3 - (4./3.)*1.3 + (1/3.) -1.2*(2/3.));
   std::cout << r << std::endl;
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
 
 TEST(ode, implicit_bdf2_step_strong_condition_correctness_C)
@@ -179,8 +177,7 @@ TEST(ode, implicit_bdf2_step_strong_condition_correctness_C)
     1     1.3   1.6     1.8
    */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -214,5 +211,5 @@ TEST(ode, implicit_bdf2_step_strong_condition_correctness_C)
   EXPECT_DOUBLE_EQ(r(2), 1.6 - (4./3.)*1.6 + (1/3.)*1.3 -1.2*(2/3.));
   std::cout << r << std::endl;
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

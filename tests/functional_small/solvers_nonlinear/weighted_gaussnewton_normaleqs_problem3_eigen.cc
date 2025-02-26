@@ -70,8 +70,7 @@ void testC3(std::string & sentinel,
 
 int main()
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::trace});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::sparse);
 
   std::string sentinel = "PASSED";
   using namespace pressio;
@@ -105,6 +104,6 @@ int main()
   std::cout << sentinel << std::endl;
 
   std::cout << std::setprecision(14) << x << std::endl;
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
   return 0;
 }

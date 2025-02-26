@@ -96,8 +96,7 @@ TEST(rom_galerkin_explicit, test5)
      phi^T f = [70; 140; 210]
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 5;
   using fom_t = MyFom;
@@ -136,5 +135,5 @@ TEST(rom_galerkin_explicit, test5)
   EXPECT_DOUBLE_EQ(romState[1], 1568002.);
   EXPECT_DOUBLE_EQ(romState[2], 2352003.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

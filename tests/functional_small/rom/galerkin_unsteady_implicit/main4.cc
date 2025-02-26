@@ -243,8 +243,7 @@ TEST(rom_galerkin_implicit, default_fullydiscrete_n2)
 {
   /* default galerkin impliacit eigen with fully discrete API */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 5;
   using fom_t = MyFom;
@@ -276,5 +275,5 @@ TEST(rom_galerkin_implicit, default_fullydiscrete_n2)
   EXPECT_DOUBLE_EQ(romState[1], 5.);
   EXPECT_DOUBLE_EQ(romState[2], 6.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

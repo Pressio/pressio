@@ -7,9 +7,7 @@
 
 int main()
 {
-  namespace plog = pressio::log;
-  plog::initialize(pressio::logto::terminal);
-  plog::setVerbosity({plog::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
 
@@ -59,6 +57,6 @@ int main()
     std::cout << "FAILED" << std::endl;
   }
 
-  plog::finalize();
+  PRESSIOLOG_FINALIZE();
   return 0;
 }

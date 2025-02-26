@@ -165,8 +165,7 @@ TEST(rom_galerkin_steady, masked)
 {
   /* steady galerkin masked */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 13;
   /* corrupt indices are those that we mess up on purpose */\
@@ -212,5 +211,5 @@ TEST(rom_galerkin_steady, masked)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

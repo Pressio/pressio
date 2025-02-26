@@ -188,8 +188,7 @@ TEST(rom_lspg_unsteady, fully_discrete_with_recovery_n3)
     but has no meaning at all. It is just a nmerical trick that helps us verify things.
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using fom_t = MyFom;
   using reduced_state_type = Eigen::VectorXd;
@@ -230,5 +229,5 @@ TEST(rom_lspg_unsteady, fully_discrete_with_recovery_n3)
   pressio::ode::advance_to_target_point_with_step_recovery
     (stepper, romState, 0., targetTime, dtManager, solver);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

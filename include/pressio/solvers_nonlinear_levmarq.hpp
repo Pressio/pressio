@@ -54,7 +54,7 @@
 #include "pressio/expressions.hpp"
 #include "pressio/ops.hpp"
 
-#include "./utils.hpp"
+#include "pressio/pressio_macros.hpp"
 #include "./solvers_linear.hpp"
 
 #include "solvers_nonlinear_concepts.hpp"

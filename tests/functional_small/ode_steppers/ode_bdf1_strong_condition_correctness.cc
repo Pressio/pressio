@@ -58,8 +58,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_bdf1_step_strong_condition_correctness_A)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -86,13 +85,12 @@ TEST(ode, implicit_bdf1_step_strong_condition_correctness_A)
     std::cout << std::setprecision(14) << y << "\n";
   }
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
 
 TEST(ode, implicit_bdf1_step_strong_condition_correctness_B)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -122,5 +120,5 @@ TEST(ode, implicit_bdf1_step_strong_condition_correctness_B)
     std::cout << std::setprecision(14) << y << "\n";
   }
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
