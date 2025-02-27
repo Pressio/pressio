@@ -2,6 +2,8 @@
 #ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
 #define PRESSIO_SOLVERS_NONLINEAR_IMPL_FUNCTIONS_HPP_
 
+#include <fstream>
+
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_CXX20
@@ -516,6 +518,24 @@ void compute_norm_internal_diagnostics(const RegistryType & reg,
 
     default: return;
   };//end switch
+}
+
+// =====================================================
+
+// Write a text file with the error that caused the
+// nonlinear solver to exit without converging.
+inline void writeNonlinearSolverTerminationFile(const std::string terminationString) {
+  int rank = 0;
+#if defined PRESSIO_ENABLE_TPL_MPI
+  int flag = 0; MPI_Initialized( &flag );
+  if (flag == 1) MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+  if (rank == 0) {
+    const std::string fileName = "nonlinear_solver_failed.txt";
+    std::ofstream file; file.open(fileName);
+    file << terminationString << std::endl;
+    file.close();
+  }
 }
 
 }}}

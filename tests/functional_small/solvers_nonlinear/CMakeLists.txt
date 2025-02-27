@@ -8,6 +8,10 @@ if (PRESSIO_ENABLE_TPL_EIGEN)
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
 
+  set(name newton_problem1_eigen_fail)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
+  add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})
+
   set(name newton_matrixfree_problem1_eigen)
   set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cc)
   add_serial_utest(${TESTING_LEVEL}_solvers_nonlinear_${name} ${SRC1})

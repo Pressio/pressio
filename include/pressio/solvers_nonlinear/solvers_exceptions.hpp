@@ -125,7 +125,7 @@ public:
 };
 
 class LineSearchObjFunctionChangeTooSmall : public std::exception{
-  std::string myerr_ = "Line serach objective function change too small";
+  std::string myerr_ = "Line search objective function change too small";
   std::string append_ = {};
 
 public:
