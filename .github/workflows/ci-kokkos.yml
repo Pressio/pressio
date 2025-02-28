@@ -47,7 +47,6 @@ jobs:
         password: ${{ secrets.github_token }}
     env:
       num_cpus: 4
-      PRESSIO_INSTALL_DIR: ${{ github.workspace }}/pressio_install
 
     steps:
       - uses: actions/checkout@v4
@@ -73,6 +72,32 @@ jobs:
           path: pressio-ops
           ref: develop
 
+      - name: Example - include only
+        working-directory: examples
+        run: |
+          $CXX \
+            --std=c++17 \
+            -DPRESSIO_ENABLE_TPL_KOKKOS \
+            -I/kokkos/install/include \
+            -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${GITHUB_WORKSPACE}/pressio/include \
+            -c main.cpp
+
+      - name: Example - include only with embedded definitions
+        working-directory: examples
+        run: |
+          $CXX \
+            --std=c++17 \
+            -DPRESSIO_ENABLE_TPL_KOKKOS \
+            -I/kokkos/install/include \
+            -I/kokkos-kernels/install/include \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${GITHUB_WORKSPACE}/pressio/include \
+            -c main_with_defines.cpp
+
       - name: Configure
         run: |
           cmake -B builddir \
@@ -86,37 +111,10 @@ jobs:
             -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
             -D Kokkos_ROOT=/kokkos/install \
             -D KokkosKernels_ROOT=/kokkos-kernels/install \
-            -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
             -D CMAKE_CXX_FLAGS='-Wall -Werror'
 
       - name: Build
-        run: cmake --build builddir -j $num_cpus --target install
-
-      - name: Example - include only
-        working-directory: examples
-        run: |
-          $CXX \
-            --std=c++17 \
-            -DPRESSIO_ENABLE_TPL_KOKKOS \
-            -I/kokkos/install/include \
-            -I/kokkos-kernels/install/include \
-            -I${GITHUB_WORKSPACE}/pressio-log/include \
-            -I${GITHUB_WORKSPACE}/pressio-ops/include \
-            -I${PRESSIO_INSTALL_DIR}/include \
-            -c main.cpp
-
-      - name: Example - include only with embedded definitions
-        working-directory: examples
-        run: |
-          $CXX \
-            --std=c++17 \
-            -DPRESSIO_ENABLE_TPL_KOKKOS \
-            -I/kokkos/install/include \
-            -I/kokkos-kernels/install/include \
-            -I${GITHUB_WORKSPACE}/pressio-log/include \
-            -I${GITHUB_WORKSPACE}/pressio-ops/include \
-            -I${PRESSIO_INSTALL_DIR}/include \
-            -c main_with_defines.cpp
+        run: cmake --build builddir -j $num_cpus
 
       - name: Test
         working-directory: builddir

@@ -56,7 +56,6 @@ jobs:
     env:
       eigen_version: 3.4.0
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
-      PRESSIO_INSTALL_DIR: ${{ github.workspace }}/pressio_install
 
     steps:
       - uses: actions/checkout@v4
@@ -88,26 +87,6 @@ jobs:
           && mkdir -p /eigen \
           && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
 
-      - name: Configure
-        run: |
-          cmake -B builddir \
-            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
-            -D CMAKE_C_COMPILER=$CC \
-            -D CMAKE_CXX_COMPILER=$CXX \
-            -D CMAKE_CXX_FLAGS='-Wall -Werror' \
-            -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
-            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-            ${{ matrix.cmake_extra_args }} \
-            -D PRESSIO_ENABLE_TESTS:BOOL=ON \
-            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
-            -D PRESSIO_LOG_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-log/include \
-            -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
-
-      - name: Build
-        run: |
-          cmake --build builddir --target install
-
       - name: Example - include only
         working-directory: examples
         run: |
@@ -117,7 +96,7 @@ jobs:
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
-            -I${PRESSIO_INSTALL_DIR}/include \
+            -I${GITHUB_WORKSPACE}/pressio/include \
             -c main.cpp                \
           && $CXX --std=c++17 -o pressio-example main.o \
           && ./pressio-example
@@ -130,10 +109,29 @@ jobs:
             -I/eigen/eigen-${{ env.eigen_version }} \
             -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
-            -I${PRESSIO_INSTALL_DIR}/include \
+            -I${GITHUB_WORKSPACE}/pressio/include \
             -c main_with_defines.cpp   \
           && $CXX --std=c++17 -o pressio-example main.o \
           && ./pressio-example
+
+      - name: Configure
+        run: |
+          cmake -B builddir \
+            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+            -D CMAKE_C_COMPILER=$CC \
+            -D CMAKE_CXX_COMPILER=$CXX \
+            -D CMAKE_CXX_FLAGS='-Wall -Werror' \
+            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            ${{ matrix.cmake_extra_args }} \
+            -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
+            -D PRESSIO_LOG_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-log/include \
+            -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
+
+      - name: Build
+        run: |
+          cmake --build builddir
 
       - name: Run small tests
         working-directory: builddir/tests/functional_small
