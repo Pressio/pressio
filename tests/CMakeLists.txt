@@ -1,8 +1,10 @@
 include(CMakePrintHelpers)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(version)
 include(macrosForCreatingTests)
 include(macrosForCreatingUnitTests)
+include(colors)
 include(options)
 
 # ---------------------------------
