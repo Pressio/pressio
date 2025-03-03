@@ -18,7 +18,7 @@ endmacro()
 macro(add_utest_mpi TESTNAME gMAIN nRANKS)
   set(testNameFinal ${TESTNAME}_np${nRANKS})
   add_executable(${testNameFinal} ${ARGN} ${GTESTMAINSDIR}/${gMAIN}.cc)
-  target_include_directories(${TESTNAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+  target_include_directories(${testNameFinal} PRIVATE ${CMAKE_SOURCE_DIR}/include)
   target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES} gtest_main)
   add_test(
     NAME ${testNameFinal}
