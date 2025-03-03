@@ -3,7 +3,9 @@ include(CMakePrintHelpers)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(macrosForCreatingTests)
 include(macrosForCreatingUnitTests)
+include(colors)
 include(options)
+include(version)
 
 # ---------------------------------
 # 1. find or get gtest

@@ -69,12 +69,12 @@ Each component (level) of the stack depends on the ones below it.
      - ``<pressio/solvers_linear.hpp>``
 
 
-These components are built off of the `Pressio/pressio-ops <https://github.com/Pressio/pressio-ops>`_ library, which is pulled in automatically when ``pressio`` is installed.
+These components depend on the `Pressio/pressio-ops <https://github.com/Pressio/pressio-ops>`_ library, which is pulled in automatically when the ``pressio`` tests are built.
 
 Get Started
 -----------
 
-* `Install pressio <installation.html>`_: (currently) it is a header-only library, so should be trivial
+* `Configure pressio <configuration.html>`_: (currently) it is a header-only library, so should be trivial
 
 * Explore our `end-to-end ROM demos <https://pressio.github.io/pressio-tutorials/endtoend/readthisfirst.html>`_ to
   see ``pressio/rom`` in action and to experiment directly
@@ -146,7 +146,7 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
    :maxdepth: 1
    :hidden:
 
-   installation
+   configuration
    keywords
 
 .. toctree::

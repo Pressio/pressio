@@ -45,7 +45,6 @@ jobs:
       eigen_version: 3.4.0
       num_cpus: 4
       trilinos_dir: /home/pressio_builds/trilinos/install
-      PRESSIO_INSTALL_DIR: ${{ github.workspace }}/pressio_install
 
     steps:
     - uses: actions/checkout@v4
@@ -78,7 +77,35 @@ jobs:
         && mkdir -p /eigen \
         && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
 
-    - name: Configure
+
+    - name: Example - include only
+      working-directory: examples
+      run: |
+          $CXX \
+          --std=c++17 \
+          -DPRESSIO_ENABLE_TPL_EIGEN    \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/eigen/eigen-${{ env.eigen_version }} \
+          -I$trilinos_dir/include       \
+          -I${GITHUB_WORKSPACE}/pressio-log/include \
+          -I${GITHUB_WORKSPACE}/pressio-ops/include \
+          -I${GITHUB_WORKSPACE}/pressio/include \
+          -c main.cpp
+
+    - name: Example - include only with embedded definitions
+      working-directory: examples
+      run: |
+          $CXX \
+          --std=c++17 \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/eigen/eigen-${{ env.eigen_version }} \
+          -I$trilinos_dir/include       \
+          -I${GITHUB_WORKSPACE}/pressio-log/include \
+          -I${GITHUB_WORKSPACE}/pressio-ops/include \
+          -I${GITHUB_WORKSPACE}/pressio/include \
+          -c main_with_defines.cpp
+
+    - name: Configure Tests
       run: |
         cmake -B builddir \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
@@ -95,38 +122,10 @@ jobs:
           -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
           -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
           -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
-          -D CMAKE_INSTALL_PREFIX:PATH=${PRESSIO_INSTALL_DIR} \
           -D CMAKE_CXX_FLAGS='-Wall'
 
-    - name: Build
-      run: cmake --build builddir -j $num_cpus --target install
-
-    - name: Example - include only
-      working-directory: examples
-      run: |
-        $CXX \
-          --std=c++17 \
-          -DPRESSIO_ENABLE_TPL_EIGEN    \
-          -DPRESSIO_ENABLE_TPL_TRILINOS \
-          -I/eigen/eigen-${{ env.eigen_version }} \
-          -I$trilinos_dir/include       \
-          -I${GITHUB_WORKSPACE}/pressio-log/include \
-          -I${GITHUB_WORKSPACE}/pressio-ops/include \
-          -I${PRESSIO_INSTALL_DIR}/include \
-          -c main.cpp
-
-    - name: Example - include only with embedded definitions
-      working-directory: examples
-      run: |
-        $CXX \
-          --std=c++17 \
-          -DPRESSIO_ENABLE_TPL_TRILINOS \
-          -I/eigen/eigen-${{ env.eigen_version }} \
-          -I$trilinos_dir/include       \
-          -I${GITHUB_WORKSPACE}/pressio-log/include \
-          -I${GITHUB_WORKSPACE}/pressio-ops/include \
-          -I${PRESSIO_INSTALL_DIR}/include \
-          -c main_with_defines.cpp
+    - name: Build Tests
+      run: cmake --build builddir -j $num_cpus
 
     - name: Test
       working-directory: builddir
