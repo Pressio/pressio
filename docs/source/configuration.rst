@@ -2,7 +2,7 @@
    :format: html
 
 Configuration and Dependencies
-=============================
+==============================
 
 .. tip::
 

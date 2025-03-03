@@ -98,7 +98,7 @@ jobs:
             -I${GITHUB_WORKSPACE}/pressio/include \
             -c main_with_defines.cpp
 
-      - name: Configure
+      - name: Configure Tests
         run: |
           cmake -B builddir \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
@@ -113,7 +113,7 @@ jobs:
             -D KokkosKernels_ROOT=/kokkos-kernels/install \
             -D CMAKE_CXX_FLAGS='-Wall -Werror'
 
-      - name: Build
+      - name: Build Tests
         run: cmake --build builddir -j $num_cpus
 
       - name: Test

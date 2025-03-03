@@ -114,7 +114,7 @@ jobs:
           && $CXX --std=c++17 -o pressio-example main.o \
           && ./pressio-example
 
-      - name: Configure
+      - name: Configure Tests
         run: |
           cmake -B builddir \
             -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
@@ -129,7 +129,7 @@ jobs:
             -D PRESSIO_LOG_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-log/include \
             -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
 
-      - name: Build
+      - name: Build Tests
         run: |
           cmake --build builddir
 
