@@ -115,6 +115,8 @@ The behavior is as follows:
    focus on the syntax, then then we will revise them with proper semantics. Keep this in mind
    if some concepts seem incomplete.
 
+Read more about `concepts in Pressio <concepts_note>`_.
+
 ..
    Here, the term concept does not necessarily
    refer to the C++ concepts feature introduced in C++20.
@@ -148,6 +150,7 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
 
    configuration
    keywords
+   concepts_note
 
 .. toctree::
    :caption: API

@@ -28,11 +28,13 @@ author = 'Francesco Rizzi'
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 def get_version():
-  local_version = ''
-  with open("../../version.txt") as version_file:
-    for line in version_file.read().strip().split("\n"):
-      local_version = local_version + line.split(" ")[1] + '.'
-    return local_version[:-1]
+    version_splits = []
+    with open("../../include/pressio/pressio_macros.hpp") as version_file:
+        for line in version_file:
+            splits = line.strip().split()
+            if len(splits) == 3 and "VERSION" in splits[1]:
+                version_splits.append(splits[2])
+    return ".".join(version_splits)
 
 # The full version, including alpha/beta/rc tags
 release = get_version()

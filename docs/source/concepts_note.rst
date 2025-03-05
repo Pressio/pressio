@@ -3,8 +3,8 @@
 
 .. include:: mydefs.rst
 
-pressio concepts: more info
-===========================
+Concepts in Pressio
+===================
 
 Concept-driven design has been and still is critical in
 the development of pressio. Here we describe some fundamental
