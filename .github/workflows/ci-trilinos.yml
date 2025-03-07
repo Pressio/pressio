@@ -41,7 +41,7 @@ jobs:
 
     env:
       num_cpus: 4
-      trilinos_dir: /home/pressio_builds/trilinos/install
+      trilinos_dir: /trilinos/install
 
     steps:
     - uses: actions/checkout@v4
