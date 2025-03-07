@@ -42,7 +42,6 @@ jobs:
     env:
       num_cpus: 4
       trilinos_dir: /trilinos/install
-      CXX: /usr/bin/mpic++
 
     steps:
     - uses: actions/checkout@v4
