@@ -42,6 +42,7 @@ jobs:
     env:
       num_cpus: 4
       trilinos_dir: /trilinos/install
+      CXX: /usr/bin/mpic++
 
     steps:
     - uses: actions/checkout@v4
@@ -75,7 +76,7 @@ jobs:
           -DPRESSIO_ENABLE_TPL_EIGEN    \
           -DPRESSIO_ENABLE_TPL_TRILINOS \
           -I/usr/include/eigen3 \
-          -I$trilinos_dir/include       \
+          -I${trilinos_dir}/include       \
           -I${GITHUB_WORKSPACE}/pressio-log/include \
           -I${GITHUB_WORKSPACE}/pressio-ops/include \
           -I${GITHUB_WORKSPACE}/pressio/include \
@@ -88,7 +89,7 @@ jobs:
           --std=c++17 \
           -DPRESSIO_ENABLE_TPL_TRILINOS \
           -I/usr/include/eigen3 \
-          -I$trilinos_dir/include       \
+          -I${trilinos_dir}/include       \
           -I${GITHUB_WORKSPACE}/pressio-log/include \
           -I${GITHUB_WORKSPACE}/pressio-ops/include \
           -I${GITHUB_WORKSPACE}/pressio/include \
