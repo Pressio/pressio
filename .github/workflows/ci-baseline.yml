@@ -32,18 +32,15 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - fedora-clang17
-          - fedora-gnu13
-          - ubuntu-clang14
-          - ubuntu-gnu11
-          #- intel-oneapi-latest
+          - ubuntu-01
+          - ubuntu-02
         build_type:
           - Release
           - Debug
         cmake_extra_args:
           - ''
         include:
-          - image: ubuntu-clang14
+          - image: ubuntu-01
             build_type: Release
             cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
 
@@ -54,7 +51,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
     env:
-      eigen_version: 3.4.0
       num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
 
     steps:
@@ -81,19 +77,13 @@ jobs:
           path: pressio-ops
           ref: develop
 
-      - name: Preparing environment
-        run: |
-          wget https://gitlab.com/libeigen/eigen/-/archive/${{ env.eigen_version }}/eigen-${{ env.eigen_version }}.tar.gz \
-          && mkdir -p /eigen \
-          && tar -xf eigen-${{ env.eigen_version }}.tar.gz -C /eigen
-
       - name: Example - include only
         working-directory: examples
         run: |
           $CXX \
             --std=c++17 \
             -DPRESSIO_ENABLE_TPL_EIGEN \
-            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I/usr/include/eigen3 \
             -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${GITHUB_WORKSPACE}/pressio/include \
@@ -106,7 +96,7 @@ jobs:
         run: |
           $CXX \
             --std=c++17 \
-            -I/eigen/eigen-${{ env.eigen_version }} \
+            -I/usr/include/eigen3 \
             -I${GITHUB_WORKSPACE}/pressio-log/include \
             -I${GITHUB_WORKSPACE}/pressio-ops/include \
             -I${GITHUB_WORKSPACE}/pressio/include \
@@ -125,7 +115,6 @@ jobs:
             ${{ matrix.cmake_extra_args }} \
             -D PRESSIO_ENABLE_TESTS:BOOL=ON \
             -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
-            -D EIGEN_INCLUDE_DIR=/eigen/eigen-${{ env.eigen_version }} \
             -D PRESSIO_LOG_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-log/include \
             -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
 
