@@ -23,7 +23,7 @@ and semantics are specified/listed as comments. Here, we adopt a different
 approach to present axioms (similar to "Design of Concept Libraries for C++", 2011)),
 that we believe benefits readability: axioms are explicitly listed using
 the keyword "axiom". Note, however, that if you want to compile the concepts below
-using a c++20 compiler, you have to comment out all axioms.
+using a C++20 compiler, you have to comment out all axioms.
 
 
 

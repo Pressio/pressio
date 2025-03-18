@@ -131,7 +131,7 @@ The following steps explain how to build and runs the Pressio tests.
    cd <where-you-cloned-pressio>
    mkdir build && mkdir install
 
-3. Use cmake to configure by passing to the command line the target list of cmake variables to define.
+3. Use cmake to configure by passing to the command line the target list of CMake variables to define.
 
 For example, suppose we want to enable support for Trilinos and the logger. We would do:
 
@@ -149,7 +149,7 @@ For example, suppose we want to enable support for Trilinos and the logger. We w
 
 Note that this step **only builds tests** because ``pressio`` is header-only.
 If you want, inspect the file ``<where-you-cloned-pressio>/install/pressio_cmake_config.h``
-which contains the cmake variables configuration.
+which contains the CMake variables configuration.
 
 By default, this step will also clone and link to the ``Pressio/pressio-ops`` library,
 which contains essential operations for ``pressio``.
