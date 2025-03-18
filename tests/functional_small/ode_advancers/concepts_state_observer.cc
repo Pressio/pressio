@@ -33,14 +33,8 @@ TEST(ode, concepts_state_observer)
 {
   using namespace pressio::ode;
 
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert( StateObserver<Obs1, double, state_type>, "");
-  static_assert( !StateObserver<Obs2, double, state_type>, "");
-  static_assert( !StateObserver<Obs3, double, state_type>, "");
-#else
   static_assert( StateObserver<Obs1, double, state_type>::value, "");
   static_assert( !StateObserver<Obs2, double, state_type>::value, "");
   static_assert( !StateObserver<Obs3, double, state_type>::value, "");
-#endif
 
 }

@@ -49,11 +49,12 @@
 #ifndef PRESSIO_NONLINEAR_SOLVERS_NEWTON_HPP_
 #define PRESSIO_NONLINEAR_SOLVERS_NEWTON_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./expressions.hpp"
-#include "./ops.hpp"
+#include "pressio/mpl.hpp"
+#include "pressio/type_traits.hpp"
+#include "pressio/expressions.hpp"
+#include "pressio/ops.hpp"
+
+#include "pressio/pressio_macros.hpp"
 #include "./solvers_linear.hpp"
 
 #include "solvers_nonlinear_concepts.hpp"

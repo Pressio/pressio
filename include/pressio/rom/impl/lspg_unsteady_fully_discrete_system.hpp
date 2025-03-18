@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_FULLY_DISCRETE_SYSTEM_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_FULLY_DISCRETE_SYSTEM_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_FULLY_DISCRETE_SYSTEM_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_FULLY_DISCRETE_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -101,16 +101,12 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< (_n==2) >
+  std::enable_if_t< (_n==2) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type*> Jo,
-#else
-			      discrete_jacobian_type* Jo,
-#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n) const
   {
@@ -130,16 +126,12 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< (_n==3) >
+  std::enable_if_t< (_n==3) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type*> Jo,
-#else
-			      discrete_jacobian_type* Jo,
-#endif
 			      const state_type & lspg_state_np1,
 			      const state_type & lspg_state_n,
 			      const state_type & lspg_state_nm1) const
@@ -212,4 +204,4 @@ protected:
 };
 
 }}}
-#endif  // ROM_IMPL_LSPG_UNSTEADY_FULLY_DISCRETE_SYSTEM_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_FULLY_DISCRETE_SYSTEM_HPP_

@@ -1,0 +1,124 @@
+name: github-Linux-trilinos
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+  push: # for direct quick fixes
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+
+concurrency:
+  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
+
+jobs:
+  CI-trilinos:
+    name: Trilinos
+    strategy:
+      matrix:
+        image:
+          - ubuntu-07
+          - ubuntu-08
+        build_type:
+          - Release
+          - Debug
+
+    runs-on: ubuntu-latest
+    container: ghcr.io/pressio/${{ matrix.image }}
+
+    env:
+      num_cpus: 4
+      trilinos_dir: /trilinos/install
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Checkout pressio examples
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-templates-usage-as-library
+        path: examples
+        ref: main
+
+    - name: Checkout pressio-log
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-log
+        path: pressio-log
+        ref: main
+
+    - name: Checkout pressio-ops
+      uses: actions/checkout@v4
+      with:
+        repository: Pressio/pressio-ops
+        path: pressio-ops
+        ref: develop
+
+    - name: Example - include only
+      working-directory: examples
+      run: |
+          $CXX \
+          --std=c++17 \
+          -DPRESSIO_ENABLE_TPL_EIGEN    \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/usr/include/eigen3 \
+          -I${trilinos_dir}/include       \
+          -I${GITHUB_WORKSPACE}/pressio-log/include \
+          -I${GITHUB_WORKSPACE}/pressio-ops/include \
+          -I${GITHUB_WORKSPACE}/pressio/include \
+          -c main.cpp
+
+    - name: Example - include only with embedded definitions
+      working-directory: examples
+      run: |
+          $CXX \
+          --std=c++17 \
+          -DPRESSIO_ENABLE_TPL_TRILINOS \
+          -I/usr/include/eigen3 \
+          -I${trilinos_dir}/include       \
+          -I${GITHUB_WORKSPACE}/pressio-log/include \
+          -I${GITHUB_WORKSPACE}/pressio-ops/include \
+          -I${GITHUB_WORKSPACE}/pressio/include \
+          -c main_with_defines.cpp
+
+    - name: Configure Tests
+      run: |
+        cmake -B builddir \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+          -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+          -D CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc \
+          -D CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/mpic++ \
+          -D MPI_Fortran_COMPILER:FILEPATH=/usr/bin/mpif90 \
+          -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_MPI:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_TRILINOS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_KOKKOS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_BLAS:BOOL=ON \
+          -D PRESSIO_ENABLE_TPL_LAPACK:BOOL=ON \
+          -D Trilinos_DIR=${{ env.trilinos_dir }}/lib/cmake/Trilinos \
+          -D CMAKE_CXX_FLAGS='-Wall'
+
+    - name: Build Tests
+      run: cmake --build builddir -j $num_cpus
+
+    - name: Test
+      working-directory: builddir
+      run: |
+        export LD_LIBRARY_PATH=${{ env.trilinos_dir }}/lib
+        export OMPI_ALLOW_RUN_AS_ROOT=1
+        export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+        ctest -j $num_cpus --output-on-failure

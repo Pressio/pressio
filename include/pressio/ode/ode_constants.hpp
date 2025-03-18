@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_PUBLIC_CONSTANTS_HPP_
-#define ODE_ODE_PUBLIC_CONSTANTS_HPP_
+#ifndef PRESSIO_ODE_ODE_CONSTANTS_HPP_
+#define PRESSIO_ODE_ODE_CONSTANTS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -56,8 +56,28 @@ constexpr typename StepCount::value_type first_step_value = 1;
 namespace constants{
 
 template <typename scalar_t>
+struct Constants
+{
+  static constexpr scalar_t negOne(){ return static_cast<scalar_t>(-1); }
+  static constexpr scalar_t zero()  { return static_cast<scalar_t>(0);  }
+  static constexpr scalar_t one()   { return static_cast<scalar_t>(1);  }
+  static constexpr scalar_t two()   { return static_cast<scalar_t>(2);  }
+  static constexpr scalar_t three() { return static_cast<scalar_t>(3);  }
+  static constexpr scalar_t four()  { return static_cast<scalar_t>(4);  }
+  static constexpr scalar_t six()   { return static_cast<scalar_t>(6);  }
+
+  static constexpr scalar_t negOneHalf() { return negOne()/two(); }
+  static constexpr scalar_t oneOvThree()  { return one()/three(); }
+  static constexpr scalar_t twoOvThree()  { return two()/three(); }
+  static constexpr scalar_t threeOvFour() { return three()/four(); }
+  static constexpr scalar_t fourOvThree() { return four()/three(); }
+  static constexpr scalar_t threeOvTwo()  { return three()/two(); }
+  static constexpr scalar_t fourInv()     { return one()/four(); }
+};
+
+template <typename scalar_t>
 struct bdf1{
-  using cnst = ::pressio::utils::Constants<scalar_t>;
+  using cnst = Constants<scalar_t>;
   static constexpr scalar_t c_np1_= cnst::one();
   static constexpr scalar_t c_n_  = cnst::negOne();
   static constexpr scalar_t c_f_  = cnst::negOne();
@@ -65,7 +85,7 @@ struct bdf1{
 
 template <typename scalar_t>
 struct bdf2{
-  using cnst = ::pressio::utils::Constants<scalar_t>;
+  using cnst = Constants<scalar_t>;
   static constexpr scalar_t c_np1_ = cnst::one();
   static constexpr scalar_t c_n_   = cnst::negOne()*cnst::fourOvThree();
   static constexpr scalar_t c_nm1_ = cnst::oneOvThree();
@@ -74,7 +94,7 @@ struct bdf2{
 
 template <typename scalar_t>
 struct cranknicolson{
-  using cnst = ::pressio::utils::Constants<scalar_t>;
+  using cnst = Constants<scalar_t>;
   static constexpr scalar_t c_np1_  = cnst::one();
   static constexpr scalar_t c_n_    = cnst::negOne();
   static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();
@@ -83,4 +103,4 @@ struct cranknicolson{
 
 }}}//end namespace pressio::ode::constants
 
-#endif  // ODE_ODE_PUBLIC_CONSTANTS_HPP_
+#endif  // PRESSIO_ODE_ODE_CONSTANTS_HPP_

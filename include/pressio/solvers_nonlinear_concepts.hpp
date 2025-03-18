@@ -49,9 +49,10 @@
 #ifndef PRESSIO_NONLINEAR_SOLVERS_CONCEPTS_HPP_
 #define PRESSIO_NONLINEAR_SOLVERS_CONCEPTS_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
+#include "pressio/mpl.hpp"
+#include "pressio/type_traits.hpp"
+
+#include "pressio/pressio_macros.hpp"
 
 #ifdef PRESSIO_ENABLE_CXX20
 #include "solvers_nonlinear/solvers_concepts_cxx20.hpp"

@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_NONLINEAR_DEFAULT_TYPES_NORMAL_EQ_PP_
-#define SOLVERS_NONLINEAR_DEFAULT_TYPES_NORMAL_EQ_PP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_DEFAULT_TYPES_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_DEFAULT_TYPES_HPP_
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -14,7 +14,7 @@ struct normal_eqs_default_types{
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct normal_eqs_default_types<
-  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+  T, std::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using hessian_type = Eigen::Matrix<typename Traits<T>::scalar_type, -1, -1>;
   using gradient_type = T;
@@ -39,9 +39,9 @@ struct valid_state_for_least_squares : std::false_type{};
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct valid_state_for_least_squares<
-  T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value >
+  T, std::enable_if_t< ::pressio::is_vector_eigen<T>::value >
   > : std::true_type{};
 #endif
 
 }}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_DEFAULT_TYPES_HPP_

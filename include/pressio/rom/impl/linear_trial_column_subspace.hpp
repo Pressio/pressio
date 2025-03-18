@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
-#define ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
+#ifndef PRESSIO_ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
+#define PRESSIO_ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -11,7 +11,7 @@ struct CreateReducedState;
 template<class ReducedStateType>
 struct CreateReducedState<
   ReducedStateType,
-  mpl::enable_if_t< ::pressio::is_vector_eigen<ReducedStateType>::value >
+  std::enable_if_t< ::pressio::is_vector_eigen<ReducedStateType>::value >
   >
 {
   template<class BasisType>
@@ -25,7 +25,7 @@ struct CreateReducedState<
 template<class ReducedStateType>
 struct CreateReducedState<
   ReducedStateType,
-  mpl::enable_if_t< ::pressio::is_vector_kokkos<ReducedStateType>::value >
+  std::enable_if_t< ::pressio::is_vector_kokkos<ReducedStateType>::value >
   >
 {
   template<class BasisType>
@@ -47,7 +47,7 @@ public:
 private:
   using linear_subspace_t = LinearSubspace<basis_matrix_type>;
   const linear_subspace_t linSpace_;
-  const full_state_type translation_;
+  full_state_type translation_;
   bool isAffine_;
   basis_matrix_type * dummy_ = nullptr;
 
@@ -58,7 +58,10 @@ public:
     : linSpace_(basisMatrix,
 		linear_subspace_t::SpanningSet::Columns),
       translation_(translation),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(basis_matrix_type && basisMatrix,
 		      full_state_type && translation,
@@ -66,7 +69,10 @@ public:
     : linSpace_(std::move(basisMatrix),
 		linear_subspace_t::SpanningSet::Columns),
       translation_(std::move(translation)),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(const basis_matrix_type & basisMatrix,
 		      full_state_type && translation,
@@ -74,7 +80,10 @@ public:
     : linSpace_(basisMatrix,
 		linear_subspace_t::SpanningSet::Columns),
       translation_(std::move(translation)),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(basis_matrix_type && basisMatrix,
 		      const full_state_type & translation,
@@ -82,12 +91,18 @@ public:
     : linSpace_(std::move(basisMatrix),
 		linear_subspace_t::SpanningSet::Columns),
       translation_(translation),
-      isAffine_(isAffine){}
+      isAffine_(isAffine)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   TrialColumnSubspace(const TrialColumnSubspace & other)
     : linSpace_(other.linSpace_),
       translation_(::pressio::ops::clone(other.translation_)),
-      isAffine_(other.isAffine_){}
+      isAffine_(other.isAffine_)
+  {
+    setShiftToZeroIfNonAffine();
+  }
 
   /* For this class to be really immutable, we should not have a
      move assign operator and copy assign.
@@ -129,7 +144,7 @@ public:
     if (isAffine_){
       // update full state to account for translation
       using sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
-      constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
+      constexpr auto one = static_cast<sc_t>(1);
       ::pressio::ops::update(fullState, one, translation_, one);
     }
   }
@@ -159,6 +174,12 @@ public:
   }
 
 private:
+  void setShiftToZeroIfNonAffine(){
+    if (!isAffine_){
+      ::pressio::ops::fill(translation_, 0);
+    }
+  }
+
   void mapFromReducedStateWithoutTranslation(const reduced_state_type & latState,
 					     full_state_type & fullState) const
   {
@@ -166,12 +187,12 @@ private:
     const auto & basis = linSpace_.basis();
     using basis_sc_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
     using full_state_sc_t = typename ::pressio::Traits<full_state_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<basis_sc_t>::one();
-    constexpr auto beta  = ::pressio::utils::Constants<full_state_sc_t>::zero();
+    constexpr auto alpha = static_cast<basis_sc_t>(1);
+    constexpr auto beta  = static_cast<full_state_sc_t>(0);
     ::pressio::ops::product(::pressio::nontranspose(), alpha,
 			    basis, latState, beta, fullState);
   }
 };
 
 }}}
-#endif  // ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_
+#endif  // PRESSIO_ROM_IMPL_LINEAR_TRIAL_COLUMN_SUBSPACE_HPP_

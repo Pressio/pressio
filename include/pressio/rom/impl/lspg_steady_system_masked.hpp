@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
-#define ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -76,40 +76,23 @@ public:
 
   void residualAndJacobian(const state_type & reducedState,
 			   residual_type & lspgResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type *> lspgJacobian) const
-#else
-			   jacobian_type * lspgJacobian) const
-#endif
   {
     trialSubspace_.get().mapFromReducedState(reducedState, fomState_);
 
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
 
-#ifdef PRESSIO_ENABLE_CXX17
     if (lspgJacobian){
       auto ja = std::optional<unmasked_fom_jac_action_result_type*>(&unMaskedFomJacAction_);
       fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, ja);
     }else{
       fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, {});
     }
-#else
-    if (lspgJacobian){
-      auto ja = &unMaskedFomJacAction_;
-      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, ja);
-    }else{
-      fomSystem_.get().residualAndJacobianAction(fomState_, unMaskedFomResidual_, phi, nullptr);
-    }
-#endif
 
     // do masking
     masker_(unMaskedFomResidual_, lspgResidual);
     if (lspgJacobian){
-#ifdef PRESSIO_ENABLE_CXX17
       masker_(unMaskedFomJacAction_, *lspgJacobian.value());
-#else
-      masker_(unMaskedFomJacAction_, *lspgJacobian);
-#endif
     }
 
     scaler_(fomState_, lspgResidual, lspgJacobian);
@@ -126,4 +109,4 @@ protected:
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_STEADY_SYSTEM_MASKED_HPP_

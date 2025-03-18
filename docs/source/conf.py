@@ -25,9 +25,19 @@ project = 'Pressio'
 copyright = u"2021, National Technology & Engineering Solutions of Sandia, LLC (NTESS)"
 author = 'Francesco Rizzi'
 
-# The full version, including alpha/beta/rc tags
-release = '0.14.0'
+# The default replacements for |version| and |release|, also used in various
+# other places throughout the built documents.
+def get_version():
+    version_splits = []
+    with open("../../include/pressio/pressio_macros.hpp") as version_file:
+        for line in version_file:
+            splits = line.strip().split()
+            if len(splits) == 3 and "VERSION" in splits[1]:
+                version_splits.append(splits[2])
+    return ".".join(version_splits)
 
+# The full version, including alpha/beta/rc tags
+release = get_version()
 
 # -- General configuration ---------------------------------------------------
 

@@ -1,0 +1,138 @@
+name: github-Linux-baseline
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+  push: # for direct quick fixes
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+    - 'logos/**'
+    - 'helper_scripts/**'
+    - 'docker_scripts/**'
+    - 'docs/**'
+    - '**/*.md'
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
+
+jobs:
+  CI:
+    name: baseline
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ubuntu-01
+          - ubuntu-02
+        build_type:
+          - Release
+          - Debug
+        cmake_extra_args:
+          - ''
+        include:
+          - image: ubuntu-01
+            build_type: Release
+            cmake_extra_args: '-D CMAKE_CXX_STANDARD=20 -D PRESSIO_ENABLE_CXX20=ON'
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pressio/${{ matrix.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+    env:
+      num_cpus: 2 # $(cat /proc/cpuinfo | grep processor -c)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout pressio examples
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-templates-usage-as-library
+          path: examples
+          ref: main
+
+      - name: Checkout pressio-log
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-log
+          path: pressio-log
+          ref: main
+
+      - name: Checkout pressio-ops
+        uses: actions/checkout@v4
+        with:
+          repository: Pressio/pressio-ops
+          path: pressio-ops
+          ref: develop
+
+      - name: Example - include only
+        working-directory: examples
+        run: |
+          $CXX \
+            --std=c++17 \
+            -DPRESSIO_ENABLE_TPL_EIGEN \
+            -I/usr/include/eigen3 \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${GITHUB_WORKSPACE}/pressio/include \
+            -c main.cpp                \
+          && $CXX --std=c++17 -o pressio-example main.o \
+          && ./pressio-example
+
+      - name: Example - include only with embedded definitions
+        working-directory: examples
+        run: |
+          $CXX \
+            --std=c++17 \
+            -I/usr/include/eigen3 \
+            -I${GITHUB_WORKSPACE}/pressio-log/include \
+            -I${GITHUB_WORKSPACE}/pressio-ops/include \
+            -I${GITHUB_WORKSPACE}/pressio/include \
+            -c main_with_defines.cpp   \
+          && $CXX --std=c++17 -o pressio-example main.o \
+          && ./pressio-example
+
+      - name: Configure Tests
+        run: |
+          cmake -B builddir \
+            -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+            -D CMAKE_C_COMPILER=$CC \
+            -D CMAKE_CXX_COMPILER=$CXX \
+            -D CMAKE_CXX_FLAGS='-Wall -Werror' \
+            -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+            ${{ matrix.cmake_extra_args }} \
+            -D PRESSIO_ENABLE_TESTS:BOOL=ON \
+            -D PRESSIO_ENABLE_TPL_EIGEN:BOOL=ON \
+            -D PRESSIO_LOG_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-log/include \
+            -D PRESSIO_OPS_INCLUDE_DIR=${GITHUB_WORKSPACE}/pressio-ops/include
+
+      - name: Build Tests
+        run: |
+          cmake --build builddir
+
+      - name: Run small tests
+        working-directory: builddir/tests/functional_small
+        run: |
+          ctest -j $num_cpus --output-on-failure
+
+      - name: Run medium tests
+        working-directory: builddir/tests/functional_medium
+        run: |
+          ctest -j $num_cpus --output-on-failure
+
+      - name: Run large tests
+        working-directory: builddir/tests/functional_large
+        run: |
+          ctest -j $num_cpus --output-on-failure

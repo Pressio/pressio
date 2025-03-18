@@ -49,20 +49,12 @@ struct MyApp2WithMM
 				   independent_variable_type /*unused*/,
 				   mass_matrix_type & M,
 				   rhs_type & rhs,
-#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<jacobian_type*> JJ) const
-#else
-                                   jacobian_type* JJ) const
-#endif
   {
     rhs = rhs_.at(count1++);
     M = massMatrices_.at(count2++);
     if (JJ){
-#ifdef PRESSIO_ENABLE_CXX17
       *(JJ.value()) = jacobians_.at(count3++);
-#else
-      *JJ = jacobians_.at(count3++);
-#endif
     }
   };
 };
@@ -104,11 +96,7 @@ struct MyApp2NoMM
   void rhsAndJacobian(const state_type & y,
 		      independent_variable_type evaltime,
 		      rhs_type & rhs,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> JJ) const
-#else
-                      jacobian_type* JJ) const
-#endif
   {
     auto tmprhs = rhs_.at(count1++);
     auto M = createMassMatrix();
@@ -119,12 +107,7 @@ struct MyApp2NoMM
       auto tmpJ = jacobians_.at(count3++);
       auto M = createMassMatrix();
       massMatrix(y, evaltime, M, true);
-#ifdef PRESSIO_ENABLE_CXX17
       *(JJ.value()) = M.inverse()*tmpJ;
-#else
-      *(JJ) = M.inverse()*tmpJ;
-#endif
-
     }
   };
 
@@ -173,13 +156,7 @@ struct FakeNonLinearSolver1{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
-
-#ifdef PRESSIO_ENABLE_CXX17
       S.residualAndJacobian(y, R, std::optional<decltype(J)*>(&J));
-#else
-      S.residualAndJacobian(y, R, &J);
-#endif
-
       auto MMinv = massMatrices_.at(count_++).inverse();
       Eigen::VectorXd tmp = MMinv*R;
       residuals_.push_back(tmp);
@@ -212,16 +189,9 @@ struct FakeNonLinearSolver2{
     auto R = S.createResidual();
     auto J = S.createJacobian();
     for (int i=0; i<numFakeSolverIterations_; ++i){
-
-#ifdef PRESSIO_ENABLE_CXX17
       S.residualAndJacobian(y, R, std::optional<decltype(J)*>(&J));
-#else
-      S.residualAndJacobian(y, R, &J);
-#endif
-
       EXPECT_TRUE( R.isApprox(residuals_[count_]) );
       EXPECT_TRUE( J.isApprox(jacobians_[count_++]) );
-
       for (int j=0; j<y.size(); ++j) y[j] += 1.;
     }
   }
@@ -229,8 +199,7 @@ struct FakeNonLinearSolver2{
 
 #define ODE_MASS_MATRIX_CHECK_TEST(NAME)			\
   std::cout << "\n";							\
-  pressio::log::initialize(pressio::logto::terminal);			\
-  pressio::log::setVerbosity({pressio::log::level::info});		\
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);			\
   using namespace pressio;						\
   srand(342556331);							\
   const auto nsteps = ::pressio::ode::StepCount(4);			\
@@ -283,7 +252,7 @@ struct FakeNonLinearSolver2{
   EXPECT_NEAR( y0(0), y1(0), 1e-12);					\
   EXPECT_NEAR( y0(1), y1(1), 1e-12);					\
   EXPECT_NEAR( y0(2), y1(2), 1e-12);					\
-  pressio::log::finalize();						\
+  PRESSIOLOG_FINALIZE();						\
 
 TEST(ode_implicit_steppers, bdf1_with_varying_mass_matrix_use_inverse)
 {

@@ -3,6 +3,8 @@
 #include "pressio/solvers_nonlinear_levmarq.hpp"
 #include "./problems/problem9.hpp"
 
+#include <iomanip>
+
 template <typename problem_t, typename solver_t>
 void testC1(std::string & sentinel,
             problem_t & problem,
@@ -61,9 +63,7 @@ void testC2(std::string & sentinel,
 
 int main()
 {
-  namespace plog = pressio::log;
-  plog::initialize(pressio::logto::terminal);
-  plog::setVerbosity({plog::level::info});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);
 
   using namespace pressio;
 
@@ -84,6 +84,6 @@ int main()
   std::cout << "\n" << std::endl;
 
   std::cout << sentinel << "\n";
-  plog::finalize();
+  PRESSIOLOG_FINALIZE();
   return 0;
 }

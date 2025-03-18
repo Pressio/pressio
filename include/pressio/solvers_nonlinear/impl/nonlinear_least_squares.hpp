@@ -1,6 +1,8 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_LEAST_SQUARES_SOLVER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_LEAST_SQUARES_SOLVER_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_
+
+#include <utility>
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -26,11 +28,7 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
 {
 
   auto mustStop = [
-#ifdef PRESSIO_ENABLE_CXX17
 		   &normDiag = std::as_const(normDiagnostics),
-#else
-		   &normDiag = normDiagnostics,
-#endif
 		   stopEnumValue, maxIters, stopTolerance](int stepCount)
   {
     const Diagnostic stopDiag = stop_criterion_to_public_diagnostic(stopEnumValue);
@@ -56,11 +54,11 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
       normDiagnostics[InternalDiagnostic::objectiveAbsoluteRelative].update(objValue, isFirstIteration);
     }
     catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
     catch (::pressio::eh::ResidualHasNans const &e){
-      PRESSIOLOG_CRITICAL(e.what());
+      PRESSIOLOG_ERROR(e.what());
       throw ::pressio::eh::NonlinearSolveFailure();
     }
 
@@ -93,12 +91,12 @@ void nonlin_ls_solving_loop_impl(ProblemTag problemTag,
     }
     catch (::pressio::eh::LineSearchStepTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
     catch (::pressio::eh::LineSearchObjFunctionChangeTooSmall const &e) {
       // nicely exist the solve
-      PRESSIOLOG_WARN(e.what());
+      PRESSIOLOG_WARNING(e.what());
       break;
     }
   }
@@ -121,6 +119,7 @@ class NonLinLeastSquares : public RegistryType
     InternalDiagnosticDataWithAbsoluteRelativeTracking<ScalarType> >;
   diagnostics_container diagnostics_;
   DiagnosticsLogger diagnosticsLogger_ = {};
+  std::optional<std::vector<scalar_trait_t<StateType> > > parameters_;
 
 public:
   template<class ...Args>
@@ -160,6 +159,9 @@ public:
   void setStopCriterion(Stop value)	  { stopEnValue_ = value; }
   void setStopTolerance(ScalarType value) { stopTolerance_ = value; }
   void setMaxIterations(int newMax)       { maxIters_ = newMax; }
+  auto & getLineSearchParameters(){
+    return parameters_;
+  }
 
   // this method can be used when passing a system object
   // that is different but syntactically and semantically equivalent
@@ -230,23 +232,15 @@ private:
     // so we need to reset the data in the registry everytime
     reset_for_new_solve_loop(tag_, extReg);
 
-    if (updateEnValue_ == Update::BacktrackStrictlyDecreasingObjective){
-      nonlin_ls_solving_loop_impl(tag_, system, extReg,
-				  stopEnValue_, stopTolerance_,
-				  diagnostics_, diagnosticsLogger_,
-				  maxIters_,
-				  BacktrackStrictlyDecreasingObjectiveUpdater{});
-    }else{
-      nonlin_ls_solving_loop_impl(tag_, system, extReg,
-				  stopEnValue_, stopTolerance_,
-				  diagnostics_, diagnosticsLogger_,
-				  maxIters_,
-				  BacktrackStrictlyDecreasingObjectiveUpdater{});
-    }
+    BacktrackStrictlyDecreasingObjectiveUpdater<scalar_trait_t<StateType>> updater(parameters_);
+    nonlin_ls_solving_loop_impl(tag_, system, extReg,
+        stopEnValue_, stopTolerance_,
+        diagnostics_, diagnosticsLogger_,
+        maxIters_, updater);
   }
 
   template<class SystemType, class _Tag = Tag>
-  mpl::enable_if_t< std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
+  std::enable_if_t< std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
   solve_lm_impl(const SystemType & system,
 		StateType & solutionInOut)
   {
@@ -276,7 +270,7 @@ private:
   }
 
   template<class SystemType, class _Tag = Tag>
-  mpl::enable_if_t< !std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
+  std::enable_if_t< !std::is_same<_Tag, LevenbergMarquardtNormalEqTag>::value >
   solve_lm_impl(const SystemType & /*system*/,
 		StateType & /*solutionInOut*/)
   {
@@ -286,4 +280,4 @@ private:
 };
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_NONLINEAR_LEAST_SQUARES_HPP_

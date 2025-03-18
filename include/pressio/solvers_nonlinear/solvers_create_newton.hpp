@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_HPP_
 
 #include "solvers_default_types.hpp"
 #include "./impl/solvers_tagbased_registry.hpp"
@@ -128,5 +128,26 @@ auto create_newton_solver(const SystemType & system,
     (tag{}, diagnostics, system, std::forward<LinearSolverType>(linSolver));
 }
 
+namespace experimental{
+template<class LinearSolverTag, class SystemType>
+auto create_matrixfree_newtonkrylov_solver(const SystemType & system)
+{
+
+  using nonlinearsolvers::Diagnostic;
+  const std::vector<Diagnostic> diagnostics =
+    {Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
+     Diagnostic::correctionAbsolutel2Norm,
+     Diagnostic::correctionRelativel2Norm};
+
+  using tag      = nonlinearsolvers::impl::MatrixFreeNewtonTag;
+  using state_t  = typename SystemType::state_type;
+  using reg_t    = nonlinearsolvers::impl::RegistryMatrixFreeNewtonKrylov<SystemType, LinearSolverTag>;
+  using scalar_t = scalar_trait_t< typename SystemType::state_type >;
+  return nonlinearsolvers::impl::RootFinder<tag, state_t, reg_t, scalar_t>
+    (tag{}, diagnostics, system);
+}
+}
+
 } //end namespace pressio
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_HPP_

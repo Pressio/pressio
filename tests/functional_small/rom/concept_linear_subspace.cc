@@ -68,21 +68,12 @@ TEST(rom_concepts, vector_subspace1)
 {
   using namespace pressio::rom;
 
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert(VectorSubspace<S1>, "");
-  static_assert(!VectorSubspace<S2>, "");
-  static_assert(!VectorSubspace<S3>, "");
-  static_assert(!VectorSubspace<S4>, "");
-  static_assert(!VectorSubspace<S5>, "");
-  static_assert(!VectorSubspace<S6>, "");
-#else
   static_assert(VectorSubspace<S1>::value, "");
   static_assert(!VectorSubspace<S2>::value, "");
   static_assert(!VectorSubspace<S3>::value, "");
   static_assert(!VectorSubspace<S4>::value, "");
   static_assert(!VectorSubspace<S5>::value, "");
   static_assert(!VectorSubspace<S6>::value, "");
-#endif
 }
 
 TEST(rom_concepts, vector_subspace2)
@@ -90,9 +81,5 @@ TEST(rom_concepts, vector_subspace2)
   using namespace pressio::rom;
 
   using T = LinearSubspace<FakeType1>;
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert(VectorSubspace<T>, "");
-#else
   static_assert(VectorSubspace<T>::value, "");
-#endif
 }

@@ -28,11 +28,7 @@ struct MyFom
   void residualAndJacobianAction(const state_type & u,
 				 residual_type & r,
 				 const Eigen::MatrixXd & B,
-#ifdef PRESSIO_ENABLE_CXX17
 				 std::optional<Eigen::MatrixXd *> Ain) const
-#else
-				 Eigen::MatrixXd * Ain) const
-#endif
   {
     EXPECT_TRUE(u.size()!=r.size());
     EXPECT_TRUE(u.size()==nStencil_);
@@ -43,16 +39,12 @@ struct MyFom
     }
 
     if (Ain){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & A = *Ain.value();
-#else
-      auto & A = *Ain;
-#endif
       for (std::size_t i=0; i<validStateIndices_.size(); ++i){
-	for (int j=0; j< A.cols(); ++j){
-	  A(i,j) = B(validStateIndices_[i], j);
-	  A(i,j) += u(validStateIndices_[i]);
-	}
+        for (int j=0; j< A.cols(); ++j){
+          A(i,j) = B(validStateIndices_[i], j);
+          A(i,j) += u(validStateIndices_[i]);
+	      }
       }
     }
   }
@@ -141,8 +133,7 @@ TEST(rom_galerkin_steady, hyperreduced)
     except that we pretend here to do a hyper-reduced problem
    */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 13;
   const std::vector<int> validStateIndices = {2,3,4,5,6,10,11,12};
@@ -186,5 +177,5 @@ TEST(rom_galerkin_steady, hyperreduced)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

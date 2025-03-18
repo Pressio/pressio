@@ -46,12 +46,10 @@
 //@HEADER
 */
 
-#ifndef ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
-#define ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
+#ifndef PRESSIO_ODE_CONCEPTS_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
+#define PRESSIO_ODE_CONCEPTS_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
 
-#ifdef PRESSIO_ENABLE_CXX17
 #include <optional>
-#endif
 
 namespace pressio{ namespace ode{
 
@@ -70,7 +68,7 @@ template <
   class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 1, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -80,11 +78,7 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
-#ifdef PRESSIO_ENABLE_CXX17
-        std::declval< std::optional<JacobianType*> >(),
-#else
-	std::declval<JacobianType*>(),
-#endif
+  std::declval< std::optional<JacobianType*> >(),
 	std::declval<state_t const&>()
 	)
        )
@@ -98,7 +92,7 @@ template <
   class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 2, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -108,11 +102,7 @@ struct has_const_discrete_residual_jacobian_method<
 	 std::declval<IndVarType const &>(),
 	 std::declval<IndVarType const &>(),
 	 std::declval<ResidualType &>(),
-#ifdef PRESSIO_ENABLE_CXX17
-        std::declval< std::optional<JacobianType*> >(),
-#else
-	std::declval<JacobianType*>(),
-#endif
+   std::declval< std::optional<JacobianType*> >(),
 	 std::declval<state_t const&>(),
 	 std::declval<state_t const&>()
 	)
@@ -126,7 +116,7 @@ template <
   class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 3, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -136,11 +126,7 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
-#ifdef PRESSIO_ENABLE_CXX17
-        std::declval< std::optional<JacobianType*> >(),
-#else
-	std::declval<JacobianType*>(),
-#endif
+  std::declval< std::optional<JacobianType*> >(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>()
@@ -156,7 +142,7 @@ template <
     class ResidualType, class JacobianType>
 struct has_const_discrete_residual_jacobian_method<
   T, 4, StepType, IndVarType, state_t, ResidualType, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -166,11 +152,7 @@ struct has_const_discrete_residual_jacobian_method<
 	std::declval<IndVarType const &>(),
 	std::declval<IndVarType const &>(),
 	std::declval<ResidualType &>(),
-#ifdef PRESSIO_ENABLE_CXX17
-        std::declval< std::optional<JacobianType*> >(),
-#else
-	std::declval<JacobianType*>(),
-#endif
+  std::declval< std::optional<JacobianType*> >(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
 	std::declval<state_t const&>(),
@@ -182,4 +164,4 @@ struct has_const_discrete_residual_jacobian_method<
   > : std::true_type{};
 
 }}
-#endif  // ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
+#endif  // PRESSIO_ODE_CONCEPTS_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_

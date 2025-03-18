@@ -19,17 +19,17 @@ public:
 
   jacobian_type createJacobian() const{
     jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
     return J;
   }
 
   void rhsAndJacobian(const state_type & /*unused*/,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const
-#else
-                      jacobian_type* /*J*/) const
-#endif
   {
     std::cout << "f: t=" << evaltime << "\n";
 
@@ -68,11 +68,7 @@ struct MyFakeSolver
 		  << state(1) << " "
 		  << state(2) << std::endl;
 
-#ifdef PRESSIO_ENABLE_CXX17
 	sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
-#else
-	sys.residualAndJacobian(state, R, &J);
-#endif
 	std::cout << "s: res" << " "
 		  << R(0) << " "
 		  << R(1) << " "
@@ -136,8 +132,7 @@ struct MyFakeSolver
 
 int main()
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
@@ -166,6 +161,6 @@ int main()
 
   std::cout << checkStr << std::endl;
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
   return 0;
 }

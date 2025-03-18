@@ -1,6 +1,6 @@
 
-#ifndef ROM_REDUCED_OPERATORS_TRAITS_HPP_
-#define ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#ifndef PRESSIO_ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#define PRESSIO_ROM_REDUCED_OPERATORS_TRAITS_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -18,7 +18,7 @@ struct SteadyGalerkinDefaultReducedOperatorsTraits
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct SteadyGalerkinDefaultReducedOperatorsTraits<
-  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+  T, std::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type    = T;
   using reduced_residual_type = T;
@@ -62,7 +62,7 @@ struct ExplicitGalerkinDefaultReducedOperatorsTraits
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct ExplicitGalerkinDefaultReducedOperatorsTraits<
-  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+  T, std::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type    = T;
   using reduced_rhs_type = T;
@@ -103,7 +103,7 @@ struct ImplicitGalerkinDefaultReducedOperatorsTraits
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct ImplicitGalerkinDefaultReducedOperatorsTraits<
-  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+  T, std::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type    = T;
   using reduced_residual_type = T;
@@ -149,7 +149,7 @@ struct SteadyLspgDefaultReducedOperatorsTraits
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct SteadyLspgDefaultReducedOperatorsTraits<
-  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+  T, std::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type = T;
   using gradient_type = T;
@@ -171,7 +171,7 @@ struct UnsteadyLspgDefaultReducedOperatorsTraits
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct UnsteadyLspgDefaultReducedOperatorsTraits<
-  T, mpl::enable_if_t<::pressio::is_vector_eigen<T>::value> >
+  T, std::enable_if_t<::pressio::is_vector_eigen<T>::value> >
 {
   using reduced_state_type = T;
   using gradient_type = T;
@@ -180,4 +180,4 @@ struct UnsteadyLspgDefaultReducedOperatorsTraits<
 #endif
 
 }}
-#endif  // ROM_REDUCED_OPERATORS_TRAITS_HPP_
+#endif  // PRESSIO_ROM_REDUCED_OPERATORS_TRAITS_HPP_

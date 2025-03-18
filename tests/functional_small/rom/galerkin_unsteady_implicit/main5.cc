@@ -288,11 +288,7 @@ public:
 					     double dt,
 					     discrete_residual_type & R,
 					     const phi_type & B,
-#ifdef PRESSIO_ENABLE_CXX17
                std::optional<phi_type*> JA,
-#else
-               phi_type* JA,
-#endif
 					     const state_type & y_np1,
 					     const state_type & y_n,
 					     const state_type & y_nm1) const
@@ -309,19 +305,11 @@ public:
       R = y_np1 - y_n - y_nm1 - dt*f;
     }
 
-#ifdef PRESSIO_ENABLE_CXX17
     if (bool(JA)){
       auto appJac = B;
       appJac.array() += time;
       *JA.value() = (B - dt*appJac);
     }
-#else
-    if (JA){
-      auto appJac = B;
-      appJac.array() += time;
-      *JA = (B - dt*appJac);
-    }
-#endif
   }
 };
 }
@@ -330,8 +318,7 @@ TEST(rom_galerkin_implicit, default_fullydiscrete_n3)
 {
   /* default galerkin impliacit eigen with fully discrete API */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 5;
   using fom_t = MyFom;
@@ -363,5 +350,5 @@ TEST(rom_galerkin_implicit, default_fullydiscrete_n3)
   EXPECT_DOUBLE_EQ(romState[1], 7.);
   EXPECT_DOUBLE_EQ(romState[2], 8.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

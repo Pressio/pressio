@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
-#define SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
+#ifndef PRESSIO_SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
+#define PRESSIO_SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
 
 #include "./impl/solvers_linear_traits.hpp"
 #include "./impl/solvers_linear_solver_selector_impl.hpp"
@@ -58,4 +58,4 @@ template<typename TagType, typename MatrixType, typename ... Args>
 using Solver = typename impl::Selector<TagType, MatrixType, Args...>::type;
 
 }}
-#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
+#endif  // PRESSIO_SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_

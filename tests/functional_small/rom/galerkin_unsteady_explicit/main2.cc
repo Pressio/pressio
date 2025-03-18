@@ -93,8 +93,7 @@ TEST(rom_galerkin_explicit, hyperreduced_velo_euler_forward)
     we fake hypereduction by mimicing a stencil/sample mesh
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const std::vector<int> sampleMeshIndices = {1,3,5,7,9,11,13,15,17,19};
   const int nstencil = 20;
@@ -149,5 +148,5 @@ TEST(rom_galerkin_explicit, hyperreduced_velo_euler_forward)
   EXPECT_DOUBLE_EQ(romState[1], 2611.);
   EXPECT_DOUBLE_EQ(romState[2], 5222.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

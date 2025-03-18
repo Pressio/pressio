@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
-#define ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -62,11 +62,7 @@ public:
 
   void residualAndJacobian(const state_type & lspgState,
 			   residual_type & lspgResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type *> lspgJacobian) const
-#else
-			   jacobian_type * lspgJacobian) const
-#endif
   {
     trialSubspace_.get().mapFromReducedState(lspgState, fomState_);
 
@@ -86,4 +82,4 @@ private:
 
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_STEADY_SYSTEM_DEFAULT_HPP_

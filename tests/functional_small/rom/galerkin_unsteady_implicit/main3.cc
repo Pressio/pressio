@@ -212,8 +212,7 @@ TEST(rom_galerkin_implicit, masked_bdf1)
   // test for masked implicit galerkin using BDF1
   // all numbers have been computed manually
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int nFull = 20;
   const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14,16,18};
@@ -270,5 +269,5 @@ TEST(rom_galerkin_implicit, masked_bdf1)
   EXPECT_TRUE(romState[1] == 5.);
   EXPECT_TRUE(romState[2] == 6.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

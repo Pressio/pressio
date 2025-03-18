@@ -46,12 +46,13 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
-#define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
+#ifndef PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
+#define PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "solvers_linear_eigen_direct_impl.hpp"
 #include "solvers_linear_eigen_iterative_impl.hpp"
+#include "solvers_linear_eigen_iterative_matrix_free_impl.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "solvers_linear_kokkos_direct_geqrf_impl.hpp"
@@ -69,10 +70,20 @@ struct Selector{
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<typename UserDefinedLinearOperatorType>
+struct Selector<
+  iterative::GMRES, UserDefinedLinearOperatorType, void
+  >
+{
+  using tag_t = iterative::GMRES;
+  using solver_traits = ::pressio::linearsolvers::Traits<tag_t>;
+  using type = EigenIterativeMatrixFree<tag_t, UserDefinedLinearOperatorType>;
+};
+
 template<typename TagType, typename MatrixType>
 struct Selector<
   TagType, MatrixType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::linearsolvers::Traits<TagType>::iterative and
     (::pressio::is_dense_matrix_eigen<MatrixType>::value or
      ::pressio::is_sparse_matrix_eigen<MatrixType>::value)
@@ -86,7 +97,7 @@ struct Selector<
 template<typename TagType, typename MatrixType>
 struct Selector<
   TagType, MatrixType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::linearsolvers::Traits<TagType>::direct and
     (::pressio::is_dense_matrix_eigen<MatrixType>::value or
      ::pressio::is_sparse_matrix_eigen<MatrixType>::value)>
@@ -101,7 +112,7 @@ struct Selector<
 template<typename TagType, typename MatrixType>
 struct Selector<
   TagType, MatrixType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::linearsolvers::Traits<TagType>::direct and
     (::pressio::is_dense_matrix_kokkos<MatrixType>::value)
     >
@@ -113,4 +124,4 @@ struct Selector<
 #endif
 
 }}}
-#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
+#endif  // PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_

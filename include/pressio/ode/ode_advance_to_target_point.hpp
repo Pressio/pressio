@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
-#define ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#ifndef PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#define PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
@@ -61,17 +61,10 @@ template<
   class StepSizePolicyType,
   class IndVarType
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
-       Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires Steppable<StepperType>
-        && StepSizePolicy<StepSizePolicyType, IndVarType>
-void
-#endif
+std::enable_if_t<
+     Steppable<StepperType>::value
+  && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+  >
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -94,19 +87,11 @@ template<
   class ObserverType,
   class IndVarType
   >
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
-       Steppable<StepperType>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    && StateObserver<ObserverType &&, IndVarType, StateType>::value
-    >
-#endif
-#ifdef PRESSIO_ENABLE_CXX20
-  requires Steppable<StepperType>
-    && StepSizePolicy<StepSizePolicyType, IndVarType>
-    && StateObserver<ObserverType, IndVarType, StateType>
-void
-#endif
+std::enable_if_t<
+     Steppable<StepperType>::value
+  && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+  && StateObserver<ObserverType &&, IndVarType, StateType>::value
+  >
 advance_to_target_point(StepperType & stepper,
 		       StateType & state,
 		       const IndVarType & startVal,
@@ -123,4 +108,4 @@ advance_to_target_point(StepperType & stepper,
 }
 
 }}//end namespace pressio::ode
-#endif  // ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_
+#endif  // PRESSIO_ODE_ODE_ADVANCE_TO_TARGET_POINT_HPP_

@@ -20,7 +20,7 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS AND PRESSIO_ENABLE_TPL_EIGEN)
  set(SRC trial_subspace_tpetra_full_state_eigen_reduced_state)
- add_utest_mpi(${TESTING_LEVEL}_rom_${SRC} "${SRC}.cc" gTestMain_tpetra 3)
+ add_utest_mpi(${TESTING_LEVEL}_rom_${SRC} gTestMain_tpetra 3 "${SRC}.cc")
 endif()
 
 #
@@ -29,6 +29,7 @@ endif()
 if(PRESSIO_ENABLE_TPL_EIGEN)
   set(SOURCES_GALERKIN_STEADY
     ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main1.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main2.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main3.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/galerkin_steady/main4.cc)
   add_serial_utest(${TESTING_LEVEL}_rom_galerkin_steady ${SOURCES_GALERKIN_STEADY})
@@ -67,4 +68,15 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady/main8.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/lspg_unsteady/main9.cc)
   add_serial_utest(${TESTING_LEVEL}_rom_lspg_unsteady ${SOURCES_LSPG_UNSTEADY})
+
+  add_serial_utest(${TESTING_LEVEL}_rom_linear linear_rom.cc)
+endif()
+
+
+if(PRESSIO_ENABLE_TPL_TRILINOS AND PRESSIO_ENABLE_TPL_EIGEN)
+  set(SRCDIR ${CMAKE_CURRENT_SOURCE_DIR}/lspg_residual_jacaction_reconstructor)
+  configure_file(${SRCDIR}/rom_states.txt ${CMAKE_CURRENT_BINARY_DIR}/lspg_residual_jacaction_reconstructor/rom_states.txt COPYONLY)
+
+  add_utest_mpi(${TESTING_LEVEL}_rom_lspg_residual_jacaction_reconstructor_discreteapi gTestMain_tpetra 3 "${SRCDIR}/main1.cc")
+  add_utest_mpi(${TESTING_LEVEL}_rom_lspg_residual_jacaction_reconstructor_bdf1 gTestMain_tpetra 3 "${SRCDIR}/main2.cc")
 endif()

@@ -22,11 +22,7 @@ struct MyFom
   void residualAndJacobianAction(const state_type & u,
 				 residual_type & r,
 				 const Eigen::MatrixXd & B,
-#ifdef PRESSIO_ENABLE_CXX17
 				 std::optional<Eigen::MatrixXd *> Ain) const
-#else
-				 Eigen::MatrixXd * Ain) const
-#endif
   {
     EXPECT_TRUE(u.size()==r.size());
     EXPECT_TRUE(u.size()==N_);
@@ -35,11 +31,7 @@ struct MyFom
     }
 
     if (Ain){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & A = *Ain.value();
-#else
-      auto & A = *Ain;
-#endif
       A = B;
       A.array() += 1.;
     }
@@ -141,8 +133,7 @@ TEST(rom_lspg_steady, test1)
     - fom applyJac appJac(B) always returns B += 1
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   constexpr int N = 8;
   using fom_t = MyFom;
@@ -176,5 +167,5 @@ TEST(rom_lspg_steady, test1)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

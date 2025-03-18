@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
-#define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
+#ifndef PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
+#define PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
 
 #include "solvers_linear_iterative_base.hpp"
 
@@ -72,6 +72,7 @@ public:
   static_assert( solver_traits::direct == false,
 		 "The native eigen solver must be iterative to use in EigenIterative");
 
+
 public:
   iteration_type numIterationsExecuted() const
   {
@@ -85,12 +86,14 @@ public:
 
   void resetLinearSystem(const MatrixType& A)
   {
+    mysolver_.setMaxIterations(this->maxIters_);
     mysolver_.compute(A);
   }
 
   template <typename T>
   void solve(const T& b, T & y)
   {
+    mysolver_.setMaxIterations(this->maxIters_);
     y = mysolver_.solve(b);
   }
 
@@ -114,4 +117,4 @@ private:
 };
 
 }}} // end namespace pressio::solvers::iterarive::impl
-#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
+#endif  // PRESSIO_SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_

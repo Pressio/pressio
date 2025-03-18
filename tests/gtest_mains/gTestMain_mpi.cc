@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-//#include <gmock/gmock.h>
 #include <mpi.h>
 
 // struct MPIEnv : public ::testing::Environment{

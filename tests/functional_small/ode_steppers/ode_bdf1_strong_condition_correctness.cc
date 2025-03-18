@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "pressio/ode_steppers_implicit.hpp"
+#include <iomanip>
 
 struct MyApp
 {
@@ -13,16 +14,20 @@ public:
   state_type createState() const{ return state_type(3); }
 
   rhs_type createRhs() const{ rhs_type f(3); return f; }
-  jacobian_type createJacobian() const{ jacobian_type J(3,3); return J; }
+
+  jacobian_type createJacobian() const{
+    jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
+    return J;
+  }
 
   void rhsAndJacobian(const state_type & /*unused*/,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const{}
-#else
-                      jacobian_type* /*J*/) const{}
-#endif
 };
 
 struct MyFakeSolver
@@ -53,8 +58,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_bdf1_step_strong_condition_correctness_A)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -81,13 +85,12 @@ TEST(ode, implicit_bdf1_step_strong_condition_correctness_A)
     std::cout << std::setprecision(14) << y << "\n";
   }
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
 
 TEST(ode, implicit_bdf1_step_strong_condition_correctness_B)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using namespace pressio;
   using problem_t = MyApp;
@@ -117,5 +120,5 @@ TEST(ode, implicit_bdf1_step_strong_condition_correctness_B)
     std::cout << std::setprecision(14) << y << "\n";
   }
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

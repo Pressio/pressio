@@ -45,11 +45,7 @@ struct MyProblem{
   jacobian_type createJacobian() const { return CustomMat{}; }
   void residualAndJacobian(const state_type& /*x*/,
 			   residual_type& /*r*/,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> /*Jo*/) const{}
-#else
-			   jacobian_type* /*Jo*/) const{}
-#endif
 };
 
 struct MyLinSolver{
@@ -60,8 +56,7 @@ struct MyLinSolver{
 
 TEST(solvers_nonlinear, newton_compile_only)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
   {
 
     using namespace pressio;
@@ -75,5 +70,5 @@ TEST(solvers_nonlinear, newton_compile_only)
     (void)y;
   }
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

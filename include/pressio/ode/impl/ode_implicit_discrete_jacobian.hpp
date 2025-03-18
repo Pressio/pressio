@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
-#define ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#define PRESSIO_ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -57,7 +57,7 @@ namespace pressio{ namespace ode{ namespace impl{
   on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
     >::value
@@ -80,7 +80,7 @@ discrete_jacobian(::pressio::ode::BDF1,
   on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class MassMatrixType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
@@ -104,7 +104,7 @@ discrete_jacobian(::pressio::ode::BDF1,
   - on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
     >::value
@@ -127,7 +127,7 @@ discrete_jacobian(::pressio::ode::BDF2,
   - on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class MassMatrixType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   ::pressio::all_have_traits_and_same_scalar<JacobianType, MassMatrixType>::value
   && std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
@@ -140,7 +140,7 @@ discrete_jacobian(::pressio::ode::BDF2,
 {
 
   using sc_t = typename ::pressio::Traits<JacobianType>::scalar_type;
-  // constexpr sc_t one  = ::pressio::utils::Constants<sc_t>::one();
+  // constexpr sc_t one  = static_cast<scalar_type>(1);
   constexpr sc_t cnp1 = ::pressio::ode::constants::bdf2<sc_t>::c_np1_;
   const sc_t cf   = ::pressio::ode::constants::bdf2<sc_t>::c_f_ * dt;
   ::pressio::ops::update(jac, cf, M_np1, cnp1);
@@ -152,7 +152,7 @@ discrete_jacobian(::pressio::ode::BDF2,
   - on output, jac contains the discrete jacobian
 */
 template <class JacobianType, class StepSizeType>
-mpl::enable_if_t<
+std::enable_if_t<
   std::is_convertible<
     StepSizeType, typename Traits<JacobianType>::scalar_type
     >::value
@@ -171,4 +171,4 @@ discrete_jacobian(::pressio::ode::CrankNicolson,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_IMPLICIT_DISCRETE_JACOBIAN_HPP_

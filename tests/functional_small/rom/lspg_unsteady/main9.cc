@@ -92,11 +92,7 @@ public:
    double dt,
    discrete_residual_type & R,
    const __this_test_phi_type & B,
-#ifdef PRESSIO_ENABLE_CXX17
-               std::optional<__this_test_phi_type*> /*JA*/,
-#else
-               __this_test_phi_type* /*JA*/,
-#endif
+   std::optional<__this_test_phi_type*> /*JA*/,
    const state_type & y_np1,
    const state_type & y_n,
    const state_type & y_nm1) const
@@ -192,8 +188,7 @@ TEST(rom_lspg_unsteady, fully_discrete_with_recovery_n3)
     but has no meaning at all. It is just a nmerical trick that helps us verify things.
   */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using fom_t = MyFom;
   using reduced_state_type = Eigen::VectorXd;
@@ -234,5 +229,5 @@ TEST(rom_lspg_unsteady, fully_discrete_with_recovery_n3)
   pressio::ode::advance_to_target_point_with_step_recovery
     (stepper, romState, 0., targetTime, dtManager, solver);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

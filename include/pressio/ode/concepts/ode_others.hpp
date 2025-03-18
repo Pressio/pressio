@@ -1,6 +1,6 @@
 
-#ifndef ODE_CONCEPTS_OTHERS_HPP_
-#define ODE_CONCEPTS_OTHERS_HPP_
+#ifndef PRESSIO_ODE_CONCEPTS_ODE_OTHERS_HPP_
+#define PRESSIO_ODE_CONCEPTS_ODE_OTHERS_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -10,7 +10,7 @@ struct Steppable : std::false_type{};
 template <class T>
 struct Steppable<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && std::is_void<
@@ -34,7 +34,7 @@ struct SteppableWithAuxiliaryArgs : std::false_type{};
 
 template <class T, class AuxT, class ...Args>
 struct SteppableWithAuxiliaryArgs<
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::has_independent_variable_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && std::is_void<
@@ -68,7 +68,7 @@ struct StateObserver : std::false_type{};
 template <class T, class IndVarType, class StateType>
 struct StateObserver<
   T, IndVarType, StateType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T>().operator()
@@ -88,7 +88,7 @@ struct StateGuesser : std::false_type{};
 template <class T, class IndVarType, class StateType>
 struct StateGuesser<
   T, IndVarType, StateType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T>()
@@ -110,7 +110,7 @@ struct StepSizePolicy : std::false_type{};
 template <class T, class IndVarType>
 struct StepSizePolicy<
   T, IndVarType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -133,7 +133,7 @@ struct StepSizePolicyWithReductionScheme : std::false_type{};
 template <class T, class IndVarType>
 struct StepSizePolicyWithReductionScheme<
   T, IndVarType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_void<
       decltype
       (
@@ -152,4 +152,4 @@ struct StepSizePolicyWithReductionScheme<
   > : std::true_type{};
 
 }} // end namespace pressio::ode
-#endif
+#endif  // PRESSIO_ODE_CONCEPTS_ODE_OTHERS_HPP_

@@ -25,17 +25,17 @@ public:
 
   jacobian_type createJacobian() const{
     jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
     return J;
   }
 
   void rhsAndJacobian(const state_type & /*unused*/,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const
-#else
-                      jacobian_type* /*J*/) const
-#endif
   {
     std::cout << "f: t=" << evaltime << "\n";
     f[0] = evaltime+1.;
@@ -51,11 +51,7 @@ struct MyFakeSolver1
   {
     auto R = sys.createResidual();
     auto J = sys.createJacobian();
-#ifdef PRESSIO_ENABLE_CXX17
     sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
-#else
-    sys.residualAndJacobian(state, R, &J);
-#endif
 
     // here we should have:
     // R = y_n - y_n-1 - dt*f()
@@ -90,17 +86,17 @@ public:
 
   jacobian_type createJacobian() const{
     jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
     return J;
   }
 
   void rhsAndJacobian(const state_type & /*unused*/,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const
-#else
-                      jacobian_type* /*J*/) const
-#endif
   {
     std::cout << "f: t=" << evaltime << "\n";
     f[0] = evaltime+1.;
@@ -120,11 +116,7 @@ struct MyFakeSolver2
 
     auto R = sys.createResidual();
     auto J = sys.createJacobian();
-#ifdef PRESSIO_ENABLE_CXX17
     sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
-#else
-    sys.residualAndJacobian(state, R, &J);
-#endif
 
     if (count_==1){
       // this is called from auxiliary stepper which is bdf1

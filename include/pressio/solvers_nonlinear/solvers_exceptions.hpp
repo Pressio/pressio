@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_
 
 #include <exception>
 
@@ -125,7 +125,7 @@ public:
 };
 
 class LineSearchObjFunctionChangeTooSmall : public std::exception{
-  std::string myerr_ = "Line serach objective function change too small";
+  std::string myerr_ = "Line search objective function change too small";
   std::string append_ = {};
 
 public:
@@ -139,4 +139,4 @@ public:
 };
 
 }}//end namespace pressio::eh
-#endif  // SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_EXCEPTIONS_HPP_

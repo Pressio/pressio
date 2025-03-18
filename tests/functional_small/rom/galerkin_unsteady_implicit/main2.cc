@@ -189,8 +189,7 @@ TEST(rom_galerkin_implicit, hyperreduced_bdf1)
   // test for hypred implicit galerkin using BDF1
   // all numbers have been computed manually
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int nStencil = 20;
   const int nSample  = 10;
@@ -243,5 +242,5 @@ TEST(rom_galerkin_implicit, hyperreduced_bdf1)
   EXPECT_TRUE(romState[1] == 5.);
   EXPECT_TRUE(romState[2] == 6.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

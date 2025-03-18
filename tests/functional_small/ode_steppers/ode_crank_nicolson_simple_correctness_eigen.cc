@@ -12,17 +12,22 @@ struct MyApp
 
 public:
   state_type createState() const{ return state_type(3); }
+
   rhs_type createRhs() const{ return rhs_type(3); }
-  jacobian_type createJacobian() const{return jacobian_type(3,3);}
+
+  jacobian_type createJacobian() const{
+    jacobian_type J(3,3);
+    // ensure that the diagonal elements exist
+    for (int i=0; i<J.innerSize(); i++) {
+      J.coeffRef(i, i) = 0;
+    }
+    return J;
+  }
 
   void rhsAndJacobian(const state_type & y,
 		      const independent_variable_type& evaltime,
 		      rhs_type & f,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*J*/) const
-#else
-                      jacobian_type* /*J*/) const
-#endif
   {
     std::cout << "velo: t=" << evaltime << "\n";
     f[0] = y(0)+evaltime;
@@ -48,11 +53,8 @@ struct MyFakeSolver
     for (int i=0; i<2; ++i)
     {
       std::cout << "i = "  << i << std::endl;
-#ifdef PRESSIO_ENABLE_CXX17
-	sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
-#else
-	sys.residualAndJacobian(state, R, &J);
-#endif
+
+	    sys.residualAndJacobian(state, R, std::optional<decltype(J)*>(&J));
 
       std::cout << "state = "  << *state.data() << std::endl;
       std::cout << "R = " << *R.data() << std::endl;
@@ -222,8 +224,7 @@ struct MyFakeSolver
 
 TEST(ode, implicit_crank_nicolson_correctness_default_policy)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
@@ -241,13 +242,12 @@ TEST(ode, implicit_crank_nicolson_correctness_default_policy)
   EXPECT_TRUE(y(1)==8.);
   EXPECT_TRUE(y(2)==9.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }
 
 TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   using app_t   = MyApp;
   using state_t = typename app_t::state_type;
@@ -270,5 +270,5 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
   EXPECT_TRUE(y(1)==8.);
   EXPECT_TRUE(y(2)==9.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

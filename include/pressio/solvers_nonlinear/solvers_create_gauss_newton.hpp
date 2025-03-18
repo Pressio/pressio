@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
 
 #include "solvers_default_types.hpp"
 #include "./impl/solvers_tagbased_registry.hpp"
@@ -180,6 +180,41 @@ auto create_gauss_newton_solver(const SystemType & system,           /*(2)*/
      std::forward<WeightingOpType>(weigher));
 }
 
+
+/*
+  Special modifications for using CompactWeightedGaussNewtonNormalEqTag
+  Requires that weigher have member leading_dim specifying leading dimension of Wr and WJ
+*/
+template<class SystemType, class LinearSolverType, class WeightingOpType>
+auto create_gauss_newton_solver(const SystemType & system,           /*(3)*/
+				LinearSolverType && linSolver,
+				WeightingOpType && weigher,
+				nonlinearsolvers::impl::CompactWeightedGaussNewtonNormalEqTag /*tag*/)
+{
+
+  using nonlinearsolvers::Diagnostic;
+  const std::vector<Diagnostic> defaultDiagnostics =
+    {Diagnostic::objectiveAbsolute,
+     Diagnostic::objectiveRelative,
+     Diagnostic::residualAbsolutel2Norm,
+     Diagnostic::residualRelativel2Norm,
+     Diagnostic::correctionAbsolutel2Norm,
+     Diagnostic::correctionRelativel2Norm,
+     Diagnostic::gradientAbsolutel2Norm,
+     Diagnostic::gradientRelativel2Norm};
+
+  using tag_t    = nonlinearsolvers::impl::CompactWeightedGaussNewtonNormalEqTag;
+  using state_t  = typename SystemType::state_type;
+  using reg_t    = nonlinearsolvers::impl::RegistryCompactWeightedGaussNewtonNormalEqs<
+    SystemType, LinearSolverType, WeightingOpType>;
+  using scalar_t = nonlinearsolvers::scalar_of_t<SystemType>;
+
+  return nonlinearsolvers::impl::NonLinLeastSquares<tag_t, state_t, reg_t, scalar_t>
+    (tag_t{}, defaultDiagnostics, system,
+     std::forward<LinearSolverType>(linSolver),
+     std::forward<WeightingOpType>(weigher));
+}
+
 namespace experimental{
 
 /*
@@ -238,4 +273,4 @@ auto create_gauss_newton_qr_solver(const SystemType & system,
 }//end experimental
 
 } // end namespace pressio
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_

@@ -1,17 +1,18 @@
 
-#ifndef SOLVERS_REGISTRIES_HPP_
-#define SOLVERS_REGISTRIES_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_REGISTRIES_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_REGISTRIES_HPP_
 
 #include "levmar_damping.hpp"
+#include "instance_or_reference_wrapper.hpp"
 
 namespace pressio{
 namespace nonlinearsolvers{
 namespace impl{
 
 #define GETMETHOD(N) \
-  template<class Tag, mpl::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
+  template<class Tag, std::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
   auto & get(){ return d##N##_; } \
-  template<class Tag, mpl::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
+  template<class Tag, std::enable_if_t< std::is_same<Tag, Tag##N >::value, int> = 0> \
   const auto & get() const { return d##N##_; }
 
 
@@ -33,7 +34,7 @@ class RegistryNewton
   state_t d2_;
   r_t d3_;
   j_t d4_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d5_;
+  InstanceOrReferenceWrapper<InnSolverType> d5_;
   SystemType const * d6_;
 
 public:
@@ -60,6 +61,44 @@ public:
   GETMETHOD(6)
 };
 
+template<class SystemType, class LinearSolverTag>
+class RegistryMatrixFreeNewtonKrylov
+{
+  using state_t    = typename SystemType::state_type;
+  using r_t        = typename SystemType::residual_type;
+
+  using Tag1 = nonlinearsolvers::CorrectionTag;
+  using Tag2 = nonlinearsolvers::InitialGuessTag;
+  using Tag3 = nonlinearsolvers::ResidualTag;
+  using Tag4 = nonlinearsolvers::impl::SystemTag;
+
+  state_t d1_;
+  state_t d2_;
+  r_t d3_;
+  SystemType const * d4_;
+
+public:
+  using linear_solver_tag = LinearSolverTag;
+
+  RegistryMatrixFreeNewtonKrylov(const SystemType & system)
+    : d1_(system.createState()),
+      d2_(system.createState()),
+      d3_(system.createResidual()),
+      d4_(&system){}
+
+  template<class TagToFind>
+  static constexpr bool contains(){
+    return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
+	    Tag1, Tag2, Tag3, Tag4>::value) < 4;
+  }
+
+  GETMETHOD(1)
+  GETMETHOD(2)
+  GETMETHOD(3)
+  GETMETHOD(4)
+};
+
+
 template<class SystemType, class InnSolverType>
 class RegistryGaussNewtonNormalEqs
 {
@@ -85,7 +124,7 @@ class RegistryGaussNewtonNormalEqs
   j_t d4_;
   gradient_t d5_;
   hessian_t d6_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d7_;
+  InstanceOrReferenceWrapper<InnSolverType> d7_;
   SystemType const * d8_;
 
 public:
@@ -146,8 +185,8 @@ class RegistryWeightedGaussNewtonNormalEqs
   j_t d6_;
   gradient_t d7_;
   hessian_t d8_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d9_;
-  utils::InstanceOrReferenceWrapper<WeightingOpType> d10_;
+  InstanceOrReferenceWrapper<InnSolverType> d9_;
+  InstanceOrReferenceWrapper<WeightingOpType> d10_;
   SystemType const * d11_;
 
 public:
@@ -186,6 +225,79 @@ public:
   GETMETHOD(11)
 };
 
+template<class SystemType, class InnSolverType, class WeightingOpType>
+class RegistryCompactWeightedGaussNewtonNormalEqs
+{
+  using state_t    = typename SystemType::state_type;
+  using r_t        = typename SystemType::residual_type;
+  using j_t        = typename SystemType::jacobian_type;
+  using hg_default = normal_eqs_default_types<state_t>;
+  using hessian_t  = typename hg_default::hessian_type;
+  using gradient_t = typename hg_default::gradient_type;
+
+  using Tag1  = nonlinearsolvers::CorrectionTag;
+  using Tag2  = nonlinearsolvers::InitialGuessTag;
+  using Tag3  = nonlinearsolvers::ResidualTag;
+  using Tag4  = nonlinearsolvers::JacobianTag;
+  using Tag5  = nonlinearsolvers::WeightedResidualTag;
+  using Tag6  = nonlinearsolvers::WeightedJacobianTag;
+  using Tag7  = nonlinearsolvers::GradientTag;
+  using Tag8  = nonlinearsolvers::HessianTag;
+  using Tag9  = nonlinearsolvers::InnerSolverTag;
+  using Tag10 = nonlinearsolvers::WeightingOperatorTag;
+  using Tag11 = nonlinearsolvers::impl::SystemTag;
+
+  state_t d1_;
+  state_t d2_;
+  r_t d3_;
+  j_t d4_;
+  r_t d5_;
+  j_t d6_;
+  gradient_t d7_;
+  hessian_t d8_;
+  InstanceOrReferenceWrapper<InnSolverType> d9_;
+  InstanceOrReferenceWrapper<WeightingOpType> d10_;
+  SystemType const * d11_;
+
+public:
+  template<class _InnSolverType, class _WeightingOpType>
+  RegistryCompactWeightedGaussNewtonNormalEqs(const SystemType & system,
+				       _InnSolverType && innS,
+				       _WeightingOpType && weigher)
+    : d1_(system.createState()),
+      d2_(system.createState()),
+      d3_(system.createResidual()),
+      d4_(system.createJacobian()),
+      d5_(system.createResidual()),
+      d6_(system.createJacobian()),
+      d7_(system.createState()),
+      d8_( hg_default::createHessian(system.createState()) ),
+      d9_(std::forward<InnSolverType>(innS)),
+      d10_(std::forward<_WeightingOpType>(weigher)),
+      d11_(&system){
+        // resize Wr and WJ leading dimension according to weighing operator
+        pressio::ops::resize(d5_, weigher.leadingDim());
+        pressio::ops::resize(d6_, weigher.leadingDim(), pressio::ops::extent(d6_, 1));
+      }
+
+  template<class TagToFind>
+  static constexpr bool contains(){
+    return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
+	    Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10, Tag11>::value) < 11;
+  }
+
+  GETMETHOD(1)
+  GETMETHOD(2)
+  GETMETHOD(3)
+  GETMETHOD(4)
+  GETMETHOD(5)
+  GETMETHOD(6)
+  GETMETHOD(7)
+  GETMETHOD(8)
+  GETMETHOD(9)
+  GETMETHOD(10)
+  GETMETHOD(11)
+};
 
 template<class SystemType, class QRSolverType>
 class RegistryGaussNewtonQr
@@ -211,7 +323,7 @@ class RegistryGaussNewtonQr
   j_t d4_;
   gradient_t d5_;
   QTr_t d6_;
-  utils::InstanceOrReferenceWrapper<QRSolverType> d7_;
+  InstanceOrReferenceWrapper<QRSolverType> d7_;
   SystemType const * d8_;
 
 public:
@@ -273,7 +385,7 @@ class RegistryLevMarNormalEqs
   hessian_t d6_;
   hessian_t d7_;
   lm_damp_t d8_;
-  utils::InstanceOrReferenceWrapper<InnSolverType> d9_;
+  InstanceOrReferenceWrapper<InnSolverType> d9_;
   SystemType const * d10_;
 
 public:
@@ -309,4 +421,4 @@ public:
 };
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_REGISTRIES_HPP_

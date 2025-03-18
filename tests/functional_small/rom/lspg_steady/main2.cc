@@ -23,11 +23,7 @@ struct MyFom
   void residualAndJacobianAction(const state_type & u,
 				 residual_type & r,
 				 const Eigen::MatrixXd & B,
-#ifdef PRESSIO_ENABLE_CXX17
 				 std::optional<Eigen::MatrixXd *> Ain) const
-#else
-				 Eigen::MatrixXd * Ain) const
-#endif
   {
     EXPECT_TRUE(u.size()==r.size());
     EXPECT_TRUE(u.size()==N_);
@@ -36,11 +32,7 @@ struct MyFom
     }
 
     if (Ain){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & A = *Ain.value();
-#else
-      auto & A = *Ain;
-#endif
       A = B;
     }
   }
@@ -129,19 +121,11 @@ class Scaler
 public:
   void operator()(const state_type &,
 		  vec_operand_type & a,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<mat_operand_type *> b) const
-#else
-		  mat_operand_type * b) const
-#endif
   {
     a.array() += 1.;
     if (b){
-#ifdef PRESSIO_ENABLE_CXX17
       b.value()->array() += 1.;
-#else
-      b->array() += 1.;
-#endif
     }
   }
 };
@@ -151,8 +135,7 @@ TEST(rom_lspg_steady, test2)
 {
   /* default steady lspg with preconditioning */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   namespace plspg = pressio::rom::lspg;
 
@@ -191,5 +174,5 @@ TEST(rom_lspg_steady, test2)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

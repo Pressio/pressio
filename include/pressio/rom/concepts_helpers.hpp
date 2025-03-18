@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_HELPERS_HPP_
-#define ROM_CONCEPTS_HELPERS_HPP_
+#ifndef PRESSIO_ROM_CONCEPTS_HELPERS_HPP_
+#define PRESSIO_ROM_CONCEPTS_HELPERS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -100,7 +100,7 @@ struct mask_action{
 template<class MaskerType, class OperandType>
 struct mask_action<
   MaskerType, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<
     decltype
       (std::declval<MaskerType const>().createResultOfMaskActionOn
@@ -131,7 +131,7 @@ struct fom_mass_matrix_action{
 template<class MassMatrixOpType, class OperandType>
 struct fom_mass_matrix_action<
   MassMatrixOpType, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<
     decltype
       (std::declval<MassMatrixOpType const>().createResultOfMassMatrixActionOn
@@ -155,4 +155,4 @@ using fom_mass_matrix_action_on_trial_space_t =
   fom_mass_matrix_action_t<FomMassMatOpType, typename TrialSubspaceType::basis_matrix_type>;
 
 }}}
-#endif  // ROM_CONCEPTS_HELPERS_HPP_
+#endif  // PRESSIO_ROM_CONCEPTS_HELPERS_HPP_

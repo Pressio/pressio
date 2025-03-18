@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-//#include <gmock/gmock.h>
 #include <Kokkos_Core.hpp>
 #include <memory>
 
@@ -26,7 +25,6 @@
 int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
-  //  ::testing::InitGoogleMock(&argc,argv);
   int err = 0;
   {
     // std::unique_ptr<KokkosEnv> envPtr(new KokkosEnv(argc, argv));

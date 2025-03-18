@@ -49,11 +49,11 @@
 #ifndef PRESSIO_ROM_GALERKIN_STEADY_TOPLEVEL_INCLUDE_HPP_
 #define PRESSIO_ROM_GALERKIN_STEADY_TOPLEVEL_INCLUDE_HPP_
 
-#include "./mpl.hpp"
-#include "./utils.hpp"
-#include "./type_traits.hpp"
-#include "./ops.hpp"
-#include "./qr.hpp"
+#include "pressio/mpl.hpp"
+#include "pressio/type_traits.hpp"
+#include "pressio/ops.hpp"
+
+#include "pressio/pressio_macros.hpp"
 #include "./solvers_linear.hpp"
 #include "./solvers_nonlinear.hpp"
 #include "./ode.hpp"

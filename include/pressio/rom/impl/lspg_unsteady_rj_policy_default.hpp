@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -102,11 +102,7 @@ public:
 		  ::pressio::ode::StepCount step,
 		  const ::pressio::ode::StepSize<IndVarType> & dt,
 		  residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		  std::optional<jacobian_type *> Jo) const
-#else
-		  jacobian_type * Jo) const
-#endif
   {
 
     if (odeSchemeName == ::pressio::ode::StepScheme::BDF1){
@@ -142,11 +138,7 @@ private:
 			 const IndVarType & dt,
 			 const typename ::pressio::ode::StepCount::value_type & step,
 			 residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
-			std::optional<jacobian_type *> & Jo) const
-#else
-		        jacobian_type * Jo) const
-#endif
+			 std::optional<jacobian_type *> & Jo) const
   {
     static_assert( std::is_same<OdeTag, ode::BDF1>::value ||
 		   std::is_same<OdeTag, ode::BDF2>::value, "");
@@ -184,11 +176,7 @@ private:
       // lspg Jac looks something like: lspgJac = decoderJac + dt*coeff*d(fomrhs)/dy*phi
       // where J is the d(fomrhs)/dy and coeff depends on the scheme.
 
-#ifdef PRESSIO_ENABLE_CXX17
       auto & J = *Jo.value();
-#else
-      auto & J = *Jo;
-#endif
 
       // first, store J*phi into J
       const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
@@ -197,7 +185,6 @@ private:
       // second, we just need to update J properly
       using basis_sc_t = typename ::pressio::Traits<
 	typename TrialSubspaceType::basis_matrix_type>::scalar_type;
-      const auto one = ::pressio::utils::Constants<basis_sc_t>::one();
       IndVarType factor = {};
       if (std::is_same<OdeTag, ode::BDF1>::value){
 	factor = dt*::pressio::ode::constants::bdf1<IndVarType>::c_f_;
@@ -206,7 +193,7 @@ private:
 	// goes to bdf2
 	factor = dt*::pressio::ode::constants::bdf2<IndVarType>::c_f_;
       }
-      ::pressio::ops::update(J, factor, phi, one);
+      ::pressio::ops::update(J, factor, phi, static_cast<basis_sc_t>(1));
     }
   }
 
@@ -225,4 +212,4 @@ private:
 
 }}}
 
-#endif  // ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_RJ_POLICY_DEFAULT_HPP_

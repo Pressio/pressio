@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_AND_MM_HPP_
-#define ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_AND_MM_HPP_
+#ifndef PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_AND_MM_HPP_
+#define PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_AND_MM_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -75,11 +75,7 @@ public:
 				   const IndVarType & rhsEvaluationTime,
 				   mass_matrix_type & reducedMassMatrix,
 				   rhs_type & reducedRhs,
-#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<jacobian_type*> reducedJacobian) const
-#else
-                                   jacobian_type* reducedJacobian) const
-#endif
   {
 
     // reconstruct fom state fomState = phi*reducedState
@@ -91,9 +87,9 @@ public:
     // compute the reduced rhs
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    constexpr auto alpha = static_cast<phi_scalar_t>(1);
     using rhs_scalar_t = typename ::pressio::Traits<rhs_type>::scalar_type;
-    constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
+    constexpr auto beta = static_cast<rhs_scalar_t>(0);
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomRhs_,
 			    beta, reducedRhs);
@@ -109,16 +105,12 @@ public:
       fomSystem_.get().applyJacobian(fomState_, phi, rhsEvaluationTime, fomJacAction_);
 
       // compute the reduced jacobian
-      constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
-      constexpr auto beta = ::pressio::utils::Constants<rhs_scalar_t>::zero();
+      constexpr auto alpha = static_cast<phi_scalar_t>(1);
+      constexpr auto beta = static_cast<rhs_scalar_t>(0);
       ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,
 			      beta,
-#ifdef PRESSIO_ENABLE_CXX17
 			      *reducedJacobian.value());
-#else
-                              *reducedJacobian);
-#endif
     }
   }
 
@@ -132,4 +124,4 @@ private:
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_HPP_
+#endif  // PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_AND_JACOBIAN_AND_MM_HPP_

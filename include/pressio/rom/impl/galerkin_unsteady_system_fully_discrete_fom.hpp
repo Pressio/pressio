@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_FULLY_DISCRETE_FOM_HPP_
-#define ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_FULLY_DISCRETE_FOM_HPP_
+#ifndef PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_FULLY_DISCRETE_FOM_HPP_
+#define PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_FULLY_DISCRETE_FOM_HPP_
 
 #include "./galerkin_unsteady_fom_states_manager.hpp"
 
@@ -67,16 +67,12 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< (_n==2) >
+  std::enable_if_t< (_n==2) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & galerkinResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type *> galerkinJacobian,
-#else
-			      discrete_jacobian_type * galerkinJacobian,
-#endif
 			      const state_type & galerkin_state_np1,
 			      const state_type & galerkin_state_n) const
   {
@@ -97,16 +93,12 @@ public:
   }
 
   template<typename step_t, std::size_t _n = n>
-  mpl::enable_if_t< (_n==3) >
+  std::enable_if_t< (_n==3) >
   discreteResidualAndJacobian(const step_t & currentStepNumber,
 			      const independent_variable_type & time_np1,
 			      const independent_variable_type & dt,
 			      discrete_residual_type & galerkinResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type *> galerkinJacobian,
-#else
-			      discrete_jacobian_type * galerkinJacobian,
-#endif
 			      const state_type & galerkin_state_np1,
 			      const state_type & galerkin_state_n,
 			      const state_type & galerkin_state_nm1) const
@@ -140,7 +132,6 @@ private:
   {
     const auto phi = trialSubspace_.get().basisOfTranslatedSpace();
 
-#ifdef PRESSIO_ENABLE_CXX17
     if (computeJacobian){
       using op_ja_t = std::optional<fom_jac_action_result_type*>;
       fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
@@ -153,50 +144,29 @@ private:
 							     dt, fomResidual_, phi, {},
 							     std::forward<States>(states)...);
     }
-#else
-    if (computeJacobian){
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_, phi, &fomJacAction_,
-							     std::forward<States>(states)...);
-    }
-    else{
-      fomSystem_.get().discreteTimeResidualAndJacobianAction(currentStepNumber, time_np1,
-							     dt, fomResidual_, phi, nullptr,
-							     std::forward<States>(states)...);
-    }
-#endif
-
   }
 
 
   void computeReducedOperators(discrete_residual_type & galerkinResidual,
-#ifdef PRESSIO_ENABLE_CXX17
 			      std::optional<discrete_jacobian_type *> galerkinJacobian) const
-#else
-			      discrete_jacobian_type * galerkinJacobian) const
-#endif
   {
     const auto & phi = trialSubspace_.get().basisOfTranslatedSpace();
     using phi_scalar_t = typename ::pressio::Traits<basis_matrix_type>::scalar_type;
-    constexpr auto alpha = ::pressio::utils::Constants<phi_scalar_t>::one();
+    constexpr auto alpha = static_cast<phi_scalar_t>(1);
 
     using residual_scalar_t = typename ::pressio::Traits<discrete_residual_type>::scalar_type;
-    constexpr auto beta = ::pressio::utils::Constants<residual_scalar_t>::zero();
+    constexpr auto beta = static_cast<residual_scalar_t>(0);;
     ::pressio::ops::product(::pressio::transpose(),
 			    alpha, phi, fomResidual_,
 			    beta, galerkinResidual);
 
     if (galerkinJacobian){
-      constexpr auto beta = ::pressio::utils::Constants<residual_scalar_t>::zero();
+      constexpr auto beta = static_cast<residual_scalar_t>(0);;
       ::pressio::ops::product(::pressio::transpose(),
 			      ::pressio::nontranspose(),
 			      alpha, phi, fomJacAction_,
 			      beta,
-#ifdef PRESSIO_ENABLE_CXX17
 			      *galerkinJacobian.value());
-#else
-			      *galerkinJacobian);
-#endif
     }
   }
 
@@ -253,4 +223,4 @@ protected:
 };
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_DEFAULT_RHS_ONLY_HPP_
+#endif  // PRESSIO_ROM_IMPL_GALERKIN_UNSTEADY_SYSTEM_FULLY_DISCRETE_FOM_HPP_

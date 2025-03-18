@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVEN_MARQ_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVEN_MARQ_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVENBERG_MARQUARDT_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVENBERG_MARQUARDT_HPP_
 
 #include "solvers_default_types.hpp"
 #include "./impl/solvers_tagbased_registry.hpp"
@@ -65,7 +65,7 @@ namespace pressio{
   where r(x) is the residual vector with r \in R^n and x \in R^k, with k < n,
   LM solves the *modified* normal equations: H delta = -g
   where:
-    H = H_0 + lambda*diag(H_0), with H_0 = J^T_r*J_r
+    H = H_0 + lambda*diagonal(H_0), with H_0 = J^T_r*J_r
     g = J^T_r * r
     delta = x_k+1 - x_k
   The user provides a problem computing residual and jacobian
@@ -116,4 +116,4 @@ auto create_levenberg_marquardt_solver(const SystemType & system,
 }
 
 } // end namespace pressio
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_PUBLIC_API_HPP_
+#endif  // PRESSIO_SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVENBERG_MARQUARDT_HPP_

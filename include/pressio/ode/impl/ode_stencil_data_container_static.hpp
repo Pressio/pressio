@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
-#define ODE_IMPL_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
+#define PRESSIO_ODE_IMPL_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -67,11 +67,11 @@ private:
   data_type data_;
 
 public:
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 0, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 0, int> = 0>
   StencilDataContainerStaticImpl(){}
 
   // constructor for n == 1
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 1, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y)}
   {
@@ -79,7 +79,7 @@ public:
   }
 
   // constructor for n == 2
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 2, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{
@@ -87,7 +87,7 @@ public:
   }
 
   // constructor for n == 3
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 3, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
@@ -96,7 +96,7 @@ public:
   }
 
   // constructor for n == 4
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 4, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 4, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
@@ -184,18 +184,18 @@ private:
   data_type data_;
 
 public:
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 0, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 0, int> = 0>
   StencilDataContainerStaticImpl(){}
 
   // constructor for n == 1
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 1, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y)}{
     setZero();
   }
 
   // constructor for n == 2
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 2, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{
@@ -203,7 +203,7 @@ public:
   }
 
   // constructor for n == 3
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 3, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
@@ -212,7 +212,7 @@ public:
   }
 
   // constructor for n == 4
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 4, int> = 0>
+  template <std::size_t _N = N, std::enable_if_t<_N == 4, int> = 0>
   StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
@@ -287,4 +287,4 @@ private:
 };
 
 }}}
-#endif  // ODE_IMPL_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_

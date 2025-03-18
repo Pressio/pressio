@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
-#define ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
+#ifndef PRESSIO_ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
+#define PRESSIO_ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
 
 #include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_noop_guesser.hpp"
@@ -63,14 +63,9 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
+  std::enable_if_t<
     SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
   >
-#else
-  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args ...>
-  void
-#endif
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -101,16 +96,10 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
-    SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    >
-#else
-  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-        && StepSizePolicy<StepSizePolicyType, IndVarType>
-  void
-#endif
+std::enable_if_t<
+  SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
+  && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+  >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -140,16 +129,10 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
-    SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
-    && StateObserver<ObserverType &&, IndVarType, StateType>::value
-    >
-#else
-  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-        && StateObserver<ObserverType, IndVarType, StateType>
-  void
-#endif
+std::enable_if_t<
+  SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
+  && StateObserver<ObserverType &&, IndVarType, StateType>::value
+  >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -181,18 +164,11 @@ template<
   class IndVarType,
   class AuxT,
   class ...Args>
-#if not defined PRESSIO_ENABLE_CXX20
-  mpl::enable_if_t<
-       SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
-    && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
-    && StateObserver<ObserverType &&, IndVarType, StateType>::value
-    >
-#else
-  requires SteppableWithAuxiliaryArgs<StepperType, AuxT, Args...>
-        && StepSizePolicy<StepSizePolicyType, IndVarType>
-	&& StateObserver<ObserverType, IndVarType, StateType>
-  void
-#endif
+std::enable_if_t<
+     SteppableWithAuxiliaryArgs<void, StepperType, AuxT &&, Args && ...>::value
+  && StepSizePolicy<StepSizePolicyType &&, IndVarType>::value
+  && StateObserver<ObserverType &&, IndVarType, StateType>::value
+  >
 advance_n_steps(StepperType & stepper,
 		StateType & state,
 		const IndVarType & startVal,
@@ -214,4 +190,4 @@ advance_n_steps(StepperType & stepper,
 }
 
 }} //end namespace pressio::ode
-#endif  // ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_
+#endif  // PRESSIO_ODE_ODE_ADVANCE_N_STEPS_VARIADIC_HPP_

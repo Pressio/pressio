@@ -9,7 +9,7 @@
 PCK_REL_DIR=${PWD}/../include/pressio
 
 # array of names
-declare -a pcks=("mpl" "utils" "type_traits" "expressions" "ops" "qr" "solvers_linear" "solvers_nonlinear" "ode" "rom")
+declare -a pcks=("solvers_linear" "solvers_nonlinear" "ode" "rom")
 
 # loop over and fix he
 for packName in ${pcks[@]}; do
@@ -24,5 +24,5 @@ for packName in ${pcks[@]}; do
     # first, convert all guards to pragmas
     guard2once -r .
     # then converts from pragmas to header with specific pattern
-    once2guard -r -p "path -1 | prepend ${packName}_ | upper | append _" -s "#endif  // %\n" .
+    once2guard -r -p "path -1 | prepend PRESSIO_${packName}_ | upper | append _" -s "#endif  // %\n" .
 done

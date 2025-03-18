@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONCEPTS_ALL_HPP_
-#define ROM_CONCEPTS_ALL_HPP_
+#ifndef PRESSIO_ROM_ROM_CONCEPTS_HPP_
+#define PRESSIO_ROM_ROM_CONCEPTS_HPP_
 
 #include "concepts_helpers.hpp"
 #include "predicates.hpp"
@@ -60,7 +60,7 @@ struct ReducedState : std::false_type{};
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<class T>
 struct ReducedState<
-  T, mpl::enable_if_t< ::pressio::is_vector_eigen<T>::value > > : std::true_type{};
+  T, std::enable_if_t< ::pressio::is_vector_eigen<T>::value > > : std::true_type{};
 #endif
 
 // ----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ struct VectorSubspace: std::false_type{};
 template<class T>
 struct VectorSubspace<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_copy_constructible<T>::value
     && ::pressio::has_basis_matrix_typedef<T>::value
     && std::is_copy_constructible<typename T::basis_matrix_type>::value
@@ -106,7 +106,7 @@ struct PossiblyAffineTrialColumnSubspace : std::false_type{};
 template<class T>
 struct PossiblyAffineTrialColumnSubspace<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
     ::pressio::has_reduced_state_typedef<T>::value
     && ReducedState<typename T::reduced_state_type>::value
     && ::pressio::has_basis_matrix_typedef<T>::value
@@ -163,7 +163,7 @@ struct PossiblyAffineRealValuedTrialColumnSubspace: std::false_type{};
 template<class T>
 struct PossiblyAffineRealValuedTrialColumnSubspace<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
   PossiblyAffineTrialColumnSubspace<T>::value
   && std::is_floating_point< scalar_trait_t<typename T::reduced_state_type> >::value
   && std::is_floating_point< scalar_trait_t<typename T::full_state_type> >::value
@@ -181,7 +181,7 @@ struct MaskableWith : std::false_type{};
 template <class T, class MaskerType>
 struct MaskableWith<
   T, MaskerType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     std::is_copy_constructible<
       decltype
       (std::declval<MaskerType const>().createResultOfMaskActionOn
@@ -211,7 +211,7 @@ struct SteadyFomWithJacobianAction : std::false_type{};
 template<class T, class JacobianActionOperandType>
 struct SteadyFomWithJacobianAction<
   T, JacobianActionOperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_state_typedef<T>::value
     && ::pressio::has_residual_typedef<T>::value
     && std::is_copy_constructible<typename T::state_type>::value
@@ -233,11 +233,7 @@ struct SteadyFomWithJacobianAction<
 	std::declval<typename T::state_type const&>(),
 	std::declval<typename T::residual_type &>(),
 	std::declval<JacobianActionOperandType const&>(),
-#ifdef PRESSIO_ENABLE_CXX17
 	std::declval< std::optional<impl::fom_jac_action_t<T, JacobianActionOperandType> *> >()
-#else
-	std::declval< impl::fom_jac_action_t<T, JacobianActionOperandType> *>()
-#endif
 	)
        )
     >::value
@@ -250,7 +246,7 @@ struct SemiDiscreteFom : std::false_type{};
 template<class T>
 struct SemiDiscreteFom<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
        ::pressio::has_time_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_rhs_typedef<T>::value
@@ -270,7 +266,7 @@ struct SemiDiscreteFomWithMassMatrixAction : std::false_type{};
 template<class T, class MassMatrixActionOperandType>
 struct SemiDiscreteFomWithMassMatrixAction<
   T, MassMatrixActionOperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     SemiDiscreteFom<T>::value
     //
     && std::is_copy_constructible<
@@ -304,7 +300,7 @@ struct SemiDiscreteFomWithJacobianAction : std::false_type{};
 template<class T,  class JacobianActionOperandType>
 struct SemiDiscreteFomWithJacobianAction<
   T,  JacobianActionOperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
        SemiDiscreteFom<T>::value
     && ::pressio::rom::has_const_create_result_of_jacobian_action_on<
 	 T,  JacobianActionOperandType>::value
@@ -326,7 +322,7 @@ struct SemiDiscreteFomWithJacobianAndMassMatrixAction : std::false_type{};
 template<class T, class OperandType>
 struct SemiDiscreteFomWithJacobianAndMassMatrixAction<
   T,  OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
      SemiDiscreteFomWithJacobianAction<T, OperandType>::value
   && SemiDiscreteFomWithMassMatrixAction<T, OperandType>::value
   >
@@ -339,14 +335,14 @@ struct FullyDiscreteSystemWithJacobianAction : std::false_type{};
 template<class T, int TotalNumStates, class JacobianActionOperandType>
 struct FullyDiscreteSystemWithJacobianAction<
   T, TotalNumStates, JacobianActionOperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     (TotalNumStates == 2 || TotalNumStates == 3)
     && ::pressio::has_time_typedef<T>::value
     && ::pressio::has_state_typedef<T>::value
     && ::pressio::has_discrete_residual_typedef<T>::value
     && std::is_copy_constructible<typename T::state_type>::value
     && std::is_copy_constructible<typename T::discrete_residual_type>::value
-    && mpl::is_same<
+    && std::is_same<
 	 typename T::discrete_residual_type,
 	 decltype(std::declval<T const>().createDiscreteTimeResidual())
 	 >::value
@@ -382,7 +378,7 @@ struct RealValuedSteadyFomWithJacobianAction : std::false_type{};
 template<class T, class JacobianActionOperandType>
 struct RealValuedSteadyFomWithJacobianAction<
   T, JacobianActionOperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
        SteadyFomWithJacobianAction<T, JacobianActionOperandType>::value
     && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
     && std::is_floating_point< scalar_trait_t<typename T::residual_type> >::value
@@ -399,7 +395,7 @@ struct RealValuedSemiDiscreteFom : std::false_type{};
 template<class T>
 struct RealValuedSemiDiscreteFom<
   T,
-  mpl::enable_if_t<
+  std::enable_if_t<
        SemiDiscreteFom<T>::value
     && std::is_floating_point< typename T::time_type>::value
     && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
@@ -414,7 +410,7 @@ struct RealValuedSemiDiscreteFomWithMassMatrixAction : std::false_type{};
 template<class T, class MassMatrixActionOperandType>
 struct RealValuedSemiDiscreteFomWithMassMatrixAction<
   T, MassMatrixActionOperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
        RealValuedSemiDiscreteFom<T>::value
     && SemiDiscreteFomWithMassMatrixAction<T, MassMatrixActionOperandType>::value
     && std::is_floating_point<
@@ -430,7 +426,7 @@ struct RealValuedSemiDiscreteFomWithJacobianAction : std::false_type{};
 template<class T, class OperandType>
 struct RealValuedSemiDiscreteFomWithJacobianAction<
   T, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
        RealValuedSemiDiscreteFom<T>::value
     && SemiDiscreteFomWithJacobianAction<T, OperandType>::value
     && std::is_floating_point<
@@ -446,7 +442,7 @@ struct RealValuedSemiDiscreteFomWithJacobianAndMassMatrixAction : std::false_typ
 template<class T, class OperandType>
 struct RealValuedSemiDiscreteFomWithJacobianAndMassMatrixAction<
   T, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
        RealValuedSemiDiscreteFomWithJacobianAction<T, OperandType>::value
     && RealValuedSemiDiscreteFomWithMassMatrixAction<T, OperandType>::value
     >
@@ -459,7 +455,7 @@ struct RealValuedFullyDiscreteSystemWithJacobianAction : std::false_type{};
 template<class T, int TotalNumStates, class OperandType>
 struct RealValuedFullyDiscreteSystemWithJacobianAction<
   T, TotalNumStates, OperandType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     FullyDiscreteSystemWithJacobianAction<T, TotalNumStates, OperandType>::value
     && std::is_floating_point< scalar_trait_t<typename T::state_type> >::value
     && std::is_floating_point< scalar_trait_t<typename T::discrete_residual_type> >::value
@@ -471,4 +467,4 @@ struct RealValuedFullyDiscreteSystemWithJacobianAction<
 
 }} // end namespace pressio::rom
 
-#endif  // ROM_CONCEPTS_FOM_STEADY_WITH_JAC_ACTION_HPP_
+#endif  // PRESSIO_ROM_ROM_CONCEPTS_HPP_

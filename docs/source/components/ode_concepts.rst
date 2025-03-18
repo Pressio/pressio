@@ -9,20 +9,20 @@ Concepts
 System
 ~~~~~~
 
-.. literalinclude:: ../../../include/pressio/ode/concepts/ode_system_cxx20.hpp
+.. literalinclude:: ../../../include/pressio/ode/concepts/ode_system.hpp
    :language: cpp
    :lines: 8-101, 213
 
 Real-valued system refinement
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../include/pressio/ode/concepts/ode_system_cxx20.hpp
+.. literalinclude:: ../../../include/pressio/ode/concepts/ode_system.hpp
    :language: cpp
    :lines: 8-9, 105-154, 213
 
 Others
 ~~~~~~
 
-.. literalinclude:: ../../../include/pressio/ode/concepts/ode_others_cxx20.hpp
+.. literalinclude:: ../../../include/pressio/ode/concepts/ode_others.hpp
    :language: cpp
    :lines: 7-90

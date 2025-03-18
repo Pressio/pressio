@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
-#define ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#ifndef PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#define PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -78,7 +78,7 @@ private:
   IndVarType dt_ = {};
   typename StepCount::value_type stepNumber_  = {};
 
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  ::pressio::nonlinearsolvers::impl::InstanceOrReferenceWrapper<SystemType> systemObj_;
   stencil_states_t stencilStates_;
   // state object to ensure the strong guarantee for handling excpetions
   StateType recoveryState_;
@@ -135,14 +135,10 @@ public:
 
   // 1 aux states, 2 total states
   template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==1 >
+  std::enable_if_t< _numAuxStates==1 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jo) const
-#else
-                      jacobian_type* Jo) const
-#endif
   {
     const auto & yn = stencilStates_(ode::n());
 
@@ -157,14 +153,10 @@ public:
 
   // 2 aux states, 3 total states
   template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==2 >
+  std::enable_if_t< _numAuxStates==2 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jo) const
-#else
-                      jacobian_type* Jo) const
-#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
@@ -181,14 +173,10 @@ public:
 
   // 3 aux states, 4 total states
   template< std::size_t _numAuxStates = numAuxStates>
-  mpl::enable_if_t< _numAuxStates==3 >
+  std::enable_if_t< _numAuxStates==3 >
   residualAndJacobian(const state_type & odeState,
 		      residual_type & R,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> Jo) const
-#else
-                      jacobian_type* Jo) const
-#endif
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
@@ -207,7 +195,7 @@ public:
 private:
   // one aux states
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==1>
+  std::enable_if_t<nAux==1>
   updateAuxiliaryStorage(const StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -216,7 +204,7 @@ private:
   }
 
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==1>
+  std::enable_if_t<nAux==1>
   rollBackStates(StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -226,7 +214,7 @@ private:
 
   // two aux states
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==2>
+  std::enable_if_t<nAux==2>
   updateAuxiliaryStorage(const StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -237,7 +225,7 @@ private:
   }
 
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==2>
+  std::enable_if_t<nAux==2>
   rollBackStates(StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -249,7 +237,7 @@ private:
 
   // three aux states
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==3>
+  std::enable_if_t<nAux==3>
   updateAuxiliaryStorage(const StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -262,7 +250,7 @@ private:
   }
 
   template<std::size_t nAux>
-  mpl::enable_if_t<nAux==3>
+  std::enable_if_t<nAux==3>
   rollBackStates(StateType & odeState)
   {
     auto & y_n = stencilStates_(ode::n());
@@ -276,4 +264,4 @@ private:
 };
 
 }}}
-#endif  // ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#endif  // PRESSIO_ODE_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_HPP_

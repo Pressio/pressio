@@ -80,11 +80,7 @@ struct System6{
   void rhsAndJacobian(const state_type &        /*unused*/,
 		      independent_variable_type /*unused*/,
 		      rhs_type &    /*unused*/,
-#ifdef PRESSIO_ENABLE_CXX17
 		      std::optional<jacobian_type*> /*unused*/) const{}
-#else
-		      jacobian_type* /*unused*/) const{}
-#endif
 };
 
 //
@@ -106,11 +102,7 @@ struct System7{
 				   independent_variable_type /*unused*/,
 				   mass_matrix_type &        /*unused*/,
 				   rhs_type &    /*unused*/,
-#ifdef PRESSIO_ENABLE_CXX17
 				   std::optional<jacobian_type*> /*unused*/) const{}
-#else
-				   jacobian_type* /*unused*/) const{}
-#endif
 };
 
 //
@@ -134,11 +126,7 @@ struct System9{
 				   independent_variable_type /*unused*/,
 				   independent_variable_type /*unused*/,
 				   discrete_residual_type &  /*unused*/,
-#ifdef PRESSIO_ENABLE_CXX17
-		                   std::optional<discrete_jacobian_type*> /*unused*/,
-#else
-		                   discrete_jacobian_type* /*unused*/,
-#endif
+           std::optional<discrete_jacobian_type*> /*unused*/,
 				   const state_type &        /*unused*/) const{}
 
   template<class StepCountType>
@@ -146,11 +134,7 @@ struct System9{
 				   independent_variable_type /*unused*/,
 				   independent_variable_type /*unused*/,
 				   discrete_residual_type &  /*unused*/,
-#ifdef PRESSIO_ENABLE_CXX17
-		                   std::optional<discrete_jacobian_type*> /*unused*/,
-#else
-		                   discrete_jacobian_type* /*unused*/,
-#endif
+           std::optional<discrete_jacobian_type*> /*unused*/,
 				   const state_type &        /*unused*/,
 				   const state_type &        /*unused*/) const{}
 };
@@ -158,29 +142,6 @@ struct System9{
 TEST(ode, concepts)
 {
   using namespace pressio::ode;
-
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert( OdeSystem<System1>, "");
-  static_assert(!CompleteOdeSystem<System1>, "");
-
-  static_assert(!OdeSystem<System2>, "");
-  static_assert(!CompleteOdeSystem<System2>, "");
-
-  static_assert(!OdeSystem<System3>, "");
-  static_assert(!CompleteOdeSystem<System3>, "");
-
-  static_assert( OdeSystemFusingMassMatrixAndRhs<System4>, "");
-
-  static_assert( !CompleteOdeSystem<System6>, "");
-  static_assert( CompleteOdeSystem<System7>, "");
-
-  static_assert(FullyDiscreteSystemWithJacobian<System9,  1>, "");
-  static_assert(FullyDiscreteSystemWithJacobian<System9,  2>, "");
-  static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>, "");
-  static_assert(!OdeSystem<System9>, "");
-  static_assert(!CompleteOdeSystem<System9>, "");
-
-#else
 
   static_assert(OdeSystem<System1>::value, "");
   static_assert(!CompleteOdeSystem<System1>::value, "");
@@ -201,6 +162,5 @@ TEST(ode, concepts)
   static_assert(!FullyDiscreteSystemWithJacobian<System9, 3>::value, "");
   static_assert(!OdeSystem<System9>::value, "");
   static_assert(!CompleteOdeSystem<System9>::value, "");
-#endif
 
 }

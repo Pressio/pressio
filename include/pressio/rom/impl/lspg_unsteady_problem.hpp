@@ -1,6 +1,6 @@
 
-#ifndef ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
-#define ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
+#ifndef PRESSIO_ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
+#define PRESSIO_ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -20,7 +20,7 @@ template <> struct DeducedStepperType<-1>{
 template <int TotalNumberOfDesiredStates>
 struct DeducedStepperType<
   TotalNumberOfDesiredStates,
-  mpl::enable_if_t< (TotalNumberOfDesiredStates>0) >
+  std::enable_if_t< (TotalNumberOfDesiredStates>0) >
   >
 {
   template<class T>
@@ -51,33 +51,36 @@ public:
     class FomSystemType,
     class ...Args,
     int _TotalNumberOfDesiredStates = TotalNumberOfDesiredStates,
-    mpl::enable_if_t< _TotalNumberOfDesiredStates == -1, int > = 0
+    std::enable_if_t< _TotalNumberOfDesiredStates == -1, int > = 0
     >
   LspgUnsteadyProblem(::pressio::ode::StepScheme odeSchemeName,
 		      const TrialSubspaceType & trialSubspace,
 		      const FomSystemType & fomSystem,
 		      Args && ... args)
-    : fomStatesManager_(create_lspg_fom_states_manager(odeSchemeName, trialSubspace)),
-      rjPolicyOrFullyDiscreteSystem_(trialSubspace, fomSystem, fomStatesManager_,
-				     std::forward<Args>(args)...),
-      stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, rjPolicyOrFullyDiscreteSystem_))
+    : fomStatesManager_(std::make_unique<LspgFomStatesManager<TrialSubspaceType>>(create_lspg_fom_states_manager(odeSchemeName, trialSubspace))),
+      rjPolicyOrFullyDiscreteSystem_(std::make_unique<ResJacPolicyOrFullyDiscreteSystemType>(trialSubspace,
+											     fomSystem,
+											     *fomStatesManager_,
+											     std::forward<Args>(args)...)),
+      stepper_( ::pressio::ode::create_implicit_stepper(odeSchemeName, *rjPolicyOrFullyDiscreteSystem_))
   {}
 
   template<
     class FomSystemType,
     class ...Args,
     int _TotalNumberOfDesiredStates = TotalNumberOfDesiredStates,
-    mpl::enable_if_t< (_TotalNumberOfDesiredStates > 0), int > = 0
+    std::enable_if_t< (_TotalNumberOfDesiredStates > 0), int > = 0
     >
   LspgUnsteadyProblem(const TrialSubspaceType & trialSubspace,
 		      const FomSystemType & fomSystem,
 		      Args && ... args)
-    : fomStatesManager_(create_lspg_fom_states_manager<
-			_TotalNumberOfDesiredStates>(trialSubspace)),
-      rjPolicyOrFullyDiscreteSystem_(trialSubspace, fomSystem, fomStatesManager_,
-				     std::forward<Args>(args)...),
+    : fomStatesManager_(std::make_unique<LspgFomStatesManager<TrialSubspaceType>>(create_lspg_fom_states_manager<
+				  _TotalNumberOfDesiredStates>(trialSubspace))),
+      rjPolicyOrFullyDiscreteSystem_(std::make_unique<ResJacPolicyOrFullyDiscreteSystemType>(trialSubspace, fomSystem,
+											     *fomStatesManager_,
+											     std::forward<Args>(args)...)),
       stepper_( ::pressio::ode::create_implicit_stepper<
-		_TotalNumberOfDesiredStates>(rjPolicyOrFullyDiscreteSystem_))
+		_TotalNumberOfDesiredStates>(*rjPolicyOrFullyDiscreteSystem_))
   {}
 
   stepper_type & lspgStepper(){ return stepper_; }
@@ -95,8 +98,8 @@ public:
   }
 
 private:
-  LspgFomStatesManager<TrialSubspaceType> fomStatesManager_;
-  ResJacPolicyOrFullyDiscreteSystemType rjPolicyOrFullyDiscreteSystem_;
+  std::unique_ptr<LspgFomStatesManager<TrialSubspaceType>> fomStatesManager_;
+  std::unique_ptr<ResJacPolicyOrFullyDiscreteSystemType> rjPolicyOrFullyDiscreteSystem_;
   stepper_type stepper_;
 };
 
@@ -110,4 +113,4 @@ using LspgUnsteadyProblemFullyDiscreteAPI =
 
 
 }}} // end pressio::rom::impl
-#endif  // ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_
+#endif  // PRESSIO_ROM_IMPL_LSPG_UNSTEADY_PROBLEM_HPP_

@@ -1,6 +1,9 @@
 
-#ifndef SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_
+
+#include <iostream>
+#include <iomanip>
 
 namespace pressio{
 namespace nonlinearsolvers{
@@ -244,7 +247,6 @@ private:
     else if (count == 11){ logImpl(iStep, dm, std::make_index_sequence<11u>{}); }
     else{ std::runtime_error("count not implemented yet");}
     ;
-
   }
 
   template <class T, std::size_t ... Is>
@@ -259,11 +261,33 @@ private:
         return is_absolute_diagnostic(d) ? data.getAbsolute() : data.getRelative();
     };
 
-    //(..., (std::cout << lam(pd[Is], dm[pd[Is]]) << "\n"));
     const auto pd = dm.publicNames();
-    PRESSIOLOG_INFO(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
+
+#if !defined(PRESSIO_ENABLE_LOGGING)
+
+    int rank = 0;
+#if defined PRESSIO_ENABLE_TPL_MPI
+  int flag = 0; MPI_Initialized( &flag );
+  if (flag==1) MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+
+  if (rank==0){
+    std::cout << "nonlinIter = " << std::left << std::setw(3) << iStep << " ";
+
+    for (auto const & it : pd){
+      const auto symbol = diagnostic_to_log_symbol(it);
+       std::cout << symbol << " = "
+                 << std::left << std::setw(18) << std::scientific << std::setprecision(10)
+                 << lam(it, dm[it]) << " ";
+    }
+    std::cout << "\n";
+  }
+#else
+    PRESSIOLOG_SOLVERS_DIAGNOSTICS_ONLY(rootWithLabels_, iStep, lam(pd[Is], dm[pd[Is]]) ...);
+#endif
+
   }
 };
 
 }}}
-#endif
+#endif  // PRESSIO_SOLVERS_NONLINEAR_IMPL_DIAGNOSTICS_HPP_

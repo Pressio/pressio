@@ -24,11 +24,7 @@ struct MyFom
   void residualAndJacobianAction(const state_type & u,
 				 residual_type & r,
 				 const Eigen::MatrixXd & B,
-#ifdef PRESSIO_ENABLE_CXX17
 				 std::optional<Eigen::MatrixXd *> Ain) const
-#else
-				 Eigen::MatrixXd * Ain) const
-#endif
   {
     EXPECT_TRUE(u.size()==r.size());
     EXPECT_TRUE(u.size()==N_);
@@ -41,21 +37,17 @@ struct MyFom
     }
 
     if (Ain){
-#ifdef PRESSIO_ENABLE_CXX17
       auto & A = *Ain.value();
-#else
-      auto & A = *Ain;
-#endif
       A = B;
       for (int i=0; i<A.rows(); ++i){
-	for (int j=0; j<A.cols(); ++j){
-	  A(i,j) += 1.;
-	}
+        for (int j=0; j<A.cols(); ++j){
+          A(i,j) += 1.;
+        }
       }
       for (auto & it : indices_to_corrupt_){
-	for (int j=0; j< A.cols(); ++j){
-	  A(it,j) = -4232;
-	}
+        for (int j=0; j< A.cols(); ++j){
+          A(it,j) = -4232;
+        }
       }
     }
   }
@@ -168,8 +160,7 @@ TEST(rom_lspg_steady, test4)
 {
   /* steady masked LSPG */
 
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
 
   const int N = 15;
   const std::vector<int> indices_to_corrupt = {1,3,5,7,9,11,13};
@@ -211,5 +202,5 @@ TEST(rom_lspg_steady, test4)
   EXPECT_DOUBLE_EQ(romState[1], 3.);
   EXPECT_DOUBLE_EQ(romState[2], 4.);
 
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

@@ -3,11 +3,11 @@
 #include "pressio/solvers_nonlinear_gaussnewton.hpp"
 #include "./problems/problem5.hpp"
 
+#include <iomanip>
+
 int main()
 {
-  namespace plog   = pressio::log;
-  plog::initialize(pressio::logto::terminal);
-  plog::setVerbosity({plog::level::info});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::info);
 
   using namespace pressio;
   Eigen::Vector4d state;
@@ -44,6 +44,6 @@ int main()
   }
   std::cout << sentinel << std::endl;
 
-  plog::finalize();
+  PRESSIOLOG_FINALIZE();
   return 0;
 }

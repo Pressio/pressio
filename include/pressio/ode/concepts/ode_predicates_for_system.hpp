@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONCEPTS_PREDICATES_HPP_
-#define ODE_CONCEPTS_PREDICATES_HPP_
+#ifndef PRESSIO_ODE_CONCEPTS_ODE_PREDICATES_FOR_SYSTEM_HPP_
+#define PRESSIO_ODE_CONCEPTS_ODE_PREDICATES_FOR_SYSTEM_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -57,8 +57,8 @@ struct has_const_create_state_method_return_result : std::false_type{};
 template <class T, class StateType>
 struct has_const_create_state_method_return_result<
   T, StateType,
-  ::pressio::mpl::enable_if_t<
-    mpl::is_same<
+  std::enable_if_t<
+    std::is_same<
       StateType,
       decltype(std::declval<T const>().createState())
       >::value
@@ -73,9 +73,9 @@ struct has_const_create_rhs_method_return_result
 template <class T, class RhsType>
 struct has_const_create_rhs_method_return_result<
   T, RhsType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<RhsType>::value and
-    mpl::is_same<
+    std::is_same<
       RhsType,
       decltype(
 	       std::declval<T const>().createRhs()
@@ -92,9 +92,9 @@ struct has_const_create_mass_matrix_method_return_result
 template <class T, class MMType>
 struct has_const_create_mass_matrix_method_return_result<
   T, MMType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<MMType>::value and
-    mpl::is_same<
+    std::is_same<
       MMType,
       decltype(
 	       std::declval<T const>().createMassMatrix()
@@ -111,7 +111,7 @@ struct has_const_create_jacobian_method_return_result
 template <class T, class JacobianType>
 struct has_const_create_jacobian_method_return_result<
   T, JacobianType,
-  mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<JacobianType>::value and
     std::is_same<
       JacobianType,
@@ -130,9 +130,9 @@ struct has_const_create_discrete_residual_method_return_result
 template <class T, class ResultType>
 struct has_const_create_discrete_residual_method_return_result<
   T, ResultType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<ResultType>::value and
-    mpl::is_same<
+    std::is_same<
       ResultType,
       decltype
       (
@@ -150,9 +150,9 @@ struct has_const_create_discrete_jacobian_method_return_result
 template <class T, class JacobianType>
 struct has_const_create_discrete_jacobian_method_return_result<
   T, JacobianType,
-  ::pressio::mpl::enable_if_t<
+  std::enable_if_t<
     !std::is_void<JacobianType>::value and
-    mpl::is_same<
+    std::is_same<
       JacobianType,
       decltype(
          std::declval<T const>().createDiscreteJacobian()
@@ -162,4 +162,4 @@ struct has_const_create_discrete_jacobian_method_return_result<
   > : std::true_type{};
 
 }}
-#endif  // ODE_CONCEPTS_PREDICATES_ODE_HAS_CONST_DISCRETE_RESIDUAL_JACOBIAN_METHOD_HPP_
+#endif  // PRESSIO_ODE_CONCEPTS_ODE_PREDICATES_FOR_SYSTEM_HPP_

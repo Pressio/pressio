@@ -15,11 +15,7 @@ struct MyProblem{
   jacobian_type createJacobian() const { return jacobian_type{}; }
   void residualAndJacobian(const state_type& /*x*/,
 			   residual_type& /*r*/,
-#ifdef PRESSIO_ENABLE_CXX17
 			   std::optional<jacobian_type*> /*Jo*/) const{}
-#else
-			   jacobian_type* /*Jo*/) const{}
-#endif
 };
 
 struct Weigher{
@@ -58,8 +54,7 @@ struct MyLinSolver{
 
 int main()
 {
-  pressio::log::initialize(pressio::logto::terminal);
-  pressio::log::setVerbosity({pressio::log::level::debug});
+  PRESSIOLOG_INITIALIZE(pressiolog::LogLevel::debug);
   {
     using namespace pressio;
     using problem_t  = MyProblem;
@@ -71,5 +66,5 @@ int main()
     (void)y;
     std::cout << "PASSED" << std::endl;
   }
-  pressio::log::finalize();
+  PRESSIOLOG_FINALIZE();
 }

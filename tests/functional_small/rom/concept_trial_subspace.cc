@@ -54,15 +54,9 @@ TEST(rom_concepts, possibly_affine_trial_subspace1)
 {
   using namespace pressio::rom;
 
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert(PossiblyAffineTrialColumnSubspace<S1>, "");
-  static_assert(!PossiblyAffineTrialColumnSubspace<S2>, "");
-  static_assert(!PossiblyAffineTrialColumnSubspace<S3>, "");
-#else
   static_assert(PossiblyAffineTrialColumnSubspace<S1>::value, "");
   static_assert(!PossiblyAffineTrialColumnSubspace<S2>::value, "");
   static_assert(!PossiblyAffineTrialColumnSubspace<S3>::value, "");
-#endif
 }
 
 TEST(rom_concepts, possibly_affine_trial_subspace2)
@@ -75,9 +69,5 @@ TEST(rom_concepts, possibly_affine_trial_subspace2)
   Eigen::VectorXd shift(10);
   auto space = pressio::rom::create_trial_column_subspace<reduced_state_type>(phi, shift, false);
 
-#ifdef PRESSIO_ENABLE_CXX20
-  static_assert(PossiblyAffineTrialColumnSubspace<decltype(space)>, "");
-#else
   static_assert(PossiblyAffineTrialColumnSubspace<decltype(space)>::value, "");
-#endif
 }
