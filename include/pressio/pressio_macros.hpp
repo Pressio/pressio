@@ -51,6 +51,10 @@
 
 #include "pressio/ops_macros.hpp"
 
+#define PRESSIO_MAJOR_VERSION 0
+#define PRESSIO_MINOR_VERSION 15
+#define PRESSIO_PATCH_VERSION 0
+
 #if PRESSIO_ENABLE_LOGGING
     #include "pressio-log/core.hpp"
     #define PRESSIOLOG_SOLVERS_DIAGNOSTICS_ONLY(...) PRESSIOLOG_SPARSE(__VA_ARGS__)

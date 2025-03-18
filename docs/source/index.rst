@@ -69,7 +69,7 @@ Each component (level) of the stack depends on the ones below it.
      - ``<pressio/solvers_linear.hpp>``
 
 
-These components depend on the `Pressio/pressio-ops <https://github.com/Pressio/pressio-ops>`_ library, which is pulled in automatically when the ``pressio`` tests are built.
+These components depend on the `Pressio/pressio-ops <https://github.com/Pressio/pressio-ops>`_ header-only library.
 
 Get Started
 -----------
@@ -96,15 +96,14 @@ C++20 concepts are, in some sense, a way to *explicitly* formalize those expecta
 
 Until we can stably upgrade to C++20, we cannot by default use C++20 concepts,
 so we currently guard the concepts in pressio inside a
-preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``. This can be enabled by
-using a C++20 compliant compiler and setting ``-DCMAKE_CXX_STANDARD=20`` at configure time.
+preprocessor directive ``#ifdef PRESSIO_ENABLE_CXX20``.
 The behavior is as follows:
 
 - if ``PRESSIO_ENABLE_CXX20`` is *enabled*: concepts are compiled and
   enforced *stricto sensu* on the pressio APIs as discussed by this documentation
 
 - if ``PRESSIO_ENABLE_CXX20`` is *disabled*: this is the default case because the
-  default pressio C++ standard is currently C++14. In this case, the "C++20 concepts"
+  default pressio C++ standard is currently C++17. In this case, the "C++20 concepts"
   are not compiled but the constraints they represent are still valid and implemented
   differently such that their enforcement is done via a combination of SFINAE and static asserts.
 
@@ -114,6 +113,8 @@ The behavior is as follows:
    still being developed. Some are more mature than others. The approach we adopt is to first
    focus on the syntax, then then we will revise them with proper semantics. Keep this in mind
    if some concepts seem incomplete.
+
+Read more about `concepts in Pressio <concepts_note.html>`_.
 
 ..
    Here, the term concept does not necessarily
@@ -148,6 +149,7 @@ open an issue on `github <https://github.com/Pressio/pressio>`_.
 
    configuration
    keywords
+   concepts_note
 
 .. toctree::
    :caption: API
