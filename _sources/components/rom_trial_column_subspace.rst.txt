@@ -42,10 +42,10 @@ then all of the following must hold:
 
 - ``basis_matrix_type`` is a rank-2 matrix data type already supported
   in pressio, i.e. an Eigen Matrix, a Kokkos rank-2 View, a Trilinos Tpetra multivector,
-  Tpetra block multivector, or Epetra multivector
+  or a Tpetra block multivector
 
 - ``full_state_type`` is an Eigen vector, a Kokkos rank-1 View, a Trilinos Tpetra vector,
-  Tpetra block vector, or Epetra vector
+  or a Tpetra block vector
 
 ..
    - :cpp:`std::is_class<BasisMatrixType>::value == true &&

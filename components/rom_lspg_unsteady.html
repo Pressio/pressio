@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Galerkin: Steady" href="rom_galerkin_steady.html" /><link rel="prev" title="LSPG: Steady" href="rom_lspg_steady.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>LSPG: Unsteady - Pressio-0.14.0</title>
+        <title>LSPG: Unsteady - Pressio-0.15.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -131,7 +131,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Pressio-0.14.0</div></a>
+      <a href="../index.html"><div class="brand">Pressio-0.15.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
     <img class="sidebar-logo" src="../_static/logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Pressio-0.14.0</span>
+  <span class="sidebar-brand-text">Pressio-0.15.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -166,8 +166,9 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration and Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../keywords.html">CMake Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts_note.html">Concepts in Pressio</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -209,12 +210,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear_solvers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellanea</span></p>
 <ul>
@@ -259,89 +254,88 @@
 <p>Header: <code class="docutils literal notranslate"><span class="pre">&lt;pressio/rom_lspg_unsteady.hpp&gt;</span></code></p>
 <section id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this heading">#</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">pressio</span><span class="p">{</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">rom</span><span class="p">{</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">lspg</span><span class="p">{</span>
-
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef PRESSIO_ENABLE_TPL_TRILINOS</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;./impl/lspg_unsteady_reconstructor.hpp&quot;</span>
+<span class="cp">#endif</span>
+<span class="c1">// -------------------------------------------------------------</span>
+<span class="c1">// default</span>
+<span class="c1">// -------------------------------------------------------------</span>
 <span class="k">template</span><span class="o">&lt;</span>
 <span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span>
 <span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">&gt;</span>
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="k">requires</span><span class="w"> </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedSemiDiscreteFomWithJacobianAction</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">full_state_type</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">state_type</span><span class="o">&gt;</span>
-<span class="cp">#endif</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">create_unsteady_problem</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="w"> </span><span class="n">schemeName</span><span class="p">,</span><span class="w">    </span><span class="cm">/*(1)*/</span>
 <span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span>
 <span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">FomSystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">)</span>
+<span class="p">{</span>
 
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MaskerType</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="k">requires</span><span class="w"> </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedSemiDiscreteFomWithJacobianAction</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">full_state_type</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">state_type</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">MaskableWith</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">rhs_type</span><span class="p">,</span><span class="w"> </span><span class="n">MaskerType</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">MaskableWith</span><span class="o">&lt;</span><span class="n">impl</span><span class="o">::</span><span class="n">fom_jac_action_on_trial_space_t</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">MaskerType</span><span class="o">&gt;</span>
-<span class="cp">#endif</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">create_unsteady_problem</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="w"> </span><span class="n">schemeName</span><span class="p">,</span><span class="w">    </span><span class="cm">/*(2)*/</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span>
+<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MaskerType</span><span class="p">,</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">enable_if_t</span><span class="o">&lt;</span>
+<span class="w">    </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;::</span><span class="n">value</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedSemiDiscreteFomWithJacobianAction</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;::</span><span class="n">value</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">full_state_type</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">state_type</span><span class="o">&gt;::</span><span class="n">value</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">MaskableWith</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">rhs_type</span><span class="p">,</span><span class="w"> </span><span class="n">MaskerType</span><span class="o">&gt;::</span><span class="n">value</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">MaskableWith</span><span class="o">&lt;</span><span class="n">impl</span><span class="o">::</span><span class="n">fom_jac_action_on_trial_space_t</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">MaskerType</span><span class="o">&gt;::</span><span class="n">value</span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">lspg_unmasked_residual_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">rhs_type</span><span class="p">;</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">lspg_unmasked_jacobian_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="p">;</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">lspg_residual_type</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="k">decltype</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">declval</span><span class="o">&lt;</span><span class="n">MaskerType</span><span class="w"> </span><span class="k">const</span><span class="o">&gt;</span><span class="p">().</span><span class="n">createResultOfMaskActionOn</span>
+<span class="w">	     </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">declval</span><span class="o">&lt;</span><span class="n">lspg_unmasked_residual_type</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;&gt;</span><span class="p">()));</span>
 <span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">FomSystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">MaskerType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">masker</span><span class="p">)</span>
+<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">HypRedUpdaterType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">hypRedUpdater</span><span class="p">)</span>
+<span class="p">{</span>
 
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">HypRedUpdaterType</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="k">requires</span><span class="w"> </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedSemiDiscreteFomWithJacobianAction</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">full_state_type</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">state_type</span><span class="o">&gt;</span>
-<span class="cp">#endif</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">create_unsteady_problem</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="w"> </span><span class="n">schemeName</span><span class="p">,</span><span class="w">    </span><span class="cm">/*(3)*/</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">FomSystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">,</span>
+<span class="w">  </span><span class="n">impl</span><span class="o">::</span><span class="n">valid_scheme_for_lspg_else_throw</span><span class="p">(</span><span class="n">schemeName</span><span class="p">);</span>
 
-<span class="k">namespace</span><span class="w"> </span><span class="nn">experimental</span><span class="p">{</span>
+<span class="w">    </span><span class="n">ind_var_type</span><span class="p">,</span><span class="w"> </span><span class="n">reduced_state_type</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lspg_residual_type</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_jacobian_type</span><span class="p">,</span>
+<span class="w">    </span><span class="n">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="n">HypRedUpdaterType</span><span class="o">&gt;</span><span class="p">;</span>
 
-<span class="k">template</span><span class="o">&lt;</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">ScalingOperatorType</span><span class="o">&gt;</span>
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="k">requires</span><span class="w"> </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedSemiDiscreteFomWithJacobianAction</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">full_state_type</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">state_type</span><span class="o">&gt;</span>
-<span class="cp">#endif</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">create_unsteady_problem</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="w"> </span><span class="n">schemeName</span><span class="p">,</span><span class="w">    </span><span class="cm">/*(4)*/</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">FomSystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">ScalingOperatorType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">scaler</span><span class="p">)</span>
-<span class="k">template</span><span class="o">&lt;</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">HypRedUpdaterType</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">ScalingOperatorType</span><span class="o">&gt;</span>
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="k">requires</span><span class="w"> </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedSemiDiscreteFomWithJacobianAction</span><span class="o">&lt;</span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">full_state_type</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">state_type</span><span class="o">&gt;</span>
-<span class="cp">#endif</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">create_unsteady_problem</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">StepScheme</span><span class="w"> </span><span class="n">schemeName</span><span class="p">,</span><span class="w">    </span><span class="cm">/*(5)*/</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">FomSystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">HypRedUpdaterType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">hypRedUpdater</span><span class="p">,</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">ScalingOperatorType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">scaler</span><span class="p">)</span>
+
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">ind_var_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">::</span><span class="n">time_type</span><span class="p">;</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">reduced_state_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">reduced_state_type</span><span class="p">;</span>
+<span class="w">	     </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rj_policy_type</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgScalingDecorator</span><span class="o">&lt;</span>
+<span class="w">      </span><span class="n">ScalingOperatorType</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_residual_type</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_jacobian_type</span><span class="p">,</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="p">,</span>
+<span class="w">      </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgUnsteadyResidualJacobianPolicy</span><span class="o">&lt;</span>
+<span class="w">	</span><span class="n">ind_var_type</span><span class="p">,</span><span class="w"> </span><span class="n">reduced_state_type</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_residual_type</span><span class="p">,</span>
+<span class="w">	</span><span class="n">lspg_jacobian_type</span><span class="p">,</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="n">FomSystemType</span>
+<span class="w">	</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">return_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgUnsteadyProblemSemiDiscreteAPI</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="n">rj_policy_type</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">return_type</span><span class="p">(</span><span class="n">schemeName</span><span class="p">,</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">,</span><span class="w"> </span><span class="n">scaler</span><span class="p">);</span>
+<span class="w">    </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgScalingDecorator</span><span class="o">&lt;</span>
+<span class="w">      </span><span class="n">ScalingOperatorType</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_residual_type</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_jacobian_type</span><span class="p">,</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="p">,</span>
+<span class="w">      </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgUnsteadyResidualJacobianPolicyHypRed</span><span class="o">&lt;</span>
+<span class="w">	</span><span class="n">ind_var_type</span><span class="p">,</span><span class="w"> </span><span class="n">reduced_state_type</span><span class="p">,</span><span class="w"> </span><span class="n">lspg_residual_type</span><span class="p">,</span>
+<span class="w">	</span><span class="n">lspg_jacobian_type</span><span class="p">,</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="n">HypRedUpdaterType</span>
+<span class="w">	</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">return_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgUnsteadyProblemSemiDiscreteAPI</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="n">rj_policy_type</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">return_type</span><span class="p">(</span><span class="n">schemeName</span><span class="p">,</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">,</span><span class="w"> </span><span class="n">scaler</span><span class="p">,</span><span class="w"> </span><span class="n">hypRedUpdater</span><span class="p">);</span>
+<span class="p">}</span>
+
 
 <span class="p">}</span><span class="w"> </span><span class="c1">//end namespace experimental</span>
 
-<span class="k">template</span><span class="o">&lt;</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">TotalNumberOfDesiredStates</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span>
-<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">FomSystemType</span><span class="o">&gt;</span>
-<span class="cp">#ifdef PRESSIO_ENABLE_CXX20</span>
-<span class="k">requires</span><span class="w"> </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span>
-<span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">RealValuedFullyDiscreteSystemWithJacobianAction</span><span class="o">&lt;</span>
-<span class="w">     </span><span class="n">FomSystemType</span><span class="p">,</span><span class="w"> </span><span class="n">TotalNumberOfDesiredStates</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="o">::</span><span class="n">basis_matrix_type</span><span class="o">&gt;</span>
-<span class="cp">#endif</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">create_unsteady_problem</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">,</span><span class="w">     </span><span class="cm">/*(6)*/</span>
-<span class="w">			     </span><span class="k">const</span><span class="w"> </span><span class="n">FomSystemType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">fomSystem</span><span class="p">)</span>
+<span class="w">    </span><span class="n">TrialSubspaceType</span><span class="p">,</span><span class="w"> </span><span class="n">FomSystemType</span><span class="o">&gt;</span><span class="p">;</span>
 
-<span class="p">}}}</span><span class="w"> </span><span class="c1">// end pressio::rom::lspg</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">return_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgUnsteadyProblemFullyDiscreteAPI</span><span class="o">&lt;</span>
+<span class="cp">#ifdef PRESSIO_ENABLE_TPL_TRILINOS</span>
+<span class="k">template</span><span class="o">&lt;</span>
+<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">TrialSubspaceType</span><span class="p">,</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">enable_if_t</span><span class="o">&lt;</span>
+<span class="w">    </span><span class="n">PossiblyAffineRealValuedTrialColumnSubspace</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;::</span><span class="n">value</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="o">&gt;</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">create_reconstructor</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TrialSubspaceType</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trialSpace</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impl</span><span class="o">::</span><span class="n">LspgReconstructor</span><span class="o">&lt;</span><span class="n">TrialSubspaceType</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">trialSpace</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -382,7 +376,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Jun 27, 2023</div>
+              Last updated on Mar 18, 2025</div>
           </div>
           <div class="right-details">
             <div class="icons">

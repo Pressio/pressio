@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="rom" href="components/rom.html" /><link rel="prev" title="CMake Keywords" href="keywords.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>pressio concepts: more info - Pressio-0.14.0</title>
+        <title>Concepts in Pressio - Pressio-0.15.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -131,7 +131,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Pressio-0.14.0</div></a>
+      <a href="index.html"><div class="brand">Pressio-0.15.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
     <img class="sidebar-logo" src="_static/logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Pressio-0.14.0</span>
+  <span class="sidebar-brand-text">Pressio-0.15.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -165,9 +165,10 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Dependencies</a></li>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration and Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keywords.html">CMake Keywords</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Concepts in Pressio</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -209,12 +210,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="components/linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear_solvers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellanea</span></p>
 <ul>
@@ -254,8 +249,8 @@
           </label>
         </div>
         <article role="main">
-          <section id="pressio-concepts-more-info">
-<h1>pressio concepts: more info<a class="headerlink" href="#pressio-concepts-more-info" title="Permalink to this heading">#</a></h1>
+          <section id="concepts-in-pressio">
+<h1>Concepts in Pressio<a class="headerlink" href="#concepts-in-pressio" title="Permalink to this heading">#</a></h1>
 <p>Concept-driven design has been and still is critical in
 the development of pressio. Here we describe some fundamental
 notions that are at the core of our design approach.</p>
@@ -270,7 +265,7 @@ and semantics are specified/listed as comments. Here, we adopt a different
 approach to present axioms (similar to “Design of Concept Libraries for C++”, 2011)),
 that we believe benefits readability: axioms are explicitly listed using
 the keyword “axiom”. Note, however, that if you want to compile the concepts below
-using a c++20 compiler, you have to comment out all axioms.</p>
+using a C++20 compiler, you have to comment out all axioms.</p>
 <ul class="simple">
 <li><p><span class="red">concepts are hard and it will take a few iterations to get meaninngful concepts done</span></p></li>
 <li><p><span class="red">not all components have the same maturity, so this will be reflected in the corresponding concepts too</span></p></li>
@@ -291,8 +286,26 @@ semantic requirements (if any) are also met.”</p>
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="components/rom.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title"><code class="docutils literal notranslate"><span class="pre">rom</span></code></div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="keywords.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">CMake Keywords</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -303,7 +316,7 @@ semantic requirements (if any) are also met.”</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Jun 27, 2023</div>
+              Last updated on Mar 18, 2025</div>
           </div>
           <div class="right-details">
             <div class="icons">
@@ -326,7 +339,7 @@ semantic requirements (if any) are also met.”</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">pressio concepts: more info</a><ul>
+<li><a class="reference internal" href="#">Concepts in Pressio</a><ul>
 <li><a class="reference internal" href="#concept-syntactic-constraints-semantics"><code class="docutils literal notranslate"><span class="pre">concept</span> <span class="pre">=</span> <span class="pre">syntactic</span> <span class="pre">constraints</span> <span class="pre">+</span> <span class="pre">semantics</span></code></a></li>
 <li><a class="reference internal" href="#satisfying-vs-modeling-a-concept">“Satisfying” vs. “modeling” a concept</a></li>
 </ul>

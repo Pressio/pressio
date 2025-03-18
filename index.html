@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation and Dependencies" href="installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration and Dependencies" href="configuration.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>Pressio-0.14.0</title>
+        <title>Pressio-0.15.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -131,7 +131,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Pressio-0.14.0</div></a>
+      <a href="#"><div class="brand">Pressio-0.15.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
     <img class="sidebar-logo" src="_static/logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Pressio-0.14.0</span>
+  <span class="sidebar-brand-text">Pressio-0.15.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -166,8 +166,9 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration and Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keywords.html">CMake Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts_note.html">Concepts in Pressio</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -209,12 +210,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="components/linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear_solvers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellanea</span></p>
 <ul>
@@ -281,9 +276,11 @@ extensibility, maintainability, and usability of each component on its own.</str
 One drawback is that at any point in time, the various components might
 have different maturity levels, so reaching a comparable and solid maturity
 across the stack might take some time—our current goal is to obtain
-in version <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code> a uniform maturity level <em>at least</em> across
-the <code class="docutils literal notranslate"><span class="pre">rom,</span> <span class="pre">ode</span> <span class="pre">and</span> <span class="pre">solvers</span></code> components. Please keep this in mind while browsing
+in version <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code> a uniform maturity level across
+the <code class="docutils literal notranslate"><span class="pre">rom</span></code>, <code class="docutils literal notranslate"><span class="pre">ode</span></code>, and <code class="docutils literal notranslate"><span class="pre">solvers</span></code> components. Please keep this in mind while browsing
 the documentation and the code.</p>
+<p>The supported capabilities of <code class="docutils literal notranslate"><span class="pre">Pressio/pressio</span></code> are included in the table below.
+Each component (level) of the stack depends on the ones below it.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -317,37 +314,14 @@ the documentation and the code.</p>
 <td><p>linear dense (on-node) solvers</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/solvers_linear.hpp&gt;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">qr</span></code></p></td>
-<td><p>QR factorization functionalities</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/qr.hpp&gt;</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ops</span></code></p></td>
-<td><p>shared-memory/distributed linear algebra kernels specializations</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/ops.hpp&gt;</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">expressions</span></code></p></td>
-<td><p>expressions templates, e.g.: span, diagonal, subspan</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/expressions.hpp&gt;</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></p></td>
-<td><p>type traits and detection</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/type_traits.hpp&gt;</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">utils</span></code></p></td>
-<td><p>logger, constants, etc</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/utils.hpp&gt;</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mpl</span></code></p></td>
-<td><p>metaprogramming functionalities</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pressio/mpl.hpp&gt;</span></code></p></td>
-</tr>
 </tbody>
 </table>
 </div>
+<p>These components depend on the <a class="reference external" href="https://github.com/Pressio/pressio-ops">Pressio/pressio-ops</a> header-only library.</p>
 <section id="get-started">
 <h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="installation.html">Install pressio</a>: (currently) it is a header-only library, so should be trivial</p></li>
+<li><p><a class="reference external" href="configuration.html">Configure pressio</a>: (currently) it is a header-only library, so should be trivial</p></li>
 <li><p>Explore our <a class="reference external" href="https://pressio.github.io/pressio-tutorials/endtoend/readthisfirst.html">end-to-end ROM demos</a> to
 see <code class="docutils literal notranslate"><span class="pre">pressio/rom</span></code> in action and to experiment directly</p></li>
 <li><p>Explore the <a class="reference external" href="https://pressio.github.io/pressio-tutorials">tutorials showing the individual capabilities</a></p></li>
@@ -364,14 +338,13 @@ template, you have some expectations of what a template needs to expose/do.
 C++20 concepts are, in some sense, a way to <em>explicitly</em> formalize those expectations.</p>
 <p>Until we can stably upgrade to C++20, we cannot by default use C++20 concepts,
 so we currently guard the concepts in pressio inside a
-preprocessor directive <code class="docutils literal notranslate"><span class="pre">#ifdef</span> <span class="pre">PRESSIO_ENABLE_CXX20</span></code>. This can be enabled by
-using a C++20 compliant compiler and setting <code class="docutils literal notranslate"><span class="pre">-DCMAKE_CXX_STANDARD=20</span></code> at configure time.
+preprocessor directive <code class="docutils literal notranslate"><span class="pre">#ifdef</span> <span class="pre">PRESSIO_ENABLE_CXX20</span></code>.
 The behavior is as follows:</p>
 <ul class="simple">
 <li><p>if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_CXX20</span></code> is <em>enabled</em>: concepts are compiled and
 enforced <em>stricto sensu</em> on the pressio APIs as discussed by this documentation</p></li>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_CXX20</span></code> is <em>disabled</em>: this is the default case because the
-default pressio C++ standard is currently C++14. In this case, the “C++20 concepts”
+default pressio C++ standard is currently C++17. In this case, the “C++20 concepts”
 are not compiled but the constraints they represent are still valid and implemented
 differently such that their enforcement is done via a combination of SFINAE and static asserts.</p></li>
 </ul>
@@ -382,6 +355,7 @@ still being developed. Some are more mature than others. The approach we adopt i
 focus on the syntax, then then we will revise them with proper semantics. Keep this in mind
 if some concepts seem incomplete.</p>
 </div>
+<p>Read more about <a class="reference external" href="concepts_note.html">concepts in Pressio</a>.</p>
 </section>
 <section id="license-and-citation">
 <h2>License and Citation<a class="headerlink" href="#license-and-citation" title="Permalink to this heading">#</a></h2>
@@ -407,12 +381,12 @@ open an issue on <a class="reference external" href="https://github.com/Pressio/
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="installation.html">
+          <a class="next-page" href="configuration.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Installation and Dependencies</div>
+                <div class="title">Configuration and Dependencies</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -427,7 +401,7 @@ open an issue on <a class="reference external" href="https://github.com/Pressio/
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Jun 27, 2023</div>
+              Last updated on Mar 18, 2025</div>
           </div>
           <div class="right-details">
             <div class="icons">

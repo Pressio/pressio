@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="rom" href="components/rom.html" /><link rel="prev" title="Installation and Dependencies" href="installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Concepts in Pressio" href="concepts_note.html" /><link rel="prev" title="Configuration and Dependencies" href="configuration.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>CMake Keywords - Pressio-0.14.0</title>
+        <title>CMake Keywords - Pressio-0.15.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -131,7 +131,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Pressio-0.14.0</div></a>
+      <a href="index.html"><div class="brand">Pressio-0.15.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
     <img class="sidebar-logo" src="_static/logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Pressio-0.14.0</span>
+  <span class="sidebar-brand-text">Pressio-0.15.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -166,8 +166,9 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration and Dependencies</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">CMake Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts_note.html">Concepts in Pressio</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -209,12 +210,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="components/linsolvers.html"><code class="docutils literal notranslate"><span class="pre">linear_solvers</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/qr.html"><code class="docutils literal notranslate"><span class="pre">qr</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/ops.html"><code class="docutils literal notranslate"><span class="pre">ops</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/expressions.html"><code class="docutils literal notranslate"><span class="pre">expressions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/type_traits.html"><code class="docutils literal notranslate"><span class="pre">type_traits</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/mpl.html"><code class="docutils literal notranslate"><span class="pre">mpl</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellanea</span></p>
 <ul>
@@ -298,14 +293,6 @@
 <td><p>self-explanatory</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>  automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_BLAS</span></code></p></td>
-<td><p>self-explanatory</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>; automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_LAPACK=ON</span></code> or <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_LAPACK</span></code></p></td>
-<td><p>self-explanatory</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>; automatically <code class="docutils literal notranslate"><span class="pre">ON</span></code> if <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_BLAS=ON</span></code> or <code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_TPL_TRILINOS=ON</span></code></p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -321,6 +308,38 @@ and disable the rest.</p>
 and cannot be turned on individualy.
 For example, if we enable Trilinos then <code class="docutils literal notranslate"><span class="pre">pressio</span></code> automatically
 enables also Kokkos, BLAS, LAPACK and MPI.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">#</a></h2>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-left">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 60%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_LOGGING</span></code></p></td>
+<td><p>enables logging with <code class="docutils literal notranslate"><span class="pre">pressio-log</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ON</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_COLORIZED_OUTPUT</span></code></p></td>
+<td><p>logging output will be colorized (warnings=yellow, errors=red)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_SILENCE_WARNINGS</span></code></p></td>
+<td><p>the logger will omit any warning messages</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="other-options">
 <h2>Other Options<a class="headerlink" href="#other-options" title="Permalink to this heading">#</a></h2>
@@ -338,14 +357,6 @@ enables also Kokkos, BLAS, LAPACK and MPI.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_DEBUG_PRINT</span></code></p></td>
-<td><p>to enable debugging print statements</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_CXX17</span></code></p></td>
-<td><p>enables C++17 standard</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">ON</span></code> since min standard is 17</p></td>
-</tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRESSIO_ENABLE_CXX20</span></code></p></td>
 <td><p>enables C++20 standard</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">OFF</span></code>; turned on if <code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code> is set to 20</p></td>
@@ -361,23 +372,23 @@ enables also Kokkos, BLAS, LAPACK and MPI.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="components/rom.html">
+          <a class="next-page" href="concepts_note.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title"><code class="docutils literal notranslate"><span class="pre">rom</span></code></div>
+                <div class="title">Concepts in Pressio</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="installation.html">
+          <a class="prev-page" href="configuration.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Installation and Dependencies</div>
+                <div class="title">Configuration and Dependencies</div>
                 
               </div>
             </a>
@@ -391,7 +402,7 @@ enables also Kokkos, BLAS, LAPACK and MPI.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Jun 27, 2023</div>
+              Last updated on Mar 18, 2025</div>
           </div>
           <div class="right-details">
             <div class="icons">
@@ -416,6 +427,7 @@ enables also Kokkos, BLAS, LAPACK and MPI.</p>
             <ul>
 <li><a class="reference internal" href="#">CMake Keywords</a><ul>
 <li><a class="reference internal" href="#third-party-libraries-tpls">Third-party Libraries (TPLs)</a></li>
+<li><a class="reference internal" href="#logging">Logging</a></li>
 <li><a class="reference internal" href="#other-options">Other Options</a></li>
 </ul>
 </li>
