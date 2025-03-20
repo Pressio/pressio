@@ -177,10 +177,6 @@ Diagnostic stop_criterion_to_public_diagnostic(const Stop & sc)
 // and what we solve for
 struct StateTag{};
 
-// the initial guess stores a deep copy of the
-// state *before* doing the solve
-struct InitialGuessTag{};
-
 // the solver for the newton step
 struct InnerSolverTag{};
 
