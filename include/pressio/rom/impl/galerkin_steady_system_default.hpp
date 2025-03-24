@@ -134,10 +134,10 @@ private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
   mutable typename FomSystemType::state_type fomState_;
-  mutable typename FomSystemType::residual_type fomResidual_;
-  mutable fom_jac_action_result_type fomJacAction_;
   mutable typename FomSystemType::state_type auxFomVec_;
   mutable typename FomSystemType::state_type auxFomVec2_;
+  mutable typename FomSystemType::residual_type fomResidual_;
+  mutable fom_jac_action_result_type fomJacAction_;
 };
 
 }}} // end pressio::rom::impl
