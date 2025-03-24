@@ -92,6 +92,20 @@ public:
     }
   }
 
+  void residual(const state_type & reducedState,
+		residual_type & reducedResidual) const
+  {
+    throw std::runtime_error("missing impl");
+  }
+
+  template<class OperandT, class ResultT>
+  void applyJacobian(const state_type & reducedState,
+		     OperandT const & reducedOperand,
+		     ResultT & out) const
+  {
+    throw std::runtime_error("missing impl");
+  }
+
 private:
   std::reference_wrapper<const TrialSubspaceType> trialSubspace_;
   std::reference_wrapper<const FomSystemType> fomSystem_;
