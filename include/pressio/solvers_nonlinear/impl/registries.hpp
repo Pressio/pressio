@@ -24,14 +24,12 @@ class RegistryNewton
   using j_t        = typename SystemType::jacobian_type;
 
   using Tag1 = nonlinearsolvers::CorrectionTag;
-  using Tag2 = nonlinearsolvers::InitialGuessTag;
   using Tag3 = nonlinearsolvers::ResidualTag;
   using Tag4 = nonlinearsolvers::JacobianTag;
   using Tag5 = nonlinearsolvers::InnerSolverTag;
   using Tag6 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   j_t d4_;
   InstanceOrReferenceWrapper<InnSolverType> d5_;
@@ -41,7 +39,6 @@ public:
   template<class _InnSolverType>
   RegistryNewton(const SystemType & system, _InnSolverType && innS)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(system.createJacobian()),
       d5_(std::forward<_InnSolverType>(innS)),
@@ -50,11 +47,10 @@ public:
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	   Tag1, Tag2, Tag3, Tag4, Tag5, Tag6>::value) < 6;
+	   Tag1, Tag3, Tag4, Tag5, Tag6>::value) < 5;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
   GETMETHOD(5)
@@ -68,12 +64,10 @@ class RegistryMatrixFreeNewtonKrylov
   using r_t        = typename SystemType::residual_type;
 
   using Tag1 = nonlinearsolvers::CorrectionTag;
-  using Tag2 = nonlinearsolvers::InitialGuessTag;
   using Tag3 = nonlinearsolvers::ResidualTag;
   using Tag4 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   SystemType const * d4_;
 
@@ -82,18 +76,16 @@ public:
 
   RegistryMatrixFreeNewtonKrylov(const SystemType & system)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(&system){}
 
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	    Tag1, Tag2, Tag3, Tag4>::value) < 4;
+	    Tag1, Tag3, Tag4>::value) < 3;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
 };
@@ -110,7 +102,6 @@ class RegistryGaussNewtonNormalEqs
   using gradient_t = typename hg_default::gradient_type;
 
   using Tag1 = nonlinearsolvers::CorrectionTag;
-  using Tag2 = nonlinearsolvers::InitialGuessTag;
   using Tag3 = nonlinearsolvers::ResidualTag;
   using Tag4 = nonlinearsolvers::JacobianTag;
   using Tag5 = nonlinearsolvers::GradientTag;
@@ -119,7 +110,6 @@ class RegistryGaussNewtonNormalEqs
   using Tag8 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   j_t d4_;
   gradient_t d5_;
@@ -131,7 +121,6 @@ public:
   template<class _InnSolverType>
   RegistryGaussNewtonNormalEqs(const SystemType & system, _InnSolverType && innS)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(system.createJacobian()),
       d5_(system.createState()),
@@ -142,11 +131,10 @@ public:
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	   Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8>::value) < 8;
+	   Tag1, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8>::value) < 7;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
   GETMETHOD(5)
@@ -166,7 +154,6 @@ class RegistryWeightedGaussNewtonNormalEqs
   using gradient_t = typename hg_default::gradient_type;
 
   using Tag1  = nonlinearsolvers::CorrectionTag;
-  using Tag2  = nonlinearsolvers::InitialGuessTag;
   using Tag3  = nonlinearsolvers::ResidualTag;
   using Tag4  = nonlinearsolvers::JacobianTag;
   using Tag5  = nonlinearsolvers::WeightedResidualTag;
@@ -178,7 +165,6 @@ class RegistryWeightedGaussNewtonNormalEqs
   using Tag11 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   j_t d4_;
   r_t d5_;
@@ -195,7 +181,6 @@ public:
 				       _InnSolverType && innS,
 				       _WeightingOpType && weigher)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(system.createJacobian()),
       d5_(system.createResidual()),
@@ -209,11 +194,10 @@ public:
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	    Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10, Tag11>::value) < 11;
+	    Tag1, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10, Tag11>::value) < 10;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
   GETMETHOD(5)
@@ -236,7 +220,6 @@ class RegistryCompactWeightedGaussNewtonNormalEqs
   using gradient_t = typename hg_default::gradient_type;
 
   using Tag1  = nonlinearsolvers::CorrectionTag;
-  using Tag2  = nonlinearsolvers::InitialGuessTag;
   using Tag3  = nonlinearsolvers::ResidualTag;
   using Tag4  = nonlinearsolvers::JacobianTag;
   using Tag5  = nonlinearsolvers::WeightedResidualTag;
@@ -248,7 +231,6 @@ class RegistryCompactWeightedGaussNewtonNormalEqs
   using Tag11 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   j_t d4_;
   r_t d5_;
@@ -265,7 +247,6 @@ public:
 				       _InnSolverType && innS,
 				       _WeightingOpType && weigher)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(system.createJacobian()),
       d5_(system.createResidual()),
@@ -283,11 +264,10 @@ public:
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	    Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10, Tag11>::value) < 11;
+	    Tag1, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10, Tag11>::value) < 10;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
   GETMETHOD(5)
@@ -309,7 +289,6 @@ class RegistryGaussNewtonQr
   using gradient_t = state_t; // type of J^T r
 
   using Tag1 = nonlinearsolvers::CorrectionTag;
-  using Tag2 = nonlinearsolvers::InitialGuessTag;
   using Tag3 = nonlinearsolvers::ResidualTag;
   using Tag4 = nonlinearsolvers::JacobianTag;
   using Tag5 = nonlinearsolvers::GradientTag;
@@ -318,7 +297,6 @@ class RegistryGaussNewtonQr
   using Tag8 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   j_t d4_;
   gradient_t d5_;
@@ -330,7 +308,6 @@ public:
   template<class QRType>
   RegistryGaussNewtonQr(const SystemType & system, QRType && qrs)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(system.createJacobian()),
       d5_(system.createState()),
@@ -341,11 +318,10 @@ public:
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	   Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8>::value) < 8;
+	   Tag1, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8>::value) < 7;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
   GETMETHOD(5)
@@ -367,7 +343,6 @@ class RegistryLevMarNormalEqs
   using lm_damp_t  = LevenbergMarquardtDamping<scalar_t>;
 
   using Tag1 = nonlinearsolvers::CorrectionTag;
-  using Tag2 = nonlinearsolvers::InitialGuessTag;
   using Tag3 = nonlinearsolvers::ResidualTag;
   using Tag4 = nonlinearsolvers::JacobianTag;
   using Tag5 = nonlinearsolvers::GradientTag;
@@ -378,7 +353,6 @@ class RegistryLevMarNormalEqs
   using Tag10 = nonlinearsolvers::impl::SystemTag;
 
   state_t d1_;
-  state_t d2_;
   r_t d3_;
   j_t d4_;
   gradient_t d5_;
@@ -392,7 +366,6 @@ public:
   template<class _InnSolverType>
   RegistryLevMarNormalEqs(const SystemType & system, _InnSolverType && innS)
     : d1_(system.createState()),
-      d2_(system.createState()),
       d3_(system.createResidual()),
       d4_(system.createJacobian()),
       d5_(system.createState()),
@@ -405,11 +378,10 @@ public:
   template<class TagToFind>
   static constexpr bool contains(){
     return (mpl::variadic::find_if_binary_pred_t<TagToFind, std::is_same,
-	    Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10>::value) < 10;
+	    Tag1, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8, Tag9, Tag10>::value) < 9;
   }
 
   GETMETHOD(1)
-  GETMETHOD(2)
   GETMETHOD(3)
   GETMETHOD(4)
   GETMETHOD(5)

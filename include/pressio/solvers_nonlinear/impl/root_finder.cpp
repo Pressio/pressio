@@ -349,9 +349,6 @@ public:
   std::enable_if_t< std::is_same<_Tag, NewtonTag>::value >
   solve(const SystemType & system, StateType & solutionInOut)
   {
-    // deep copy the initial guess
-    ::pressio::ops::deep_copy(this->template get<InitialGuessTag>(), solutionInOut);
-
     if (updateEnValue_ == Update::Standard)
     {
       auto extReg = reference_capture_registry_and_extend_with<
@@ -380,9 +377,6 @@ public:
   std::enable_if_t< std::is_same<_Tag, MatrixFreeNewtonTag>::value >
   solve(const SystemType & system, StateType & solutionInOut)
   {
-    // deep copy the initial guess
-    ::pressio::ops::deep_copy(this->template get<InitialGuessTag>(), solutionInOut);
-
     assert(updateEnValue_ == Update::Standard);
 
     auto extReg = reference_capture_registry_and_extend_with<
