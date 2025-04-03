@@ -31,7 +31,7 @@
      showgrid="false"
      inkscape:zoom="0.84336708"
      inkscape:cx="750.56285"
-     inkscape:cy="52.764687"
+     inkscape:cy="51.578964"
      inkscape:window-x="66"
      inkscape:window-y="23"
      inkscape:window-maximized="0"
@@ -83,8 +83,5 @@
            font-weight="500"
            style="font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
            id="tspan912">pressio-rom</tspan></tspan></text>
-    <path
-       d="m321.85 116.11v-0.55905c-68.365 0-273.46 0.55905-341.83 0.55905 68.365 0 273.46 0.55903 341.83 0.55903v-0.55903z"
-       id="path918" />
   </g>
 </svg>
